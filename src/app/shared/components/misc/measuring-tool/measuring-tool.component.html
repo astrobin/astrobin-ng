@@ -605,5 +605,7 @@
 
 
   <!-- Overlay for capturing clicks and drags during measuring mode -->
-  <div class="measure-click-overlay" (click)="handleMeasurementClick($event)"></div>
+  <div class="measure-click-overlay" 
+       (click)="handleMeasurementClick($event)"
+       (mousedown)="handleMeasurementMouseDown($event)"></div>
 </div>

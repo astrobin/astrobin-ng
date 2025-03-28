@@ -137,11 +137,186 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
   }
 
   /** 
-   * Handle clicks on the measurement overlay to place points and calculate distances
+   * Handle mouse down on the measurement overlay to start measuring
    */
-  handleMeasurementClick(event: MouseEvent): void {
+  handleMeasurementMouseDown(event: MouseEvent): void {
+    // Skip if this mousedown should be prevented
     if (this._preventNextClick) {
       this._preventNextClick = false;
+      return;
+    }
+
+    // Get the offset of the image element
+    const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+    if (!imageElement) {
+      return;
+    }
+
+    // Check if the mouse down is within the bounds of the image
+    const imageRect = imageElement.getBoundingClientRect();
+    if (
+      event.clientX < imageRect.left ||
+      event.clientX > imageRect.right ||
+      event.clientY < imageRect.top ||
+      event.clientY > imageRect.bottom
+    ) {
+      return;
+    }
+
+    // Prevent text selection during drag
+    event.preventDefault();
+    
+    // If already in the middle of a two-click measurement (start point exists but no end point),
+    // don't start a new measurement with mouse down
+    if (this.measureStartPoint && !this.measureEndPoint) {
+      return;
+    }
+
+    // If we already have a start and end point, this is a new measurement
+    if (this.measureStartPoint && this.measureEndPoint) {
+      // Reset for a new measurement
+      this.measureStartPoint = null;
+      this.measureEndPoint = null;
+      this.measureDistance = null;
+    }
+
+    // Store starting position to check if this is a click or drag
+    const startX = event.clientX;
+    const startY = event.clientY;
+    
+    // Keep track of whether we've moved enough to consider this a drag
+    let hasDraggedEnough = false;
+    const dragThreshold = 10; // Minimum pixels to move before considering it a drag
+    
+    // Track if we're in a drag operation (don't set flag yet)
+    let isDragging = false;
+    
+    // Set the start point on mousedown
+    this.measureStartPoint = {
+      x: event.clientX,
+      y: event.clientY,
+      ra: null,
+      dec: null
+    };
+
+    // Initialize mouse position to match the cursor position immediately
+    this.mouseX = event.clientX;
+    this.mouseY = event.clientY;
+
+    // If we have solution data, calculate celestial coordinates for this point
+    if (this.advancedSolutionMatrix) {
+      const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY);
+      if (coords) {
+        this.measureStartPoint.ra = coords.ra;
+        this.measureStartPoint.dec = coords.dec;
+      } else {
+        // For testing, provide dummy coordinates to make labels visible
+        this.measureStartPoint.ra = 10.5;
+        this.measureStartPoint.dec = 40.2;
+      }
+    } else {
+      // For testing, provide dummy coordinates to make labels visible
+      this.measureStartPoint.ra = 10.5;
+      this.measureStartPoint.dec = 40.2;
+    }
+    
+    // Add mouse move event listener to track the mouse position
+    const mouseMoveHandler = (moveEvent: MouseEvent) => {
+      // Calculate distance moved
+      const dx = moveEvent.clientX - startX;
+      const dy = moveEvent.clientY - startY;
+      const distanceMoved = Math.sqrt(dx * dx + dy * dy);
+      
+      // If we've moved enough, consider this a drag operation
+      if (distanceMoved >= dragThreshold) {
+        hasDraggedEnough = true;
+        isDragging = true;
+        
+        // Set the drag flag to prevent the click handler from running
+        this._dragInProgress = true;
+      }
+      
+      // Always update the mouse position for the dashed line preview
+      this.mouseX = moveEvent.clientX;
+      this.mouseY = moveEvent.clientY;
+    };
+    
+    // Add mouse up event listener to complete the measurement
+    const mouseUpHandler = (upEvent: MouseEvent) => {
+      // Calculate final distance moved
+      const dx = upEvent.clientX - startX;
+      const dy = upEvent.clientY - startY;
+      const distanceMoved = Math.sqrt(dx * dx + dy * dy);
+      
+      // Only complete the measurement if we dragged far enough
+      if (hasDraggedEnough && isDragging) {
+        // Set the end point at the mouse up position
+        this.measureEndPoint = {
+          x: upEvent.clientX,
+          y: upEvent.clientY,
+          ra: null,
+          dec: null
+        };
+        
+        // If we have solution data, calculate celestial coordinates for this point
+        if (this.advancedSolutionMatrix) {
+          const coords = this.calculateCoordinatesAtPoint(upEvent.clientX, upEvent.clientY);
+          if (coords) {
+            this.measureEndPoint.ra = coords.ra;
+            this.measureEndPoint.dec = coords.dec;
+          } else {
+            // For testing, provide dummy coordinates to make labels visible
+            this.measureEndPoint.ra = 10.6;
+            this.measureEndPoint.dec = 40.3;
+          }
+        } else {
+          // For testing, provide dummy coordinates to make labels visible
+          this.measureEndPoint.ra = 10.6;
+          this.measureEndPoint.dec = 40.3;
+        }
+        
+        // Finalize the measurement
+        this._finalizeMeasurement();
+        
+        // Set flag to prevent click handler from running
+        this._preventNextClick = true;
+      } else if (distanceMoved < dragThreshold) {
+        // If we didn't drag far enough, it's treated like a normal click
+        // Keep the start point set (so it appears immediately) but don't set end point
+        // The user can set the end point with a second click
+        this.measureEndPoint = null;
+      }
+      
+      // Clean up event listeners
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
+      
+      // Reset drag state
+      this._dragInProgress = false;
+      
+      // Small delay to prevent accidental double measurements
+      setTimeout(() => {
+        this._preventNextClick = false;
+      }, 100);
+    };
+    
+    // Add the event listeners
+    document.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mouseup', mouseUpHandler, { once: true });
+  }
+  
+  /** 
+   * Handle clicks on the measurement overlay to place points 
+   */
+  handleMeasurementClick(event: MouseEvent): void {
+    // Skip if this click should be prevented (e.g., it's part of a drag operation)
+    if (this._preventNextClick) {
+      this._preventNextClick = false;
+      return;
+    }
+
+    // Skip if dragging is in progress
+    if (this._dragInProgress) {
       return;
     }
 
@@ -161,8 +336,48 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     ) {
       return;
     }
+    
+    // If we have a completed measurement, start a new one
+    if (this.measureStartPoint && this.measureEndPoint) {
+      this.measureStartPoint = null;
+      this.measureEndPoint = null;
+      this.measureDistance = null;
+      
+      // Set first point immediately on this click
+      console.log("Setting start point (click - new measurement)");
+      this.measureStartPoint = {
+        x: event.clientX,
+        y: event.clientY,
+        ra: null,
+        dec: null
+      };
 
+      // Initialize mouse position for dashed line display
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
+
+      // If we have solution data, calculate celestial coordinates for this point
+      if (this.advancedSolutionMatrix) {
+        const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY);
+        if (coords) {
+          this.measureStartPoint.ra = coords.ra;
+          this.measureStartPoint.dec = coords.dec;
+        } else {
+          // For testing, provide dummy coordinates to make labels visible
+          this.measureStartPoint.ra = 10.5;
+          this.measureStartPoint.dec = 40.2;
+        }
+      } else {
+        // For testing, provide dummy coordinates to make labels visible
+        this.measureStartPoint.ra = 10.5;
+        this.measureStartPoint.dec = 40.2;
+      }
+      return;
+    }
+
+    // Set first point if needed
     if (!this.measureStartPoint) {
+      console.log("Setting start point (click)");
       // Set start point
       this.measureStartPoint = {
         x: event.clientX,
@@ -171,27 +386,31 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
         dec: null
       };
 
+      // Initialize mouse position for dashed line display
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
+
       // If we have solution data, calculate celestial coordinates for this point
       if (this.advancedSolutionMatrix) {
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY);
         if (coords) {
           this.measureStartPoint.ra = coords.ra;
           this.measureStartPoint.dec = coords.dec;
-          console.log('Start point coordinates set:', coords);
         } else {
-          console.log('Could not calculate coordinates for start point');
           // For testing, provide dummy coordinates to make labels visible
           this.measureStartPoint.ra = 10.5;
           this.measureStartPoint.dec = 40.2;
         }
       } else {
-        console.log('No solution matrix available for coordinate calculation');
         // For testing, provide dummy coordinates to make labels visible
         this.measureStartPoint.ra = 10.5;
         this.measureStartPoint.dec = 40.2;
       }
-    } else if (!this.measureEndPoint) {
-      // Set end point
+    } 
+    // Set second point if we already have first point
+    else if (!this.measureEndPoint) {
+      console.log("Setting end point (click)");
+      // Set end point (for two-click measurements)
       this.measureEndPoint = {
         x: event.clientX,
         y: event.clientY,
@@ -205,83 +424,93 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
         if (coords) {
           this.measureEndPoint.ra = coords.ra;
           this.measureEndPoint.dec = coords.dec;
-          console.log('End point coordinates set:', coords);
         } else {
-          console.log('Could not calculate coordinates for end point');
           // For testing, provide dummy coordinates to make labels visible
           this.measureEndPoint.ra = 10.6;
           this.measureEndPoint.dec = 40.3;
         }
       } else {
-        console.log('No solution matrix available for coordinate calculation');
         // For testing, provide dummy coordinates to make labels visible
         this.measureEndPoint.ra = 10.6;
         this.measureEndPoint.dec = 40.3;
       }
 
-      // Calculate distance
-      const pixelDistance = this.calculateDistance(
-        this.measureStartPoint.x,
-        this.measureStartPoint.y,
-        this.measureEndPoint.x,
-        this.measureEndPoint.y
-      );
-
-      // Format the distance for display (pixels or angular distance if plate-solved)
-      if (this.advancedSolutionMatrix && this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
-        this.measureDistance = this.formatAngularDistance(pixelDistance);
-      } else {
-        this.measureDistance = `${Math.round(pixelDistance)} px`;
-      }
-
-      // Create measurement data object for saving
-      const midX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
-      const midY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
-      
-      const measurementData: MeasurementData = {
-        startX: this.measureStartPoint.x,
-        startY: this.measureStartPoint.y,
-        endX: this.measureEndPoint.x,
-        endY: this.measureEndPoint.y,
-        midX: midX,
-        midY: midY,
-        distance: this.measureDistance,
-        timestamp: Date.now(),
-        startRa: this.measureStartPoint.ra,
-        startDec: this.measureStartPoint.dec,
-        endRa: this.measureEndPoint.ra,
-        endDec: this.measureEndPoint.dec,
-        startLabelX: 0, // Will be calculated
-        startLabelY: 0, // Will be calculated
-        endLabelX: 0, // Will be calculated
-        endLabelY: 0, // Will be calculated
-        showCircle: this.showCurrentCircle,
-        showRectangle: this.showCurrentRectangle
-      };
-      
-      // Calculate label positions
-      this.updateCoordinateLabelPositions(measurementData);
-      
-      // Save measurement to previous list
-      this.previousMeasurements.push(measurementData);
-      
-      // Get the current shape preference first
-      const currentCircle = this.showCurrentCircle;
-      const currentRectangle = this.showCurrentRectangle;
-      
-      // Reset current measurement points after adding to previous measurements
-      // This prevents duplicate display of the current measurement
-      this.measureStartPoint = null;
-      this.measureEndPoint = null;
-      this.measureDistance = null;
-      
-      // Keep the shape preference settings so they apply to the next measurement
-      this.showCurrentCircle = currentCircle;
-      this.showCurrentRectangle = currentRectangle;
-      
-      // Emit the completed measurement
-      this.measurementComplete.emit(measurementData);
+      // Finalize the measurement
+      this._finalizeMeasurement();
     }
+  }
+  
+  /**
+   * Helper method to finalize a measurement after both points are placed
+   * This calculates distance, creates the measurement object, and resets for the next measurement
+   */
+  private _finalizeMeasurement(): void {
+    if (!this.measureStartPoint || !this.measureEndPoint) {
+      return;
+    }
+    
+    // Calculate distance
+    const pixelDistance = this.calculateDistance(
+      this.measureStartPoint.x,
+      this.measureStartPoint.y,
+      this.measureEndPoint.x,
+      this.measureEndPoint.y
+    );
+
+    // Format the distance for display (pixels or angular distance if plate-solved)
+    if (this.advancedSolutionMatrix && this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
+      this.measureDistance = this.formatAngularDistance(pixelDistance);
+    } else {
+      this.measureDistance = `${Math.round(pixelDistance)} px`;
+    }
+
+    // Create measurement data object for saving
+    const midX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
+    const midY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
+    
+    const measurementData: MeasurementData = {
+      startX: this.measureStartPoint.x,
+      startY: this.measureStartPoint.y,
+      endX: this.measureEndPoint.x,
+      endY: this.measureEndPoint.y,
+      midX: midX,
+      midY: midY,
+      distance: this.measureDistance,
+      timestamp: Date.now(),
+      startRa: this.measureStartPoint.ra,
+      startDec: this.measureStartPoint.dec,
+      endRa: this.measureEndPoint.ra,
+      endDec: this.measureEndPoint.dec,
+      startLabelX: 0, // Will be calculated
+      startLabelY: 0, // Will be calculated
+      endLabelX: 0, // Will be calculated
+      endLabelY: 0, // Will be calculated
+      showCircle: this.showCurrentCircle,
+      showRectangle: this.showCurrentRectangle
+    };
+    
+    // Calculate label positions
+    this.updateCoordinateLabelPositions(measurementData);
+    
+    // Save measurement to previous list
+    this.previousMeasurements.push(measurementData);
+    
+    // Get the current shape preference first
+    const currentCircle = this.showCurrentCircle;
+    const currentRectangle = this.showCurrentRectangle;
+    
+    // Reset current measurement points after adding to previous measurements
+    // This prevents duplicate display of the current measurement
+    this.measureStartPoint = null;
+    this.measureEndPoint = null;
+    this.measureDistance = null;
+    
+    // Keep the shape preference settings so they apply to the next measurement
+    this.showCurrentCircle = currentCircle;
+    this.showCurrentRectangle = currentRectangle;
+    
+    // Emit the completed measurement
+    this.measurementComplete.emit(measurementData);
   }
 
   /**
