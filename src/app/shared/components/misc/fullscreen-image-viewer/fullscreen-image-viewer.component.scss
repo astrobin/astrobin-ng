@@ -785,6 +785,13 @@ $header-height: 63px;
           fill: none;
           stroke-width: 1.5px;
           stroke-dasharray: 5 3;
+          pointer-events: none; /* Disable interactions with the shape so clicks pass through */
+          transition: stroke-width 0.2s ease, stroke 0.2s ease;
+          
+          &:hover {
+            stroke-width: 2.5px; /* Thicker stroke on hover for better visibility */
+            stroke-dasharray: 4 2; /* Tighter dash pattern on hover for better visibility */
+          }
 
           &.current {
             stroke: rgba(50, 150, 50, 0.8);
@@ -803,6 +810,12 @@ $header-height: 63px;
       .shape-overlay {
         fill: rgba(0, 0, 0, 0.2);
         pointer-events: none;
+        transition: fill 0.2s ease;
+      }
+      
+      /* Brighten the overlay slightly when dragging to provide feedback */
+      .isDragging .shape-overlay {
+        fill: rgba(0, 0, 0, 0.15);
       }
 
       /* Dimension labels for rectangles */
@@ -876,7 +889,15 @@ $header-height: 63px;
         flex-wrap: nowrap;
         white-space: nowrap;
         align-items: center;
-        transition: background-color 0.2s ease, transform 0.2s ease;
+        cursor: grab;
+        
+        &:hover {
+          background-color: rgba(60, 170, 60, 0.9);
+        }
+        
+        &:active {
+          cursor: grabbing;
+        }
 
         /* No updating style, as requested */
       }
@@ -914,7 +935,15 @@ $header-height: 63px;
         justify-content: center;
         max-width: none;
         white-space: nowrap;
-        transition: background-color 0.2s ease, transform 0.2s ease;
+        cursor: grab;
+        
+        &:hover {
+          background-color: rgba(30, 30, 30, 0.85);
+        }
+        
+        &:active {
+          cursor: grabbing;
+        }
 
         /* No updating style, as requested */
 

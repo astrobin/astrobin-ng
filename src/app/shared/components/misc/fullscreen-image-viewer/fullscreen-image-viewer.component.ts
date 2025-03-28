@@ -155,6 +155,33 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   dragStartY: number = null;
   protected isDraggingPoint: 'start' | 'end' | string | null = null;
   protected pointDragRadius = 10; // Pixel radius around points that's draggable
+  
+  // We'll use the existing shape drag handlers
+  
+  // We'll use existing cookie preference functionality
+  
+  /**
+   * Helper to update coordinate label positions for measurements
+   * This is used by the existing drag handlers
+   */
+  private updateCoordinateLabelPositions(measurement: any): void {
+    // Calculate the midpoint of the line
+    const midX = (measurement.startX + measurement.endX) / 2;
+    const midY = (measurement.startY + measurement.endY) / 2;
+    
+    // Calculate the angle of the line
+    const angle = Math.atan2(measurement.endY - measurement.startY, measurement.endX - measurement.startX);
+    
+    // Calculate perpendicular offset distance (increased for better readability)
+    const offsetDistance = 30;
+    
+    // Calculate label positions perpendicular to the line
+    measurement.startLabelX = measurement.startX + Math.cos(angle + Math.PI / 2) * offsetDistance;
+    measurement.startLabelY = measurement.startY + Math.sin(angle + Math.PI / 2) * offsetDistance;
+    measurement.endLabelX = measurement.endX + Math.cos(angle + Math.PI / 2) * offsetDistance;
+    measurement.endLabelY = measurement.endY + Math.sin(angle + Math.PI / 2) * offsetDistance;
+  }
+  
   protected previousMeasurements: Array<{
     startX: number;
     startY: number;
@@ -214,6 +241,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _onMeasuringMouseMove = this.handleMeasuringMouseMove.bind(this);
   private _onPreviousMeasurementDragMove: any = null;
   private _onPreviousMeasurementDragEnd: any = null;
+  private _onShapeDragMove: any = null;
+  private _onShapeDragEnd: any = null;
+  private _onCurrentShapeDragMove: any = null;
+  private _onCurrentShapeDragEnd: any = null;
   private _canvasContext: CanvasRenderingContext2D;
   private _canvasContainerDimensions: { width: number; height: number; centerX: number; centerY: number };
   private _canvasImageDimensions: { width: number; height: number };
@@ -2146,6 +2177,200 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.showCurrentCircle = shapePreference === 'circle';
     this.showCurrentRectangle = shapePreference === 'rectangle';
 
+    this.changeDetectorRef.markForCheck();
+  }
+
+  /**
+   * Handler for starting a drag operation on a shape (circle or rectangle) in a previous measurement
+   * @param event - The mousedown event
+   * @param index - Index of the previous measurement
+   * @param shapeType - Type of shape being dragged ('circle' or 'rectangle')
+   */
+  protected handleShapeDragStart(event: MouseEvent, index: number, shapeType: 'circle' | 'rectangle'): void {
+    // Prevent default browser drag behavior and propagation
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (this._dragInProgress) {
+      return;
+    }
+    
+    this._dragInProgress = true;
+    
+    // Store the starting position for this drag operation
+    this.dragStartX = event.clientX;
+    this.dragStartY = event.clientY;
+    
+    // Store the original measurement point positions
+    const originalStartX = this.previousMeasurements[index].startX;
+    const originalStartY = this.previousMeasurements[index].startY;
+    const originalEndX = this.previousMeasurements[index].endX;
+    const originalEndY = this.previousMeasurements[index].endY;
+    
+    // Create the move and end handlers
+    this._onShapeDragMove = (moveEvent: MouseEvent) => {
+      // Calculate movement delta
+      const deltaX = moveEvent.clientX - this.dragStartX;
+      const deltaY = moveEvent.clientY - this.dragStartY;
+      
+      // Update both start and end points with the same delta to move the entire shape
+      this.previousMeasurements[index].startX = originalStartX + deltaX;
+      this.previousMeasurements[index].startY = originalStartY + deltaY;
+      this.previousMeasurements[index].endX = originalEndX + deltaX;
+      this.previousMeasurements[index].endY = originalEndY + deltaY;
+      
+      // Recalculate midpoint and other derived values
+      this.previousMeasurements[index].midX = (this.previousMeasurements[index].startX + this.previousMeasurements[index].endX) / 2;
+      this.previousMeasurements[index].midY = (this.previousMeasurements[index].startY + this.previousMeasurements[index].endY) / 2;
+      
+      // Update label positions and distance measurement
+      this._recalculatePreviousMeasurement(index);
+      
+      this.changeDetectorRef.markForCheck();
+    };
+    
+    this._onShapeDragEnd = () => {
+      this._dragInProgress = false;
+      
+      if (this.isBrowser) {
+        document.removeEventListener('mousemove', this._onShapeDragMove);
+        document.removeEventListener('mouseup', this._onShapeDragEnd);
+      }
+      
+      this._onShapeDragMove = null;
+      this._onShapeDragEnd = null;
+      
+      // Prevent the next click from being processed (to avoid it being treated as a new measurement)
+      this._preventNextClick = true;
+      setTimeout(() => {
+        this._preventNextClick = false;
+      }, 100);
+      
+      this.changeDetectorRef.markForCheck();
+    };
+    
+    // Add document-level event listeners for drag operations
+    if (this.isBrowser) {
+      document.addEventListener('mousemove', this._onShapeDragMove);
+      document.addEventListener('mouseup', this._onShapeDragEnd);
+    }
+    
+    this.changeDetectorRef.markForCheck();
+  }
+  
+  /**
+   * Handler for starting a drag operation on a shape (circle or rectangle) in the current measurement
+   * @param event - The mousedown event
+   * @param shapeType - Type of shape being dragged ('circle' or 'rectangle')
+   */
+  protected handleCurrentShapeDragStart(event: MouseEvent, shapeType: 'circle' | 'rectangle'): void {
+    // Prevent default browser drag behavior and propagation
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (this._dragInProgress || !this.measureStartPoint || !this.measureEndPoint) {
+      return;
+    }
+    
+    this._dragInProgress = true;
+    
+    // Store the starting position for this drag operation
+    this.dragStartX = event.clientX;
+    this.dragStartY = event.clientY;
+    
+    // Store the original measurement point positions
+    const originalStartX = this.measureStartPoint.x;
+    const originalStartY = this.measureStartPoint.y;
+    const originalEndX = this.measureEndPoint.x;
+    const originalEndY = this.measureEndPoint.y;
+    
+    // Create the move and end handlers
+    this._onCurrentShapeDragMove = (moveEvent: MouseEvent) => {
+      // Calculate movement delta
+      const deltaX = moveEvent.clientX - this.dragStartX;
+      const deltaY = moveEvent.clientY - this.dragStartY;
+      
+      // Update both start and end points with the same delta to move the entire shape
+      this.measureStartPoint.x = originalStartX + deltaX;
+      this.measureStartPoint.y = originalStartY + deltaY;
+      this.measureEndPoint.x = originalEndX + deltaX;
+      this.measureEndPoint.y = originalEndY + deltaY;
+      
+      // Update celestial coordinates if available and shape is circle
+      if (this.hasAdvancedSolution) {
+        // Recalculate coordinates for both points
+        const startCoords = this._calculateCoordinatesAtPoint(this.measureStartPoint.x, this.measureStartPoint.y);
+        if (startCoords) {
+          this.measureStartPoint.ra = startCoords.ra;
+          this.measureStartPoint.dec = startCoords.dec;
+        }
+        
+        const endCoords = this._calculateCoordinatesAtPoint(this.measureEndPoint.x, this.measureEndPoint.y);
+        if (endCoords) {
+          this.measureEndPoint.ra = endCoords.ra;
+          this.measureEndPoint.dec = endCoords.dec;
+        }
+        
+        // Recalculate the angular distance
+        if (this.measureStartPoint.ra !== null && this.measureStartPoint.dec !== null && 
+            this.measureEndPoint.ra !== null && this.measureEndPoint.dec !== null) {
+          const angularDistance = this._calculateAngularDistance(
+            this.measureStartPoint.ra, this.measureStartPoint.dec,
+            this.measureEndPoint.ra, this.measureEndPoint.dec
+          );
+          
+          // Format the result
+          const degrees = Math.floor(angularDistance);
+          const arcminutes = Math.floor((angularDistance - degrees) * 60);
+          const arcseconds = Math.round(((angularDistance - degrees) * 60 - arcminutes) * 60);
+          
+          this.measureDistance = `${degrees}° ${arcminutes}′ ${arcseconds}″`;
+        } else {
+          // Use pixel distance if celestial coordinates can't be calculated
+          const pixelDistance = Math.sqrt(
+            Math.pow(this.measureEndPoint.x - this.measureStartPoint.x, 2) +
+            Math.pow(this.measureEndPoint.y - this.measureStartPoint.y, 2)
+          ).toFixed(1);
+          this.measureDistance = this.translateService.instant("{{0}} pixels", { 0: pixelDistance });
+        }
+      } else {
+        // For non-plate-solved images, just update the pixel distance
+        const pixelDistance = Math.sqrt(
+          Math.pow(this.measureEndPoint.x - this.measureStartPoint.x, 2) +
+          Math.pow(this.measureEndPoint.y - this.measureStartPoint.y, 2)
+        ).toFixed(1);
+        this.measureDistance = this.translateService.instant("{{0}} pixels", { 0: pixelDistance });
+      }
+      
+      this.changeDetectorRef.markForCheck();
+    };
+    
+    this._onCurrentShapeDragEnd = () => {
+      this._dragInProgress = false;
+      
+      if (this.isBrowser) {
+        document.removeEventListener('mousemove', this._onCurrentShapeDragMove);
+        document.removeEventListener('mouseup', this._onCurrentShapeDragEnd);
+      }
+      
+      this._onCurrentShapeDragMove = null;
+      this._onCurrentShapeDragEnd = null;
+      
+      // Prevent the next click from being processed (to avoid it being treated as a new measurement)
+      this._preventNextClick = true;
+      setTimeout(() => {
+        this._preventNextClick = false;
+      }, 100);
+      
+      this.changeDetectorRef.markForCheck();
+    };
+    
+    // Add document-level event listeners for drag operations
+    if (this.isBrowser) {
+      document.addEventListener('mousemove', this._onCurrentShapeDragMove);
+      document.addEventListener('mouseup', this._onCurrentShapeDragEnd);
+    }
+    
     this.changeDetectorRef.markForCheck();
   }
 

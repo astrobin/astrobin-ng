@@ -591,6 +591,7 @@
       
       <!-- Circle drawing for previous measurement, if available -->
       <svg *ngIf="measurement.showCircle" class="measure-shape-container"
+           [class.isDragging]="isDraggingPoint === 'prevShape-' + i"
            [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
            [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
         <!-- Semi-transparent overlay for the area outside the circle -->
@@ -619,14 +620,13 @@
           [attr.cx]="(measurement.startX + measurement.endX) / 2" 
           [attr.cy]="(measurement.startY + measurement.endY) / 2"
           [attr.r]="calculateDistance(measurement.startX, measurement.startY, measurement.endX, measurement.endY) / 2"
-          class="measure-shape circle"
-          (mousedown)="handleShapeDragStart($event, i, 'circle')"
-          [style.cursor]="'move'">
+          class="measure-shape circle">
         </circle>
       </svg>
       
       <!-- Rectangle drawing for previous measurement, if available -->
       <svg *ngIf="measurement.showRectangle" class="measure-shape-container"
+           [class.isDragging]="isDraggingPoint === 'prevShape-' + i"
            [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
            [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
         <!-- Semi-transparent overlay for the area outside the rectangle -->
@@ -657,9 +657,7 @@
           [attr.y]="Math.min(measurement.startY, measurement.endY)"
           [attr.width]="Math.abs(measurement.endX - measurement.startX)"
           [attr.height]="Math.abs(measurement.endY - measurement.startY)"
-          class="measure-shape rectangle"
-          (mousedown)="handleShapeDragStart($event, i, 'rectangle')"
-          [style.cursor]="'move'">
+          class="measure-shape rectangle">
         </rect>
         
         <!-- Width dimension label -->
@@ -776,7 +774,8 @@
          [style.left.px]="measurement.midX"
          [style.top.px]="measurement.midY"
          (mouseenter)="setMouseOverUIElement(true)"
-         (mouseleave)="setMouseOverUIElement(false)">
+         (mouseleave)="setMouseOverUIElement(false)"
+         (mousedown)="handleShapeDragStart ? handleShapeDragStart($event, i, measurement.showCircle ? 'circle' : 'rectangle') : null">
       <span class="measurement-text">{{ measurement.distance }}</span>
       
       <div class="measurement-actions">
@@ -813,6 +812,7 @@
 
     <!-- Current measurement circle -->
     <svg *ngIf="showCurrentCircle && measureStartPoint && measureEndPoint" class="measure-shape-container"
+         [class.isDragging]="isDraggingPoint === 'currentShape'"
          [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
          [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
       <!-- Semi-transparent overlay for the area outside the circle -->
@@ -847,6 +847,7 @@
     
     <!-- Current measurement rectangle -->
     <svg *ngIf="showCurrentRectangle && measureStartPoint && measureEndPoint" class="measure-shape-container"
+         [class.isDragging]="isDraggingPoint === 'currentShape'"
          [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
          [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
       <!-- Semi-transparent overlay for the area outside the rectangle -->
@@ -992,7 +993,8 @@
          [style.left.px]="(measureStartPoint.x + measureEndPoint.x) / 2"
          [style.top.px]="(measureStartPoint.y + measureEndPoint.y) / 2"
          (mouseenter)="setMouseOverUIElement(true)"
-         (mouseleave)="setMouseOverUIElement(false)">
+         (mouseleave)="setMouseOverUIElement(false)"
+         (mousedown)="handleCurrentShapeDragStart ? handleCurrentShapeDragStart($event, showCurrentCircle ? 'circle' : 'rectangle') : null">
       <span class="measurement-text">{{ measureDistance }}</span>
       
       <div class="measurement-actions">
