@@ -1,0 +1,101 @@
+/**
+ * Handler for starting a drag operation on a shape (circle or rectangle)
+ * @param event Mouse event that triggered the drag
+ * @param index Index of the measurement in the previousMeasurements array
+ * @param shapeType Type of shape ('circle' or 'rectangle')
+ */
+protected handleShapeDragStart(event: MouseEvent, index: number, shapeType: 'circle' | 'rectangle'): void {
+  // Prevent default browser behavior
+  event.preventDefault();
+  event.stopPropagation();
+
+  // Store initial drag position
+  this.dragStartX = event.clientX;
+  this.dragStartY = event.clientY;
+
+  // Set the dragging shape
+  this.isDraggingShape = { index, type: shapeType };
+  this._dragInProgress = true;
+  
+  // Set up drag event handlers
+  this._onShapeDragMove = (moveEvent: MouseEvent) => {
+    this._onShapeDragMove_impl(moveEvent, index);
+  };
+  
+  this._onShapeDragEnd = (upEvent: MouseEvent) => {
+    this._onShapeDragEnd_impl(upEvent, index);
+  };
+  
+  document.addEventListener('mousemove', this._onShapeDragMove);
+  document.addEventListener('mouseup', this._onShapeDragEnd);
+  
+  this.changeDetectorRef.markForCheck();
+}
+
+/**
+ * Handler for when a shape is being dragged
+ * @param event Mouse move event
+ * @param index Index of the measurement
+ */
+private _onShapeDragMove_impl(event: MouseEvent, index: number): void {
+  if (!this.isDraggingShape || this.isDraggingShape.index !== index) {
+    return;
+  }
+  
+  // Calculate the drag delta
+  const deltaX = event.clientX - this.dragStartX;
+  const deltaY = event.clientY - this.dragStartY;
+  
+  if (deltaX === 0 && deltaY === 0) {
+    return;
+  }
+  
+  // Update start and end points
+  this.previousMeasurements[index].startX += deltaX;
+  this.previousMeasurements[index].startY += deltaY;
+  this.previousMeasurements[index].endX += deltaX;
+  this.previousMeasurements[index].endY += deltaY;
+  
+  // Update midpoint coordinates
+  this.previousMeasurements[index].midX = (this.previousMeasurements[index].startX + this.previousMeasurements[index].endX) / 2;
+  this.previousMeasurements[index].midY = (this.previousMeasurements[index].startY + this.previousMeasurements[index].endY) / 2;
+  
+  // Update label positions
+  this._updateMeasurementLabelPositions(this.previousMeasurements[index]);
+  
+  // Reset drag start position for continuous dragging
+  this.dragStartX = event.clientX;
+  this.dragStartY = event.clientY;
+  
+  // If we have advanced solution, recalculate celestial coordinates
+  if (this.hasAdvancedSolution && this.previousMeasurements[index].startRa !== null) {
+    this._recalculatePreviousMeasurement(index);
+  }
+  
+  this.changeDetectorRef.markForCheck();
+}
+
+/**
+ * Handler for when a shape drag operation ends
+ * @param event Mouse up event
+ * @param index Index of the measurement
+ */
+private _onShapeDragEnd_impl(event: MouseEvent, index: number): void {
+  // Clean up event listeners
+  document.removeEventListener('mousemove', this._onShapeDragMove);
+  document.removeEventListener('mouseup', this._onShapeDragEnd);
+  this._onShapeDragMove = null;
+  this._onShapeDragEnd = null;
+  
+  // Reset drag state
+  this.isDraggingShape = null;
+  this._dragInProgress = false;
+  this._preventNextClick = true;
+  
+  // Use setTimeout to prevent the click event from firing immediately after mouseup
+  setTimeout(() => {
+    this._preventNextClick = false;
+  }, 100);
+  
+  this.changeDetectorRef.markForCheck();
+}
