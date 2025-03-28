@@ -1,4 +1,10 @@
-<div class="measuring-tool-container" *ngIf="active">
+<div class="measuring-tool-container" *ngIf="active" [class.rotation-active]="isRotatingRectangle">
+  <!-- Overlay for capturing clicks and drags during measuring mode -->
+  <!-- Put this first so other elements can be on top of it -->
+  <div class="measure-click-overlay" 
+       (click)="handleMeasurementClick($event)"
+       (mousedown)="handleMeasurementMouseDown($event)"></div>
+       
   <!-- Start and end markers -->
   <div *ngIf="measureStartPoint" class="measure-marker start-marker"
        [class.dragging]="isDraggingPoint === 'start'"
@@ -190,13 +196,17 @@
       <defs>
         <mask id="rectangle-mask-{{i}}">
           <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
-          <rect 
-            [attr.x]="Math.min(measurement.startX, measurement.endX)" 
-            [attr.y]="Math.min(measurement.startY, measurement.endY)"
-            [attr.width]="Math.abs(measurement.endX - measurement.startX)"
-            [attr.height]="Math.abs(measurement.endY - measurement.startY)"
-            fill="black">
-          </rect>
+          <g [attr.transform]="'rotate(' + (measurement.rectangleRotation || 0) + ' ' + 
+                         ((measurement.startX + measurement.endX) / 2) + ' ' + 
+                         ((measurement.startY + measurement.endY) / 2) + ')'">
+            <rect 
+              [attr.x]="Math.min(measurement.startX, measurement.endX)" 
+              [attr.y]="Math.min(measurement.startY, measurement.endY)"
+              [attr.width]="Math.abs(measurement.endX - measurement.startX)"
+              [attr.height]="Math.abs(measurement.endY - measurement.startY)"
+              fill="black">
+            </rect>
+          </g>
         </mask>
       </defs>
       
@@ -208,119 +218,158 @@
             [attr.mask]="'url(#rectangle-mask-' + i + ')'">
       </rect>
       
-      <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
-      <rect 
-        [attr.x]="Math.min(measurement.startX, measurement.endX)" 
-        [attr.y]="Math.min(measurement.startY, measurement.endY)"
-        [attr.width]="Math.abs(measurement.endX - measurement.startX)"
-        [attr.height]="Math.abs(measurement.endY - measurement.startY)"
-        class="measure-shape rectangle">
-      </rect>
-      
-      <!-- Width dimension label -->
-      <g class="dimension-label width-label">
-        <!-- Width line -->
-        <line 
-          [attr.x1]="Math.min(measurement.startX, measurement.endX)"
-          [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
-          [attr.x2]="Math.max(measurement.startX, measurement.endX)"
-          [attr.y2]="Math.max(measurement.startY, measurement.endY) + 15"
-          class="dimension-line">
-        </line>
+      <!-- Rectangle group with rotation transform -->
+      <g [attr.transform]="'rotate(' + (measurement.rectangleRotation || 0) + ' ' + 
+                         ((measurement.startX + measurement.endX) / 2) + ' ' + 
+                         ((measurement.startY + measurement.endY) / 2) + ')'">
+        <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
+        <rect 
+          [attr.x]="Math.min(measurement.startX, measurement.endX)" 
+          [attr.y]="Math.min(measurement.startY, measurement.endY)"
+          [attr.width]="Math.abs(measurement.endX - measurement.startX)"
+          [attr.height]="Math.abs(measurement.endY - measurement.startY)"
+          class="measure-shape rectangle"
+          [class.rotating]="isDraggingPoint === 'rotateRect-' + i && isRotatingRectangle">
+        </rect>
         
-        <!-- Dimension arrows -->
-        <line 
-          [attr.x1]="Math.min(measurement.startX, measurement.endX)"
-          [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
-          [attr.x2]="Math.min(measurement.startX, measurement.endX) + 5"
-          [attr.y2]="Math.max(measurement.startY, measurement.endY) + 10"
-          class="dimension-arrow">
-        </line>
-        <line 
-          [attr.x1]="Math.min(measurement.startX, measurement.endX)"
-          [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
-          [attr.x2]="Math.min(measurement.startX, measurement.endX) + 5"
-          [attr.y2]="Math.max(measurement.startY, measurement.endY) + 20"
-          class="dimension-arrow">
-        </line>
+        <!-- Width dimension label (inside rotated group) -->
+        <g class="dimension-label width-label">
+          <!-- Width line -->
+          <line 
+            [attr.x1]="Math.min(measurement.startX, measurement.endX)"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX)"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 15"
+            class="dimension-line">
+          </line>
+          
+          <!-- Dimension arrows -->
+          <line 
+            [attr.x1]="Math.min(measurement.startX, measurement.endX)"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
+            [attr.x2]="Math.min(measurement.startX, measurement.endX) + 5"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 10"
+            class="dimension-arrow">
+          </line>
+          <line 
+            [attr.x1]="Math.min(measurement.startX, measurement.endX)"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
+            [attr.x2]="Math.min(measurement.startX, measurement.endX) + 5"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 20"
+            class="dimension-arrow">
+          </line>
+          
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX)"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) - 5"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 10"
+            class="dimension-arrow">
+          </line>
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX)"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) - 5"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 20"
+            class="dimension-arrow">
+          </line>
+          
+          <!-- Width text -->
+          <text 
+            [attr.x]="(Math.min(measurement.startX, measurement.endX) + Math.max(measurement.startX, measurement.endX)) / 2"
+            [attr.y]="Math.max(measurement.startY, measurement.endY) + 30"
+            text-anchor="middle"
+            class="dimension-text"
+            [attr.dominant-baseline]="'central'">
+            {{ getHorizontalCelestialDistance(Math.min(measurement.startX, measurement.endX), Math.max(measurement.startY, measurement.endY), Math.max(measurement.startX, measurement.endX)) || (Math.round(Math.abs(measurement.endX - measurement.startX)) + ' px') }}
+          </text>
+        </g>
         
-        <line 
-          [attr.x1]="Math.max(measurement.startX, measurement.endX)"
-          [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
-          [attr.x2]="Math.max(measurement.startX, measurement.endX) - 5"
-          [attr.y2]="Math.max(measurement.startY, measurement.endY) + 10"
-          class="dimension-arrow">
-        </line>
-        <line 
-          [attr.x1]="Math.max(measurement.startX, measurement.endX)"
-          [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
-          [attr.x2]="Math.max(measurement.startX, measurement.endX) - 5"
-          [attr.y2]="Math.max(measurement.startY, measurement.endY) + 20"
-          class="dimension-arrow">
-        </line>
+        <!-- Height dimension label (inside rotated group) -->
+        <g class="dimension-label height-label">
+          <!-- Height line -->
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
+            [attr.y1]="Math.min(measurement.startY, measurement.endY)"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 20"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY)"
+            class="dimension-line">
+          </line>
+          
+          <!-- Dimension arrows -->
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
+            [attr.y1]="Math.min(measurement.startY, measurement.endY)"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 15"
+            [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
+            class="dimension-arrow">
+          </line>
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
+            [attr.y1]="Math.min(measurement.startY, measurement.endY)"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
+            [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
+            class="dimension-arrow">
+          </line>
+          
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY)"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 15"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
+            class="dimension-arrow">
+          </line>
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY)"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
+            class="dimension-arrow">
+          </line>
+          
+          <!-- Height text -->
+          <text 
+            [attr.x]="Math.max(measurement.startX, measurement.endX) + 35"
+            [attr.y]="(Math.min(measurement.startY, measurement.endY) + Math.max(measurement.startY, measurement.endY)) / 2"
+            text-anchor="start"
+            class="dimension-text"
+            [attr.dominant-baseline]="'central'">
+            {{ getVerticalCelestialDistance(Math.max(measurement.startX, measurement.endX), Math.min(measurement.startY, measurement.endY), Math.max(measurement.startY, measurement.endY)) || (Math.round(Math.abs(measurement.endY - measurement.startY)) + ' px') }}
+          </text>
+        </g>
         
-        <!-- Width text -->
-        <text 
-          [attr.x]="(Math.min(measurement.startX, measurement.endX) + Math.max(measurement.startX, measurement.endX)) / 2"
-          [attr.y]="Math.max(measurement.startY, measurement.endY) + 30"
-          text-anchor="middle"
-          class="dimension-text"
-          [attr.dominant-baseline]="'central'">
-          {{ getHorizontalCelestialDistance(Math.min(measurement.startX, measurement.endX), Math.max(measurement.startY, measurement.endY), Math.max(measurement.startX, measurement.endX)) || (Math.round(Math.abs(measurement.endX - measurement.startX)) + ' px') }}
-        </text>
-      </g>
-      
-      <!-- Height dimension label -->
-      <g class="dimension-label height-label">
-        <!-- Height line -->
-        <line 
-          [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
-          [attr.y1]="Math.min(measurement.startY, measurement.endY)"
-          [attr.x2]="Math.max(measurement.startX, measurement.endX) + 20"
-          [attr.y2]="Math.max(measurement.startY, measurement.endY)"
-          class="dimension-line">
-        </line>
-        
-        <!-- Dimension arrows -->
-        <line 
-          [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
-          [attr.y1]="Math.min(measurement.startY, measurement.endY)"
-          [attr.x2]="Math.max(measurement.startX, measurement.endX) + 15"
-          [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
-          class="dimension-arrow">
-        </line>
-        <line 
-          [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
-          [attr.y1]="Math.min(measurement.startY, measurement.endY)"
-          [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
-          [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
-          class="dimension-arrow">
-        </line>
-        
-        <line 
-          [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
-          [attr.y1]="Math.max(measurement.startY, measurement.endY)"
-          [attr.x2]="Math.max(measurement.startX, measurement.endX) + 15"
-          [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
-          class="dimension-arrow">
-        </line>
-        <line 
-          [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
-          [attr.y1]="Math.max(measurement.startY, measurement.endY)"
-          [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
-          [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
-          class="dimension-arrow">
-        </line>
-        
-        <!-- Height text -->
-        <text 
-          [attr.x]="Math.max(measurement.startX, measurement.endX) + 35"
-          [attr.y]="(Math.min(measurement.startY, measurement.endY) + Math.max(measurement.startY, measurement.endY)) / 2"
-          text-anchor="start"
-          class="dimension-text"
-          [attr.dominant-baseline]="'central'">
-          {{ getVerticalCelestialDistance(Math.max(measurement.startX, measurement.endX), Math.min(measurement.startY, measurement.endY), Math.max(measurement.startY, measurement.endY)) || (Math.round(Math.abs(measurement.endY - measurement.startY)) + ' px') }}
-        </text>
+        <!-- Rotation handle in the top-right corner -->
+        <g class="rotate-handle rotation-master-handle" title="{{ 'Rotate rectangle' | translate }}">
+          <!-- Extra large invisible touch area for better interaction -->
+          <circle 
+            [attr.cx]="Math.max(measurement.startX, measurement.endX)" 
+            [attr.cy]="Math.min(measurement.startY, measurement.endY)"
+            r="32"
+            fill="rgba(255, 255, 0, 0.3)"
+            stroke="rgba(255, 255, 0, 0.5)"
+            style="pointer-events: all !important; cursor: grab;"
+            (mousedown)="handleRectangleRotateStart($event, i)">
+          </circle>
+          <!-- Visible rotation handle circle -->
+          <circle 
+            [attr.cx]="Math.max(measurement.startX, measurement.endX)" 
+            [attr.cy]="Math.min(measurement.startY, measurement.endY)"
+            r="16"
+            class="rotate-handle-bg"
+            [class.rotating]="isDraggingPoint === 'rotateRect-' + i && isRotatingRectangle"
+            (mousedown)="handleRectangleRotateStart($event, i)">
+          </circle>
+          <svg
+            [attr.x]="Math.max(measurement.startX, measurement.endX) - 8"
+            [attr.y]="Math.min(measurement.startY, measurement.endY) - 8"
+            width="16" height="16" viewBox="0 0 24 24"
+            class="rotate-handle-icon"
+            [class.rotating]="isDraggingPoint === 'rotateRect-' + i && isRotatingRectangle"
+            (mousedown)="handleRectangleRotateStart($event, i)">
+            <!-- SVG path for a rotation icon -->
+            <path d="M4,12 A8,8 0 1,1 6,20 L6,16 L2,16 L2,20 Q2,20 6,20 M20,4 L20,8 L16,8 L16,4" fill="none" stroke="black" stroke-width="2" />
+          </svg>
+        </g>
       </g>
     </svg>
   </div>
@@ -409,13 +458,17 @@
     <defs>
       <mask id="current-rectangle-mask">
         <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
-        <rect 
-          [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)" 
-          [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-          [attr.width]="Math.abs(measureEndPoint.x - measureStartPoint.x)"
-          [attr.height]="Math.abs(measureEndPoint.y - measureStartPoint.y)"
-          fill="black">
-        </rect>
+        <g [attr.transform]="'rotate(' + currentRectangleRotation + ' ' + 
+                         ((measureStartPoint.x + measureEndPoint.x) / 2) + ' ' + 
+                         ((measureStartPoint.y + measureEndPoint.y) / 2) + ')'">
+          <rect 
+            [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)" 
+            [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+            [attr.width]="Math.abs(measureEndPoint.x - measureStartPoint.x)"
+            [attr.height]="Math.abs(measureEndPoint.y - measureStartPoint.y)"
+            fill="black">
+          </rect>
+        </g>
       </mask>
     </defs>
     
@@ -427,119 +480,158 @@
           mask="url(#current-rectangle-mask)">
     </rect>
     
-    <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
-    <rect 
-      [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)" 
-      [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-      [attr.width]="Math.abs(measureEndPoint.x - measureStartPoint.x)"
-      [attr.height]="Math.abs(measureEndPoint.y - measureStartPoint.y)"
-      class="measure-shape rectangle current">
-    </rect>
-    
-    <!-- Width dimension label -->
-    <g class="dimension-label width-label">
-      <!-- Width line -->
-      <line 
-        [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
-        [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
-        [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x)"
-        [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
-        class="dimension-line current">
-      </line>
+    <!-- Rectangle group with rotation transform -->
+    <g [attr.transform]="'rotate(' + currentRectangleRotation + ' ' + 
+                       ((measureStartPoint.x + measureEndPoint.x) / 2) + ' ' + 
+                       ((measureStartPoint.y + measureEndPoint.y) / 2) + ')'">
+      <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
+      <rect 
+        [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)" 
+        [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+        [attr.width]="Math.abs(measureEndPoint.x - measureStartPoint.x)"
+        [attr.height]="Math.abs(measureEndPoint.y - measureStartPoint.y)"
+        class="measure-shape rectangle current"
+        [class.rotating]="isDraggingPoint === 'rotateCurrentRect' && isRotatingRectangle">
+      </rect>
+
+      <!-- Width dimension label -->
+      <g class="dimension-label width-label">
+        <!-- Width line -->
+        <line 
+          [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          class="dimension-line current">
+        </line>
+        
+        <!-- Dimension arrows -->
+        <line 
+          [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.min(measureStartPoint.x, measureEndPoint.x) + 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 10"
+          class="dimension-arrow current">
+        </line>
+        <line 
+          [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.min(measureStartPoint.x, measureEndPoint.x) + 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 20"
+          class="dimension-arrow current">
+        </line>
+        
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) - 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 10"
+          class="dimension-arrow current">
+        </line>
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) - 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 20"
+          class="dimension-arrow current">
+        </line>
+        
+        <!-- Width text -->
+        <text 
+          [attr.x]="(Math.min(measureStartPoint.x, measureEndPoint.x) + Math.max(measureStartPoint.x, measureEndPoint.x)) / 2"
+          [attr.y]="Math.max(measureStartPoint.y, measureEndPoint.y) + 30"
+          text-anchor="middle"
+          class="dimension-text current"
+          [attr.dominant-baseline]="'central'">
+          {{ getHorizontalCelestialDistance(Math.min(measureStartPoint.x, measureEndPoint.x), Math.max(measureStartPoint.y, measureEndPoint.y), Math.max(measureStartPoint.x, measureEndPoint.x)) || (Math.round(Math.abs(measureEndPoint.x - measureStartPoint.x)) + ' px') }}
+        </text>
+      </g>
+
+      <!-- Height dimension label -->
+      <g class="dimension-label height-label">
+        <!-- Height line -->
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y)"
+          class="dimension-line current">
+        </line>
+        
+        <!-- Dimension arrows -->
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 15"
+          [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
+          class="dimension-arrow current">
+        </line>
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
+          [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
+          class="dimension-arrow current">
+        </line>
+        
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 15"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
+          class="dimension-arrow current">
+        </line>
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
+          class="dimension-arrow current">
+        </line>
+        
+        <!-- Height text -->
+        <text 
+          [attr.x]="Math.max(measureStartPoint.x, measureEndPoint.x) + 35"
+          [attr.y]="(Math.min(measureStartPoint.y, measureEndPoint.y) + Math.max(measureStartPoint.y, measureEndPoint.y)) / 2"
+          text-anchor="start"
+          class="dimension-text current"
+          [attr.dominant-baseline]="'central'">
+          {{ getVerticalCelestialDistance(Math.max(measureStartPoint.x, measureEndPoint.x), Math.min(measureStartPoint.y, measureEndPoint.y), Math.max(measureStartPoint.y, measureEndPoint.y)) || (Math.round(Math.abs(measureEndPoint.y - measureStartPoint.y)) + ' px') }}
+        </text>
+      </g>
       
-      <!-- Dimension arrows -->
-      <line 
-        [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
-        [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
-        [attr.x2]="Math.min(measureStartPoint.x, measureEndPoint.x) + 5"
-        [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 10"
-        class="dimension-arrow current">
-      </line>
-      <line 
-        [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
-        [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
-        [attr.x2]="Math.min(measureStartPoint.x, measureEndPoint.x) + 5"
-        [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 20"
-        class="dimension-arrow current">
-      </line>
-      
-      <line 
-        [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x)"
-        [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
-        [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) - 5"
-        [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 10"
-        class="dimension-arrow current">
-      </line>
-      <line 
-        [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x)"
-        [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
-        [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) - 5"
-        [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 20"
-        class="dimension-arrow current">
-      </line>
-      
-      <!-- Width text -->
-      <text 
-        [attr.x]="(Math.min(measureStartPoint.x, measureEndPoint.x) + Math.max(measureStartPoint.x, measureEndPoint.x)) / 2"
-        [attr.y]="Math.max(measureStartPoint.y, measureEndPoint.y) + 30"
-        text-anchor="middle"
-        class="dimension-text current"
-        [attr.dominant-baseline]="'central'">
-        {{ getHorizontalCelestialDistance(Math.min(measureStartPoint.x, measureEndPoint.x), Math.max(measureStartPoint.y, measureEndPoint.y), Math.max(measureStartPoint.x, measureEndPoint.x)) || (Math.round(Math.abs(measureEndPoint.x - measureStartPoint.x)) + ' px') }}
-      </text>
-    </g>
-    
-    <!-- Height dimension label -->
-    <g class="dimension-label height-label">
-      <!-- Height line -->
-      <line 
-        [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
-        [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-        [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
-        [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y)"
-        class="dimension-line current">
-      </line>
-      
-      <!-- Dimension arrows -->
-      <line 
-        [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
-        [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-        [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 15"
-        [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
-        class="dimension-arrow current">
-      </line>
-      <line 
-        [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
-        [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-        [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
-        [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
-        class="dimension-arrow current">
-      </line>
-      
-      <line 
-        [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
-        [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
-        [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 15"
-        [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
-        class="dimension-arrow current">
-      </line>
-      <line 
-        [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
-        [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
-        [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
-        [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
-        class="dimension-arrow current">
-      </line>
-      
-      <!-- Height text -->
-      <text 
-        [attr.x]="Math.max(measureStartPoint.x, measureEndPoint.x) + 35"
-        [attr.y]="(Math.min(measureStartPoint.y, measureEndPoint.y) + Math.max(measureStartPoint.y, measureEndPoint.y)) / 2"
-        text-anchor="start"
-        class="dimension-text current"
-        [attr.dominant-baseline]="'central'">
-        {{ getVerticalCelestialDistance(Math.max(measureStartPoint.x, measureEndPoint.x), Math.min(measureStartPoint.y, measureEndPoint.y), Math.max(measureStartPoint.y, measureEndPoint.y)) || (Math.round(Math.abs(measureEndPoint.y - measureStartPoint.y)) + ' px') }}
-      </text>
+      <!-- Rotation handle in the top-right corner -->
+      <g class="rotate-handle rotation-master-handle" title="{{ 'Rotate rectangle' | translate }}">
+        <!-- Extra large invisible touch area for better interaction -->
+        <circle 
+          [attr.cx]="Math.max(measureStartPoint.x, measureEndPoint.x)" 
+          [attr.cy]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+          r="32"
+          fill="rgba(255, 255, 0, 0.3)"
+          stroke="rgba(255, 255, 0, 0.5)"
+          style="pointer-events: all !important; cursor: grab;"
+          (mousedown)="handleRectangleRotateStart($event)">
+        </circle>
+        <!-- Visible rotation handle circle -->
+        <circle 
+          [attr.cx]="Math.max(measureStartPoint.x, measureEndPoint.x)" 
+          [attr.cy]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+          r="16"
+          class="rotate-handle-bg current"
+          [class.rotating]="isDraggingPoint === 'rotateCurrentRect' && isRotatingRectangle"
+          (mousedown)="handleRectangleRotateStart($event)">
+        </circle>
+        <svg
+          [attr.x]="Math.max(measureStartPoint.x, measureEndPoint.x) - 8"
+          [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y) - 8"
+          width="16" height="16" viewBox="0 0 24 24"
+          class="rotate-handle-icon current"
+          [class.rotating]="isDraggingPoint === 'rotateCurrentRect' && isRotatingRectangle"
+          (mousedown)="handleRectangleRotateStart($event)">
+          <!-- SVG path for a rotation icon -->
+          <path d="M4,12 A8,8 0 1,1 6,20 L6,16 L2,16 L2,20 Q2,20 6,20 M20,4 L20,8 L16,8 L16,4" fill="none" stroke="black" stroke-width="2" />
+        </svg>
+      </g>
     </g>
   </svg>
   
@@ -603,9 +695,4 @@
     </button>
   </div>
 
-
-  <!-- Overlay for capturing clicks and drags during measuring mode -->
-  <div class="measure-click-overlay" 
-       (click)="handleMeasurementClick($event)"
-       (mousedown)="handleMeasurementMouseDown($event)"></div>
 </div>
