@@ -1711,7 +1711,15 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
       this._imageRotationContainer.style.display = 'flex';
       this._imageRotationContainer.style.alignItems = 'center';
       this._imageRotationContainer.style.justifyContent = 'center';
-      this._imageRotationContainer.style.transformOrigin = `${centerX}px ${centerY}px`;
+      
+      // Calculate the exact center of the image, not the rectangle
+      const imgBounds = imageElement.getBoundingClientRect();
+      const imageCenterX = imgBounds.width / 2;
+      const imageCenterY = imgBounds.height / 2;
+      
+      // Set the transform origin to the exact center of the image
+      this._imageRotationContainer.style.transformOrigin = `${imageCenterX}px ${imageCenterY}px`;
+      
       this._imageRotationContainer.style.transition = 'transform 0.05s ease-out';
       this._imageRotationContainer.style.zIndex = '0';
 
@@ -1720,7 +1728,6 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
 
       // Save the image's original parent node, size, and position
       const originalParent = imageElement.parentNode;
-      const imgRect = imageElement.getBoundingClientRect();
       const parentRect = (originalParent as HTMLElement).getBoundingClientRect();
 
       // Position the image container relative to its parent
@@ -1751,8 +1758,13 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
       // Hide the original image
       (imageElement as HTMLElement).style.opacity = '0';
     } else {
-      // Update the transform origin to the current rectangle center
-      this._imageRotationContainer.style.transformOrigin = `${centerX}px ${centerY}px`;
+      // Calculate the exact center of the image, not the rectangle
+      const imgBounds = imageElement.getBoundingClientRect();
+      const imageCenterX = imgBounds.width / 2;
+      const imageCenterY = imgBounds.height / 2;
+      
+      // Update the transform origin to the exact center of the image
+      this._imageRotationContainer.style.transformOrigin = `${imageCenterX}px ${imageCenterY}px`;
 
       // Reset to the current rotation (in opposite direction)
       this._imageRotationContainer.style.transform = `rotate(${-1 * originalRotation}deg)`;
@@ -2009,30 +2021,17 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
       }
 
       // Get the image dimensions
-      const imageRect = imageElement.getBoundingClientRect();
+      const imgBounds = imageElement.getBoundingClientRect();
 
       // Apply rotation adjustment if needed
       let adjustedX = x;
       let adjustedY = y;
 
       if (accountForRotation && this._imageRotationContainer) {
-        // Get rotation center
-        const transformOrigin = this._imageRotationContainer.style.transformOrigin;
-        let centerX, centerY;
-
-        if (transformOrigin) {
-          const originParts = transformOrigin.split(" ");
-          if (originParts.length >= 2) {
-            centerX = parseFloat(originParts[0]);
-            centerY = parseFloat(originParts[1]);
-          } else {
-            centerX = imageRect.left + imageRect.width / 2;
-            centerY = imageRect.top + imageRect.height / 2;
-          }
-        } else {
-          centerX = imageRect.left + imageRect.width / 2;
-          centerY = imageRect.top + imageRect.height / 2;
-        }
+        // Always use the exact center of the image for rotation
+        // This ensures consistency with how the image is actually rotated
+        const centerX = imgBounds.left + imgBounds.width / 2;
+        const centerY = imgBounds.top + imgBounds.height / 2;
 
         // Get rotation angle
         const rotationStyle = this._imageRotationContainer.style.transform;
@@ -2618,7 +2617,22 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
 
     // Update the image rotation (in opposite direction)
     if (this._imageRotationContainer) {
-      this._imageRotationContainer.style.transformOrigin = `${centerX}px ${centerY}px`;
+      // Find the image element
+      let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
+      if (!imageElement) {
+        imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+      }
+      
+      if (imageElement) {
+        // Calculate the exact center of the image
+        const imgBounds = imageElement.getBoundingClientRect();
+        const imageCenterX = imgBounds.width / 2;
+        const imageCenterY = imgBounds.height / 2;
+        
+        // Set transform origin to the exact center of the image
+        this._imageRotationContainer.style.transformOrigin = `${imageCenterX}px ${imageCenterY}px`;
+      }
+      
       this._imageRotationContainer.style.transform = `rotate(${-1 * newRotation}deg)`;
     }
 
@@ -2638,17 +2652,8 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
           measurement.endDec
         );
 
-        // Format based on size
-        if (angularDistance < 1/60) {
-          // Less than 1 arcminute, show in arcseconds
-          measurement.distance = `${(angularDistance * 3600).toFixed(1)}″`;
-        } else if (angularDistance < 1) {
-          // Less than 1 degree, show in arcminutes
-          measurement.distance = `${(angularDistance * 60).toFixed(1)}′`;
-        } else {
-          // Show in degrees
-          measurement.distance = `${angularDistance.toFixed(2)}°`;
-        }
+        // Use consistent stable formatting for angular distances
+        measurement.distance = this._formatStableAngularDistance(angularDistance);
       }
 
       // Force update of coordinate labels by recalculating their positions
