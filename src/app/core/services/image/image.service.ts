@@ -26,6 +26,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
 import { IotdInterface } from "@features/iotd/services/iotd-api.service";
 import { Router } from "@angular/router";
 import { BBCodeService } from "@core/services/bbcode.service";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 
 @Injectable({
   providedIn: "root"
@@ -1074,7 +1075,14 @@ export class ImageService extends BaseService {
   }
 
   getObjectFit(
-    image: ImageSearchInterface | ImageInterface | ImageRevisionInterface | FeedItemInterface | IotdInterface
+    obj: (
+      ImageSearchInterface |
+      ImageInterface |
+      ImageRevisionInterface |
+      FeedItemInterface |
+      IotdInterface |
+      CollectionInterface
+    )
   ): {
     position: {
       x: number,
@@ -1082,22 +1090,22 @@ export class ImageService extends BaseService {
     },
     scale: number
   } {
-    if (image.hasOwnProperty("revisions")) {
-      image = this.getFinalRevision(image as ImageInterface) as ImageRevisionInterface;
+    if (obj.hasOwnProperty("revisions")) {
+      obj = this.getFinalRevision(obj as ImageInterface) as ImageRevisionInterface;
     }
 
-    const w = this.getW(image);
-    const h = this.getH(image);
+    const w = this.getW(obj);
+    const h = this.getH(obj);
 
-    if (!image.hasOwnProperty("squareCropping")) {
+    if (!obj.hasOwnProperty("squareCropping")) {
       return { position: { x: 50, y: 50 }, scale: 1 };
     }
 
-    if (!(image as (ImageSearchInterface | ImageInterface)).squareCropping) {
+    if (!(obj as (ImageSearchInterface | ImageInterface | CollectionInterface)).squareCropping) {
       return { position: { x: 50, y: 50 }, scale: 1 };
     }
 
-    const coords = (image as (ImageSearchInterface | ImageInterface)).squareCropping.split(",").map(Number);
+    const coords = (obj as (ImageSearchInterface | ImageInterface | CollectionInterface)).squareCropping.split(",").map(Number);
 
     if (coords.length !== 4 || coords.some(isNaN)) {
       return { position: { x: 50, y: 50 }, scale: 1 };
@@ -1147,28 +1155,42 @@ export class ImageService extends BaseService {
   }
 
   getW(
-    image: ImageSearchInterface | ImageInterface | ImageRevisionInterface | FeedItemInterface | IotdInterface
+    obj: (
+      ImageSearchInterface |
+      ImageInterface |
+      ImageRevisionInterface |
+      FeedItemInterface |
+      IotdInterface |
+      CollectionInterface
+      )
   ) {
-    if (image.hasOwnProperty("finalW")) {
-      return (image as ImageSearchInterface).finalW;
+    if (obj.hasOwnProperty("finalW")) {
+      return (obj as ImageSearchInterface).finalW;
     }
 
-    if (image.hasOwnProperty("w")) {
-      return (image as ImageInterface).w;
+    if (obj.hasOwnProperty("w")) {
+      return (obj as ImageInterface).w;
     }
 
     return 200;
   }
 
   getH(
-    image: ImageSearchInterface | ImageInterface | ImageRevisionInterface | FeedItemInterface | IotdInterface
+    obj: (
+      ImageSearchInterface |
+      ImageInterface |
+      ImageRevisionInterface |
+      FeedItemInterface |
+      IotdInterface |
+      CollectionInterface
+    )
   ) {
-    if (image.hasOwnProperty("finalH")) {
-      return (image as ImageSearchInterface).finalH;
+    if (obj.hasOwnProperty("finalH")) {
+      return (obj as ImageSearchInterface).finalH;
     }
 
-    if (image.hasOwnProperty("h")) {
-      return (image as ImageInterface).h;
+    if (obj.hasOwnProperty("h")) {
+      return (obj as ImageInterface).h;
     }
 
     return 200;

@@ -68,6 +68,10 @@
       padding: .5rem .75rem;
     }
   }
+
+  a.dropdown-item {
+    cursor: pointer;
+  }
 }
 
 .dropdown-divider {
