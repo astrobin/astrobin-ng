@@ -455,7 +455,20 @@ export function appReducer(state = initialAppState, action: All): AppState {
       } // If the image is not found, return the original state
 
       const image = { ...state.images[imageIndex] };
+      const revision = image.revisions.find(revision => revision.pk === action.payload.pk);
       image.revisions = image.revisions.filter(revision => revision.pk !== action.payload.pk);
+      image.thumbnails = image.thumbnails.filter(thumbnail => thumbnail.revision !== revision.label);
+
+      if (revision.isFinal) {
+        image.isFinal = true;
+        image.thumbnails = image.thumbnails.filter(thumbnail => thumbnail.revision !== FINAL_REVISION_LABEL);
+        image.thumbnails = image.thumbnails.filter(thumbnail => thumbnail.revision === ORIGINAL_REVISION_LABEL).map(
+          thumbnail => ({
+            ...thumbnail,
+            revision: FINAL_REVISION_LABEL
+          })
+        )
+      }
 
       return {
         ...state,
@@ -765,7 +778,11 @@ export function appReducer(state = initialAppState, action: All): AppState {
           collection.id === action.payload.collectionId
             ? {
               ...collection,
-              coverThumbnail: action.payload.coverThumbnail
+              coverThumbnail: action.payload.coverThumbnail,
+              coverThumbnailHd: action.payload.coverThumbnailHd,
+              squareCropping: action.payload.squareCropping,
+              w: action.payload.w,
+              h: action.payload.h
             }
             : collection
         )

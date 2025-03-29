@@ -5,6 +5,8 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { ImageService } from "@core/services/image/image.service";
 
 @Component({
   selector: "astrobin-user-gallery-collection-thumbnail",
@@ -12,8 +14,24 @@ import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <div class="collection-container">
         <div class="collection-background">
-          <div class="collection-thumbnail">
-            <img *ngIf="collection.coverThumbnail" [ngSrc]="collection.coverThumbnail" fill alt="" />
+          <div class="collection-thumbnail h-100">
+            <ng-container *ngIf="collection.coverThumbnail">
+              <ng-container *ngIf="imageService.getObjectFit(collection) as fit">
+                <div
+                  [astrobinLazyBackground]="collection.coverThumbnail"
+                  [highResolutionUrl]="collection.coverThumbnailHd"
+                  [useHighResolution]="fit.scale > 3"
+                  [ngStyle]="{
+                          'background-position': fit.position.x + '% ' + fit.position.y + '%',
+                          'background-size': fit.scale > 1.5 ? (fit.scale * 100) + '%' : 'cover',
+                          'background-repeat': 'no-repeat'
+                        }"
+                  [attr.aria-label]="collection.name"
+                  role="img"
+                ></div>
+              </ng-container>
+            </ng-container>
+
             <img
               *ngIf="!collection.coverThumbnail"
               [ngSrc]="'/assets/images/stars.jpg?v=20241008'"
@@ -86,8 +104,11 @@ export class UserGalleryCollectionThumbnailComponent extends BaseComponentDirect
   @Input() collection: CollectionInterface;
 
   constructor(
-    public readonly store$: Store<MainState>
+    public readonly store$: Store<MainState>,
+    public readonly imageService: ImageService
   ) {
     super(store$);
   }
+
+  protected readonly ImageAlias = ImageAlias;
 }
