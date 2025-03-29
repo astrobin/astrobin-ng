@@ -12,17 +12,26 @@ $size: 150px;
     height: calc($size + 10px);
     width: $size;
     position: relative;
+    overflow: hidden;
 
-    img {
-      position: absolute;
-      top: 13px !important;
-      left: 16px !important;
-      width: calc(100% - 32px) !important;
-      height: calc(100% - 44px) !important;
-      object-fit: cover;
+    .collection-thumbnail {
+      width: $size;
+      height: $size;
+      overflow: hidden;
 
-      &.empty-collection-thumbnail {
-        object-fit: none;
+      img,
+      [role="img"] {
+        position: absolute;
+        top: 13px !important;
+        left: 16px !important;
+        width: calc(100% - 32px) !important;
+        height: calc(100% - 44px) !important;
+        object-fit: cover;
+        overflow: hidden;
+
+        &.empty-collection-thumbnail {
+          object-fit: none;
+        }
       }
     }
   }

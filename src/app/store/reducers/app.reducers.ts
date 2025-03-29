@@ -706,7 +706,11 @@ export function appReducer(state = initialAppState, action: All): AppState {
           collection.id === action.payload.collectionId
             ? {
               ...collection,
-              coverThumbnail: action.payload.coverThumbnail
+              coverThumbnail: action.payload.coverThumbnail,
+              coverThumbnailHd: action.payload.coverThumbnailHd,
+              squareCropping: action.payload.squareCropping,
+              w: action.payload.w,
+              h: action.payload.h
             }
             : collection
         )

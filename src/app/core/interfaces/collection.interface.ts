@@ -16,8 +16,12 @@ export interface CollectionInterface {
   images?: ImageInterface["pk"][];
   cover: ImageInterface["pk"] | null;
   coverThumbnail: string | null;
+  coverThumbnailHd: string | null;
   orderByTag: string | null;
   imageCount?: number;
   imageCountIncludingWip?: number;
   nestedCollectionCount?: number;
+  squareCropping?: string;
+  w?: number;
+  h?: number;
 }

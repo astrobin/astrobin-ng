@@ -257,7 +257,11 @@ export class CollectionEffects {
             map(collection => new SetCollectionCoverImageSuccess({
               collectionId: action.payload.collectionId,
               imageId: action.payload.imageId,
-              coverThumbnail: collection.coverThumbnail
+              coverThumbnail: collection.coverThumbnail,
+              coverThumbnailHd: collection.coverThumbnailHd,
+              squareCropping: collection.squareCropping,
+              w: collection.w,
+              h: collection.h
             })),
             catchError(error => of(new SetCollectionCoverImageFailure({
               collectionId: action.payload.collectionId,
