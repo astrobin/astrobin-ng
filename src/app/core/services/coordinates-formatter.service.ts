@@ -125,7 +125,7 @@ export class CoordinatesFormatterService {
       const centerY = imageRenderedHeight / 2;
       
       // Rotate the point around the center
-      const rotatedPoint = this._rotatePointAroundCenter(
+      const rotatedPoint = this.rotatePointAroundCenter(
         relativeX, 
         relativeY, 
         centerX, 
@@ -606,7 +606,7 @@ export class CoordinatesFormatterService {
    * @param angleDegrees Angle in degrees to rotate by
    * @returns The rotated point coordinates
    */
-  private _rotatePointAroundCenter(
+  public rotatePointAroundCenter(
     x: number,
     y: number,
     centerX: number,

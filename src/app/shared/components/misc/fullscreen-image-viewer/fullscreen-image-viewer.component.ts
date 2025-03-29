@@ -1459,7 +1459,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * Calculate the coordinates at the current mouse position
    */
   // Track the current rotation angle in degrees
-  private _currentRotationDegrees = 0;
+  protected _currentRotationDegrees = 0;
 
   /**
    * Updates the current rotation angle
@@ -1468,13 +1468,15 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   updateRotation(rotationDegrees: number): void {
     this._currentRotationDegrees = rotationDegrees;
     // Force recalculation if coordinates are being displayed
-    if (this.showCoordinates && this.mouseRa && this.mouseDec) {
+    if (this.showCoordinates && this._lastMouseEvent) {
       const fakeEvent = {
         clientX: this._lastMouseEvent?.clientX || 0,
         clientY: this._lastMouseEvent?.clientY || 0
       } as MouseEvent;
       this._calculateMouseCoordinates(fakeEvent);
     }
+    // Update display and mark for change detection
+    this.changeDetectorRef.markForCheck();
   }
 
   // Store last mouse event for recalculation

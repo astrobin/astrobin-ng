@@ -423,6 +423,29 @@ $header-height: 63px;
     right: 1rem;
     z-index: 5;
     pointer-events: none;
+    
+    .rotation-badge {
+      position: absolute;
+      top: -2rem;
+      right: 0;
+      background-color: rgba(255, 165, 0, 0.7);
+      color: white;
+      border-radius: 4px;
+      padding: 0.15rem 0.5rem;
+      font-size: 0.7rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.25rem;
+      pointer-events: auto;
+      
+      fa-icon {
+        margin-right: 0.2rem;
+        font-size: 0.6rem;
+        transform: scale(0.8);
+      }
+    }
   }
 
   .keyboard-shortcuts-overlay {

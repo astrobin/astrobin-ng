@@ -152,6 +152,20 @@
       <div class="marker-dot"></div>
     </div>
     
+    <!-- Rotation handle for rectangle -->
+    <div *ngIf="measurement.showRectangle" 
+         class="measure-marker rotation-handle"
+         [class.rotating]="isDraggingPoint === 'rotateRect-' + i && isRotatingRectangle"
+         [style.left.px]="Math.max(measurement.startX, measurement.endX)" 
+         [style.top.px]="Math.min(measurement.startY, measurement.endY)"
+         (mousedown)="handleRectangleRotateStart($event, i)"
+         (wheel)="handleRotationWheel($event, i)"
+         title="{{ 'Rotate rectangle' | translate }}">
+      <div class="rotation-icon">
+        <fa-icon icon="arrows-rotate"></fa-icon>
+      </div>
+    </div>
+    
     <!-- Circle drawing for previous measurement, if available -->
     <svg *ngIf="measurement.showCircle" class="measure-shape-container"
          [class.isDragging]="isDraggingPoint === 'prevShape-' + i"
@@ -334,41 +348,8 @@
           </text>
         </g>
         
-        <!-- Rotation handle in the top-right corner -->
-        <g class="rotate-handle rotation-master-handle" title="{{ 'Rotate rectangle' | translate }}">
-          <!-- Extra large invisible touch area for better interaction -->
-          <circle 
-            [attr.cx]="Math.max(measurement.startX, measurement.endX)" 
-            [attr.cy]="Math.min(measurement.startY, measurement.endY)"
-            r="32"
-            fill="rgba(255, 255, 0, 0.3)"
-            stroke="rgba(255, 255, 0, 0.5)"
-            style="pointer-events: all !important; cursor: grab;"
-            (mousedown)="handleRectangleRotateStart($event, i)"
-            (wheel)="handleRotationWheel($event, i)">
-          </circle>
-          <!-- Visible rotation handle circle -->
-          <circle 
-            [attr.cx]="Math.max(measurement.startX, measurement.endX)" 
-            [attr.cy]="Math.min(measurement.startY, measurement.endY)"
-            r="16"
-            class="rotate-handle-bg"
-            [class.rotating]="isDraggingPoint === 'rotateRect-' + i && isRotatingRectangle"
-            (mousedown)="handleRectangleRotateStart($event, i)"
-            (wheel)="handleRotationWheel($event, i)">
-          </circle>
-          <svg
-            [attr.x]="Math.max(measurement.startX, measurement.endX) - 8"
-            [attr.y]="Math.min(measurement.startY, measurement.endY) - 8"
-            width="16" height="16" viewBox="0 0 24 24"
-            class="rotate-handle-icon"
-            [class.rotating]="isDraggingPoint === 'rotateRect-' + i && isRotatingRectangle"
-            (mousedown)="handleRectangleRotateStart($event, i)"
-            (wheel)="handleRotationWheel($event, i)">
-            <!-- SVG path for a rotation icon -->
-            <path d="M4,12 A8,8 0 1,1 6,20 L6,16 L2,16 L2,20 Q2,20 6,20 M20,4 L20,8 L16,8 L16,4" fill="none" stroke="black" stroke-width="2" />
-          </svg>
-        </g>
+        <!-- Removing SVG rotation handle (using DOM-based version instead) -->
+        <g class="rotate-handle rotation-master-handle-placeholder"></g>
       </g>
     </svg>
   </div>
@@ -595,41 +576,8 @@
         </text>
       </g>
       
-      <!-- Rotation handle in the top-right corner -->
-      <g class="rotate-handle rotation-master-handle" title="{{ 'Rotate rectangle' | translate }}">
-        <!-- Extra large invisible touch area for better interaction -->
-        <circle 
-          [attr.cx]="Math.max(measureStartPoint.x, measureEndPoint.x)" 
-          [attr.cy]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-          r="32"
-          fill="rgba(255, 255, 0, 0.3)"
-          stroke="rgba(255, 255, 0, 0.5)"
-          style="pointer-events: all !important; cursor: grab;"
-          (mousedown)="handleRectangleRotateStart($event)"
-          (wheel)="handleRotationWheel($event)">
-        </circle>
-        <!-- Visible rotation handle circle -->
-        <circle 
-          [attr.cx]="Math.max(measureStartPoint.x, measureEndPoint.x)" 
-          [attr.cy]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-          r="16"
-          class="rotate-handle-bg current"
-          [class.rotating]="isDraggingPoint === 'rotateCurrentRect' && isRotatingRectangle"
-          (mousedown)="handleRectangleRotateStart($event)"
-          (wheel)="handleRotationWheel($event)">
-        </circle>
-        <svg
-          [attr.x]="Math.max(measureStartPoint.x, measureEndPoint.x) - 8"
-          [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y) - 8"
-          width="16" height="16" viewBox="0 0 24 24"
-          class="rotate-handle-icon current"
-          [class.rotating]="isDraggingPoint === 'rotateCurrentRect' && isRotatingRectangle"
-          (mousedown)="handleRectangleRotateStart($event)"
-          (wheel)="handleRotationWheel($event)">
-          <!-- SVG path for a rotation icon -->
-          <path d="M4,12 A8,8 0 1,1 6,20 L6,16 L2,16 L2,20 Q2,20 6,20 M20,4 L20,8 L16,8 L16,4" fill="none" stroke="black" stroke-width="2" />
-        </svg>
-      </g>
+      <!-- Removing SVG rotation handle (using DOM-based version instead) -->
+      <g class="rotate-handle rotation-master-handle-placeholder"></g>
     </g>
   </svg>
   
@@ -660,6 +608,20 @@
               title="{{ 'Draw rectangle' | translate }}">
         <fa-icon icon="square"></fa-icon>
       </button>
+    </div>
+  </div>
+
+  <!-- Current rotation handle as a DOM element -->
+  <div *ngIf="showCurrentRectangle && measureStartPoint && measureEndPoint" 
+       class="measure-marker rotation-handle current"
+       [class.rotating]="isDraggingPoint === 'rotateCurrentRect' && isRotatingRectangle"
+       [style.left.px]="Math.max(measureStartPoint.x, measureEndPoint.x)" 
+       [style.top.px]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+       (mousedown)="handleRectangleRotateStart($event)"
+       (wheel)="handleRotationWheel($event)"
+       title="{{ 'Rotate rectangle' | translate }}">
+    <div class="rotation-icon">
+      <fa-icon icon="arrows-rotate"></fa-icon>
     </div>
   </div>
 

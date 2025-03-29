@@ -1817,6 +1817,10 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
 
         // Update the rotation
         measurement.rectangleRotation = newRotation;
+        
+        // Update internal rotation tracker and emit the change
+        this._currentRotationDegrees = newRotation;
+        this.rotationChanged.emit(newRotation);
 
         // Only update coordinates and distance with debouncing
         if (shouldUpdateCoordinates) {
@@ -1854,6 +1858,10 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
 
         // Always update the rotation angle
         this.currentRectangleRotation = newRotation;
+        
+        // Update internal rotation tracker and emit the change
+        this._currentRotationDegrees = newRotation;
+        this.rotationChanged.emit(newRotation);
 
         // Only update coordinates with debouncing (reuse the same debounce from above)
         if (shouldUpdateCoordinates) {
@@ -2049,13 +2057,14 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
 
         if (rotationMatch && rotationMatch[1]) {
           const rotationDegrees = parseFloat(rotationMatch[1]);
-          const rotationRadians = (-rotationDegrees * Math.PI) / 180;
-
-          // Rotate the point
-          const originalPoint = this.rotatePointAroundCenter(
-            { x, y },
-            { x: centerX, y: centerY },
-            rotationRadians
+          
+          // Use the coordinates formatter service to rotate the point
+          const originalPoint = this.coordinatesFormatter.rotatePointAroundCenter(
+            x, 
+            y,
+            centerX, 
+            centerY,
+            rotationDegrees  // The service takes care of the negative angle
           );
 
           adjustedX = originalPoint.x;
@@ -2489,18 +2498,22 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     // Convert rotation delta to radians
     const rotationRadians = (rotationDelta * Math.PI) / 180;
 
-    // Calculate the rotated start point position
-    const startPointRotated = this.rotatePointAroundCenter(
-      { x: measurement.startX, y: measurement.startY },
-      { x: centerX, y: centerY },
-      rotationRadians
+    // Calculate the rotated start point position using the service
+    const startPointRotated = this.coordinatesFormatter.rotatePointAroundCenter(
+      measurement.startX, 
+      measurement.startY,
+      centerX, 
+      centerY,
+      -rotationDelta // Convert to the correct direction
     );
 
-    // Calculate the rotated end point position
-    const endPointRotated = this.rotatePointAroundCenter(
-      { x: measurement.endX, y: measurement.endY },
-      { x: centerX, y: centerY },
-      rotationRadians
+    // Calculate the rotated end point position using the service
+    const endPointRotated = this.coordinatesFormatter.rotatePointAroundCenter(
+      measurement.endX, 
+      measurement.endY,
+      centerX, 
+      centerY,
+      -rotationDelta // Convert to the correct direction
     );
 
     console.log('Original points:', {
@@ -2561,31 +2574,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     measurement.midY = midY;
   }
 
-  /**
-   * Helper method to rotate a point around a center
-   */
-  private rotatePointAroundCenter(
-    point: { x: number, y: number },
-    center: { x: number, y: number },
-    angleRadians: number
-  ): { x: number, y: number } {
-    const sin = Math.sin(angleRadians);
-    const cos = Math.cos(angleRadians);
-
-    // Translate point to origin
-    const translatedX = point.x - center.x;
-    const translatedY = point.y - center.y;
-
-    // Rotate point around origin
-    const rotatedX = translatedX * cos - translatedY * sin;
-    const rotatedY = translatedX * sin + translatedY * cos;
-
-    // Translate point back
-    return {
-      x: rotatedX + center.x,
-      y: rotatedY + center.y
-    };
-  }
+  // Removed the rotatePointAroundCenter method as we now use the one from CoordinatesFormatterService
 
   /**
    * Handle rotation via mouse wheel on rotation handles
