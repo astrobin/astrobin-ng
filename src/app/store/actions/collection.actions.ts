@@ -173,7 +173,11 @@ export class SetCollectionCoverImageSuccess implements PayloadActionInterface {
   constructor(public payload: {
     collectionId: CollectionInterface["id"],
     imageId: ImageInterface["pk"],
-    coverThumbnail: string
+    coverThumbnail: string,
+    coverThumbnailHd: string
+    squareCropping: string,
+    w: number,
+    h: number
   }) {
   }
 }
