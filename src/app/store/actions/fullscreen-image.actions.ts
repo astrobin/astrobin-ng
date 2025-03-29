@@ -11,7 +11,13 @@ export class ShowFullscreenImage implements PayloadActionInterface {
   constructor(
     public payload: {
       imageId: ImageInterface["pk"],
-      event?: MouseEvent | TouchEvent | null
+      event?: MouseEvent | TouchEvent | null,
+      externalSolutionMatrix?: {
+        matrixRect: string;
+        matrixDelta: number;
+        raMatrix: string;
+        decMatrix: string;
+      }
     }
   ) {
   }

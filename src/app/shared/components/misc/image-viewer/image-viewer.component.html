@@ -218,11 +218,13 @@
       </button>
 
       <astrobin-fullscreen-image-viewer
+        #fullscreenViewer
         *ngIf="standalone && supportsFullscreen"
         [id]="image.pk"
         [eagerLoading]="true"
         [revisionLabel]="revisionLabel"
         [standalone]="standalone"
+        [externalSolutionMatrix]="advancedSolutionMatrix"
         (exitFullscreen)="exitFullscreen()"
       ></astrobin-fullscreen-image-viewer>
 
@@ -316,27 +318,16 @@
             *ngIf="!advancedSolutionMatrix && loadingAdvancedSolutionMatrix"
           ></astrobin-loading-indicator>
 
-          <div *ngIf="!!advancedSolutionMatrix" class="mouse-hover-svg-overlay-coordinates">
-            <div
-              class="ra-dec d-flex gap-2"
-              ngbTooltip="RA/Dec"
-            >
-              <span [innerHTML]="mouseHoverRa"></span>
-              <span [innerHTML]="mouseHoverDec"></span>
-            </div>
-
-            <div
-              class="galactic d-flex gap-2"
-              [ngbTooltip]="'Galactic coordinates' | translate"
-            >
-              <span [innerHTML]="mouseHoverGalacticRa"></span>
-              <span [innerHTML]="mouseHoverGalacticDec"></span>
-            </div>
-          </div>
-
-          <span>
-            Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
-          </span>
+          <astrobin-coordinates-display
+            *ngIf="!!advancedSolutionMatrix"
+            [raHtml]="mouseHoverRa"
+            [decHtml]="mouseHoverDec"
+            [galacticRaHtml]="mouseHoverGalacticRa"
+            [galacticDecHtml]="mouseHoverGalacticDec"
+            [showGalactic]="true"
+            [showAttribution]="true"
+            ngbTooltip="RA/Dec"
+          ></astrobin-coordinates-display>
         </div>
 
         <div

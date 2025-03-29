@@ -761,36 +761,9 @@ $largeViewPortBreakpoint: 2561px;
           position: absolute;
           bottom: .5rem;
           right: .5rem;
-          background: rgba(0, 0, 0, .75);
           opacity: 0;
           transition: opacity 0.3s;
-          padding: .5rem .75rem;
-          font-size: .9rem;
           z-index: 1;
-
-          @media (max-width: $sm-max) {
-            font-size: .65rem;
-            padding: .25rem;
-          }
-
-          .mouse-hover-svg-overlay-coordinates {
-            ::ng-deep {
-              .symbol {
-                color: var(--white);
-                font-weight: bold;
-              }
-
-              .value {
-                color: var(--lightestGrey);
-              }
-
-              .unit {
-                font-size: .75rem;
-                color: var(--lighterGrey);
-                vertical-align: super;
-              }
-            }
-          }
 
           @media (hover: hover) and (pointer: fine) {
             &:hover {

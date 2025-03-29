@@ -1,4 +1,5 @@
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
+import { LoadSolutionMatrixFailure, LoadSolutionMatrixStart, LoadSolutionMatrixSuccess } from "@app/store/actions/solution.actions";
 import { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
 import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
 import { CameraInterface } from "@core/interfaces/camera.interface";
@@ -49,6 +50,12 @@ export interface AppState {
   // All seen solutions.
   solutions: SolutionInterface[];
 
+  // Map of solution matrices by solution ID.
+  solutionMatrices: { [solutionId: number]: any };
+  
+  // Set of solution IDs for which matrix loading is in progress
+  solutionMatricesLoading: Set<number>;
+
   // All seen telescopes.
   telescopes: TelescopeInterface[];
 
@@ -87,6 +94,8 @@ export const initialAppState: AppState = {
   images: [],
   thumbnails: [],
   solutions: [],
+  solutionMatrices: {},
+  solutionMatricesLoading: new Set<number>(),
   telescopes: [],
   cameras: [],
   createLocationAddTag: null,
@@ -523,6 +532,56 @@ export function appReducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         solutions: UtilsService.arrayUniqueObjects([...state.solutions, ...action.payload], "id")
+      };
+    }
+
+    case AppActionTypes.LOAD_SOLUTION_MATRIX_START: {
+      const matrixAction = action as unknown as LoadSolutionMatrixStart;
+      console.log(`[Reducer] LOAD_SOLUTION_MATRIX_START for ${matrixAction.payload.solutionId}`);
+      
+      // Create new Set to avoid mutation
+      const newSet = new Set(state.solutionMatricesLoading);
+      newSet.add(matrixAction.payload.solutionId);
+      console.log(`[Reducer] Loading set after adding ${matrixAction.payload.solutionId}:`, Array.from(newSet));
+      
+      return {
+        ...state,
+        solutionMatricesLoading: newSet
+      };
+    }
+      
+    case AppActionTypes.LOAD_SOLUTION_MATRIX_SUCCESS: {
+      const matrixAction = action as unknown as LoadSolutionMatrixSuccess;
+      console.log(`[Reducer] LOAD_SOLUTION_MATRIX_SUCCESS for ${matrixAction.payload.solutionId}`);
+      
+      // Remove from loading set
+      const newSet = new Set(state.solutionMatricesLoading);
+      newSet.delete(matrixAction.payload.solutionId);
+      console.log(`[Reducer] Loading set after removing ${matrixAction.payload.solutionId}:`, Array.from(newSet));
+      
+      console.log(`[Reducer] Storing matrix for ${matrixAction.payload.solutionId}`);
+      return {
+        ...state,
+        solutionMatrices: {
+          ...state.solutionMatrices,
+          [matrixAction.payload.solutionId]: matrixAction.payload.matrix
+        },
+        solutionMatricesLoading: newSet
+      };
+    }
+    
+    case AppActionTypes.LOAD_SOLUTION_MATRIX_FAILURE: {
+      const matrixAction = action as unknown as LoadSolutionMatrixFailure;
+      console.log(`[Reducer] LOAD_SOLUTION_MATRIX_FAILURE for ${matrixAction.payload.solutionId}`);
+      
+      // Remove from loading set
+      const newSet = new Set(state.solutionMatricesLoading);
+      newSet.delete(matrixAction.payload.solutionId);
+      console.log(`[Reducer] Loading set after removing ${matrixAction.payload.solutionId}:`, Array.from(newSet));
+      
+      return {
+        ...state,
+        solutionMatricesLoading: newSet
       };
     }
 

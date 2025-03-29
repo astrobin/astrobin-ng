@@ -151,6 +151,8 @@ import { NotificationsListComponent } from "@shared/components/misc/notification
 import { DragDropAreaComponent } from "@shared/components/misc/formly-field-chunked-file/drag-drop-area.component";
 import { AvatarManagerComponent } from "@shared/components/misc/avatar-manager/avatar-manager.component";
 import { AvatarEditorComponent } from "@shared/components/misc/avatar-editor/avatar-editor.component";
+import { CoordinatesDisplayComponent } from "@shared/components/misc/coordinates-display/coordinates-display.component";
+import { MeasuringToolComponent } from "@shared/components/misc/measuring-tool/measuring-tool.component";
 
 const modules = [
   CommonModule,
@@ -203,6 +205,7 @@ const components = [
   CountrySelectionModalComponent,
   CustomToastComponent,
   DataDoesNotUpdateInRealTimeComponent,
+  CoordinatesDisplayComponent,
   DragDropAreaComponent,
   EmptyListComponent,
   FileValueAccessorDirective,
@@ -275,6 +278,7 @@ const components = [
   MasonryLayoutComponent,
   MarketplaceListingCardComponent,
   MarketplaceListingCardsComponent,
+  MeasuringToolComponent,
   MobileMenuComponent,
   MostOftenUsedWithModalComponent,
   NestedCommentComponent,

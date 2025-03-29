@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { LoadSolutionMatrix } from "@app/store/actions/solution.actions";
+import { selectIsSolutionMatrixLoading, selectSolutionMatrix } from "@app/store/selectors/app/solution.selectors";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectCurrentFullscreenImage, selectCurrentFullscreenImageEvent } from "@app/store/selectors/app/app.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
@@ -12,7 +14,7 @@ import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageService } from "@core/services/image/image.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { Coord, NgxImageZoomComponent } from "ngx-image-zoom";
-import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable, of, Subscription } from "rxjs";
 import { distinctUntilChanged, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
 import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
@@ -28,6 +30,9 @@ import { TitleService } from "@core/services/title/title.service";
 import { fadeInOut } from "@shared/animations";
 import { SwipeDownService } from "@core/services/swipe-down.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { ActiveToast } from "ngx-toastr";
+import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
+import { SolutionStatus } from "@core/interfaces/solution.interface";
 
 declare type HammerInput = any;
 
@@ -39,6 +44,7 @@ declare type HammerInput = any;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
+
   @Input()
   id: ImageInterface["pk"];
 
@@ -58,6 +64,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @Input()
   eagerLoading = false;
+
+  @Input()
+  externalSolutionMatrix: {
+    matrixRect: string;
+    matrixDelta: number;
+    raMatrix: string;
+    decMatrix: string;
+  };
 
   @Output()
   enterFullscreen = new EventEmitter<void>();
@@ -85,7 +99,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   protected readonly Math = Math;
 
-  protected zoomScroll = 1;
+  // Flag to easily check if we're running in a browser environment
+  protected readonly isBrowser: boolean;
+
+  // We initialize this to a default value, but it will be updated with minZoomRatio in _initImageZoom
+  protected zoomScroll = 0;
   protected touchMode?: boolean = undefined;
   protected enableLens = true;
   protected zoomLensSize: number;
@@ -111,6 +129,54 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected canvasLoading = false;
   protected isGif = false;
   protected zoomFrozen = false;
+  protected mouseRa: string;
+  protected mouseDec: string;
+  protected mouseGalacticRa: string;
+  protected mouseGalacticDec: string;
+  protected showCoordinates: boolean = false;
+  protected showKebabMenu: boolean = false;
+  protected showKeyboardShortcutsOverlay: boolean = false;
+
+  // Measuring tool properties
+  protected advancedSolutionMatrix: {
+    matrixRect: string;
+    matrixDelta: number;
+    raMatrix: string;
+    decMatrix: string;
+  };
+  protected loadingAdvancedSolutionMatrix = false;
+  protected isMeasuringMode: boolean = false;
+  protected measureStartPoint: { x: number; y: number; ra: number; dec: number } = null;
+  protected measureEndPoint: { x: number; y: number; ra: number; dec: number } = null;
+  protected measureDistance: string = null;
+
+  protected previousMeasurements: Array<{
+    startX: number;
+    startY: number;
+    endX: number;
+    endY: number;
+    midX: number;
+    midY: number;
+    distance: string;
+    timestamp: number;
+    startRa: number | null;
+    startDec: number | null;
+    endRa: number | null;
+    endDec: number | null;
+    // Positions for perpendicular label placement
+    startLabelX: number;
+    startLabelY: number;
+    endLabelX: number;
+    endLabelY: number;
+    // Flags for showing shape visualizations
+    showCircle?: boolean;
+    showRectangle?: boolean;
+  }> = [];
+
+  // Flags for current measurement shapes
+  protected showCurrentCircle: boolean = false;
+  protected showCurrentRectangle: boolean = false;
+
   // Swipe-down properties
   protected touchStartY: { value: number } = { value: 0 };
   protected touchCurrentY: { value: number } = { value: 0 };
@@ -120,7 +186,22 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected swipeThreshold: number = 150;
   protected swipeDirectionDown: { value: boolean } = { value: true };
 
-  private _revision: ImageInterface | ImageRevisionInterface;
+  // Mouse position for crosshair rulers
+  protected mouseX: number = null;
+  protected mouseY: number = null;
+  protected crosshairLeft: number = 0;
+  protected crosshairTop: number = 0;
+  protected crosshairWidth: number = 0;
+  protected crosshairHeight: number = 0;
+  protected isMouseOverUIElement: boolean = false;
+  protected image: ImageInterface;
+  protected revision: ImageInterface | ImageRevisionInterface;
+
+  // Track the "Activate zoom first" notification
+  private _zoomActivationNotification: ActiveToast<any> | null = null;
+
+  // Track the "Measuring tool only available at default zoom" notification
+  private _measureZoomNotification: ActiveToast<any> | null = null;
   private _lastTransform: string = null;
   private _imageBitmap: ImageBitmap = null;
   private _canvasImage: HTMLImageElement;
@@ -152,17 +233,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   readonly firstRender$ = this._firstRenderSubject.asObservable().pipe(
     filter(rendered => rendered)
   );
+
   // Two levels of downsampled bitmaps for smoother zoom transitions
   private _downsampledBitmapLow: ImageBitmap = null;  // Lower resolution for initial view
   private _downsampledBitmapMedium: ImageBitmap = null;  // Medium resolution for intermediate zoom
   private readonly LENS_ENABLED_COOKIE_NAME = "astrobin-fullscreen-lens-enabled";
   private readonly TOUCH_OR_MOUSE_MODE_COOKIE_NAME = "astrobin-fullscreen-touch-or-mouse";
+  private readonly COORDINATES_ENABLED_COOKIE_NAME = "astrobin-fullscreen-show-coordinates";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
   private readonly FRAME_INTERVAL = 1000 / 120; // 120 FPS
+
   // Store original handlers and position for freezing/unfreezing
   private _originalOnMouseMove: any = null;
   private _originalOnMouseWheel: any = null;
-  private _frozenZoomPosition: { x: number, y: number } = null;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -181,9 +264,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly renderer: Renderer2,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly swipeDownService: SwipeDownService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly coordinatesFormatter: CoordinatesFormatterService
   ) {
     super(store$);
+
+    // Initialize the browser flag
+    this.isBrowser = isPlatformBrowser(platformId);
 
     this.isHybridPC = this.deviceService.isHybridPC();
     this.isTouchDevice = this.deviceService.isTouchEnabled();
@@ -198,6 +285,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     this.enableLens = this.cookieService.get(this.LENS_ENABLED_COOKIE_NAME) === "true";
+    this.showCoordinates = this.cookieService.get(this.COORDINATES_ENABLED_COOKIE_NAME) === "true";
     this.hdImageLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
     this.realImageLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
     this.loadingProgress$ = combineLatest([
@@ -239,11 +327,67 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return this.naturalWidth * (this.naturalHeight || this.naturalWidth) > this.PIXEL_THRESHOLD;
   }
 
+  protected get hasAdvancedSolution(): boolean {
+    return !!(
+      this.revision?.solution?.status === SolutionStatus.ADVANCED_SUCCESS &&
+      this.revision?.solution?.advancedRa &&
+      this.revision?.solution?.advancedDec
+    );
+  }
+
+  @HostListener("document:click", ["$event"])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // If the kebab menu is open and the click is outside the menu, close it
+    if (this.showKebabMenu) {
+      const kebabContainer = (event.target as HTMLElement).closest(".kebab-menu-container");
+      if (!kebabContainer) {
+        this.showKebabMenu = false;
+        this.changeDetectorRef.markForCheck();
+      }
+    }
+  }
+
   @HostListener("window:resize", ["$event"])
   onResize(event) {
+    if (!this.isBrowser) {
+      return;
+    }
+
     this._setZoomLensSize();
     this._updateCanvasDimensions();
     this._drawCanvas();
+
+    // Clear coordinate display until next mouse move
+    this.mouseRa = null;
+    this.mouseDec = null;
+    this.mouseGalacticRa = null;
+    this.mouseGalacticDec = null;
+
+    // Reset crosshair position
+    this.mouseX = null;
+    this.mouseY = null;
+    this.crosshairLeft = 0;
+    this.crosshairTop = 0;
+    this.crosshairWidth = 0;
+    this.crosshairHeight = 0;
+
+    this.changeDetectorRef.markForCheck();
+
+    // Re-trigger coordinate calculation on next mouse movement
+    if (this.revision && this.windowRef.nativeWindow) {
+      // Use requestAnimationFrame to wait for the resize to finish
+      this.windowRef.nativeWindow.requestAnimationFrame(() => {
+        // If we have the current mouse position, simulate a mouse move event to update coordinates
+        const lastMouseEvent = this.windowRef.nativeWindow.event as MouseEvent;
+        if (lastMouseEvent && lastMouseEvent.type === "mousemove") {
+          this.onGlobalMouseMove(lastMouseEvent);
+        }
+      });
+    }
   }
 
   ngOnInit() {
@@ -337,6 +481,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   ngOnDestroy() {
     super.ngOnDestroy();
 
+    // Clear any measuring zoom notification
+    if (this._measureZoomNotification) {
+      this.popNotificationsService.clear(this._measureZoomNotification.toastId);
+      this._measureZoomNotification = null;
+    }
+
     // Restore original event handlers if needed
     this._restoreOriginalEventHandlers();
 
@@ -382,25 +532,75 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   setZoomPosition(position: Coord) {
     this.showZoomIndicator = this.zoomingEnabled;
     this._setZoomIndicatorTimeout();
+
+    // Only disable coordinates display in lens mode
+    if (this.enableLens && this.zoomingEnabled && this.showCoordinates) {
+      this.showCoordinates = false;
+      this.mouseRa = null;
+      this.mouseDec = null;
+      this.mouseGalacticRa = null;
+      this.mouseGalacticDec = null;
+      this.mouseX = null;
+      this.mouseY = null;
+      this.changeDetectorRef.markForCheck();
+    }
   }
 
   setZoomScroll(scroll: number) {
+    // If the zoom is changing, clear any "measuring tool only available at default zoom" notifications
+    if (Math.abs(this.zoomScroll - scroll) > 0.001 && this._measureZoomNotification) {
+      this.popNotificationsService.clear(this._measureZoomNotification.toastId);
+      this._measureZoomNotification = null;
+    }
+
     this.zoomScroll = scroll;
-    this.showZoomIndicator = this.zoomingEnabled;
+
+    // Show zoom indicator when zooming is enabled or when we're not at the default zoom level
+    this.showZoomIndicator = this.zoomingEnabled || !this._isAtDefaultZoom();
+
     this._setZoomIndicatorTimeout();
   }
 
   snapTo1x() {
-    this.ngxImageZoom.setMagnification = 1;
-    this.ngxImageZoom.zoomService.zoomOn({ offsetX: 0, offsetY: 0 } as MouseEvent);
+    if (this.ngxImageZoom) {
+      try {
+        this.ngxImageZoom.setMagnification = 1;
+        this.ngxImageZoom.zoomService.zoomOn({ offsetX: 0, offsetY: 0 } as MouseEvent);
+      } catch (e) {
+        console.error("Error in snapTo1x:", e);
+      }
+    }
   }
 
   @HostListener("window:keyup.escape", ["$event"])
   hide(event: Event): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Always prevent default and stop propagation to avoid browser's ESC behavior
     if (event) {
       event.preventDefault();
       event.stopPropagation();
     }
+
+    // Close the kebab menu if it's open
+    if (this.showKebabMenu) {
+      this.showKebabMenu = false;
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    // If in measuring mode, exit measuring mode instead of closing fullscreen
+    if (this.isMeasuringMode) {
+      // Use toggleMeasuringMode to fully exit the measuring mode
+      this.toggleMeasuringMode(event as MouseEvent);
+      return;
+    }
+
+    // Clear mouse position to hide rulers
+    this.mouseX = null;
+    this.mouseY = null;
 
     // Reset frozen state when hiding
     if (this.zoomFrozen) {
@@ -411,8 +611,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.store$.dispatch(new HideFullscreenImage());
   }
 
-  @HostListener("window:keyup.f", ["$event"])
-  toggleZoomFreeze(event: KeyboardEvent): void {
+  @HostListener("window:keyup.z", ["$event"])
+  toggleZoomLensMode(event: KeyboardEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
     // Don't interfere with input fields
     if (
       event.target instanceof HTMLInputElement ||
@@ -422,8 +626,124 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
-    // Do nothing if the component is not being shown.
-    if (!this.show) {
+    // Do nothing if the component is not being shown, in touch mode, or in measuring mode
+    if (!this.show || this.touchMode || this.isMeasuringMode) {
+      return;
+    }
+
+    // Toggle lens mode using existing method
+    this.toggleEnableLens(null);
+  }
+
+  @HostListener("window:keyup.c", ["$event"])
+  toggleCoordinatesShortcut(event: KeyboardEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Don't interfere with input fields
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+    ) {
+      return;
+    }
+
+    // Do nothing if the component is not being shown, in measuring mode, or if the image doesn't have an advanced solution
+    if (!this.show || this.isMeasuringMode || !this.hasAdvancedSolution) {
+      return;
+    }
+
+    // Toggle coordinates using existing method
+    this.toggleCoordinates();
+  }
+
+  @HostListener("window:keyup.d", ["$event"])
+  toggleMeasuringModeShortcut(event: KeyboardEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Don't interfere with input fields
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+    ) {
+      return;
+    }
+
+    // Do nothing if the component is not being shown or if it's a GIF
+    if (!this.show || this.isGif) {
+      return;
+    }
+
+    // Don't allow measuring when zoomed in - only at default zoom level (fit to window)
+    if (!this.isMeasuringMode && !this._isAtDefaultZoom()) {
+      // Store the notification reference so we can clear it when zoom changes
+      this._measureZoomNotification = this.popNotificationsService.warning(
+        this.translateService.instant("Measuring is only available at the default zoom level (fit to window).")
+      );
+      return;
+    }
+
+    // Toggle measuring mode using existing method
+    this.toggleMeasuringMode(event as unknown as MouseEvent);
+  }
+
+  // Reset to default zoom level (fit to window)
+  resetToDefaultZoom(): void {
+    // Reset zoom to default level (fit to window)
+    if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
+      // Set magnification to the minimum ratio (fit to window)
+      const minRatio = this.ngxImageZoom.zoomService.minZoomRatio;
+      this.ngxImageZoom.zoomService.magnification = minRatio;
+
+      // Clear any measuring zoom notifications immediately
+      if (this._measureZoomNotification) {
+        this.popNotificationsService.clear(this._measureZoomNotification.toastId);
+        this._measureZoomNotification = null;
+      }
+
+      // Update the UI to show the current zoom level
+      this.setZoomScroll(minRatio);
+
+      // Trigger a zoom update if needed
+      if (this.ngxImageZoom.zoomService.zoomingEnabled) {
+        // Create a center-based mouse event to update zoom position
+        const container = this.ngxImageZoomEl.nativeElement;
+        if (container) {
+          const rect = container.getBoundingClientRect();
+          const fakeEvent = {
+            offsetX: rect.width / 2,
+            offsetY: rect.height / 2
+          } as MouseEvent;
+          this.ngxImageZoom.zoomService.calculateZoomPosition(fakeEvent);
+        }
+      }
+    }
+  }
+
+  @HostListener("window:keyup.f", ["$event"])
+  toggleZoomFreeze(event: KeyboardEvent | MouseEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Don't interfere with input fields
+    if (event instanceof KeyboardEvent) {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+      ) {
+        return;
+      }
+    }
+
+    // Do nothing if the component is not being shown or in measuring mode
+    if (!this.show || this.isMeasuringMode) {
       return;
     }
 
@@ -439,7 +759,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this.translateService.instant("Zoom freezing is not available for very large images.")
         );
       } else if (!this.zoomingEnabled) {
-        this.popNotificationsService.info(
+        // Store the toast reference so we can clear this specific notification when zoom is activated
+        this._zoomActivationNotification = this.popNotificationsService.info(
           this.translateService.instant("Activate zoom first before freezing (click or scroll on image).")
         );
       }
@@ -468,6 +789,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * Handle wheel events and apply appropriate zoom behavior
    */
   protected onGlobalWheel(event: WheelEvent): void {
+    // Block wheel events during measuring mode
+    if (this.isMeasuringMode) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     // If the event has ctrlKey, it's a pinch gesture in Firefox or zoom in other browsers
     // Always prevent browser zoom
     if (event.ctrlKey) {
@@ -494,6 +821,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // If we're not zoomed yet, activate zoom at event position
         this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
         this.ngxImageZoom.zoomService.zoomOn(event);
+
+        // Clear specific "Activate zoom first" notification if it exists
+        if (this._zoomActivationNotification) {
+          // Extract toast ID - ActiveToast has a toastId property of type number
+          if (typeof this._zoomActivationNotification !== "string" && this._zoomActivationNotification.toastId) {
+            this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
+          }
+          this._zoomActivationNotification = null;
+        }
+
         this.changeDetectorRef.markForCheck();
         return;
       }
@@ -504,7 +841,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         const currentMag = this.ngxImageZoom.zoomService.magnification;
         const minRatio = this.ngxImageZoom.zoomService.minZoomRatio || 1;
         const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
-        const stepSize = 0.05; // Default step size
+        const stepSize = .05; // Default step size
 
         // For normal wheel events, use deltaY with opposite sign (up = zoom in, down = zoom out)
         const delta = -event.deltaY / 100; // Normalize regular wheel delta
@@ -535,13 +872,77 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   // Handle mouse move events on the component and proxy them to ngx-image-zoom
   protected onGlobalMouseMove(event: MouseEvent): void {
+    // If in measuring mode, and we've already placed the first point,
+    // update line drawing position but allow coordinate calculation to continue
+    if (this.isMeasuringMode && this.measureStartPoint) {
+      // Update mouse position for line drawing
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
+
+      // Don't trigger zoom functionality, but continue to next section to update coordinates
+      // This allows coordinates to be updated in the display box while placing the second point
+    }
+
+    // We need to ensure the revision is loaded before calculating coordinates
+    if (!this.revision) {
+      return;
+    }
+
     // Don't update position if frozen
     if (this.zoomFrozen) {
       return;
     }
 
-    // Only proxy if we have the zoom component, are in mouse mode, and are currently zooming
-    if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage) {
+    // Don't update position if touch mode is active
+    if (this.touchMode) {
+      return;
+    }
+
+    // Update mouse position for crosshair rulers and coordinate display
+    const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+
+    if (imageElement) {
+      // Get fresh dimensions each time
+      const imageRect = imageElement.getBoundingClientRect();
+
+      // Always store the mouse position for crosshairs if coordinates are enabled
+      if (this.showCoordinates) {
+        this.mouseX = event.clientX;
+        this.mouseY = event.clientY;
+
+        // Check if mouse is within bounds of the actual image
+        if (
+          event.clientX >= imageRect.left &&
+          event.clientX <= imageRect.right &&
+          event.clientY >= imageRect.top &&
+          event.clientY <= imageRect.bottom
+        ) {
+          // Recalculate coordinates immediately
+          if (this.revision?.solution?.ra || this.revision?.solution?.advancedRa) {
+            this._calculateMouseCoordinates(event);
+          }
+        } else {
+          // Hide coordinate display when mouse is outside the image
+          this.mouseRa = null;
+          this.mouseDec = null;
+          this.mouseGalacticRa = null;
+          this.mouseGalacticDec = null;
+        }
+      } else {
+        // Coordinates are disabled, clear all values
+        this.mouseX = null;
+        this.mouseY = null;
+        this.mouseRa = null;
+        this.mouseDec = null;
+        this.mouseGalacticRa = null;
+        this.mouseGalacticDec = null;
+      }
+
+      this.changeDetectorRef.markForCheck();
+    }
+
+    // Only proxy if we have the zoom component, are in mouse mode, not in measuring mode, and are currently zooming
+    if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage && !this.isMeasuringMode) {
       // We need to convert global coordinates to coordinates relative to the image
       // Find the image and its position
       const zoomContainer = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomContainer");
@@ -573,15 +974,220 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
-  protected toggleEnableLens(): void {
+  protected toggleEnableLens(event: MouseEvent = null): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      // Hide any tooltips before toggling
+      this._clearTooltips();
+    }
+
+    const wasInLensMode = this.enableLens;
     this.enableLens = !this.enableLens;
     this.cookieService.put(this.LENS_ENABLED_COOKIE_NAME, this.enableLens.toString());
+
     if (this.enableLens) {
+      // Entering lens mode
       this._setZoomLensSize();
+
+      // Turn off coordinates when lens mode is activated
+      if (this.showCoordinates) {
+        this.showCoordinates = false;
+        this.mouseRa = null;
+        this.mouseDec = null;
+        this.mouseGalacticRa = null;
+        this.mouseGalacticDec = null;
+        this.mouseX = null;
+        this.mouseY = null;
+        this.changeDetectorRef.markForCheck();
+      }
+    } else if (wasInLensMode) {
+      // Exiting lens mode - clear any notifications that might be related to lens mode
+      this.popNotificationsService.clear();
+    }
+  }
+
+  protected setMouseOverUIElement(isOver: boolean): void {
+    this.isMouseOverUIElement = isOver;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected showShortcutsDialog(event: MouseEvent): void {
+    // Prevent the event from propagating
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Hide any tooltips
+    document.querySelectorAll(".tooltip").forEach(tooltip => {
+      tooltip.remove();
+    });
+
+    // Close the kebab menu
+    this.showKebabMenu = false;
+
+    // Toggle the shortcuts overlay
+    this.showKeyboardShortcutsOverlay = true;
+
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected hideShortcutsOverlay(): void {
+    this.showKeyboardShortcutsOverlay = false;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected toggleKebabMenu(event: MouseEvent): void {
+    // Prevent the event from propagating to avoid triggering other click handlers
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Hide any tooltips before toggling
+    this._clearTooltips();
+
+    this.showKebabMenu = !this.showKebabMenu;
+
+    // If opening the menu, add a click event listener to close it when clicking outside
+    if (this.showKebabMenu && this.isBrowser) {
+      setTimeout(() => {
+        const closeMenuHandler = (e: MouseEvent) => {
+          // Check if the click was outside the menu
+          const kebabContainer = (event.target as HTMLElement).closest(".kebab-menu-container");
+          const clickedInsideMenu = kebabContainer && kebabContainer.contains(e.target as Node);
+
+          if (!clickedInsideMenu) {
+            this.showKebabMenu = false;
+            this.changeDetectorRef.markForCheck();
+            document.removeEventListener("click", closeMenuHandler);
+          }
+        };
+
+        document.addEventListener("click", closeMenuHandler);
+      });
+    }
+
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected toggleCoordinates(): void {
+    // Hide any tooltips before toggling
+    this._clearTooltips();
+
+    // If in lens mode, show notification and don't toggle
+    if (this.enableLens && this.zoomingEnabled) {
+      this.popNotificationsService.warning(
+        this.translateService.instant("Coordinates are not available in lens mode.")
+      );
+      return;
+    }
+
+    this.showCoordinates = !this.showCoordinates;
+    this.cookieService.put(this.COORDINATES_ENABLED_COOKIE_NAME, this.showCoordinates.toString());
+
+    // If coordinates are turned off, hide any currently displayed values
+    if (!this.showCoordinates) {
+      this.mouseRa = null;
+      this.mouseDec = null;
+      this.mouseGalacticRa = null;
+      this.mouseGalacticDec = null;
+      this.mouseX = null;
+      this.mouseY = null;
+    } else if (this.mouseX !== null && this.mouseY !== null) {
+      // If coordinates are turned on and we have a current mouse position, recalculate
+      const lastMouseEvent = this.windowRef.nativeWindow.event as MouseEvent;
+      if (lastMouseEvent && lastMouseEvent.type === "mousemove") {
+        this.onGlobalMouseMove(lastMouseEvent);
+      }
+    }
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected toggleMeasuringMode(event: MouseEvent): void {
+    // Prevent the event from propagating
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    // Hide any tooltips before toggling
+    this._clearTooltips();
+
+    // Don't allow measuring in lens mode
+    if (this.enableLens && this.zoomingEnabled) {
+      this.popNotificationsService.warning(
+        this.translateService.instant("Measuring is not available in lens mode.")
+      );
+      return;
+    }
+
+    // Don't allow measuring when zoomed in - only at default zoom level (fit to window)
+    if (!this.isMeasuringMode && !this._isAtDefaultZoom()) {
+      // Store the notification reference so we can clear it when zoom changes
+      this._measureZoomNotification = this.popNotificationsService.warning(
+        this.translateService.instant("Measuring is only available at the default zoom level (fit to window).")
+      );
+      return;
+    }
+
+    // Toggle measuring mode
+    this.isMeasuringMode = !this.isMeasuringMode;
+
+    // When exiting measuring mode, reset state
+    if (!this.isMeasuringMode) {
+      // Reset mouse position tracking
+      this.mouseX = null;
+      this.mouseY = null;
+    }
+
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected resetMeasurement(): void {
+    this.measureStartPoint = null;
+    this.measureEndPoint = null;
+    this.measureDistance = null;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected clearAllMeasurements(): void {
+    this.resetMeasurement();
+    this.previousMeasurements = [];
+    this.changeDetectorRef.markForCheck();
+  }
+
+  /**
+   * Formats angular distance in degrees to a DMS string
+   * @param angularDistance - Angular distance in degrees
+   * @returns Formatted string with degrees, arcminutes, and arcseconds
+   */
+  protected formatAngularDistance(angularDistance: number): string {
+    if (typeof angularDistance !== 'number' || isNaN(angularDistance)) {
+      return null;
+    }
+
+    const degrees = Math.floor(angularDistance);
+    const arcminutes = Math.floor((angularDistance - degrees) * 60);
+    const arcseconds = Math.round(((angularDistance - degrees) * 60 - arcminutes) * 60);
+
+    return `${degrees.toString().padStart(2, '0')}° ${arcminutes.toString().padStart(2, '0')}′ ${arcseconds.toString().padStart(2, '0')}″`;
+  }
+
+  protected clearCoordinates(): void {
+    if (this.showCoordinates) {
+      this.mouseX = null;
+      this.mouseY = null;
+      this.mouseRa = null;
+      this.mouseDec = null;
+      this.mouseGalacticRa = null;
+      this.mouseGalacticDec = null;
+      this.changeDetectorRef.markForCheck();
     }
   }
 
   protected setTouchMouseMode(touch: boolean): void {
+    // Hide any tooltips before toggling
+    this._clearTooltips();
+
     // Never allow touch mode for GIFs
     if (this.isGif && touch) {
       return;
@@ -821,17 +1427,143 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     );
   }
 
+  /**
+   * Check if the current zoom level is at the default (fit to window) level
+   */
+  private _isAtDefaultZoom(): boolean {
+    if (!this.ngxImageZoom || !this.ngxImageZoom.zoomService) {
+      // If zoom service is not available, we can't determine the default zoom
+      return false;
+    }
+
+    // Get the minimum zoom ratio (fit to window)
+    const minRatio = this.ngxImageZoom.zoomService.minZoomRatio;
+
+    // Use a small threshold for floating point comparison with the minimum ratio
+    return Math.abs(this.zoomScroll - minRatio) <= 0.01;
+  }
+
+  /**
+   * Safely remove tooltips when we need to clear UI elements
+   * This handles SSR by checking if we're in a browser environment
+   */
+  private _clearTooltips(): void {
+    if (this.isBrowser) {
+      document.querySelectorAll(".tooltip").forEach(tooltip => {
+        tooltip.remove();
+      });
+    }
+  }
+
+  /**
+   * Calculate the coordinates at the current mouse position
+   */
+  // Track the current rotation angle in degrees
+  protected _currentRotationDegrees = 0;
+
+  /**
+   * Updates the current rotation angle
+   * @param rotationDegrees Rotation angle in degrees
+   */
+  updateRotation(rotationDegrees: number): void {
+    this._currentRotationDegrees = rotationDegrees;
+    // Force recalculation if coordinates are being displayed
+    if (this.showCoordinates && this._lastMouseEvent) {
+      const fakeEvent = {
+        clientX: this._lastMouseEvent?.clientX || 0,
+        clientY: this._lastMouseEvent?.clientY || 0
+      } as MouseEvent;
+      this._calculateMouseCoordinates(fakeEvent);
+    }
+    // Update display and mark for change detection
+    this.changeDetectorRef.markForCheck();
+  }
+
+  // Store last mouse event for recalculation
+  private _lastMouseEvent: MouseEvent;
+
+  private _calculateMouseCoordinates(event: MouseEvent): void {
+    // Store the last mouse event
+    this._lastMouseEvent = event;
+    
+    console.log("Fullscreen image viewer: Calculating mouse coordinates: ", event.clientX, event.clientY);
+    // Don't calculate coordinates when using lens mode
+    if (this.enableLens && this.ngxImageZoom?.zoomService?.zoomingEnabled) {
+      this.mouseRa = null;
+      this.mouseDec = null;
+      this.mouseGalacticRa = null;
+      this.mouseGalacticDec = null;
+      return;
+    }
+
+    // Don't attempt calculation if matrix is still loading
+    if (this.loadingAdvancedSolutionMatrix) {
+      return;
+    }
+
+    // If we have the advanced solution matrix, use it for accurate coordinate calculation
+    if (this.advancedSolutionMatrix && this.advancedSolutionMatrix.raMatrix) {
+      try {
+        // Try the full container image first, but fallback to container image if full container is not visible
+        let imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
+
+        // If the full container image has display:none or no dimensions, fallback to the container image
+        if (imageElement) {
+          const rect = imageElement.getBoundingClientRect();
+          if (rect.width === 0 || rect.height === 0) {
+            // Fallback to using container image
+            imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+          }
+        } else {
+          // Full container image not found, try container image
+          imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+        }
+
+        if (!imageElement) {
+          return;
+        }
+
+        // Use the shared service to calculate and format the coordinates
+        const result = this.coordinatesFormatter.calculateMouseCoordinates(
+          event,
+          imageElement,
+          this.advancedSolutionMatrix,
+          {
+            useClientCoords: true,
+            naturalWidth: this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w,
+            rotationDegrees: this._currentRotationDegrees
+          }
+        );
+
+        if (!result) {
+          this.mouseRa = null;
+          this.mouseDec = null;
+          this.mouseGalacticRa = null;
+          this.mouseGalacticDec = null;
+          return;
+        }
+
+        // Set the formatted coordinates
+        this.mouseRa = result.coordinates.raHtml;
+        this.mouseDec = result.coordinates.decHtml;
+        this.mouseGalacticRa = result.coordinates.galacticRaHtml;
+        this.mouseGalacticDec = result.coordinates.galacticDecHtml;
+
+        this.changeDetectorRef.markForCheck();
+      } catch (error) {
+        this.mouseRa = null;
+        this.mouseDec = null;
+        this.mouseGalacticRa = null;
+        this.mouseGalacticDec = null;
+      }
+    }
+  }
+
   // Replace both mousemove and wheel handlers to completely freeze the zoom
   private _deregisterZoomEvents(): void {
     if (!this.ngxImageZoom || !(this.ngxImageZoom as any).zoomInstance) {
       return;
     }
-
-    // Store current zoom position
-    this._frozenZoomPosition = {
-      x: this.ngxImageZoom.zoomService.lensLeft,
-      y: this.ngxImageZoom.zoomService.lensTop
-    };
 
     // Store the original handlers
     this._originalOnMouseMove = (this.ngxImageZoom as any).zoomInstance.onMouseMove;
@@ -872,9 +1604,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   // Restore original event handlers
   private _registerZoomEvents(): void {
     this._restoreOriginalEventHandlers();
-
-    // Clear saved zoom position
-    this._frozenZoomPosition = null;
   }
 
   /**
@@ -882,6 +1611,69 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * @param event WheelEvent with ctrlKey for Firefox pinch gestures
    * @param syntheticEvent Optional synthetic event with proper coordinates
    */
+  /**
+   * Ensures that a solution matrix is loaded, with proper state tracking
+   * This prevents race conditions between multiple components trying to load the same matrix
+   */
+  private _ensureSolutionMatrixLoaded(solutionId: number): void {
+    // Check if matrix is already loaded in component with valid properties
+    if (this.advancedSolutionMatrix &&
+      this.advancedSolutionMatrix.raMatrix &&
+      this.advancedSolutionMatrix.decMatrix &&
+      this.advancedSolutionMatrix.matrixRect &&
+      this.advancedSolutionMatrix.matrixDelta !== undefined) {
+      return;
+    }
+
+    // Mark as loading to prevent duplicate requests
+    this.loadingAdvancedSolutionMatrix = true;
+
+    // First check if matrix is in the store
+    this.store$.pipe(
+      select(selectSolutionMatrix, solutionId),
+      take(1),
+      switchMap(matrixFromStore => {
+        if (matrixFromStore) {
+          // If matrix is already in store, use it
+          this.advancedSolutionMatrix = matrixFromStore;
+          this.loadingAdvancedSolutionMatrix = false;
+          return of(matrixFromStore);
+        } else {
+          // Otherwise, check if it's currently being loaded by another component
+          return this.store$.pipe(
+            select(selectIsSolutionMatrixLoading, solutionId),
+            take(1),
+            switchMap(isLoading => {
+              if (isLoading) {
+                // If already loading, wait for it to complete
+                return this.store$.pipe(
+                  select(selectSolutionMatrix, solutionId),
+                  filter(matrix => !!matrix), // Wait until matrix is available
+                  take(1)
+                );
+              } else {
+                // If not loading, dispatch action to load it
+                this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
+
+                // Then wait for it to complete
+                return this.store$.pipe(
+                  select(selectSolutionMatrix, solutionId),
+                  filter(matrix => !!matrix), // Wait until matrix is available
+                  take(1)
+                );
+              }
+            })
+          );
+        }
+      })
+    ).subscribe(matrix => {
+      // Update component state with the matrix
+      this.advancedSolutionMatrix = matrix;
+      this.loadingAdvancedSolutionMatrix = false;
+      this.changeDetectorRef.markForCheck();
+    });
+  }
+
   private _handleFirefoxPinchZoom(event: WheelEvent, syntheticEvent?: WheelEvent): void {
     // Always prevent browser zoom when using ctrl+wheel (Firefox pinch gesture)
     event.preventDefault();
@@ -957,7 +1749,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return syntheticEvent;
   }
 
-  private _initImageZoom() {
+  private _initImageZoom(skipZoomReset: boolean = false) {
     if (this.ngxImageZoom) {
       const renderedThumbnailHeight = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").height;
       const thumbnailNaturalHeight = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").naturalHeight;
@@ -967,9 +1759,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.ngxImageZoom.zoomService.thumbWidth = renderedThumbnailWidth;
       this.ngxImageZoom.zoomService.thumbHeight = renderedThumbnailHeight;
       this.ngxImageZoom.zoomService.minZoomRatio = renderedThumbnailWidth / this.naturalWidth;
-      this.ngxImageZoom.zoomService.magnification = 1;
 
-      this.setZoomScroll(1);
+      // Only reset the magnification and zoom scroll if not explicitly skipping this step
+      // This helps when restoring from measuring mode where we want to maintain the previous zoom level
+      if (!skipZoomReset) {
+        // Get the minimum zoom ratio (fit to window)
+        const minRatio = this.ngxImageZoom.zoomService.minZoomRatio;
+
+        // Set magnification to the minimum ratio (fit to window) instead of 1
+        this.ngxImageZoom.zoomService.magnification = minRatio;
+        this.setZoomScroll(minRatio);
+      }
 
       // Handle touchpad pinch gestures in Firefox
       // Convert them to zoom operations similar to Chrome
@@ -1039,6 +1839,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
         this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
         this.ngxImageZoom.zoomService.zoomOn(event);
+        // Clear specific "Activate zoom first" notification if it exists
+        if (this._zoomActivationNotification) {
+          // Extract toast ID - ActiveToast has a toastId property of type number
+          if (typeof this._zoomActivationNotification !== "string" && this._zoomActivationNotification.toastId) {
+            this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
+          }
+          this._zoomActivationNotification = null;
+        }
         this.changeDetectorRef.markForCheck();
       }, { once: true });
 
@@ -1052,12 +1860,28 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             this.ngxImageZoom.zoomService.zoomOff();
           } else {
             this.ngxImageZoom.zoomService.zoomOn(event);
+            // Clear specific "Activate zoom first" notification if it exists
+            if (this._zoomActivationNotification) {
+              // Extract toast ID - ActiveToast has a toastId property of type number
+              if (typeof this._zoomActivationNotification !== "string" && this._zoomActivationNotification.toastId) {
+                this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
+              }
+              this._zoomActivationNotification = null;
+            }
           }
         } else {
           if (this.zoomingEnabled) {
             this.hide(null);
           } else {
             this.ngxImageZoom.zoomService.zoomOn(event);
+            // Clear specific "Activate zoom first" notification if it exists
+            if (this._zoomActivationNotification) {
+              // Extract toast ID - ActiveToast has a toastId property of type number
+              if (typeof this._zoomActivationNotification !== "string" && this._zoomActivationNotification.toastId) {
+                this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
+              }
+              this._zoomActivationNotification = null;
+            }
           }
         }
       };
@@ -1248,10 +2072,24 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       filter(image => !!image),
       take(1),
       tap(image => {
-        this._revision = this.imageService.getRevision(image, this.revisionLabel);
-        this.naturalWidth = this._revision.w;
-        this.naturalHeight = this._revision.h;
+        this.image = image;
+        this.revision = this.imageService.getRevision(image, this.revisionLabel);
+        this.naturalWidth = this.revision.w;
+        this.naturalHeight = this.revision.h;
         this.maxZoom = image.maxZoom || image.defaultMaxZoom || 8;
+
+        // Load solution matrix for coordinate calculation
+        if (this.revision?.solution?.id) {
+          // If matrix was passed from parent component, use it directly
+          if (this.externalSolutionMatrix) {
+            this.advancedSolutionMatrix = this.externalSolutionMatrix;
+            this.loadingAdvancedSolutionMatrix = false;
+            this.changeDetectorRef.markForCheck();
+          } else {
+            // Use same pattern as in ImageViewerComponent
+            this._ensureSolutionMatrixLoaded(this.revision.solution.id);
+          }
+        }
 
         this.hdThumbnailLoading = true;
         this._hdLoadingProgressSubject.next(0);
@@ -1271,7 +2109,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       })
     ).subscribe(() => {
       // Check if the image is a GIF
-      this.isGif = this._revision.imageFile && this._revision.imageFile.toLowerCase().endsWith(".gif");
+      this.isGif = this.revision.imageFile && this.revision.imageFile.toLowerCase().endsWith(".gif");
 
       // For GIFs, always use non-touch mode
       if (this.isGif && this.touchMode) {
@@ -1286,7 +2124,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this._hdLoadingProgressSubject.next(0);
         this._realLoadingProgressSubject.next(0);
 
-        this.imageService.loadImageFile(this._revision.imageFile, (progress: number) => {
+        this.imageService.loadImageFile(this.revision.imageFile, (progress: number) => {
           this._hdLoadingProgressSubject.next(progress);
           this._realLoadingProgressSubject.next(progress);
         }).pipe(
@@ -1298,7 +2136,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         ).subscribe(url => {
           this.hdThumbnail = url;
           this.realThumbnail = url;
-          this.realThumbnailUnsafeUrl = this._revision.imageFile;
+          this.realThumbnailUnsafeUrl = this.revision.imageFile;
 
           this.hdThumbnailLoading = false;
           this.realThumbnailLoading = false;

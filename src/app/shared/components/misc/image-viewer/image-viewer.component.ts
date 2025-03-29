@@ -3,6 +3,8 @@ import { FINAL_REVISION_LABEL, FullSizeLimitationDisplayOptions, ImageInterface,
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
+import { Actions, ofType } from "@ngrx/effects";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { DeviceService } from "@core/services/device.service";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
@@ -13,6 +15,8 @@ import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { LoadSolutionMatrix } from "@app/store/actions/solution.actions";
+import { selectIsSolutionMatrixLoading, selectSolutionMatrix } from "@app/store/selectors/app/solution.selectors";
 import { animationFrameScheduler, auditTime, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { isPlatformBrowser, Location } from "@angular/common";
 import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
@@ -39,6 +43,7 @@ import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-
 import { CookieService } from "ngx-cookie";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { SearchService } from "@core/services/search.service";
+import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
 
 
 @Component({
@@ -117,6 +122,9 @@ export class ImageViewerComponent
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
 
+  @ViewChild("fullscreenViewer", { static: false })
+  fullscreenViewer: any;
+
   protected readonly ImageAlias = ImageAlias;
   protected readonly isPlatformBrowser = isPlatformBrowser;
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
@@ -182,11 +190,13 @@ export class ImageViewerComponent
   private _preloadedMoonImage: HTMLImageElement = null; // Store the preloaded image element
   private _moonStartDragPosition = { x: 0, y: 0 };
   private _dataAreaScrollEventSubscription: Subscription;
+  private _hideFullscreenImageSubscription: Subscription;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
   private _activeOffcanvas: NgbOffcanvasRef;
 
   constructor(
     public readonly store$: Store<MainState>,
+    private readonly actions$: Actions,
     public readonly deviceService: DeviceService,
     public readonly imageService: ImageService,
     public readonly jsonApiService: JsonApiService,
@@ -212,7 +222,8 @@ export class ImageViewerComponent
     public readonly cookieService: CookieService,
     public readonly searchService: SearchService,
     public readonly contentTranslateService: ContentTranslateService,
-    public readonly elementRef: ElementRef
+    public readonly elementRef: ElementRef,
+    public readonly coordinatesFormatterService: CoordinatesFormatterService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -234,6 +245,15 @@ export class ImageViewerComponent
 
     this.offcanvasService.activeInstance.pipe(takeUntil(this.destroyed$)).subscribe(activeOffcanvas => {
       this._activeOffcanvas = activeOffcanvas;
+    });
+
+    // Subscribe to the HIDE_FULLSCREEN_IMAGE action to update our local state
+    this._hideFullscreenImageSubscription = this.actions$.pipe(
+      ofType(AppActionTypes.HIDE_FULLSCREEN_IMAGE),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.viewingFullscreenImage = false;
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -290,6 +310,15 @@ export class ImageViewerComponent
 
         this.changeDetectorRef.markForCheck();
       });
+
+      // Check for the fullscreen viewer and subscribe to its events
+      this.utilsService.delay(100).subscribe(() => {
+        if (this.fullscreenViewer) {
+          this.fullscreenViewer.exitFullscreen.subscribe(() => {
+            this.exitFullscreen();
+          });
+        }
+      });
     }
 
     this.changeDetectorRef.detectChanges();
@@ -304,6 +333,10 @@ export class ImageViewerComponent
   ngOnDestroy() {
     if (this._dataAreaScrollEventSubscription) {
       this._dataAreaScrollEventSubscription.unsubscribe();
+    }
+
+    if (this._hideFullscreenImageSubscription) {
+      this._hideFullscreenImageSubscription.unsubscribe();
     }
 
     if (this.adManagerComponent) {
@@ -333,7 +366,8 @@ export class ImageViewerComponent
     }
 
     if (this.viewingFullscreenImage) {
-      this.exitFullscreen();
+      // We don't need to do anything here - the FullscreenImageViewerComponent
+      // will handle ESC key and emit exitFullscreen event back to us
       return;
     }
 
@@ -465,6 +499,10 @@ export class ImageViewerComponent
       return;
     }
 
+    if (this.viewingFullscreenImage) {
+      return;
+    }
+
     if (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -589,6 +627,12 @@ export class ImageViewerComponent
   @Throttle(20)
   protected onSvgMouseMove(event: MouseEvent): void {
     if (!this.advancedSolutionMatrix || !this.advancedSolutionMatrix.raMatrix) {
+      // Matrix not loaded yet, can't calculate coordinates
+      return;
+    }
+
+    if (this.loadingAdvancedSolutionMatrix) {
+      // Still loading, don't attempt to calculate coordinates
       return;
     }
 
@@ -598,70 +642,24 @@ export class ImageViewerComponent
       return;
     }
 
-    const imageRenderedWidth = imageElement.clientWidth;
-    const imageNaturalWidth = imageElement.naturalWidth;
-    const hdWidth = Math.min(imageNaturalWidth, 1824);
-    const scale = imageRenderedWidth / hdWidth;
-    const raMatrix = this.advancedSolutionMatrix.raMatrix.split(",").map(Number);
-    const decMatrix = this.advancedSolutionMatrix.decMatrix.split(",").map(Number);
-    const rect = this.advancedSolutionMatrix.matrixRect.split(",").map(Number);
-    const delta = this.advancedSolutionMatrix.matrixDelta;
-
-    const interpolation = new CoordinateInterpolation(
-      raMatrix,
-      decMatrix,
-      rect[0],
-      rect[1],
-      rect[2],
-      rect[3],
-      delta,
-      undefined,
-      scale
+    // Use the shared service to calculate and format the coordinates
+    const result = this.coordinatesFormatterService.calculateMouseCoordinates(
+      event,
+      imageElement,
+      this.advancedSolutionMatrix
     );
 
-    const interpolationText = interpolation.interpolateAsText(
-      event.offsetX / scale,
-      event.offsetY / scale,
-      false,
-      true,
-      true
-    );
+    if (!result) {
+      return;
+    }
 
-    const ra = interpolationText.alpha.trim().split(" ").map(x => x.padStart(2, "0"));
-    const dec = interpolationText.delta.trim().split(" ").map(x => x.padStart(2, "0"));
-
-    this.mouseHoverRa = `
-      <span class="symbol">α</span>:
-      <span class="value">${ra[0]}</span><span class="unit">h</span>
-      <span class="value">${ra[1]}</span><span class="unit">m</span>
-      <span class="value">${ra[2]}</span><span class="unit">s</span>
-    `;
-    this.mouseHoverDec = `
-      <span class="symbol">δ</span>:
-      <span class="value">${dec[0]}</span><span class="unit">°</span>
-      <span class="value">${dec[1]}</span><span class="unit">'</span>
-      <span class="value">${dec[2]}</span><span class="unit">"</span>
-    `;
-
-    const galacticRa = interpolationText.l.trim().split(" ").map(x => x.padStart(2, "0"));
-    const galacticDec = interpolationText.b.trim().split(" ").map(x => x.padStart(2, "0"));
-
-    this.mouseHoverGalacticRa = `
-      <span class="symbol">l</span>:
-      <span class="value">${galacticRa[0]}</span><span class="unit">°</span>
-      <span class="value">${galacticRa[1]}</span><span class="unit">'</span>
-      <span class="value">${galacticRa[2]}</span><span class="unit>"</span>
-    `;
-
-    this.mouseHoverGalacticDec = `
-      <span class="symbol">b</span>:
-      <span class="value">${galacticDec[0]}</span><span class="unit">°</span>
-      <span class="value">${galacticDec[1]}</span><span class="unit">'</span>
-      <span class="value">${galacticDec[2]}</span><span class="unit"></span>
-    `;
-
-    this.mouseHoverX = event.offsetX;
-    this.mouseHoverY = event.offsetY;
+    // Set the formatted coordinates and positions
+    this.mouseHoverRa = result.coordinates.raHtml;
+    this.mouseHoverDec = result.coordinates.decHtml;
+    this.mouseHoverGalacticRa = result.coordinates.galacticRaHtml;
+    this.mouseHoverGalacticDec = result.coordinates.galacticDecHtml;
+    this.mouseHoverX = result.x;
+    this.mouseHoverY = result.y;
   }
 
   protected onRevisionSelected(revisionLabel: ImageRevisionInterface["label"], pushState: boolean): void {
@@ -876,7 +874,14 @@ export class ImageViewerComponent
           return;
         }
 
-        this.store$.dispatch(new ShowFullscreenImage({ imageId: this.image.pk, event }));
+        // Pass the loaded matrix to the fullscreen component to avoid race conditions
+        const solutionMatrixToPass = this.loadingAdvancedSolutionMatrix ? null : this.advancedSolutionMatrix;
+
+        this.store$.dispatch(new ShowFullscreenImage({
+          imageId: this.image.pk,
+          event,
+          externalSolutionMatrix: solutionMatrixToPass
+        }));
         this.viewingFullscreenImage = true;
 
         // Reset moon overlay state when entering fullscreen
@@ -900,7 +905,9 @@ export class ImageViewerComponent
     });
   }
 
-  protected exitFullscreen(): void {
+  // Removed unnecessary wrapper method
+
+  public exitFullscreen(): void {
     this.store$.dispatch(new HideFullscreenImage());
     this.viewingFullscreenImage = false;
     this.toggleFullscreen.emit(false);
@@ -1329,7 +1336,14 @@ export class ImageViewerComponent
       return;
     }
 
+    // Reset appropriate properties first
+    this.mouseHoverRa = null;
+    this.mouseHoverDec = null;
+    this.mouseHoverGalacticRa = null;
+    this.mouseHoverGalacticDec = null;
+
     if (this.revision?.solution?.pixinsightSvgAnnotationRegular) {
+      // Load the SVG first
       this._loadInlineSvg$(
         environment.classicBaseUrl + `/platesolving/solution/${this.revision.solution.id}/svg/regular/`
       ).subscribe(inlineSvg => {
@@ -1337,18 +1351,82 @@ export class ImageViewerComponent
         this.inlineSvg = inlineSvg;
         this.changeDetectorRef.markForCheck();
       });
-      this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
-        this.advancedSolutionMatrix = matrix;
-        this.loadingAdvancedSolutionMatrix = false;
-        this.changeDetectorRef.markForCheck();
-      });
+
+      // Then ensure we have the solution matrix - we need coordinated loading with a clear state
+      this._ensureSolutionMatrixLoaded(this.revision.solution.id);
     } else if (this.revision?.solution?.imageFile) {
       this.solutionMouseHoverImage = this.revision.solution.imageFile;
       this.inlineSvg = null;
+
+      // Even with image file, we need the matrix for coordinates
+      if (this.revision.solution.id) {
+        this._ensureSolutionMatrixLoaded(this.revision.solution.id);
+      }
     } else {
       this.solutionMouseHoverImage = null;
       this.inlineSvg = null;
+      this.advancedSolutionMatrix = null;
+      this.loadingAdvancedSolutionMatrix = false;
     }
+  }
+
+  /**
+   * Ensures that a solution matrix is loaded, with proper state tracking
+   * This prevents race conditions between multiple components trying to load the same matrix
+   */
+  private _ensureSolutionMatrixLoaded(solutionId: number): void {
+    // If matrix is already loaded in component, we're done
+    if (this.advancedSolutionMatrix) {
+      return;
+    }
+
+    // Mark as loading to prevent duplicate requests
+    this.loadingAdvancedSolutionMatrix = true;
+
+    // First check if matrix is in the store
+    this.store$.pipe(
+      select(selectSolutionMatrix, solutionId),
+      take(1),
+      switchMap(matrixFromStore => {
+        if (matrixFromStore) {
+          // If matrix is already in store, use it
+          this.advancedSolutionMatrix = matrixFromStore;
+          this.loadingAdvancedSolutionMatrix = false;
+          return of(matrixFromStore);
+        } else {
+          // Otherwise, check if it's currently being loaded by another component
+          return this.store$.pipe(
+            select(selectIsSolutionMatrixLoading, solutionId),
+            take(1),
+            switchMap(isLoading => {
+              if (isLoading) {
+                // If already loading, wait for it to complete
+                return this.store$.pipe(
+                  select(selectSolutionMatrix, solutionId),
+                  filter(matrix => !!matrix), // Wait until matrix is available
+                  take(1)
+                );
+              } else {
+                // If not loading, dispatch action to load it
+                this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
+
+                // Then wait for it to complete
+                return this.store$.pipe(
+                  select(selectSolutionMatrix, solutionId),
+                  filter(matrix => !!matrix), // Wait until matrix is available
+                  take(1)
+                );
+              }
+            })
+          );
+        }
+      })
+    ).subscribe(matrix => {
+      // Update component state with the matrix
+      this.advancedSolutionMatrix = matrix;
+      this.loadingAdvancedSolutionMatrix = false;
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   private _setShowPlateSolvingBanner() {
@@ -1396,20 +1474,7 @@ export class ImageViewerComponent
     );
   }
 
-  private _loadAdvancedSolutionMatrix$(solutionId: number): Observable<{
-    matrixRect: string;
-    matrixDelta: number;
-    raMatrix: string;
-    decMatrix: string;
-  }> {
-    if (this.loadingAdvancedSolutionMatrix || this.advancedSolutionMatrix) {
-      return of(this.advancedSolutionMatrix);
-    }
-
-    this.loadingAdvancedSolutionMatrix = true;
-
-    return this.solutionApiService.getAdvancedMatrix(solutionId);
-  }
+  // Removed _loadAdvancedSolutionMatrix$ in favor of _ensureSolutionMatrixLoaded
 
   private _onMouseHoverSvgLoad(): void {
     if (this.isBrowser) {
@@ -1643,10 +1708,10 @@ export class ImageViewerComponent
       this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
       this.onRevisionSelected((this.revision as ImageRevisionInterface).label, false);
     }
-    
+
     this._updateNorthArrowRotation();
   }
-  
+
   private _updateNorthArrowRotation(): void {
     if (this.revision?.solution) {
       this.northArrowRotation = this.imageService.calculateCorrectOrientation(this.revision.solution);
