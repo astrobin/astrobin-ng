@@ -17,7 +17,7 @@ import { UploadDataService } from "@core/services/upload-metadata/upload-data.se
 import { WindowRefService } from "@core/services/window-ref.service";
 import { UploadState, UploadxService } from "ngx-uploadx";
 import { Observable } from "rxjs";
-import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 import { SubscriptionName } from "@core/types/subscription-name.type";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { Actions } from "@ngrx/effects";
