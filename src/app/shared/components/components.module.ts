@@ -152,7 +152,7 @@ import { DragDropAreaComponent } from "@shared/components/misc/formly-field-chun
 import { AvatarManagerComponent } from "@shared/components/misc/avatar-manager/avatar-manager.component";
 import { AvatarEditorComponent } from "@shared/components/misc/avatar-editor/avatar-editor.component";
 import { CoordinatesDisplayComponent } from "@shared/components/misc/coordinates-display/coordinates-display.component";
-import { MeasuringToolComponent } from "@shared/components/misc/measuring-tool/measuring-tool.component";
+import { MeasuringToolModule } from "@shared/components/misc/measuring-tool/measuring-tool.module";
 
 const modules = [
   CommonModule,
@@ -164,6 +164,7 @@ const modules = [
   HammerModule,
   ImageCropperModule,
   LightboxModule,
+  MeasuringToolModule,
   NgbAccordionModule,
   NgbCarouselModule,
   NgbCollapseModule,
@@ -278,7 +279,6 @@ const components = [
   MasonryLayoutComponent,
   MarketplaceListingCardComponent,
   MarketplaceListingCardsComponent,
-  MeasuringToolComponent,
   MobileMenuComponent,
   MostOftenUsedWithModalComponent,
   NestedCommentComponent,

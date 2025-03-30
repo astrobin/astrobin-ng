@@ -434,17 +434,13 @@
     [windowWidth]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
     [windowHeight]="isBrowser ? windowRef.nativeWindow.innerHeight : 0"
     [setMouseOverUIElement]="setMouseOverUIElement.bind(this)"
-    (exitMeasuringMode)="toggleMeasuringMode($event)"
-    (rotationChanged)="updateRotation($event)"
+    (exitMeasuringMode)="toggleMeasuringMode()"
   ></astrobin-measuring-tool>
 
   <!-- Coordinate display -->
   <div class="coordinates-wrapper" *ngIf="showCoordinates && mouseRa && mouseDec && !isGif"
        (mouseenter)="setMouseOverUIElement(true)"
        (mouseleave)="setMouseOverUIElement(false)">
-    <div *ngIf="_currentRotationDegrees !== 0" class="rotation-badge">
-      <fa-icon icon="rotate"></fa-icon> {{ _currentRotationDegrees | number:'1.1-1' }}°
-    </div>
     <astrobin-coordinates-display
       [raHtml]="mouseRa"
       [decHtml]="mouseDec"

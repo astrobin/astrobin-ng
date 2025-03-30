@@ -1,6 +1,28 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { CoordinatesFormatterService } from '@core/services/coordinates-formatter.service';
+import { Store, select } from "@ngrx/store";
+import { MainState } from "@app/store/state";
+import { ToggleFOVSimulator } from "./fov-simulator/store/fov-simulator.actions";
+import { PopNotificationsService } from '@core/services/pop-notifications.service';
+import { TranslateService } from '@ngx-translate/core';
+import {
+  CreateMeasurementPreset,
+  DeleteMeasurementPreset,
+  LoadMeasurementPresets,
+  SelectMeasurementPreset,
+  ToggleSavedMeasurements
+} from './store/measurement-preset.actions';
+import {
+  selectAllMeasurementPresets,
+  selectShowSavedMeasurements
+} from './store/measurement-preset.selectors';
+import { MeasurementPresetInterface } from './measurement-preset.interface';
+import { take, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { BaseComponentDirective } from '@shared/components/base-component.directive';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SaveMeasurementModalComponent } from './save-measurement-modal/save-measurement-modal.component';
 
 export interface MeasurementPoint {
   x: number;
@@ -28,6 +50,12 @@ export interface MeasurementData {
   endLabelY: number;
   showCircle?: boolean;
   showRectangle?: boolean;
+  
+  // For saved measurements
+  widthArcseconds?: number | null;  // Width in arcseconds for rectangular measurements
+  heightArcseconds?: number | null; // Height in arcseconds for rectangular measurements
+  length?: number;                  // Length in pixels for recreating the measurement
+  notes?: string;                   // Optional user notes about the measurement
 }
 
 export interface SolutionMatrix {
@@ -42,7 +70,7 @@ export interface SolutionMatrix {
   templateUrl: './measuring-tool.component.html',
   styleUrls: ['./measuring-tool.component.scss']
 })
-export class MeasuringToolComponent implements OnInit, OnDestroy {
+export class MeasuringToolComponent extends BaseComponentDirective implements OnInit, OnDestroy {
   @Input() active: boolean = false;
   @Input() imageElement: ElementRef<HTMLElement>;
   @Input() advancedSolutionMatrix: SolutionMatrix | null = null;
@@ -58,6 +86,12 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
   measureEndPoint: MeasurementPoint | null = null;
   measureDistance: string | null = null;
   previousMeasurements: MeasurementData[] = [];
+
+  // Saved measurements
+  showSavedMeasurements: boolean = false;
+  newMeasurementName: string = '';
+  savedMeasurements: MeasurementPresetInterface[] = [];
+  private destroy$ = new Subject<void>();
 
   // Mouse tracking
   mouseX: number | null = null;
@@ -130,11 +164,17 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private cookieService: CookieService,
-    private coordinatesFormatter: CoordinatesFormatterService,
-    private cdRef: ChangeDetectorRef,
-    private ngZone: NgZone
+    public readonly store$: Store<MainState>,
+    public readonly cookieService: CookieService,
+    public readonly coordinatesFormatter: CoordinatesFormatterService,
+    public readonly cdRef: ChangeDetectorRef,
+    public readonly ngZone: NgZone,
+    private modalService: NgbModal,
+    private popNotificationsService: PopNotificationsService,
+    private translateService: TranslateService
   ) {
+    super(store$);
+
     // Initialize bound handlers
     this._onMeasuringMouseMove = this.handleMeasuringMouseMove.bind(this);
     this._onPointDragMove = this.handlePointDragMove.bind(this);
@@ -145,11 +185,37 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     this._onShapeDragEnd = this.handleShapeDragEnd.bind(this);
     this._onCurrentShapeDragMove = this.handleCurrentShapeDragMove.bind(this);
     this._onCurrentShapeDragEnd = this.handleCurrentShapeDragEnd.bind(this);
-    // Rotation handlers are now implemented directly
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.loadMeasurementShapePreference();
+
+    // Subscribe to state changes
+    this.store$.pipe(
+      select(selectShowSavedMeasurements),
+      takeUntil(this.destroy$)
+    ).subscribe(showSavedMeasurements => {
+      this.showSavedMeasurements = showSavedMeasurements;
+    });
+
+    this.store$.pipe(
+      select(selectAllMeasurementPresets),
+      takeUntil(this.destroy$)
+    ).subscribe(presets => {
+      this.savedMeasurements = presets;
+    });
+
+    // Load presets when the component initializes
+    this.currentUser$.pipe(
+      take(1),
+      takeUntil(this.destroy$)
+    ).subscribe(user => {
+      if (user) {
+        this.store$.dispatch(new LoadMeasurementPresets({ userId: user.id }));
+      }
+    });
 
     // Add document level mouse move event listener when active
     if (this.active) {
@@ -185,6 +251,12 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     document.removeEventListener('mousemove', this._onCurrentShapeDragMove);
     document.removeEventListener('mouseup', this._onCurrentShapeDragEnd);
 
+    // Complete the destroy subject
+    this.destroy$.next();
+    this.destroy$.complete();
+
+    // Call parent class ngOnDestroy
+    super.ngOnDestroy();
   }
 
   /**
@@ -195,6 +267,13 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     // Skip if this mousedown should be prevented
     if (this._preventNextClick) {
       this._preventNextClick = false;
+      return;
+    }
+
+    // Skip if click is on FOV simulator or saved measurements panel or any of their children
+    const target = event.target as HTMLElement;
+    if (target.closest('.fov-simulator-container') || target.closest('.saved-measurements-panel')) {
+      console.log('Skipping click on UI panel');
       return;
     }
 
@@ -371,6 +450,13 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
 
     // Skip if dragging is in progress
     if (this._dragInProgress) {
+      return;
+    }
+
+    // Skip if click is on FOV simulator or saved measurements panel or any of their children
+    const target = event.target as HTMLElement;
+    if (target.closest('.fov-simulator-container') || target.closest('.saved-measurements-panel')) {
+      console.log('Skipping click on UI panel');
       return;
     }
 
@@ -2042,5 +2128,1001 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
    */
   exitMeasuring(): void {
     this.exitMeasuringMode.emit();
+  }
+
+  /**
+   * Toggle the saved measurements panel visibility
+   */
+  toggleSavedMeasurements(event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    // Check if user is logged in
+    let isLoggedIn = false;
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      isLoggedIn = !!user;
+    });
+    
+    if (!isLoggedIn) {
+      console.log('Cannot display saved measurements: User not logged in');
+      return;
+    }
+
+    this.store$.dispatch(new ToggleSavedMeasurements());
+  }
+
+  /**
+   * Open the saved measurements panel and pre-fill with current measurement
+   */
+  openSaveCurrentMeasurement(event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    // Check if user is logged in
+    let isLoggedIn = false;
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      isLoggedIn = !!user;
+    });
+    
+    if (!isLoggedIn) {
+      console.log('Cannot save measurement: User not logged in');
+      return;
+    }
+
+    if (!this.measureStartPoint || !this.measureEndPoint || !this.measureDistance) {
+      return;
+    }
+
+    // Generate a default name based on the distance
+    const defaultName = `Measurement ${this.measureDistance}`;
+
+    // Calculate measurement length (needed for recreation)
+    const length = this.calculateDistance(
+      this.measureStartPoint.x,
+      this.measureStartPoint.y,
+      this.measureEndPoint.x,
+      this.measureEndPoint.y
+    );
+
+    // Calculate width and height in arcseconds if we have celestial coordinates
+    let widthArcseconds = null;
+    let heightArcseconds = null;
+    
+    if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null &&
+        this.measureStartPoint.dec !== null && this.measureEndPoint.dec !== null && 
+        this.showCurrentRectangle) {
+          
+      // For rectangular measurements, calculate width and height
+      if (this.advancedSolutionMatrix) {
+        // Calculate width in arcseconds (horizontal component)
+        const minX = Math.min(this.measureStartPoint.x, this.measureEndPoint.x);
+        const maxX = Math.max(this.measureStartPoint.x, this.measureEndPoint.x);
+        const midY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
+        
+        const leftCoords = this.calculateCoordinatesAtPoint(minX, midY);
+        const rightCoords = this.calculateCoordinatesAtPoint(maxX, midY);
+        
+        if (leftCoords && rightCoords) {
+          const angularWidth = this.calculateAngularDistance(
+            leftCoords.ra, leftCoords.dec,
+            rightCoords.ra, rightCoords.dec
+          );
+          
+          // Convert to arcseconds
+          widthArcseconds = angularWidth * 3600;
+        }
+        
+        // Calculate height in arcseconds (vertical component)
+        const minY = Math.min(this.measureStartPoint.y, this.measureEndPoint.y);
+        const maxY = Math.max(this.measureStartPoint.y, this.measureEndPoint.y);
+        const midX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
+        
+        const topCoords = this.calculateCoordinatesAtPoint(midX, minY);
+        const bottomCoords = this.calculateCoordinatesAtPoint(midX, maxY);
+        
+        if (topCoords && bottomCoords) {
+          const angularHeight = this.calculateAngularDistance(
+            topCoords.ra, topCoords.dec,
+            bottomCoords.ra, bottomCoords.dec
+          );
+          
+          // Convert to arcseconds
+          heightArcseconds = angularHeight * 3600;
+        }
+      }
+    }
+
+    // Create simplified measurement data with just what's needed to recreate the measurement
+    const measurementData: MeasurementData = {
+      // We only need one of these coordinates if we recreate in the center
+      startRa: this.measureStartPoint.ra,
+      startDec: this.measureStartPoint.dec,
+      endRa: this.measureEndPoint.ra,
+      endDec: this.measureEndPoint.dec,
+      
+      // Width and height in arcseconds (for rectangular measurements)
+      widthArcseconds: widthArcseconds,
+      heightArcseconds: heightArcseconds,
+      
+      // Length in pixels needed to recreate the measurement
+      length: length,
+      
+      // Formatted distance string
+      distance: this.measureDistance,
+      
+      // Shape visualization preferences
+      showCircle: this.showCurrentCircle,
+      showRectangle: this.showCurrentRectangle,
+      
+      // Timestamp for sorting
+      timestamp: Date.now(),
+        
+      // We need these fields for the interface, but they'll be recalculated on load
+      startX: 0,
+      startY: 0,
+      endX: 0,
+      endY: 0,
+      midX: 0,
+      midY: 0,
+      startLabelX: 0,
+      startLabelY: 0,
+      endLabelX: 0,
+      endLabelY: 0
+    };
+
+    // Open the modal
+    console.log('Opening save measurement modal...');
+    try {
+      const modalRef = this.modalService.open(SaveMeasurementModalComponent);
+      console.log('Modal opened successfully');
+      modalRef.componentInstance.measurementData = measurementData;
+      modalRef.componentInstance.defaultName = defaultName;
+      
+      // Handle the result when the modal is closed
+      modalRef.result.then(result => {
+        this.currentUser$.pipe(take(1)).subscribe(user => {
+          if (user) {
+            // Create the base preset object
+            const preset: MeasurementPresetInterface = {
+              name: result.name,
+              notes: result.notes,
+              user: user.id
+            };
+            
+            // Only include width/height when they are valid measurements
+            if (measurementData.widthArcseconds !== null && measurementData.widthArcseconds !== undefined) {
+              preset.widthArcseconds = measurementData.widthArcseconds;
+            }
+            
+            if (measurementData.heightArcseconds !== null && measurementData.heightArcseconds !== undefined) {
+              preset.heightArcseconds = measurementData.heightArcseconds;
+            }
+
+            // Dispatch action to save preset
+            console.log('Dispatching CreateMeasurementPreset action with payload:', preset);
+            this.store$.dispatch(new CreateMeasurementPreset({ preset }));
+          }
+        });
+      }, () => {
+        // Modal dismissed, do nothing
+        console.log('Modal dismissed');
+      });
+    } catch (error) {
+      console.error('Error opening modal:', error);
+    }
+  }
+  
+  /**
+   * Save a previous measurement directly to the presets
+   */
+  savePreviousMeasurement(event: MouseEvent, index: number): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    // Check if user is logged in
+    let isLoggedIn = false;
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      isLoggedIn = !!user;
+    });
+    
+    if (!isLoggedIn) {
+      console.log('Cannot save measurement: User not logged in');
+      return;
+    }
+    
+    if (index >= 0 && index < this.previousMeasurements.length) {
+      const originalMeasurement = this.previousMeasurements[index];
+      
+      // Generate a default name
+      const defaultName = `Measurement ${originalMeasurement.distance}`;
+      
+      // Calculate measurement length (needed for recreation)
+      const length = this.calculateDistance(
+        originalMeasurement.startX,
+        originalMeasurement.startY,
+        originalMeasurement.endX,
+        originalMeasurement.endY
+      );
+      
+      // Calculate width and height in arcseconds if we have celestial coordinates
+      let widthArcseconds = null;
+      let heightArcseconds = null;
+      
+      if (originalMeasurement.startRa !== null && originalMeasurement.endRa !== null &&
+          originalMeasurement.startDec !== null && originalMeasurement.endDec !== null && 
+          originalMeasurement.showRectangle) {
+            
+        // For rectangular measurements, calculate width and height
+        if (this.advancedSolutionMatrix) {
+          // Calculate width in arcseconds (horizontal component)
+          const minX = Math.min(originalMeasurement.startX, originalMeasurement.endX);
+          const maxX = Math.max(originalMeasurement.startX, originalMeasurement.endX);
+          const midY = (originalMeasurement.startY + originalMeasurement.endY) / 2;
+          
+          const leftCoords = this.calculateCoordinatesAtPoint(minX, midY);
+          const rightCoords = this.calculateCoordinatesAtPoint(maxX, midY);
+          
+          if (leftCoords && rightCoords) {
+            const angularWidth = this.calculateAngularDistance(
+              leftCoords.ra, leftCoords.dec,
+              rightCoords.ra, rightCoords.dec
+            );
+            
+            // Convert to arcseconds
+            widthArcseconds = angularWidth * 3600;
+          }
+          
+          // Calculate height in arcseconds (vertical component)
+          const minY = Math.min(originalMeasurement.startY, originalMeasurement.endY);
+          const maxY = Math.max(originalMeasurement.startY, originalMeasurement.endY);
+          const midX = (originalMeasurement.startX + originalMeasurement.endX) / 2;
+          
+          const topCoords = this.calculateCoordinatesAtPoint(midX, minY);
+          const bottomCoords = this.calculateCoordinatesAtPoint(midX, maxY);
+          
+          if (topCoords && bottomCoords) {
+            const angularHeight = this.calculateAngularDistance(
+              topCoords.ra, topCoords.dec,
+              bottomCoords.ra, bottomCoords.dec
+            );
+            
+            // Convert to arcseconds
+            heightArcseconds = angularHeight * 3600;
+          }
+        }
+      }
+      
+      // Create simplified measurement data with just what's needed to recreate the measurement
+      const measurementData: MeasurementData = {
+        // We only need one of these coordinates if we recreate in the center
+        startRa: originalMeasurement.startRa,
+        startDec: originalMeasurement.startDec,
+        endRa: originalMeasurement.endRa,
+        endDec: originalMeasurement.endDec,
+        
+        // Width and height in arcseconds (for rectangular measurements)
+        widthArcseconds: widthArcseconds,
+        heightArcseconds: heightArcseconds,
+        
+        // Length in pixels needed to recreate the measurement
+        length: length,
+        
+        // Formatted distance string
+        distance: originalMeasurement.distance,
+        
+        // Shape visualization preferences
+        showCircle: originalMeasurement.showCircle,
+        showRectangle: originalMeasurement.showRectangle,
+        
+        // Timestamp for sorting
+        timestamp: Date.now(),
+          
+        // We need these fields for the interface, but they'll be recalculated on load
+        startX: 0,
+        startY: 0,
+        endX: 0,
+        endY: 0,
+        midX: 0,
+        midY: 0,
+        startLabelX: 0,
+        startLabelY: 0,
+        endLabelX: 0,
+        endLabelY: 0
+      };
+      
+      // Open the modal
+      console.log('Opening save measurement modal for previous measurement...');
+      try {
+        const modalRef = this.modalService.open(SaveMeasurementModalComponent);
+        console.log('Modal opened successfully');
+        modalRef.componentInstance.measurementData = measurementData;
+        modalRef.componentInstance.defaultName = defaultName;
+        
+        // Handle the result when the modal is closed
+        modalRef.result.then(result => {
+          this.currentUser$.pipe(take(1)).subscribe(user => {
+            if (user) {
+              const preset: MeasurementPresetInterface = {
+                name: result.name,
+                notes: result.notes,
+                user: user.id
+              };
+              
+              // Only include width/height when they are valid measurements
+              if (measurementData.widthArcseconds !== null && measurementData.widthArcseconds !== undefined) {
+                preset.widthArcseconds = measurementData.widthArcseconds;
+              }
+              
+              if (measurementData.heightArcseconds !== null && measurementData.heightArcseconds !== undefined) {
+                preset.heightArcseconds = measurementData.heightArcseconds;
+              }
+              
+              // Dispatch action to save preset using NgRx
+              console.log('Dispatching CreateMeasurementPreset action with payload:', preset);
+              this.store$.dispatch(new CreateMeasurementPreset({ preset }));
+            }
+          });
+        }, () => {
+          // Modal dismissed, do nothing
+          console.log('Modal dismissed');
+        });
+      } catch (error) {
+        console.error('Error opening modal:', error);
+      }
+    }
+  }
+
+  /**
+   * Save the current measurement with the given name
+   * 
+   * Note: This is used by the saved measurements panel form, not the modal.
+   * For the save button on the measurement itself, see openSaveCurrentMeasurement.
+   */
+  saveMeasurement(): void {
+    // Check if user is logged in
+    let isLoggedIn = false;
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      isLoggedIn = !!user;
+    });
+    
+    if (!isLoggedIn) {
+      console.log('Cannot save measurement: User not logged in');
+      return;
+    }
+
+    if (!this.newMeasurementName || !this.measureDistance || !this.measureStartPoint || !this.measureEndPoint) {
+      return;
+    }
+
+    // Calculate measurement length (needed for recreation)
+    const length = this.calculateDistance(
+      this.measureStartPoint.x,
+      this.measureStartPoint.y,
+      this.measureEndPoint.x,
+      this.measureEndPoint.y
+    );
+    
+    // Calculate width and height in arcseconds if we have celestial coordinates
+    let widthArcseconds = null;
+    let heightArcseconds = null;
+    
+    if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null &&
+        this.measureStartPoint.dec !== null && this.measureEndPoint.dec !== null && 
+        this.showCurrentRectangle) {
+          
+      // For rectangular measurements, calculate width and height
+      if (this.advancedSolutionMatrix) {
+        // Calculate width in arcseconds (horizontal component)
+        const minX = Math.min(this.measureStartPoint.x, this.measureEndPoint.x);
+        const maxX = Math.max(this.measureStartPoint.x, this.measureEndPoint.x);
+        const midY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
+        
+        const leftCoords = this.calculateCoordinatesAtPoint(minX, midY);
+        const rightCoords = this.calculateCoordinatesAtPoint(maxX, midY);
+        
+        if (leftCoords && rightCoords) {
+          const angularWidth = this.calculateAngularDistance(
+            leftCoords.ra, leftCoords.dec,
+            rightCoords.ra, rightCoords.dec
+          );
+          
+          // Convert to arcseconds
+          widthArcseconds = angularWidth * 3600;
+        }
+        
+        // Calculate height in arcseconds (vertical component)
+        const minY = Math.min(this.measureStartPoint.y, this.measureEndPoint.y);
+        const maxY = Math.max(this.measureStartPoint.y, this.measureEndPoint.y);
+        const midX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
+        
+        const topCoords = this.calculateCoordinatesAtPoint(midX, minY);
+        const bottomCoords = this.calculateCoordinatesAtPoint(midX, maxY);
+        
+        if (topCoords && bottomCoords) {
+          const angularHeight = this.calculateAngularDistance(
+            topCoords.ra, topCoords.dec,
+            bottomCoords.ra, bottomCoords.dec
+          );
+          
+          // Convert to arcseconds
+          heightArcseconds = angularHeight * 3600;
+        }
+      }
+    }
+
+    // Create simplified measurement data for saving
+    const measurementData: MeasurementData = {
+      // Celestial coordinates
+      startRa: this.measureStartPoint.ra,
+      startDec: this.measureStartPoint.dec,
+      endRa: this.measureEndPoint.ra,
+      endDec: this.measureEndPoint.dec,
+      
+      // Width and height in arcseconds (for rectangular measurements)
+      widthArcseconds: widthArcseconds,
+      heightArcseconds: heightArcseconds,
+      
+      // Length in pixels needed for recreation
+      length: length,
+      
+      // Formatted distance string
+      distance: this.measureDistance,
+      
+      // Shape visualization preferences
+      showCircle: this.showCurrentCircle,
+      showRectangle: this.showCurrentRectangle,
+      
+      // Timestamp for sorting
+      timestamp: Date.now(),
+        
+      // We need these fields for the interface, but they'll be recalculated on load
+      startX: 0,
+      startY: 0,
+      endX: 0,
+      endY: 0,
+      midX: 0,
+      midY: 0,
+      startLabelX: 0,
+      startLabelY: 0,
+      endLabelX: 0,
+      endLabelY: 0
+    };
+
+    // Create the measurement preset
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      if (user) {
+        // Create the base preset object
+        const preset: MeasurementPresetInterface = {
+          name: this.newMeasurementName,
+          user: user.id
+        };
+        
+        // Only include width/height when they are valid measurements
+        if (measurementData.widthArcseconds !== null && measurementData.widthArcseconds !== undefined) {
+          preset.widthArcseconds = measurementData.widthArcseconds;
+        }
+        
+        if (measurementData.heightArcseconds !== null && measurementData.heightArcseconds !== undefined) {
+          preset.heightArcseconds = measurementData.heightArcseconds;
+        }
+
+        // Dispatch action to save preset
+        this.store$.dispatch(new CreateMeasurementPreset({ preset }));
+
+        // Reset name field
+        this.newMeasurementName = '';
+      }
+    });
+  }
+
+  /**
+   * Load a saved measurement
+   */
+  loadMeasurement(preset: MeasurementPresetInterface): void {
+    // Check if user is logged in
+    let isLoggedIn = false;
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      isLoggedIn = !!user;
+    });
+    
+    if (!isLoggedIn) {
+      console.log('Cannot load measurement: User not logged in');
+      return;
+    }
+
+    // Check if we have a solution matrix, required for accurate measurements
+    if (!this.advancedSolutionMatrix) {
+      this.popNotificationsService.info(
+        this.translateService.instant("Measurement presets cannot be loaded on images without plate-solving data")
+      );
+      return;
+    }
+    
+    // Save current measurement to previous measurements if it exists
+    if (this.measureStartPoint && this.measureEndPoint && this.measureDistance) {
+      this.saveToPreviousMeasurements();
+    }
+    
+    // Get the center of the viewport for positioning
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    
+    // Define default measurements if not provided in preset
+    const defaultLength = 200; // pixels
+    
+    // Check if we have width and height in arcseconds from the preset
+    const hasArcsecondDimensions = !!preset.widthArcseconds && !!preset.heightArcseconds;
+    
+    if (hasArcsecondDimensions) {
+      // We have width and height in arcseconds, so we need to calculate the pixel dimensions
+      // based on the plate scale of the image
+      
+      // Create a rectangle at the center of the screen
+      // First calculate a reasonable pixel width and height based on the plate scale
+      // and the saved arcsecond dimensions
+      
+      // We need to determine the plate scale (pixels per arcsecond) to convert 
+      // the saved arcsecond measurements to screen pixels
+      
+      // Let's try a simpler approach to calculate the plate scale
+
+      // Get the center of the visible viewport
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
+      // Declare variables we'll calculate
+      let horizontalPixelsPerArcsec = 0;
+      let verticalPixelsPerArcsec = 0;
+      
+      // Calculate coordinates at the center
+      const centerCoords = this.calculateCoordinatesAtPoint(centerX, centerY);
+      if (!centerCoords) {
+        this.popNotificationsService.error(
+          this.translateService.instant("Error calculating coordinates at image center")
+        );
+        
+        // If we can't even get center coordinates, use a very conservative estimate
+        horizontalPixelsPerArcsec = 0.25;
+        verticalPixelsPerArcsec = 0.25;
+        
+        // Skip to pixel dimension calculation
+        const pixelsPerArcsec = 0.25;
+        const pixelWidth = preset.widthArcseconds * pixelsPerArcsec;
+        const pixelHeight = preset.heightArcseconds * pixelsPerArcsec;
+        
+        // Calculate the rectangle corners
+        const halfWidth = pixelWidth / 2;
+        const halfHeight = pixelHeight / 2;
+        
+        // Set the start and end points
+        this.measureStartPoint = {
+          x: centerX - halfWidth,
+          y: centerY - halfHeight,
+          ra: null,
+          dec: null
+        };
+        
+        this.measureEndPoint = {
+          x: centerX + halfWidth,
+          y: centerY + halfHeight,
+          ra: null,
+          dec: null
+        };
+        
+        return;
+      }
+      
+      // Try points that are shifted slightly from the center
+      // Go +/- 10% of the viewport width/height from the center
+      const offsetX = window.innerWidth * 0.1;
+      const offsetY = window.innerHeight * 0.1;
+      
+      // Calculate coordinates at these offset points
+      const rightCoords = this.calculateCoordinatesAtPoint(centerX + offsetX, centerY);
+      const bottomCoords = this.calculateCoordinatesAtPoint(centerX, centerY + offsetY);
+      
+      if (!rightCoords || !bottomCoords) {
+        console.error("Failed to calculate coordinates at offset points", {
+          centerCoords,
+          rightCoords,
+          bottomCoords,
+          offsetX,
+          offsetY
+        });
+        
+        // Try fallback method with smaller offsets
+        const smallerOffsetX = window.innerWidth * 0.05;
+        const smallerOffsetY = window.innerHeight * 0.05;
+        
+        // Calculate coordinates at these smaller offset points
+        const rightCoordsSmall = this.calculateCoordinatesAtPoint(centerX + smallerOffsetX, centerY);
+        const bottomCoordsSmall = this.calculateCoordinatesAtPoint(centerX, centerY + smallerOffsetY);
+        
+        // If still failed, use a fixed scale estimate as last resort
+        if (!rightCoordsSmall || !bottomCoordsSmall) {
+          console.warn("Using fallback fixed plate scale estimation");
+          
+          // Use a reasonable default plate scale of 0.5 pixels per arcsecond
+          const estimatedPixelsPerArcsec = 0.5;
+          
+          // Calculate pixel dimensions based on the estimated plate scale
+          const pixelWidth = preset.widthArcseconds * estimatedPixelsPerArcsec;
+          const pixelHeight = preset.heightArcseconds * estimatedPixelsPerArcsec;
+          
+          // Skip to corner calculation
+          const halfWidth = pixelWidth / 2;
+          const halfHeight = pixelHeight / 2;
+          
+          // Calculate coordinates for the corners of the rectangle
+          const startX = centerX - halfWidth;
+          const startY = centerY - halfHeight;
+          const endX = centerX + halfWidth;
+          const endY = centerY + halfHeight;
+          
+          // Set the start and end points
+          this.measureStartPoint = {
+            x: startX,
+            y: startY,
+            ra: null,
+            dec: null
+          };
+          
+          this.measureEndPoint = {
+            x: endX,
+            y: endY,
+            ra: null,
+            dec: null
+          };
+          
+          return;
+        }
+        
+        // Use the smaller offsets
+        const horizontalAngularDistanceSmall = this.calculateAngularDistance(
+          centerCoords.ra, centerCoords.dec,
+          rightCoordsSmall.ra, rightCoordsSmall.dec
+        );
+        
+        const verticalAngularDistanceSmall = this.calculateAngularDistance(
+          centerCoords.ra, centerCoords.dec,
+          bottomCoordsSmall.ra, bottomCoordsSmall.dec
+        );
+        
+        // Convert to arcseconds
+        const horizontalArcsecondsSmall = horizontalAngularDistanceSmall * 3600;
+        const verticalArcsecondsSmall = verticalAngularDistanceSmall * 3600;
+        
+        // Calculate pixels per arcsecond
+        const horizontalPixelsPerArcsecSmall = smallerOffsetX / horizontalArcsecondsSmall;
+        const verticalPixelsPerArcsecSmall = smallerOffsetY / verticalArcsecondsSmall;
+        
+        // Use these values instead
+        horizontalPixelsPerArcsec = horizontalPixelsPerArcsecSmall;
+        verticalPixelsPerArcsec = verticalPixelsPerArcsecSmall;
+        
+        console.log('Using smaller offsets for plate scale calculation');
+        console.log('Smaller scale:', horizontalPixelsPerArcsecSmall, verticalPixelsPerArcsecSmall);
+      }
+      
+      // Calculate angular distances if we have valid coordinates
+      if (rightCoords && bottomCoords) {
+        const horizontalAngularDistance = this.calculateAngularDistance(
+          centerCoords.ra, centerCoords.dec,
+          rightCoords.ra, rightCoords.dec
+        );
+        
+        const verticalAngularDistance = this.calculateAngularDistance(
+          centerCoords.ra, centerCoords.dec,
+          bottomCoords.ra, bottomCoords.dec
+        );
+        
+        // Convert to arcseconds
+        const horizontalArcseconds = horizontalAngularDistance * 3600;
+        const verticalArcseconds = verticalAngularDistance * 3600;
+        
+        // Calculate pixels per arcsecond
+        horizontalPixelsPerArcsec = offsetX / horizontalArcseconds;
+        verticalPixelsPerArcsec = offsetY / verticalArcseconds;
+      }
+      
+      // Safeguard against zero or very low values
+      if (horizontalPixelsPerArcsec <= 0.01) horizontalPixelsPerArcsec = 0.25;
+      if (verticalPixelsPerArcsec <= 0.01) verticalPixelsPerArcsec = 0.25;
+      
+      // Log debug information
+      console.log('Viewport size:', window.innerWidth, 'x', window.innerHeight);
+      console.log('Center coordinates:', centerCoords);
+      console.log('Offset points:', { rightCoords, bottomCoords });
+      console.log('Plate scale (pixels/arcsecond):', {
+        horizontal: horizontalPixelsPerArcsec.toFixed(4),
+        vertical: verticalPixelsPerArcsec.toFixed(4)
+      });
+      console.log('Saved measurement:', preset.widthArcseconds, 'x', preset.heightArcseconds, 'arcseconds');
+      
+      // Use the average plate scale for better accuracy, with a minimum value
+      const pixelsPerArcsec = Math.max(
+        0.25, // minimum reasonable value
+        (horizontalPixelsPerArcsec + verticalPixelsPerArcsec) / 2
+      );
+      
+      // Calculate pixel dimensions based on the saved arcsecond dimensions
+      // Important: we need to ensure the measurements are correctly scaled
+      const pixelWidth = preset.widthArcseconds * pixelsPerArcsec;
+      const pixelHeight = preset.heightArcseconds * pixelsPerArcsec;
+      
+      console.log('Calculated pixel size:', pixelWidth, 'x', pixelHeight, 'pixels');
+      
+      // Calculate half dimensions for corner placement
+      const halfWidth = pixelWidth / 2;
+      const halfHeight = pixelHeight / 2;
+      
+      // Calculate coordinates for the corners of the rectangle
+      // For simplicity, we'll use top-left and bottom-right corners
+      const startX = centerX - halfWidth;
+      const startY = centerY - halfHeight;
+      const endX = centerX + halfWidth;
+      const endY = centerY + halfHeight;
+      
+      // Set the start and end points
+      this.measureStartPoint = {
+        x: startX,
+        y: startY,
+        ra: null,
+        dec: null
+      };
+      
+      this.measureEndPoint = {
+        x: endX,
+        y: endY,
+        ra: null,
+        dec: null
+      };
+      
+      // Calculate celestial coordinates for the points
+      const startCoords = this.calculateCoordinatesAtPoint(startX, startY);
+      if (startCoords) {
+        this.measureStartPoint.ra = startCoords.ra;
+        this.measureStartPoint.dec = startCoords.dec;
+      }
+      
+      const endCoords = this.calculateCoordinatesAtPoint(endX, endY);
+      if (endCoords) {
+        this.measureEndPoint.ra = endCoords.ra;
+        this.measureEndPoint.dec = endCoords.dec;
+      }
+      
+      // Calculate the measurement distance based on RA/Dec coordinates 
+      // This ensures it matches how new measurements are displayed
+      if (startCoords && endCoords) {
+        // Always use the direct angular distance between start and end points
+        // This matches the behavior of new measurements
+        const angularDistance = this.calculateAngularDistance(
+          startCoords.ra, startCoords.dec,
+          endCoords.ra, endCoords.dec
+        );
+        this.measureDistance = this._formatStableAngularDistance(angularDistance);
+      } 
+      // Fall back to using stored values if coordinates couldn't be calculated
+      else if (preset.widthArcseconds) {
+        // Convert arcseconds to degrees and format
+        const angularDistance = preset.widthArcseconds / 3600;
+        this.measureDistance = this._formatStableAngularDistance(angularDistance);
+      }
+      // Last resort - just show pixel distance
+      else {
+        this.measureDistance = Math.round(defaultLength) + ' px';
+      }
+      
+      // Instead of enabling current rectangle, save as a previous measurement
+      // and reset the current measurement to provide better visual styling
+      
+      // Prepare a nice label with both dimensions if available
+      let displayDistance = this.measureDistance;
+      
+      // Log the preset and calculated dimensions
+      console.log('Loading measurement with preset:', preset);
+      console.log('Calculated display distance:', displayDistance);
+      
+      // First create a previous measurement from the loaded data
+      const loadedMeasurement: MeasurementData = {
+        startX: this.measureStartPoint.x,
+        startY: this.measureStartPoint.y,
+        endX: this.measureEndPoint.x,
+        endY: this.measureEndPoint.y,
+        midX: (this.measureStartPoint.x + this.measureEndPoint.x) / 2,
+        midY: (this.measureStartPoint.y + this.measureEndPoint.y) / 2,
+        distance: displayDistance,
+        timestamp: Date.now(),
+        startRa: this.measureStartPoint.ra,
+        startDec: this.measureStartPoint.dec,
+        endRa: this.measureEndPoint.ra,
+        endDec: this.measureEndPoint.dec,
+        startLabelX: 0,
+        startLabelY: 0,
+        endLabelX: 0,
+        endLabelY: 0,
+        showCircle: false,
+        showRectangle: true,
+        // Store the original width/height from the preset for future reference
+        widthArcseconds: preset.widthArcseconds,
+        heightArcseconds: preset.heightArcseconds
+      };
+      
+      // Update label positions
+      this.updateCoordinateLabelPositions(loadedMeasurement);
+      
+      // Add to previous measurements
+      this.previousMeasurements.push(loadedMeasurement);
+      
+      // Reset current measurement
+      this.measureStartPoint = null;
+      this.measureEndPoint = null;
+      this.measureDistance = null;
+    } else {
+      // No arcsecond dimensions, use default pixel based measurements
+      // Default horizontal angle
+      const angle = 0;
+      
+      // Calculate start and end points based on center, length and angle
+      const halfLength = defaultLength / 2;
+      const startX = centerX - halfLength * Math.cos(angle);
+      const startY = centerY - halfLength * Math.sin(angle);
+      const endX = centerX + halfLength * Math.cos(angle);
+      const endY = centerY + halfLength * Math.sin(angle);
+      
+      // Create temporary points to calculate coordinates
+      const tempStartPoint = {
+        x: startX,
+        y: startY,
+        ra: null,
+        dec: null
+      };
+      
+      const tempEndPoint = {
+        x: endX,
+        y: endY,
+        ra: null,
+        dec: null
+      };
+      
+      // Calculate celestial coordinates for the points
+      const startCoords = this.calculateCoordinatesAtPoint(startX, startY);
+      if (startCoords) {
+        tempStartPoint.ra = startCoords.ra;
+        tempStartPoint.dec = startCoords.dec;
+      }
+      
+      const endCoords = this.calculateCoordinatesAtPoint(endX, endY);
+      if (endCoords) {
+        tempEndPoint.ra = endCoords.ra;
+        tempEndPoint.dec = endCoords.dec;
+      }
+      
+      // Determine the measurement distance using the same approach as our main logic
+      let distanceText = '';
+      if (tempStartPoint.ra !== null && tempEndPoint.ra !== null) {
+        // Calculate direct angular distance between start and end points
+        const angularDistance = this.calculateAngularDistance(
+          tempStartPoint.ra, tempStartPoint.dec,
+          tempEndPoint.ra, tempEndPoint.dec
+        );
+        distanceText = this._formatStableAngularDistance(angularDistance);
+      } else {
+        // Default to pixel distance if we couldn't calculate angular distance
+        distanceText = Math.round(defaultLength) + ' px';
+      }
+      
+      // Create a previous measurement instead of a current one for better styling
+      const loadedMeasurement: MeasurementData = {
+        startX: startX,
+        startY: startY,
+        endX: endX,
+        endY: endY,
+        midX: (startX + endX) / 2,
+        midY: (startY + endY) / 2,
+        distance: distanceText,
+        timestamp: Date.now(),
+        startRa: tempStartPoint.ra,
+        startDec: tempStartPoint.dec,
+        endRa: tempEndPoint.ra,
+        endDec: tempEndPoint.dec,
+        startLabelX: 0,
+        startLabelY: 0,
+        endLabelX: 0,
+        endLabelY: 0,
+        showCircle: false,
+        showRectangle: false
+      };
+      
+      // Update label positions
+      this.updateCoordinateLabelPositions(loadedMeasurement);
+      
+      // Add to previous measurements
+      this.previousMeasurements.push(loadedMeasurement);
+    }
+
+    // Show a subtle info notification when loading is complete
+    // We're using info instead of success to be less intrusive
+    this.popNotificationsService.info(
+      this.translateService.instant("Measurement loaded")
+    );
+
+    // Track selected preset in store
+    this.store$.dispatch(new SelectMeasurementPreset({ preset }));
+  }
+
+  /**
+   * Helper method to save the current measurement to previous measurements
+   */
+  private saveToPreviousMeasurements(): void {
+    if (!this.measureStartPoint || !this.measureEndPoint || !this.measureDistance) {
+      return;
+    }
+
+    const measurementData: MeasurementData = {
+      startX: this.measureStartPoint.x,
+      startY: this.measureStartPoint.y,
+      endX: this.measureEndPoint.x,
+      endY: this.measureEndPoint.y,
+      midX: (this.measureStartPoint.x + this.measureEndPoint.x) / 2,
+      midY: (this.measureStartPoint.y + this.measureEndPoint.y) / 2,
+      distance: this.measureDistance,
+      timestamp: Date.now(),
+      startRa: this.measureStartPoint.ra,
+      startDec: this.measureStartPoint.dec,
+      endRa: this.measureEndPoint.ra,
+      endDec: this.measureEndPoint.dec,
+      startLabelX: 0,
+      startLabelY: 0,
+      endLabelX: 0,
+      endLabelY: 0,
+      showCircle: this.showCurrentCircle,
+      showRectangle: this.showCurrentRectangle
+    };
+
+    // Update label positions
+    this.updateCoordinateLabelPositions(measurementData);
+
+    // Save to previous measurements
+    this.previousMeasurements.push(measurementData);
+  }
+
+  /**
+   * Delete a saved measurement
+   */
+  deleteSavedMeasurement(index: number): void {
+    // Check if user is logged in
+    let isLoggedIn = false;
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      isLoggedIn = !!user;
+    });
+    
+    if (!isLoggedIn) {
+      console.log('Cannot delete measurement: User not logged in');
+      return;
+    }
+    if (index >= 0 && index < this.savedMeasurements.length) {
+      const preset = this.savedMeasurements[index];
+
+      if (preset.id) {
+        // Dispatch action to delete preset
+        this.store$.dispatch(new DeleteMeasurementPreset({ presetId: preset.id }));
+      }
+    }
+  }
+
+  /**
+   * Toggle the FOV simulator visibility
+   */
+  toggleFOVSimulator(): void {
+    // Using the ToggleFOVSimulator action from the FOV simulator store
+    // This will be handled through NgRx
+    this.store$.dispatch(new ToggleFOVSimulator());
   }
 }

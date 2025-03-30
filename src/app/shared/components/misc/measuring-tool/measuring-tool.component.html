@@ -367,6 +367,14 @@
               title="{{ 'Draw rectangle' | translate }}">
         <fa-icon icon="square"></fa-icon>
       </button>
+      
+      <button *ngIf="currentUser$ | async" type="button" class="btn-shape-action save-button"
+              (click)="savePreviousMeasurement($event, i)"
+              (mousedown)="$event.stopPropagation()"
+              (pointerdown)="$event.stopPropagation()"
+              title="{{ 'Save measurement' | translate }}">
+        <fa-icon icon="save"></fa-icon>
+      </button>
 
       <button type="button" class="btn-delete-measurement delete-button"
               (click)="deleteMeasurement($event, i)"
@@ -591,6 +599,14 @@
               title="{{ 'Draw rectangle' | translate }}">
         <fa-icon icon="square"></fa-icon>
       </button>
+      
+      <button *ngIf="currentUser$ | async" type="button" class="btn-shape-action save-button"
+              (click)="openSaveCurrentMeasurement($event)"
+              (mousedown)="$event.stopPropagation()"
+              (pointerdown)="$event.stopPropagation()"
+              title="{{ 'Save measurement' | translate }}">
+        <fa-icon icon="save"></fa-icon>
+      </button>
     </div>
   </div>
 
@@ -612,17 +628,82 @@
     </div>
   </div>
 
+  <!-- FOV Simulator overlay -->
+  <astrobin-fov-overlay
+    [solutionMatrix]="advancedSolutionMatrix"
+    [imageElement]="imageElement?.nativeElement">
+  </astrobin-fov-overlay>
+
   <!-- Measuring tool controls -->
   <div class="measuring-controls-right">
+    <button *ngIf="currentUser$ | async" class="btn btn-sm btn-outline-light me-2"
+            (click)="toggleSavedMeasurements()"
+            title="{{ 'Saved Measurements' | translate }}">
+      <fa-icon icon="bookmark" class="me-1"></fa-icon>
+      {{ 'Saved' | translate }}
+    </button>
+
     <button class="btn btn-sm btn-outline-light me-2" (click)="clearAllMeasurements()"
             *ngIf="previousMeasurements.length > 0">
       <fa-icon icon="trash" class="me-1"></fa-icon>
       {{ 'Clear all' | translate }}
     </button>
+
     <button class="btn btn-sm btn-outline-light" (click)="exitMeasuring()">
       <fa-icon icon="times" class="me-1"></fa-icon>
       {{ 'Exit measuring tool' | translate }}
     </button>
+  </div>
+
+  <!-- Saved Measurements Panel -->
+  <div class="saved-measurements-panel" *ngIf="showSavedMeasurements">
+    <div class="panel-header">
+      <h5>{{ 'Saved Measurements' | translate }}</h5>
+      <button class="btn btn-sm btn-close" (click)="toggleSavedMeasurements()">
+        <fa-icon icon="times"></fa-icon>
+      </button>
+    </div>
+
+    <div class="panel-body">
+      <!-- Current measurement - save option -->
+      <div class="current-measurement-save" *ngIf="measureDistance">
+        <div class="mb-2">
+          <h6>{{ 'Current Measurement' | translate }}</h6>
+          <p>{{ measureDistance }}</p>
+        </div>
+        <div class="input-group input-group-sm mb-2" *ngIf="currentUser$ | async">
+          <input type="text" class="form-control" [(ngModel)]="newMeasurementName"
+                 placeholder="{{ 'Measurement name' | translate }}">
+          <button class="btn btn-primary" (click)="saveMeasurement()">
+            <fa-icon icon="save" class="me-1"></fa-icon>
+            {{ 'Save' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Saved measurements list -->
+      <div class="saved-measurements-list">
+        <h6 *ngIf="savedMeasurements.length > 0">{{ 'My Measurements' | translate }}</h6>
+        <p *ngIf="savedMeasurements.length === 0" class="text-muted">
+          {{ 'No saved measurements yet.' | translate }}
+        </p>
+
+        <div class="measurement-item" *ngFor="let preset of savedMeasurements; let i = index">
+          <div class="measurement-details">
+            <div class="measurement-name">{{ preset.name }}</div>
+            <div class="measurement-value">{{ preset.data?.distance }}</div>
+          </div>
+          <div class="measurement-actions" *ngIf="currentUser$ | async">
+            <button class="btn btn-sm btn-outline-light me-1" (click)="loadMeasurement(preset)">
+              <fa-icon icon="arrow-right"></fa-icon>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" (click)="deleteSavedMeasurement(i)">
+              <fa-icon icon="trash-alt"></fa-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>

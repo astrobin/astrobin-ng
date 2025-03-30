@@ -1102,7 +1102,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.changeDetectorRef.markForCheck();
   }
 
-  protected toggleMeasuringMode(event: MouseEvent): void {
+  protected toggleMeasuringMode(event?: MouseEvent): void {
     // Prevent the event from propagating
     if (event) {
       event.preventDefault();

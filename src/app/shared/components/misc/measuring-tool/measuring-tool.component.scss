@@ -18,6 +18,142 @@
   &.rotation-active {
     cursor: grabbing !important;
   }
+  
+  /* Saved Measurements Panel */
+  .saved-measurements-panel {
+    position: absolute;
+    top: 3rem;
+    right: 0.75rem;
+    width: 280px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    pointer-events: all;
+    z-index: 15;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      
+      h5 {
+        margin: 0;
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+      }
+      
+      .btn-close {
+        background-color: transparent;
+        color: rgba(255, 255, 255, 0.7);
+        border: none;
+        padding: 0;
+        font-size: 0.9rem;
+        cursor: pointer;
+        
+        &:hover {
+          color: rgba(255, 255, 255, 1);
+        }
+      }
+    }
+    
+    .panel-body {
+      padding: 15px;
+      max-height: calc(100vh - 12rem);
+      overflow-y: auto;
+      
+      .current-measurement-save {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        
+        h6 {
+          font-size: 0.85rem;
+          color: rgba(255, 255, 255, 0.8);
+          margin-bottom: 5px;
+        }
+        
+        p {
+          font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+          background-color: rgba(50, 150, 50, 0.3);
+          padding: 4px 8px;
+          border-radius: 3px;
+          margin: 0;
+          font-size: 0.9rem;
+        }
+        
+        .input-group {
+          margin-top: 10px;
+        }
+        
+        .btn-primary {
+          background-color: rgba(50, 150, 50, 0.8);
+          border-color: rgba(50, 150, 50, 0.6);
+          
+          &:hover {
+            background-color: rgba(50, 150, 50, 1);
+          }
+        }
+      }
+      
+      .saved-measurements-list {
+        h6 {
+          font-size: 0.85rem;
+          color: rgba(255, 255, 255, 0.8);
+          margin-bottom: 10px;
+        }
+        
+        .text-muted {
+          font-size: 0.8rem;
+          font-style: italic;
+        }
+        
+        .measurement-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 10px;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 4px;
+          margin-bottom: 8px;
+          
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+          }
+          
+          .measurement-details {
+            .measurement-name {
+              font-size: 0.85rem;
+              font-weight: 500;
+            }
+            
+            .measurement-value {
+              font-size: 0.75rem;
+              font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+              opacity: 0.8;
+            }
+          }
+          
+          .measurement-actions {
+            display: flex;
+            
+            .btn {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 28px;
+              height: 28px;
+              padding: 0;
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
+  }
 
   .measure-click-overlay {
     position: absolute;
@@ -667,7 +803,7 @@
             color: rgba(255, 255, 255, 1);
           }
 
-          &:first-child {
+          &.circle-button {
             color: rgba(100, 150, 255, 0.8);
 
             &:hover, &.active {
@@ -675,11 +811,19 @@
             }
           }
 
-          &:nth-child(2) {
+          &.rectangle-button {
             color: rgba(255, 180, 50, 0.8);
 
             &:hover, &.active {
               color: rgba(255, 180, 50, 1);
+            }
+          }
+          
+          &.save-button {
+            color: rgba(50, 180, 100, 0.8);
+
+            &:hover, &.active {
+              color: rgba(50, 180, 100, 1);
             }
           }
         }
