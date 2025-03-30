@@ -2,6 +2,39 @@
 
 $header-height: 63px;
 
+// Define the animations for swipe gestures
+@keyframes return-to-normal {
+  0% {
+    // Start from the current state - animation will use the current computed style
+  }
+  99% {
+    // Almost at the end - ensure we keep pointer-events disabled
+    pointer-events: none;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: all; // Re-enable interaction
+    will-change: auto; // Reset will-change to free up resources
+  }
+}
+
+@keyframes swipe-to-close {
+  0% {
+    // Start from the current state - animation will use the current computed style
+  }
+  99% {
+    // Almost at the end - ensure we keep pointer-events disabled
+    pointer-events: none;
+  }
+  100% {
+    transform: translateY(100%) scale(0.8);
+    opacity: 0;
+    pointer-events: none; // Keep disabled since we're hiding
+    will-change: auto; // Reset will-change to free up resources
+  }
+}
+
 :host {
   position: fixed;
   top: 0;
@@ -18,9 +51,34 @@ $header-height: 63px;
   transition: opacity .2s ease;
   pointer-events: none;
 
-  // For swipe-down gesture
+  // For swipe-down gesture - improves performance with composite layers
   will-change: transform, opacity;
   transform: translateY(0) scale(1);
+  
+  // Add animation classes for swipe gestures
+  &.swipe-to-close-animating {
+    pointer-events: none;
+    // Force GPU acceleration for smoother animations
+    will-change: transform, opacity;
+  }
+  
+  &.swipe-to-close-return-to-normal {
+    animation: return-to-normal 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    pointer-events: none; /* Disable interaction during animation */
+    // Force hardware acceleration for smoother animations
+    will-change: transform, opacity;
+    // Remove all transitions to prevent conflicts with the animation
+    transition: none !important;
+  }
+  
+  &.swipe-to-close-animate {
+    animation: swipe-to-close 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    pointer-events: none; /* Disable interaction during animation */
+    // Force hardware acceleration for smoother animations
+    will-change: transform, opacity;
+    // Remove all transitions to prevent conflicts with the animation
+    transition: none !important;
+  }
 
   &.show {
     opacity: 1;
