@@ -690,9 +690,11 @@
           <div class="measurement-details">
             <div class="measurement-name">{{ preset.name }}</div>
             <div class="measurement-value">{{ preset.data?.distance }}</div>
+            <div class="measurement-notes" *ngIf="preset.notes && preset.notes.trim()">{{ preset.notes }}</div>
+            <div class="measurement-date" *ngIf="preset.created">{{ preset.created | date:'short' }}</div>
           </div>
           <div class="measurement-actions" *ngIf="currentUser$ | async">
-            <button class="btn btn-sm btn-outline-light me-1" (click)="loadMeasurement(preset)">
+            <button class="btn btn-sm btn-outline-light" (click)="loadMeasurement(preset)">
               <fa-icon icon="arrow-right"></fa-icon>
             </button>
             <button class="btn btn-sm btn-outline-danger" (click)="deleteSavedMeasurement(i)">

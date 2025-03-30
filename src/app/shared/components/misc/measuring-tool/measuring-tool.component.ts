@@ -142,6 +142,35 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   /**
+   * Formats astronomical angles according to standard notation
+   * - Less than 60 arcseconds: shows as arcseconds only
+   * - Less than 60 arcminutes: shows as arcminutes and arcseconds
+   * - Otherwise: shows as degrees, arcminutes, and arcseconds
+   * Always rounds to the nearest arcsecond with no decimal places
+   */
+  private _formatAstronomicalAngle(arcseconds: number): string {
+    // Round to the nearest arcsecond
+    const totalArcseconds = Math.round(arcseconds);
+    
+    // Calculate components
+    const degrees = Math.floor(totalArcseconds / 3600);
+    const arcminutes = Math.floor((totalArcseconds % 3600) / 60);
+    const remainingArcseconds = totalArcseconds % 60;
+    
+    // Format based on size
+    if (totalArcseconds < 60) {
+      // Less than 1 arcminute: show only arcseconds
+      return `${remainingArcseconds}″`;
+    } else if (totalArcseconds < 3600) {
+      // Less than 1 degree: show arcminutes and arcseconds
+      return `${arcminutes}′ ${remainingArcseconds}″`;
+    } else {
+      // 1 degree or more: show degrees, arcminutes, and arcseconds
+      return `${degrees}° ${arcminutes}′ ${remainingArcseconds}″`;
+    }
+  }
+
+  /**
    * Format angular distance consistently across the component
    * This method applies stabilization to prevent flickering from floating point issues
    */
@@ -2248,12 +2277,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           heightArcseconds = angularHeight * 3600;
         }
         
-        // Set the default name to width x height
+        // Set the default name to width x height using astronomical format
         if (widthArcseconds !== null && heightArcseconds !== null) {
-          // Format to 2 decimal places
-          const widthFormatted = widthArcseconds.toFixed(2);
-          const heightFormatted = heightArcseconds.toFixed(2);
-          defaultName = `${widthFormatted}″ × ${heightFormatted}″`;
+          // Format using proper astronomical angle notation
+          const widthFormatted = this._formatAstronomicalAngle(widthArcseconds);
+          const heightFormatted = this._formatAstronomicalAngle(heightArcseconds);
+          defaultName = `${widthFormatted} × ${heightFormatted}`;
         }
       }
     }
@@ -2418,12 +2447,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             heightArcseconds = angularHeight * 3600;
           }
           
-          // Set the default name to width x height
+          // Set the default name to width x height using astronomical format
           if (widthArcseconds !== null && heightArcseconds !== null) {
-            // Format to 2 decimal places
-            const widthFormatted = widthArcseconds.toFixed(2);
-            const heightFormatted = heightArcseconds.toFixed(2);
-            defaultName = `${widthFormatted}″ × ${heightFormatted}″`;
+            // Format using proper astronomical angle notation
+            const widthFormatted = this._formatAstronomicalAngle(widthArcseconds);
+            const heightFormatted = this._formatAstronomicalAngle(heightArcseconds);
+            defaultName = `${widthFormatted} × ${heightFormatted}`;
           }
         }
       }

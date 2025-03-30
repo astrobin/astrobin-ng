@@ -4,22 +4,8 @@
 </div>
 
 <div class="modal-body">
-  <!-- No preview needed - name will be set as width x height by default -->
-  
   <form [formGroup]="form">
-    <div class="mb-3">
-      <label for="name" class="form-label">{{ 'Name' | translate }} *</label>
-      <input type="text" class="form-control" id="name" formControlName="name" autofocus />
-      <div *ngIf="form.get('name').invalid && form.get('name').touched" class="text-danger small mt-1">
-        {{ 'Name is required' | translate }}
-      </div>
-    </div>
-    
-    <div class="mb-3">
-      <label for="notes" class="form-label">{{ 'Notes' | translate }}</label>
-      <textarea class="form-control" id="notes" rows="3" formControlName="notes" 
-                placeholder="{{ 'Add notes about this measurement (optional)' | translate }}"></textarea>
-    </div>
+    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
   </form>
 </div>
 
@@ -30,11 +16,4 @@
   <button type="button" class="btn btn-primary" [disabled]="form.invalid" (click)="save()">
     {{ 'Save' | translate }}
   </button>
-</div>
-
-<!-- Debug info (hidden, just for checking values) -->
-<div class="d-none">
-  <pre>Form valid: {{ form.valid }}</pre>
-  <pre>Form value: {{ form.value | json }}</pre>
-  <pre>Measurement data: {{ measurementData | json }}</pre>
 </div>
