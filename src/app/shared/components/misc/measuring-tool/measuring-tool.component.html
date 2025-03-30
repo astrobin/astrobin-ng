@@ -279,7 +279,7 @@
             text-anchor="middle"
             class="dimension-text"
             [attr.dominant-baseline]="'central'">
-            {{ getHorizontalCelestialDistance(Math.min(measurement.startX, measurement.endX), Math.max(measurement.startY, measurement.endY), Math.max(measurement.startX, measurement.endX), measurement) || 
+            {{ getHorizontalCelestialDistance(Math.min(measurement.startX, measurement.endX), Math.max(measurement.startY, measurement.endY), Math.max(measurement.startX, measurement.endX), measurement) ||
                 (Math.round(Math.abs(measurement.endX - measurement.startX)) + ' px') }}
           </text>
         </g>
@@ -333,7 +333,7 @@
             text-anchor="start"
             class="dimension-text"
             [attr.dominant-baseline]="'central'">
-            {{ getVerticalCelestialDistance(Math.max(measurement.startX, measurement.endX), Math.min(measurement.startY, measurement.endY), Math.max(measurement.startY, measurement.endY), measurement) || 
+            {{ getVerticalCelestialDistance(Math.max(measurement.startX, measurement.endX), Math.min(measurement.startY, measurement.endY), Math.max(measurement.startY, measurement.endY), measurement) ||
                 (Math.round(Math.abs(measurement.endY - measurement.startY)) + ' px') }}
           </text>
         </g>
@@ -659,7 +659,7 @@
   <div class="saved-measurements-panel" *ngIf="showSavedMeasurements">
     <div class="panel-header">
       <h5>{{ 'Saved Measurements' | translate }}</h5>
-      <button class="btn btn-sm btn-close" (click)="toggleSavedMeasurements()">
+      <button class="btn btn-sm btn-link text-muted" (click)="toggleSavedMeasurements()">
         <fa-icon icon="times"></fa-icon>
       </button>
     </div>
@@ -683,7 +683,6 @@
 
       <!-- Saved measurements list -->
       <div class="saved-measurements-list">
-        <h6 *ngIf="savedMeasurements.length > 0">{{ 'My Measurements' | translate }}</h6>
         <p *ngIf="savedMeasurements.length === 0" class="text-muted">
           {{ 'No saved measurements yet.' | translate }}
         </p>
@@ -691,7 +690,6 @@
         <div class="measurement-item" *ngFor="let preset of savedMeasurements; let i = index">
           <div class="measurement-details">
             <div class="measurement-name">{{ preset.name }}</div>
-            <div class="measurement-value">{{ preset.data?.distance }}</div>
             <div class="measurement-notes" *ngIf="preset.notes && preset.notes.trim()">{{ preset.notes }}</div>
             <div class="measurement-date" *ngIf="preset.created">{{ preset.created | date:'short' }}</div>
           </div>
@@ -704,6 +702,11 @@
             </button>
           </div>
         </div>
+      </div>
+
+      <!-- Note about measurements -->
+      <div class="precision-note">
+        <small>{{ 'Measurements have sub-pixel precision limitations. Loaded measurements are placed in center and represent distances only.' | translate }}</small>
       </div>
     </div>
   </div>
