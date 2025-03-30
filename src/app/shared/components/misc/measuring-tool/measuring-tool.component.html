@@ -47,7 +47,8 @@
       <line
         [attr.x1]="measurement.startX" [attr.y1]="measurement.startY"
         [attr.x2]="measurement.endX" [attr.y2]="measurement.endY"
-        class="measure-line previous-line">
+        class="measure-line previous-line"
+        [class.affected-by-resize]="measurementsAffectedByResize">
       </line>
     </g>
 
@@ -184,7 +185,8 @@
         [attr.cx]="(measurement.startX + measurement.endX) / 2"
         [attr.cy]="(measurement.startY + measurement.endY) / 2"
         [attr.r]="calculateDistance(measurement.startX, measurement.startY, measurement.endX, measurement.endY) / 2"
-        class="measure-shape circle">
+        class="measure-shape circle"
+        [class.affected-by-resize]="measurementsAffectedByResize">
       </circle>
     </svg>
 
@@ -224,7 +226,8 @@
           [attr.y]="Math.min(measurement.startY, measurement.endY)"
           [attr.width]="Math.abs(measurement.endX - measurement.startX)"
           [attr.height]="Math.abs(measurement.endY - measurement.startY)"
-          class="measure-shape rectangle">
+          class="measure-shape rectangle"
+          [class.affected-by-resize]="measurementsAffectedByResize">
         </rect>
 
         <!-- Width dimension label (inside rotated group) -->
@@ -342,6 +345,7 @@
   <!-- Distance labels - show previous measurements -->
   <div *ngFor="let measurement of previousMeasurements; let i = index"
        class="measure-distance previous-measurement"
+       [class.affected-by-resize]="measurementsAffectedByResize"
        [style.left.px]="measurement.midX"
        [style.top.px]="measurement.midY"
        (mouseenter)="setMouseOverUIElement(true)"
@@ -367,7 +371,7 @@
               title="{{ 'Draw rectangle' | translate }}">
         <fa-icon icon="square"></fa-icon>
       </button>
-      
+
       <button *ngIf="currentUser$ | async" type="button" class="btn-shape-action save-button"
               (click)="savePreviousMeasurement($event, i)"
               (mousedown)="$event.stopPropagation()"
@@ -599,7 +603,7 @@
               title="{{ 'Draw rectangle' | translate }}">
         <fa-icon icon="square"></fa-icon>
       </button>
-      
+
       <button *ngIf="currentUser$ | async" type="button" class="btn-shape-action save-button"
               (click)="openSaveCurrentMeasurement($event)"
               (mousedown)="$event.stopPropagation()"
@@ -627,12 +631,6 @@
       <small>{{ formatCoordinatesCompact(measurement.endRa, measurement.endDec) }}</small>
     </div>
   </div>
-
-  <!-- FOV Simulator overlay -->
-  <astrobin-fov-overlay
-    [solutionMatrix]="advancedSolutionMatrix"
-    [imageElement]="imageElement?.nativeElement">
-  </astrobin-fov-overlay>
 
   <!-- Measuring tool controls -->
   <div class="measuring-controls-right">
@@ -705,5 +703,24 @@
       </div>
     </div>
   </div>
+
+<!-- Custom resize warning modal -->
+<div *ngIf="showResizeWarningModal" class="resize-warning-modal">
+  <div class="resize-warning-content">
+    <div class="warning-header">
+      <h5>{{ 'Window Resized' | translate }}</h5>
+    </div>
+    <div class="warning-body">
+      <p>
+        {{ 'The window size has changed. Measurements may no longer be accurate as they don\'t adjust to window resizing. Please clear all measurements and create new ones with the current window size.' | translate }}
+      </p>
+    </div>
+    <div class="warning-footer">
+      <button class="btn btn-danger" (click)="clearAllAndCloseWarning()">
+        {{ 'Clear All Measurements' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
 
 </div>

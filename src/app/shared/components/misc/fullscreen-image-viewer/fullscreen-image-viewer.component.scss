@@ -41,6 +41,7 @@ $header-height: 63px;
     ::ng-deep {
       .ngxImageZoomContainer {
         text-align: center;
+        max-height: 100%;
 
         .ngxImageZoomThumbnail {
           max-width: 100vw;

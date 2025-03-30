@@ -10,15 +10,15 @@
   height: 100%;
   pointer-events: none;
   z-index: 5;
-  
+
   /* Global CSS property for rotation state */
   --rotating: 'false';
-  
+
   /* Global rotation feedback - when rotation is active, change cursor for entire container */
   &.rotation-active {
     cursor: grabbing !important;
   }
-  
+
   /* Saved Measurements Panel */
   .saved-measurements-panel {
     position: absolute;
@@ -32,20 +32,20 @@
     pointer-events: all;
     z-index: 15;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    
+
     .panel-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 10px 15px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      
+
       h5 {
         margin: 0;
         font-size: 1rem;
         color: rgba(255, 255, 255, 0.9);
       }
-      
+
       .btn-close {
         background-color: transparent;
         color: rgba(255, 255, 255, 0.7);
@@ -53,29 +53,29 @@
         padding: 0;
         font-size: 0.9rem;
         cursor: pointer;
-        
+
         &:hover {
           color: rgba(255, 255, 255, 1);
         }
       }
     }
-    
+
     .panel-body {
       padding: 15px;
       max-height: calc(100vh - 12rem);
       overflow-y: auto;
-      
+
       .current-measurement-save {
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding-bottom: 15px;
         margin-bottom: 15px;
-        
+
         h6 {
           font-size: 0.85rem;
           color: rgba(255, 255, 255, 0.8);
           margin-bottom: 5px;
         }
-        
+
         p {
           font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
           background-color: rgba(50, 150, 50, 0.3);
@@ -84,33 +84,33 @@
           margin: 0;
           font-size: 0.9rem;
         }
-        
+
         .input-group {
           margin-top: 10px;
         }
-        
+
         .btn-primary {
           background-color: rgba(50, 150, 50, 0.8);
           border-color: rgba(50, 150, 50, 0.6);
-          
+
           &:hover {
             background-color: rgba(50, 150, 50, 1);
           }
         }
       }
-      
+
       .saved-measurements-list {
         h6 {
           font-size: 0.85rem;
           color: rgba(255, 255, 255, 0.8);
           margin-bottom: 10px;
         }
-        
+
         .text-muted {
           font-size: 0.8rem;
           font-style: italic;
         }
-        
+
         .measurement-item {
           display: flex;
           justify-content: space-between;
@@ -119,27 +119,27 @@
           background-color: rgba(255, 255, 255, 0.1);
           border-radius: 4px;
           margin-bottom: 8px;
-          
+
           &:hover {
             background-color: rgba(255, 255, 255, 0.15);
           }
-          
+
           .measurement-details {
             .measurement-name {
               font-size: 0.85rem;
               font-weight: 500;
             }
-            
+
             .measurement-value {
               font-size: 0.75rem;
               font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
               opacity: 0.8;
             }
           }
-          
+
           .measurement-actions {
             display: flex;
-            
+
             .btn {
               display: flex;
               align-items: center;
@@ -164,10 +164,10 @@
     z-index: 1; /* Low z-index to allow buttons and handles to be clicked */
     pointer-events: all;
     cursor: crosshair;
-    
+
     /* Uncomment for debugging - will show the overlay area */
     /* background-color: rgba(255, 0, 0, 0.05); */
-    
+
     /* Add this to disable pointer events over specific areas */
     &.debug-mode {
       background-color: rgba(255, 0, 0, 0.05);
@@ -183,7 +183,7 @@
     cursor: grab;
     pointer-events: all; /* Ensure it captures mouse events */
     transition: transform 0.1s ease;
-    
+
     /* Rotation handle specific styles */
     &.rotation-handle {
       z-index: 1000; /* Very high z-index to be above all other elements */
@@ -197,30 +197,30 @@
       justify-content: center;
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
       pointer-events: all !important;
-      
+
       &:hover {
         background-color: rgba(255, 204, 0, 1);
         transform: translate(-50%, -50%) scale(1.15);
       }
-      
+
       &:active, &.rotating {
         background-color: rgba(255, 220, 50, 1);
         transform: translate(-50%, -50%) scale(1.2);
         cursor: grabbing;
       }
-      
+
       &.current {
         background-color: rgba(50, 180, 50, 0.9);
-        
+
         &:hover {
           background-color: rgba(50, 180, 50, 1);
         }
-        
+
         &:active, &.rotating {
           background-color: rgba(70, 200, 70, 1);
         }
       }
-      
+
       .rotation-icon {
         color: #fff;
         font-size: 22px;
@@ -460,6 +460,13 @@
         stroke: rgba(200, 200, 200, 0.6);
         stroke-width: 1px;
       }
+
+      /* Add warning style for measurements affected by window resize */
+      &.affected-by-resize {
+        stroke: rgba(255, 50, 50, 0.8) !important;
+        stroke-width: 2px !important;
+        stroke-dasharray: 5 3 !important;
+      }
     }
 
     .measure-point {
@@ -492,7 +499,14 @@
         stroke-dasharray: 5 3;
         pointer-events: none; /* Disable interactions with the shape so clicks pass through */
         transition: stroke-width 0.2s ease, stroke 0.2s ease;
-        
+
+        /* Add warning style for measurements affected by window resize */
+        &.affected-by-resize {
+          stroke: rgba(255, 50, 50, 0.8) !important;
+          stroke-width: 2px !important;
+          stroke-dasharray: 5 3 !important;
+        }
+
         &:hover {
           stroke-width: 2.5px; /* Thicker stroke on hover for better visibility */
           stroke-dasharray: 4 2; /* Tighter dash pattern on hover for better visibility */
@@ -509,7 +523,7 @@
 
       &.rectangle {
         stroke: rgba(255, 180, 50, 0.7);
-        
+
         &.rotating {
           stroke: rgba(255, 220, 50, 1);
           stroke-width: 2px;
@@ -518,7 +532,7 @@
           cursor: grabbing; /* Modern better cursor */
         }
       }
-      
+
       /* Rotation handle styling */
       .rotation-master-handle {
         /* Override SVG rules for the master handle */
@@ -527,12 +541,12 @@
         z-index: 1000 !important;
         touch-action: none !important; /* Disable default touch actions */
       }
-      
+
       .rotate-handle {
         pointer-events: all !important; /* Force enable interactions with the handle */
         z-index: 1000 !important; /* Ensure the handle is above all other elements, including the overlay */
         touch-action: none !important; /* Disable default touch actions */
-        
+
         .rotate-handle-bg {
           cursor: grab;
           fill: rgba(255, 255, 0, 0.9); /* More visible yellow color */
@@ -542,20 +556,20 @@
           pointer-events: all !important; /* Force ensure it's clickable */
           box-shadow: 0 0 8px rgba(255, 255, 255, 0.5), 0 0 4px rgba(0, 0, 0, 0.5);
           filter: drop-shadow(0 0 3px rgba(255, 220, 0, 0.5));
-          
+
           &:hover {
             fill: rgba(255, 255, 255, 1);
             stroke: rgba(0, 0, 0, 0.8);
             stroke-width: 2px;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
           }
-          
+
           &:active {
             cursor: grabbing;
             fill: rgba(255, 255, 255, 1);
             box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
           }
-          
+
           &.rotating {
             cursor: grabbing !important;
             fill: rgba(255, 255, 100, 1);
@@ -563,11 +577,11 @@
             transform: scale(1.2); /* Visual feedback that it's active */
             transition: transform 0.1s ease-out;
           }
-          
+
           &.current {
             fill: rgba(50, 180, 50, 0.85);
             box-shadow: 0 0 8px rgba(50, 180, 50, 0.4);
-            
+
             &:hover {
               fill: rgba(50, 180, 50, 1);
               stroke: rgba(0, 0, 0, 0.8);
@@ -575,29 +589,29 @@
             }
           }
         }
-        
+
         .rotate-handle-icon {
           pointer-events: all !important;
           cursor: grab;
           z-index: 1001 !important; /* Even higher z-index */
-          
+
           &:active, &.rotating {
             cursor: grabbing;
           }
-          
+
           path {
             stroke: rgba(0, 0, 0, 0.8);
             stroke-width: 2px;
             fill: none;
             transition: stroke 0.2s ease, stroke-width 0.2s ease;
           }
-          
+
           &.rotating path {
             stroke: rgba(255, 220, 0, 1);
             stroke-width: 3px;
             animation: rotate-icon 1.5s infinite linear;
           }
-          
+
           @keyframes rotate-icon {
             0% {
               transform: rotate(0deg);
@@ -606,12 +620,12 @@
               transform: rotate(360deg);
             }
           }
-          
+
           &.current path {
             stroke: rgba(255, 255, 255, 0.9);
             stroke-width: 2px;
           }
-          
+
           &.current.rotating path {
             stroke: rgba(50, 255, 50, 1);
             stroke-width: 3px;
@@ -625,7 +639,7 @@
       pointer-events: none;
       transition: fill 0.2s ease;
     }
-    
+
     /* Brighten the overlay slightly when dragging to provide feedback */
     .isDragging .shape-overlay {
       fill: rgba(0, 0, 0, 0.15);
@@ -703,11 +717,11 @@
       white-space: nowrap;
       align-items: center;
       cursor: grab;
-      
+
       &:hover {
         background-color: rgba(60, 170, 60, 0.9);
       }
-      
+
       &:active {
         cursor: grabbing;
       }
@@ -745,11 +759,18 @@
       max-width: none;
       white-space: nowrap;
       cursor: grab;
-      
+
+      /* Add warning style for measurements affected by window resize */
+      &.affected-by-resize {
+        background-color: rgba(180, 30, 30, 0.8) !important;
+        border: 1px solid rgba(255, 100, 100, 0.8) !important;
+        box-shadow: 0 0 8px rgba(255, 0, 0, 0.5) !important;
+      }
+
       &:hover {
         background-color: rgba(30, 30, 30, 0.85);
       }
-      
+
       &:active {
         cursor: grabbing;
       }
@@ -790,7 +811,7 @@
             background-color: rgba(255, 255, 255, 0.3);
             opacity: 1;
           }
-          
+
           // Add a small delay to avoid accidental double clicks
           pointer-events: all !important;
         }
@@ -818,7 +839,7 @@
               color: rgba(255, 180, 50, 1);
             }
           }
-          
+
           &.save-button {
             color: rgba(50, 180, 100, 0.8);
 
@@ -836,7 +857,7 @@
             color: rgba(255, 100, 100, 1);
             background-color: rgba(255, 100, 100, 0.2); // Add subtle background highlight
           }
-          
+
           &.delete-button {
             pointer-events: all !important;
           }
@@ -860,13 +881,13 @@
     pointer-events: none; // So it doesn't interfere with clicks
     text-align: center;
     max-width: 500px;
-    
+
     .status-message {
       font-weight: bold;
       margin-bottom: 5px;
       color: #ffcc00;
     }
-    
+
     .start-coordinates {
       font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
       font-size: 0.85rem;
@@ -925,4 +946,55 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); // Stronger shadow
 
   /* Position is managed by our label positioning functions in the component */
+}
+
+/* Custom resize warning modal */
+.resize-warning-modal {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: all;
+
+  .resize-warning-content {
+    background-color: rgba(40, 40, 40, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+
+    .warning-header {
+      padding: 12px 16px;
+
+      h5 {
+        margin: 0;
+        color: white;
+        font-weight: 600;
+      }
+    }
+
+    .warning-body {
+      padding: 16px;
+
+      p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 15px;
+        line-height: 1.5;
+      }
+    }
+
+    .warning-footer {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
 }

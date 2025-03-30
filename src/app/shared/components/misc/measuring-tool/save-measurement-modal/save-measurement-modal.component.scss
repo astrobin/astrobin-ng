@@ -1,0 +1,20 @@
+.measurement-preview {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  
+  .preview-label {
+    font-weight: 500;
+    margin-right: 8px;
+  }
+  
+  .preview-value {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+}
