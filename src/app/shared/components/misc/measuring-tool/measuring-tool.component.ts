@@ -28,7 +28,6 @@ export interface MeasurementData {
   endLabelY: number;
   showCircle?: boolean;
   showRectangle?: boolean;
-  rectangleRotation?: number; // Angle in degrees for rectangle rotation
 }
 
 export interface SolutionMatrix {
@@ -73,21 +72,6 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
   // Shape visualization
   showCurrentCircle: boolean = false;
   showCurrentRectangle: boolean = false;
-  currentRectangleRotation: number = 0; // Current rectangle rotation angle in degrees
-
-  // Rotation state tracking
-  isRotatingRectangle: boolean = false;
-  rotationStartAngle: number = 0;
-
-  // For storing original positions during rotation
-  private _dragOriginalStart: {x: number, y: number} | null = null;
-  private _dragOriginalEnd: {x: number, y: number} | null = null;
-
-  // Image rotation container reference
-  private _imageRotationContainer: HTMLElement | null = null;
-
-  // Rotation increment for mouse wheel in degrees
-  private readonly WHEEL_ROTATION_INCREMENT = 5;
 
   // Bound event handlers
   private _onMeasuringMouseMove: any = null;
@@ -101,7 +85,6 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
   private _onCurrentShapeDragEnd: any = null;
   private _dragInProgress = false;
   private _preventNextClick = false;
-  private _isOverRotateHandle = false; // Flag to track if cursor is over a rotation handle
 
   // Cookie name for storing shape preferences
   private readonly MEASUREMENT_SHAPE_COOKIE_NAME = "astrobin-fullscreen-measurement-shape";
@@ -113,7 +96,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
   private _stabilizeValue(value: number, decimals: number = 4): number {
     return parseFloat(value.toFixed(decimals));
   }
-  
+
   /**
    * Format angular distance consistently across the component
    * This method applies stabilization to prevent flickering from floating point issues
@@ -121,15 +104,15 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
   private _formatStableAngularDistance(angularDistance: number): string {
     // Stabilize the input value to reduce flickering
     const stableAngularDistance = this._stabilizeValue(angularDistance);
-    
+
     // Format based on size, with stable thresholds
     const arcminThreshold = this._stabilizeValue(1/60);
     const degreeThreshold = 1;
-    
+
     if (stableAngularDistance < arcminThreshold) {
       // Less than 1 arcminute, show in arcseconds
       const arcseconds = this._stabilizeValue(stableAngularDistance * 3600);
-      
+
       // For very small values, prevent unnecessary frequent changes by rounding more
       if (arcseconds < 1) {
         return `${arcseconds.toFixed(2)}″`;
@@ -145,7 +128,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
       return `${stableAngularDistance.toFixed(2)}°`;
     }
   }
-  
+
   constructor(
     private cookieService: CookieService,
     private coordinatesFormatter: CoordinatesFormatterService,
@@ -202,18 +185,6 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     document.removeEventListener('mousemove', this._onCurrentShapeDragMove);
     document.removeEventListener('mouseup', this._onCurrentShapeDragEnd);
 
-    // Clean up image rotation container if it exists
-    if (this._imageRotationContainer && this._imageRotationContainer.parentElement) {
-      // Find the original image element and restore its opacity
-      const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-      if (imageElement) {
-        (imageElement as HTMLElement).style.opacity = '1';
-      }
-
-      // Remove the rotation container
-      this._imageRotationContainer.parentElement.removeChild(this._imageRotationContainer);
-      this._imageRotationContainer = null;
-    }
   }
 
   /**
@@ -227,11 +198,6 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Skip if we're over a rotation handle
-    if (this._isOverRotateHandle) {
-      console.log('Mousedown prevented: cursor is over a rotation handle');
-      return;
-    }
 
     // Get the offset of the image element
     const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
@@ -392,25 +358,6 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     document.addEventListener('mouseup', mouseUpHandler, { once: true });
   }
 
-  /**
-   * Handle mouse enter events on rotation handles
-   */
-  handleRotateHandleMouseEnter(event: MouseEvent): void {
-    this._isOverRotateHandle = true;
-    // Explicitly stop propagation to ensure no other elements get this event
-    event.stopPropagation();
-    event.preventDefault();
-  }
-
-  /**
-   * Handle mouse leave events on rotation handles
-   */
-  handleRotateHandleMouseLeave(event: MouseEvent): void {
-    this._isOverRotateHandle = false;
-    // Explicitly stop propagation to ensure no other elements get this event
-    event.stopPropagation();
-    event.preventDefault();
-  }
 
   /**
    * Handle clicks on the measurement overlay to place points
@@ -427,11 +374,6 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Skip if we're over a rotation handle
-    if (this._isOverRotateHandle) {
-      console.log('Click prevented: cursor is over a rotation handle');
-      return;
-    }
 
     // Get the offset of the image element
     const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
@@ -599,8 +541,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
       endLabelX: 0, // Will be calculated
       endLabelY: 0, // Will be calculated
       showCircle: this.showCurrentCircle,
-      showRectangle: this.showCurrentRectangle,
-      rectangleRotation: this.showCurrentRectangle ? this.currentRectangleRotation : undefined
+      showRectangle: this.showCurrentRectangle
     };
 
     // Calculate label positions
@@ -1006,12 +947,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
   // For debouncing coordinate updates during drag
   private _lastCoordUpdateTime = 0;
   private _coordUpdateDebounceMs = 100; // Update at most every 100ms
-  
-  // Current rotation in degrees, negative value to match the visual rotation direction
-  private _currentRotationDegrees = 0;
-  
-  // Output event when rotation changes
-  @Output() rotationChanged = new EventEmitter<number>();
+
 
   /**
    * Handle shape drag movement
@@ -1056,13 +992,13 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     // Update the drag start point for the next move event
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
-    
+
     // Update coordinates in real-time during drag, with debouncing
     // Only update if we have solution data and enough time has passed since last update
     const now = Date.now();
     if (this.advancedSolutionMatrix && (now - this._lastCoordUpdateTime > this._coordUpdateDebounceMs)) {
       this._lastCoordUpdateTime = now;
-      
+
       // Run in ngZone to ensure Angular detects the changes
       this.ngZone.run(() => {
         // Get new RA/Dec for start point
@@ -1071,14 +1007,14 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
           measurement.startRa = startCoords.ra;
           measurement.startDec = startCoords.dec;
         }
-        
+
         // Get new RA/Dec for end point
         const endCoords = this.calculateCoordinatesAtPoint(measurement.endX, measurement.endY);
         if (endCoords) {
           measurement.endRa = endCoords.ra;
           measurement.endDec = endCoords.dec;
         }
-        
+
         // Update distance calculation if we have valid coordinates
         if (measurement.startRa !== null && measurement.endRa !== null) {
           const angularDistance = this.calculateAngularDistance(
@@ -1087,11 +1023,11 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
             measurement.endRa,
             measurement.endDec
           );
-          
+
           // Use consistent stable formatting for angular distances
           measurement.distance = this._formatStableAngularDistance(angularDistance);
         }
-        
+
         // Force change detection
         this.cdRef.detectChanges();
       });
@@ -1115,7 +1051,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
 
       if (!isNaN(index) && index >= 0 && index < this.previousMeasurements.length) {
         const measurement = this.previousMeasurements[index];
-        
+
         // Ensure final update of celestial coordinates for start and end points
         if (this.advancedSolutionMatrix) {
           // Get new RA/Dec for start point
@@ -1124,14 +1060,14 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
             measurement.startRa = startCoords.ra;
             measurement.startDec = startCoords.dec;
           }
-          
+
           // Get new RA/Dec for end point
           const endCoords = this.calculateCoordinatesAtPoint(measurement.endX, measurement.endY);
           if (endCoords) {
             measurement.endRa = endCoords.ra;
             measurement.endDec = endCoords.dec;
           }
-          
+
           // Update the distance calculation
           if (measurement.startRa !== null && measurement.endRa !== null) {
             const angularDistance = this.calculateAngularDistance(
@@ -1140,18 +1076,18 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
               measurement.endRa,
               measurement.endDec
             );
-            
+
             // Use consistent stable formatting for angular distances
             measurement.distance = this._formatStableAngularDistance(angularDistance);
           }
-          
+
           console.log('Final update of RA/Dec coordinates for previous measurement after drag', {
             startRa: measurement.startRa,
             startDec: measurement.startDec,
             endRa: measurement.endRa,
             endDec: measurement.endDec
           });
-          
+
           // Force change detection to ensure updates are visible
           this.cdRef.detectChanges();
         }
@@ -1167,7 +1103,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     this.isDraggingPoint = null;
     this.dragStartX = null;
     this.dragStartY = null;
-    
+
     // Reset debounce timer
     this._lastCoordUpdateTime = 0;
   }
@@ -1223,13 +1159,13 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     // Update the drag start point for the next move event
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
-    
+
     // Update coordinates in real-time during drag, with debouncing
     // Only update if we have solution data and enough time has passed since last update
     const now = Date.now();
     if (this.advancedSolutionMatrix && (now - this._lastCoordUpdateTime > this._coordUpdateDebounceMs)) {
       this._lastCoordUpdateTime = now;
-      
+
       // Run in ngZone to ensure Angular detects the changes
       this.ngZone.run(() => {
         // Get new RA/Dec for start point
@@ -1238,14 +1174,14 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
           this.measureStartPoint.ra = startCoords.ra;
           this.measureStartPoint.dec = startCoords.dec;
         }
-        
+
         // Get new RA/Dec for end point
         const endCoords = this.calculateCoordinatesAtPoint(this.measureEndPoint.x, this.measureEndPoint.y);
         if (endCoords) {
           this.measureEndPoint.ra = endCoords.ra;
           this.measureEndPoint.dec = endCoords.dec;
         }
-        
+
         // Update the distance calculation
         if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
           const angularDistance = this.calculateAngularDistance(
@@ -1254,7 +1190,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
             this.measureEndPoint.ra,
             this.measureEndPoint.dec
           );
-          
+
           // Use consistent stable formatting for angular distances
           this.measureDistance = this._formatStableAngularDistance(angularDistance);
         } else {
@@ -1267,7 +1203,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
           );
           this.measureDistance = `${Math.round(pixelDistance)} px`;
         }
-        
+
         // Force change detection
         this.cdRef.detectChanges();
       });
@@ -1292,14 +1228,14 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
         this.measureStartPoint.ra = startCoords.ra;
         this.measureStartPoint.dec = startCoords.dec;
       }
-      
+
       // Recalculate end point RA/Dec
       const endCoords = this.calculateCoordinatesAtPoint(this.measureEndPoint.x, this.measureEndPoint.y);
       if (endCoords) {
         this.measureEndPoint.ra = endCoords.ra;
         this.measureEndPoint.dec = endCoords.dec;
       }
-      
+
       // Update distance calculation
       if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
         const angularDistance = this.calculateAngularDistance(
@@ -1308,11 +1244,11 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
           this.measureEndPoint.ra,
           this.measureEndPoint.dec
         );
-        
+
         // Use consistent stable formatting for angular distances
         this.measureDistance = this._formatStableAngularDistance(angularDistance);
       }
-      
+
       console.log('Final update of RA/Dec coordinates for current measurement after drag', {
         startRa: this.measureStartPoint.ra,
         startDec: this.measureStartPoint.dec,
@@ -1330,7 +1266,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     this.isDraggingPoint = null;
     this.dragStartX = null;
     this.dragStartY = null;
-    
+
     // Reset debounce timer
     this._lastCoordUpdateTime = 0;
 
@@ -1625,350 +1561,6 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     console.log('Label positions updated with variable distance positioning, angle:', angle, 'extra:', extraDistance);
   }
 
-  /**
-   * Handle rotation by rotating the image instead of manipulating marker positions
-   * This approach keeps the markers in place and rotates the view under them
-   */
-  handleRectangleRotateStart(event: MouseEvent, index?: number): void {
-    // Prevent all default behaviors and event bubbling
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-
-    // Prevent subsequent click events
-    this._preventNextClick = true;
-
-    // Get the image element to rotate
-    const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-    if (!imageElement) {
-      console.error('Could not find image element to rotate');
-      return;
-    }
-
-    // Setup variables for the rotation
-    const startMouseX = event.clientX;
-    const startMouseY = event.clientY;
-
-    // Get the appropriate rectangle data
-    let centerX: number;
-    let centerY: number;
-    let originalRotation: number;
-    let measurement: MeasurementData | null = null;
-
-    // Determine which rectangle we're working with
-    if (index !== undefined) {
-      // Previous measurement
-      if (index < 0 || index >= this.previousMeasurements.length) {
-        console.error('Invalid measurement index:', index);
-        return;
-      }
-
-      measurement = this.previousMeasurements[index];
-      centerX = (measurement.startX + measurement.endX) / 2;
-      centerY = (measurement.startY + measurement.endY) / 2;
-      originalRotation = measurement.rectangleRotation || 0;
-    } else {
-      // Current measurement
-      if (!this.measureStartPoint || !this.measureEndPoint) {
-        console.error('No current measurement to rotate');
-        return;
-      }
-
-      centerX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
-      centerY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
-      originalRotation = this.currentRectangleRotation;
-    }
-
-    // Calculate the initial angle for reference
-    const initialAngle = Math.atan2(startMouseY - centerY, startMouseX - centerX) * 180 / Math.PI;
-
-    // Set up state for rotation
-    this.isRotatingRectangle = true;
-    this.isDraggingPoint = index !== undefined ? `rotateRect-${index}` : 'rotateCurrentRect';
-    this._dragInProgress = true;
-
-    // Force change detection immediately to update UI state
-    this.cdRef.markForCheck();
-    this.cdRef.detectChanges();
-
-    // Save the original document cursor to restore it later
-    const originalCursor = document.body.style.cursor;
-    // Set cursor for entire document to show we're in rotation mode
-    document.body.style.cursor = 'grabbing';
-
-    // Create or get a rotation container for the image
-    // This approach creates a wrapper that holds the image, which we can rotate
-    if (!this._imageRotationContainer) {
-      // Get the image's parent container
-      const imageContainer = imageElement.parentElement;
-      if (!imageContainer) {
-        console.error('Cannot find image container for rotation');
-        return;
-      }
-
-      // Create a wrapper element for rotation
-      this._imageRotationContainer = document.createElement('div');
-      this._imageRotationContainer.className = 'image-rotation-container';
-      this._imageRotationContainer.style.position = 'absolute';
-      this._imageRotationContainer.style.top = '0';
-      this._imageRotationContainer.style.left = '0';
-      this._imageRotationContainer.style.width = '100%';
-      this._imageRotationContainer.style.height = '100%';
-      this._imageRotationContainer.style.display = 'flex';
-      this._imageRotationContainer.style.alignItems = 'center';
-      this._imageRotationContainer.style.justifyContent = 'center';
-      
-      // Calculate the exact center of the image, not the rectangle
-      const imgBounds = imageElement.getBoundingClientRect();
-      const imageCenterX = imgBounds.width / 2;
-      const imageCenterY = imgBounds.height / 2;
-      
-      // Set the transform origin to the exact center of the image
-      this._imageRotationContainer.style.transformOrigin = `${imageCenterX}px ${imageCenterY}px`;
-      
-      this._imageRotationContainer.style.transition = 'transform 0.05s ease-out';
-      this._imageRotationContainer.style.zIndex = '0';
-
-      // Apply initial rotation if any (in opposite direction)
-      this._imageRotationContainer.style.transform = `rotate(${-1 * originalRotation}deg)`;
-
-      // Save the image's original parent node, size, and position
-      const originalParent = imageElement.parentNode;
-      const parentRect = (originalParent as HTMLElement).getBoundingClientRect();
-
-      // Position the image container relative to its parent
-      imageContainer.style.position = 'relative';
-
-      // Clone the image for rotation
-      // This approach avoids modifying the original image element
-      const clonedImage = imageElement.cloneNode(true) as HTMLImageElement;
-
-      // Capture all the computed styles from the original image
-      const computedStyle = window.getComputedStyle(imageElement);
-
-      // Apply those styles to the cloned image
-      clonedImage.style.position = 'absolute';
-      clonedImage.style.width = computedStyle.width;
-      clonedImage.style.height = computedStyle.height;
-      clonedImage.style.left = '0';
-      clonedImage.style.top = '0';
-      clonedImage.style.objectFit = computedStyle.objectFit;
-      clonedImage.style.objectPosition = computedStyle.objectPosition;
-
-      // Add the cloned image to the rotation container
-      this._imageRotationContainer.appendChild(clonedImage);
-
-      // Add the rotation container to the image container
-      imageContainer.appendChild(this._imageRotationContainer);
-
-      // Hide the original image
-      (imageElement as HTMLElement).style.opacity = '0';
-    } else {
-      // Calculate the exact center of the image, not the rectangle
-      const imgBounds = imageElement.getBoundingClientRect();
-      const imageCenterX = imgBounds.width / 2;
-      const imageCenterY = imgBounds.height / 2;
-      
-      // Update the transform origin to the exact center of the image
-      this._imageRotationContainer.style.transformOrigin = `${imageCenterX}px ${imageCenterY}px`;
-
-      // Reset to the current rotation (in opposite direction)
-      this._imageRotationContainer.style.transform = `rotate(${-1 * originalRotation}deg)`;
-    }
-
-    // Mouse move handler - rotate the image container instead of the markers
-    // Keep track of the last time coordinates were updated (for debouncing)
-    let lastUpdateTime = 0;
-    const debounceInterval = 50; // Update at most every 50ms during rotation for smoother performance
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      // Stop event propagation
-      moveEvent.preventDefault();
-      moveEvent.stopPropagation();
-
-      // Calculate the current angle
-      const currentAngle = Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) * 180 / Math.PI;
-
-      // Calculate the angle delta in degrees
-      const angleDelta = currentAngle - initialAngle;
-
-      // Calculate the new rotation for the image only (opposite direction)
-      // We rotate the image in the opposite direction of the rectangle
-      // so that the image appears to rotate while the rectangle stays fixed
-      const imageRotation = -1 * (originalRotation + angleDelta) % 360;
-
-      // Apply rotation to the image container only
-      if (this._imageRotationContainer) {
-        this._imageRotationContainer.style.transform = `rotate(${imageRotation}deg)`;
-      }
-
-      // Calculate the new rotation angle
-      const newRotation = originalRotation + angleDelta;
-
-      // Check if we should update coordinates (debounce)
-      const now = Date.now();
-      const shouldUpdateCoordinates = now - lastUpdateTime > debounceInterval;
-      
-      // Always update the rotation angle, but only update coordinates based on debounce
-      if (index !== undefined && measurement) {
-        // Calculate the delta from previous position to update coordinates
-        const previousRotation = measurement.rectangleRotation;
-        const rotationDelta = newRotation - previousRotation;
-
-        // Update the rotation
-        measurement.rectangleRotation = newRotation;
-        
-        // Update internal rotation tracker and emit the change
-        this._currentRotationDegrees = newRotation;
-        this.rotationChanged.emit(newRotation);
-
-        // Only update coordinates and distance with debouncing
-        if (shouldUpdateCoordinates) {
-          lastUpdateTime = now;
-          
-          // Run in ngZone to ensure Angular change detection updates the UI
-          this.ngZone.run(() => {
-            // Update celestial coordinates based on rotation
-            this.updateCoordinatesForRotation(measurement, centerX, centerY, rotationDelta);
-
-            // Update distance calculation based on new coordinates
-            if (measurement.startRa !== null && measurement.endRa !== null) {
-              const angularDistance = this.calculateAngularDistance(
-                measurement.startRa,
-                measurement.startDec,
-                measurement.endRa,
-                measurement.endDec
-              );
-
-              // Use stable formatting for distances
-              measurement.distance = this._formatStableAngularDistance(angularDistance);
-            }
-
-            // Force update of coordinate labels by recalculating their positions
-            this.updateCoordinateLabelPositions(measurement);
-            
-            // Force change detection to update the UI
-            this.cdRef.detectChanges();
-          });
-        }
-      } else if (this.measureStartPoint && this.measureEndPoint) {
-        // Calculate the delta from previous position to update coordinates
-        const previousRotation = this.currentRectangleRotation;
-        const rotationDelta = newRotation - previousRotation;
-
-        // Always update the rotation angle
-        this.currentRectangleRotation = newRotation;
-        
-        // Update internal rotation tracker and emit the change
-        this._currentRotationDegrees = newRotation;
-        this.rotationChanged.emit(newRotation);
-
-        // Only update coordinates with debouncing (reuse the same debounce from above)
-        if (shouldUpdateCoordinates) {
-          lastUpdateTime = now;
-          
-          // Run in ngZone to ensure Angular change detection updates the UI
-          this.ngZone.run(() => {
-            // Create a measurement data object to update coordinates
-            const currentMeasurement: MeasurementData = {
-              startX: this.measureStartPoint.x,
-              startY: this.measureStartPoint.y,
-              endX: this.measureEndPoint.x,
-              endY: this.measureEndPoint.y,
-              midX: centerX,
-              midY: centerY,
-              distance: this.measureDistance || '',
-              timestamp: Date.now(),
-              startRa: this.measureStartPoint.ra,
-              startDec: this.measureStartPoint.dec,
-              endRa: this.measureEndPoint.ra,
-              endDec: this.measureEndPoint.dec,
-              startLabelX: 0,
-              startLabelY: 0,
-              endLabelX: 0,
-              endLabelY: 0,
-              rectangleRotation: newRotation
-            };
-
-            // Update the coordinates
-            this.updateCoordinatesForRotation(currentMeasurement, centerX, centerY, rotationDelta);
-
-            // Update the current measurement points with new coordinates
-            if (currentMeasurement.startRa !== null) {
-              this.measureStartPoint.ra = currentMeasurement.startRa;
-            }
-            if (currentMeasurement.startDec !== null) {
-              this.measureStartPoint.dec = currentMeasurement.startDec;
-            }
-            if (currentMeasurement.endRa !== null) {
-              this.measureEndPoint.ra = currentMeasurement.endRa;
-            }
-            if (currentMeasurement.endDec !== null) {
-              this.measureEndPoint.dec = currentMeasurement.endDec;
-            }
-
-            // Update the distance calculation for the current measurement
-            if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
-              const angularDistance = this.calculateAngularDistance(
-                this.measureStartPoint.ra,
-                this.measureStartPoint.dec,
-                this.measureEndPoint.ra,
-                this.measureEndPoint.dec
-              );
-
-              // Use consistent stable formatting for angular distances
-              this.measureDistance = this._formatStableAngularDistance(angularDistance);
-            }
-            
-            // Force change detection to update the UI
-            this.cdRef.detectChanges();
-          });
-        }
-      }
-
-      console.log(`Rotating image: ${imageRotation}deg around (${centerX}, ${centerY})`);
-
-      // Force change detection
-      this.cdRef.markForCheck();
-    };
-
-    // Mouse up handler - cleanup
-    const handleMouseUp = (upEvent: MouseEvent) => {
-      // Remove the event listeners immediately
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-      document.body.style.cursor = originalCursor;
-
-      // Save the final rotation angle
-      const finalRotation = index !== undefined && measurement
-                            ? measurement.rectangleRotation
-                            : this.currentRectangleRotation;
-
-      console.log(`Final rotation: ${finalRotation}deg`);
-
-      // Reset our state flags
-      this.isRotatingRectangle = false;
-      this.isDraggingPoint = null;
-      this._dragInProgress = false;
-
-      // Force change detection
-      this.cdRef.markForCheck();
-      this.cdRef.detectChanges();
-
-      // Allow clicks after a short delay
-      setTimeout(() => {
-        this._preventNextClick = false;
-      }, 100);
-    };
-
-    // Attach event handlers to document for reliable capture
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  }
-
-  // We have completely rewritten the rotation handling
-  // The new implementation is self-contained in handleRectangleRotateStart
-  // and doesn't use these older methods
 
   /**
    * Save the user's shape preference to a cookie
@@ -2019,7 +1611,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
   /**
    * Calculate celestial coordinates at a given screen position
    */
-  calculateCoordinatesAtPoint(x: number, y: number, accountForRotation: boolean = true): { ra: number; dec: number } | null {
+  calculateCoordinatesAtPoint(x: number, y: number, accountForRotation: boolean = false): { ra: number; dec: number } | null {
     console.log("Measuring tool: Calculating coordinates at point:", x, y);
     try {
       if (!this.advancedSolutionMatrix) {
@@ -2041,36 +1633,8 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
       // Get the image dimensions
       const imgBounds = imageElement.getBoundingClientRect();
 
-      // Apply rotation adjustment if needed
       let adjustedX = x;
       let adjustedY = y;
-
-      if (accountForRotation && this._imageRotationContainer) {
-        // Always use the exact center of the image for rotation
-        // This ensures consistency with how the image is actually rotated
-        const centerX = imgBounds.left + imgBounds.width / 2;
-        const centerY = imgBounds.top + imgBounds.height / 2;
-
-        // Get rotation angle
-        const rotationStyle = this._imageRotationContainer.style.transform;
-        const rotationMatch = rotationStyle.match(/rotate\(([-\d.]+)deg\)/);
-
-        if (rotationMatch && rotationMatch[1]) {
-          const rotationDegrees = parseFloat(rotationMatch[1]);
-          
-          // Use the coordinates formatter service to rotate the point
-          const originalPoint = this.coordinatesFormatter.rotatePointAroundCenter(
-            x, 
-            y,
-            centerX, 
-            centerY,
-            rotationDegrees  // The service takes care of the negative angle
-          );
-
-          adjustedX = originalPoint.x;
-          adjustedY = originalPoint.y;
-        }
-      }
 
       // Create a synthetic mouse event with the adjusted coordinates
       const syntheticEvent = new MouseEvent('mousemove', {
@@ -2098,13 +1662,13 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
       // Convert the raw coordinate data to decimal format
       const raData = result.coordinates.ra;
       const decData = result.coordinates.dec;
-      
+
       // Convert HMS to decimal hours
       const raDecimal = raData.hours + (raData.minutes / 60) + (raData.seconds / 3600);
-      
+
       // Convert DMS to decimal degrees
       const decDecimal = decData.sign * (decData.degrees + (decData.minutes / 60) + (decData.seconds / 3600));
-      
+
       console.log('Using raw RA/Dec from service:', {
         raComponents: [raData.hours, raData.minutes, raData.seconds],
         decComponents: [decData.sign, decData.degrees, decData.minutes, decData.seconds],
@@ -2113,7 +1677,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
           dec: decDecimal
         }
       });
-      
+
       return {
         ra: raDecimal,
         dec: decDecimal
@@ -2145,14 +1709,7 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     // Convert to degrees
     return c * 180 / Math.PI;
   }
-  
-  /**
-   * Get the current rotation angle in degrees
-   * @returns The current rotation angle in degrees (negative value)
-   */
-  getCurrentRotation(): number {
-    return this._currentRotationDegrees;
-  }
+
 
   /**
    * Format coordinates in a compact display format
@@ -2478,293 +2035,12 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     return this.measureEndPoint.y + (labelDistance + pointRadius + extraDistance) * Math.sin(angle);
   }
 
-  /**
-   * Update celestial coordinates (RA/Dec) based on image rotation
-   * This uses the plate solving solution to recalculate coordinates at the rotated positions
-   */
-  private updateCoordinatesForRotation(measurement: MeasurementData, centerX: number, centerY: number, rotationDelta: number): void {
-    console.log('updateCoordinatesForRotation called with delta:', rotationDelta, 'center:', centerX, centerY);
-    console.log('Original coordinates:', {
-      start: { ra: measurement.startRa, dec: measurement.startDec },
-      end: { ra: measurement.endRa, dec: measurement.endDec }
-    });
 
-    // Skip if we don't have a plate solution
-    if (!this.advancedSolutionMatrix) {
-      console.log('No plate solution available for coordinate update during rotation');
-      return;
-    }
-
-    // Convert rotation delta to radians
-    const rotationRadians = (rotationDelta * Math.PI) / 180;
-
-    // Calculate the rotated start point position using the service
-    const startPointRotated = this.coordinatesFormatter.rotatePointAroundCenter(
-      measurement.startX, 
-      measurement.startY,
-      centerX, 
-      centerY,
-      -rotationDelta // Convert to the correct direction
-    );
-
-    // Calculate the rotated end point position using the service
-    const endPointRotated = this.coordinatesFormatter.rotatePointAroundCenter(
-      measurement.endX, 
-      measurement.endY,
-      centerX, 
-      centerY,
-      -rotationDelta // Convert to the correct direction
-    );
-
-    console.log('Original points:', {
-      start: { x: measurement.startX, y: measurement.startY },
-      end: { x: measurement.endX, y: measurement.endY }
-    });
-    console.log('Rotated points:', {
-      start: startPointRotated,
-      end: endPointRotated
-    });
-
-    // Get the image element for the actual image dimensions
-    let imageElement = this.imageElement?.nativeElement;
-    if (!imageElement) {
-      console.log('No image element available for coordinate calculation during rotation');
-      return;
-    }
-
-    // Create synthetic mouse positions for the start and end points
-    // Pass accountForRotation=false since we're already manually doing the rotation transformation
-    const startCoords = this.calculateCoordinatesAtPoint(startPointRotated.x, startPointRotated.y, false);
-    if (startCoords) {
-      const oldStartRa = measurement.startRa;
-      const oldStartDec = measurement.startDec;
-
-      measurement.startRa = startCoords.ra;  // RA is now in hours (0-24) format
-      measurement.startDec = startCoords.dec;
-
-      console.log('Updated start point coordinates:', {
-        before: { ra: oldStartRa, dec: oldStartDec },
-        after: { ra: startCoords.ra, dec: startCoords.dec }
-      });
-    } else {
-      console.log('Failed to calculate new start point coordinates');
-    }
-
-    // Calculate new celestial coordinates for the rotated end point
-    const endCoords = this.calculateCoordinatesAtPoint(endPointRotated.x, endPointRotated.y, false);
-    if (endCoords) {
-      const oldEndRa = measurement.endRa;
-      const oldEndDec = measurement.endDec;
-
-      measurement.endRa = endCoords.ra;  // RA is now in hours (0-24) format
-      measurement.endDec = endCoords.dec;
-
-      console.log('Updated end point coordinates:', {
-        before: { ra: oldEndRa, dec: oldEndDec },
-        after: { ra: endCoords.ra, dec: endCoords.dec }
-      });
-    } else {
-      console.log('Failed to calculate new end point coordinates');
-    }
-
-    // Update the mid-point coordinates (needed for distance labels)
-    const midX = (measurement.startX + measurement.endX) / 2;
-    const midY = (measurement.startY + measurement.endY) / 2;
-    measurement.midX = midX;
-    measurement.midY = midY;
-  }
-
-  // Removed the rotatePointAroundCenter method as we now use the one from CoordinatesFormatterService
-
-  /**
-   * Handle rotation via mouse wheel on rotation handles
-   */
-  handleRotationWheel(event: WheelEvent, index?: number): void {
-    // Prevent default scrolling
-    event.preventDefault();
-    event.stopPropagation();
-
-    // Determine which rotation we're working with
-    let centerX: number;
-    let centerY: number;
-    let currentRotation: number;
-    let measurement: MeasurementData | null = null;
-
-    // Get the measurement and center point
-    if (index !== undefined) {
-      // Previous measurement
-      if (index < 0 || index >= this.previousMeasurements.length) {
-        console.error('Invalid measurement index:', index);
-        return;
-      }
-
-      measurement = this.previousMeasurements[index];
-      centerX = (measurement.startX + measurement.endX) / 2;
-      centerY = (measurement.startY + measurement.endY) / 2;
-      currentRotation = measurement.rectangleRotation || 0;
-    } else {
-      // Current measurement
-      if (!this.measureStartPoint || !this.measureEndPoint) {
-        console.error('No current measurement to rotate');
-        return;
-      }
-
-      centerX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
-      centerY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
-      currentRotation = this.currentRectangleRotation;
-    }
-
-    // Determine rotation direction and amount based on wheel delta
-    // Negative delta means scrolling down, positive means scrolling up
-    const direction = event.deltaY > 0 ? -1 : 1;
-    const rotationChange = direction * this.WHEEL_ROTATION_INCREMENT;
-
-    // Calculate the new rotation angle
-    const newRotation = (currentRotation + rotationChange) % 360;
-
-    // Update the image rotation (in opposite direction)
-    if (this._imageRotationContainer) {
-      // Find the image element
-      let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
-      if (!imageElement) {
-        imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-      }
-      
-      if (imageElement) {
-        // Calculate the exact center of the image
-        const imgBounds = imageElement.getBoundingClientRect();
-        const imageCenterX = imgBounds.width / 2;
-        const imageCenterY = imgBounds.height / 2;
-        
-        // Set transform origin to the exact center of the image
-        this._imageRotationContainer.style.transformOrigin = `${imageCenterX}px ${imageCenterY}px`;
-      }
-      
-      this._imageRotationContainer.style.transform = `rotate(${-1 * newRotation}deg)`;
-    }
-
-    // Update rotation in the data model
-    if (index !== undefined && measurement) {
-      measurement.rectangleRotation = newRotation;
-
-      // Use ngZone to ensure UI updates
-      this.ngZone.run(() => {
-        // Update the RA/Dec coordinates based on rotation
-        this.updateCoordinatesForRotation(measurement, centerX, centerY, rotationChange);
-
-        // Update distance calculation based on new coordinates
-        if (measurement.startRa !== null && measurement.endRa !== null) {
-          const angularDistance = this.calculateAngularDistance(
-            measurement.startRa,
-            measurement.startDec,
-            measurement.endRa,
-            measurement.endDec
-          );
-
-          // Use consistent stable formatting for angular distances
-          measurement.distance = this._formatStableAngularDistance(angularDistance);
-        }
-
-        // Force update of coordinate labels by recalculating their positions
-        this.updateCoordinateLabelPositions(measurement);
-        
-        // Force change detection to update the UI
-        this.cdRef.detectChanges();
-      });
-    } else if (this.measureStartPoint && this.measureEndPoint) {
-      this.currentRectangleRotation = newRotation;
-
-      // Use ngZone to ensure UI updates
-      this.ngZone.run(() => {
-        // Update current measurement RA/Dec based on rotation
-        const currentMeasurement: MeasurementData = {
-          startX: this.measureStartPoint.x,
-          startY: this.measureStartPoint.y,
-          endX: this.measureEndPoint.x,
-          endY: this.measureEndPoint.y,
-          midX: centerX,
-          midY: centerY,
-          distance: this.measureDistance || '',
-          timestamp: Date.now(),
-          startRa: this.measureStartPoint.ra,
-          startDec: this.measureStartPoint.dec,
-          endRa: this.measureEndPoint.ra,
-          endDec: this.measureEndPoint.dec,
-          startLabelX: 0,
-          startLabelY: 0,
-          endLabelX: 0,
-          endLabelY: 0,
-          rectangleRotation: newRotation
-        };
-
-        this.updateCoordinatesForRotation(currentMeasurement, centerX, centerY, rotationChange);
-
-        // Update the current measurement points with new coordinates
-        if (currentMeasurement.startRa !== null) {
-          this.measureStartPoint.ra = currentMeasurement.startRa;
-        }
-        if (currentMeasurement.startDec !== null) {
-          this.measureStartPoint.dec = currentMeasurement.startDec;
-        }
-        if (currentMeasurement.endRa !== null) {
-          this.measureEndPoint.ra = currentMeasurement.endRa;
-        }
-        if (currentMeasurement.endDec !== null) {
-          this.measureEndPoint.dec = currentMeasurement.endDec;
-        }
-
-        // Update the distance calculation for the current measurement
-        if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
-          const angularDistance = this.calculateAngularDistance(
-            this.measureStartPoint.ra,
-            this.measureStartPoint.dec,
-            this.measureEndPoint.ra,
-            this.measureEndPoint.dec
-          );
-
-          // Use consistent stable formatting
-          this.measureDistance = this._formatStableAngularDistance(angularDistance);
-        }
-        
-        // Force change detection to update the UI
-        this.cdRef.detectChanges();
-      });
-
-      // Force update for coordinate label positions
-      // This is what makes the coordinate labels reposition properly
-      if (this.measureStartPoint && this.measureEndPoint) {
-        // Force coordinate label position updates
-        this.calculateStartLabelX();
-        this.calculateStartLabelY();
-        this.calculateEndLabelX();
-        this.calculateEndLabelY();
-      }
-    }
-
-    console.log(`Wheel rotation: ${newRotation}deg, increment: ${rotationChange}deg`);
-
-    // Force change detection
-    this.cdRef.markForCheck();
-    this.cdRef.detectChanges();
-  }
 
   /**
    * Exit measuring mode
    */
   exitMeasuring(): void {
-    // Clean up the image rotation container before exiting
-    if (this._imageRotationContainer && this._imageRotationContainer.parentElement) {
-      // Find the original image element and restore its opacity
-      const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-      if (imageElement) {
-        (imageElement as HTMLElement).style.opacity = '1';
-      }
-
-      // Remove the rotation container
-      this._imageRotationContainer.parentElement.removeChild(this._imageRotationContainer);
-      this._imageRotationContainer = null;
-    }
-
     this.exitMeasuringMode.emit();
   }
 }

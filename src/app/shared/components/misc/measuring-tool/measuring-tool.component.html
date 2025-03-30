@@ -1,10 +1,10 @@
-<div class="measuring-tool-container" *ngIf="active" [class.rotation-active]="isRotatingRectangle">
+<div class="measuring-tool-container" *ngIf="active">
   <!-- Overlay for capturing clicks and drags during measuring mode -->
   <!-- Put this first so other elements can be on top of it -->
-  <div class="measure-click-overlay" 
+  <div class="measure-click-overlay"
        (click)="handleMeasurementClick($event)"
        (mousedown)="handleMeasurementMouseDown($event)"></div>
-       
+
   <!-- Start and end markers -->
   <div *ngIf="measureStartPoint" class="measure-marker start-marker"
        [class.dragging]="isDraggingPoint === 'start'"
@@ -12,13 +12,13 @@
        (mousedown)="handlePointDragStart($event, 'start')">
     <div class="marker-dot"></div>
     <!-- Start point coordinates with extended directional positioning -->
-    <div *ngIf="!measureEndPoint" class="marker-coordinates initial-position visible"
+    <div *ngIf="!measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null" class="marker-coordinates initial-position visible"
          style="position: absolute; top: -24px; left: -24px; transform: translateX(-50%);">
       <small>{{ formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) }}</small>
     </div>
 
     <!-- Once both points are selected, calculate perpendicular position for labels -->
-    <div *ngIf="measureEndPoint" class="marker-coordinates visible"
+    <div *ngIf="measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null" class="marker-coordinates visible"
          [style.left.px]="calculateStartLabelX()"
          [style.top.px]="calculateStartLabelY()">
       <small>{{ formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) }}</small>
@@ -31,7 +31,7 @@
        (mousedown)="handlePointDragStart($event, 'end')">
     <div class="marker-dot"></div>
     <!-- End point coordinates perpendicular to line -->
-    <div class="marker-coordinates visible"
+    <div *ngIf="measureEndPoint.ra !== null && measureEndPoint.dec !== null" class="marker-coordinates visible"
          [style.left.px]="calculateEndLabelX()"
          [style.top.px]="calculateEndLabelY()">
       <small>{{ formatCoordinatesCompact(measureEndPoint.ra, measureEndPoint.dec) }}</small>
@@ -60,7 +60,7 @@
           [attr.x1]="measureStartPoint.x" [attr.y1]="measureStartPoint.y"
           [attr.x2]="measureEndPoint.x" [attr.y2]="measureEndPoint.y"
           class="measure-line current-line"></line>
-          
+
     <!-- Visual indicator for original position when dragging current measurement points -->
     <g *ngIf="isDraggingPoint === 'start' && measureStartPoint">
       <circle
@@ -77,7 +77,7 @@
         class="measure-line drag-indicator">
       </line>
     </g>
-    
+
     <g *ngIf="isDraggingPoint === 'end' && measureEndPoint">
       <circle
         [attr.cx]="dragStartX || measureEndPoint.x"
@@ -93,7 +93,7 @@
         class="measure-line drag-indicator">
       </line>
     </g>
-    
+
     <!-- Visual indicators for dragging previous measurement points -->
     <g *ngFor="let measurement of previousMeasurements; let i = index">
       <!-- Start point drag indicator -->
@@ -112,7 +112,7 @@
           class="measure-line drag-indicator">
         </line>
       </g>
-      
+
       <!-- End point drag indicator -->
       <g *ngIf="isDraggingPoint === 'prevEnd-' + i">
         <circle
@@ -137,35 +137,22 @@
     <!-- Start point marker -->
     <div class="measure-marker previous-start-marker"
          [class.dragging]="isDraggingPoint === 'prevStart-' + i"
-         [style.left.px]="measurement.startX" 
+         [style.left.px]="measurement.startX"
          [style.top.px]="measurement.startY"
          (mousedown)="handlePreviousMeasurementDrag($event, i, 'start')">
       <div class="marker-dot"></div>
     </div>
-    
+
     <!-- End point marker -->
     <div class="measure-marker previous-end-marker"
          [class.dragging]="isDraggingPoint === 'prevEnd-' + i"
-         [style.left.px]="measurement.endX" 
+         [style.left.px]="measurement.endX"
          [style.top.px]="measurement.endY"
          (mousedown)="handlePreviousMeasurementDrag($event, i, 'end')">
       <div class="marker-dot"></div>
     </div>
-    
-    <!-- Rotation handle for rectangle -->
-    <div *ngIf="measurement.showRectangle" 
-         class="measure-marker rotation-handle"
-         [class.rotating]="isDraggingPoint === 'rotateRect-' + i && isRotatingRectangle"
-         [style.left.px]="Math.max(measurement.startX, measurement.endX)" 
-         [style.top.px]="Math.min(measurement.startY, measurement.endY)"
-         (mousedown)="handleRectangleRotateStart($event, i)"
-         (wheel)="handleRotationWheel($event, i)"
-         title="{{ 'Rotate rectangle' | translate }}">
-      <div class="rotation-icon">
-        <fa-icon icon="arrows-rotate"></fa-icon>
-      </div>
-    </div>
-    
+
+
     <!-- Circle drawing for previous measurement, if available -->
     <svg *ngIf="measurement.showCircle" class="measure-shape-container"
          [class.isDragging]="isDraggingPoint === 'prevShape-' + i"
@@ -175,32 +162,32 @@
       <defs>
         <mask id="circle-mask-{{i}}">
           <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
-          <circle 
-            [attr.cx]="(measurement.startX + measurement.endX) / 2" 
+          <circle
+            [attr.cx]="(measurement.startX + measurement.endX) / 2"
             [attr.cy]="(measurement.startY + measurement.endY) / 2"
             [attr.r]="calculateDistance(measurement.startX, measurement.startY, measurement.endX, measurement.endY) / 2"
             fill="black">
           </circle>
         </mask>
       </defs>
-      
+
       <!-- This rect will darken everything except the masked circle area -->
-      <rect x="0" y="0" 
-            width="100%" 
-            height="100%" 
+      <rect x="0" y="0"
+            width="100%"
+            height="100%"
             class="shape-overlay"
             [attr.mask]="'url(#circle-mask-' + i + ')'">
       </rect>
-      
+
       <!-- The circle outline -->
-      <circle 
-        [attr.cx]="(measurement.startX + measurement.endX) / 2" 
+      <circle
+        [attr.cx]="(measurement.startX + measurement.endX) / 2"
         [attr.cy]="(measurement.startY + measurement.endY) / 2"
         [attr.r]="calculateDistance(measurement.startX, measurement.startY, measurement.endX, measurement.endY) / 2"
         class="measure-shape circle">
       </circle>
     </svg>
-    
+
     <!-- Rectangle drawing for previous measurement, if available -->
     <svg *ngIf="measurement.showRectangle" class="measure-shape-container"
          [class.isDragging]="isDraggingPoint === 'prevShape-' + i"
@@ -211,8 +198,8 @@
         <mask id="rectangle-mask-{{i}}">
           <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
           <g>
-            <rect 
-              [attr.x]="Math.min(measurement.startX, measurement.endX)" 
+            <rect
+              [attr.x]="Math.min(measurement.startX, measurement.endX)"
               [attr.y]="Math.min(measurement.startY, measurement.endY)"
               [attr.width]="Math.abs(measurement.endX - measurement.startX)"
               [attr.height]="Math.abs(measurement.endY - measurement.startY)"
@@ -221,71 +208,69 @@
           </g>
         </mask>
       </defs>
-      
+
       <!-- This rect will darken everything except the masked rectangle area -->
-      <rect x="0" y="0" 
-            width="100%" 
-            height="100%" 
+      <rect x="0" y="0"
+            width="100%"
+            height="100%"
             class="shape-overlay"
             [attr.mask]="'url(#rectangle-mask-' + i + ')'">
       </rect>
-      
-      <!-- Rectangle group without rotation transform - image rotates instead -->
+
       <g>
         <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
-        <rect 
-          [attr.x]="Math.min(measurement.startX, measurement.endX)" 
+        <rect
+          [attr.x]="Math.min(measurement.startX, measurement.endX)"
           [attr.y]="Math.min(measurement.startY, measurement.endY)"
           [attr.width]="Math.abs(measurement.endX - measurement.startX)"
           [attr.height]="Math.abs(measurement.endY - measurement.startY)"
-          class="measure-shape rectangle"
-          [class.rotating]="isDraggingPoint === 'rotateRect-' + i && isRotatingRectangle">
+          class="measure-shape rectangle">
         </rect>
-        
+
         <!-- Width dimension label (inside rotated group) -->
         <g class="dimension-label width-label">
           <!-- Width line -->
-          <line 
+          <line
             [attr.x1]="Math.min(measurement.startX, measurement.endX)"
             [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
             [attr.x2]="Math.max(measurement.startX, measurement.endX)"
             [attr.y2]="Math.max(measurement.startY, measurement.endY) + 15"
             class="dimension-line">
           </line>
-          
+
           <!-- Dimension arrows -->
-          <line 
+          <line
             [attr.x1]="Math.min(measurement.startX, measurement.endX)"
             [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
             [attr.x2]="Math.min(measurement.startX, measurement.endX) + 5"
             [attr.y2]="Math.max(measurement.startY, measurement.endY) + 10"
             class="dimension-arrow">
           </line>
-          <line 
+          <line
             [attr.x1]="Math.min(measurement.startX, measurement.endX)"
             [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
             [attr.x2]="Math.min(measurement.startX, measurement.endX) + 5"
             [attr.y2]="Math.max(measurement.startY, measurement.endY) + 20"
             class="dimension-arrow">
           </line>
-          
-          <line 
+
+          <line
             [attr.x1]="Math.max(measurement.startX, measurement.endX)"
             [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
             [attr.x2]="Math.max(measurement.startX, measurement.endX) - 5"
             [attr.y2]="Math.max(measurement.startY, measurement.endY) + 10"
             class="dimension-arrow">
           </line>
-          <line 
+          <line
             [attr.x1]="Math.max(measurement.startX, measurement.endX)"
             [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
             [attr.x2]="Math.max(measurement.startX, measurement.endX) - 5"
             [attr.y2]="Math.max(measurement.startY, measurement.endY) + 20"
             class="dimension-arrow">
           </line>
-          
+
           <!-- Width text -->
-          <text 
+          <text
             [attr.x]="(Math.min(measurement.startX, measurement.endX) + Math.max(measurement.startX, measurement.endX)) / 2"
             [attr.y]="Math.max(measurement.startY, measurement.endY) + 30"
             text-anchor="middle"
@@ -294,51 +279,51 @@
             {{ getHorizontalCelestialDistance(Math.min(measurement.startX, measurement.endX), Math.max(measurement.startY, measurement.endY), Math.max(measurement.startX, measurement.endX)) || (Math.round(Math.abs(measurement.endX - measurement.startX)) + ' px') }}
           </text>
         </g>
-        
+
         <!-- Height dimension label (inside rotated group) -->
         <g class="dimension-label height-label">
           <!-- Height line -->
-          <line 
+          <line
             [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y1]="Math.min(measurement.startY, measurement.endY)"
             [attr.x2]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y2]="Math.max(measurement.startY, measurement.endY)"
             class="dimension-line">
           </line>
-          
+
           <!-- Dimension arrows -->
-          <line 
+          <line
             [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y1]="Math.min(measurement.startY, measurement.endY)"
             [attr.x2]="Math.max(measurement.startX, measurement.endX) + 15"
             [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
             class="dimension-arrow">
           </line>
-          <line 
+          <line
             [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y1]="Math.min(measurement.startY, measurement.endY)"
             [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
             [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
             class="dimension-arrow">
           </line>
-          
-          <line 
+
+          <line
             [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y1]="Math.max(measurement.startY, measurement.endY)"
             [attr.x2]="Math.max(measurement.startX, measurement.endX) + 15"
             [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
             class="dimension-arrow">
           </line>
-          <line 
+          <line
             [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y1]="Math.max(measurement.startY, measurement.endY)"
             [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
             [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
             class="dimension-arrow">
           </line>
-          
+
           <!-- Height text -->
-          <text 
+          <text
             [attr.x]="Math.max(measurement.startX, measurement.endX) + 35"
             [attr.y]="(Math.min(measurement.startY, measurement.endY) + Math.max(measurement.startY, measurement.endY)) / 2"
             text-anchor="start"
@@ -347,7 +332,7 @@
             {{ getVerticalCelestialDistance(Math.max(measurement.startX, measurement.endX), Math.min(measurement.startY, measurement.endY), Math.max(measurement.startY, measurement.endY)) || (Math.round(Math.abs(measurement.endY - measurement.startY)) + ' px') }}
           </text>
         </g>
-        
+
         <!-- Removing SVG rotation handle (using DOM-based version instead) -->
         <g class="rotate-handle rotation-master-handle-placeholder"></g>
       </g>
@@ -363,28 +348,27 @@
        (mouseleave)="setMouseOverUIElement(false)"
        (mousedown)="handleShapeDragStart($event, i, measurement.showCircle ? 'circle' : 'rectangle')">
     <span class="measurement-text">{{ measurement.distance }}</span>
-    
+
     <div class="measurement-actions">
-      <button type="button" class="btn-shape-action circle-button" 
+      <button type="button" class="btn-shape-action circle-button"
               [class.active]="measurement.showCircle"
-              (click)="toggleCircle($event, i)" 
+              (click)="toggleCircle($event, i)"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
               title="{{ 'Draw circle' | translate }}">
         <fa-icon icon="circle"></fa-icon>
       </button>
-      
-      <button type="button" class="btn-shape-action rectangle-button" 
+
+      <button type="button" class="btn-shape-action rectangle-button"
               [class.active]="measurement.showRectangle"
-              (click)="toggleRectangle($event, i)" 
+              (click)="toggleRectangle($event, i)"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
               title="{{ 'Draw rectangle' | translate }}">
         <fa-icon icon="square"></fa-icon>
       </button>
-      
-      <button type="button" *ngIf="!isDraggingPoint || !isDraggingPoint.startsWith('prev')" 
-              class="btn-delete-measurement delete-button" 
+
+      <button type="button" class="btn-delete-measurement delete-button"
               (click)="deleteMeasurement($event, i)"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
@@ -403,32 +387,32 @@
     <defs>
       <mask id="current-circle-mask">
         <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
-        <circle 
-          [attr.cx]="(measureStartPoint.x + measureEndPoint.x) / 2" 
+        <circle
+          [attr.cx]="(measureStartPoint.x + measureEndPoint.x) / 2"
           [attr.cy]="(measureStartPoint.y + measureEndPoint.y) / 2"
           [attr.r]="calculateDistance(measureStartPoint.x, measureStartPoint.y, measureEndPoint.x, measureEndPoint.y) / 2"
           fill="black">
         </circle>
       </mask>
     </defs>
-    
+
     <!-- This rect will darken everything except the masked circle area -->
-    <rect x="0" y="0" 
-          width="100%" 
-          height="100%" 
+    <rect x="0" y="0"
+          width="100%"
+          height="100%"
           class="shape-overlay"
           mask="url(#current-circle-mask)">
     </rect>
-    
+
     <!-- The circle outline -->
-    <circle 
-      [attr.cx]="(measureStartPoint.x + measureEndPoint.x) / 2" 
+    <circle
+      [attr.cx]="(measureStartPoint.x + measureEndPoint.x) / 2"
       [attr.cy]="(measureStartPoint.y + measureEndPoint.y) / 2"
       [attr.r]="calculateDistance(measureStartPoint.x, measureStartPoint.y, measureEndPoint.x, measureEndPoint.y) / 2"
       class="measure-shape circle current">
     </circle>
   </svg>
-  
+
   <!-- Current measurement rectangle -->
   <svg *ngIf="showCurrentRectangle && measureStartPoint && measureEndPoint" class="measure-shape-container"
        [class.isDragging]="isDraggingPoint === 'currentShape'"
@@ -439,8 +423,8 @@
       <mask id="current-rectangle-mask">
         <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
         <g>
-          <rect 
-            [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)" 
+          <rect
+            [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)"
             [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
             [attr.width]="Math.abs(measureEndPoint.x - measureStartPoint.x)"
             [attr.height]="Math.abs(measureEndPoint.y - measureStartPoint.y)"
@@ -449,71 +433,70 @@
         </g>
       </mask>
     </defs>
-    
+
     <!-- This rect will darken everything except the masked rectangle area -->
-    <rect x="0" y="0" 
-          width="100%" 
-          height="100%" 
+    <rect x="0" y="0"
+          width="100%"
+          height="100%"
           class="shape-overlay"
           mask="url(#current-rectangle-mask)">
     </rect>
-    
+
     <!-- Rectangle group without rotation transform - image rotates instead -->
     <g>
       <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
-      <rect 
-        [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)" 
+      <rect
+        [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)"
         [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
         [attr.width]="Math.abs(measureEndPoint.x - measureStartPoint.x)"
         [attr.height]="Math.abs(measureEndPoint.y - measureStartPoint.y)"
-        class="measure-shape rectangle current"
-        [class.rotating]="isDraggingPoint === 'rotateCurrentRect' && isRotatingRectangle">
+        class="measure-shape rectangle current">
       </rect>
 
       <!-- Width dimension label -->
       <g class="dimension-label width-label">
         <!-- Width line -->
-        <line 
+        <line
           [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
           [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
           [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x)"
           [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
           class="dimension-line current">
         </line>
-        
+
         <!-- Dimension arrows -->
-        <line 
+        <line
           [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
           [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
           [attr.x2]="Math.min(measureStartPoint.x, measureEndPoint.x) + 5"
           [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 10"
           class="dimension-arrow current">
         </line>
-        <line 
+        <line
           [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
           [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
           [attr.x2]="Math.min(measureStartPoint.x, measureEndPoint.x) + 5"
           [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 20"
           class="dimension-arrow current">
         </line>
-        
-        <line 
+
+        <line
           [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x)"
           [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
           [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) - 5"
           [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 10"
           class="dimension-arrow current">
         </line>
-        <line 
+        <line
           [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x)"
           [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
           [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) - 5"
           [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 20"
           class="dimension-arrow current">
         </line>
-        
+
         <!-- Width text -->
-        <text 
+        <text
           [attr.x]="(Math.min(measureStartPoint.x, measureEndPoint.x) + Math.max(measureStartPoint.x, measureEndPoint.x)) / 2"
           [attr.y]="Math.max(measureStartPoint.y, measureEndPoint.y) + 30"
           text-anchor="middle"
@@ -526,47 +509,47 @@
       <!-- Height dimension label -->
       <g class="dimension-label height-label">
         <!-- Height line -->
-        <line 
+        <line
           [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
           [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y)"
           class="dimension-line current">
         </line>
-        
+
         <!-- Dimension arrows -->
-        <line 
+        <line
           [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
           [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 15"
           [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
           class="dimension-arrow current">
         </line>
-        <line 
+        <line
           [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
           [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
           [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
           class="dimension-arrow current">
         </line>
-        
-        <line 
+
+        <line
           [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
           [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 15"
           [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
           class="dimension-arrow current">
         </line>
-        <line 
+        <line
           [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
           [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
           [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
           class="dimension-arrow current">
         </line>
-        
+
         <!-- Height text -->
-        <text 
+        <text
           [attr.x]="Math.max(measureStartPoint.x, measureEndPoint.x) + 35"
           [attr.y]="(Math.min(measureStartPoint.y, measureEndPoint.y) + Math.max(measureStartPoint.y, measureEndPoint.y)) / 2"
           text-anchor="start"
@@ -575,12 +558,12 @@
           {{ getVerticalCelestialDistance(Math.max(measureStartPoint.x, measureEndPoint.x), Math.min(measureStartPoint.y, measureEndPoint.y), Math.max(measureStartPoint.y, measureEndPoint.y)) || (Math.round(Math.abs(measureEndPoint.y - measureStartPoint.y)) + ' px') }}
         </text>
       </g>
-      
+
       <!-- Removing SVG rotation handle (using DOM-based version instead) -->
       <g class="rotate-handle rotation-master-handle-placeholder"></g>
     </g>
   </svg>
-  
+
   <!-- Current measurement display -->
   <div *ngIf="measureDistance" class="measure-distance current-measurement"
        [style.left.px]="(measureStartPoint.x + measureEndPoint.x) / 2"
@@ -589,20 +572,20 @@
        (mouseleave)="setMouseOverUIElement(false)"
        (mousedown)="handleCurrentShapeDragStart($event, showCurrentCircle ? 'circle' : 'rectangle')">
     <span class="measurement-text">{{ measureDistance }}</span>
-    
+
     <div class="measurement-actions">
-      <button type="button" class="btn-shape-action circle-button" 
+      <button type="button" class="btn-shape-action circle-button"
               [class.active]="showCurrentCircle"
-              (click)="toggleCurrentCircle($event)" 
+              (click)="toggleCurrentCircle($event)"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
               title="{{ 'Draw circle' | translate }}">
         <fa-icon icon="circle"></fa-icon>
       </button>
-      
-      <button type="button" class="btn-shape-action rectangle-button" 
+
+      <button type="button" class="btn-shape-action rectangle-button"
               [class.active]="showCurrentRectangle"
-              (click)="toggleCurrentRectangle($event)" 
+              (click)="toggleCurrentRectangle($event)"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
               title="{{ 'Draw rectangle' | translate }}">
@@ -611,31 +594,18 @@
     </div>
   </div>
 
-  <!-- Current rotation handle as a DOM element -->
-  <div *ngIf="showCurrentRectangle && measureStartPoint && measureEndPoint" 
-       class="measure-marker rotation-handle current"
-       [class.rotating]="isDraggingPoint === 'rotateCurrentRect' && isRotatingRectangle"
-       [style.left.px]="Math.max(measureStartPoint.x, measureEndPoint.x)" 
-       [style.top.px]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-       (mousedown)="handleRectangleRotateStart($event)"
-       (wheel)="handleRotationWheel($event)"
-       title="{{ 'Rotate rectangle' | translate }}">
-    <div class="rotation-icon">
-      <fa-icon icon="arrows-rotate"></fa-icon>
-    </div>
-  </div>
 
   <!-- Coordinate labels for previous measurements -->
   <div *ngFor="let measurement of previousMeasurements; let i = index">
     <!-- Start point coordinates with perpendicular positioning -->
-    <div class="measure-coord-label visible"
+    <div *ngIf="measurement.startRa !== null && measurement.startDec !== null" class="measure-coord-label visible"
          [style.left.px]="measurement.startLabelX"
          [style.top.px]="measurement.startLabelY">
       <small>{{ formatCoordinatesCompact(measurement.startRa, measurement.startDec) }}</small>
     </div>
 
     <!-- End point coordinates with perpendicular positioning -->
-    <div class="measure-coord-label visible"
+    <div *ngIf="measurement.endRa !== null && measurement.endDec !== null" class="measure-coord-label visible"
          [style.left.px]="measurement.endLabelX"
          [style.top.px]="measurement.endLabelY">
       <small>{{ formatCoordinatesCompact(measurement.endRa, measurement.endDec) }}</small>

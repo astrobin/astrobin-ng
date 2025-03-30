@@ -66,7 +66,6 @@ export class CoordinatesFormatterService {
       useClientCoords?: boolean; // Whether to use client coordinates instead of offset
       naturalWidth?: number;    // Optional natural width if not available from image element
       imageScale?: number;      // Optional scale to apply (for zoom)
-      rotationDegrees?: number; // Optional rotation angle in degrees
     }
   ): {
     coordinates: CoordinateData;
@@ -107,7 +106,7 @@ export class CoordinatesFormatterService {
     const imageRenderedWidth = options?.useClientCoords
       ? imageElement.getBoundingClientRect().width
       : imageElement.clientWidth;
-      
+
     const imageRenderedHeight = options?.useClientCoords
       ? imageElement.getBoundingClientRect().height
       : imageElement.clientHeight;
@@ -118,24 +117,7 @@ export class CoordinatesFormatterService {
     // HD_WIDTH is a fixed reference width that the plate-solving matrix is based on
     const HD_WIDTH = 1824;
 
-    // Apply rotation if specified
-    if (options?.rotationDegrees && options.rotationDegrees !== 0) {
-      // Calculate image center for rotation
-      const centerX = imageRenderedWidth / 2;
-      const centerY = imageRenderedHeight / 2;
-      
-      // Rotate the point around the center
-      const rotatedPoint = this.rotatePointAroundCenter(
-        relativeX, 
-        relativeY, 
-        centerX, 
-        centerY, 
-        -options.rotationDegrees // Use negative angle to counter the applied rotation
-      );
-      
-      relativeX = rotatedPoint.x;
-      relativeY = rotatedPoint.y;
-    }
+    // Rotation functionality has been removed
 
     // Calculate x/y in HD space for coordinate interpolation
     let scaledX, scaledY;
@@ -177,27 +159,27 @@ export class CoordinatesFormatterService {
 
     // Get raw values from the interpolation
     const interpolationResult = interpolation.interpolate(scaledX, scaledY, true, true);
-    
+
     if (!interpolationResult || typeof interpolationResult.alpha !== 'number') {
       return null;
     }
-    
+
     // Convert RA from degrees (0-360) to hours (0-24)
     const raDegrees = interpolationResult.alpha;
     const raHours = raDegrees / 15;
-    
+
     // Helper function to avoid rounding errors
     const fixFloatingPointIssues = (value: number): number => {
       // Convert to fixed precision (4 decimal places) then back to number to avoid precision issues
       return parseFloat(value.toFixed(4));
     };
-    
+
     // Calculate HMS components with stable precision
     const raHoursInt = Math.floor(raHours);
     const raMinutesFull = (raHours - raHoursInt) * 60;
     const raMinutesInt = Math.floor(raMinutesFull);
     const raSeconds = fixFloatingPointIssues((raMinutesFull - raMinutesInt) * 60);
-    
+
     // Calculate DMS components with stable precision
     const decDegrees = Math.abs(interpolationResult.delta);
     const decSign = interpolationResult.delta >= 0 ? 1 : -1;
@@ -205,40 +187,40 @@ export class CoordinatesFormatterService {
     const decMinutesFull = (decDegrees - decDegreesInt) * 60;
     const decMinutesInt = Math.floor(decMinutesFull);
     const decSeconds = fixFloatingPointIssues((decMinutesFull - decMinutesInt) * 60);
-    
+
     // Handle carryover when seconds are very close to 60
     let finalRaHours = raHoursInt;
     let finalRaMinutes = raMinutesInt;
     let finalRaSeconds = raSeconds;
-    
+
     if (finalRaSeconds >= 59.995) {
       finalRaSeconds = 0;
       finalRaMinutes += 1;
-      
+
       if (finalRaMinutes >= 60) {
         finalRaMinutes = 0;
         finalRaHours += 1;
-        
+
         if (finalRaHours >= 24) {
           finalRaHours = 0;
         }
       }
     }
-    
+
     let finalDecDegrees = decDegreesInt;
     let finalDecMinutes = decMinutesInt;
     let finalDecSeconds = decSeconds;
-    
+
     if (finalDecSeconds >= 59.995) {
       finalDecSeconds = 0;
       finalDecMinutes += 1;
-      
+
       if (finalDecMinutes >= 60) {
         finalDecMinutes = 0;
         finalDecDegrees += 1;
       }
     }
-    
+
     // Create the coordinate data object with stabilized values
     const coordinates: CoordinateData = {
       ra: {
@@ -253,7 +235,7 @@ export class CoordinatesFormatterService {
         seconds: Math.round(finalDecSeconds)
       }
     };
-    
+
     // Add galactic coordinates if available
     if (interpolationResult.l !== undefined && interpolationResult.b !== undefined) {
       const lDegrees = Math.abs(interpolationResult.l);
@@ -261,48 +243,48 @@ export class CoordinatesFormatterService {
       const lMinutesFull = (lDegrees - lDegreesInt) * 60;
       const lMinutesInt = Math.floor(lMinutesFull);
       const lSeconds = fixFloatingPointIssues((lMinutesFull - lMinutesInt) * 60);
-      
+
       const bDegrees = Math.abs(interpolationResult.b);
       const bSign = interpolationResult.b >= 0 ? 1 : -1;
       const bDegreesInt = Math.floor(bDegrees);
       const bMinutesFull = (bDegrees - bDegreesInt) * 60;
       const bMinutesInt = Math.floor(bMinutesFull);
       const bSeconds = fixFloatingPointIssues((bMinutesFull - bMinutesInt) * 60);
-      
+
       // Handle carryover for galactic longitude (l)
       let finalLDegrees = lDegreesInt;
       let finalLMinutes = lMinutesInt;
       let finalLSeconds = lSeconds;
-      
+
       if (finalLSeconds >= 59.995) {
         finalLSeconds = 0;
         finalLMinutes += 1;
-        
+
         if (finalLMinutes >= 60) {
           finalLMinutes = 0;
           finalLDegrees += 1;
-          
+
           if (finalLDegrees >= 360) {
             finalLDegrees = 0;
           }
         }
       }
-      
+
       // Handle carryover for galactic latitude (b)
       let finalBDegrees = bDegreesInt;
       let finalBMinutes = bMinutesInt;
       let finalBSeconds = bSeconds;
-      
+
       if (finalBSeconds >= 59.995) {
         finalBSeconds = 0;
         finalBMinutes += 1;
-        
+
         if (finalBMinutes >= 60) {
           finalBMinutes = 0;
           finalBDegrees += 1;
         }
       }
-      
+
       coordinates.galactic = {
         l: {
           degrees: finalLDegrees,
@@ -346,7 +328,6 @@ export class CoordinatesFormatterService {
       useClientCoords?: boolean; // Whether to use client coordinates instead of offset
       naturalWidth?: number;    // Optional natural width if not available from image element
       imageScale?: number;      // Optional scale to apply (for zoom)
-      rotationDegrees?: number; // Optional rotation angle in degrees
     }
   ): {
     coordinates: FormattedCoordinates;
@@ -355,14 +336,14 @@ export class CoordinatesFormatterService {
   } {
     // Get the raw coordinate data
     const result = this.calculateRawCoordinates(event, imageElement, interpolationMatrix, options);
-    
+
     if (!result) {
       return null;
     }
-    
+
     // Format the coordinates as HTML
     const formattedCoordinates = this.formatCoordinateData(result.coordinates);
-    
+
     return {
       coordinates: formattedCoordinates,
       x: result.x,
@@ -522,7 +503,7 @@ export class CoordinatesFormatterService {
       galacticDecHtml
     };
   }
-  
+
   /**
    * Format raw coordinate data into HTML representation
    * @param coordinateData Raw coordinate data to format
@@ -537,7 +518,7 @@ export class CoordinatesFormatterService {
         galacticDecHtml: ""
       };
     }
-    
+
     // Format equatorial coordinates
     const { raHtml, decHtml } = this.formatEquatorialCoordinates(
       coordinateData.ra.hours.toString(),
@@ -548,11 +529,11 @@ export class CoordinatesFormatterService {
       coordinateData.dec.seconds.toString(),
       coordinateData.dec.sign > 0 ? "" : "-"
     );
-    
+
     // Format galactic coordinates if available
     let galacticRaHtml = "";
     let galacticDecHtml = "";
-    
+
     if (coordinateData.galactic) {
       const galacticCoords = this.formatGalacticCoordinates(
         coordinateData.galactic.l.degrees.toString(),
@@ -563,11 +544,11 @@ export class CoordinatesFormatterService {
         coordinateData.galactic.b.seconds.toString(),
         coordinateData.galactic.b.sign > 0 ? "+" : "-"
       );
-      
+
       galacticRaHtml = galacticCoords.galacticRaHtml;
       galacticDecHtml = galacticCoords.galacticDecHtml;
     }
-    
+
     return {
       raHtml,
       decHtml,
@@ -597,37 +578,4 @@ export class CoordinatesFormatterService {
     );
   }
 
-  /**
-   * Rotates a point around a center point by a given angle in degrees
-   * @param x X coordinate of the point to rotate
-   * @param y Y coordinate of the point to rotate
-   * @param centerX X coordinate of the center point
-   * @param centerY Y coordinate of the center point
-   * @param angleDegrees Angle in degrees to rotate by
-   * @returns The rotated point coordinates
-   */
-  public rotatePointAroundCenter(
-    x: number,
-    y: number,
-    centerX: number,
-    centerY: number,
-    angleDegrees: number
-  ): { x: number; y: number } {
-    // Convert degrees to radians
-    const angleRadians = (angleDegrees * Math.PI) / 180;
-
-    // Translate point to origin
-    const translatedX = x - centerX;
-    const translatedY = y - centerY;
-
-    // Apply rotation
-    const rotatedX = translatedX * Math.cos(angleRadians) - translatedY * Math.sin(angleRadians);
-    const rotatedY = translatedX * Math.sin(angleRadians) + translatedY * Math.cos(angleRadians);
-
-    // Translate back from origin
-    return {
-      x: rotatedX + centerX,
-      y: rotatedY + centerY
-    };
-  }
 }
