@@ -205,7 +205,7 @@
         [src]="hd"
         class="hd-image"
         alt=""
-        [style.max-width.px]="naturalWidth"
+        [style.max-width.px]="maxDisplayWidth"
       />
 
       <!-- For GIFs on non-touch devices, we can use ngx-image-zoom as it works well there -->
@@ -258,7 +258,7 @@
         [src]="hd"
         alt=""
         class="hd-image"
-        [style.max-width.px]="naturalWidth"
+        [style.max-width.px]="maxDisplayWidth"
       />
 
       <a
@@ -271,7 +271,7 @@
           [src]="hd"
           alt=""
           class="hd-image"
-          [style.max-width.px]="naturalWidth"
+          [style.max-width.px]="maxDisplayWidth"
         />
       </a>
       <ng-container

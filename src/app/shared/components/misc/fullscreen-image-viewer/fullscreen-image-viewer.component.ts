@@ -323,6 +323,21 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return this.ngxImageZoom?.zoomService.zoomingEnabled;
   }
 
+  // Returns the maximum width for the image - either naturalWidth or window width, whichever is smaller
+  get maxDisplayWidth(): number {
+    if (!this.isBrowser || !this.windowRef?.nativeWindow) {
+      return this.naturalWidth || 1000; // Fallback for SSR or no window ref
+    }
+
+    const availableWidth = this.windowRef.nativeWindow.innerWidth;
+
+    if (!this.naturalWidth) {
+      return availableWidth;
+    }
+
+    return Math.min(this.naturalWidth, availableWidth);
+  }
+
   protected get isVeryLargeImage(): boolean {
     return this.naturalWidth * (this.naturalHeight || this.naturalWidth) > this.PIXEL_THRESHOLD;
   }
@@ -357,8 +372,53 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
+    // First reset zoom completely - we'll reinitialize from scratch
+    this.resetToDefaultZoom();
+
+    // Update dimensions
     this._setZoomLensSize();
     this._updateCanvasDimensions();
+
+    // For non-touch mode, completely reinitialize the zoom component
+    if (!this.touchMode && this.ngxImageZoom && !this.isVeryLargeImage) {
+      // Force zoom component reinitialization using setTimeout
+      // This ensures DOM has updated before we try to access elements
+      this.windowRef.nativeWindow.setTimeout(() => {
+        // If we have access to _initImageZoom, call it directly
+        if (typeof this._initImageZoom === 'function') {
+          this._initImageZoom(false); // Pass false to avoid keeping current zoom state
+        } else {
+          // Otherwise manually initialize key zoom properties
+          const zoomContainer = this.ngxImageZoomEl?.nativeElement;
+          if (zoomContainer) {
+            const thumbnailElem = zoomContainer.querySelector('.ngxImageZoomThumbnail');
+            if (thumbnailElem) {
+              // Recalculate thumbnail dimensions based on current rendered size
+              const renderedThumbnailHeight = thumbnailElem.height;
+              const thumbnailNaturalHeight = thumbnailElem.naturalHeight;
+              const renderRatio = renderedThumbnailHeight / thumbnailNaturalHeight;
+              const renderedThumbnailWidth = thumbnailElem.naturalWidth * renderRatio;
+
+              // Update core zoom service properties with new dimensions
+              if (this.ngxImageZoom.zoomService) {
+                this.ngxImageZoom.zoomService.thumbWidth = renderedThumbnailWidth;
+                this.ngxImageZoom.zoomService.thumbHeight = renderedThumbnailHeight;
+                this.ngxImageZoom.zoomService.minZoomRatio = renderedThumbnailWidth / this.naturalWidth;
+                this.ngxImageZoom.zoomService.calculateRatio();
+
+                // Make sure zoom is off initially
+                this.ngxImageZoom.zoomService.zoomOff();
+              }
+            }
+          }
+        }
+
+        // Force change detection to update UI
+        this.changeDetectorRef.markForCheck();
+      }, 100);
+    }
+
+    // Redraw canvas with updated dimensions
     this._drawCanvas();
 
     // Clear coordinate display until next mouse move
@@ -692,37 +752,56 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.toggleMeasuringMode(event as unknown as MouseEvent);
   }
 
-  // Reset to default zoom level (fit to window)
+  // Reset zoom completely - return to initial non-zoomed state
   resetToDefaultZoom(): void {
-    // Reset zoom to default level (fit to window)
-    if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
-      // Set magnification to the minimum ratio (fit to window)
-      const minRatio = this.ngxImageZoom.zoomService.minZoomRatio;
-      this.ngxImageZoom.zoomService.magnification = minRatio;
+    // Handle touch mode and mouse mode differently
+    if (this.touchMode) {
+      // For touch mode, fully reset the touch zoom
+      this._resetTouchZoom();
+      this._updateCanvasDimensions();
+      this._drawCanvas();
 
-      // Clear any measuring zoom notifications immediately
+      // Reset any touch zoom indicators
+      this.actualTouchZoom = null;
+    } else if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
+      // For mouse mode, completely disable zooming and reset all zoom state
+
+      // Turn off zoom completely
+      this.ngxImageZoom.zoomService.zoomOff();
+
+      // Reset all zoom related properties to initial values
+      this.ngxImageZoom.zoomService.zoomingEnabled = false;
+      this.ngxImageZoom.zoomService.magnification = 1;
+
+      // Clear any measuring zoom notifications
       if (this._measureZoomNotification) {
         this.popNotificationsService.clear(this._measureZoomNotification.toastId);
         this._measureZoomNotification = null;
       }
 
-      // Update the UI to show the current zoom level
-      this.setZoomScroll(minRatio);
+      // Reset zoom indicators/display
+      this.setZoomScroll(1);
 
-      // Trigger a zoom update if needed
-      if (this.ngxImageZoom.zoomService.zoomingEnabled) {
-        // Create a center-based mouse event to update zoom position
-        const container = this.ngxImageZoomEl.nativeElement;
-        if (container) {
-          const rect = container.getBoundingClientRect();
-          const fakeEvent = {
-            offsetX: rect.width / 2,
-            offsetY: rect.height / 2
-          } as MouseEvent;
-          this.ngxImageZoom.zoomService.calculateZoomPosition(fakeEvent);
-        }
+      // Reset lens/thumb image position to ensure a clean state
+      const thumbElement = this.ngxImageZoomEl?.nativeElement?.querySelector('.ngxImageZoomThumbnail');
+      if (thumbElement) {
+        thumbElement.style.transform = 'translate(0px, 0px)';
+      }
+
+      // Hide any active lens
+      const lensElement = this.ngxImageZoomEl?.nativeElement?.querySelector('.ngxImageZoomLens');
+      if (lensElement) {
+        lensElement.style.display = 'none';
       }
     }
+
+    // Clear any measuring tool state
+    if (this.isMeasuringMode) {
+      this.resetMeasurement();
+    }
+
+    // Force change detection to ensure UI updates
+    this.changeDetectorRef.markForCheck();
   }
 
   @HostListener("window:keyup.f", ["$event"])
