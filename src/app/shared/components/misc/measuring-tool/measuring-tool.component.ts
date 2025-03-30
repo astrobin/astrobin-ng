@@ -101,7 +101,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   dragStartX: number | null = null;
   dragStartY: number | null = null;
   isDraggingPoint: 'start' | 'end' | string | null = null;
-  pointDragRadius = 10; // Pixel radius around points that's draggable
 
   // Shape visualization
   showCurrentCircle: boolean = false;
@@ -345,7 +344,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       ra: null,
       dec: null
     };
-    
+
     // Emit event to signal measurement has started
     this.measurementStarted.emit();
 
@@ -536,7 +535,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         ra: null,
         dec: null
       };
-      
+
       // Emit event to signal measurement has started
       this.measurementStarted.emit();
 
@@ -648,7 +647,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Save measurement to previous list
     this.previousMeasurements.push(measurementData);
-    
+
     // No need to emit a separate finished event - measurementComplete already signals completion
 
     // Get the current shape preference first
@@ -2192,8 +2191,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       return;
     }
 
-    // Generate a default name based on the distance
-    const defaultName = `Measurement ${this.measureDistance}`;
+    // Generate a default name based on width x height if available (for rectangles)
+    let defaultName = this.measureDistance; // Fallback
 
     // Calculate measurement length (needed for recreation)
     const length = this.calculateDistance(
@@ -2247,6 +2246,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
           // Convert to arcseconds
           heightArcseconds = angularHeight * 3600;
+        }
+        
+        // Set the default name to width x height
+        if (widthArcseconds !== null && heightArcseconds !== null) {
+          // Format to 2 decimal places
+          const widthFormatted = widthArcseconds.toFixed(2);
+          const heightFormatted = heightArcseconds.toFixed(2);
+          defaultName = `${widthFormatted}″ × ${heightFormatted}″`;
         }
       }
     }
@@ -2355,7 +2362,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       const originalMeasurement = this.previousMeasurements[index];
 
       // Generate a default name
-      const defaultName = `Measurement ${originalMeasurement.distance}`;
+      let defaultName = originalMeasurement.distance; // Fallback
 
       // Calculate measurement length (needed for recreation)
       const length = this.calculateDistance(
@@ -2409,6 +2416,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
             // Convert to arcseconds
             heightArcseconds = angularHeight * 3600;
+          }
+          
+          // Set the default name to width x height
+          if (widthArcseconds !== null && heightArcseconds !== null) {
+            // Format to 2 decimal places
+            const widthFormatted = widthArcseconds.toFixed(2);
+            const heightFormatted = heightArcseconds.toFixed(2);
+            defaultName = `${widthFormatted}″ × ${heightFormatted}″`;
           }
         }
       }
@@ -3062,11 +3077,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.previousMeasurements.push(loadedMeasurement);
     }
 
-    // Show a subtle info notification when loading is complete
-    // We're using info instead of success to be less intrusive
-    this.popNotificationsService.info(
-      this.translateService.instant("Measurement loaded")
-    );
+    // No notification needed - the measurement appearing is obvious to the user
 
     // Track selected preset in store
     this.store$.dispatch(new SelectMeasurementPreset({ preset }));

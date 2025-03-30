@@ -4,10 +4,7 @@
 </div>
 
 <div class="modal-body">
-  <div class="measurement-preview">
-    <div class="preview-label">{{ 'Measurement' | translate }}: </div>
-    <div class="preview-value">{{ measurementData?.distance }}</div>
-  </div>
+  <!-- No preview needed - name will be set as width x height by default -->
   
   <form [formGroup]="form">
     <div class="mb-3">
