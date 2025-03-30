@@ -279,7 +279,8 @@
             text-anchor="middle"
             class="dimension-text"
             [attr.dominant-baseline]="'central'">
-            {{ getHorizontalCelestialDistance(Math.min(measurement.startX, measurement.endX), Math.max(measurement.startY, measurement.endY), Math.max(measurement.startX, measurement.endX)) || (Math.round(Math.abs(measurement.endX - measurement.startX)) + ' px') }}
+            {{ getHorizontalCelestialDistance(Math.min(measurement.startX, measurement.endX), Math.max(measurement.startY, measurement.endY), Math.max(measurement.startX, measurement.endX), measurement) || 
+                (Math.round(Math.abs(measurement.endX - measurement.startX)) + ' px') }}
           </text>
         </g>
 
@@ -332,7 +333,8 @@
             text-anchor="start"
             class="dimension-text"
             [attr.dominant-baseline]="'central'">
-            {{ getVerticalCelestialDistance(Math.max(measurement.startX, measurement.endX), Math.min(measurement.startY, measurement.endY), Math.max(measurement.startY, measurement.endY)) || (Math.round(Math.abs(measurement.endY - measurement.startY)) + ' px') }}
+            {{ getVerticalCelestialDistance(Math.max(measurement.startX, measurement.endX), Math.min(measurement.startY, measurement.endY), Math.max(measurement.startY, measurement.endY), measurement) || 
+                (Math.round(Math.abs(measurement.endY - measurement.startY)) + ' px') }}
           </text>
         </g>
 

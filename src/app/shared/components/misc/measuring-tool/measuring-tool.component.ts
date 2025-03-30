@@ -148,15 +148,15 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * - Otherwise: shows as degrees, arcminutes, and arcseconds
    * Always rounds to the nearest arcsecond with no decimal places
    */
-  private _formatAstronomicalAngle(arcseconds: number): string {
+  formatAstronomicalAngle(arcseconds: number): string {
     // Round to the nearest arcsecond
     const totalArcseconds = Math.round(arcseconds);
-    
+
     // Calculate components
     const degrees = Math.floor(totalArcseconds / 3600);
     const arcminutes = Math.floor((totalArcseconds % 3600) / 60);
     const remainingArcseconds = totalArcseconds % 60;
-    
+
     // Format based on size
     if (totalArcseconds < 60) {
       // Less than 1 arcminute: show only arcseconds
@@ -172,34 +172,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
   /**
    * Format angular distance consistently across the component
-   * This method applies stabilization to prevent flickering from floating point issues
    */
   private _formatStableAngularDistance(angularDistance: number): string {
     // Stabilize the input value to reduce flickering
     const stableAngularDistance = this._stabilizeValue(angularDistance);
 
-    // Format based on size, with stable thresholds
-    const arcminThreshold = this._stabilizeValue(1/60);
-    const degreeThreshold = 1;
+    // Convert to arcseconds - this is what formatAstronomicalAngle expects
+    const arcseconds = stableAngularDistance * 3600;
 
-    if (stableAngularDistance < arcminThreshold) {
-      // Less than 1 arcminute, show in arcseconds
-      const arcseconds = this._stabilizeValue(stableAngularDistance * 3600);
-
-      // For very small values, prevent unnecessary frequent changes by rounding more
-      if (arcseconds < 1) {
-        return `${arcseconds.toFixed(2)}″`;
-      } else {
-        return `${arcseconds.toFixed(1)}″`;
-      }
-    } else if (stableAngularDistance < degreeThreshold) {
-      // Less than 1 degree, show in arcminutes
-      const arcminutes = this._stabilizeValue(stableAngularDistance * 60);
-      return `${arcminutes.toFixed(1)}′`;
-    } else {
-      // Show in degrees
-      return `${stableAngularDistance.toFixed(2)}°`;
-    }
+    // Use the standardized astronomical angle formatter
+    return this.formatAstronomicalAngle(arcseconds);
   }
 
   constructor(
@@ -1009,17 +991,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         measurement.endDec
       );
 
-      // Format based on size
-      if (angularDistance < 1/60) {
-        // Less than 1 arcminute, show in arcseconds
-        measurement.distance = `${(angularDistance * 3600).toFixed(1)}″`;
-      } else if (angularDistance < 1) {
-        // Less than 1 degree, show in arcminutes
-        measurement.distance = `${(angularDistance * 60).toFixed(1)}′`;
-      } else {
-        // Show in degrees
-        measurement.distance = `${angularDistance.toFixed(2)}°`;
-      }
+      // Convert to arcseconds and use consistent formatting
+      const arcseconds = angularDistance * 3600;
+
+      // Use the standardized astronomical angle formatter
+      measurement.distance = this.formatAstronomicalAngle(arcseconds);
     } else {
       measurement.distance = `${Math.round(pixelDistance)} px`;
     }
@@ -1041,6 +1017,29 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     event.preventDefault();
+
+    // Extract the index from the drag state string
+    if (this.isDraggingPoint && (this.isDraggingPoint.startsWith('prevStart-') || this.isDraggingPoint.startsWith('prevEnd-'))) {
+      const parts = this.isDraggingPoint.split('-');
+      const index = parseInt(parts[1], 10);
+
+      if (!isNaN(index) && index >= 0 && index < this.previousMeasurements.length) {
+        const measurement = this.previousMeasurements[index];
+
+        // Always calculate on the fly based on current coordinates
+        if (measurement.startRa !== null && measurement.endRa !== null) {
+          const angularDistance = this.calculateAngularDistance(
+            measurement.startRa,
+            measurement.startDec,
+            measurement.endRa,
+            measurement.endDec
+          );
+
+          // Use consistent formatting
+          measurement.distance = this._formatStableAngularDistance(angularDistance);
+        }
+      }
+    }
 
     // Clean up event listeners
     document.removeEventListener('mousemove', this._onPreviousMeasurementDragMove);
@@ -1197,7 +1196,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             measurement.endDec = endCoords.dec;
           }
 
-          // Update the distance calculation
+          // Always recalculate based on new coordinates
+          // This ensures honest representation of the actual measurement
           if (measurement.startRa !== null && measurement.endRa !== null) {
             const angularDistance = this.calculateAngularDistance(
               measurement.startRa,
@@ -1365,8 +1365,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.measureEndPoint.dec = endCoords.dec;
       }
 
-      // Update distance calculation
-      if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
+      // Always calculate distances on the fly based on the current coordinates
+      else if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
         const angularDistance = this.calculateAngularDistance(
           this.measureStartPoint.ra,
           this.measureStartPoint.dec,
@@ -1865,8 +1865,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
   /**
    * Get horizontal celestial distance for rectangle
+   *
+   * @param measurement Optional measurement data containing additional information
    */
-  getHorizontalCelestialDistance(x1: number, y: number, x2: number): string {
+  getHorizontalCelestialDistance(x1: number, y: number, x2: number, measurement?: MeasurementData | MeasurementPresetInterface): string {
     // If no advanced solution, return empty (template will show px)
     if (!this.advancedSolutionMatrix) {
       return '';
@@ -1885,17 +1887,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         endCoords.dec
       );
 
-      // Format based on size
-      if (angularDistance < 1/60) {
-        // Less than 1 arcminute, show in arcseconds
-        return `${(angularDistance * 3600).toFixed(1)}″`;
-      } else if (angularDistance < 1) {
-        // Less than 1 degree, show in arcminutes
-        return `${(angularDistance * 60).toFixed(1)}′`;
-      } else {
-        // Show in degrees
-        return `${angularDistance.toFixed(2)}°`;
-      }
+      // Convert to arcseconds
+      const arcseconds = angularDistance * 3600;
+
+      // Format using standardized astronomical notation
+      return this.formatAstronomicalAngle(arcseconds);
     }
 
     // If we couldn't calculate celestial coordinates, return empty string
@@ -1905,8 +1901,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
   /**
    * Get vertical celestial distance for rectangle
+   *
+   * @param measurement Optional measurement data containing additional information
    */
-  getVerticalCelestialDistance(x: number, y1: number, y2: number): string {
+  getVerticalCelestialDistance(x: number, y1: number, y2: number, measurement?: MeasurementData | MeasurementPresetInterface): string {
     // If no advanced solution, return empty (template will show px)
     if (!this.advancedSolutionMatrix) {
       return '';
@@ -1925,17 +1923,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         endCoords.dec
       );
 
-      // Format based on size
-      if (angularDistance < 1/60) {
-        // Less than 1 arcminute, show in arcseconds
-        return `${(angularDistance * 3600).toFixed(1)}″`;
-      } else if (angularDistance < 1) {
-        // Less than 1 degree, show in arcminutes
-        return `${(angularDistance * 60).toFixed(1)}′`;
-      } else {
-        // Show in degrees
-        return `${angularDistance.toFixed(2)}°`;
-      }
+      // Convert to arcseconds
+      const arcseconds = angularDistance * 3600;
+
+      // Format using standardized astronomical notation
+      return this.formatAstronomicalAngle(arcseconds);
     }
 
     // If we couldn't calculate celestial coordinates, return empty string
@@ -2276,12 +2268,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           // Convert to arcseconds
           heightArcseconds = angularHeight * 3600;
         }
-        
+
         // Set the default name to width x height using astronomical format
         if (widthArcseconds !== null && heightArcseconds !== null) {
           // Format using proper astronomical angle notation
-          const widthFormatted = this._formatAstronomicalAngle(widthArcseconds);
-          const heightFormatted = this._formatAstronomicalAngle(heightArcseconds);
+          const widthFormatted = this.formatAstronomicalAngle(widthArcseconds);
+          const heightFormatted = this.formatAstronomicalAngle(heightArcseconds);
           defaultName = `${widthFormatted} × ${heightFormatted}`;
         }
       }
@@ -2446,12 +2438,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             // Convert to arcseconds
             heightArcseconds = angularHeight * 3600;
           }
-          
+
           // Set the default name to width x height using astronomical format
           if (widthArcseconds !== null && heightArcseconds !== null) {
             // Format using proper astronomical angle notation
-            const widthFormatted = this._formatAstronomicalAngle(widthArcseconds);
-            const heightFormatted = this._formatAstronomicalAngle(heightArcseconds);
+            const widthFormatted = this.formatAstronomicalAngle(widthArcseconds);
+            const heightFormatted = this.formatAstronomicalAngle(heightArcseconds);
             defaultName = `${widthFormatted} × ${heightFormatted}`;
           }
         }
@@ -2956,21 +2948,70 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.measureEndPoint.dec = endCoords.dec;
       }
 
-      // Calculate the measurement distance based on RA/Dec coordinates
-      // This ensures it matches how new measurements are displayed
-      if (startCoords && endCoords) {
-        // Always use the direct angular distance between start and end points
-        // This matches the behavior of new measurements
+      // First improve the accuracy of point placement using the known exact width/height
+      if (preset.widthArcseconds && preset.heightArcseconds && this.measureStartPoint && this.measureEndPoint) {
+        // We're targeting exact width and height in arcseconds, but our pixel placement might be off
+        // due to rounding or small errors in coordinate transformation
+
+        // Get the current points
+        const centerX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
+        const centerY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
+
+        // Start with a very precise plate scale calculation
+        const pixelsPerArcsec = Math.max(
+          0.25, // minimum reasonable value
+          (horizontalPixelsPerArcsec + verticalPixelsPerArcsec) / 2
+        );
+
+        // Get the exact target dimensions in pixels
+        const targetWidthPixels = preset.widthArcseconds * pixelsPerArcsec;
+        const targetHeightPixels = preset.heightArcseconds * pixelsPerArcsec;
+
+        // Calculate the adjustment needed (ratio between target and current dimensions)
+        const currentWidthPixels = Math.abs(this.measureEndPoint.x - this.measureStartPoint.x);
+        const currentHeightPixels = Math.abs(this.measureEndPoint.y - this.measureStartPoint.y);
+
+        // Apply correction by repositioning the end point (keep start fixed)
+        const adjustedEndX = this.measureStartPoint.x +
+          (this.measureEndPoint.x - this.measureStartPoint.x) *
+          (targetWidthPixels / Math.max(0.1, currentWidthPixels));
+
+        const adjustedEndY = this.measureStartPoint.y +
+          (this.measureEndPoint.y - this.measureStartPoint.y) *
+          (targetHeightPixels / Math.max(0.1, currentHeightPixels));
+
+        // Update the end point position
+        this.measureEndPoint.x = adjustedEndX;
+        this.measureEndPoint.y = adjustedEndY;
+
+        // Recalculate celestial coordinates for the adjusted end point
+        const adjustedEndCoords = this.calculateCoordinatesAtPoint(adjustedEndX, adjustedEndY);
+        if (adjustedEndCoords) {
+          this.measureEndPoint.ra = adjustedEndCoords.ra;
+          this.measureEndPoint.dec = adjustedEndCoords.dec;
+        }
+      }
+
+      // Now calculate distance based on adjusted RA/Dec coordinates
+      // Use the current points which may have been adjusted above
+      if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
+        // Use the direct angular distance between start and end points (which may have been adjusted)
+        const angularDistance = this.calculateAngularDistance(
+          this.measureStartPoint.ra, this.measureStartPoint.dec,
+          this.measureEndPoint.ra, this.measureEndPoint.dec
+        );
+
+        // Format this distance using our standard formatter
+        this.measureDistance = this._formatStableAngularDistance(angularDistance);
+      }
+      // This is the fallback if for some reason we couldn't get RA/Dec values
+      // from the measurement points directly
+      else if (startCoords && endCoords) {
+        // Use the original coordinate calculations from earlier in the function
         const angularDistance = this.calculateAngularDistance(
           startCoords.ra, startCoords.dec,
           endCoords.ra, endCoords.dec
         );
-        this.measureDistance = this._formatStableAngularDistance(angularDistance);
-      }
-      // Fall back to using stored values if coordinates couldn't be calculated
-      else if (preset.widthArcseconds) {
-        // Convert arcseconds to degrees and format
-        const angularDistance = preset.widthArcseconds / 3600;
         this.measureDistance = this._formatStableAngularDistance(angularDistance);
       }
       // Last resort - just show pixel distance
