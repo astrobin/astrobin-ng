@@ -78,6 +78,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   @Input() setMouseOverUIElement: (value: boolean) => void;
 
   @Output() exitMeasuringMode = new EventEmitter<void>();
+  @Output() measurementStarted = new EventEmitter<void>();
   @Output() measurementComplete = new EventEmitter<MeasurementData>();
 
   // Measurement points
@@ -344,6 +345,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       ra: null,
       dec: null
     };
+    
+    // Emit event to signal measurement has started
+    this.measurementStarted.emit();
 
     // Initialize mouse position to match the cursor position immediately
     this.mouseX = event.clientX;
@@ -532,6 +536,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         ra: null,
         dec: null
       };
+      
+      // Emit event to signal measurement has started
+      this.measurementStarted.emit();
 
       // Initialize mouse position for dashed line display
       this.mouseX = event.clientX;
@@ -641,6 +648,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Save measurement to previous list
     this.previousMeasurements.push(measurementData);
+    
+    // No need to emit a separate finished event - measurementComplete already signals completion
 
     // Get the current shape preference first
     const currentCircle = this.showCurrentCircle;

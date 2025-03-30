@@ -146,6 +146,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   };
   protected loadingAdvancedSolutionMatrix = false;
   protected isMeasuringMode: boolean = false;
+  protected measurementInProgress: boolean = false;
   protected measureStartPoint: { x: number; y: number; ra: number; dec: number } = null;
   protected measureEndPoint: { x: number; y: number; ra: number; dec: number } = null;
   protected measureDistance: string = null;

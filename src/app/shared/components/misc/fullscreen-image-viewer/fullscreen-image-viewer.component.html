@@ -304,15 +304,16 @@
         ></ng-container>
       </ng-container>
 
-      <!-- Measurement instructions -->
+      <!-- Measurement instructions - only use the first point instruction here,
+           the measuring tool component will handle the second point instruction -->
       <ng-container *ngIf="isMeasuringMode">
         <ng-container
-          *ngIf="!measureStartPoint"
+          *ngIf="!measurementInProgress"
           [ngTemplateOutlet]="measureFirstPointInstructionTemplate"
         ></ng-container>
 
         <ng-container
-          *ngIf="measureStartPoint && !measureEndPoint"
+          *ngIf="measurementInProgress"
           [ngTemplateOutlet]="measureSecondPointInstructionTemplate"
         ></ng-container>
       </ng-container>
@@ -435,6 +436,8 @@
     [windowHeight]="isBrowser ? windowRef.nativeWindow.innerHeight : 0"
     [setMouseOverUIElement]="setMouseOverUIElement.bind(this)"
     (exitMeasuringMode)="toggleMeasuringMode()"
+    (measurementStarted)="measurementInProgress = true"
+    (measurementComplete)="measurementInProgress = false"
   ></astrobin-measuring-tool>
 
   <!-- Coordinate display -->
