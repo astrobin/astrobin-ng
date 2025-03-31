@@ -13,7 +13,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("SubscriptionsService", () => {
   let service: SubscriptionsService;
-  let store: MockStore;
+  // let store: MockStore;
   const initialState: MainState = StateGenerator.default();
 
   beforeEach(async () => {

@@ -37,7 +37,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     return this.cookieService.get(AuthService.CLASSIC_AUTH_TOKEN_COOKIE);
   }
 
-  login(handle: string, password: string, redirectUrl?: string): Observable<string> {
+  login(handle: string, password: string, _redirectUrl?: string): Observable<string> {
     return this.authClassicApi.login(handle, password);
   }
 

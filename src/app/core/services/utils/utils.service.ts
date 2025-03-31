@@ -171,7 +171,7 @@ export class UtilsService {
       }
 
       // The result can be accessed through the `m`-variable.
-      m.forEach((match, groupIndex) => {
+      m.forEach(match => {
         if (match.indexOf("href") !== 0) {
           links.push(match);
         }

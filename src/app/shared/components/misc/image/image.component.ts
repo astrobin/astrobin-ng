@@ -275,7 +275,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     this.store$.dispatch(new LoadImage({ imageId: this.id }));
   }
 
-  onLoad(event) {
+  onLoad(_event) {
     if (this._autoLoadSubscription) {
       this._autoLoadSubscription.unsubscribe();
       this._autoLoadSubscription = null;
@@ -554,7 +554,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
               filter(image => !!image),
               take(1)
             )
-            .subscribe(image => {
+            .subscribe(_image => {
               this.load();
               this.changeDetectorRef.markForCheck();
             });

@@ -191,10 +191,11 @@ export class ImageApiService extends BaseClassicApiService {
   }
 
   download(
-    pk: ImageInterface["pk"],
-    revisionLabel: ImageRevisionInterface["label"],
-    version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations"
+    _pk: ImageInterface["pk"],
+    _revisionLabel: ImageRevisionInterface["label"],
+    _version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations"
   ): void {
+    // Method is a stub, params are unused intentionally
   }
 
   deleteUncompressedSourceFile(pk: ImageInterface["pk"]): Observable<ImageInterface> {

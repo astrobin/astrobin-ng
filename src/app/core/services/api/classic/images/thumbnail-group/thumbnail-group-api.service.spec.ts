@@ -29,7 +29,7 @@ describe("ThumbnailGroupApiService", () => {
 
   it("getThumbnailGroup should work", () => {
     const image = ImageGenerator.image();
-    const thumbnailGroup = ThumbnailGroupGenerator.thumbnailGroup();
+    // const thumbnailGroup = ThumbnailGroupGenerator.thumbnailGroup();
 
     service.getThumbnailGroup(image.pk, Constants.ORIGINAL_REVISION).subscribe(response => {
       expect(response.image).toEqual(image.pk);

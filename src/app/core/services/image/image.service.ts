@@ -1,4 +1,4 @@
-import { Inject, Injectable, NgZone, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { Inject, Injectable, NgZone, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
 import { WindowRefService } from "@core/services/window-ref.service";

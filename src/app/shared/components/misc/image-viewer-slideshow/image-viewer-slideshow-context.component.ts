@@ -125,7 +125,7 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
     }
   }
 
-  protected trackByFn(index: number, item: ImageViewerNavigationContextItem) {
+  protected trackByFn(_index: number, item: ImageViewerNavigationContextItem) {
     return item.imageId;
   }
 

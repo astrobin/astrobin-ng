@@ -24,7 +24,7 @@ export class ContentTypeEffects {
               )
               : this.commonApiService.getContentType(action.payload.appLabel, action.payload.model).pipe(
                 map(contentType => new LoadContentTypeSuccess(contentType)),
-                catchError(error => EMPTY)
+                catchError(_error => EMPTY)
               )
           )
         )
@@ -46,7 +46,7 @@ export class ContentTypeEffects {
               )
               : this.commonApiService.getContentTypeById(payload.id).pipe(
                 map(contentType => new LoadContentTypeSuccess(contentType)),
-                catchError(error => EMPTY)
+                catchError(_error => EMPTY)
               )
           )
         )
