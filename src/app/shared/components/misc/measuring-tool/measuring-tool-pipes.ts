@@ -161,7 +161,7 @@ interface LabelBoundingBox {
   width: number;
   height: number;
   priority: number;
-  type: 'point' | 'dimension';
+  type: "point" | "dimension";
 }
 
 @Pipe({
@@ -169,64 +169,6 @@ interface LabelBoundingBox {
   pure: true
 })
 export class CalculateLabelPositionPipe implements PipeTransform {
-  // Helper method to detect collisions between labels
-  private doLabelsOverlap(label1: LabelBoundingBox, label2: LabelBoundingBox): boolean {
-    return (
-      label1.x < label2.x + label2.width &&
-      label1.x + label1.width > label2.x &&
-      label1.y < label2.y + label2.height &&
-      label1.y + label1.height > label2.y
-    );
-  }
-
-  // Helper method to resolve collisions by moving labels
-  private resolveCollision(label1: LabelBoundingBox, label2: LabelBoundingBox): { x: number, y: number } {
-    // Determine which label to move (higher priority number gets moved)
-    const labelToMove = label1.priority > label2.priority ? label1 : label2;
-    const fixedLabel = label1.priority > label2.priority ? label2 : label1;
-    
-    // Calculate overlap amounts
-    const overlapX = Math.min(
-      labelToMove.x + labelToMove.width - fixedLabel.x,
-      fixedLabel.x + fixedLabel.width - labelToMove.x
-    );
-    
-    const overlapY = Math.min(
-      labelToMove.y + labelToMove.height - fixedLabel.y,
-      fixedLabel.y + fixedLabel.height - labelToMove.y
-    );
-    
-    // Determine which direction requires less movement
-    let newX = labelToMove.x;
-    let newY = labelToMove.y;
-    
-    // For point labels, prefer to move in the same direction as original offset
-    if (labelToMove.type === 'point') {
-      // Check relative position
-      const isRightOfFixed = labelToMove.x > fixedLabel.x + fixedLabel.width / 2;
-      const isBelowFixed = labelToMove.y > fixedLabel.y + fixedLabel.height / 2;
-      
-      // Move horizontally or vertically based on smaller overlap
-      if (overlapX < overlapY) {
-        newX = isRightOfFixed ? 
-          fixedLabel.x + fixedLabel.width + 5 : 
-          fixedLabel.x - labelToMove.width - 5;
-      } else {
-        newY = isBelowFixed ? 
-          fixedLabel.y + fixedLabel.height + 5 : 
-          fixedLabel.y - labelToMove.height - 5;
-      }
-    } 
-    // For dimension labels, prefer vertical movement
-    else if (labelToMove.type === 'dimension') {
-      newY = labelToMove.y > fixedLabel.y ? 
-        fixedLabel.y + fixedLabel.height + 5 : 
-        fixedLabel.y - labelToMove.height - 5;
-    }
-    
-    return { x: newX, y: newY };
-  }
-  
   transform(
     startPoint: MeasurementPoint | null,
     endPoint: MeasurementPoint | null,
@@ -270,7 +212,7 @@ export class CalculateLabelPositionPipe implements PipeTransform {
     // Calculate initial position
     const pointToUse = position === "start" ? startPoint : endPoint;
     const directionFactor = position === "start" ? -1 : 1;
-    
+
     let posX = pointToUse.x + directionFactor * (labelDistance + pointRadius + extraDistance) * Math.cos(angle);
     let posY = pointToUse.y + directionFactor * (labelDistance + pointRadius + extraDistance) * Math.sin(angle);
 
@@ -289,65 +231,119 @@ export class CalculateLabelPositionPipe implements PipeTransform {
     const coordLabelHeight = 20;  // Height of RA/Dec label
     const dimLabelWidth = 60;     // Width of dimension label
     const dimLabelHeight = 20;    // Height of dimension label
-    
+
     // Create bounding boxes for collision detection
     const currentLabel: LabelBoundingBox = {
-      x: posX - coordLabelWidth/2,
-      y: posY - coordLabelHeight/2,
+      x: posX - coordLabelWidth / 2,
+      y: posY - coordLabelHeight / 2,
       width: coordLabelWidth,
       height: coordLabelHeight,
       priority: 2,  // Point coordinates have medium priority
-      type: 'point'
+      type: "point"
     };
-    
+
     // Create dimension label positions
     const labels: LabelBoundingBox[] = [];
-    
+
     // Width dimension label (horizontal)
-    const widthLabelX = (Math.min(startPoint.x, endPoint.x) + 
-                       Math.abs(endPoint.x - startPoint.x) / 2) - dimLabelWidth/2;
+    const widthLabelX = (Math.min(startPoint.x, endPoint.x) +
+      Math.abs(endPoint.x - startPoint.x) / 2) - dimLabelWidth / 2;
     const widthLabelY = Math.max(startPoint.y, endPoint.y) + 20;
-    
+
     labels.push({
       x: widthLabelX,
       y: widthLabelY,
       width: dimLabelWidth,
       height: dimLabelHeight,
       priority: 1,  // Dimension labels have higher priority
-      type: 'dimension'
+      type: "dimension"
     });
-    
+
     // Height dimension label (vertical)
     const heightLabelX = Math.max(startPoint.x, endPoint.x) + 20;
-    const heightLabelY = (Math.min(startPoint.y, endPoint.y) + 
-                        Math.abs(endPoint.y - startPoint.y) / 2) - dimLabelHeight/2;
-    
+    const heightLabelY = (Math.min(startPoint.y, endPoint.y) +
+      Math.abs(endPoint.y - startPoint.y) / 2) - dimLabelHeight / 2;
+
     labels.push({
       x: heightLabelX,
       y: heightLabelY,
       width: dimLabelWidth,
       height: dimLabelHeight,
       priority: 1,
-      type: 'dimension'
+      type: "dimension"
     });
-    
+
     // Check for collisions with dimension labels
     for (const label of labels) {
       if (this.doLabelsOverlap(currentLabel, label)) {
         const newPos = this.resolveCollision(currentLabel, label);
         // Update our position
-        posX = newPos.x + coordLabelWidth/2;
-        posY = newPos.y + coordLabelHeight/2;
+        posX = newPos.x + coordLabelWidth / 2;
+        posY = newPos.y + coordLabelHeight / 2;
         // Update the current label for subsequent collision checks
         currentLabel.x = newPos.x;
         currentLabel.y = newPos.y;
       }
     }
-    
-    // Also check collision with the other point label if it's not us
-    // We can't actually do this here since the pipe is called separately for each label
-    // Instead, we'll rely on the general spacing logic to keep them apart initially
-    
+
     return { x: posX, y: posY };
+  }
+
+  // Helper method to detect collisions between labels
+  private doLabelsOverlap(label1: LabelBoundingBox, label2: LabelBoundingBox): boolean {
+    return (
+      label1.x < label2.x + label2.width &&
+      label1.x + label1.width > label2.x &&
+      label1.y < label2.y + label2.height &&
+      label1.y + label1.height > label2.y
+    );
+  }
+
+  // Helper method to resolve collisions by moving labels
+  private resolveCollision(label1: LabelBoundingBox, label2: LabelBoundingBox): { x: number, y: number } {
+    // Determine which label to move (higher priority number gets moved)
+    const labelToMove = label1.priority > label2.priority ? label1 : label2;
+    const fixedLabel = label1.priority > label2.priority ? label2 : label1;
+
+    // Calculate overlap amounts
+    const overlapX = Math.min(
+      labelToMove.x + labelToMove.width - fixedLabel.x,
+      fixedLabel.x + fixedLabel.width - labelToMove.x
+    );
+
+    const overlapY = Math.min(
+      labelToMove.y + labelToMove.height - fixedLabel.y,
+      fixedLabel.y + fixedLabel.height - labelToMove.y
+    );
+
+    // Determine which direction requires less movement
+    let newX = labelToMove.x;
+    let newY = labelToMove.y;
+
+    // For point labels, prefer to move in the same direction as original offset
+    if (labelToMove.type === "point") {
+      // Check relative position
+      const isRightOfFixed = labelToMove.x > fixedLabel.x + fixedLabel.width / 2;
+      const isBelowFixed = labelToMove.y > fixedLabel.y + fixedLabel.height / 2;
+
+      // Move horizontally or vertically based on smaller overlap
+      if (overlapX < overlapY) {
+        newX = isRightOfFixed ?
+          fixedLabel.x + fixedLabel.width + 5 :
+          fixedLabel.x - labelToMove.width - 5;
+      } else {
+        newY = isBelowFixed ?
+          fixedLabel.y + fixedLabel.height + 5 :
+          fixedLabel.y - labelToMove.height - 5;
+      }
+    }
+    // For dimension labels, prefer vertical movement
+    else if (labelToMove.type === "dimension") {
+      newY = labelToMove.y > fixedLabel.y ?
+        fixedLabel.y + fixedLabel.height + 5 :
+        fixedLabel.y - labelToMove.height - 5;
+    }
+
+    return { x: newX, y: newY };
   }
 }
