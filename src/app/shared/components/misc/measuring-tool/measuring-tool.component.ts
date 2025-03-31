@@ -1,29 +1,20 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
-import { CookieService } from 'ngx-cookie';
-import { CoordinatesFormatterService } from '@core/services/coordinates-formatter.service';
-import { Store, select } from "@ngrx/store";
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
+import { CookieService } from "ngx-cookie";
+import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
+import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { PopNotificationsService } from '@core/services/pop-notifications.service';
-import { TranslateService } from '@ngx-translate/core';
-import {
-  CreateMeasurementPreset,
-  DeleteMeasurementPreset,
-  LoadMeasurementPresets,
-  SelectMeasurementPreset,
-  ToggleSavedMeasurements
-} from './store/measurement-preset.actions';
-import {
-  selectAllMeasurementPresets,
-  selectShowSavedMeasurements
-} from './store/measurement-preset.selectors';
-import { MeasurementPresetInterface } from './measurement-preset.interface';
-import { take, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
-import { BaseComponentDirective } from '@shared/components/base-component.directive';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SaveMeasurementModalComponent } from './save-measurement-modal/save-measurement-modal.component';
-import { SolutionInterface } from '@core/interfaces/solution.interface';
-import { ConfirmationDialogComponent } from '@shared/components/misc/confirmation-dialog/confirmation-dialog.component';
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
+import { CreateMeasurementPreset, DeleteMeasurementPreset, LoadMeasurementPresets, ToggleSavedMeasurements } from "./store/measurement-preset.actions";
+import { selectAllMeasurementPresets, selectShowSavedMeasurements } from "./store/measurement-preset.selectors";
+import { MeasurementPresetInterface } from "./measurement-preset.interface";
+import { take, takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-measurement-modal.component";
+import { SolutionInterface } from "@core/interfaces/solution.interface";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 export interface MeasurementPoint {
   x: number;
@@ -67,9 +58,9 @@ export interface SolutionMatrix {
 }
 
 @Component({
-  selector: 'astrobin-measuring-tool',
-  templateUrl: './measuring-tool.component.html',
-  styleUrls: ['./measuring-tool.component.scss']
+  selector: "astrobin-measuring-tool",
+  templateUrl: "./measuring-tool.component.html",
+  styleUrls: ["./measuring-tool.component.scss"]
 })
 export class MeasuringToolComponent extends BaseComponentDirective implements OnInit, OnDestroy {
   @Input() active: boolean = false;
@@ -94,23 +85,25 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
   // Saved measurements
   showSavedMeasurements: boolean = false;
-  newMeasurementName: string = '';
+  newMeasurementName: string = "";
   savedMeasurements: MeasurementPresetInterface[] = [];
-  private destroy$ = new Subject<void>();
-
   // Mouse tracking
   mouseX: number | null = null;
   mouseY: number | null = null;
-
   // Drag functionality
   dragStartX: number | null = null;
   dragStartY: number | null = null;
-  isDraggingPoint: 'start' | 'end' | string | null = null;
-
+  isDraggingPoint: "start" | "end" | string | null = null;
   // Shape visualization
   showCurrentCircle: boolean = false;
   showCurrentRectangle: boolean = false;
-
+  // Flag to track if window has been resized (affecting measurement accuracy)
+  public measurementsAffectedByResize: boolean = false;
+  // Flag to control the visibility of the resize warning modal
+  public showResizeWarningModal: boolean = false;
+  // Constants
+  protected readonly Math = Math;
+  private destroy$ = new Subject<void>();
   // Bound event handlers
   private _onMeasuringMouseMove: any = null;
   private _onPointDragMove: any = null;
@@ -124,26 +117,38 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   private _onWindowResize: any = null;
   private _dragInProgress = false;
   private _preventNextClick = false;
-
   // Track the previous window dimensions to detect significant changes
   private _prevWindowWidth: number = 0;
   private _prevWindowHeight: number = 0;
-
-  // Flag to track if window has been resized (affecting measurement accuracy)
-  public measurementsAffectedByResize: boolean = false;
-
-  // Flag to control the visibility of the resize warning modal
-  public showResizeWarningModal: boolean = false;
-
   // Cookie name for storing shape preferences
   private readonly MEASUREMENT_SHAPE_COOKIE_NAME = "astrobin-fullscreen-measurement-shape";
+  // For debouncing coordinate updates during drag
+  private _lastCoordUpdateTime = 0;
+  private _coordUpdateDebounceMs = 100; // Update at most every 100ms
 
-  // Constants
-  protected readonly Math = Math;
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly cookieService: CookieService,
+    public readonly coordinatesFormatter: CoordinatesFormatterService,
+    public readonly cdRef: ChangeDetectorRef,
+    public readonly ngZone: NgZone,
+    private modalService: NgbModal,
+    private popNotificationsService: PopNotificationsService,
+    private translateService: TranslateService
+  ) {
+    super(store$);
 
-  // Helper function to stabilize floating point values
-  private _stabilizeValue(value: number, decimals: number = 4): number {
-    return parseFloat(value.toFixed(decimals));
+    // Initialize bound handlers
+    this._onMeasuringMouseMove = this.handleMeasuringMouseMove.bind(this);
+    this._onPointDragMove = this.handlePointDragMove.bind(this);
+    this._onPointDragEnd = this.handlePointDragEnd.bind(this);
+    this._onPreviousMeasurementDragMove = this.handlePreviousMeasurementDragMove.bind(this);
+    this._onPreviousMeasurementDragEnd = this.handlePreviousMeasurementDragEnd.bind(this);
+    this._onShapeDragMove = this.handleShapeDragMove.bind(this);
+    this._onShapeDragEnd = this.handleShapeDragEnd.bind(this);
+    this._onCurrentShapeDragMove = this.handleCurrentShapeDragMove.bind(this);
+    this._onCurrentShapeDragEnd = this.handleCurrentShapeDragEnd.bind(this);
+    this._onWindowResize = this.handleWindowResize.bind(this);
   }
 
   /**
@@ -173,45 +178,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // 1 degree or more: show degrees, arcminutes, and arcseconds
       return `${degrees}° ${arcminutes}′ ${remainingArcseconds}″`;
     }
-  }
-
-  /**
-   * Format angular distance consistently across the component
-   */
-  private _formatStableAngularDistance(angularDistance: number): string {
-    // Stabilize the input value to reduce flickering
-    const stableAngularDistance = this._stabilizeValue(angularDistance);
-
-    // Convert to arcseconds - this is what formatAstronomicalAngle expects
-    const arcseconds = stableAngularDistance * 3600;
-
-    // Use the standardized astronomical angle formatter
-    return this.formatAstronomicalAngle(arcseconds);
-  }
-
-  constructor(
-    public readonly store$: Store<MainState>,
-    public readonly cookieService: CookieService,
-    public readonly coordinatesFormatter: CoordinatesFormatterService,
-    public readonly cdRef: ChangeDetectorRef,
-    public readonly ngZone: NgZone,
-    private modalService: NgbModal,
-    private popNotificationsService: PopNotificationsService,
-    private translateService: TranslateService
-  ) {
-    super(store$);
-
-    // Initialize bound handlers
-    this._onMeasuringMouseMove = this.handleMeasuringMouseMove.bind(this);
-    this._onPointDragMove = this.handlePointDragMove.bind(this);
-    this._onPointDragEnd = this.handlePointDragEnd.bind(this);
-    this._onPreviousMeasurementDragMove = this.handlePreviousMeasurementDragMove.bind(this);
-    this._onPreviousMeasurementDragEnd = this.handlePreviousMeasurementDragEnd.bind(this);
-    this._onShapeDragMove = this.handleShapeDragMove.bind(this);
-    this._onShapeDragEnd = this.handleShapeDragEnd.bind(this);
-    this._onCurrentShapeDragMove = this.handleCurrentShapeDragMove.bind(this);
-    this._onCurrentShapeDragEnd = this.handleCurrentShapeDragEnd.bind(this);
-    this._onWindowResize = this.handleWindowResize.bind(this);
   }
 
   ngOnInit(): void {
@@ -246,11 +212,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Add document level mouse move event listener when active
     if (this.active) {
-      document.addEventListener('mousemove', this._onMeasuringMouseMove);
+      document.addEventListener("mousemove", this._onMeasuringMouseMove);
     }
 
     // Add window resize listener to maintain measurements when window is resized
-    window.addEventListener('resize', this._onWindowResize);
+    window.addEventListener("resize", this._onWindowResize);
 
     // Initialize previous window dimensions
     this._prevWindowWidth = window.innerWidth;
@@ -259,16 +225,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
   ngOnDestroy(): void {
     // Clean up all event listeners
-    document.removeEventListener('mousemove', this._onMeasuringMouseMove);
-    document.removeEventListener('mousemove', this._onPointDragMove);
-    document.removeEventListener('mouseup', this._onPointDragEnd);
-    document.removeEventListener('mousemove', this._onPreviousMeasurementDragMove);
-    document.removeEventListener('mouseup', this._onPreviousMeasurementDragEnd);
-    document.removeEventListener('mousemove', this._onShapeDragMove);
-    document.removeEventListener('mouseup', this._onShapeDragEnd);
-    document.removeEventListener('mousemove', this._onCurrentShapeDragMove);
-    document.removeEventListener('mouseup', this._onCurrentShapeDragEnd);
-    window.removeEventListener('resize', this._onWindowResize);
+    document.removeEventListener("mousemove", this._onMeasuringMouseMove);
+    document.removeEventListener("mousemove", this._onPointDragMove);
+    document.removeEventListener("mouseup", this._onPointDragEnd);
+    document.removeEventListener("mousemove", this._onPreviousMeasurementDragMove);
+    document.removeEventListener("mouseup", this._onPreviousMeasurementDragEnd);
+    document.removeEventListener("mousemove", this._onShapeDragMove);
+    document.removeEventListener("mouseup", this._onShapeDragEnd);
+    document.removeEventListener("mousemove", this._onCurrentShapeDragMove);
+    document.removeEventListener("mouseup", this._onCurrentShapeDragEnd);
+    window.removeEventListener("resize", this._onWindowResize);
 
     // Complete the destroy subject
     this.destroy$.next();
@@ -436,8 +402,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       }
 
       // Clean up event listeners
-      document.removeEventListener('mousemove', mouseMoveHandler);
-      document.removeEventListener('mouseup', mouseUpHandler);
+      document.removeEventListener("mousemove", mouseMoveHandler);
+      document.removeEventListener("mouseup", mouseUpHandler);
 
       // Reset drag state
       this._dragInProgress = false;
@@ -449,8 +415,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     };
 
     // Add the event listeners
-    document.addEventListener('mousemove', mouseMoveHandler);
-    document.addEventListener('mouseup', mouseUpHandler, { once: true });
+    document.addEventListener("mousemove", mouseMoveHandler);
+    document.addEventListener("mouseup", mouseUpHandler, { once: true });
   }
 
 
@@ -590,81 +556,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   /**
-   * Helper method to finalize a measurement after both points are placed
-   * This calculates distance, creates the measurement object, and resets for the next measurement
-   */
-  private _finalizeMeasurement(): void {
-    if (!this.measureStartPoint || !this.measureEndPoint) {
-      return;
-    }
-
-    // Calculate distance
-    const pixelDistance = this.calculateDistance(
-      this.measureStartPoint.x,
-      this.measureStartPoint.y,
-      this.measureEndPoint.x,
-      this.measureEndPoint.y
-    );
-
-    // Format the distance for display (pixels or angular distance if plate-solved)
-    if (this.advancedSolutionMatrix && this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
-      this.measureDistance = this.formatAngularDistance(pixelDistance);
-    } else {
-      this.measureDistance = `${Math.round(pixelDistance)} px`;
-    }
-
-    // Create measurement data object for saving
-    const midX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
-    const midY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
-
-    const measurementData: MeasurementData = {
-      startX: this.measureStartPoint.x,
-      startY: this.measureStartPoint.y,
-      endX: this.measureEndPoint.x,
-      endY: this.measureEndPoint.y,
-      midX: midX,
-      midY: midY,
-      distance: this.measureDistance,
-      timestamp: Date.now(),
-      startRa: this.measureStartPoint.ra,
-      startDec: this.measureStartPoint.dec,
-      endRa: this.measureEndPoint.ra,
-      endDec: this.measureEndPoint.dec,
-      startLabelX: 0, // Will be calculated
-      startLabelY: 0, // Will be calculated
-      endLabelX: 0, // Will be calculated
-      endLabelY: 0, // Will be calculated
-      showCircle: this.showCurrentCircle,
-      showRectangle: this.showCurrentRectangle
-    };
-
-    // Calculate label positions
-    this.updateCoordinateLabelPositions(measurementData);
-
-    // Save measurement to previous list
-    this.previousMeasurements.push(measurementData);
-
-    // No need to emit a separate finished event - measurementComplete already signals completion
-
-    // Get the current shape preference first
-    const currentCircle = this.showCurrentCircle;
-    const currentRectangle = this.showCurrentRectangle;
-
-    // Reset current measurement points after adding to previous measurements
-    // This prevents duplicate display of the current measurement
-    this.measureStartPoint = null;
-    this.measureEndPoint = null;
-    this.measureDistance = null;
-
-    // Keep the shape preference settings so they apply to the next measurement
-    this.showCurrentCircle = currentCircle;
-    this.showCurrentRectangle = currentRectangle;
-
-    // Emit the completed measurement
-    this.measurementComplete.emit(measurementData);
-  }
-
-  /**
    * Calculate the distance between two points
    */
   calculateDistance(x1: number, y1: number, x2: number, y2: number): number {
@@ -682,7 +573,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // If we have coordinates for both points, use them to calculate the actual angular distance
     if (this.measureStartPoint?.ra !== null && this.measureStartPoint?.dec !== null &&
-        this.measureEndPoint?.ra !== null && this.measureEndPoint?.dec !== null) {
+      this.measureEndPoint?.ra !== null && this.measureEndPoint?.dec !== null) {
 
       const angularDistance = this.calculateAngularDistance(
         this.measureStartPoint.ra,
@@ -711,7 +602,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   /**
    * Start dragging a measurement point
    */
-  handlePointDragStart(event: MouseEvent, point: 'start' | 'end'): void {
+  handlePointDragStart(event: MouseEvent, point: "start" | "end"): void {
     event.preventDefault();
     event.stopPropagation();
 
@@ -720,8 +611,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.dragStartY = event.clientY;
 
     // Add event listeners for drag move and end
-    document.addEventListener('mousemove', this._onPointDragMove);
-    document.addEventListener('mouseup', this._onPointDragEnd);
+    document.addEventListener("mousemove", this._onPointDragMove);
+    document.addEventListener("mouseup", this._onPointDragEnd);
 
     // Signal that dragging has started
     this._dragInProgress = true;
@@ -739,7 +630,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     event.preventDefault();
 
     // Update the position of the point being dragged
-    if (this.isDraggingPoint === 'start' && this.measureStartPoint) {
+    if (this.isDraggingPoint === "start" && this.measureStartPoint) {
       this.measureStartPoint.x = event.clientX;
       this.measureStartPoint.y = event.clientY;
 
@@ -769,7 +660,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.measureDistance = `${Math.round(pixelDistance)} px`;
         }
       }
-    } else if (this.isDraggingPoint === 'end' && this.measureEndPoint) {
+    } else if (this.isDraggingPoint === "end" && this.measureEndPoint) {
       this.measureEndPoint.x = event.clientX;
       this.measureEndPoint.y = event.clientY;
 
@@ -821,8 +712,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     event.preventDefault();
 
     // Clean up event listeners
-    document.removeEventListener('mousemove', this._onPointDragMove);
-    document.removeEventListener('mouseup', this._onPointDragEnd);
+    document.removeEventListener("mousemove", this._onPointDragMove);
+    document.removeEventListener("mouseup", this._onPointDragEnd);
 
     // Reset drag state
     this._dragInProgress = false;
@@ -868,7 +759,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   /**
    * Start dragging a previous measurement point
    */
-  handlePreviousMeasurementDrag(event: MouseEvent, index: number, point: 'start' | 'end'): void {
+  handlePreviousMeasurementDrag(event: MouseEvent, index: number, point: "start" | "end"): void {
     event.preventDefault();
     event.stopPropagation();
 
@@ -877,8 +768,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.dragStartY = event.clientY;
 
     // Add event listeners for drag move and end
-    document.addEventListener('mousemove', this._onPreviousMeasurementDragMove);
-    document.addEventListener('mouseup', this._onPreviousMeasurementDragEnd);
+    document.addEventListener("mousemove", this._onPreviousMeasurementDragMove);
+    document.addEventListener("mouseup", this._onPreviousMeasurementDragEnd);
 
     // Signal that dragging has started
     this._dragInProgress = true;
@@ -889,14 +780,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Handle previous measurement point drag movement
    */
   handlePreviousMeasurementDragMove(event: MouseEvent): void {
-    if (!this.isDraggingPoint || !this._dragInProgress || !this.isDraggingPoint.startsWith('prev')) {
+    if (!this.isDraggingPoint || !this._dragInProgress || !this.isDraggingPoint.startsWith("prev")) {
       return;
     }
 
     event.preventDefault();
 
     // Extract the index from the drag state string (prevStart-1 or prevEnd-1 -> 1)
-    const parts = this.isDraggingPoint.split('-');
+    const parts = this.isDraggingPoint.split("-");
     const index = parseInt(parts[1], 10);
 
     if (isNaN(index) || index < 0 || index >= this.previousMeasurements.length) {
@@ -906,7 +797,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     const measurement = this.previousMeasurements[index];
 
     // Update the position of the point being dragged
-    if (this.isDraggingPoint.startsWith('prevStart')) {
+    if (this.isDraggingPoint.startsWith("prevStart")) {
       measurement.startX = event.clientX;
       measurement.startY = event.clientY;
 
@@ -919,7 +810,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           measurement.startDec = coords.dec;
         }
       }
-    } else if (this.isDraggingPoint.startsWith('prevEnd')) {
+    } else if (this.isDraggingPoint.startsWith("prevEnd")) {
       measurement.endX = event.clientX;
       measurement.endY = event.clientY;
 
@@ -980,8 +871,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     event.preventDefault();
 
     // Extract the index from the drag state string
-    if (this.isDraggingPoint && (this.isDraggingPoint.startsWith('prevStart-') || this.isDraggingPoint.startsWith('prevEnd-'))) {
-      const parts = this.isDraggingPoint.split('-');
+    if (this.isDraggingPoint && (this.isDraggingPoint.startsWith("prevStart-") || this.isDraggingPoint.startsWith("prevEnd-"))) {
+      const parts = this.isDraggingPoint.split("-");
       const index = parseInt(parts[1], 10);
 
       if (!isNaN(index) && index >= 0 && index < this.previousMeasurements.length) {
@@ -1003,8 +894,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Clean up event listeners
-    document.removeEventListener('mousemove', this._onPreviousMeasurementDragMove);
-    document.removeEventListener('mouseup', this._onPreviousMeasurementDragEnd);
+    document.removeEventListener("mousemove", this._onPreviousMeasurementDragMove);
+    document.removeEventListener("mouseup", this._onPreviousMeasurementDragEnd);
 
     // Reset drag state
     this._dragInProgress = false;
@@ -1016,7 +907,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   /**
    * Start dragging a shape (circle or rectangle)
    */
-  handleShapeDragStart(event: MouseEvent, index: number, shapeType: 'circle' | 'rectangle'): void {
+  handleShapeDragStart(event: MouseEvent, index: number, shapeType: "circle" | "rectangle"): void {
     event.preventDefault();
     event.stopPropagation();
 
@@ -1025,31 +916,26 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.dragStartY = event.clientY;
 
     // Add event listeners for drag move and end
-    document.addEventListener('mousemove', this._onShapeDragMove);
-    document.addEventListener('mouseup', this._onShapeDragEnd);
+    document.addEventListener("mousemove", this._onShapeDragMove);
+    document.addEventListener("mouseup", this._onShapeDragEnd);
 
     // Signal that dragging has started
     this._dragInProgress = true;
     this._preventNextClick = true;
   }
 
-  // For debouncing coordinate updates during drag
-  private _lastCoordUpdateTime = 0;
-  private _coordUpdateDebounceMs = 100; // Update at most every 100ms
-
-
   /**
    * Handle shape drag movement
    */
   handleShapeDragMove(event: MouseEvent): void {
-    if (!this.isDraggingPoint || !this._dragInProgress || !this.isDraggingPoint.startsWith('prevShape')) {
+    if (!this.isDraggingPoint || !this._dragInProgress || !this.isDraggingPoint.startsWith("prevShape")) {
       return;
     }
 
     event.preventDefault();
 
     // Extract the index from the drag state string
-    const parts = this.isDraggingPoint.split('-');
+    const parts = this.isDraggingPoint.split("-");
     const index = parseInt(parts[1], 10);
 
     if (isNaN(index) || index < 0 || index >= this.previousMeasurements.length) {
@@ -1134,8 +1020,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     event.preventDefault();
 
     // Extract the index from the drag state string
-    if (this.isDraggingPoint && this.isDraggingPoint.startsWith('prevShape')) {
-      const parts = this.isDraggingPoint.split('-');
+    if (this.isDraggingPoint && this.isDraggingPoint.startsWith("prevShape")) {
+      const parts = this.isDraggingPoint.split("-");
       const index = parseInt(parts[1], 10);
 
       if (!isNaN(index) && index >= 0 && index < this.previousMeasurements.length) {
@@ -1178,8 +1064,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Clean up event listeners
-    document.removeEventListener('mousemove', this._onShapeDragMove);
-    document.removeEventListener('mouseup', this._onShapeDragEnd);
+    document.removeEventListener("mousemove", this._onShapeDragMove);
+    document.removeEventListener("mouseup", this._onShapeDragEnd);
 
     // Reset drag state
     this._dragInProgress = false;
@@ -1194,7 +1080,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   /**
    * Start dragging the current shape
    */
-  handleCurrentShapeDragStart(event: MouseEvent, shapeType: 'circle' | 'rectangle'): void {
+  handleCurrentShapeDragStart(event: MouseEvent, shapeType: "circle" | "rectangle"): void {
     event.preventDefault();
     event.stopPropagation();
 
@@ -1202,13 +1088,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       return;
     }
 
-    this.isDraggingPoint = 'currentShape';
+    this.isDraggingPoint = "currentShape";
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
 
     // Add event listeners for drag move and end
-    document.addEventListener('mousemove', this._onCurrentShapeDragMove);
-    document.addEventListener('mouseup', this._onCurrentShapeDragEnd);
+    document.addEventListener("mousemove", this._onCurrentShapeDragMove);
+    document.addEventListener("mouseup", this._onCurrentShapeDragEnd);
 
     // Signal that dragging has started
     this._dragInProgress = true;
@@ -1219,7 +1105,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Handle current shape drag movement
    */
   handleCurrentShapeDragMove(event: MouseEvent): void {
-    if (!this.isDraggingPoint || !this._dragInProgress || this.isDraggingPoint !== 'currentShape') {
+    if (!this.isDraggingPoint || !this._dragInProgress || this.isDraggingPoint !== "currentShape") {
       return;
     }
 
@@ -1334,8 +1220,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Clean up event listeners
-    document.removeEventListener('mousemove', this._onCurrentShapeDragMove);
-    document.removeEventListener('mouseup', this._onCurrentShapeDragEnd);
+    document.removeEventListener("mousemove", this._onCurrentShapeDragMove);
+    document.removeEventListener("mouseup", this._onCurrentShapeDragEnd);
 
     // Reset drag state
     this._dragInProgress = false;
@@ -1416,7 +1302,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Force change detection cycle with a meaningful operation
       setTimeout(() => {
-        console.log('Circle visualization toggled for measurement', index, ':', measurement.showCircle);
+        console.log("Circle visualization toggled for measurement", index, ":", measurement.showCircle);
       }, 0);
     }
   }
@@ -1456,7 +1342,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Force change detection cycle with a meaningful operation
       setTimeout(() => {
-        console.log('Rectangle visualization toggled for measurement', index, ':', measurement.showRectangle);
+        console.log("Rectangle visualization toggled for measurement", index, ":", measurement.showRectangle);
       }, 0);
     }
   }
@@ -1487,7 +1373,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Force change detection cycle with a meaningful operation
     setTimeout(() => {
-      console.log('Current circle visualization toggled:', this.showCurrentCircle);
+      console.log("Current circle visualization toggled:", this.showCurrentCircle);
     }, 0);
   }
 
@@ -1517,7 +1403,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Force change detection cycle with a meaningful operation
     setTimeout(() => {
-      console.log('Current rectangle visualization toggled:', this.showCurrentRectangle);
+      console.log("Current rectangle visualization toggled:", this.showCurrentRectangle);
     }, 0);
   }
 
@@ -1532,7 +1418,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Open confirmation dialog
     const modalRef = this.modalService.open(ConfirmationDialogComponent, {
       centered: true,
-      backdrop: 'static'
+      backdrop: "static"
     });
 
     // Configure dialog
@@ -1568,7 +1454,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Open confirmation dialog
     const modalRef = this.modalService.open(ConfirmationDialogComponent, {
       centered: true,
-      backdrop: 'static'
+      backdrop: "static"
     });
 
     // Configure dialog
@@ -1612,7 +1498,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Expand what constitutes "nearly horizontal" to include slacker angles
     const isNearlyHorizontal = horizontalness < Math.PI / 8; // Within ~22.5 degrees of horizontal (more forgiving)
-    const isNearlyVertical = Math.abs(absAngle - Math.PI/2) < Math.PI / 12; // Within 15 degrees of vertical
+    const isNearlyVertical = Math.abs(absAngle - Math.PI / 2) < Math.PI / 12; // Within 15 degrees of vertical
 
     // Calculate extra distance based on how horizontal the line is
     // As the line gets more horizontal (horizontalness approaches 0), increase the distance
@@ -1657,49 +1543,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
   }
 
-
-  /**
-   * Save the user's shape preference to a cookie
-   */
-  private saveMeasurementShapePreference(): void {
-    let preference = 'none';
-
-    if (this.showCurrentCircle) {
-      preference = 'circle';
-    } else if (this.showCurrentRectangle) {
-      preference = 'rectangle';
-    }
-
-    // Save preference with 1 year expiration
-    const expirationDate = new Date();
-    expirationDate.setFullYear(expirationDate.getFullYear() + 1);
-
-    this.cookieService.put(
-      this.MEASUREMENT_SHAPE_COOKIE_NAME,
-      preference,
-      { expires: expirationDate }
-    );
-  }
-
-  /**
-   * Load the user's shape preference from a cookie
-   */
-  private loadMeasurementShapePreference(): void {
-    const preference = this.cookieService.get(this.MEASUREMENT_SHAPE_COOKIE_NAME);
-
-    if (preference === 'circle') {
-      this.showCurrentCircle = true;
-      this.showCurrentRectangle = false;
-    } else if (preference === 'rectangle') {
-      this.showCurrentCircle = false;
-      this.showCurrentRectangle = true;
-    } else {
-      // Default to no shape
-      this.showCurrentCircle = false;
-      this.showCurrentRectangle = false;
-    }
-  }
-
   /**
    * Calculate celestial coordinates at a given screen position
    * This depends on the advanced solution matrix being available
@@ -1707,7 +1550,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   /**
    * Calculate celestial coordinates at a given screen position
    */
-  calculateCoordinatesAtPoint(x: number, y: number, accountForRotation: boolean = false): { ra: number; dec: number } | null {
+  calculateCoordinatesAtPoint(x: number, y: number, accountForRotation: boolean = false): {
+    ra: number;
+    dec: number
+  } | null {
     try {
       if (!this.advancedSolutionMatrix) {
         return null;
@@ -1730,7 +1576,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       let adjustedY = y;
 
       // Create a synthetic mouse event with the adjusted coordinates
-      const syntheticEvent = new MouseEvent('mousemove', {
+      const syntheticEvent = new MouseEvent("mousemove", {
         clientX: adjustedX,
         clientY: adjustedY
       });
@@ -1784,15 +1630,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Use the haversine formula for great circle distance
     const dra = ra2Rad - ra1Rad;
     const ddec = dec2Rad - dec1Rad;
-    const a = Math.sin(ddec/2) * Math.sin(ddec/2) +
-              Math.cos(dec1Rad) * Math.cos(dec2Rad) *
-              Math.sin(dra/2) * Math.sin(dra/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const a = Math.sin(ddec / 2) * Math.sin(ddec / 2) +
+      Math.cos(dec1Rad) * Math.cos(dec2Rad) *
+      Math.sin(dra / 2) * Math.sin(dra / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     // Convert to degrees
     return c * 180 / Math.PI;
   }
-
 
   /**
    * Format coordinates in a compact display format
@@ -1800,7 +1645,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   formatCoordinatesCompact(ra: number | null, dec: number | null): string {
     // If either coordinate is null, return empty string
     if (ra === null || dec === null) {
-      return '';
+      return "";
     }
 
     // Convert ra/dec to formatted strings
@@ -1812,9 +1657,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     const decMinutes = Math.floor((Math.abs(dec) - decDegrees) * 60);
     const decSeconds = Math.floor(((Math.abs(dec) - decDegrees) * 60 - decMinutes) * 60);
 
-    const sign = dec >= 0 ? '+' : '-';
+    const sign = dec >= 0 ? "+" : "-";
 
-    return `${raHours.toString().padStart(2, '0')}h ${raMinutes.toString().padStart(2, '0')}m ${raSeconds.toString().padStart(2, '0')}s, ${sign}${decDegrees.toString().padStart(2, '0')}° ${decMinutes.toString().padStart(2, '0')}' ${decSeconds.toString().padStart(2, '0')}"`;
+    return `${raHours.toString().padStart(2, "0")}h ${raMinutes.toString().padStart(2, "0")}m ${raSeconds.toString().padStart(2, "0")}s, ${sign}${decDegrees.toString().padStart(2, "0")}° ${decMinutes.toString().padStart(2, "0")}' ${decSeconds.toString().padStart(2, "0")}"`;
   }
 
   /**
@@ -1825,7 +1670,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   getHorizontalCelestialDistance(x1: number, y: number, x2: number, measurement?: MeasurementData | MeasurementPresetInterface): string {
     // If no advanced solution, return empty (template will show px)
     if (!this.advancedSolutionMatrix) {
-      return '';
+      return "";
     }
 
     // Get the coordinates at both points
@@ -1850,7 +1695,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // If we couldn't calculate celestial coordinates, return empty string
     // The template will fall back to showing pixel distance
-    return '';
+    return "";
   }
 
   /**
@@ -1861,7 +1706,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   getVerticalCelestialDistance(x: number, y1: number, y2: number, measurement?: MeasurementData | MeasurementPresetInterface): string {
     // If no advanced solution, return empty (template will show px)
     if (!this.advancedSolutionMatrix) {
-      return '';
+      return "";
     }
 
     // Get the coordinates at both points
@@ -1886,7 +1731,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // If we couldn't calculate celestial coordinates, return empty string
     // The template will fall back to showing pixel distance
-    return '';
+    return "";
   }
 
   /**
@@ -1899,7 +1744,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate the angle of the line
     const angle = Math.atan2(this.measureEndPoint.y - this.measureStartPoint.y,
-                            this.measureEndPoint.x - this.measureStartPoint.x);
+      this.measureEndPoint.x - this.measureStartPoint.x);
 
     // Set offset parameters
     const pointRadius = 6;
@@ -1914,7 +1759,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Expand what constitutes "nearly horizontal" to include slacker angles
     const isNearlyHorizontal = horizontalness < Math.PI / 8; // Within ~22.5 degrees of horizontal (more forgiving)
-    const isNearlyVertical = Math.abs(absAngle - Math.PI/2) < Math.PI / 12; // Within 15 degrees of vertical
+    const isNearlyVertical = Math.abs(absAngle - Math.PI / 2) < Math.PI / 12; // Within 15 degrees of vertical
 
     // Calculate extra distance based on how horizontal the line is
     let extraDistance = 0;
@@ -1963,7 +1808,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate the angle of the line
     const angle = Math.atan2(this.measureEndPoint.y - this.measureStartPoint.y,
-                            this.measureEndPoint.x - this.measureStartPoint.x);
+      this.measureEndPoint.x - this.measureStartPoint.x);
 
     // Set offset parameters
     const pointRadius = 6;
@@ -2010,7 +1855,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate the angle of the line
     const angle = Math.atan2(this.measureEndPoint.y - this.measureStartPoint.y,
-                            this.measureEndPoint.x - this.measureStartPoint.x);
+      this.measureEndPoint.x - this.measureStartPoint.x);
 
     // Set offset parameters
     const pointRadius = 6;
@@ -2025,7 +1870,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Expand what constitutes "nearly horizontal" to include slacker angles
     const isNearlyHorizontal = horizontalness < Math.PI / 8; // Within ~22.5 degrees of horizontal (more forgiving)
-    const isNearlyVertical = Math.abs(absAngle - Math.PI/2) < Math.PI / 12; // Within 15 degrees of vertical
+    const isNearlyVertical = Math.abs(absAngle - Math.PI / 2) < Math.PI / 12; // Within 15 degrees of vertical
 
     // Calculate extra distance based on how horizontal the line is
     let extraDistance = 0;
@@ -2073,7 +1918,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate the angle of the line
     const angle = Math.atan2(this.measureEndPoint.y - this.measureStartPoint.y,
-                            this.measureEndPoint.x - this.measureStartPoint.x);
+      this.measureEndPoint.x - this.measureStartPoint.x);
 
     // Set offset parameters
     const pointRadius = 6;
@@ -2109,8 +1954,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // For the end point, place in the same direction as the line
     return this.measureEndPoint.y + (labelDistance + pointRadius + extraDistance) * Math.sin(angle);
   }
-
-
 
   /**
    * Exit measuring mode
@@ -2191,7 +2034,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Always calculate width and height regardless of display mode
     if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null &&
-        this.measureStartPoint.dec !== null && this.measureEndPoint.dec !== null) {
+      this.measureStartPoint.dec !== null && this.measureEndPoint.dec !== null) {
 
       // For rectangular measurements, calculate width and height
       if (this.advancedSolutionMatrix) {
@@ -2311,7 +2154,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         });
       });
     } catch (error) {
-      console.error('Error opening modal:', error);
+      console.error("Error opening modal:", error);
     }
   }
 
@@ -2364,7 +2207,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Always calculate width and height regardless of display mode
       if (originalMeasurement.startRa !== null && originalMeasurement.endRa !== null &&
-          originalMeasurement.startDec !== null && originalMeasurement.endDec !== null) {
+        originalMeasurement.startDec !== null && originalMeasurement.endDec !== null) {
 
         // For rectangular measurements, calculate width and height
         if (this.advancedSolutionMatrix) {
@@ -2487,7 +2330,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           });
         });
       } catch (error) {
-        console.error('Error opening modal:', error);
+        console.error("Error opening modal:", error);
       }
     }
   }
@@ -2536,8 +2379,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     let heightArcseconds = null;
 
     if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null &&
-        this.measureStartPoint.dec !== null && this.measureEndPoint.dec !== null &&
-        this.showCurrentRectangle) {
+      this.measureStartPoint.dec !== null && this.measureEndPoint.dec !== null &&
+      this.showCurrentRectangle) {
 
       // For rectangular measurements, calculate width and height
       if (this.advancedSolutionMatrix) {
@@ -2639,7 +2482,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.store$.dispatch(new CreateMeasurementPreset({ preset }));
 
         // Reset name field
-        this.newMeasurementName = '';
+        this.newMeasurementName = "";
       }
     });
   }
@@ -2851,7 +2694,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Format this distance using our standard formatter
         this.measureDistance = this._formatStableAngularDistance(angularDistance);
       }
-      // This is the fallback if for some reason we couldn't get RA/Dec values
+        // This is the fallback if for some reason we couldn't get RA/Dec values
       // from the measurement points directly
       else if (startCoords && endCoords) {
         // Use the original coordinate calculations from earlier in the function
@@ -2920,42 +2763,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   /**
-   * Helper method to save the current measurement to previous measurements
-   */
-  private saveToPreviousMeasurements(): void {
-    if (!this.measureStartPoint || !this.measureEndPoint || !this.measureDistance) {
-      return;
-    }
-
-    const measurementData: MeasurementData = {
-      startX: this.measureStartPoint.x,
-      startY: this.measureStartPoint.y,
-      endX: this.measureEndPoint.x,
-      endY: this.measureEndPoint.y,
-      midX: (this.measureStartPoint.x + this.measureEndPoint.x) / 2,
-      midY: (this.measureStartPoint.y + this.measureEndPoint.y) / 2,
-      distance: this.measureDistance,
-      timestamp: Date.now(),
-      startRa: this.measureStartPoint.ra,
-      startDec: this.measureStartPoint.dec,
-      endRa: this.measureEndPoint.ra,
-      endDec: this.measureEndPoint.dec,
-      startLabelX: 0,
-      startLabelY: 0,
-      endLabelX: 0,
-      endLabelY: 0,
-      showCircle: this.showCurrentCircle,
-      showRectangle: this.showCurrentRectangle
-    };
-
-    // Update label positions
-    this.updateCoordinateLabelPositions(measurementData);
-
-    // Save to previous measurements
-    this.previousMeasurements.push(measurementData);
-  }
-
-  /**
    * Delete a saved measurement with confirmation dialog
    */
   deleteSavedMeasurement(index: number): void {
@@ -2975,7 +2782,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Open confirmation dialog
       const modalRef = this.modalService.open(ConfirmationDialogComponent, {
         centered: true,
-        backdrop: 'static'
+        backdrop: "static"
       });
 
       // Configure dialog
@@ -3029,7 +2836,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Only show warning if the size change is significant (more than 50px)
     if ((widthDiff > 50 || heightDiff > 50) &&
-        (this.previousMeasurements.length > 0 ||
+      (this.previousMeasurements.length > 0 ||
         (this.measureStartPoint && this.measureEndPoint))) {
       // Set flag to mark measurements as potentially incorrect
       this.measurementsAffectedByResize = true;
@@ -3044,18 +2851,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this._prevWindowWidth = newWidth;
       this._prevWindowHeight = newHeight;
     }
-  }
-
-  /**
-   * Shows a warning modal about window resizing affecting measurements
-   * Uses a direct approach with a custom modal in the template
-   */
-  private showResizeWarning(): void {
-    // Show the modal
-    this.showResizeWarningModal = true;
-
-    // Force change detection to ensure the modal appears immediately
-    this.cdRef.detectChanges();
   }
 
   /**
@@ -3079,6 +2874,190 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    */
   closeResizeWarning(): void {
     this.showResizeWarningModal = false;
+    this.cdRef.detectChanges();
+  }
+
+  // Helper function to stabilize floating point values
+  private _stabilizeValue(value: number, decimals: number = 4): number {
+    return parseFloat(value.toFixed(decimals));
+  }
+
+  /**
+   * Format angular distance consistently across the component
+   */
+  private _formatStableAngularDistance(angularDistance: number): string {
+    // Stabilize the input value to reduce flickering
+    const stableAngularDistance = this._stabilizeValue(angularDistance);
+
+    // Convert to arcseconds - this is what formatAstronomicalAngle expects
+    const arcseconds = stableAngularDistance * 3600;
+
+    // Use the standardized astronomical angle formatter
+    return this.formatAstronomicalAngle(arcseconds);
+  }
+
+  /**
+   * Helper method to finalize a measurement after both points are placed
+   * This calculates distance, creates the measurement object, and resets for the next measurement
+   */
+  private _finalizeMeasurement(): void {
+    if (!this.measureStartPoint || !this.measureEndPoint) {
+      return;
+    }
+
+    // Calculate distance
+    const pixelDistance = this.calculateDistance(
+      this.measureStartPoint.x,
+      this.measureStartPoint.y,
+      this.measureEndPoint.x,
+      this.measureEndPoint.y
+    );
+
+    // Format the distance for display (pixels or angular distance if plate-solved)
+    if (this.advancedSolutionMatrix && this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
+      this.measureDistance = this.formatAngularDistance(pixelDistance);
+    } else {
+      this.measureDistance = `${Math.round(pixelDistance)} px`;
+    }
+
+    // Create measurement data object for saving
+    const midX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
+    const midY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
+
+    const measurementData: MeasurementData = {
+      startX: this.measureStartPoint.x,
+      startY: this.measureStartPoint.y,
+      endX: this.measureEndPoint.x,
+      endY: this.measureEndPoint.y,
+      midX: midX,
+      midY: midY,
+      distance: this.measureDistance,
+      timestamp: Date.now(),
+      startRa: this.measureStartPoint.ra,
+      startDec: this.measureStartPoint.dec,
+      endRa: this.measureEndPoint.ra,
+      endDec: this.measureEndPoint.dec,
+      startLabelX: 0, // Will be calculated
+      startLabelY: 0, // Will be calculated
+      endLabelX: 0, // Will be calculated
+      endLabelY: 0, // Will be calculated
+      showCircle: this.showCurrentCircle,
+      showRectangle: this.showCurrentRectangle
+    };
+
+    // Calculate label positions
+    this.updateCoordinateLabelPositions(measurementData);
+
+    // Save measurement to previous list
+    this.previousMeasurements.push(measurementData);
+
+    // No need to emit a separate finished event - measurementComplete already signals completion
+
+    // Get the current shape preference first
+    const currentCircle = this.showCurrentCircle;
+    const currentRectangle = this.showCurrentRectangle;
+
+    // Reset current measurement points after adding to previous measurements
+    // This prevents duplicate display of the current measurement
+    this.measureStartPoint = null;
+    this.measureEndPoint = null;
+    this.measureDistance = null;
+
+    // Keep the shape preference settings so they apply to the next measurement
+    this.showCurrentCircle = currentCircle;
+    this.showCurrentRectangle = currentRectangle;
+
+    // Emit the completed measurement
+    this.measurementComplete.emit(measurementData);
+  }
+
+  /**
+   * Save the user's shape preference to a cookie
+   */
+  private saveMeasurementShapePreference(): void {
+    let preference = "none";
+
+    if (this.showCurrentCircle) {
+      preference = "circle";
+    } else if (this.showCurrentRectangle) {
+      preference = "rectangle";
+    }
+
+    // Save preference with 1 year expiration
+    const expirationDate = new Date();
+    expirationDate.setFullYear(expirationDate.getFullYear() + 1);
+
+    this.cookieService.put(
+      this.MEASUREMENT_SHAPE_COOKIE_NAME,
+      preference,
+      { expires: expirationDate }
+    );
+  }
+
+  /**
+   * Load the user's shape preference from a cookie
+   */
+  private loadMeasurementShapePreference(): void {
+    const preference = this.cookieService.get(this.MEASUREMENT_SHAPE_COOKIE_NAME);
+
+    if (preference === "circle") {
+      this.showCurrentCircle = true;
+      this.showCurrentRectangle = false;
+    } else if (preference === "rectangle") {
+      this.showCurrentCircle = false;
+      this.showCurrentRectangle = true;
+    } else {
+      // Default to no shape
+      this.showCurrentCircle = false;
+      this.showCurrentRectangle = false;
+    }
+  }
+
+  /**
+   * Helper method to save the current measurement to previous measurements
+   */
+  private saveToPreviousMeasurements(): void {
+    if (!this.measureStartPoint || !this.measureEndPoint || !this.measureDistance) {
+      return;
+    }
+
+    const measurementData: MeasurementData = {
+      startX: this.measureStartPoint.x,
+      startY: this.measureStartPoint.y,
+      endX: this.measureEndPoint.x,
+      endY: this.measureEndPoint.y,
+      midX: (this.measureStartPoint.x + this.measureEndPoint.x) / 2,
+      midY: (this.measureStartPoint.y + this.measureEndPoint.y) / 2,
+      distance: this.measureDistance,
+      timestamp: Date.now(),
+      startRa: this.measureStartPoint.ra,
+      startDec: this.measureStartPoint.dec,
+      endRa: this.measureEndPoint.ra,
+      endDec: this.measureEndPoint.dec,
+      startLabelX: 0,
+      startLabelY: 0,
+      endLabelX: 0,
+      endLabelY: 0,
+      showCircle: this.showCurrentCircle,
+      showRectangle: this.showCurrentRectangle
+    };
+
+    // Update label positions
+    this.updateCoordinateLabelPositions(measurementData);
+
+    // Save to previous measurements
+    this.previousMeasurements.push(measurementData);
+  }
+
+  /**
+   * Shows a warning modal about window resizing affecting measurements
+   * Uses a direct approach with a custom modal in the template
+   */
+  private showResizeWarning(): void {
+    // Show the modal
+    this.showResizeWarningModal = true;
+
+    // Force change detection to ensure the modal appears immediately
     this.cdRef.detectChanges();
   }
 }

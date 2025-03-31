@@ -704,6 +704,16 @@
       font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
       text-shadow: 0 0 4px rgba(0, 0, 0, 1);
       paint-order: stroke;
+    }
+    
+    .info-icon-svg {
+      color: #88ccff;
+      font-size: 12px;
+      cursor: pointer;
+      
+      &:hover {
+        color: #aaddff;
+      }
       stroke: rgba(0, 0, 0, 0.5);
       stroke-width: 1px;
 
@@ -810,6 +820,20 @@
 
       .measurement-text {
         margin-right: 6px;
+        display: flex;
+        align-items: center;
+
+        .info-icon {
+          font-size: 0.85em;
+          color: #88ccff;
+          cursor: pointer;
+          opacity: 0.9;
+          
+          &:hover {
+            opacity: 1;
+            color: #aaddff;
+          }
+        }
       }
 
       .measurement-actions {

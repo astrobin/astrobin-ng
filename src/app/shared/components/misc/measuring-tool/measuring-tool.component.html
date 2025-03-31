@@ -353,7 +353,16 @@
        (mouseenter)="setMouseOverUIElement(true)"
        (mouseleave)="setMouseOverUIElement(false)"
        (mousedown)="handleShapeDragStart($event, i, measurement.showCircle ? 'circle' : 'rectangle')">
-    <span class="measurement-text">{{ measurement.distance }}</span>
+    <span class="measurement-text">
+      {{ measurement.distance }}
+      <fa-icon *ngIf="measurement.distance.endsWith('px')" 
+               icon="info-circle"
+               class="info-icon ms-1"
+               [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
+               container="body"
+               placement="top">
+      </fa-icon>
+    </span>
 
     <div class="measurement-actions">
       <button type="button" class="btn-shape-action circle-button"
@@ -600,7 +609,16 @@
        (mouseenter)="setMouseOverUIElement(true)"
        (mouseleave)="setMouseOverUIElement(false)"
        (mousedown)="handleCurrentShapeDragStart($event, showCurrentCircle ? 'circle' : 'rectangle')">
-    <span class="measurement-text">{{ measureDistance }}</span>
+    <span class="measurement-text">
+      {{ measureDistance }}
+      <fa-icon *ngIf="measureDistance && measureDistance.endsWith('px')" 
+               icon="info-circle"
+               class="info-icon ms-1"
+               [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
+               container="body"
+               placement="top">
+      </fa-icon>
+    </span>
 
     <div class="measurement-actions">
       <button type="button" class="btn-shape-action circle-button"

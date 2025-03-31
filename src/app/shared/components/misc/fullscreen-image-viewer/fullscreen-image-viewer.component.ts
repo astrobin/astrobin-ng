@@ -699,6 +699,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this._restoreOriginalEventHandlers();
     }
 
+    this.popNotificationsService.clear();
+
     this.store$.dispatch(new HideFullscreenImage());
   }
 
