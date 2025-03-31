@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 :host {
   display: block;
   background: rgba(0, 0, 0, 0.75);
@@ -6,10 +8,8 @@
   font-family: monospace;
   font-size: 0.9rem;
 
-  // Make smaller on mobile
-  @media (max-width: 576px) { // $sm-max
-    font-size: 0.65rem;
-    padding: 0.25rem;
+  @media (max-width: $sm-max) {
+    display: none;
   }
 
   .coordinates-display {

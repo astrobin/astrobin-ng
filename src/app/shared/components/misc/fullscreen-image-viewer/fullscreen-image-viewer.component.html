@@ -444,7 +444,7 @@
   ></astrobin-measuring-tool>
 
   <!-- Coordinate display -->
-  <div class="coordinates-wrapper" *ngIf="showCoordinates && mouseRa && mouseDec && !isGif"
+  <div class="coordinates-wrapper" *ngIf="showCoordinates && mouseRa && mouseDec && !isGif && hasAdvancedSolutionMatrix"
        (mouseenter)="setMouseOverUIElement(true)"
        (mouseleave)="setMouseOverUIElement(false)">
     <astrobin-coordinates-display
@@ -464,7 +464,8 @@
     mouseX !== null &&
     mouseY !== null &&
     !isGif &&
-    !isMouseOverUIElement
+    !isMouseOverUIElement &&
+    hasAdvancedSolutionMatrix
   "
     class="crosshair-container"
   >

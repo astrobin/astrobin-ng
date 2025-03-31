@@ -23,6 +23,7 @@ import { BaseComponentDirective } from '@shared/components/base-component.direct
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SaveMeasurementModalComponent } from './save-measurement-modal/save-measurement-modal.component';
 import { SolutionInterface } from '@core/interfaces/solution.interface';
+import { ConfirmationDialogComponent } from '@shared/components/misc/confirmation-dialog/confirmation-dialog.component';
 
 export interface MeasurementPoint {
   x: number;
@@ -1521,14 +1522,40 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   /**
-   * Clear all measurements
+   * Clear all measurements with confirmation dialog
    */
   clearAllMeasurements(): void {
-    this.previousMeasurements = [];
+    if (this.previousMeasurements.length === 0) {
+      return; // Nothing to clear
+    }
+
+    // Open confirmation dialog
+    const modalRef = this.modalService.open(ConfirmationDialogComponent, {
+      centered: true,
+      backdrop: 'static'
+    });
+
+    // Configure dialog
+    modalRef.componentInstance.title = this.translateService.instant("Clear all measurements");
+    modalRef.componentInstance.message = this.translateService.instant(
+      "This action cannot be undone."
+    );
+    modalRef.componentInstance.confirmLabel = this.translateService.instant("Clear all");
+
+    // Subscribe to dialog result
+    modalRef.result.then(
+      () => {
+        // Modal closed with confirm button
+        this.previousMeasurements = [];
+      },
+      () => {
+        // Modal dismissed, do nothing
+      }
+    );
   }
 
   /**
-   * Delete a specific measurement
+   * Delete a specific measurement with confirmation dialog
    */
   deleteMeasurement(event: MouseEvent, index: number): void {
     event.preventDefault();
@@ -1538,13 +1565,30 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Prevent click from propagating to parent containers
     this._preventNextClick = true;
 
-    // Remove the measurement
-    this.previousMeasurements.splice(index, 1);
+    // Open confirmation dialog
+    const modalRef = this.modalService.open(ConfirmationDialogComponent, {
+      centered: true,
+      backdrop: 'static'
+    });
 
-    // Force change detection
-    setTimeout(() => {
-      console.log('Measurement deleted, remaining:', this.previousMeasurements.length);
-    }, 0);
+    // Configure dialog
+    modalRef.componentInstance.title = this.translateService.instant("Delete measurement");
+    modalRef.componentInstance.message = this.translateService.instant(
+      "This action cannot be undone."
+    );
+    modalRef.componentInstance.confirmLabel = this.translateService.instant("Delete");
+
+    // Subscribe to dialog result
+    modalRef.result.then(
+      () => {
+        // Modal closed with confirm button
+        // Remove the measurement
+        this.previousMeasurements.splice(index, 1);
+      },
+      () => {
+        // Modal dismissed, do nothing
+      }
+    );
   }
 
   /**
@@ -2106,6 +2150,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       event.stopPropagation();
     }
 
+    // Check if we have the advanced solution matrix needed for saving
+    if (!this.advancedSolutionMatrix) {
+      this.popNotificationsService.error(
+        this.translateService.instant(
+          "Measurement presets cannot be saved on images without advanced plate-solving data"
+        )
+      );
+      return;
+    }
+
     // Check if user is logged in
     let isLoggedIn = false;
     this.currentUser$.pipe(take(1)).subscribe(user => {
@@ -2268,6 +2322,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (event) {
       event.preventDefault();
       event.stopPropagation();
+    }
+
+    // Check if we have the advanced solution matrix needed for saving
+    if (!this.advancedSolutionMatrix) {
+      this.popNotificationsService.error(
+        this.translateService.instant(
+          "Measurement presets cannot be saved on images without advanced plate-solving data"
+        )
+      );
+      return;
     }
 
     // Check if user is logged in
@@ -2435,6 +2499,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * For the save button on the measurement itself, see openSaveCurrentMeasurement.
    */
   saveMeasurement(): void {
+    // Check if we have the advanced solution matrix needed for saving
+    if (!this.advancedSolutionMatrix) {
+      this.popNotificationsService.error(
+        this.translateService.instant(
+          "Measurement presets cannot be saved on images without advanced plate-solving data"
+        )
+      );
+      return;
+    }
+
     // Check if user is logged in
     let isLoggedIn = false;
     this.currentUser$.pipe(take(1)).subscribe(user => {
@@ -2584,11 +2658,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       return;
     }
 
-    // Check if we have a solution matrix, required for accurate measurements
+    // Check if we have a solution matrix, required for loading measurements
     if (!this.advancedSolutionMatrix) {
       this.popNotificationsService.error(
         this.translateService.instant(
-          "Measurement presets cannot be loaded on images without advanced plate-solving data"
+          "Measurement presets cannot be loaded on images without advanced plate-solving data. Use the measuring tool to create pixel-based measurements instead."
         )
       );
       return;
@@ -2882,7 +2956,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   /**
-   * Delete a saved measurement
+   * Delete a saved measurement with confirmation dialog
    */
   deleteSavedMeasurement(index: number): void {
     // Check if user is logged in
@@ -2894,13 +2968,36 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!isLoggedIn) {
       return;
     }
+
     if (index >= 0 && index < this.savedMeasurements.length) {
       const preset = this.savedMeasurements[index];
 
-      if (preset.id) {
-        // Dispatch action to delete preset
-        this.store$.dispatch(new DeleteMeasurementPreset({ presetId: preset.id }));
-      }
+      // Open confirmation dialog
+      const modalRef = this.modalService.open(ConfirmationDialogComponent, {
+        centered: true,
+        backdrop: 'static'
+      });
+
+      // Configure dialog
+      modalRef.componentInstance.title = this.translateService.instant("Delete measurement");
+      modalRef.componentInstance.message = this.translateService.instant(
+        "This action cannot be undone."
+      );
+      modalRef.componentInstance.confirmLabel = this.translateService.instant("Delete");
+
+      // Subscribe to dialog result
+      modalRef.result.then(
+        () => {
+          // Modal closed with confirm button
+          if (preset.id) {
+            // Dispatch action to delete preset
+            this.store$.dispatch(new DeleteMeasurementPreset({ presetId: preset.id }));
+          }
+        },
+        () => {
+          // Modal dismissed, do nothing
+        }
+      );
     }
   }
 

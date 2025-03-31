@@ -360,34 +360,49 @@
               [class.active]="measurement.showCircle"
               (click)="toggleCircle($event, i)"
               (mousedown)="$event.stopPropagation()"
-              (pointerdown)="$event.stopPropagation()"
-              title="{{ 'Draw circle' | translate }}">
-        <fa-icon icon="circle"></fa-icon>
+              (pointerdown)="$event.stopPropagation()">
+        <fa-icon
+          icon="circle"
+          [ngbTooltip]="'Draw circle' | translate"
+          container="body"
+        ></fa-icon>
       </button>
 
       <button type="button" class="btn-shape-action rectangle-button"
               [class.active]="measurement.showRectangle"
               (click)="toggleRectangle($event, i)"
               (mousedown)="$event.stopPropagation()"
-              (pointerdown)="$event.stopPropagation()"
-              title="{{ 'Draw rectangle' | translate }}">
-        <fa-icon icon="square"></fa-icon>
+              (pointerdown)="$event.stopPropagation()">
+        <fa-icon
+          icon="square"
+          [ngbTooltip]="'Draw rectangle' | translate"
+          container="body"
+        ></fa-icon>
       </button>
 
       <button *ngIf="currentUser$ | async" type="button" class="btn-shape-action save-button"
-              (click)="savePreviousMeasurement($event, i)"
+              (click)="advancedSolutionMatrix ? savePreviousMeasurement($event, i) : $event.stopPropagation()"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
-              title="{{ 'Save measurement' | translate }}">
-        <fa-icon icon="save"></fa-icon>
+              [class.disabled]="!advancedSolutionMatrix"
+              [style.opacity]="!advancedSolutionMatrix ? '0.5' : '1'"
+              [style.pointer-events]="'auto'">
+        <fa-icon
+          icon="save"
+          [ngbTooltip]="!advancedSolutionMatrix ? ('Saving measurements requires advanced plate-solving data' | translate) : ('Save measurement' | translate)"
+          container="body"
+        ></fa-icon>
       </button>
 
       <button type="button" class="btn-delete-measurement delete-button"
               (click)="deleteMeasurement($event, i)"
               (mousedown)="$event.stopPropagation()"
-              (pointerdown)="$event.stopPropagation()"
-              title="{{ 'Delete measurement' | translate }}">
-        <fa-icon icon="times"></fa-icon>
+              (pointerdown)="$event.stopPropagation()">
+        <fa-icon
+          icon="times"
+          [ngbTooltip]="'Delete measurement' | translate"
+          container="body"
+        ></fa-icon>
       </button>
     </div>
   </div>
@@ -592,26 +607,26 @@
               [class.active]="showCurrentCircle"
               (click)="toggleCurrentCircle($event)"
               (mousedown)="$event.stopPropagation()"
-              (pointerdown)="$event.stopPropagation()"
-              title="{{ 'Draw circle' | translate }}">
-        <fa-icon icon="circle"></fa-icon>
+              (pointerdown)="$event.stopPropagation()">
+        <fa-icon icon="circle" [ngbTooltip]="'Draw circle' | translate" container="body"></fa-icon>
       </button>
 
       <button type="button" class="btn-shape-action rectangle-button"
               [class.active]="showCurrentRectangle"
               (click)="toggleCurrentRectangle($event)"
               (mousedown)="$event.stopPropagation()"
-              (pointerdown)="$event.stopPropagation()"
-              title="{{ 'Draw rectangle' | translate }}">
-        <fa-icon icon="square"></fa-icon>
+              (pointerdown)="$event.stopPropagation()">
+        <fa-icon icon="square" [ngbTooltip]="'Draw rectangle' | translate" container="body"></fa-icon>
       </button>
 
       <button *ngIf="currentUser$ | async" type="button" class="btn-shape-action save-button"
-              (click)="openSaveCurrentMeasurement($event)"
+              (click)="advancedSolutionMatrix ? openSaveCurrentMeasurement($event) : $event.stopPropagation()"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
-              title="{{ 'Save measurement' | translate }}">
-        <fa-icon icon="save"></fa-icon>
+              [class.disabled]="!advancedSolutionMatrix"
+              [style.opacity]="!advancedSolutionMatrix ? '0.5' : '1'"
+              [style.pointer-events]="'auto'">
+        <fa-icon icon="save" [ngbTooltip]="!advancedSolutionMatrix ? ('Saving measurements requires advanced plate-solving data' | translate) : ('Save measurement' | translate)" container="body"></fa-icon>
       </button>
     </div>
   </div>
@@ -674,7 +689,12 @@
         <div class="input-group input-group-sm mb-2" *ngIf="currentUser$ | async">
           <input type="text" class="form-control" [(ngModel)]="newMeasurementName"
                  placeholder="{{ 'Measurement name' | translate }}">
-          <button class="btn btn-primary" (click)="saveMeasurement()">
+          <button class="btn btn-primary"
+                  (click)="advancedSolutionMatrix ? saveMeasurement() : null"
+                  [class.disabled]="!advancedSolutionMatrix"
+                  [style.pointer-events]="'auto'"
+                  [ngbTooltip]="!advancedSolutionMatrix ? ('Saving measurements requires advanced plate-solving data' | translate) : ('Save measurement' | translate)"
+                  container="body">
             <fa-icon icon="save" class="me-1"></fa-icon>
             {{ 'Save' | translate }}
           </button>
@@ -687,6 +707,10 @@
           {{ 'No saved measurements yet.' | translate }}
         </p>
 
+        <div class="alert alert-info mb-2" *ngIf="!advancedSolutionMatrix && savedMeasurements.length > 0">
+          <small>{{ 'This image lacks advanced plate-solving data required to use saved measurements. Measurements are displayed for reference only.' | translate }}</small>
+        </div>
+
         <div class="measurement-item" *ngFor="let preset of savedMeasurements; let i = index">
           <div class="measurement-details">
             <div class="measurement-name">{{ preset.name }}</div>
@@ -694,11 +718,14 @@
             <div class="measurement-date" *ngIf="preset.created">{{ preset.created | date:'short' }}</div>
           </div>
           <div class="measurement-actions" *ngIf="currentUser$ | async">
-            <button class="btn btn-sm btn-outline-light" (click)="loadMeasurement(preset)">
-              <fa-icon icon="arrow-right"></fa-icon>
+            <button class="btn btn-sm btn-outline-light"
+                    (click)="advancedSolutionMatrix ? loadMeasurement(preset) : null"
+                    [class.disabled]="!advancedSolutionMatrix"
+                    [style.pointer-events]="'auto'">
+              <fa-icon icon="arrow-right" [ngbTooltip]="!advancedSolutionMatrix ? ('Loading measurements requires advanced plate-solving data' | translate) : ('Load measurement' | translate)" container="body"></fa-icon>
             </button>
             <button class="btn btn-sm btn-outline-danger" (click)="deleteSavedMeasurement(i)">
-              <fa-icon icon="trash-alt"></fa-icon>
+              <fa-icon icon="trash-alt" [ngbTooltip]="'Delete saved measurement' | translate" container="body"></fa-icon>
             </button>
           </div>
         </div>

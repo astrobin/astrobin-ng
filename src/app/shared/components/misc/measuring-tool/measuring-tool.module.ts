@@ -11,6 +11,7 @@ import { PipesModule } from "@shared/pipes/pipes.module";
 import { MeasuringToolComponent } from "./measuring-tool.component";
 import { MeasurementPresetModule } from "./measurement-preset.module";
 import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-measurement-modal.component";
+import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-mea
     TranslateModule,
     FontAwesomeModule,
     FormsModule,
+    NgbTooltipModule,
     ReactiveFormsModule,
     FormlyModule,
     FormlyBootstrapModule,
