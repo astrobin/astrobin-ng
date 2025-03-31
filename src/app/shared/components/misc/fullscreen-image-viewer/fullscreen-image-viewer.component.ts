@@ -266,6 +266,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly swipeDownService: SwipeDownService,
     public readonly popNotificationsService: PopNotificationsService,
+    public readonly hostElementRef: ElementRef,
     public readonly coordinatesFormatter: CoordinatesFormatterService
   ) {
     super(store$);
@@ -525,6 +526,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
         this._resetCanvas();
 
+        // Remove any body classes that might have been added during swipe
+        if (typeof document !== "undefined") {
+          document.body.classList.remove("image-viewer-closing");
+        }
+
         cancelAnimationFrame(this._animationFrame);
         this.exitFullscreen.emit();
         this.changeDetectorRef.markForCheck();
@@ -541,6 +547,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this.setTouchMouseMode(false);
           this.changeDetectorRef.markForCheck();
         }
+
+        // Remove any inline styles and animation classes that might be preventing the component from showing
+        this.renderer.removeStyle(this.hostElementRef.nativeElement, 'transform');
+        this.renderer.removeStyle(this.hostElementRef.nativeElement, 'opacity');
+        this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
+        this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animate');
+        this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-return-to-normal');
 
         this.show = true;
         this.titleService.disablePageZoom();
@@ -1476,6 +1489,38 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * Handle touch start for swipe-down gesture
    */
   protected onTouchStart(event: TouchEvent): void {
+    if (!this.show) {
+      return;
+    }
+
+    // Completely reset state variables to ensure we can start a new swipe
+    this.isSwiping.value = false;
+    this.swipeProgress.value = 0;
+    this.touchStartY.value = 0;
+    this.touchCurrentY.value = 0;
+    this.touchPreviousY.value = 0;
+    this.swipeDirectionDown.value = true;
+
+    // Remove any swipe-related classes that might be lingering
+    this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
+    this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animate');
+    this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-return-to-normal');
+
+    // Remove any inline styles that might be preventing gestures
+    this.renderer.removeStyle(this.hostElementRef.nativeElement, 'transition');
+    this.renderer.removeStyle(this.hostElementRef.nativeElement, 'transform');
+    this.renderer.removeStyle(this.hostElementRef.nativeElement, 'opacity');
+    this.renderer.removeStyle(this.hostElementRef.nativeElement, 'will-change');
+
+    // Set initial opacity to match the show state
+    if (this.show) {
+      this.renderer.setStyle(this.hostElementRef.nativeElement, 'opacity', '1');
+    }
+
+    // Force a reflow to ensure styles are applied before handling the touch
+    const reflow = this.hostElementRef.nativeElement.offsetHeight;
+
+    // Initialize the new touch gesture
     this.swipeDownService.handleTouchStart(
       event,
       this.touchStartY,
@@ -1489,7 +1534,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * Handle touch move for swipe-down gesture
    */
   protected onTouchMove(event: TouchEvent): void {
-    this.swipeDownService.handleTouchMove(
+    const wasSwipingBefore = this.isSwiping.value;
+
+    // Call the service handler
+    const isSwipingNow = this.swipeDownService.handleTouchMove(
       event,
       this.touchStartY,
       this.touchCurrentY,
@@ -1498,30 +1546,156 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.isSwiping,
       this.swipeProgress,
       this.swipeThreshold,
-      new ElementRef(event.currentTarget),
+      this.hostElementRef,
       this.renderer,
       () => this.canSwipeToClose()
     );
+
+    // If we just started swiping, add the class for background animation
+    if (!wasSwipingBefore && isSwipingNow && typeof document !== "undefined") {
+      document.body.classList.add("image-viewer-closing");
+    }
+
+    // If we were swiping but now stopped (user moved back up), remove the class
+    if (wasSwipingBefore && !isSwipingNow && typeof document !== "undefined") {
+      document.body.classList.remove("image-viewer-closing");
+
+      // Add return animation class - this is the key to the bounce-back behavior
+      this.renderer.addClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
+      this.renderer.addClass(this.hostElementRef.nativeElement, 'swipe-to-close-return-to-normal');
+
+      // Set up a listener for animation end to clean up classes
+      const onAnimationEnd = (event: any) => {
+        if (event.animationName === 'return-to-normal') {
+          // Remove the animation classes when complete
+          this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
+          this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-return-to-normal');
+
+          // Reset transform explicitly to ensure no residual transform remains
+          this.renderer.setStyle(this.hostElementRef.nativeElement, 'transform', 'translateY(0) scale(1)');
+
+          // Clean up the event listener
+          this.hostElementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
+        }
+      };
+
+      // Add the event listener
+      this.hostElementRef.nativeElement.addEventListener('animationend', onAnimationEnd);
+
+      // Safety timeout in case animation end doesn't fire
+      this.utilsService.delay(300).subscribe(() => {
+        // Also clean up styles here as a fallback
+        this.renderer.setStyle(this.hostElementRef.nativeElement, 'transform', 'translateY(0) scale(1)');
+      });
+    }
   }
 
   /**
    * Handle touch end for swipe-down gesture
    */
   protected onTouchEnd(event: TouchEvent): void {
-    this.swipeDownService.handleTouchEnd(
-      this.isSwiping,
-      this.touchStartY,
-      this.touchCurrentY,
-      this.touchPreviousY,
-      this.swipeDirectionDown,
-      this.swipeThreshold,
-      this.swipeProgress,
-      new ElementRef(event.currentTarget),
-      this.renderer,
-      () => {
+    // Only process if we're swiping
+    if (!this.isSwiping.value) {
+      return;
+    }
+
+    // Add class for background animation - the service will handle cancel detection
+    if (typeof document !== "undefined") {
+      document.body.classList.add("image-viewer-closing");
+    }
+
+    // Get the current swipe delta
+    const deltaY = this.touchCurrentY.value - this.touchStartY.value;
+
+    // Check if swipe threshold has been met and if the swipe is downward
+    const thresholdMet = deltaY >= this.swipeThreshold && this.swipeDirectionDown.value;
+
+    if (thresholdMet) {
+      // Add animation classes for close animation
+      this.renderer.addClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
+      this.renderer.addClass(this.hostElementRef.nativeElement, 'swipe-to-close-animate');
+
+      // Listen for animation end
+      const onAnimationEnd = (event: any) => {
+        if (event.animationName === 'swipe-to-close') {
+          // Clean up animation classes
+          this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
+          this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animate');
+
+          // Reset transform and opacity explicitly
+          this.renderer.setStyle(this.hostElementRef.nativeElement, 'transform', 'translateY(0) scale(1)');
+          this.renderer.setStyle(this.hostElementRef.nativeElement, 'opacity', '0');
+
+          // Hide the component
+          this.hide(null);
+
+          // Remove event listener
+          this.hostElementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
+        }
+      };
+
+      // Add the event listener
+      this.hostElementRef.nativeElement.addEventListener('animationend', onAnimationEnd);
+
+      // Safety timeout in case animation end doesn't fire
+      this.utilsService.delay(400).subscribe(() => {
+        // Also clean up styles here as a fallback
+        this.renderer.setStyle(this.hostElementRef.nativeElement, 'transform', 'translateY(0) scale(1)');
+        this.renderer.setStyle(this.hostElementRef.nativeElement, 'opacity', '0');
         this.hide(null);
+      });
+
+      // Reset swipe state immediately
+      this.isSwiping.value = false;
+      this.swipeProgress.value = 0;
+    } else {
+      // For canceled swipes, use the same approach as in onTouchMove
+      this.renderer.addClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
+      this.renderer.addClass(this.hostElementRef.nativeElement, 'swipe-to-close-return-to-normal');
+
+      // Listen for animation end
+      const onAnimationEnd = (event: any) => {
+        if (event.animationName === 'return-to-normal') {
+          // Remove animation classes
+          this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
+          this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-return-to-normal');
+
+          // Reset transform explicitly to ensure no residual transform remains
+          this.renderer.setStyle(this.hostElementRef.nativeElement, 'transform', 'translateY(0) scale(1)');
+
+          // Remove event listener
+          this.hostElementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
+
+          // Also ensure touch state is completely reset
+          this.touchStartY.value = 0;
+          this.touchCurrentY.value = 0;
+          this.touchPreviousY.value = 0;
+        }
+      };
+
+      // Add the event listener
+      this.hostElementRef.nativeElement.addEventListener('animationend', onAnimationEnd);
+
+      // Safety timeout in case animation end doesn't fire
+      this.utilsService.delay(300).subscribe(() => {
+        // Also clean up styles here as a fallback
+        this.renderer.setStyle(this.hostElementRef.nativeElement, 'transform', 'translateY(0) scale(1)');
+
+        // Ensure touch state is reset even if animation end doesn't fire
+        this.touchStartY.value = 0;
+        this.touchCurrentY.value = 0;
+        this.touchPreviousY.value = 0;
+      });
+
+      // Reset swipe state immediately
+      this.isSwiping.value = false;
+      this.swipeProgress.value = 0;
+
+      // Remove the closing class from the body
+      if (typeof document !== "undefined") {
+        document.body.classList.remove("image-viewer-closing");
       }
-    );
+    }
   }
 
   /**
@@ -2331,6 +2505,18 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.canvasLoading = false;
     this._canvasContainerDimensions = null;
     this._canvasImageDimensions = null;
+
+    // Also reset swipe state when canvas is reset
+    this.isSwiping.value = false;
+    this.swipeProgress.value = 0;
+    this.touchStartY.value = 0;
+    this.touchCurrentY.value = 0;
+    this.touchPreviousY.value = 0;
+
+    // Remove any swipe animation classes
+    this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
+    this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animate');
+    this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-return-to-normal');
   }
 
   /**
