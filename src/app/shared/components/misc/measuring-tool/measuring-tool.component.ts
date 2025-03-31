@@ -134,13 +134,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
   // Events streams
   private _documentMouseMove$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<MouseEvent>(document, 'mousemove').pipe(takeUntil(this.destroyed$)) :
+    fromEvent<MouseEvent>(document, "mousemove").pipe(takeUntil(this.destroyed$)) :
     new Subject<MouseEvent>();
   private _documentMouseUp$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<MouseEvent>(document, 'mouseup').pipe(takeUntil(this.destroyed$)) :
+    fromEvent<MouseEvent>(document, "mouseup").pipe(takeUntil(this.destroyed$)) :
     new Subject<MouseEvent>();
   private _windowResize$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<UIEvent>(window, 'resize').pipe(
+    fromEvent<UIEvent>(window, "resize").pipe(
       debounceTime(300),
       takeUntil(this.destroyed$)
     ) :
@@ -232,7 +232,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       take(1),
       takeUntil(this.destroyed$)
     ).subscribe(user => {
-      if (user && 'id' in user) {
+      if (user && "id" in user) {
         this.store$.dispatch(new LoadMeasurementPresets({ userId: user.id }));
       }
     });
@@ -259,7 +259,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         .pipe(
           takeUntil(this.destroyed$),
           tap(() => this._dragInProgress = true),
-          switchMap(({event, point}) => this._documentMouseMove$.pipe(
+          switchMap(({ event, point }) => this._documentMouseMove$.pipe(
             takeUntil(merge(this._pointDragEnd$, this.destroyed$)),
             tap(moveEvent => this.handlePointDragMove(moveEvent))
           ))
@@ -282,7 +282,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         .pipe(
           takeUntil(this.destroyed$),
           tap(() => this._dragInProgress = true),
-          switchMap(({event, index, point}) => this._documentMouseMove$.pipe(
+          switchMap(({ event, index, point }) => this._documentMouseMove$.pipe(
             takeUntil(merge(this._previousMeasurementDragEnd$, this.destroyed$)),
             tap(moveEvent => this.handlePreviousMeasurementDragMove(moveEvent))
           ))
@@ -305,7 +305,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         .pipe(
           takeUntil(this.destroyed$),
           tap(() => this._dragInProgress = true),
-          switchMap(({event, index}) => this._documentMouseMove$.pipe(
+          switchMap(({ event, index }) => this._documentMouseMove$.pipe(
             takeUntil(merge(this._shapeDragEnd$, this.destroyed$)),
             tap(moveEvent => this.handleShapeDragMove(moveEvent))
           ))
@@ -354,11 +354,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         )
         .subscribe(event => {
           // Determine which drag is active and end it
-          if (this.isDraggingPoint?.startsWith('prev') && this.isDraggingPoint?.includes('-')) {
+          if (this.isDraggingPoint?.startsWith("prev") && this.isDraggingPoint?.includes("-")) {
             this._previousMeasurementDragEnd$.next(event);
-          } else if (this.isDraggingPoint?.startsWith('prevShape')) {
+          } else if (this.isDraggingPoint?.startsWith("prevShape")) {
             this._shapeDragEnd$.next(event);
-          } else if (this.isDraggingPoint === 'currentShape') {
+          } else if (this.isDraggingPoint === "currentShape") {
             this._currentShapeDragEnd$.next(event);
           } else if (this.isDraggingPoint) {
             this._pointDragEnd$.next(event);
@@ -2291,12 +2291,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Handle the result when the modal is closed
       modalRef.result.then(result => {
         this.currentUser$.pipe(take(1)).subscribe(user => {
-          if (user && 'id' in user) {
+          if (user && "id" in user) {
             // Create the base preset object
             const preset: MeasurementPresetInterface = {
               name: result.name,
               notes: result.notes,
-              user: user && 'id' in user ? user.id : null
+              user: user && "id" in user ? user.id : null
             };
 
             // Only include width/height when they are valid measurements
@@ -2472,11 +2472,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Handle the result when the modal is closed
         modalRef.result.then(result => {
           this.currentUser$.pipe(take(1)).subscribe(user => {
-            if (user && 'id' in user) {
+            if (user && "id" in user) {
               const preset: MeasurementPresetInterface = {
                 name: result.name,
                 notes: result.notes,
-                user: user && 'id' in user ? user.id : null
+                user: user && "id" in user ? user.id : null
               };
 
               // Only include width/height when they are valid measurements
@@ -2626,12 +2626,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Create the measurement preset
     this.currentUser$.pipe(take(1)).subscribe(user => {
-      if (user && 'id' in user) {
+      if (user && "id" in user) {
         // Create the base preset object
         const preset: MeasurementPresetInterface = {
           name: this.newMeasurementName,
           notes: this.saveMeasurementNotes, // Include notes in the preset
-          user: user && 'id' in user ? user.id : null
+          user: user && "id" in user ? user.id : null
         };
 
         // Only include width/height when they are valid measurements
