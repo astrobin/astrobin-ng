@@ -73,6 +73,24 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   @Input() solution: SolutionInterface;
   @Input() naturalWidth: number;
   @Input() naturalHeight: number;
+  
+  /**
+   * Checks if the advancedSolutionMatrix is valid and has all required non-null properties
+   * @returns true if the matrix is valid and can be used for calculations
+   */
+  private isValidSolutionMatrix(): boolean {
+    return !!(
+      this.advancedSolutionMatrix && 
+      this.advancedSolutionMatrix.matrixRect !== null && 
+      this.advancedSolutionMatrix.matrixRect !== undefined &&
+      this.advancedSolutionMatrix.matrixDelta !== null && 
+      this.advancedSolutionMatrix.matrixDelta !== undefined &&
+      this.advancedSolutionMatrix.raMatrix !== null && 
+      this.advancedSolutionMatrix.raMatrix !== undefined &&
+      this.advancedSolutionMatrix.decMatrix !== null && 
+      this.advancedSolutionMatrix.decMatrix !== undefined
+    );
+  }
 
   @Output() exitMeasuringMode = new EventEmitter<void>();
   @Output() measurementStarted = new EventEmitter<void>();
@@ -330,8 +348,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.mouseX = event.clientX;
     this.mouseY = event.clientY;
 
-    // If we have solution data, calculate celestial coordinates for this point
-    if (this.advancedSolutionMatrix) {
+    // If we have valid solution data, calculate celestial coordinates for this point
+    if (this.isValidSolutionMatrix()) {
       const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY);
       if (coords) {
         this.measureStartPoint.ra = coords.ra;
@@ -342,7 +360,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.measureStartPoint.dec = null;
       }
     } else {
-      // If we don't have a solution matrix, set to null
+      // If we don't have a valid solution matrix, set to null
       this.measureStartPoint.ra = null;
       this.measureStartPoint.dec = null;
     }
@@ -385,8 +403,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           dec: null
         };
 
-        // If we have solution data, calculate celestial coordinates for this point
-        if (this.advancedSolutionMatrix) {
+        // If we have valid solution data, calculate celestial coordinates for this point
+        if (this.isValidSolutionMatrix()) {
           const coords = this.calculateCoordinatesAtPoint(upEvent.clientX, upEvent.clientY);
           if (coords) {
             this.measureEndPoint.ra = coords.ra;
@@ -397,7 +415,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             this.measureEndPoint.dec = null;
           }
         } else {
-          // If we don't have a solution matrix, set to null
+          // If we don't have a valid solution matrix, set to null
           this.measureEndPoint.ra = null;
           this.measureEndPoint.dec = null;
         }
@@ -483,8 +501,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.mouseX = event.clientX;
       this.mouseY = event.clientY;
 
-      // If we have solution data, calculate celestial coordinates for this point
-      if (this.advancedSolutionMatrix) {
+      // If we have valid solution data, calculate celestial coordinates for this point
+      if (this.isValidSolutionMatrix()) {
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY);
         if (coords) {
           this.measureStartPoint.ra = coords.ra;
@@ -495,7 +513,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.measureStartPoint.dec = null;
         }
       } else {
-        // If we don't have a solution matrix, set to null
+        // If we don't have a valid solution matrix, set to null
         this.measureStartPoint.ra = null;
         this.measureStartPoint.dec = null;
       }
@@ -519,8 +537,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.mouseX = event.clientX;
       this.mouseY = event.clientY;
 
-      // If we have solution data, calculate celestial coordinates for this point
-      if (this.advancedSolutionMatrix) {
+      // If we have valid solution data, calculate celestial coordinates for this point
+      if (this.isValidSolutionMatrix()) {
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY);
         if (coords) {
           this.measureStartPoint.ra = coords.ra;
@@ -531,7 +549,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.measureStartPoint.dec = null;
         }
       } else {
-        // If we don't have a solution matrix, set to null
+        // If we don't have a valid solution matrix, set to null
         this.measureStartPoint.ra = null;
         this.measureStartPoint.dec = null;
       }
@@ -546,8 +564,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         dec: null
       };
 
-      // If we have solution data, calculate celestial coordinates for this point
-      if (this.advancedSolutionMatrix) {
+      // If we have valid solution data, calculate celestial coordinates for this point
+      if (this.isValidSolutionMatrix()) {
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY);
         if (coords) {
           this.measureEndPoint.ra = coords.ra;
@@ -558,7 +576,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.measureEndPoint.dec = null;
         }
       } else {
-        // If we don't have a solution matrix, set to null
+        // If we don't have a valid solution matrix, set to null
         this.measureEndPoint.ra = null;
         this.measureEndPoint.dec = null;
       }
@@ -580,7 +598,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    */
   formatAngularDistance(distance: number): string {
     // Convert pixel distance to angular distance using solution matrix
-    if (!this.advancedSolutionMatrix) {
+    if (!this.isValidSolutionMatrix()) {
       return `${Math.round(distance)} px`;
     }
 
@@ -647,8 +665,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.measureStartPoint.x = event.clientX;
       this.measureStartPoint.y = event.clientY;
 
-      // Update celestial coordinates if we have plate solution data
-      if (this.advancedSolutionMatrix) {
+      // Update celestial coordinates if we have valid plate solution data
+      if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates during drag
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
         if (coords) {
@@ -666,8 +684,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.measureEndPoint.y
         );
 
-        // Format the distance based on whether we have celestial coordinates
-        if (this.advancedSolutionMatrix && this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
+        // Format the distance based on whether we have valid celestial coordinates
+        if (this.isValidSolutionMatrix() && this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
           this.measureDistance = this.formatAngularDistance(pixelDistance);
         } else {
           this.measureDistance = `${Math.round(pixelDistance)} px`;
@@ -677,8 +695,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.measureEndPoint.x = event.clientX;
       this.measureEndPoint.y = event.clientY;
 
-      // Update celestial coordinates if we have plate solution data
-      if (this.advancedSolutionMatrix) {
+      // Update celestial coordinates if we have valid plate solution data
+      if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates during drag
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
         if (coords) {
@@ -696,8 +714,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.measureEndPoint.y
         );
 
-        // Format the distance based on whether we have celestial coordinates
-        if (this.advancedSolutionMatrix && this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
+        // Format the distance based on whether we have valid celestial coordinates
+        if (this.isValidSolutionMatrix() && this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
           this.measureDistance = this.formatAngularDistance(pixelDistance);
         } else {
           this.measureDistance = `${Math.round(pixelDistance)} px`;
@@ -814,8 +832,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       measurement.startX = event.clientX;
       measurement.startY = event.clientY;
 
-      // Update celestial coordinates if we have plate solution data
-      if (this.advancedSolutionMatrix) {
+      // Update celestial coordinates if we have valid plate solution data
+      if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
         if (coords) {
@@ -827,8 +845,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       measurement.endX = event.clientX;
       measurement.endY = event.clientY;
 
-      // Update celestial coordinates if we have plate solution data
-      if (this.advancedSolutionMatrix) {
+      // Update celestial coordinates if we have valid plate solution data
+      if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
         if (coords) {
@@ -846,8 +864,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       measurement.endY
     );
 
-    // Format the distance based on whether we have celestial coordinates
-    if (this.advancedSolutionMatrix && measurement.startRa !== null && measurement.endRa !== null) {
+    // Format the distance based on whether we have valid celestial coordinates
+    if (this.isValidSolutionMatrix() && measurement.startRa !== null && measurement.endRa !== null) {
       // If we have RA/Dec coordinates, calculate angular distance
       const angularDistance = this.calculateAngularDistance(
         measurement.startRa,
@@ -982,9 +1000,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.dragStartY = event.clientY;
 
     // Update coordinates in real-time during drag, with debouncing
-    // Only update if we have solution data and enough time has passed since last update
+    // Only update if we have valid solution data and enough time has passed since last update
     const now = Date.now();
-    if (this.advancedSolutionMatrix && (now - this._lastCoordUpdateTime > this._coordUpdateDebounceMs)) {
+    if (this.isValidSolutionMatrix() && (now - this._lastCoordUpdateTime > this._coordUpdateDebounceMs)) {
       this._lastCoordUpdateTime = now;
 
       // Run in ngZone to ensure Angular detects the changes
@@ -1568,7 +1586,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     dec: number
   } | null {
     try {
-      if (!this.advancedSolutionMatrix) {
+      if (!this.isValidSolutionMatrix()) {
         return null;
       }
 
@@ -1681,8 +1699,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * @param measurement Optional measurement data containing additional information
    */
   getHorizontalCelestialDistance(x1: number, y: number, x2: number, measurement?: MeasurementData | MeasurementPresetInterface): string {
-    // If no advanced solution, return empty (template will show px)
-    if (!this.advancedSolutionMatrix) {
+    // If no valid advanced solution, return empty (template will show px)
+    if (!this.isValidSolutionMatrix()) {
       return "";
     }
 
@@ -1717,8 +1735,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * @param measurement Optional measurement data containing additional information
    */
   getVerticalCelestialDistance(x: number, y1: number, y2: number, measurement?: MeasurementData | MeasurementPresetInterface): string {
-    // If no advanced solution, return empty (template will show px)
-    if (!this.advancedSolutionMatrix) {
+    // If no valid advanced solution, return empty (template will show px)
+    if (!this.isValidSolutionMatrix()) {
       return "";
     }
 
@@ -2006,11 +2024,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       event.stopPropagation();
     }
 
-    // Check if we have the advanced solution matrix needed for saving
-    if (!this.advancedSolutionMatrix) {
+    // Check if we have a valid advanced solution matrix needed for saving
+    if (!this.isValidSolutionMatrix()) {
       this.popNotificationsService.error(
         this.translateService.instant(
-          "Measurement presets cannot be saved on images without advanced plate-solving data"
+          "Measurement presets cannot be saved on images without valid advanced plate-solving data"
         )
       );
       return;
@@ -2180,11 +2198,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       event.stopPropagation();
     }
 
-    // Check if we have the advanced solution matrix needed for saving
-    if (!this.advancedSolutionMatrix) {
+    // Check if we have a valid advanced solution matrix needed for saving
+    if (!this.isValidSolutionMatrix()) {
       this.popNotificationsService.error(
         this.translateService.instant(
-          "Measurement presets cannot be saved on images without advanced plate-solving data"
+          "Measurement presets cannot be saved on images without valid advanced plate-solving data"
         )
       );
       return;
@@ -2355,11 +2373,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * For the save button on the measurement itself, see openSaveCurrentMeasurement.
    */
   saveMeasurement(): void {
-    // Check if we have the advanced solution matrix needed for saving
-    if (!this.advancedSolutionMatrix) {
+    // Check if we have a valid advanced solution matrix needed for saving
+    if (!this.isValidSolutionMatrix()) {
       this.popNotificationsService.error(
         this.translateService.instant(
-          "Measurement presets cannot be saved on images without advanced plate-solving data"
+          "Measurement presets cannot be saved on images without valid advanced plate-solving data"
         )
       );
       return;

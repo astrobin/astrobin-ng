@@ -390,15 +390,15 @@
       </button>
 
       <button *ngIf="currentUser$ | async" type="button" class="btn-shape-action save-button"
-              (click)="advancedSolutionMatrix ? savePreviousMeasurement($event, i) : $event.stopPropagation()"
+              (click)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? savePreviousMeasurement($event, i) : $event.stopPropagation()"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
-              [class.disabled]="!advancedSolutionMatrix"
-              [style.opacity]="!advancedSolutionMatrix ? '0.5' : '1'"
+              [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
+              [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
               [style.pointer-events]="'auto'">
         <fa-icon
           icon="save"
-          [ngbTooltip]="!advancedSolutionMatrix ? ('Saving measurements requires advanced plate-solving data' | translate) : ('Save measurement' | translate)"
+          [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Saving measurements requires valid advanced plate-solving data' | translate) : ('Save measurement' | translate)"
           container="body"
         ></fa-icon>
       </button>
@@ -638,13 +638,13 @@
       </button>
 
       <button *ngIf="currentUser$ | async" type="button" class="btn-shape-action save-button"
-              (click)="advancedSolutionMatrix ? openSaveCurrentMeasurement($event) : $event.stopPropagation()"
+              (click)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? openSaveCurrentMeasurement($event) : $event.stopPropagation()"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
-              [class.disabled]="!advancedSolutionMatrix"
-              [style.opacity]="!advancedSolutionMatrix ? '0.5' : '1'"
+              [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
+              [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
               [style.pointer-events]="'auto'">
-        <fa-icon icon="save" [ngbTooltip]="!advancedSolutionMatrix ? ('Saving measurements requires advanced plate-solving data' | translate) : ('Save measurement' | translate)" container="body"></fa-icon>
+        <fa-icon icon="save" [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Saving measurements requires valid advanced plate-solving data' | translate) : ('Save measurement' | translate)" container="body"></fa-icon>
       </button>
     </div>
   </div>
