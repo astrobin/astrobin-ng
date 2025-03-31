@@ -18,9 +18,11 @@
     </div>
 
     <!-- Once both points are selected, calculate perpendicular position for labels -->
-    <div *ngIf="measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null" class="marker-coordinates visible"
+    <div *ngIf="measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null" 
+         class="marker-coordinates visible draggable-label"
          [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').x"
-         [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').y">
+         [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').y"
+         (mousedown)="handlePointDragStart($event, 'start')">
       <small>{{ measureStartPoint.ra | formatCoordinatesCompact : measureStartPoint.dec }}</small>
     </div>
   </div>
@@ -31,9 +33,11 @@
        (mousedown)="handlePointDragStart($event, 'end')">
     <div class="marker-dot"></div>
     <!-- End point coordinates perpendicular to line -->
-    <div *ngIf="measureEndPoint.ra !== null && measureEndPoint.dec !== null" class="marker-coordinates visible"
+    <div *ngIf="measureEndPoint.ra !== null && measureEndPoint.dec !== null" 
+         class="marker-coordinates visible draggable-label"
          [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').x"
-         [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').y">
+         [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').y"
+         (mousedown)="handlePointDragStart($event, 'end')">
       <small>{{ measureEndPoint.ra | formatCoordinatesCompact : measureEndPoint.dec }}</small>
     </div>
   </div>
@@ -275,7 +279,7 @@
           <!-- Width text -->
           <text
             [attr.x]="(measurement.startX | mathMin:measurement.endX) | getMidpoint:(measurement.startX | mathMax:measurement.endX)"
-            [attr.y]="(measurement.startY | mathMax:measurement.endY) + 30"
+            [attr.y]="checkHorizontalLabelPosition((measurement.startY | mathMax:measurement.endY) + 30, measurement)"
             text-anchor="middle"
             class="dimension-text"
             [attr.dominant-baseline]="'central'">
@@ -326,10 +330,10 @@
             class="dimension-arrow">
           </line>
 
-          <!-- Height text -->
+          <!-- Height text - adjust position to avoid overlap with measurement box -->
           <text
             [attr.x]="(measurement.startX | mathMax:measurement.endX) + 35"
-            [attr.y]="(measurement.startY | mathMin:measurement.endY) | getMidpoint:(measurement.startY | mathMax:measurement.endY)"
+            [attr.y]="checkVerticalLabelPosition((measurement.startY | mathMin:measurement.endY) | getMidpoint:(measurement.startY | mathMax:measurement.endY), measurement)"
             text-anchor="start"
             class="dimension-text"
             [attr.dominant-baseline]="'central'">
@@ -353,16 +357,37 @@
        (mouseenter)="setMouseOverUIElement(true)"
        (mouseleave)="setMouseOverUIElement(false)"
        (mousedown)="handleShapeDragStart($event, i, measurement.showCircle ? 'circle' : 'rectangle')">
-    <span class="measurement-text">
-      {{ measurement.distance }}
-      <fa-icon *ngIf="measurement.distance.endsWith('px')" 
-               icon="info-circle"
-               class="info-icon ms-1"
-               [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
-               container="body"
-               placement="top">
-      </fa-icon>
-    </span>
+    <div class="measurement-content">
+      <!-- Display name if it exists -->
+      <div *ngIf="measurement.name" class="measurement-name">
+        {{ measurement.name }}
+      </div>
+      
+      <!-- Display the distance measurement -->
+      <span class="measurement-text">
+        {{ measurement.distance }}
+        <fa-icon *ngIf="measurement.distance.endsWith('px')" 
+                icon="info-circle"
+                class="info-icon ms-1"
+                [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
+                container="body"
+                placement="top">
+        </fa-icon>
+      </span>
+      
+      <!-- Display notes if they exist -->
+      <div *ngIf="measurement.notes" class="measurement-notes">
+        <span class="notes-content">{{ measurement.notes }}</span>
+        <a *ngIf="measurement.notes" 
+           href="#" 
+           class="see-more-link"
+           (click)="openFullNotesModal($event, measurement.notes)"
+           (mousedown)="$event.stopPropagation()"
+           (pointerdown)="$event.stopPropagation()">
+          {{ 'See more' | translate }}
+        </a>
+      </div>
+    </div>
 
     <div class="measurement-actions">
       <button type="button" class="btn-shape-action circle-button"
@@ -536,7 +561,7 @@
         <!-- Width text -->
         <text
           [attr.x]="(Math.min(measureStartPoint.x, measureEndPoint.x) + Math.max(measureStartPoint.x, measureEndPoint.x)) / 2"
-          [attr.y]="Math.max(measureStartPoint.y, measureEndPoint.y) + 30"
+          [attr.y]="checkHorizontalLabelPosition(Math.max(measureStartPoint.y, measureEndPoint.y) + 30)"
           text-anchor="middle"
           class="dimension-text current"
           [attr.dominant-baseline]="'central'">
@@ -586,10 +611,10 @@
           class="dimension-arrow current">
         </line>
 
-        <!-- Height text -->
+        <!-- Height text - adjust position to avoid overlap with measurement box -->
         <text
           [attr.x]="Math.max(measureStartPoint.x, measureEndPoint.x) + 35"
-          [attr.y]="(Math.min(measureStartPoint.y, measureEndPoint.y) + Math.max(measureStartPoint.y, measureEndPoint.y)) / 2"
+          [attr.y]="checkVerticalLabelPosition((Math.min(measureStartPoint.y, measureEndPoint.y) + Math.max(measureStartPoint.y, measureEndPoint.y)) / 2)"
           text-anchor="start"
           class="dimension-text current"
           [attr.dominant-baseline]="'central'">
@@ -609,16 +634,37 @@
        (mouseenter)="setMouseOverUIElement(true)"
        (mouseleave)="setMouseOverUIElement(false)"
        (mousedown)="handleCurrentShapeDragStart($event, showCurrentCircle ? 'circle' : 'rectangle')">
-    <span class="measurement-text">
-      {{ measureDistance }}
-      <fa-icon *ngIf="measureDistance && measureDistance.endsWith('px')" 
-               icon="info-circle"
-               class="info-icon ms-1"
-               [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
-               container="body"
-               placement="top">
-      </fa-icon>
-    </span>
+    <div class="measurement-content">
+      <!-- Display name if it exists -->
+      <div *ngIf="newMeasurementName" class="measurement-name">
+        {{ newMeasurementName }}
+      </div>
+      
+      <!-- Display the distance measurement -->
+      <span class="measurement-text">
+        {{ measureDistance }}
+        <fa-icon *ngIf="measureDistance && measureDistance.endsWith('px')" 
+                icon="info-circle"
+                class="info-icon ms-1"
+                [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
+                container="body"
+                placement="top">
+        </fa-icon>
+      </span>
+      
+      <!-- Display notes if they exist -->
+      <div *ngIf="saveMeasurementNotes" class="measurement-notes">
+        <span class="notes-content">{{ saveMeasurementNotes }}</span>
+        <a *ngIf="saveMeasurementNotes" 
+           href="#" 
+           class="see-more-link"
+           (click)="openFullNotesModal($event, saveMeasurementNotes)"
+           (mousedown)="$event.stopPropagation()"
+           (pointerdown)="$event.stopPropagation()">
+          {{ 'See more' | translate }}
+        </a>
+      </div>
+    </div>
 
     <div class="measurement-actions">
       <button type="button" class="btn-shape-action circle-button"
@@ -653,16 +699,20 @@
   <!-- Coordinate labels for previous measurements -->
   <div *ngFor="let measurement of previousMeasurements; let i = index">
     <!-- Start point coordinates with perpendicular positioning -->
-    <div *ngIf="measurement.startRa !== null && measurement.startDec !== null" class="measure-coord-label visible"
+    <div *ngIf="measurement.startRa !== null && measurement.startDec !== null" 
+         class="measure-coord-label visible draggable-label"
          [style.left.px]="measurement.startLabelX"
-         [style.top.px]="measurement.startLabelY">
+         [style.top.px]="measurement.startLabelY"
+         (mousedown)="handlePreviousMeasurementDrag($event, i, 'start')">
       <small>{{ measurement.startRa | formatCoordinatesCompact:measurement.startDec }}</small>
     </div>
 
     <!-- End point coordinates with perpendicular positioning -->
-    <div *ngIf="measurement.endRa !== null && measurement.endDec !== null" class="measure-coord-label visible"
+    <div *ngIf="measurement.endRa !== null && measurement.endDec !== null" 
+         class="measure-coord-label visible draggable-label"
          [style.left.px]="measurement.endLabelX"
-         [style.top.px]="measurement.endLabelY">
+         [style.top.px]="measurement.endLabelY"
+         (mousedown)="handlePreviousMeasurementDrag($event, i, 'end')">
       <small>{{ measurement.endRa | formatCoordinatesCompact:measurement.endDec }}</small>
     </div>
   </div>
@@ -704,18 +754,31 @@
           <h6>{{ 'Current Measurement' | translate }}</h6>
           <p>{{ measureDistance }}</p>
         </div>
-        <div class="input-group input-group-sm mb-2" *ngIf="currentUser$ | async">
-          <input type="text" class="form-control" [(ngModel)]="newMeasurementName"
-                 placeholder="{{ 'Measurement name' | translate }}">
-          <button class="btn btn-primary"
-                  (click)="advancedSolutionMatrix ? saveMeasurement() : null"
-                  [class.disabled]="!advancedSolutionMatrix"
-                  [style.pointer-events]="'auto'"
-                  [ngbTooltip]="!advancedSolutionMatrix ? ('Saving measurements requires advanced plate-solving data' | translate) : ('Save measurement' | translate)"
-                  container="body">
-            <fa-icon icon="save" class="me-1"></fa-icon>
-            {{ 'Save' | translate }}
-          </button>
+        <div *ngIf="currentUser$ | async">
+          <!-- Name input -->
+          <div class="input-group input-group-sm mb-2">
+            <input type="text" class="form-control" [(ngModel)]="newMeasurementName"
+                   placeholder="{{ 'Measurement name' | translate }}">
+          </div>
+          
+          <!-- Notes input -->
+          <div class="input-group input-group-sm mb-2">
+            <textarea class="form-control" [(ngModel)]="saveMeasurementNotes" rows="2"
+                     placeholder="{{ 'Measurement notes (optional)' | translate }}"></textarea>
+          </div>
+          
+          <!-- Save button -->
+          <div class="input-group input-group-sm mb-2">
+            <button class="btn btn-primary"
+                    (click)="advancedSolutionMatrix ? saveMeasurement() : null"
+                    [class.disabled]="!advancedSolutionMatrix"
+                    [style.pointer-events]="'auto'"
+                    [ngbTooltip]="!advancedSolutionMatrix ? ('Saving measurements requires advanced plate-solving data' | translate) : ('Save measurement' | translate)"
+                    container="body">
+              <fa-icon icon="save" class="me-1"></fa-icon>
+              {{ 'Save' | translate }}
+            </button>
+          </div>
         </div>
       </div>
 

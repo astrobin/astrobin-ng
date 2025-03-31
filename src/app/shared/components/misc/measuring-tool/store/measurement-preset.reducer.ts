@@ -73,12 +73,31 @@ export function measurementPresetReducer(
       };
       
     case MeasurementPresetActionTypes.CREATE_MEASUREMENT_PRESET_SUCCESS:
-      return {
-        ...state,
-        presets: [...state.presets, action.payload.preset],
-        loading: false,
-        error: null
-      };
+      // Check if a preset with the same name already exists
+      const existingPresetIndex = state.presets.findIndex(
+        preset => preset.name === action.payload.preset.name
+      );
+      
+      // If preset with same name exists, update it instead of adding a new one
+      if (existingPresetIndex !== -1) {
+        const updatedPresets = [...state.presets];
+        updatedPresets[existingPresetIndex] = action.payload.preset;
+        
+        return {
+          ...state,
+          presets: updatedPresets,
+          loading: false,
+          error: null
+        };
+      } else {
+        // Otherwise, add the new preset to the list
+        return {
+          ...state,
+          presets: [...state.presets, action.payload.preset],
+          loading: false,
+          error: null
+        };
+      }
       
     case MeasurementPresetActionTypes.CREATE_MEASUREMENT_PRESET_FAILURE:
       return {

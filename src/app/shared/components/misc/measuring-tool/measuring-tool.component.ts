@@ -15,7 +15,18 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-measurement-modal.component";
 import { SolutionInterface } from "@core/interfaces/solution.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { isPlatformBrowser } from "@angular/common";
+
+// Interface to represent a label's bounding box for collision detection
+interface LabelBoundingBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  priority: number; // Lower number = higher priority (less likely to be moved)
+  type: 'point' | 'dimension'; // Type of label for special handling
+}
 
 export interface MeasurementPoint {
   x: number;
@@ -48,6 +59,7 @@ export interface MeasurementData {
   widthArcseconds?: number | null;  // Width in arcseconds for rectangular measurements
   heightArcseconds?: number | null; // Height in arcseconds for rectangular measurements
   length?: number;                  // Length in pixels for recreating the measurement
+  name?: string;                    // Name for the measurement
   notes?: string;                   // Optional user notes about the measurement
 }
 
@@ -64,6 +76,64 @@ export interface SolutionMatrix {
   styleUrls: ["./measuring-tool.component.scss"]
 })
 export class MeasuringToolComponent extends BaseComponentDirective implements OnInit, OnDestroy {
+  // Helper method to detect collisions between labels
+  private doLabelsOverlap(label1: LabelBoundingBox, label2: LabelBoundingBox): boolean {
+    return (
+      label1.x < label2.x + label2.width &&
+      label1.x + label1.width > label2.x &&
+      label1.y < label2.y + label2.height &&
+      label1.y + label1.height > label2.y
+    );
+  }
+
+  // Helper method to resolve collisions by moving labels
+  private resolveCollision(label1: LabelBoundingBox, label2: LabelBoundingBox): { x: number, y: number } {
+    // Determine which label to move (higher priority number gets moved)
+    const labelToMove = label1.priority > label2.priority ? label1 : label2;
+    const fixedLabel = label1.priority > label2.priority ? label2 : label1;
+    
+    // Calculate overlap amounts
+    const overlapX = Math.min(
+      labelToMove.x + labelToMove.width - fixedLabel.x,
+      fixedLabel.x + fixedLabel.width - labelToMove.x
+    );
+    
+    const overlapY = Math.min(
+      labelToMove.y + labelToMove.height - fixedLabel.y,
+      fixedLabel.y + fixedLabel.height - labelToMove.y
+    );
+    
+    // Determine which direction requires less movement
+    let newX = labelToMove.x;
+    let newY = labelToMove.y;
+    
+    // For point labels, we prefer to move in the same direction as their original offset
+    if (labelToMove.type === 'point') {
+      // Check if the point is to the left/right of what it's colliding with
+      const isRightOfFixed = labelToMove.x > fixedLabel.x + fixedLabel.width / 2;
+      const isBelowFixed = labelToMove.y > fixedLabel.y + fixedLabel.height / 2;
+      
+      // Move horizontally for wider collisions, vertically for taller ones
+      if (overlapX < overlapY) {
+        newX = isRightOfFixed ? 
+          fixedLabel.x + fixedLabel.width + 5 : 
+          fixedLabel.x - labelToMove.width - 5;
+      } else {
+        newY = isBelowFixed ? 
+          fixedLabel.y + fixedLabel.height + 5 : 
+          fixedLabel.y - labelToMove.height - 5;
+      }
+    } 
+    // For dimension labels, we have specific positioning needs
+    else if (labelToMove.type === 'dimension') {
+      // Dimension labels should mostly move vertically
+      newY = labelToMove.y > fixedLabel.y ? 
+        fixedLabel.y + fixedLabel.height + 5 : 
+        fixedLabel.y - labelToMove.height - 5;
+    }
+    
+    return { x: newX, y: newY };
+  }
   @Input() active: boolean = false;
   @Input() imageElement: ElementRef<HTMLElement>;
   @Input() advancedSolutionMatrix: SolutionMatrix | null = null;
@@ -105,6 +175,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   // Saved measurements
   showSavedMeasurements: boolean = false;
   newMeasurementName: string = "";
+  saveMeasurementNotes: string = "";
   savedMeasurements: MeasurementPresetInterface[] = [];
   // Mouse tracking
   mouseX: number | null = null;
@@ -112,6 +183,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   // Drag functionality
   dragStartX: number | null = null;
   dragStartY: number | null = null;
+  dragOffsetX: number = 0;
+  dragOffsetY: number = 0;
   isDraggingPoint: "start" | "end" | string | null = null;
   // Shape visualization
   showCurrentCircle: boolean = false;
@@ -644,6 +717,19 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     event.stopPropagation();
 
     this.isDraggingPoint = point;
+    
+    // Calculate offset between mouse position and point position
+    if (point === "start" && this.measureStartPoint) {
+      this.dragOffsetX = this.measureStartPoint.x - event.clientX;
+      this.dragOffsetY = this.measureStartPoint.y - event.clientY;
+    } else if (point === "end" && this.measureEndPoint) {
+      this.dragOffsetX = this.measureEndPoint.x - event.clientX;
+      this.dragOffsetY = this.measureEndPoint.y - event.clientY;
+    } else {
+      this.dragOffsetX = 0;
+      this.dragOffsetY = 0;
+    }
+    
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
 
@@ -666,15 +752,15 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     event.preventDefault();
 
-    // Update the position of the point being dragged
+    // Update the position of the point being dragged, maintaining the original offset
     if (this.isDraggingPoint === "start" && this.measureStartPoint) {
-      this.measureStartPoint.x = event.clientX;
-      this.measureStartPoint.y = event.clientY;
+      this.measureStartPoint.x = event.clientX + this.dragOffsetX;
+      this.measureStartPoint.y = event.clientY + this.dragOffsetY;
 
       // Update celestial coordinates if we have valid plate solution data
       if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates during drag
-        const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
+        const coords = this.calculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
         if (coords) {
           this.measureStartPoint.ra = coords.ra;
           this.measureStartPoint.dec = coords.dec;
@@ -698,13 +784,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         }
       }
     } else if (this.isDraggingPoint === "end" && this.measureEndPoint) {
-      this.measureEndPoint.x = event.clientX;
-      this.measureEndPoint.y = event.clientY;
+      this.measureEndPoint.x = event.clientX + this.dragOffsetX;
+      this.measureEndPoint.y = event.clientY + this.dragOffsetY;
 
       // Update celestial coordinates if we have valid plate solution data
       if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates during drag
-        const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
+        const coords = this.calculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
         if (coords) {
           this.measureEndPoint.ra = coords.ra;
           this.measureEndPoint.dec = coords.dec;
@@ -801,6 +887,25 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     event.stopPropagation();
 
     this.isDraggingPoint = `prev${point.charAt(0).toUpperCase() + point.slice(1)}-${index}`;
+    
+    // Calculate offset between mouse position and point position
+    if (index >= 0 && index < this.previousMeasurements.length) {
+      const measurement = this.previousMeasurements[index];
+      if (point === "start") {
+        this.dragOffsetX = measurement.startX - event.clientX;
+        this.dragOffsetY = measurement.startY - event.clientY;
+      } else if (point === "end") {
+        this.dragOffsetX = measurement.endX - event.clientX;
+        this.dragOffsetY = measurement.endY - event.clientY;
+      } else {
+        this.dragOffsetX = 0;
+        this.dragOffsetY = 0;
+      }
+    } else {
+      this.dragOffsetX = 0;
+      this.dragOffsetY = 0;
+    }
+    
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
 
@@ -833,28 +938,28 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     const measurement = this.previousMeasurements[index];
 
-    // Update the position of the point being dragged
+    // Update the position of the point being dragged, maintaining the offset
     if (this.isDraggingPoint.startsWith("prevStart")) {
-      measurement.startX = event.clientX;
-      measurement.startY = event.clientY;
+      measurement.startX = event.clientX + this.dragOffsetX;
+      measurement.startY = event.clientY + this.dragOffsetY;
 
       // Update celestial coordinates if we have valid plate solution data
       if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates
-        const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
+        const coords = this.calculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
         if (coords) {
           measurement.startRa = coords.ra;
           measurement.startDec = coords.dec;
         }
       }
     } else if (this.isDraggingPoint.startsWith("prevEnd")) {
-      measurement.endX = event.clientX;
-      measurement.endY = event.clientY;
+      measurement.endX = event.clientX + this.dragOffsetX;
+      measurement.endY = event.clientY + this.dragOffsetY;
 
       // Update celestial coordinates if we have valid plate solution data
       if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates
-        const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
+        const coords = this.calculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
         if (coords) {
           measurement.endRa = coords.ra;
           measurement.endDec = coords.dec;
@@ -1515,59 +1620,59 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   /**
-   * Calculate display positions for coordinate labels
+   * Calculate display positions for coordinate labels with collision detection
    */
   updateCoordinateLabelPositions(measurement: MeasurementData): void {
     // Calculate the angle of the line
     const angle = Math.atan2(measurement.endY - measurement.startY, measurement.endX - measurement.startX);
 
-    // Set offset parameters similar to fullscreen-image-viewer
+    // Set offset parameters
     const pointRadius = 6;
-    const labelDistance = 24; // Base distance from the point to place the label
+    const baseLabelDistance = 24; 
+    const startLabelDistance = baseLabelDistance;
+    const endLabelDistance = baseLabelDistance * 1.5;
 
+    // Calculate initial positions based on angle
+    // Start with the basic geometric positioning
+    
     // Calculate how horizontal the line is
-    // 0 = perfectly horizontal, PI/2 = perfectly vertical
     const absAngle = Math.abs(angle);
     const horizontalness = Math.min(
-      Math.abs(absAngle), // Angle from positive x-axis
-      Math.abs(absAngle - Math.PI) // Angle from negative x-axis
+      Math.abs(absAngle),
+      Math.abs(absAngle - Math.PI)
     );
 
-    // Expand what constitutes "nearly horizontal" to include slacker angles
-    const isNearlyHorizontal = horizontalness < Math.PI / 8; // Within ~22.5 degrees of horizontal (more forgiving)
-    const isNearlyVertical = Math.abs(absAngle - Math.PI / 2) < Math.PI / 12; // Within 15 degrees of vertical
+    // Determine if line is nearly horizontal or vertical
+    const isNearlyHorizontal = horizontalness < Math.PI / 8;
+    const isNearlyVertical = Math.abs(absAngle - Math.PI / 2) < Math.PI / 12;
 
-    // Calculate extra distance based on how horizontal the line is
-    // As the line gets more horizontal (horizontalness approaches 0), increase the distance
-    let extraDistance = 0;
+    // Calculate the diagonal factor
+    const diagonalFactor = Math.abs(Math.sin(2 * angle)) / 1.0;
+    
+    // Calculate distances with boosts
+    const startVerticalBoost = startLabelDistance * 0.8 * diagonalFactor;
+    const endVerticalBoost = endLabelDistance * 0.8 * diagonalFactor;
 
-    // Calculate a diagonal factor - maximum at 45 and 135 degrees, minimum at 0 or 90 degrees
-    // Math.abs ensures we get a positive factor regardless of the line direction
-    // This gives us a value between 0 and 1, with 1 being at 45 or 135 degrees
-    const diagonalFactor = Math.abs(Math.sin(2 * angle)) / 1.0; // abs(sin(2x)) peaks at 45 and 135 degrees
-
-    // Add some vertical offset based on diagonal factor
-    const verticalBoost = labelDistance * 0.8 * diagonalFactor; // 0.8x gives a more noticeable boost
+    let startExtraDistance = 0;
+    let endExtraDistance = 0;
 
     if (isNearlyHorizontal) {
-      // For nearly horizontal lines, add significant extra distance to avoid overlap
-      // The closer to horizontal, the larger the extra distance
-      const horizontalFactor = 1 - (horizontalness / (Math.PI / 8)); // 0 to 1 factor, adjusted for wider angle
-      extraDistance = labelDistance * 3.5 * horizontalFactor + verticalBoost; // Scale up with vertical boost
+      const horizontalFactor = 1 - (horizontalness / (Math.PI / 8));
+      startExtraDistance = startLabelDistance * 3.5 * horizontalFactor + startVerticalBoost;
+      endExtraDistance = endLabelDistance * 3.5 * horizontalFactor + endVerticalBoost;
     } else {
-      // For non-horizontal lines, still add the vertical boost
-      extraDistance = verticalBoost;
+      startExtraDistance = startVerticalBoost;
+      endExtraDistance = endVerticalBoost;
     }
 
-    // Start label - place in opposite direction of the line
-    measurement.startLabelX = measurement.startX - (labelDistance + pointRadius + extraDistance) * Math.cos(angle);
-    measurement.startLabelY = measurement.startY - (labelDistance + pointRadius + extraDistance) * Math.sin(angle);
+    // Calculate initial positions
+    measurement.startLabelX = measurement.startX - (startLabelDistance + pointRadius + startExtraDistance) * Math.cos(angle);
+    measurement.startLabelY = measurement.startY - (startLabelDistance + pointRadius + startExtraDistance) * Math.sin(angle);
 
-    // End label - place in the direction of the line
-    measurement.endLabelX = measurement.endX + (labelDistance + pointRadius + extraDistance) * Math.cos(angle);
-    measurement.endLabelY = measurement.endY + (labelDistance + pointRadius + extraDistance) * Math.sin(angle);
+    measurement.endLabelX = measurement.endX + (endLabelDistance + pointRadius + endExtraDistance) * Math.cos(angle);
+    measurement.endLabelY = measurement.endY + (endLabelDistance + pointRadius + endExtraDistance) * Math.sin(angle);
 
-    // For vertical lines, add a slight horizontal offset to avoid direct overlap
+    // For vertical lines, add horizontal offset
     if (isNearlyVertical) {
       const horizontalOffset = 15;
       if (angle > 0) { // Line pointing downward
@@ -1577,6 +1682,98 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         measurement.startLabelX += horizontalOffset;
         measurement.endLabelX -= horizontalOffset;
       }
+    }
+    
+    // For rectangle mode, we now need to check if labels will collide with dimension labels
+    // Approximate where dimension labels will be (we don't have actual references to them here)
+    
+    // Estimate label dimensions - these are approximate values
+    const coordLabelWidth = 150;  // RA/Dec label width
+    const coordLabelHeight = 20;  // RA/Dec label height
+    const dimLabelWidth = 60;     // Dimension label width 
+    const dimLabelHeight = 20;    // Dimension label height
+    
+    // Create bounding boxes for our labels
+    const labels: LabelBoundingBox[] = [
+      // 1. Start point coordinates label
+      {
+        x: measurement.startLabelX - coordLabelWidth/2,
+        y: measurement.startLabelY - coordLabelHeight/2,
+        width: coordLabelWidth,
+        height: coordLabelHeight,
+        priority: 2,  // Medium priority
+        type: 'point'
+      },
+      // 2. End point coordinates label
+      {
+        x: measurement.endLabelX - coordLabelWidth/2,
+        y: measurement.endLabelY - coordLabelHeight/2,
+        width: coordLabelWidth,
+        height: coordLabelHeight,
+        priority: 2,  // Medium priority
+        type: 'point'
+      }
+    ];
+    
+    // 3. Add width dimension label (horizontal) - positioned at midpoint of X, below the rectangle 
+    const widthLabelX = (Math.min(measurement.startX, measurement.endX) + 
+                         Math.abs(measurement.endX - measurement.startX) / 2) - dimLabelWidth/2;
+    const widthLabelY = Math.max(measurement.startY, measurement.endY) + 20;
+    
+    labels.push({
+      x: widthLabelX,
+      y: widthLabelY,
+      width: dimLabelWidth,
+      height: dimLabelHeight,
+      priority: 1,  // Higher priority (less likely to move)
+      type: 'dimension'
+    });
+    
+    // 4. Add height dimension label (vertical) - positioned to the right of the rectangle
+    const heightLabelX = Math.max(measurement.startX, measurement.endX) + 20;
+    const heightLabelY = (Math.min(measurement.startY, measurement.endY) + 
+                          Math.abs(measurement.endY - measurement.startY) / 2) - dimLabelHeight/2;
+    
+    labels.push({
+      x: heightLabelX,
+      y: heightLabelY,
+      width: dimLabelWidth,
+      height: dimLabelHeight,
+      priority: 1,  // Higher priority
+      type: 'dimension'
+    });
+    
+    // Perform collision detection and resolution
+    // We only need to check the first two labels (coord labels) against the others
+    for (let i = 0; i < 2; i++) {  // Coordinate labels
+      for (let j = 2; j < labels.length; j++) {  // Dimension labels
+        if (this.doLabelsOverlap(labels[i], labels[j])) {
+          // If collision detected, move the coordinate label
+          const newPos = this.resolveCollision(labels[i], labels[j]);
+          
+          // Update the label position
+          if (i === 0) {  // Start label
+            measurement.startLabelX = newPos.x + coordLabelWidth/2;
+            measurement.startLabelY = newPos.y + coordLabelHeight/2;
+          } else {  // End label
+            measurement.endLabelX = newPos.x + coordLabelWidth/2;
+            measurement.endLabelY = newPos.y + coordLabelHeight/2;
+          }
+          
+          // Update the label's position in our array for subsequent collision checks
+          labels[i].x = newPos.x;
+          labels[i].y = newPos.y;
+        }
+      }
+    }
+    
+    // Also check if the two coordinate labels collide with each other
+    if (this.doLabelsOverlap(labels[0], labels[1])) {
+      const newPos = this.resolveCollision(labels[0], labels[1]);
+      
+      // We move the first label as it has the same priority as the second
+      measurement.startLabelX = newPos.x + coordLabelWidth/2;
+      measurement.startLabelY = newPos.y + coordLabelHeight/2;
     }
   }
 
@@ -2185,6 +2382,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
               preset.heightArcseconds = measurementData.heightArcseconds;
             }
 
+            // Update the current measurement's name and notes for display
+            this.newMeasurementName = result.name;
+            this.saveMeasurementNotes = result.notes;
+
             // Dispatch action to save preset
             this.store$.dispatch(new CreateMeasurementPreset({ preset }));
           }
@@ -2503,6 +2704,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Create the base preset object
         const preset: MeasurementPresetInterface = {
           name: this.newMeasurementName,
+          notes: this.saveMeasurementNotes, // Include notes in the preset
           user: user.id
         };
 
@@ -2518,8 +2720,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Dispatch action to save preset
         this.store$.dispatch(new CreateMeasurementPreset({ preset }));
 
-        // Reset name field
+        // Reset name and notes fields
         this.newMeasurementName = "";
+        this.saveMeasurementNotes = "";
       }
     });
   }
@@ -2777,7 +2980,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         showRectangle: true,
         // Store the original width/height from the preset for future reference
         widthArcseconds: preset.widthArcseconds,
-        heightArcseconds: preset.heightArcseconds
+        heightArcseconds: preset.heightArcseconds,
+        // Include name and notes from the preset
+        name: preset.name,
+        notes: preset.notes
       };
 
       // Update label positions
@@ -3118,5 +3324,223 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Force change detection to ensure the modal appears immediately
     this.cdRef.detectChanges();
+  }
+  
+  /**
+   * Opens a modal to display the full notes
+   * Called when the user clicks on the "See more" link
+   */
+  openFullNotesModal(event: MouseEvent, notes: string): void {
+    // Prevent default link behavior and event propagation
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    // Open the modal using the InformationDialogComponent
+    const modalRef = this.modalService.open(InformationDialogComponent, {
+      centered: true,
+      scrollable: true,
+      size: 'md'
+    });
+    
+    // Configure the modal
+    modalRef.componentInstance.title = this.translateService.instant('Measurement Notes');
+    modalRef.componentInstance.message = notes;
+    
+    // Add safe event handling
+    try {
+      event.stopImmediatePropagation();
+    } catch (e) {
+      // Ignore errors
+    }
+  }
+
+  /**
+   * Checks and adjusts horizontal label position to avoid overlap with the measurement box
+   * This positions the horizontal distance label to avoid overlap with the center box
+   * 
+   * Works with both current measurements and previous measurements
+   */
+  checkHorizontalLabelPosition(y: number, measurement?: MeasurementData): number {
+    if (!this.isBrowser) {
+      return y;
+    }
+    
+    // Use provided measurement if available, otherwise use the current measurement
+    const startPoint = measurement ? { x: measurement.startX, y: measurement.startY } : this.measureStartPoint;
+    const endPoint = measurement ? { x: measurement.endX, y: measurement.endY } : this.measureEndPoint;
+    
+    if (!startPoint || !endPoint) {
+      return y;
+    }
+    
+    // Calculate midpoint of the rectangle
+    const midX = (startPoint.x + endPoint.x) / 2;
+    const midY = (startPoint.y + endPoint.y) / 2;
+    
+    // Find all measure-distance elements
+    const measureDistanceElements = Array.from(
+      document.querySelectorAll('.measure-distance')
+    ) as HTMLElement[];
+    
+    // Calculate position and dimensions of the horizontal distance label
+    const horizontalLabelX = midX; // X position at the middle of width
+    const horizontalLabelY = y; // Proposed Y position below rectangle
+    
+    // Approximate dimensions of the horizontal distance label
+    const horizontalLabelWidth = 100; // Typical width of the distance label
+    const horizontalLabelHeight = 20; // Typical height of the distance label
+    
+    // Define the bounding box of the horizontal label
+    const horizontalLabelBox = {
+      left: horizontalLabelX - horizontalLabelWidth / 2, // Center aligned text
+      right: horizontalLabelX + horizontalLabelWidth / 2,
+      top: horizontalLabelY - horizontalLabelHeight / 2,
+      bottom: horizontalLabelY + horizontalLabelHeight / 2
+    };
+    
+    let overlaps = false;
+    let overlappingElement: HTMLElement | null = null;
+    
+    // Check if this horizontal label would overlap with any .measure-distance element
+    for (const element of measureDistanceElements) {
+      const rect = element.getBoundingClientRect();
+      
+      // Create a box with some margin around the element
+      const elementBox = {
+        left: rect.left - 5,
+        right: rect.right + 5,
+        top: rect.top - 5,
+        bottom: rect.bottom + 5
+      };
+      
+      // Check for overlap between the horizontal label and the element
+      if (!(horizontalLabelBox.right < elementBox.left || 
+            horizontalLabelBox.left > elementBox.right || 
+            horizontalLabelBox.bottom < elementBox.top || 
+            horizontalLabelBox.top > elementBox.bottom)) {
+        overlaps = true;
+        overlappingElement = element;
+        break;
+      }
+    }
+    
+    // If there's an overlap, adjust the position to move further down
+    if (overlaps && overlappingElement) {
+      const elementRect = overlappingElement.getBoundingClientRect();
+      // Move below the element with extra padding
+      return elementRect.bottom + horizontalLabelHeight + 10;
+    }
+    
+    return y;
+  }
+
+  /**
+   * Checks and adjusts vertical label position to avoid overlap with the measurement box
+   * This positions the vertical measurement label to avoid the center box with name/distance/notes
+   * 
+   * Works with both current measurements and previous measurements
+   */
+  checkVerticalLabelPosition(y: number, measurement?: MeasurementData): number {
+    if (!this.isBrowser) {
+      return y;
+    }
+    
+    // Use provided measurement if available, otherwise use the current measurement
+    const startPoint = measurement ? { x: measurement.startX, y: measurement.startY } : this.measureStartPoint;
+    const endPoint = measurement ? { x: measurement.endX, y: measurement.endY } : this.measureEndPoint;
+    
+    if (!startPoint || !endPoint) {
+      return y;
+    }
+    
+    // Calculate midpoint and rectangle edges
+    const midX = (startPoint.x + endPoint.x) / 2;
+    const midY = (startPoint.y + endPoint.y) / 2;
+    const rightEdgeX = Math.max(startPoint.x, endPoint.x);
+    const height = Math.abs(endPoint.y - startPoint.y);
+    
+    // Find the actual .measure-distance element at the center of the measurement
+    // This is the element we need to avoid overlapping with
+    const measureDistanceElements = Array.from(
+      document.querySelectorAll('.measure-distance')
+    ) as HTMLElement[];
+    
+    // Calculate position and dimensions of the vertical distance label
+    const verticalLabelX = rightEdgeX + 35; // X position of vertical label
+    const verticalLabelY = y; // Proposed Y position of the vertical label
+    
+    // Approximate dimensions of the vertical distance label
+    const verticalLabelWidth = 70; // Typical width of the distance label
+    const verticalLabelHeight = 20; // Typical height of the distance label
+    
+    // Define the bounding box of the vertical label
+    const verticalLabelBox = {
+      left: verticalLabelX - 5, // Add a small buffer
+      right: verticalLabelX + verticalLabelWidth,
+      top: verticalLabelY - verticalLabelHeight / 2,
+      bottom: verticalLabelY + verticalLabelHeight / 2
+    };
+    
+    let overlaps = false;
+    let overlappingElement: HTMLElement | null = null;
+    
+    // Check if this vertical label would overlap with any .measure-distance element
+    for (const element of measureDistanceElements) {
+      const rect = element.getBoundingClientRect();
+      
+      // Create a box with some margin around the element
+      const elementBox = {
+        left: rect.left - 5,
+        right: rect.right + 5,
+        top: rect.top - 5,
+        bottom: rect.bottom + 5
+      };
+      
+      // Check for overlap between the vertical label and the element
+      if (!(verticalLabelBox.right < elementBox.left || 
+            verticalLabelBox.left > elementBox.right || 
+            verticalLabelBox.bottom < elementBox.top || 
+            verticalLabelBox.top > elementBox.bottom)) {
+        overlaps = true;
+        overlappingElement = element;
+        break;
+      }
+    }
+    
+    // If there's an overlap, adjust the position
+    if (overlaps && overlappingElement) {
+      const elementRect = overlappingElement.getBoundingClientRect();
+      const distanceToTop = Math.abs(elementRect.top - verticalLabelY);
+      const distanceToBottom = Math.abs(elementRect.bottom - verticalLabelY);
+      
+      if (distanceToTop < distanceToBottom) {
+        // Move above the element if closer to top
+        return elementRect.top - verticalLabelHeight - 10;
+      } else {
+        // Move below the element if closer to bottom
+        return elementRect.bottom + verticalLabelHeight + 10;
+      }
+    }
+    
+    // If the label isn't overlapping with a .measure-distance element,
+    // use a simpler method based on the rectangle's height
+    if (measurement || (this.measureStartPoint && this.measureEndPoint)) {
+      const rectangleTop = Math.min(startPoint.y, endPoint.y);
+      
+      // Check if vertical label is near the midpoint
+      if (Math.abs(y - midY) < 30) {
+        if (midY - rectangleTop < height / 2) {
+          // Move label down if we're in the upper half of the rectangle
+          return y + 60;
+        } else {
+          // Move label up if we're in the lower half of the rectangle
+          return y - 60;
+        }
+      }
+    }
+    
+    return y;
   }
 }

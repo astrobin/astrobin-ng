@@ -155,11 +155,78 @@ interface LabelPosition {
   y: number;
 }
 
+interface LabelBoundingBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  priority: number;
+  type: 'point' | 'dimension';
+}
+
 @Pipe({
   name: "calculateLabelPosition",
   pure: true
 })
 export class CalculateLabelPositionPipe implements PipeTransform {
+  // Helper method to detect collisions between labels
+  private doLabelsOverlap(label1: LabelBoundingBox, label2: LabelBoundingBox): boolean {
+    return (
+      label1.x < label2.x + label2.width &&
+      label1.x + label1.width > label2.x &&
+      label1.y < label2.y + label2.height &&
+      label1.y + label1.height > label2.y
+    );
+  }
+
+  // Helper method to resolve collisions by moving labels
+  private resolveCollision(label1: LabelBoundingBox, label2: LabelBoundingBox): { x: number, y: number } {
+    // Determine which label to move (higher priority number gets moved)
+    const labelToMove = label1.priority > label2.priority ? label1 : label2;
+    const fixedLabel = label1.priority > label2.priority ? label2 : label1;
+    
+    // Calculate overlap amounts
+    const overlapX = Math.min(
+      labelToMove.x + labelToMove.width - fixedLabel.x,
+      fixedLabel.x + fixedLabel.width - labelToMove.x
+    );
+    
+    const overlapY = Math.min(
+      labelToMove.y + labelToMove.height - fixedLabel.y,
+      fixedLabel.y + fixedLabel.height - labelToMove.y
+    );
+    
+    // Determine which direction requires less movement
+    let newX = labelToMove.x;
+    let newY = labelToMove.y;
+    
+    // For point labels, prefer to move in the same direction as original offset
+    if (labelToMove.type === 'point') {
+      // Check relative position
+      const isRightOfFixed = labelToMove.x > fixedLabel.x + fixedLabel.width / 2;
+      const isBelowFixed = labelToMove.y > fixedLabel.y + fixedLabel.height / 2;
+      
+      // Move horizontally or vertically based on smaller overlap
+      if (overlapX < overlapY) {
+        newX = isRightOfFixed ? 
+          fixedLabel.x + fixedLabel.width + 5 : 
+          fixedLabel.x - labelToMove.width - 5;
+      } else {
+        newY = isBelowFixed ? 
+          fixedLabel.y + fixedLabel.height + 5 : 
+          fixedLabel.y - labelToMove.height - 5;
+      }
+    } 
+    // For dimension labels, prefer vertical movement
+    else if (labelToMove.type === 'dimension') {
+      newY = labelToMove.y > fixedLabel.y ? 
+        fixedLabel.y + fixedLabel.height + 5 : 
+        fixedLabel.y - labelToMove.height - 5;
+    }
+    
+    return { x: newX, y: newY };
+  }
+  
   transform(
     startPoint: MeasurementPoint | null,
     endPoint: MeasurementPoint | null,
@@ -174,53 +241,40 @@ export class CalculateLabelPositionPipe implements PipeTransform {
 
     // Set offset parameters
     const pointRadius = 6;
-    const labelDistance = 24;
+    const baseLabelDistance = 24;
+    const labelDistance = position === "end" ? baseLabelDistance * 1.5 : baseLabelDistance;
 
     // Calculate how horizontal the line is
-    // 0 = perfectly horizontal, PI/2 = perfectly vertical
     const absAngle = Math.abs(angle);
     const horizontalness = Math.min(
-      Math.abs(absAngle), // Angle from positive x-axis
-      Math.abs(absAngle - Math.PI) // Angle from negative x-axis
+      Math.abs(absAngle),
+      Math.abs(absAngle - Math.PI)
     );
 
-    // Expand what constitutes "nearly horizontal" to include slacker angles
-    const isNearlyHorizontal = horizontalness < Math.PI / 8; // Within ~22.5 degrees of horizontal (more forgiving)
-    const isNearlyVertical = Math.abs(absAngle - Math.PI / 2) < Math.PI / 12; // Within 15 degrees of vertical
+    // Determine if line is nearly horizontal or vertical
+    const isNearlyHorizontal = horizontalness < Math.PI / 8;
+    const isNearlyVertical = Math.abs(absAngle - Math.PI / 2) < Math.PI / 12;
 
-    // Calculate extra distance based on how horizontal the line is
-    // As the line gets more horizontal (horizontalness approaches 0), increase the distance
+    // Calculate diagonal factor
+    const diagonalFactor = Math.abs(Math.sin(2 * angle)) / 1.0;
+    const verticalBoost = labelDistance * 0.8 * diagonalFactor;
+
     let extraDistance = 0;
-
-    // Calculate a diagonal factor - maximum at 45 and 135 degrees, minimum at 0 or 90 degrees
-    // Math.abs ensures we get a positive factor regardless of the line direction
-    // This gives us a value between 0 and 1, with 1 being at 45 or 135 degrees
-    const diagonalFactor = Math.abs(Math.sin(2 * angle)) / 1.0; // abs(sin(2x)) peaks at 45 and 135 degrees
-
-    // Add some vertical offset based on diagonal factor
-    const verticalBoost = labelDistance * 0.8 * diagonalFactor; // 0.8x gives a more noticeable boost
-
     if (isNearlyHorizontal) {
-      // For nearly horizontal lines, add significant extra distance to avoid overlap
-      // The closer to horizontal, the larger the extra distance
-      const horizontalFactor = 1 - (horizontalness / (Math.PI / 8)); // 0 to 1 factor, adjusted for wider angle
-      extraDistance = labelDistance * 3.5 * horizontalFactor + verticalBoost; // Scale up with vertical boost
+      const horizontalFactor = 1 - (horizontalness / (Math.PI / 8));
+      extraDistance = labelDistance * 3.5 * horizontalFactor + verticalBoost;
     } else {
-      // For non-horizontal lines, still add the vertical boost
       extraDistance = verticalBoost;
     }
 
+    // Calculate initial position
     const pointToUse = position === "start" ? startPoint : endPoint;
-    let posX, posY;
-
-    // Start label - place in opposite direction of the line
-    // End label - place in the direction of the line
     const directionFactor = position === "start" ? -1 : 1;
+    
+    let posX = pointToUse.x + directionFactor * (labelDistance + pointRadius + extraDistance) * Math.cos(angle);
+    let posY = pointToUse.y + directionFactor * (labelDistance + pointRadius + extraDistance) * Math.sin(angle);
 
-    posX = pointToUse.x + directionFactor * (labelDistance + pointRadius + extraDistance) * Math.cos(angle);
-    posY = pointToUse.y + directionFactor * (labelDistance + pointRadius + extraDistance) * Math.sin(angle);
-
-    // For vertical lines, add a slight horizontal offset to avoid direct overlap
+    // For vertical lines, add horizontal offset
     if (isNearlyVertical) {
       const horizontalOffset = 15;
       if (angle > 0) { // Line pointing downward
@@ -230,6 +284,70 @@ export class CalculateLabelPositionPipe implements PipeTransform {
       }
     }
 
+    // Define label dimensions for collision detection
+    const coordLabelWidth = 150;  // Width of RA/Dec label
+    const coordLabelHeight = 20;  // Height of RA/Dec label
+    const dimLabelWidth = 60;     // Width of dimension label
+    const dimLabelHeight = 20;    // Height of dimension label
+    
+    // Create bounding boxes for collision detection
+    const currentLabel: LabelBoundingBox = {
+      x: posX - coordLabelWidth/2,
+      y: posY - coordLabelHeight/2,
+      width: coordLabelWidth,
+      height: coordLabelHeight,
+      priority: 2,  // Point coordinates have medium priority
+      type: 'point'
+    };
+    
+    // Create dimension label positions
+    const labels: LabelBoundingBox[] = [];
+    
+    // Width dimension label (horizontal)
+    const widthLabelX = (Math.min(startPoint.x, endPoint.x) + 
+                       Math.abs(endPoint.x - startPoint.x) / 2) - dimLabelWidth/2;
+    const widthLabelY = Math.max(startPoint.y, endPoint.y) + 20;
+    
+    labels.push({
+      x: widthLabelX,
+      y: widthLabelY,
+      width: dimLabelWidth,
+      height: dimLabelHeight,
+      priority: 1,  // Dimension labels have higher priority
+      type: 'dimension'
+    });
+    
+    // Height dimension label (vertical)
+    const heightLabelX = Math.max(startPoint.x, endPoint.x) + 20;
+    const heightLabelY = (Math.min(startPoint.y, endPoint.y) + 
+                        Math.abs(endPoint.y - startPoint.y) / 2) - dimLabelHeight/2;
+    
+    labels.push({
+      x: heightLabelX,
+      y: heightLabelY,
+      width: dimLabelWidth,
+      height: dimLabelHeight,
+      priority: 1,
+      type: 'dimension'
+    });
+    
+    // Check for collisions with dimension labels
+    for (const label of labels) {
+      if (this.doLabelsOverlap(currentLabel, label)) {
+        const newPos = this.resolveCollision(currentLabel, label);
+        // Update our position
+        posX = newPos.x + coordLabelWidth/2;
+        posY = newPos.y + coordLabelHeight/2;
+        // Update the current label for subsequent collision checks
+        currentLabel.x = newPos.x;
+        currentLabel.y = newPos.y;
+      }
+    }
+    
+    // Also check collision with the other point label if it's not us
+    // We can't actually do this here since the pipe is called separately for each label
+    // Instead, we'll rely on the general spacing logic to keep them apart initially
+    
     return { x: posX, y: posY };
   }
 }

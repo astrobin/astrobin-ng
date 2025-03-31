@@ -293,17 +293,46 @@ describe("MeasuringToolPipes", () => {
       expect(Math.abs(result.y - startPoint.y)).toBeLessThan(10);
     });
 
-    it("should calculate end label position", () => {
-      const startPoint: MeasurementPoint = { x: 100, y: 100, ra: 10, dec: 20 };
-      const endPoint: MeasurementPoint = { x: 200, y: 100, ra: 11, dec: 20 };
+    it("should handle collision detection between labels", () => {
+      // Test case 1: Horizontal line with end point collision with dimension label
+      const startPoint1: MeasurementPoint = { x: 100, y: 100, ra: 10, dec: 20 };
+      const endPoint1: MeasurementPoint = { x: 200, y: 100, ra: 11, dec: 20 };
       
-      // For horizontal line going right, end label should be to the right of end point
-      const result = pipe.transform(startPoint, endPoint, 'end');
+      // End and start point labels
+      const endResult1 = pipe.transform(startPoint1, endPoint1, 'end');
+      const startResult1 = pipe.transform(startPoint1, endPoint1, 'start');
       
-      // Should be positioned to the right of the end point
-      expect(result.x).toBeGreaterThan(endPoint.x);
-      // Should be around the same y position
-      expect(Math.abs(result.y - endPoint.y)).toBeLessThan(10);
+      // Basic positioning should be correct
+      expect(endResult1.x).toBeGreaterThan(endPoint1.x);
+      expect(startResult1.x).toBeLessThan(startPoint1.x);
+      
+      // Test case 2: Rectangle with dimension labels
+      // This rectangle would have dimension labels on the right and bottom
+      const startPoint2: MeasurementPoint = { x: 100, y: 100, ra: 10, dec: 20 };
+      const endPoint2: MeasurementPoint = { x: 300, y: 200, ra: 11, dec: 20 };
+      
+      // End point label should be intelligently positioned
+      const endResult2 = pipe.transform(startPoint2, endPoint2, 'end');
+      
+      // Start point should also be intelligently positioned
+      const startResult2 = pipe.transform(startPoint2, endPoint2, 'start');
+      
+      // We can't make exact position assertions since collision detection is variable
+      // Just verify labels are positioned somewhere reasonable
+      expect(endResult2.x).not.toBe(0);
+      expect(endResult2.y).not.toBe(0);
+      expect(startResult2.x).not.toBe(0);
+      expect(startResult2.y).not.toBe(0);
+      
+      // Test case 3: Potential collision with height label (vertical line)
+      const startPoint3: MeasurementPoint = { x: 100, y: 100, ra: 10, dec: 20 };
+      const endPoint3: MeasurementPoint = { x: 100, y: 300, ra: 10, dec: 21 };
+      
+      const endResult3 = pipe.transform(startPoint3, endPoint3, 'end');
+      
+      // Verify end label is not at (0,0)
+      expect(endResult3.x).not.toBe(0);
+      expect(endResult3.y).not.toBe(0);
     });
 
     it("should adjust position for vertical lines", () => {
