@@ -2135,9 +2135,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     let widthArcseconds = null;
     let heightArcseconds = null;
 
+    // Always calculate width and height regardless of display mode
     if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null &&
-        this.measureStartPoint.dec !== null && this.measureEndPoint.dec !== null &&
-        this.showCurrentRectangle) {
+        this.measureStartPoint.dec !== null && this.measureEndPoint.dec !== null) {
 
       // For rectangular measurements, calculate width and height
       if (this.advancedSolutionMatrix) {
@@ -2177,12 +2177,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           heightArcseconds = angularHeight * 3600;
         }
 
-        // Set the default name to width x height using astronomical format
+        // Set the default name to width x height = diagonal using astronomical format
         if (widthArcseconds !== null && heightArcseconds !== null) {
           // Format using proper astronomical angle notation
           const widthFormatted = this.formatAstronomicalAngle(widthArcseconds);
           const heightFormatted = this.formatAstronomicalAngle(heightArcseconds);
-          defaultName = `${widthFormatted} × ${heightFormatted}`;
+          defaultName = `${widthFormatted} × ${heightFormatted} = ${this.measureDistance}`;
         }
       }
     }
@@ -2298,9 +2298,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       let widthArcseconds = null;
       let heightArcseconds = null;
 
+      // Always calculate width and height regardless of display mode
       if (originalMeasurement.startRa !== null && originalMeasurement.endRa !== null &&
-          originalMeasurement.startDec !== null && originalMeasurement.endDec !== null &&
-          originalMeasurement.showRectangle) {
+          originalMeasurement.startDec !== null && originalMeasurement.endDec !== null) {
 
         // For rectangular measurements, calculate width and height
         if (this.advancedSolutionMatrix) {
@@ -2340,12 +2340,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             heightArcseconds = angularHeight * 3600;
           }
 
-          // Set the default name to width x height using astronomical format
+          // Set the default name to width x height = diagonal using astronomical format
           if (widthArcseconds !== null && heightArcseconds !== null) {
             // Format using proper astronomical angle notation
             const widthFormatted = this.formatAstronomicalAngle(widthArcseconds);
             const heightFormatted = this.formatAstronomicalAngle(heightArcseconds);
-            defaultName = `${widthFormatted} × ${heightFormatted}`;
+
+            // The diagonal measurement is already calculated and stored in measureDistance
+            const diagonalFormatted = this.measureDistance || originalMeasurement?.distance;
+
+            defaultName = `${widthFormatted} × ${heightFormatted} = ${diagonalFormatted}`;
           }
         }
       }
