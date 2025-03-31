@@ -22,6 +22,7 @@ import { Subject } from 'rxjs';
 import { BaseComponentDirective } from '@shared/components/base-component.directive';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SaveMeasurementModalComponent } from './save-measurement-modal/save-measurement-modal.component';
+import { SolutionInterface } from '@core/interfaces/solution.interface';
 
 export interface MeasurementPoint {
   x: number;
@@ -76,6 +77,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   @Input() windowWidth: number;
   @Input() windowHeight: number;
   @Input() setMouseOverUIElement: (value: boolean) => void;
+  @Input() solution: SolutionInterface;
+  @Input() naturalWidth: number;
+  @Input() naturalHeight: number;
 
   @Output() exitMeasuringMode = new EventEmitter<void>();
   @Output() measurementStarted = new EventEmitter<void>();
@@ -2578,221 +2582,114 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Check if we have a solution matrix, required for accurate measurements
     if (!this.advancedSolutionMatrix) {
-      this.popNotificationsService.info(
-        this.translateService.instant("Measurement presets cannot be loaded on images without plate-solving data")
+      this.popNotificationsService.error(
+        this.translateService.instant(
+          "Measurement presets cannot be loaded on images without advanced plate-solving data"
+        )
       );
       return;
     }
 
-    // Save current measurement to previous measurements if it exists
-    if (this.measureStartPoint && this.measureEndPoint && this.measureDistance) {
-      this.saveToPreviousMeasurements();
+    // We need to find the image element for proper centering
+    let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
+
+    if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
+      imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
     }
 
-    // Get the center of the viewport for positioning
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
+    if (!imageElement) {
+      this.popNotificationsService.error(
+        this.translateService.instant("Cannot locate image element")
+      );
+      return;
+    }
 
-    // Define default measurements if not provided in preset
-    const defaultLength = 200; // pixels
+    // Get the center of the image for positioning, not the viewport
+    const imgRect = imageElement.getBoundingClientRect();
+    const centerX = imgRect.left + (imgRect.width / 2);
+    const centerY = imgRect.top + (imgRect.height / 2);
 
     // Check if we have width and height in arcseconds from the preset
     const hasArcsecondDimensions = !!preset.widthArcseconds && !!preset.heightArcseconds;
 
     if (hasArcsecondDimensions) {
-      // We have width and height in arcseconds, so we need to calculate the pixel dimensions
-      // based on the plate scale of the image
-
-      // Create a rectangle at the center of the screen
-      // First calculate a reasonable pixel width and height based on the plate scale
-      // and the saved arcsecond dimensions
-
-      // We need to determine the plate scale (pixels per arcsecond) to convert
-      // the saved arcsecond measurements to screen pixels
-
-      // Let's try a simpler approach to calculate the plate scale
-
-      // Get the center of the visible viewport
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-
-      // Declare variables we'll calculate
-      let horizontalPixelsPerArcsec = 0;
-      let verticalPixelsPerArcsec = 0;
-
-      // Calculate coordinates at the center
+      // Calculate coordinates at the center of the image
       const centerCoords = this.calculateCoordinatesAtPoint(centerX, centerY);
       if (!centerCoords) {
         this.popNotificationsService.error(
           this.translateService.instant("Error calculating coordinates at image center")
         );
-
-        // If we can't even get center coordinates, use a very conservative estimate
-        horizontalPixelsPerArcsec = 0.25;
-        verticalPixelsPerArcsec = 0.25;
-
-        // Skip to pixel dimension calculation
-        const pixelsPerArcsec = 0.25;
-        const pixelWidth = preset.widthArcseconds * pixelsPerArcsec;
-        const pixelHeight = preset.heightArcseconds * pixelsPerArcsec;
-
-        // Calculate the rectangle corners
-        const halfWidth = pixelWidth / 2;
-        const halfHeight = pixelHeight / 2;
-
-        // Set the start and end points
-        this.measureStartPoint = {
-          x: centerX - halfWidth,
-          y: centerY - halfHeight,
-          ra: null,
-          dec: null
-        };
-
-        this.measureEndPoint = {
-          x: centerX + halfWidth,
-          y: centerY + halfHeight,
-          ra: null,
-          dec: null
-        };
-
         return;
       }
 
-      // Try points that are shifted slightly from the center
-      // Go +/- 10% of the viewport width/height from the center
-      const offsetX = window.innerWidth * 0.1;
-      const offsetY = window.innerHeight * 0.1;
-
-      // Calculate coordinates at these offset points
-      const rightCoords = this.calculateCoordinatesAtPoint(centerX + offsetX, centerY);
-      const bottomCoords = this.calculateCoordinatesAtPoint(centerX, centerY + offsetY);
-
-      if (!rightCoords || !bottomCoords) {
-        console.error("Failed to calculate coordinates at offset points", {
-          centerCoords,
-          rightCoords,
-          bottomCoords,
-          offsetX,
-          offsetY
-        });
-
-        // Try fallback method with smaller offsets
-        const smallerOffsetX = window.innerWidth * 0.05;
-        const smallerOffsetY = window.innerHeight * 0.05;
-
-        // Calculate coordinates at these smaller offset points
-        const rightCoordsSmall = this.calculateCoordinatesAtPoint(centerX + smallerOffsetX, centerY);
-        const bottomCoordsSmall = this.calculateCoordinatesAtPoint(centerX, centerY + smallerOffsetY);
-
-        // If still failed, use a fixed scale estimate as last resort
-        if (!rightCoordsSmall || !bottomCoordsSmall) {
-          console.warn("Using fallback fixed plate scale estimation");
-
-          // Use a reasonable default plate scale of 0.5 pixels per arcsecond
-          const estimatedPixelsPerArcsec = 0.5;
-
-          // Calculate pixel dimensions based on the estimated plate scale
-          const pixelWidth = preset.widthArcseconds * estimatedPixelsPerArcsec;
-          const pixelHeight = preset.heightArcseconds * estimatedPixelsPerArcsec;
-
-          // Skip to corner calculation
-          const halfWidth = pixelWidth / 2;
-          const halfHeight = pixelHeight / 2;
-
-          // Calculate coordinates for the corners of the rectangle
-          const startX = centerX - halfWidth;
-          const startY = centerY - halfHeight;
-          const endX = centerX + halfWidth;
-          const endY = centerY + halfHeight;
-
-          // Set the start and end points
-          this.measureStartPoint = {
-            x: startX,
-            y: startY,
-            ra: null,
-            dec: null
-          };
-
-          this.measureEndPoint = {
-            x: endX,
-            y: endY,
-            ra: null,
-            dec: null
-          };
-
-          return;
-        }
-
-        // Use the smaller offsets
-        const horizontalAngularDistanceSmall = this.calculateAngularDistance(
-          centerCoords.ra, centerCoords.dec,
-          rightCoordsSmall.ra, rightCoordsSmall.dec
+      if (!this.solution.advancedPixscale) {
+        this.popNotificationsService.error(
+          this.translateService.instant("Invalid pixel scale in image solution")
         );
-
-        const verticalAngularDistanceSmall = this.calculateAngularDistance(
-          centerCoords.ra, centerCoords.dec,
-          bottomCoordsSmall.ra, bottomCoordsSmall.dec
-        );
-
-        // Convert to arcseconds
-        const horizontalArcsecondsSmall = horizontalAngularDistanceSmall * 3600;
-        const verticalArcsecondsSmall = verticalAngularDistanceSmall * 3600;
-
-        // Calculate pixels per arcsecond
-        const horizontalPixelsPerArcsecSmall = smallerOffsetX / horizontalArcsecondsSmall;
-        const verticalPixelsPerArcsecSmall = smallerOffsetY / verticalArcsecondsSmall;
-
-        // Use these values instead
-        horizontalPixelsPerArcsec = horizontalPixelsPerArcsecSmall;
-        verticalPixelsPerArcsec = verticalPixelsPerArcsecSmall;
+        return;
       }
 
-      // Calculate angular distances if we have valid coordinates
-      if (rightCoords && bottomCoords) {
-        const horizontalAngularDistance = this.calculateAngularDistance(
-          centerCoords.ra, centerCoords.dec,
-          rightCoords.ra, rightCoords.dec
+      // Get the plate scale directly from the plate solution
+      // advancedPixscale is already in arcseconds per pixel, so we don't need to invert it
+      const arcsecPerPixel = parseFloat(this.solution?.advancedPixscale);
+
+      // If for some reason the pixscale is unavailable or invalid
+      if (isNaN(arcsecPerPixel) || arcsecPerPixel <= 0) {
+        this.popNotificationsService.error(
+          this.translateService.instant("Invalid plate scale in image solution")
         );
-
-        const verticalAngularDistance = this.calculateAngularDistance(
-          centerCoords.ra, centerCoords.dec,
-          bottomCoords.ra, bottomCoords.dec
-        );
-
-        // Convert to arcseconds
-        const horizontalArcseconds = horizontalAngularDistance * 3600;
-        const verticalArcseconds = verticalAngularDistance * 3600;
-
-        // Calculate pixels per arcsecond
-        horizontalPixelsPerArcsec = offsetX / horizontalArcseconds;
-        verticalPixelsPerArcsec = offsetY / verticalArcseconds;
+        return;
       }
-
-      // Safeguard against zero or very low values
-      if (horizontalPixelsPerArcsec <= 0.01) horizontalPixelsPerArcsec = 0.25;
-      if (verticalPixelsPerArcsec <= 0.01) verticalPixelsPerArcsec = 0.25;
-
-      // Use the average plate scale for better accuracy, with a minimum value
-      const pixelsPerArcsec = Math.max(
-        0.25, // minimum reasonable value
-        (horizontalPixelsPerArcsec + verticalPixelsPerArcsec) / 2
-      );
 
       // Calculate pixel dimensions based on the saved arcsecond dimensions
-      // Important: we need to ensure the measurements are correctly scaled
-      const pixelWidth = preset.widthArcseconds * pixelsPerArcsec;
-      const pixelHeight = preset.heightArcseconds * pixelsPerArcsec;
+      // First convert to natural image dimensions
+      const naturalPixelWidth = preset.widthArcseconds / arcsecPerPixel;
+      const naturalPixelHeight = preset.heightArcseconds / arcsecPerPixel;
+
+      // Now account for the current zoom level by comparing the image element size to the natural size
+      let zoomFactor = 1.0;
+      if (this.naturalWidth && imageElement) {
+        const displayWidth = imageElement.clientWidth || imageElement.getBoundingClientRect().width;
+        zoomFactor = displayWidth / this.naturalWidth;
+      }
+
+      // Apply the zoom factor to get the actual display pixel dimensions
+      const pixelWidth = naturalPixelWidth * zoomFactor;
+      const pixelHeight = naturalPixelHeight * zoomFactor;
 
       // Calculate half dimensions for corner placement
       const halfWidth = pixelWidth / 2;
       const halfHeight = pixelHeight / 2;
 
-      // Calculate coordinates for the corners of the rectangle
-      // For simplicity, we'll use top-left and bottom-right corners
+      // Calculate coordinates for the corners of the rectangle from the center
       const startX = centerX - halfWidth;
       const startY = centerY - halfHeight;
       const endX = centerX + halfWidth;
       const endY = centerY + halfHeight;
+
+      // Validate the measurement is large enough (at least 50 display pixels in either dimension)
+      if (pixelWidth < 50 || pixelHeight < 50) {
+        this.popNotificationsService.error(
+          this.translateService.instant("Measurement is too small for this image.")
+        );
+        return;
+      }
+
+      // Get image boundaries
+      const imgBounds = imageElement.getBoundingClientRect();
+
+      // Check if any point would be outside the image boundaries
+      if (
+        startX < imgBounds.left || startX > imgBounds.right ||
+        startY < imgBounds.top || startY > imgBounds.bottom ||
+        endX < imgBounds.left || endX > imgBounds.right ||
+        endY < imgBounds.top || endY > imgBounds.bottom
+      ) {
+        this.popNotificationsService.error(
+          this.translateService.instant("Measurement could not be placed within the image boundaries.")
+        );
+        return;
+      }
 
       // Set the start and end points
       this.measureStartPoint = {
@@ -2831,15 +2728,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         const centerX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
         const centerY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
 
-        // Start with a very precise plate scale calculation
-        const pixelsPerArcsec = Math.max(
-          0.25, // minimum reasonable value
-          (horizontalPixelsPerArcsec + verticalPixelsPerArcsec) / 2
-        );
+        // Use arcsecPerPixel already calculated from the solution, accounting for zoom
+        const targetNaturalWidthPixels = preset.widthArcseconds / arcsecPerPixel;
+        const targetNaturalHeightPixels = preset.heightArcseconds / arcsecPerPixel;
 
-        // Get the exact target dimensions in pixels
-        const targetWidthPixels = preset.widthArcseconds * pixelsPerArcsec;
-        const targetHeightPixels = preset.heightArcseconds * pixelsPerArcsec;
+        // Reuse the same zoom factor calculated earlier
+        const targetWidthPixels = targetNaturalWidthPixels * zoomFactor;
+        const targetHeightPixels = targetNaturalHeightPixels * zoomFactor;
 
         // Calculate the adjustment needed (ratio between target and current dimensions)
         const currentWidthPixels = Math.abs(this.measureEndPoint.x - this.measureStartPoint.x);
@@ -2888,9 +2783,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         );
         this.measureDistance = this._formatStableAngularDistance(angularDistance);
       }
-      // Last resort - just show pixel distance
+      // Last resort - show an error message
       else {
-        this.measureDistance = Math.round(defaultLength) + ' px';
+        this.popNotificationsService.error(
+          this.translateService.instant("Could not calculate distance for the measurement")
+        );
+        return;
       }
 
       // Instead of enabling current rectangle, save as a previous measurement
@@ -2935,92 +2833,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.measureEndPoint = null;
       this.measureDistance = null;
     } else {
-      // No arcsecond dimensions, use default pixel based measurements
-      // Default horizontal angle
-      const angle = 0;
-
-      // Calculate start and end points based on center, length and angle
-      const halfLength = defaultLength / 2;
-      const startX = centerX - halfLength * Math.cos(angle);
-      const startY = centerY - halfLength * Math.sin(angle);
-      const endX = centerX + halfLength * Math.cos(angle);
-      const endY = centerY + halfLength * Math.sin(angle);
-
-      // Create temporary points to calculate coordinates
-      const tempStartPoint = {
-        x: startX,
-        y: startY,
-        ra: null,
-        dec: null
-      };
-
-      const tempEndPoint = {
-        x: endX,
-        y: endY,
-        ra: null,
-        dec: null
-      };
-
-      // Calculate celestial coordinates for the points
-      const startCoords = this.calculateCoordinatesAtPoint(startX, startY);
-      if (startCoords) {
-        tempStartPoint.ra = startCoords.ra;
-        tempStartPoint.dec = startCoords.dec;
-      }
-
-      const endCoords = this.calculateCoordinatesAtPoint(endX, endY);
-      if (endCoords) {
-        tempEndPoint.ra = endCoords.ra;
-        tempEndPoint.dec = endCoords.dec;
-      }
-
-      // Determine the measurement distance using the same approach as our main logic
-      let distanceText = '';
-      if (tempStartPoint.ra !== null && tempEndPoint.ra !== null) {
-        // Calculate direct angular distance between start and end points
-        const angularDistance = this.calculateAngularDistance(
-          tempStartPoint.ra, tempStartPoint.dec,
-          tempEndPoint.ra, tempEndPoint.dec
-        );
-        distanceText = this._formatStableAngularDistance(angularDistance);
-      } else {
-        // Default to pixel distance if we couldn't calculate angular distance
-        distanceText = Math.round(defaultLength) + ' px';
-      }
-
-      // Create a previous measurement instead of a current one for better styling
-      const loadedMeasurement: MeasurementData = {
-        startX: startX,
-        startY: startY,
-        endX: endX,
-        endY: endY,
-        midX: (startX + endX) / 2,
-        midY: (startY + endY) / 2,
-        distance: distanceText,
-        timestamp: Date.now(),
-        startRa: tempStartPoint.ra,
-        startDec: tempStartPoint.dec,
-        endRa: tempEndPoint.ra,
-        endDec: tempEndPoint.dec,
-        startLabelX: 0,
-        startLabelY: 0,
-        endLabelX: 0,
-        endLabelY: 0,
-        showCircle: false,
-        showRectangle: false
-      };
-
-      // Update label positions
-      this.updateCoordinateLabelPositions(loadedMeasurement);
-
-      // Add to previous measurements
-      this.previousMeasurements.push(loadedMeasurement);
+      // No arcsecond dimensions in preset
+      this.popNotificationsService.error(
+        this.translateService.instant("Invalid measurement preset: missing width/height dimensions")
+      );
+      return;
     }
-
-    // No notification needed - the measurement appearing is obvious to the user
-
-    // Track selected preset in store
-    this.store$.dispatch(new SelectMeasurementPreset({ preset }));
   }
 
   /**
