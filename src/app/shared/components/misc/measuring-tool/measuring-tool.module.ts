@@ -12,16 +12,7 @@ import { MeasuringToolComponent } from "./measuring-tool.component";
 import { MeasurementPresetModule } from "./measurement-preset.module";
 import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-measurement-modal.component";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
-import { 
-  CalculateDistancePipe, 
-  FormatCoordinatesCompactPipe, 
-  GetCelestialDistancePipe,
-  MathMinPipe,
-  MathMaxPipe,
-  MathAbsPipe,
-  GetMidpointPipe,
-  CalculateLabelPositionPipe
-} from "./measuring-tool-pipes";
+import { CalculateDistancePipe, CalculateLabelPositionPipe, FormatCoordinatesCompactPipe, GetCelestialDistancePipe, GetMidpointPipe, MathAbsPipe, MathMaxPipe, MathMinPipe } from "./measuring-tool-pipes";
 
 @NgModule({
   declarations: [
@@ -52,4 +43,5 @@ import {
   ],
   exports: [MeasuringToolComponent]
 })
-export class MeasuringToolModule {}
+export class MeasuringToolModule {
+}
