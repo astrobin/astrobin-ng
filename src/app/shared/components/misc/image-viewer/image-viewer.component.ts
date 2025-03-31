@@ -827,7 +827,6 @@ export class ImageViewerComponent
       // Check if we have a preloaded image that matches our source
       if (this._preloadedMoonImage && this._preloadedMoonImage.src === this.moonImageSrc && this._preloadedMoonImage.complete) {
         // Use the preloaded image - immediately mark as loaded
-        console.log("Using preloaded moon image");
         this.isMoonImageLoaded = true;
       } else {
         // Reset loading state when showing - the image will trigger onload when it's ready
@@ -1066,12 +1065,6 @@ export class ImageViewerComponent
 
     // Create and load the image in the background
     this._preloadedMoonImage = new Image();
-
-    // Set up onload handler to mark as successfully loaded
-    this._preloadedMoonImage.onload = () => {
-      // Once loaded, signal that we have a preloaded image ready
-      console.log("Moon image preloaded successfully:", imageSrc);
-    };
 
     // Set up error handler
     this._preloadedMoonImage.onerror = () => {

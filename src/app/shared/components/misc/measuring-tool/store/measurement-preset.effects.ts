@@ -18,7 +18,7 @@ import {
 
 @Injectable()
 export class MeasurementPresetEffects {
-  
+
   loadMeasurementPresets$ = createEffect(() =>
     this.actions$.pipe(
       ofType(MeasurementPresetActionTypes.LOAD_MEASUREMENT_PRESETS),
@@ -30,15 +30,13 @@ export class MeasurementPresetEffects {
       )
     )
   );
-  
+
   createMeasurementPreset$ = createEffect(() =>
     this.actions$.pipe(
       ofType(MeasurementPresetActionTypes.CREATE_MEASUREMENT_PRESET),
       mergeMap((action: CreateMeasurementPreset) => {
-        console.log('MeasurementPresetEffects: Received CREATE_MEASUREMENT_PRESET action:', action);
         return this.measurementPresetApiService.createMeasurementPreset(action.payload.preset).pipe(
           map(preset => {
-            console.log('MeasurementPresetEffects: API call successful, returning success action');
             return new CreateMeasurementPresetSuccess({ preset });
           }),
           catchError(error => {
@@ -49,7 +47,7 @@ export class MeasurementPresetEffects {
       })
     )
   );
-  
+
   deleteMeasurementPreset$ = createEffect(() =>
     this.actions$.pipe(
       ofType(MeasurementPresetActionTypes.DELETE_MEASUREMENT_PRESET),
@@ -61,7 +59,7 @@ export class MeasurementPresetEffects {
       )
     )
   );
-  
+
   constructor(
     private actions$: Actions,
     private measurementPresetApiService: MeasurementPresetApiService

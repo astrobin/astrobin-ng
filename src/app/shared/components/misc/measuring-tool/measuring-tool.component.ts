@@ -250,22 +250,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Initialize previous window dimensions
     this._prevWindowWidth = window.innerWidth;
     this._prevWindowHeight = window.innerHeight;
-
-    // Log the solution matrix status for debugging
-    console.log('Solution matrix available:', this.advancedSolutionMatrix !== null);
-    if (this.advancedSolutionMatrix) {
-      console.log('Solution matrix (debugging):', this.advancedSolutionMatrix);
-
-      // Test coordinate calculation at a sample point in the center of the screen
-      setTimeout(() => {
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        const coords = this.calculateCoordinatesAtPoint(centerX, centerY, false);
-        console.log('Sample coordinates at center:', coords);
-      }, 1000);
-    } else {
-      console.warn('No solution matrix available! Coordinates will not be displayed.');
-    }
   }
 
   ngOnDestroy(): void {
@@ -293,7 +277,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Handle mouse down on the measurement overlay to start measuring
    */
   handleMeasurementMouseDown(event: MouseEvent): void {
-    console.log('Measurement mousedown:', event);
     // Skip if this mousedown should be prevented
     if (this._preventNextClick) {
       this._preventNextClick = false;
@@ -505,7 +488,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.measureDistance = null;
 
       // Set first point immediately on this click
-      console.log("Setting start point (click - new measurement)");
       this.measureStartPoint = {
         x: event.clientX,
         y: event.clientY,
@@ -538,7 +520,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Set first point if needed
     if (!this.measureStartPoint) {
-      console.log("Setting start point (click)");
       // Set start point
       this.measureStartPoint = {
         x: event.clientX,
@@ -573,7 +554,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
     // Set second point if we already have first point
     else if (!this.measureEndPoint) {
-      console.log("Setting end point (click)");
       // Set end point (for two-click measurements)
       this.measureEndPoint = {
         x: event.clientX,
@@ -763,14 +743,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Account for rotation when calculating coordinates during drag
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
         if (coords) {
-          console.log('Drag point update - Start point coords:', {
-            before: { ra: this.measureStartPoint.ra, dec: this.measureStartPoint.dec },
-            after: { ra: coords.ra, dec: coords.dec }
-          });
           this.measureStartPoint.ra = coords.ra;
           this.measureStartPoint.dec = coords.dec;
-        } else {
-          console.log('Failed to calculate start coordinates during drag');
         }
       }
 
@@ -799,14 +773,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Account for rotation when calculating coordinates during drag
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
         if (coords) {
-          console.log('Drag point update - End point coords:', {
-            before: { ra: this.measureEndPoint.ra, dec: this.measureEndPoint.dec },
-            after: { ra: coords.ra, dec: coords.dec }
-          });
           this.measureEndPoint.ra = coords.ra;
           this.measureEndPoint.dec = coords.dec;
-        } else {
-          console.log('Failed to calculate end coordinates during drag');
         }
       }
 
@@ -942,14 +910,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Account for rotation when calculating coordinates
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
         if (coords) {
-          console.log('Previous measurement drag - Start point coords:', {
-            before: { ra: measurement.startRa, dec: measurement.startDec },
-            after: { ra: coords.ra, dec: coords.dec }
-          });
           measurement.startRa = coords.ra;
           measurement.startDec = coords.dec;
-        } else {
-          console.log('Failed to calculate previous measurement start coordinates during drag');
         }
       }
     } else if (this.isDraggingPoint.startsWith('prevEnd')) {
@@ -961,14 +923,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Account for rotation when calculating coordinates
         const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY, true);
         if (coords) {
-          console.log('Previous measurement drag - End point coords:', {
-            before: { ra: measurement.endRa, dec: measurement.endDec },
-            after: { ra: coords.ra, dec: coords.dec }
-          });
           measurement.endRa = coords.ra;
           measurement.endDec = coords.dec;
-        } else {
-          console.log('Failed to calculate previous measurement end coordinates during drag');
         }
       }
     }
@@ -1210,13 +1166,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             measurement.distance = this._formatStableAngularDistance(angularDistance);
           }
 
-          console.log('Final update of RA/Dec coordinates for previous measurement after drag', {
-            startRa: measurement.startRa,
-            startDec: measurement.startDec,
-            endRa: measurement.endRa,
-            endDec: measurement.endDec
-          });
-
           // Force change detection to ensure updates are visible
           this.cdRef.detectChanges();
         }
@@ -1377,13 +1326,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Use consistent stable formatting for angular distances
         this.measureDistance = this._formatStableAngularDistance(angularDistance);
       }
-
-      console.log('Final update of RA/Dec coordinates for current measurement after drag', {
-        startRa: this.measureStartPoint.ra,
-        startDec: this.measureStartPoint.dec,
-        endRa: this.measureEndPoint.ra,
-        endDec: this.measureEndPoint.dec
-      });
     }
 
     // Clean up event listeners
@@ -1448,7 +1390,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this._preventNextClick = true;
 
     if (index >= 0 && index < this.previousMeasurements.length) {
-      console.log('Toggling circle for measurement', index);
       const measurement = this.previousMeasurements[index];
       measurement.showCircle = !measurement.showCircle;
 
@@ -1489,7 +1430,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this._preventNextClick = true;
 
     if (index >= 0 && index < this.previousMeasurements.length) {
-      console.log('Toggling rectangle for measurement', index);
       const measurement = this.previousMeasurements[index];
       measurement.showRectangle = !measurement.showRectangle;
 
@@ -1529,8 +1469,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Prevent click from propagating to parent containers
     this._preventNextClick = true;
 
-    console.log('Toggling current circle visualization');
-
     // Toggle the circle visualization
     this.showCurrentCircle = !this.showCurrentCircle;
 
@@ -1561,8 +1499,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Prevent click from propagating to parent containers
     this._preventNextClick = true;
 
-    console.log('Toggling current rectangle visualization');
-
     // Toggle the rectangle visualization
     this.showCurrentRectangle = !this.showCurrentRectangle;
 
@@ -1578,19 +1514,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     setTimeout(() => {
       console.log('Current rectangle visualization toggled:', this.showCurrentRectangle);
     }, 0);
-  }
-
-  /**
-   * Position the initial label for the start point before end point is placed
-   * This ensures we have nice positioning even before the user places the second point
-   */
-  positionInitialStartLabel(): { x: number, y: number } {
-    // Position the label at an angle from the marker similar to the fullscreen-image-viewer
-    // Using fixed positioning for initial placement before the second point is placed
-    return {
-      x: -24,  // Position to the top-left of the marker
-      y: -24   // This creates a diagonal offset similar to how labels are positioned on the line
-    };
   }
 
   /**
@@ -1610,8 +1533,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Prevent click from propagating to parent containers
     this._preventNextClick = true;
-
-    console.log('Deleting measurement', index);
 
     // Remove the measurement
     this.previousMeasurements.splice(index, 1);
@@ -1686,8 +1607,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         measurement.endLabelX -= horizontalOffset;
       }
     }
-
-    console.log('Label positions updated with variable distance positioning, angle:', angle, 'extra:', extraDistance);
   }
 
 
@@ -1741,10 +1660,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Calculate celestial coordinates at a given screen position
    */
   calculateCoordinatesAtPoint(x: number, y: number, accountForRotation: boolean = false): { ra: number; dec: number } | null {
-    console.log("Measuring tool: Calculating coordinates at point:", x, y);
     try {
       if (!this.advancedSolutionMatrix) {
-        console.log("No advanced solution matrix available for coordinate calculation");
         return null;
       }
 
@@ -1755,7 +1672,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       }
 
       if (!imageElement) {
-        console.log("No image element found");
         return null;
       }
 
@@ -1784,7 +1700,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       );
 
       if (!result || !result.coordinates) {
-        console.log('coordinatesFormatter.calculateRawCoordinates failed to calculate coordinates');
         return null;
       }
 
@@ -1797,15 +1712,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Convert DMS to decimal degrees
       const decDecimal = decData.sign * (decData.degrees + (decData.minutes / 60) + (decData.seconds / 3600));
-
-      console.log('Using raw RA/Dec from service:', {
-        raComponents: [raData.hours, raData.minutes, raData.seconds],
-        decComponents: [decData.sign, decData.degrees, decData.minutes, decData.seconds],
-        converted: {
-          ra: raDecimal,
-          dec: decDecimal
-        }
-      });
 
       return {
         ra: raDecimal,
@@ -2181,7 +2087,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     });
 
     if (!isLoggedIn) {
-      console.log('Cannot display saved measurements: User not logged in');
       return;
     }
 
@@ -2204,7 +2109,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     });
 
     if (!isLoggedIn) {
-      console.log('Cannot save measurement: User not logged in');
       return;
     }
 
@@ -2318,10 +2222,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     };
 
     // Open the modal
-    console.log('Opening save measurement modal...');
     try {
       const modalRef = this.modalService.open(SaveMeasurementModalComponent);
-      console.log('Modal opened successfully');
       modalRef.componentInstance.measurementData = measurementData;
       modalRef.componentInstance.defaultName = defaultName;
 
@@ -2346,13 +2248,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             }
 
             // Dispatch action to save preset
-            console.log('Dispatching CreateMeasurementPreset action with payload:', preset);
             this.store$.dispatch(new CreateMeasurementPreset({ preset }));
           }
         });
-      }, () => {
-        // Modal dismissed, do nothing
-        console.log('Modal dismissed');
       });
     } catch (error) {
       console.error('Error opening modal:', error);
@@ -2375,7 +2273,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     });
 
     if (!isLoggedIn) {
-      console.log('Cannot save measurement: User not logged in');
       return;
     }
 
@@ -2488,10 +2385,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       };
 
       // Open the modal
-      console.log('Opening save measurement modal for previous measurement...');
       try {
         const modalRef = this.modalService.open(SaveMeasurementModalComponent);
-        console.log('Modal opened successfully');
         modalRef.componentInstance.measurementData = measurementData;
         modalRef.componentInstance.defaultName = defaultName;
 
@@ -2515,13 +2410,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
               }
 
               // Dispatch action to save preset using NgRx
-              console.log('Dispatching CreateMeasurementPreset action with payload:', preset);
               this.store$.dispatch(new CreateMeasurementPreset({ preset }));
             }
           });
-        }, () => {
-          // Modal dismissed, do nothing
-          console.log('Modal dismissed');
         });
       } catch (error) {
         console.error('Error opening modal:', error);
@@ -2543,7 +2434,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     });
 
     if (!isLoggedIn) {
-      console.log('Cannot save measurement: User not logged in');
       return;
     }
 
@@ -2683,7 +2573,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     });
 
     if (!isLoggedIn) {
-      console.log('Cannot load measurement: User not logged in');
       return;
     }
 
@@ -2856,9 +2745,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Use these values instead
         horizontalPixelsPerArcsec = horizontalPixelsPerArcsecSmall;
         verticalPixelsPerArcsec = verticalPixelsPerArcsecSmall;
-
-        console.log('Using smaller offsets for plate scale calculation');
-        console.log('Smaller scale:', horizontalPixelsPerArcsecSmall, verticalPixelsPerArcsecSmall);
       }
 
       // Calculate angular distances if we have valid coordinates
@@ -2886,16 +2772,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       if (horizontalPixelsPerArcsec <= 0.01) horizontalPixelsPerArcsec = 0.25;
       if (verticalPixelsPerArcsec <= 0.01) verticalPixelsPerArcsec = 0.25;
 
-      // Log debug information
-      console.log('Viewport size:', window.innerWidth, 'x', window.innerHeight);
-      console.log('Center coordinates:', centerCoords);
-      console.log('Offset points:', { rightCoords, bottomCoords });
-      console.log('Plate scale (pixels/arcsecond):', {
-        horizontal: horizontalPixelsPerArcsec.toFixed(4),
-        vertical: verticalPixelsPerArcsec.toFixed(4)
-      });
-      console.log('Saved measurement:', preset.widthArcseconds, 'x', preset.heightArcseconds, 'arcseconds');
-
       // Use the average plate scale for better accuracy, with a minimum value
       const pixelsPerArcsec = Math.max(
         0.25, // minimum reasonable value
@@ -2906,8 +2782,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Important: we need to ensure the measurements are correctly scaled
       const pixelWidth = preset.widthArcseconds * pixelsPerArcsec;
       const pixelHeight = preset.heightArcseconds * pixelsPerArcsec;
-
-      console.log('Calculated pixel size:', pixelWidth, 'x', pixelHeight, 'pixels');
 
       // Calculate half dimensions for corner placement
       const halfWidth = pixelWidth / 2;
@@ -3024,10 +2898,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Prepare a nice label with both dimensions if available
       let displayDistance = this.measureDistance;
-
-      // Log the preset and calculated dimensions
-      console.log('Loading measurement with preset:', preset);
-      console.log('Calculated display distance:', displayDistance);
 
       // First create a previous measurement from the loaded data
       const loadedMeasurement: MeasurementData = {
@@ -3200,7 +3070,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     });
 
     if (!isLoggedIn) {
-      console.log('Cannot delete measurement: User not logged in');
       return;
     }
     if (index >= 0 && index < this.savedMeasurements.length) {

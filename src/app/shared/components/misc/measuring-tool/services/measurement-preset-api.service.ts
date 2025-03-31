@@ -21,7 +21,6 @@ export class MeasurementPresetApiService {
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService
   ) {
-    console.log('MeasurementPresetApiService initialized with baseUrl:', this.baseUrl);
   }
 
   /**
@@ -61,19 +60,17 @@ export class MeasurementPresetApiService {
    */
   createMeasurementPreset(preset: MeasurementPresetInterface): Observable<MeasurementPresetInterface> {
     const url = `${this.baseUrl}/equipment/measurement-preset/`;
-    
+
     // Clean up the preset object before sending to API
     const cleanPreset = {...preset};
     if (cleanPreset.widthArcseconds === null || cleanPreset.widthArcseconds === undefined) {
       delete cleanPreset.widthArcseconds;
     }
-    
+
     if (cleanPreset.heightArcseconds === null || cleanPreset.heightArcseconds === undefined) {
       delete cleanPreset.heightArcseconds;
     }
-    
-    console.log('MeasurementPresetApiService: Creating preset:', cleanPreset);
-    console.log('MeasurementPresetApiService: POST request to:', url);
+
     this.setLoading(true);
 
     return this.http.post<MeasurementPresetInterface>(url, cleanPreset).pipe(
@@ -86,7 +83,6 @@ export class MeasurementPresetApiService {
         throw error;
       }),
       finalize(() => {
-        console.log('MeasurementPresetApiService: Request finished');
         this.setLoading(false);
       })
     );
