@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { CookieService } from "ngx-cookie";
 import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
+import { AstroUtilsService } from "@core/services/astro-utils/astro-utils.service";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
@@ -145,6 +146,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     public readonly store$: Store<MainState>,
     public readonly cookieService: CookieService,
     public readonly coordinatesFormatter: CoordinatesFormatterService,
+    public readonly astroUtilsService: AstroUtilsService,
     public readonly cdRef: ChangeDetectorRef,
     public readonly ngZone: NgZone,
     private modalService: NgbModal,
@@ -171,41 +173,36 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   // Bound methods for use in pipes
-  public boundCalculateCoordinatesAtPoint = (x: number, y: number) => this.calculateCoordinatesAtPoint(x, y);
+  public boundCalculateCoordinatesAtPoint = (x: number, y: number, accountForRotation: boolean = false) => {
+    if (!this.isValidSolutionMatrix()) {
+      return null;
+    }
+
+    // Find the image element
+    let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
+    if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
+      imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+    }
+
+    if (!imageElement) {
+      return null;
+    }
+
+    // Use the service to calculate coordinates
+    return this.astroUtilsService.calculateCoordinatesAtPoint(
+      x,
+      y,
+      this.advancedSolutionMatrix,
+      imageElement as HTMLElement
+    );
+  };
 
   public boundCalculateAngularDistance = (ra1: number, dec1: number, ra2: number, dec2: number) =>
-    this.calculateAngularDistance(ra1, dec1, ra2, dec2);
+    this.astroUtilsService.calculateAngularDistance(ra1, dec1, ra2, dec2);
 
-  public boundFormatAstronomicalAngle = (arcseconds: number) => this.formatAstronomicalAngle(arcseconds);
+  public boundFormatAstronomicalAngle = (arcseconds: number) => 
+    this.astroUtilsService.formatAstronomicalAngle(arcseconds);
 
-  /**
-   * Formats astronomical angles according to standard notation
-   * - Less than 60 arcseconds: shows as arcseconds only
-   * - Less than 60 arcminutes: shows as arcminutes and arcseconds
-   * - Otherwise: shows as degrees, arcminutes, and arcseconds
-   * Always rounds to the nearest arcsecond with no decimal places
-   */
-  formatAstronomicalAngle(arcseconds: number): string {
-    // Round to the nearest arcsecond
-    const totalArcseconds = Math.round(arcseconds);
-
-    // Calculate components
-    const degrees = Math.floor(totalArcseconds / 3600);
-    const arcminutes = Math.floor((totalArcseconds % 3600) / 60);
-    const remainingArcseconds = totalArcseconds % 60;
-
-    // Format based on size
-    if (totalArcseconds < 60) {
-      // Less than 1 arcminute: show only arcseconds
-      return `${remainingArcseconds}″`;
-    } else if (totalArcseconds < 3600) {
-      // Less than 1 degree: show arcminutes and arcseconds
-      return `${arcminutes}′ ${remainingArcseconds}″`;
-    } else {
-      // 1 degree or more: show degrees, arcminutes, and arcseconds
-      return `${degrees}° ${arcminutes}′ ${remainingArcseconds}″`;
-    }
-  }
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -352,7 +349,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // If we have valid solution data, calculate celestial coordinates for this point
     if (this.isValidSolutionMatrix()) {
-      const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY);
+      const coords = this.boundCalculateCoordinatesAtPoint(event.clientX, event.clientY);
       if (coords) {
         this.measureStartPoint.ra = coords.ra;
         this.measureStartPoint.dec = coords.dec;
@@ -407,7 +404,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
         // If we have valid solution data, calculate celestial coordinates for this point
         if (this.isValidSolutionMatrix()) {
-          const coords = this.calculateCoordinatesAtPoint(upEvent.clientX, upEvent.clientY);
+          const coords = this.boundCalculateCoordinatesAtPoint(upEvent.clientX, upEvent.clientY);
           if (coords) {
             this.measureEndPoint.ra = coords.ra;
             this.measureEndPoint.dec = coords.dec;
@@ -504,7 +501,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // If we have valid solution data, calculate celestial coordinates for this point
       if (this.isValidSolutionMatrix()) {
-        const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY);
+        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX, event.clientY);
         if (coords) {
           this.measureStartPoint.ra = coords.ra;
           this.measureStartPoint.dec = coords.dec;
@@ -540,7 +537,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // If we have valid solution data, calculate celestial coordinates for this point
       if (this.isValidSolutionMatrix()) {
-        const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY);
+        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX, event.clientY);
         if (coords) {
           this.measureStartPoint.ra = coords.ra;
           this.measureStartPoint.dec = coords.dec;
@@ -567,7 +564,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // If we have valid solution data, calculate celestial coordinates for this point
       if (this.isValidSolutionMatrix()) {
-        const coords = this.calculateCoordinatesAtPoint(event.clientX, event.clientY);
+        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX, event.clientY);
         if (coords) {
           this.measureEndPoint.ra = coords.ra;
           this.measureEndPoint.dec = coords.dec;
@@ -607,15 +604,15 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (this.measureStartPoint?.ra !== null && this.measureStartPoint?.dec !== null &&
       this.measureEndPoint?.ra !== null && this.measureEndPoint?.dec !== null) {
 
-      const angularDistance = this.calculateAngularDistance(
+      const angularDistance = this.astroUtilsService.calculateAngularDistance(
         this.measureStartPoint.ra,
         this.measureStartPoint.dec,
         this.measureEndPoint.ra,
         this.measureEndPoint.dec
       );
 
-      // Use the common formatting method to avoid precision issues
-      return this._formatStableAngularDistance(angularDistance);
+      // Format the angular distance
+      return this.astroUtilsService.formatAngularDistance(angularDistance);
     }
 
     // If we don't have valid celestial coordinates, return the pixel distance
@@ -682,7 +679,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Update celestial coordinates if we have valid plate solution data
       if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates during drag
-        const coords = this.calculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
+        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
         if (coords) {
           this.measureStartPoint.ra = coords.ra;
           this.measureStartPoint.dec = coords.dec;
@@ -712,7 +709,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Update celestial coordinates if we have valid plate solution data
       if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates during drag
-        const coords = this.calculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
+        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
         if (coords) {
           this.measureEndPoint.ra = coords.ra;
           this.measureEndPoint.dec = coords.dec;
@@ -868,7 +865,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Update celestial coordinates if we have valid plate solution data
       if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates
-        const coords = this.calculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
+        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
         if (coords) {
           measurement.startRa = coords.ra;
           measurement.startDec = coords.dec;
@@ -881,7 +878,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Update celestial coordinates if we have valid plate solution data
       if (this.isValidSolutionMatrix()) {
         // Account for rotation when calculating coordinates
-        const coords = this.calculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
+        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
         if (coords) {
           measurement.endRa = coords.ra;
           measurement.endDec = coords.dec;
@@ -900,7 +897,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Format the distance based on whether we have valid celestial coordinates
     if (this.isValidSolutionMatrix() && measurement.startRa !== null && measurement.endRa !== null) {
       // If we have RA/Dec coordinates, calculate angular distance
-      const angularDistance = this.calculateAngularDistance(
+      const angularDistance = this.astroUtilsService.calculateAngularDistance(
         measurement.startRa,
         measurement.startDec,
         measurement.endRa,
@@ -911,7 +908,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       const arcseconds = angularDistance * 3600;
 
       // Use the standardized astronomical angle formatter
-      measurement.distance = this.formatAstronomicalAngle(arcseconds);
+      measurement.distance = this.astroUtilsService.formatAstronomicalAngle(arcseconds);
     } else {
       measurement.distance = `${Math.round(pixelDistance)} px`;
     }
@@ -944,7 +941,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
         // Always calculate on the fly based on current coordinates
         if (measurement.startRa !== null && measurement.endRa !== null) {
-          const angularDistance = this.calculateAngularDistance(
+          const angularDistance = this.astroUtilsService.calculateAngularDistance(
             measurement.startRa,
             measurement.startDec,
             measurement.endRa,
@@ -952,7 +949,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           );
 
           // Use consistent formatting
-          measurement.distance = this._formatStableAngularDistance(angularDistance);
+          measurement.distance = this.astroUtilsService.formatAngularDistance(angularDistance);
         }
       }
     }
@@ -1041,14 +1038,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Run in ngZone to ensure Angular detects the changes
       this.ngZone.run(() => {
         // Get new RA/Dec for start point
-        const startCoords = this.calculateCoordinatesAtPoint(measurement.startX, measurement.startY);
+        const startCoords = this.boundCalculateCoordinatesAtPoint(measurement.startX, measurement.startY);
         if (startCoords) {
           measurement.startRa = startCoords.ra;
           measurement.startDec = startCoords.dec;
         }
 
         // Get new RA/Dec for end point
-        const endCoords = this.calculateCoordinatesAtPoint(measurement.endX, measurement.endY);
+        const endCoords = this.boundCalculateCoordinatesAtPoint(measurement.endX, measurement.endY);
         if (endCoords) {
           measurement.endRa = endCoords.ra;
           measurement.endDec = endCoords.dec;
@@ -1056,7 +1053,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
         // Update distance calculation if we have valid coordinates
         if (measurement.startRa !== null && measurement.endRa !== null) {
-          const angularDistance = this.calculateAngularDistance(
+          const angularDistance = this.astroUtilsService.calculateAngularDistance(
             measurement.startRa,
             measurement.startDec,
             measurement.endRa,
@@ -1064,7 +1061,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           );
 
           // Use consistent stable formatting for angular distances
-          measurement.distance = this._formatStableAngularDistance(angularDistance);
+          measurement.distance = this.astroUtilsService.formatAngularDistance(angularDistance);
         }
 
         // Force change detection
@@ -1094,14 +1091,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Ensure final update of celestial coordinates for start and end points
         if (this.advancedSolutionMatrix) {
           // Get new RA/Dec for start point
-          const startCoords = this.calculateCoordinatesAtPoint(measurement.startX, measurement.startY);
+          const startCoords = this.boundCalculateCoordinatesAtPoint(measurement.startX, measurement.startY);
           if (startCoords) {
             measurement.startRa = startCoords.ra;
             measurement.startDec = startCoords.dec;
           }
 
           // Get new RA/Dec for end point
-          const endCoords = this.calculateCoordinatesAtPoint(measurement.endX, measurement.endY);
+          const endCoords = this.boundCalculateCoordinatesAtPoint(measurement.endX, measurement.endY);
           if (endCoords) {
             measurement.endRa = endCoords.ra;
             measurement.endDec = endCoords.dec;
@@ -1110,7 +1107,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           // Always recalculate based on new coordinates
           // This ensures honest representation of the actual measurement
           if (measurement.startRa !== null && measurement.endRa !== null) {
-            const angularDistance = this.calculateAngularDistance(
+            const angularDistance = this.astroUtilsService.calculateAngularDistance(
               measurement.startRa,
               measurement.startDec,
               measurement.endRa,
@@ -1118,7 +1115,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             );
 
             // Use consistent stable formatting for angular distances
-            measurement.distance = this._formatStableAngularDistance(angularDistance);
+            measurement.distance = this.astroUtilsService.formatAngularDistance(angularDistance);
           }
 
           // Force change detection to ensure updates are visible
@@ -1202,14 +1199,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Run in ngZone to ensure Angular detects the changes
       this.ngZone.run(() => {
         // Get new RA/Dec for start point
-        const startCoords = this.calculateCoordinatesAtPoint(this.measureStartPoint.x, this.measureStartPoint.y);
+        const startCoords = this.boundCalculateCoordinatesAtPoint(this.measureStartPoint.x, this.measureStartPoint.y);
         if (startCoords) {
           this.measureStartPoint.ra = startCoords.ra;
           this.measureStartPoint.dec = startCoords.dec;
         }
 
         // Get new RA/Dec for end point
-        const endCoords = this.calculateCoordinatesAtPoint(this.measureEndPoint.x, this.measureEndPoint.y);
+        const endCoords = this.boundCalculateCoordinatesAtPoint(this.measureEndPoint.x, this.measureEndPoint.y);
         if (endCoords) {
           this.measureEndPoint.ra = endCoords.ra;
           this.measureEndPoint.dec = endCoords.dec;
@@ -1217,7 +1214,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
         // Update the distance calculation
         if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
-          const angularDistance = this.calculateAngularDistance(
+          const angularDistance = this.astroUtilsService.calculateAngularDistance(
             this.measureStartPoint.ra,
             this.measureStartPoint.dec,
             this.measureEndPoint.ra,
@@ -1225,7 +1222,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           );
 
           // Use consistent stable formatting for angular distances
-          this.measureDistance = this._formatStableAngularDistance(angularDistance);
+          this.measureDistance = this.astroUtilsService.formatAngularDistance(angularDistance);
         } else {
           // Calculate pixel distance as fallback
           const pixelDistance = this.calculateDistance(
@@ -1256,14 +1253,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Ensure final update of celestial coordinates for the current measurement
     if (this.measureStartPoint && this.measureEndPoint && this.advancedSolutionMatrix) {
       // Recalculate start point RA/Dec
-      const startCoords = this.calculateCoordinatesAtPoint(this.measureStartPoint.x, this.measureStartPoint.y);
+      const startCoords = this.boundCalculateCoordinatesAtPoint(this.measureStartPoint.x, this.measureStartPoint.y);
       if (startCoords) {
         this.measureStartPoint.ra = startCoords.ra;
         this.measureStartPoint.dec = startCoords.dec;
       }
 
       // Recalculate end point RA/Dec
-      const endCoords = this.calculateCoordinatesAtPoint(this.measureEndPoint.x, this.measureEndPoint.y);
+      const endCoords = this.boundCalculateCoordinatesAtPoint(this.measureEndPoint.x, this.measureEndPoint.y);
       if (endCoords) {
         this.measureEndPoint.ra = endCoords.ra;
         this.measureEndPoint.dec = endCoords.dec;
@@ -1271,7 +1268,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Always calculate distances on the fly based on the current coordinates
       else if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
-        const angularDistance = this.calculateAngularDistance(
+        const angularDistance = this.astroUtilsService.calculateAngularDistance(
           this.measureStartPoint.ra,
           this.measureStartPoint.dec,
           this.measureEndPoint.ra,
@@ -1279,7 +1276,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         );
 
         // Use consistent stable formatting for angular distances
-        this.measureDistance = this._formatStableAngularDistance(angularDistance);
+        this.measureDistance = this.astroUtilsService.formatAngularDistance(angularDistance);
       }
     }
 
@@ -1700,102 +1697,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   /**
-   * Calculate celestial coordinates at a given screen position
-   * This depends on the advanced solution matrix being available
-   */
-  /**
-   * Calculate celestial coordinates at a given screen position
-   */
-  calculateCoordinatesAtPoint(x: number, y: number, accountForRotation: boolean = false): {
-    ra: number;
-    dec: number
-  } | null {
-    try {
-      if (!this.isValidSolutionMatrix()) {
-        return null;
-      }
-
-      // Find the image element
-      let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
-      if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
-        imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-      }
-
-      if (!imageElement) {
-        return null;
-      }
-
-      // Get the image dimensions
-      const imgBounds = imageElement.getBoundingClientRect();
-
-      let adjustedX = x;
-      let adjustedY = y;
-
-      // Create a synthetic mouse event with the adjusted coordinates
-      const syntheticEvent = new MouseEvent("mousemove", {
-        clientX: adjustedX,
-        clientY: adjustedY
-      });
-
-      // Use the shared service to calculate raw coordinates
-      // This provides a cleaner data structure without HTML parsing
-      const result = this.coordinatesFormatter.calculateRawCoordinates(
-        syntheticEvent,
-        imageElement as HTMLElement,
-        this.advancedSolutionMatrix,
-        {
-          useClientCoords: true,
-          naturalWidth: (imageElement as HTMLImageElement).naturalWidth
-        }
-      );
-
-      if (!result || !result.coordinates) {
-        return null;
-      }
-
-      // Convert the raw coordinate data to decimal format
-      const raData = result.coordinates.ra;
-      const decData = result.coordinates.dec;
-
-      // Convert HMS to decimal hours
-      const raDecimal = raData.hours + (raData.minutes / 60) + (raData.seconds / 3600);
-
-      // Convert DMS to decimal degrees
-      const decDecimal = decData.sign * (decData.degrees + (decData.minutes / 60) + (decData.seconds / 3600));
-
-      return {
-        ra: raDecimal,
-        dec: decDecimal
-      };
-    } catch (error) {
-      console.error("Error calculating coordinates:", error);
-      return null;
-    }
-  }
-
-  /**
-   * Calculate angular distance between two celestial points
-   */
-  calculateAngularDistance(ra1: number, dec1: number, ra2: number, dec2: number): number {
-    // Convert to radians
-    const ra1Rad = ra1 * Math.PI / 12; // RA is in hours (0-24), so divide by 12 to get to range 0-2π
-    const dec1Rad = dec1 * Math.PI / 180;
-    const ra2Rad = ra2 * Math.PI / 12;
-    const dec2Rad = dec2 * Math.PI / 180;
-
-    // Use the haversine formula for great circle distance
-    const dra = ra2Rad - ra1Rad;
-    const ddec = dec2Rad - dec1Rad;
-    const a = Math.sin(ddec / 2) * Math.sin(ddec / 2) +
-      Math.cos(dec1Rad) * Math.cos(dec2Rad) *
-      Math.sin(dra / 2) * Math.sin(dra / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    // Convert to degrees
-    return c * 180 / Math.PI;
-  }
-
-  /**
    * Format coordinates in a compact display format
    */
   formatCoordinatesCompact(ra: number | null, dec: number | null): string {
@@ -1830,12 +1731,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Get the coordinates at both points
-    const startCoords = this.calculateCoordinatesAtPoint(x1, y);
-    const endCoords = this.calculateCoordinatesAtPoint(x2, y);
+    const startCoords = this.boundCalculateCoordinatesAtPoint(x1, y);
+    const endCoords = this.boundCalculateCoordinatesAtPoint(x2, y);
 
     // If we have valid coordinates, calculate angular distance
     if (startCoords && endCoords) {
-      const angularDistance = this.calculateAngularDistance(
+      const angularDistance = this.astroUtilsService.calculateAngularDistance(
         startCoords.ra,
         startCoords.dec,
         endCoords.ra,
@@ -1846,7 +1747,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       const arcseconds = angularDistance * 3600;
 
       // Format using standardized astronomical notation
-      return this.formatAstronomicalAngle(arcseconds);
+      return this.astroUtilsService.formatAstronomicalAngle(arcseconds);
     }
 
     // If we couldn't calculate celestial coordinates, return empty string
@@ -1866,12 +1767,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Get the coordinates at both points
-    const startCoords = this.calculateCoordinatesAtPoint(x, y1);
-    const endCoords = this.calculateCoordinatesAtPoint(x, y2);
+    const startCoords = this.boundCalculateCoordinatesAtPoint(x, y1);
+    const endCoords = this.boundCalculateCoordinatesAtPoint(x, y2);
 
     // If we have valid coordinates, calculate angular distance
     if (startCoords && endCoords) {
-      const angularDistance = this.calculateAngularDistance(
+      const angularDistance = this.astroUtilsService.calculateAngularDistance(
         startCoords.ra,
         startCoords.dec,
         endCoords.ra,
@@ -1882,7 +1783,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       const arcseconds = angularDistance * 3600;
 
       // Format using standardized astronomical notation
-      return this.formatAstronomicalAngle(arcseconds);
+      return this.astroUtilsService.formatAstronomicalAngle(arcseconds);
     }
 
     // If we couldn't calculate celestial coordinates, return empty string
@@ -2199,11 +2100,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         const maxX = Math.max(this.measureStartPoint.x, this.measureEndPoint.x);
         const midY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
 
-        const leftCoords = this.calculateCoordinatesAtPoint(minX, midY);
-        const rightCoords = this.calculateCoordinatesAtPoint(maxX, midY);
+        const leftCoords = this.boundCalculateCoordinatesAtPoint(minX, midY);
+        const rightCoords = this.boundCalculateCoordinatesAtPoint(maxX, midY);
 
         if (leftCoords && rightCoords) {
-          const angularWidth = this.calculateAngularDistance(
+          const angularWidth = this.astroUtilsService.calculateAngularDistance(
             leftCoords.ra, leftCoords.dec,
             rightCoords.ra, rightCoords.dec
           );
@@ -2217,11 +2118,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         const maxY = Math.max(this.measureStartPoint.y, this.measureEndPoint.y);
         const midX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
 
-        const topCoords = this.calculateCoordinatesAtPoint(midX, minY);
-        const bottomCoords = this.calculateCoordinatesAtPoint(midX, maxY);
+        const topCoords = this.boundCalculateCoordinatesAtPoint(midX, minY);
+        const bottomCoords = this.boundCalculateCoordinatesAtPoint(midX, maxY);
 
         if (topCoords && bottomCoords) {
-          const angularHeight = this.calculateAngularDistance(
+          const angularHeight = this.astroUtilsService.calculateAngularDistance(
             topCoords.ra, topCoords.dec,
             bottomCoords.ra, bottomCoords.dec
           );
@@ -2233,8 +2134,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Set the default name to width x height = diagonal using astronomical format
         if (widthArcseconds !== null && heightArcseconds !== null) {
           // Format using proper astronomical angle notation
-          const widthFormatted = this.formatAstronomicalAngle(widthArcseconds);
-          const heightFormatted = this.formatAstronomicalAngle(heightArcseconds);
+          const widthFormatted = this.astroUtilsService.formatAstronomicalAngle(widthArcseconds);
+          const heightFormatted = this.astroUtilsService.formatAstronomicalAngle(heightArcseconds);
           defaultName = `${widthFormatted} × ${heightFormatted} = ${this.measureDistance}`;
         }
       }
@@ -2376,11 +2277,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           const maxX = Math.max(originalMeasurement.startX, originalMeasurement.endX);
           const midY = (originalMeasurement.startY + originalMeasurement.endY) / 2;
 
-          const leftCoords = this.calculateCoordinatesAtPoint(minX, midY);
-          const rightCoords = this.calculateCoordinatesAtPoint(maxX, midY);
+          const leftCoords = this.boundCalculateCoordinatesAtPoint(minX, midY);
+          const rightCoords = this.boundCalculateCoordinatesAtPoint(maxX, midY);
 
           if (leftCoords && rightCoords) {
-            const angularWidth = this.calculateAngularDistance(
+            const angularWidth = this.astroUtilsService.calculateAngularDistance(
               leftCoords.ra, leftCoords.dec,
               rightCoords.ra, rightCoords.dec
             );
@@ -2394,11 +2295,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           const maxY = Math.max(originalMeasurement.startY, originalMeasurement.endY);
           const midX = (originalMeasurement.startX + originalMeasurement.endX) / 2;
 
-          const topCoords = this.calculateCoordinatesAtPoint(midX, minY);
-          const bottomCoords = this.calculateCoordinatesAtPoint(midX, maxY);
+          const topCoords = this.boundCalculateCoordinatesAtPoint(midX, minY);
+          const bottomCoords = this.boundCalculateCoordinatesAtPoint(midX, maxY);
 
           if (topCoords && bottomCoords) {
-            const angularHeight = this.calculateAngularDistance(
+            const angularHeight = this.astroUtilsService.calculateAngularDistance(
               topCoords.ra, topCoords.dec,
               bottomCoords.ra, bottomCoords.dec
             );
@@ -2410,8 +2311,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           // Set the default name to width x height = diagonal using astronomical format
           if (widthArcseconds !== null && heightArcseconds !== null) {
             // Format using proper astronomical angle notation
-            const widthFormatted = this.formatAstronomicalAngle(widthArcseconds);
-            const heightFormatted = this.formatAstronomicalAngle(heightArcseconds);
+            const widthFormatted = this.astroUtilsService.formatAstronomicalAngle(widthArcseconds);
+            const heightFormatted = this.astroUtilsService.formatAstronomicalAngle(heightArcseconds);
 
             // The diagonal measurement is already calculated and stored in measureDistance
             const diagonalFormatted = this.measureDistance || originalMeasurement?.distance;
@@ -2549,11 +2450,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         const maxX = Math.max(this.measureStartPoint.x, this.measureEndPoint.x);
         const midY = (this.measureStartPoint.y + this.measureEndPoint.y) / 2;
 
-        const leftCoords = this.calculateCoordinatesAtPoint(minX, midY);
-        const rightCoords = this.calculateCoordinatesAtPoint(maxX, midY);
+        const leftCoords = this.boundCalculateCoordinatesAtPoint(minX, midY);
+        const rightCoords = this.boundCalculateCoordinatesAtPoint(maxX, midY);
 
         if (leftCoords && rightCoords) {
-          const angularWidth = this.calculateAngularDistance(
+          const angularWidth = this.astroUtilsService.calculateAngularDistance(
             leftCoords.ra, leftCoords.dec,
             rightCoords.ra, rightCoords.dec
           );
@@ -2567,11 +2468,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         const maxY = Math.max(this.measureStartPoint.y, this.measureEndPoint.y);
         const midX = (this.measureStartPoint.x + this.measureEndPoint.x) / 2;
 
-        const topCoords = this.calculateCoordinatesAtPoint(midX, minY);
-        const bottomCoords = this.calculateCoordinatesAtPoint(midX, maxY);
+        const topCoords = this.boundCalculateCoordinatesAtPoint(midX, minY);
+        const bottomCoords = this.boundCalculateCoordinatesAtPoint(midX, maxY);
 
         if (topCoords && bottomCoords) {
-          const angularHeight = this.calculateAngularDistance(
+          const angularHeight = this.astroUtilsService.calculateAngularDistance(
             topCoords.ra, topCoords.dec,
             bottomCoords.ra, bottomCoords.dec
           );
@@ -2697,7 +2598,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     if (hasArcsecondDimensions) {
       // Calculate coordinates at the center of the image
-      const centerCoords = this.calculateCoordinatesAtPoint(centerX, centerY);
+      const centerCoords = this.boundCalculateCoordinatesAtPoint(centerX, centerY);
       if (!centerCoords) {
         this.popNotificationsService.error(
           this.translateService.instant("Error calculating coordinates at image center")
@@ -2790,13 +2691,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       };
 
       // Calculate celestial coordinates for the points
-      const startCoords = this.calculateCoordinatesAtPoint(startX, startY);
+      const startCoords = this.boundCalculateCoordinatesAtPoint(startX, startY);
       if (startCoords) {
         this.measureStartPoint.ra = startCoords.ra;
         this.measureStartPoint.dec = startCoords.dec;
       }
 
-      const endCoords = this.calculateCoordinatesAtPoint(endX, endY);
+      const endCoords = this.boundCalculateCoordinatesAtPoint(endX, endY);
       if (endCoords) {
         this.measureEndPoint.ra = endCoords.ra;
         this.measureEndPoint.dec = endCoords.dec;
@@ -2837,7 +2738,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.measureEndPoint.y = adjustedEndY;
 
         // Recalculate celestial coordinates for the adjusted end point
-        const adjustedEndCoords = this.calculateCoordinatesAtPoint(adjustedEndX, adjustedEndY);
+        const adjustedEndCoords = this.boundCalculateCoordinatesAtPoint(adjustedEndX, adjustedEndY);
         if (adjustedEndCoords) {
           this.measureEndPoint.ra = adjustedEndCoords.ra;
           this.measureEndPoint.dec = adjustedEndCoords.dec;
@@ -2848,23 +2749,23 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Use the current points which may have been adjusted above
       if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
         // Use the direct angular distance between start and end points (which may have been adjusted)
-        const angularDistance = this.calculateAngularDistance(
+        const angularDistance = this.astroUtilsService.calculateAngularDistance(
           this.measureStartPoint.ra, this.measureStartPoint.dec,
           this.measureEndPoint.ra, this.measureEndPoint.dec
         );
 
         // Format this distance using our standard formatter
-        this.measureDistance = this._formatStableAngularDistance(angularDistance);
+        this.measureDistance = this.astroUtilsService.formatAngularDistance(angularDistance);
       }
         // This is the fallback if for some reason we couldn't get RA/Dec values
       // from the measurement points directly
       else if (startCoords && endCoords) {
         // Use the original coordinate calculations from earlier in the function
-        const angularDistance = this.calculateAngularDistance(
+        const angularDistance = this.astroUtilsService.calculateAngularDistance(
           startCoords.ra, startCoords.dec,
           endCoords.ra, endCoords.dec
         );
-        this.measureDistance = this._formatStableAngularDistance(angularDistance);
+        this.measureDistance = this.astroUtilsService.formatAngularDistance(angularDistance);
       }
       // Last resort - show an error message
       else {
@@ -3332,36 +3233,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * @returns true if the matrix is valid and can be used for calculations
    */
   private isValidSolutionMatrix(): boolean {
-    return !!(
-      this.advancedSolutionMatrix &&
-      this.advancedSolutionMatrix.matrixRect !== null &&
-      this.advancedSolutionMatrix.matrixRect !== undefined &&
-      this.advancedSolutionMatrix.matrixDelta !== null &&
-      this.advancedSolutionMatrix.matrixDelta !== undefined &&
-      this.advancedSolutionMatrix.raMatrix !== null &&
-      this.advancedSolutionMatrix.raMatrix !== undefined &&
-      this.advancedSolutionMatrix.decMatrix !== null &&
-      this.advancedSolutionMatrix.decMatrix !== undefined
-    );
+    return this.astroUtilsService.isValidSolutionMatrix(this.advancedSolutionMatrix);
   }
 
   // Helper function to stabilize floating point values
   private _stabilizeValue(value: number, decimals: number = 4): number {
     return parseFloat(value.toFixed(decimals));
-  }
-
-  /**
-   * Format angular distance consistently across the component
-   */
-  private _formatStableAngularDistance(angularDistance: number): string {
-    // Stabilize the input value to reduce flickering
-    const stableAngularDistance = this._stabilizeValue(angularDistance);
-
-    // Convert to arcseconds - this is what formatAstronomicalAngle expects
-    const arcseconds = stableAngularDistance * 3600;
-
-    // Use the standardized astronomical angle formatter
-    return this.formatAstronomicalAngle(arcseconds);
   }
 
   /**
