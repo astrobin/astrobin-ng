@@ -11,6 +11,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "typeRoots": [
       "./node_modules/@types",
       "./src/types"

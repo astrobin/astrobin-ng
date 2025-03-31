@@ -45,7 +45,7 @@ export interface FormattedCoordinates {
 export class CoordinatesFormatterService {
   private isBrowser: boolean;
   
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
@@ -110,10 +110,6 @@ export class CoordinatesFormatterService {
     const imageRenderedWidth = options?.useClientCoords
       ? imageElement.getBoundingClientRect().width
       : imageElement.clientWidth;
-
-    const imageRenderedHeight = options?.useClientCoords
-      ? imageElement.getBoundingClientRect().height
-      : imageElement.clientHeight;
 
     const imageNaturalWidth = options?.naturalWidth ||
       ((imageElement as HTMLImageElement).naturalWidth) || 1824;
