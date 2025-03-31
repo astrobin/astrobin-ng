@@ -771,4 +771,37 @@ describe("MeasuringToolComponent", () => {
     expect(formatted).toContain("10h");
     expect(formatted).toContain("+20°");
   });
+
+  it("should have a valid isValidSolutionMatrix method", () => {
+    // No matrix
+    component.advancedSolutionMatrix = null;
+    expect(component["isValidSolutionMatrix"]()).toBe(false);
+
+    // Incomplete matrix
+    component.advancedSolutionMatrix = {
+      matrixRect: "0,0,1824,1200",
+      matrixDelta: 1,
+      raMatrix: null,
+      decMatrix: "0,0,0,0"
+    };
+    expect(component["isValidSolutionMatrix"]()).toBe(false);
+
+    // Complete but with undefined properties
+    component.advancedSolutionMatrix = {
+      matrixRect: "0,0,1824,1200",
+      matrixDelta: 1,
+      raMatrix: undefined,
+      decMatrix: "0,0,0,0"
+    };
+    expect(component["isValidSolutionMatrix"]()).toBe(false);
+
+    // Complete valid matrix
+    component.advancedSolutionMatrix = {
+      matrixRect: "0,0,1824,1200",
+      matrixDelta: 1,
+      raMatrix: "0,0,0,0",
+      decMatrix: "0,0,0,0"
+    };
+    expect(component["isValidSolutionMatrix"]()).toBe(true);
+  });
 });

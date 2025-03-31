@@ -127,6 +127,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   private destroy$ = new Subject<void>();
   // Bound event handlers
   private _onMeasuringMouseMove: any = null;
+  
+  // Bound methods for use in pipes
+  public boundCalculateCoordinatesAtPoint = (x: number, y: number) => this.calculateCoordinatesAtPoint(x, y);
+  public boundCalculateAngularDistance = (ra1: number, dec1: number, ra2: number, dec2: number) => 
+    this.calculateAngularDistance(ra1, dec1, ra2, dec2);
+  public boundFormatAstronomicalAngle = (arcseconds: number) => this.formatAstronomicalAngle(arcseconds);
   private _onPointDragMove: any = null;
   private _onPointDragEnd: any = null;
   private _onPreviousMeasurementDragMove: any = null;

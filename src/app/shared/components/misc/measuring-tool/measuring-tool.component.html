@@ -14,14 +14,14 @@
     <!-- Start point coordinates with extended directional positioning -->
     <div *ngIf="!measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null" class="marker-coordinates initial-position visible"
          style="position: absolute; top: -24px; left: -24px; transform: translateX(-50%);">
-      <small>{{ formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) }}</small>
+      <small>{{ measureStartPoint.ra | formatCoordinatesCompact : measureStartPoint.dec }}</small>
     </div>
 
     <!-- Once both points are selected, calculate perpendicular position for labels -->
     <div *ngIf="measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null" class="marker-coordinates visible"
-         [style.left.px]="calculateStartLabelX()"
-         [style.top.px]="calculateStartLabelY()">
-      <small>{{ formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) }}</small>
+         [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').x"
+         [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').y">
+      <small>{{ measureStartPoint.ra | formatCoordinatesCompact : measureStartPoint.dec }}</small>
     </div>
   </div>
 
@@ -32,9 +32,9 @@
     <div class="marker-dot"></div>
     <!-- End point coordinates perpendicular to line -->
     <div *ngIf="measureEndPoint.ra !== null && measureEndPoint.dec !== null" class="marker-coordinates visible"
-         [style.left.px]="calculateEndLabelX()"
-         [style.top.px]="calculateEndLabelY()">
-      <small>{{ formatCoordinatesCompact(measureEndPoint.ra, measureEndPoint.dec) }}</small>
+         [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').x"
+         [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').y">
+      <small>{{ measureEndPoint.ra | formatCoordinatesCompact : measureEndPoint.dec }}</small>
     </div>
   </div>
 
@@ -164,9 +164,9 @@
         <mask id="circle-mask-{{i}}">
           <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
           <circle
-            [attr.cx]="(measurement.startX + measurement.endX) / 2"
-            [attr.cy]="(measurement.startY + measurement.endY) / 2"
-            [attr.r]="calculateDistance(measurement.startX, measurement.startY, measurement.endX, measurement.endY) / 2"
+            [attr.cx]="measurement.startX | getMidpoint:measurement.endX"
+            [attr.cy]="measurement.startY | getMidpoint:measurement.endY"
+            [attr.r]="(measurement.startX | calculateDistance:measurement.startY:measurement.endX:measurement.endY) / 2"
             fill="black">
           </circle>
         </mask>
@@ -182,9 +182,9 @@
 
       <!-- The circle outline -->
       <circle
-        [attr.cx]="(measurement.startX + measurement.endX) / 2"
-        [attr.cy]="(measurement.startY + measurement.endY) / 2"
-        [attr.r]="calculateDistance(measurement.startX, measurement.startY, measurement.endX, measurement.endY) / 2"
+        [attr.cx]="measurement.startX | getMidpoint:measurement.endX"
+        [attr.cy]="measurement.startY | getMidpoint:measurement.endY"
+        [attr.r]="(measurement.startX | calculateDistance:measurement.startY:measurement.endX:measurement.endY) / 2"
         class="measure-shape circle"
         [class.affected-by-resize]="measurementsAffectedByResize">
       </circle>
@@ -201,10 +201,10 @@
           <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
           <g>
             <rect
-              [attr.x]="Math.min(measurement.startX, measurement.endX)"
-              [attr.y]="Math.min(measurement.startY, measurement.endY)"
-              [attr.width]="Math.abs(measurement.endX - measurement.startX)"
-              [attr.height]="Math.abs(measurement.endY - measurement.startY)"
+              [attr.x]="measurement.startX | mathMin:measurement.endX"
+              [attr.y]="measurement.startY | mathMin:measurement.endY"
+              [attr.width]="measurement.endX - measurement.startX | mathAbs"
+              [attr.height]="measurement.endY - measurement.startY | mathAbs"
               fill="black">
             </rect>
           </g>
@@ -222,10 +222,10 @@
       <g>
         <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
         <rect
-          [attr.x]="Math.min(measurement.startX, measurement.endX)"
-          [attr.y]="Math.min(measurement.startY, measurement.endY)"
-          [attr.width]="Math.abs(measurement.endX - measurement.startX)"
-          [attr.height]="Math.abs(measurement.endY - measurement.startY)"
+          [attr.x]="measurement.startX | mathMin:measurement.endX"
+          [attr.y]="measurement.startY | mathMin:measurement.endY"
+          [attr.width]="measurement.endX - measurement.startX | mathAbs"
+          [attr.height]="measurement.endY - measurement.startY | mathAbs"
           class="measure-shape rectangle"
           [class.affected-by-resize]="measurementsAffectedByResize">
         </rect>
@@ -234,53 +234,53 @@
         <g class="dimension-label width-label">
           <!-- Width line -->
           <line
-            [attr.x1]="Math.min(measurement.startX, measurement.endX)"
-            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX)"
-            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 15"
+            [attr.x1]="measurement.startX | mathMin:measurement.endX"
+            [attr.y1]="(measurement.startY | mathMax:measurement.endY) + 15"
+            [attr.x2]="measurement.startX | mathMax:measurement.endX"
+            [attr.y2]="(measurement.startY | mathMax:measurement.endY) + 15"
             class="dimension-line">
           </line>
 
           <!-- Dimension arrows -->
           <line
-            [attr.x1]="Math.min(measurement.startX, measurement.endX)"
-            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
-            [attr.x2]="Math.min(measurement.startX, measurement.endX) + 5"
-            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 10"
+            [attr.x1]="measurement.startX | mathMin:measurement.endX"
+            [attr.y1]="(measurement.startY | mathMax:measurement.endY) + 15"
+            [attr.x2]="(measurement.startX | mathMin:measurement.endX) + 5"
+            [attr.y2]="(measurement.startY | mathMax:measurement.endY) + 10"
             class="dimension-arrow">
           </line>
           <line
-            [attr.x1]="Math.min(measurement.startX, measurement.endX)"
-            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
-            [attr.x2]="Math.min(measurement.startX, measurement.endX) + 5"
-            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 20"
+            [attr.x1]="measurement.startX | mathMin:measurement.endX"
+            [attr.y1]="(measurement.startY | mathMax:measurement.endY) + 15"
+            [attr.x2]="(measurement.startX | mathMin:measurement.endX) + 5"
+            [attr.y2]="(measurement.startY | mathMax:measurement.endY) + 20"
             class="dimension-arrow">
           </line>
 
           <line
-            [attr.x1]="Math.max(measurement.startX, measurement.endX)"
-            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) - 5"
-            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 10"
+            [attr.x1]="measurement.startX | mathMax:measurement.endX"
+            [attr.y1]="(measurement.startY | mathMax:measurement.endY) + 15"
+            [attr.x2]="(measurement.startX | mathMax:measurement.endX) - 5"
+            [attr.y2]="(measurement.startY | mathMax:measurement.endY) + 10"
             class="dimension-arrow">
           </line>
           <line
-            [attr.x1]="Math.max(measurement.startX, measurement.endX)"
-            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) - 5"
-            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 20"
+            [attr.x1]="measurement.startX | mathMax:measurement.endX"
+            [attr.y1]="(measurement.startY | mathMax:measurement.endY) + 15"
+            [attr.x2]="(measurement.startX | mathMax:measurement.endX) - 5"
+            [attr.y2]="(measurement.startY | mathMax:measurement.endY) + 20"
             class="dimension-arrow">
           </line>
 
           <!-- Width text -->
           <text
-            [attr.x]="(Math.min(measurement.startX, measurement.endX) + Math.max(measurement.startX, measurement.endX)) / 2"
-            [attr.y]="Math.max(measurement.startY, measurement.endY) + 30"
+            [attr.x]="(measurement.startX | mathMin:measurement.endX) | getMidpoint:(measurement.startX | mathMax:measurement.endX)"
+            [attr.y]="(measurement.startY | mathMax:measurement.endY) + 30"
             text-anchor="middle"
             class="dimension-text"
             [attr.dominant-baseline]="'central'">
-            {{ getHorizontalCelestialDistance(Math.min(measurement.startX, measurement.endX), Math.max(measurement.startY, measurement.endY), Math.max(measurement.startX, measurement.endX), measurement) ||
-                (Math.round(Math.abs(measurement.endX - measurement.startX)) + ' px') }}
+            {{ measurement | getCelestialDistance:'horizontal':advancedSolutionMatrix:boundCalculateCoordinatesAtPoint:boundCalculateAngularDistance:boundFormatAstronomicalAngle ||
+                (((measurement.endX - measurement.startX) | mathAbs) + ' px') }}
           </text>
         </g>
 
@@ -288,53 +288,53 @@
         <g class="dimension-label height-label">
           <!-- Height line -->
           <line
-            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
-            [attr.y1]="Math.min(measurement.startY, measurement.endY)"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 20"
-            [attr.y2]="Math.max(measurement.startY, measurement.endY)"
+            [attr.x1]="(measurement.startX | mathMax:measurement.endX) + 20"
+            [attr.y1]="measurement.startY | mathMin:measurement.endY"
+            [attr.x2]="(measurement.startX | mathMax:measurement.endX) + 20"
+            [attr.y2]="measurement.startY | mathMax:measurement.endY"
             class="dimension-line">
           </line>
 
           <!-- Dimension arrows -->
           <line
-            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
-            [attr.y1]="Math.min(measurement.startY, measurement.endY)"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 15"
-            [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
+            [attr.x1]="(measurement.startX | mathMax:measurement.endX) + 20"
+            [attr.y1]="measurement.startY | mathMin:measurement.endY"
+            [attr.x2]="(measurement.startX | mathMax:measurement.endX) + 15"
+            [attr.y2]="(measurement.startY | mathMin:measurement.endY) + 5"
             class="dimension-arrow">
           </line>
           <line
-            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
-            [attr.y1]="Math.min(measurement.startY, measurement.endY)"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
-            [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
+            [attr.x1]="(measurement.startX | mathMax:measurement.endX) + 20"
+            [attr.y1]="measurement.startY | mathMin:measurement.endY"
+            [attr.x2]="(measurement.startX | mathMax:measurement.endX) + 25"
+            [attr.y2]="(measurement.startY | mathMin:measurement.endY) + 5"
             class="dimension-arrow">
           </line>
 
           <line
-            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
-            [attr.y1]="Math.max(measurement.startY, measurement.endY)"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 15"
-            [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
+            [attr.x1]="(measurement.startX | mathMax:measurement.endX) + 20"
+            [attr.y1]="measurement.startY | mathMax:measurement.endY"
+            [attr.x2]="(measurement.startX | mathMax:measurement.endX) + 15"
+            [attr.y2]="(measurement.startY | mathMax:measurement.endY) - 5"
             class="dimension-arrow">
           </line>
           <line
-            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
-            [attr.y1]="Math.max(measurement.startY, measurement.endY)"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
-            [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
+            [attr.x1]="(measurement.startX | mathMax:measurement.endX) + 20"
+            [attr.y1]="measurement.startY | mathMax:measurement.endY"
+            [attr.x2]="(measurement.startX | mathMax:measurement.endX) + 25"
+            [attr.y2]="(measurement.startY | mathMax:measurement.endY) - 5"
             class="dimension-arrow">
           </line>
 
           <!-- Height text -->
           <text
-            [attr.x]="Math.max(measurement.startX, measurement.endX) + 35"
-            [attr.y]="(Math.min(measurement.startY, measurement.endY) + Math.max(measurement.startY, measurement.endY)) / 2"
+            [attr.x]="(measurement.startX | mathMax:measurement.endX) + 35"
+            [attr.y]="(measurement.startY | mathMin:measurement.endY) | getMidpoint:(measurement.startY | mathMax:measurement.endY)"
             text-anchor="start"
             class="dimension-text"
             [attr.dominant-baseline]="'central'">
-            {{ getVerticalCelestialDistance(Math.max(measurement.startX, measurement.endX), Math.min(measurement.startY, measurement.endY), Math.max(measurement.startY, measurement.endY), measurement) ||
-                (Math.round(Math.abs(measurement.endY - measurement.startY)) + ' px') }}
+            {{ measurement | getCelestialDistance:'vertical':advancedSolutionMatrix:boundCalculateCoordinatesAtPoint:boundCalculateAngularDistance:boundFormatAstronomicalAngle ||
+                (((measurement.endY - measurement.startY) | mathAbs) + ' px') }}
           </text>
         </g>
 
@@ -426,9 +426,9 @@
       <mask id="current-circle-mask">
         <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
         <circle
-          [attr.cx]="(measureStartPoint.x + measureEndPoint.x) / 2"
-          [attr.cy]="(measureStartPoint.y + measureEndPoint.y) / 2"
-          [attr.r]="calculateDistance(measureStartPoint.x, measureStartPoint.y, measureEndPoint.x, measureEndPoint.y) / 2"
+          [attr.cx]="measureStartPoint.x | getMidpoint:measureEndPoint.x"
+          [attr.cy]="measureStartPoint.y | getMidpoint:measureEndPoint.y"
+          [attr.r]="(measureStartPoint.x | calculateDistance:measureStartPoint.y:measureEndPoint.x:measureEndPoint.y) / 2"
           fill="black">
         </circle>
       </mask>
@@ -444,9 +444,9 @@
 
     <!-- The circle outline -->
     <circle
-      [attr.cx]="(measureStartPoint.x + measureEndPoint.x) / 2"
-      [attr.cy]="(measureStartPoint.y + measureEndPoint.y) / 2"
-      [attr.r]="calculateDistance(measureStartPoint.x, measureStartPoint.y, measureEndPoint.x, measureEndPoint.y) / 2"
+      [attr.cx]="measureStartPoint.x | getMidpoint:measureEndPoint.x"
+      [attr.cy]="measureStartPoint.y | getMidpoint:measureEndPoint.y"
+      [attr.r]="(measureStartPoint.x | calculateDistance:measureStartPoint.y:measureEndPoint.x:measureEndPoint.y) / 2"
       class="measure-shape circle current">
     </circle>
   </svg>
@@ -462,10 +462,10 @@
         <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
         <g>
           <rect
-            [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)"
-            [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-            [attr.width]="Math.abs(measureEndPoint.x - measureStartPoint.x)"
-            [attr.height]="Math.abs(measureEndPoint.y - measureStartPoint.y)"
+            [attr.x]="measureStartPoint.x | mathMin:measureEndPoint.x"
+            [attr.y]="measureStartPoint.y | mathMin:measureEndPoint.y"
+            [attr.width]="measureEndPoint.x - measureStartPoint.x | mathAbs"
+            [attr.height]="measureEndPoint.y - measureStartPoint.y | mathAbs"
             fill="black">
           </rect>
         </g>
@@ -484,10 +484,10 @@
     <g>
       <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
       <rect
-        [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)"
-        [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-        [attr.width]="Math.abs(measureEndPoint.x - measureStartPoint.x)"
-        [attr.height]="Math.abs(measureEndPoint.y - measureStartPoint.y)"
+        [attr.x]="measureStartPoint.x | mathMin:measureEndPoint.x"
+        [attr.y]="measureStartPoint.y | mathMin:measureEndPoint.y"
+        [attr.width]="measureEndPoint.x - measureStartPoint.x | mathAbs"
+        [attr.height]="measureEndPoint.y - measureStartPoint.y | mathAbs"
         class="measure-shape rectangle current">
       </rect>
 
@@ -656,14 +656,14 @@
     <div *ngIf="measurement.startRa !== null && measurement.startDec !== null" class="measure-coord-label visible"
          [style.left.px]="measurement.startLabelX"
          [style.top.px]="measurement.startLabelY">
-      <small>{{ formatCoordinatesCompact(measurement.startRa, measurement.startDec) }}</small>
+      <small>{{ measurement.startRa | formatCoordinatesCompact:measurement.startDec }}</small>
     </div>
 
     <!-- End point coordinates with perpendicular positioning -->
     <div *ngIf="measurement.endRa !== null && measurement.endDec !== null" class="measure-coord-label visible"
          [style.left.px]="measurement.endLabelX"
          [style.top.px]="measurement.endLabelY">
-      <small>{{ formatCoordinatesCompact(measurement.endRa, measurement.endDec) }}</small>
+      <small>{{ measurement.endRa | formatCoordinatesCompact:measurement.endDec }}</small>
     </div>
   </div>
 
