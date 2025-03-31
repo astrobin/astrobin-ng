@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { CookieService } from "ngx-cookie";
 import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
 import { select, Store } from "@ngrx/store";
@@ -15,6 +15,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-measurement-modal.component";
 import { SolutionInterface } from "@core/interfaces/solution.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { isPlatformBrowser } from "@angular/common";
 
 export interface MeasurementPoint {
   x: number;
@@ -103,6 +104,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   public showResizeWarningModal: boolean = false;
   // Constants
   protected readonly Math = Math;
+  // Flag to detect browser environment
+  protected isBrowser: boolean;
   private destroy$ = new Subject<void>();
   // Bound event handlers
   private _onMeasuringMouseMove: any = null;
@@ -134,7 +137,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     public readonly ngZone: NgZone,
     private modalService: NgbModal,
     private popNotificationsService: PopNotificationsService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     super(store$);
 
@@ -149,6 +153,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this._onCurrentShapeDragMove = this.handleCurrentShapeDragMove.bind(this);
     this._onCurrentShapeDragEnd = this.handleCurrentShapeDragEnd.bind(this);
     this._onWindowResize = this.handleWindowResize.bind(this);
+    
+    // For SSR compatibility
+    this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   /**
@@ -210,31 +217,37 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       }
     });
 
-    // Add document level mouse move event listener when active
-    if (this.active) {
-      document.addEventListener("mousemove", this._onMeasuringMouseMove);
+    // Only add browser-specific event listeners when in browser environment
+    if (this.isBrowser) {
+      // Add document level mouse move event listener when active
+      if (this.active) {
+        document.addEventListener("mousemove", this._onMeasuringMouseMove);
+      }
+
+      // Add window resize listener to maintain measurements when window is resized
+      window.addEventListener("resize", this._onWindowResize);
+
+      // Initialize previous window dimensions
+      this._prevWindowWidth = window.innerWidth;
+      this._prevWindowHeight = window.innerHeight;
     }
-
-    // Add window resize listener to maintain measurements when window is resized
-    window.addEventListener("resize", this._onWindowResize);
-
-    // Initialize previous window dimensions
-    this._prevWindowWidth = window.innerWidth;
-    this._prevWindowHeight = window.innerHeight;
   }
 
   ngOnDestroy(): void {
-    // Clean up all event listeners
-    document.removeEventListener("mousemove", this._onMeasuringMouseMove);
-    document.removeEventListener("mousemove", this._onPointDragMove);
-    document.removeEventListener("mouseup", this._onPointDragEnd);
-    document.removeEventListener("mousemove", this._onPreviousMeasurementDragMove);
-    document.removeEventListener("mouseup", this._onPreviousMeasurementDragEnd);
-    document.removeEventListener("mousemove", this._onShapeDragMove);
-    document.removeEventListener("mouseup", this._onShapeDragEnd);
-    document.removeEventListener("mousemove", this._onCurrentShapeDragMove);
-    document.removeEventListener("mouseup", this._onCurrentShapeDragEnd);
-    window.removeEventListener("resize", this._onWindowResize);
+    // Only remove browser-specific event listeners when in browser environment
+    if (this.isBrowser) {
+      // Clean up all event listeners
+      document.removeEventListener("mousemove", this._onMeasuringMouseMove);
+      document.removeEventListener("mousemove", this._onPointDragMove);
+      document.removeEventListener("mouseup", this._onPointDragEnd);
+      document.removeEventListener("mousemove", this._onPreviousMeasurementDragMove);
+      document.removeEventListener("mouseup", this._onPreviousMeasurementDragEnd);
+      document.removeEventListener("mousemove", this._onShapeDragMove);
+      document.removeEventListener("mouseup", this._onShapeDragEnd);
+      document.removeEventListener("mousemove", this._onCurrentShapeDragMove);
+      document.removeEventListener("mouseup", this._onCurrentShapeDragEnd);
+      window.removeEventListener("resize", this._onWindowResize);
+    }
 
     // Complete the destroy subject
     this.destroy$.next();
@@ -2815,8 +2828,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   resetResizeWarningState(): void {
     if (this.measurementsAffectedByResize) {
       this.measurementsAffectedByResize = false;
-      this._prevWindowWidth = window.innerWidth;
-      this._prevWindowHeight = window.innerHeight;
+      
+      if (this.isBrowser) {
+        this._prevWindowWidth = window.innerWidth;
+        this._prevWindowHeight = window.innerHeight;
+      }
+      
       this.cdRef.detectChanges();
     }
   }
@@ -2826,6 +2843,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Shows a warning if there are measurements visible
    */
   handleWindowResize(event: UIEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    
     const newWidth = window.innerWidth;
     const newHeight = window.innerHeight;
 
@@ -2975,6 +2996,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Save the user's shape preference to a cookie
    */
   private saveMeasurementShapePreference(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    
     let preference = "none";
 
     if (this.showCurrentCircle) {
@@ -2998,16 +3023,22 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Load the user's shape preference from a cookie
    */
   private loadMeasurementShapePreference(): void {
-    const preference = this.cookieService.get(this.MEASUREMENT_SHAPE_COOKIE_NAME);
+    if (this.isBrowser) {
+      const preference = this.cookieService.get(this.MEASUREMENT_SHAPE_COOKIE_NAME);
 
-    if (preference === "circle") {
-      this.showCurrentCircle = true;
-      this.showCurrentRectangle = false;
-    } else if (preference === "rectangle") {
-      this.showCurrentCircle = false;
-      this.showCurrentRectangle = true;
+      if (preference === "circle") {
+        this.showCurrentCircle = true;
+        this.showCurrentRectangle = false;
+      } else if (preference === "rectangle") {
+        this.showCurrentCircle = false;
+        this.showCurrentRectangle = true;
+      } else {
+        // Default to no shape
+        this.showCurrentCircle = false;
+        this.showCurrentRectangle = false;
+      }
     } else {
-      // Default to no shape
+      // Default to no shape for SSR
       this.showCurrentCircle = false;
       this.showCurrentRectangle = false;
     }
@@ -3054,6 +3085,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Uses a direct approach with a custom modal in the template
    */
   private showResizeWarning(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    
     // Show the modal
     this.showResizeWarningModal = true;
 

@@ -1,4 +1,5 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
 
 // Interface for raw coordinate data
 export interface CoordinateData {
@@ -42,7 +43,10 @@ export interface FormattedCoordinates {
   providedIn: "root"
 })
 export class CoordinatesFormatterService {
-  constructor() {
+  private isBrowser: boolean;
+  
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   /**
@@ -72,7 +76,7 @@ export class CoordinatesFormatterService {
     x: number;
     y: number;
   } {
-    if (!interpolationMatrix || !interpolationMatrix.raMatrix || !imageElement) {
+    if (!this.isBrowser || !interpolationMatrix || !interpolationMatrix.raMatrix || !imageElement) {
       return null;
     }
 
@@ -144,6 +148,11 @@ export class CoordinatesFormatterService {
       ? undefined   // Not needed for fullscreen, handled by scaledX/Y
       : imageRenderedWidth / Math.min(imageNaturalWidth, HD_WIDTH);
 
+    // Check if CoordinateInterpolation is available (it's defined globally in assets/js/CoordinateInterpolation.js)
+    if (typeof CoordinateInterpolation === 'undefined' || !CoordinateInterpolation) {
+      return null;
+    }
+    
     // @ts-ignore - CoordinateInterpolation is defined globally in assets/js/CoordinateInterpolation.js
     const interpolation = new CoordinateInterpolation(
       raMatrix,
