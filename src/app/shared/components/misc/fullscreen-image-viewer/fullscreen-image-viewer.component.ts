@@ -481,6 +481,23 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         });
       }
     }
+    
+    // Reset the solution matrix when the revision changes
+    if (changes.revisionLabel) {
+      // Clear the current solution matrix to force a reload for the new revision
+      this.advancedSolutionMatrix = null;
+      this.loadingAdvancedSolutionMatrix = false;
+      
+      // If we have the image loaded already, reload the revision and matrix
+      if (this.image) {
+        this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+        
+        // If the new revision has a solution, ensure the matrix is loaded
+        if (this.revision?.solution?.id) {
+          this._ensureSolutionMatrixLoaded(this.revision.solution.id);
+        }
+      }
+    }
 
     if (this._currentFullscreenImageSubscription) {
       this._currentFullscreenImageSubscription.unsubscribe();

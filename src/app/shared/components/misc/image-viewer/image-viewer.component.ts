@@ -689,6 +689,10 @@ export class ImageViewerComponent
     // Clear any preloaded moon image
     this._preloadedMoonImage = null;
 
+    // Clear the current solution matrix to force a reload for the new revision
+    this.advancedSolutionMatrix = null;
+    this.loadingAdvancedSolutionMatrix = false;
+
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     this._setNonSolutionMouseHoverImage();
     this._setSolutionMouseHoverImage();
