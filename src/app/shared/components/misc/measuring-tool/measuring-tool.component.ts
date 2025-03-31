@@ -9,8 +9,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { CreateMeasurementPreset, DeleteMeasurementPreset, LoadMeasurementPresets, ToggleSavedMeasurements } from "./store/measurement-preset.actions";
 import { selectAllMeasurementPresets, selectShowSavedMeasurements } from "./store/measurement-preset.selectors";
 import { MeasurementPresetInterface } from "./measurement-preset.interface";
-import { take, takeUntil } from "rxjs/operators";
-import { Subject } from "rxjs";
+import { debounceTime, filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { fromEvent, merge, Subject } from "rxjs";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-measurement-modal.component";
@@ -86,9 +86,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   @Input() solution: SolutionInterface;
   @Input() naturalWidth: number;
   @Input() naturalHeight: number;
+
   @Output() exitMeasuringMode = new EventEmitter<void>();
   @Output() measurementStarted = new EventEmitter<void>();
   @Output() measurementComplete = new EventEmitter<MeasurementData>();
+
   // Measurement points
   measureStartPoint: MeasurementPoint | null = null;
   measureEndPoint: MeasurementPoint | null = null;
@@ -119,18 +121,31 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   protected readonly Math = Math;
   // Flag to detect browser environment
   protected isBrowser: boolean;
-  private destroy$ = new Subject<void>();
   // Bound event handlers
-  private _onMeasuringMouseMove: any = null;
-  private _onPointDragMove: any = null;
-  private _onPointDragEnd: any = null;
-  private _onPreviousMeasurementDragMove: any = null;
-  private _onPreviousMeasurementDragEnd: any = null;
-  private _onShapeDragMove: any = null;
-  private _onShapeDragEnd: any = null;
-  private _onCurrentShapeDragMove: any = null;
-  private _onCurrentShapeDragEnd: any = null;
-  private _onWindowResize: any = null;
+  // Subjects for controlling drag operations
+  private _pointDragStart$ = new Subject<{ event: MouseEvent, point: string }>();
+  private _pointDragEnd$ = new Subject<MouseEvent>();
+  private _previousMeasurementDragStart$ = new Subject<{ event: MouseEvent, index: number, point: string }>();
+  private _previousMeasurementDragEnd$ = new Subject<MouseEvent>();
+  private _shapeDragStart$ = new Subject<{ event: MouseEvent, index: number }>();
+  private _shapeDragEnd$ = new Subject<MouseEvent>();
+  private _currentShapeDragStart$ = new Subject<MouseEvent>();
+  private _currentShapeDragEnd$ = new Subject<MouseEvent>();
+
+  // Events streams
+  private _documentMouseMove$ = isPlatformBrowser(this.platformId) ?
+    fromEvent<MouseEvent>(document, 'mousemove').pipe(takeUntil(this.destroyed$)) :
+    new Subject<MouseEvent>();
+  private _documentMouseUp$ = isPlatformBrowser(this.platformId) ?
+    fromEvent<MouseEvent>(document, 'mouseup').pipe(takeUntil(this.destroyed$)) :
+    new Subject<MouseEvent>();
+  private _windowResize$ = isPlatformBrowser(this.platformId) ?
+    fromEvent<UIEvent>(window, 'resize').pipe(
+      debounceTime(300),
+      takeUntil(this.destroyed$)
+    ) :
+    new Subject<UIEvent>();
+
   private _dragInProgress = false;
   private _preventNextClick = false;
   // Track the previous window dimensions to detect significant changes
@@ -155,18 +170,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     super(store$);
-
-    // Initialize bound handlers
-    this._onMeasuringMouseMove = this.handleMeasuringMouseMove.bind(this);
-    this._onPointDragMove = this.handlePointDragMove.bind(this);
-    this._onPointDragEnd = this.handlePointDragEnd.bind(this);
-    this._onPreviousMeasurementDragMove = this.handlePreviousMeasurementDragMove.bind(this);
-    this._onPreviousMeasurementDragEnd = this.handlePreviousMeasurementDragEnd.bind(this);
-    this._onShapeDragMove = this.handleShapeDragMove.bind(this);
-    this._onShapeDragEnd = this.handleShapeDragEnd.bind(this);
-    this._onCurrentShapeDragMove = this.handleCurrentShapeDragMove.bind(this);
-    this._onCurrentShapeDragEnd = this.handleCurrentShapeDragEnd.bind(this);
-    this._onWindowResize = this.handleWindowResize.bind(this);
 
     // For SSR compatibility
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -200,7 +203,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   public boundCalculateAngularDistance = (ra1: number, dec1: number, ra2: number, dec2: number) =>
     this.astroUtilsService.calculateAngularDistance(ra1, dec1, ra2, dec2);
 
-  public boundFormatAstronomicalAngle = (arcseconds: number) => 
+  public boundFormatAstronomicalAngle = (arcseconds: number) =>
     this.astroUtilsService.formatAstronomicalAngle(arcseconds);
 
 
@@ -212,14 +215,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Subscribe to state changes
     this.store$.pipe(
       select(selectShowSavedMeasurements),
-      takeUntil(this.destroy$)
+      takeUntil(this.destroyed$)
     ).subscribe(showSavedMeasurements => {
       this.showSavedMeasurements = showSavedMeasurements;
     });
 
     this.store$.pipe(
       select(selectAllMeasurementPresets),
-      takeUntil(this.destroy$)
+      takeUntil(this.destroyed$)
     ).subscribe(presets => {
       this.savedMeasurements = presets;
     });
@@ -227,50 +230,158 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Load presets when the component initializes
     this.currentUser$.pipe(
       take(1),
-      takeUntil(this.destroy$)
+      takeUntil(this.destroyed$)
     ).subscribe(user => {
-      if (user) {
+      if (user && 'id' in user) {
         this.store$.dispatch(new LoadMeasurementPresets({ userId: user.id }));
       }
     });
 
-    // Only add browser-specific event listeners when in browser environment
+    // Only set up RxJS streams when in browser environment
     if (this.isBrowser) {
-      // Add document level mouse move event listener when active
+      // Set up document mouse move for measuring mode
       if (this.active) {
-        document.addEventListener("mousemove", this._onMeasuringMouseMove);
+        this._documentMouseMove$
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(event => this.handleMeasuringMouseMove(event));
       }
 
-      // Add window resize listener to maintain measurements when window is resized
-      window.addEventListener("resize", this._onWindowResize);
+      // Set up window resize handler
+      this._windowResize$
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(event => this.handleWindowResize(event));
 
       // Initialize previous window dimensions
       this._prevWindowWidth = window.innerWidth;
+
+      // Set up point drag handling
+      this._pointDragStart$
+        .pipe(
+          takeUntil(this.destroyed$),
+          tap(() => this._dragInProgress = true),
+          switchMap(({event, point}) => this._documentMouseMove$.pipe(
+            takeUntil(merge(this._pointDragEnd$, this.destroyed$)),
+            tap(moveEvent => this.handlePointDragMove(moveEvent))
+          ))
+        )
+        .subscribe();
+
+      // Handle point drag end
+      this._pointDragEnd$
+        .pipe(
+          takeUntil(this.destroyed$),
+          tap(event => {
+            this.handlePointDragEnd(event);
+            this._dragInProgress = false;
+          })
+        )
+        .subscribe();
+
+      // Set up previous measurement drag handling
+      this._previousMeasurementDragStart$
+        .pipe(
+          takeUntil(this.destroyed$),
+          tap(() => this._dragInProgress = true),
+          switchMap(({event, index, point}) => this._documentMouseMove$.pipe(
+            takeUntil(merge(this._previousMeasurementDragEnd$, this.destroyed$)),
+            tap(moveEvent => this.handlePreviousMeasurementDragMove(moveEvent))
+          ))
+        )
+        .subscribe();
+
+      // Handle previous measurement drag end
+      this._previousMeasurementDragEnd$
+        .pipe(
+          takeUntil(this.destroyed$),
+          tap(event => {
+            this.handlePreviousMeasurementDragEnd(event);
+            this._dragInProgress = false;
+          })
+        )
+        .subscribe();
+
+      // Set up shape drag handling
+      this._shapeDragStart$
+        .pipe(
+          takeUntil(this.destroyed$),
+          tap(() => this._dragInProgress = true),
+          switchMap(({event, index}) => this._documentMouseMove$.pipe(
+            takeUntil(merge(this._shapeDragEnd$, this.destroyed$)),
+            tap(moveEvent => this.handleShapeDragMove(moveEvent))
+          ))
+        )
+        .subscribe();
+
+      // Handle shape drag end
+      this._shapeDragEnd$
+        .pipe(
+          takeUntil(this.destroyed$),
+          tap(event => {
+            this.handleShapeDragEnd(event);
+            this._dragInProgress = false;
+          })
+        )
+        .subscribe();
+
+      // Set up current shape drag handling
+      this._currentShapeDragStart$
+        .pipe(
+          takeUntil(this.destroyed$),
+          tap(() => this._dragInProgress = true),
+          switchMap(event => this._documentMouseMove$.pipe(
+            takeUntil(merge(this._currentShapeDragEnd$, this.destroyed$)),
+            tap(moveEvent => this.handleCurrentShapeDragMove(moveEvent))
+          ))
+        )
+        .subscribe();
+
+      // Handle current shape drag end
+      this._currentShapeDragEnd$
+        .pipe(
+          takeUntil(this.destroyed$),
+          tap(event => {
+            this.handleCurrentShapeDragEnd(event);
+            this._dragInProgress = false;
+          })
+        )
+        .subscribe();
+
+      // Global mouse up handler for all drags
+      this._documentMouseUp$
+        .pipe(
+          takeUntil(this.destroyed$),
+          filter(() => this._dragInProgress)
+        )
+        .subscribe(event => {
+          // Determine which drag is active and end it
+          if (this.isDraggingPoint?.startsWith('prev') && this.isDraggingPoint?.includes('-')) {
+            this._previousMeasurementDragEnd$.next(event);
+          } else if (this.isDraggingPoint?.startsWith('prevShape')) {
+            this._shapeDragEnd$.next(event);
+          } else if (this.isDraggingPoint === 'currentShape') {
+            this._currentShapeDragEnd$.next(event);
+          } else if (this.isDraggingPoint) {
+            this._pointDragEnd$.next(event);
+          }
+        });
       this._prevWindowHeight = window.innerHeight;
     }
   }
 
   ngOnDestroy(): void {
-    // Only remove browser-specific event listeners when in browser environment
     if (this.isBrowser) {
-      // Clean up all event listeners
-      document.removeEventListener("mousemove", this._onMeasuringMouseMove);
-      document.removeEventListener("mousemove", this._onPointDragMove);
-      document.removeEventListener("mouseup", this._onPointDragEnd);
-      document.removeEventListener("mousemove", this._onPreviousMeasurementDragMove);
-      document.removeEventListener("mouseup", this._onPreviousMeasurementDragEnd);
-      document.removeEventListener("mousemove", this._onShapeDragMove);
-      document.removeEventListener("mouseup", this._onShapeDragEnd);
-      document.removeEventListener("mousemove", this._onCurrentShapeDragMove);
-      document.removeEventListener("mouseup", this._onCurrentShapeDragEnd);
-      window.removeEventListener("resize", this._onWindowResize);
+      // Complete all drag-related subjects
+      this._pointDragStart$.complete();
+      this._pointDragEnd$.complete();
+      this._previousMeasurementDragStart$.complete();
+      this._previousMeasurementDragEnd$.complete();
+      this._shapeDragStart$.complete();
+      this._shapeDragEnd$.complete();
+      this._currentShapeDragStart$.complete();
+      this._currentShapeDragEnd$.complete();
     }
 
-    // Complete the destroy subject
-    this.destroy$.next();
-    this.destroy$.complete();
-
-    // Call parent class ngOnDestroy
+    // Call parent class ngOnDestroy - this will also complete the destroyed$ subject
     super.ngOnDestroy();
   }
 
@@ -652,13 +763,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
 
-    // Add event listeners for drag move and end
-    document.addEventListener("mousemove", this._onPointDragMove);
-    document.addEventListener("mouseup", this._onPointDragEnd);
-
     // Signal that dragging has started
-    this._dragInProgress = true;
     this._preventNextClick = true;
+
+    // Trigger the drag start stream
+    this._pointDragStart$.next({ event, point });
   }
 
   /**
@@ -754,8 +863,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     event.preventDefault();
 
     // Clean up event listeners
-    document.removeEventListener("mousemove", this._onPointDragMove);
-    document.removeEventListener("mouseup", this._onPointDragEnd);
+    // Using RxJS streams for handling drag events now
+    this._pointDragEnd$.next(event);
 
     // Reset drag state
     this._dragInProgress = false;
@@ -828,13 +937,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
 
-    // Add event listeners for drag move and end
-    document.addEventListener("mousemove", this._onPreviousMeasurementDragMove);
-    document.addEventListener("mouseup", this._onPreviousMeasurementDragEnd);
-
     // Signal that dragging has started
-    this._dragInProgress = true;
     this._preventNextClick = true;
+
+    // Trigger the drag start stream
+    this._previousMeasurementDragStart$.next({ event, index, point });
   }
 
   /**
@@ -955,8 +1062,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Clean up event listeners
-    document.removeEventListener("mousemove", this._onPreviousMeasurementDragMove);
-    document.removeEventListener("mouseup", this._onPreviousMeasurementDragEnd);
+    // Using RxJS streams for handling drag events now
+    this._previousMeasurementDragEnd$.next(event);
 
     // Reset drag state
     this._dragInProgress = false;
@@ -976,13 +1083,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
 
-    // Add event listeners for drag move and end
-    document.addEventListener("mousemove", this._onShapeDragMove);
-    document.addEventListener("mouseup", this._onShapeDragEnd);
-
     // Signal that dragging has started
-    this._dragInProgress = true;
     this._preventNextClick = true;
+
+    // Trigger the drag start stream
+    this._shapeDragStart$.next({ event, index });
   }
 
   /**
@@ -1125,8 +1230,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Clean up event listeners
-    document.removeEventListener("mousemove", this._onShapeDragMove);
-    document.removeEventListener("mouseup", this._onShapeDragEnd);
+    // Using RxJS streams for handling drag events now
+    this._shapeDragEnd$.next(event);
 
     // Reset drag state
     this._dragInProgress = false;
@@ -1153,13 +1258,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
 
-    // Add event listeners for drag move and end
-    document.addEventListener("mousemove", this._onCurrentShapeDragMove);
-    document.addEventListener("mouseup", this._onCurrentShapeDragEnd);
-
     // Signal that dragging has started
-    this._dragInProgress = true;
     this._preventNextClick = true;
+
+    // Trigger the drag start stream
+    this._currentShapeDragStart$.next(event);
   }
 
   /**
@@ -1281,8 +1384,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Clean up event listeners
-    document.removeEventListener("mousemove", this._onCurrentShapeDragMove);
-    document.removeEventListener("mouseup", this._onCurrentShapeDragEnd);
+    // Using RxJS streams for handling drag events now
+    this._currentShapeDragEnd$.next(event);
 
     // Reset drag state
     this._dragInProgress = false;
@@ -2188,12 +2291,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Handle the result when the modal is closed
       modalRef.result.then(result => {
         this.currentUser$.pipe(take(1)).subscribe(user => {
-          if (user) {
+          if (user && 'id' in user) {
             // Create the base preset object
             const preset: MeasurementPresetInterface = {
               name: result.name,
               notes: result.notes,
-              user: user.id
+              user: user && 'id' in user ? user.id : null
             };
 
             // Only include width/height when they are valid measurements
@@ -2369,11 +2472,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Handle the result when the modal is closed
         modalRef.result.then(result => {
           this.currentUser$.pipe(take(1)).subscribe(user => {
-            if (user) {
+            if (user && 'id' in user) {
               const preset: MeasurementPresetInterface = {
                 name: result.name,
                 notes: result.notes,
-                user: user.id
+                user: user && 'id' in user ? user.id : null
               };
 
               // Only include width/height when they are valid measurements
@@ -2523,12 +2626,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Create the measurement preset
     this.currentUser$.pipe(take(1)).subscribe(user => {
-      if (user) {
+      if (user && 'id' in user) {
         // Create the base preset object
         const preset: MeasurementPresetInterface = {
           name: this.newMeasurementName,
           notes: this.saveMeasurementNotes, // Include notes in the preset
-          user: user.id
+          user: user && 'id' in user ? user.id : null
         };
 
         // Only include width/height when they are valid measurements
