@@ -11,14 +11,6 @@
   pointer-events: none;
   z-index: 5;
 
-  /* Global CSS property for rotation state */
-  --rotating: 'false';
-
-  /* Global rotation feedback - when rotation is active, change cursor for entire container */
-  &.rotation-active {
-    cursor: grabbing !important;
-  }
-
   /* Saved Measurements Panel */
   .saved-measurements-panel {
     position: absolute;
