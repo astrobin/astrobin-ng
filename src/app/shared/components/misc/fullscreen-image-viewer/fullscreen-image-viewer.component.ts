@@ -526,10 +526,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
         this._resetCanvas();
 
-        // Remove any body classes that might have been added during swipe
-        if (typeof document !== "undefined") {
-          document.body.classList.remove("image-viewer-closing");
-        }
+        // Clean up all styles and classes
+        this._cleanupHostStyles();
 
         cancelAnimationFrame(this._animationFrame);
         this.exitFullscreen.emit();
@@ -663,6 +661,25 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
+  /**
+   * Clean up all inline styles and animation classes that might be present on the host element
+   * This is important for proper component display/hiding
+   */
+  private _cleanupHostStyles(): void {
+    this.renderer.removeStyle(this.hostElementRef.nativeElement, 'transform');
+    this.renderer.removeStyle(this.hostElementRef.nativeElement, 'opacity');
+    this.renderer.removeStyle(this.hostElementRef.nativeElement, 'transition');
+    this.renderer.removeStyle(this.hostElementRef.nativeElement, 'will-change');
+    this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
+    this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animate');
+    this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-return-to-normal');
+
+    // Remove any body classes that might have been added during swipe
+    if (typeof document !== "undefined") {
+      document.body.classList.remove("image-viewer-closing");
+    }
+  }
+
   @HostListener("window:keyup.escape", ["$event"])
   hide(event: Event): void {
     if (!this.isBrowser) {
@@ -698,6 +715,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.zoomFrozen = false;
       this._restoreOriginalEventHandlers();
     }
+
+    // Clean up all styles and classes
+    this._cleanupHostStyles();
 
     this.popNotificationsService.clear();
 
@@ -1616,20 +1636,25 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Add animation classes for close animation
       this.renderer.addClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
       this.renderer.addClass(this.hostElementRef.nativeElement, 'swipe-to-close-animate');
-
+// Keep track of whether we've already handled the animation completion
+      let animationHandled = false;
       // Listen for animation end
       const onAnimationEnd = (event: any) => {
-        if (event.animationName === 'swipe-to-close') {
-          // Clean up animation classes
+        if (event.animationName === 'swipe-to-close' && !animationHandled) {
+          animationHandled = true;
+
+          // Set opacity to 0 immediately to prevent flashing
+          this.renderer.setStyle(this.hostElementRef.nativeElement, 'opacity', '0');
+
+          // Remove classes first
           this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
           this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animate');
 
-          // Reset transform and opacity explicitly
-          this.renderer.setStyle(this.hostElementRef.nativeElement, 'transform', 'translateY(0) scale(1)');
-          this.renderer.setStyle(this.hostElementRef.nativeElement, 'opacity', '0');
-
-          // Hide the component
+          // Important: Hide component with slight delay to prevent flashing
+          // This ensures styles are applied before component removal
+          this.utilsService.delay(50).subscribe(() => {
           this.hide(null);
+});
 
           // Remove event listener
           this.hostElementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
@@ -1641,10 +1666,18 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       // Safety timeout in case animation end doesn't fire
       this.utilsService.delay(400).subscribe(() => {
-        // Also clean up styles here as a fallback
-        this.renderer.setStyle(this.hostElementRef.nativeElement, 'transform', 'translateY(0) scale(1)');
-        this.renderer.setStyle(this.hostElementRef.nativeElement, 'opacity', '0');
-        this.hide(null);
+        if (!animationHandled) {
+          animationHandled = true;
+
+          // Same approach as animation end handler
+          this.renderer.setStyle(this.hostElementRef.nativeElement, 'opacity', '0');
+          this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animating');
+          this.renderer.removeClass(this.hostElementRef.nativeElement, 'swipe-to-close-animate');
+
+          this.utilsService.delay(50).subscribe(() => {
+            this.hide(null);
+          });
+        }
       });
 
       // Reset swipe state immediately
