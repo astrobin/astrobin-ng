@@ -121,6 +121,18 @@
   pointer-events: none;
   z-index: 5;
 
+  .boundary-warning {
+    position: absolute;
+    bottom: -36px;
+    font-size: .65rem;
+    text-align: center;
+    padding: 0;
+    left: 0;
+    color: red;
+    text-shadow: 1px 1px 1px black;
+    width: 100%;
+  }
+
   /* Saved Measurements Panel */
   .saved-measurements-panel {
     position: absolute;
@@ -465,7 +477,7 @@
         border: 1px solid rgba(255, 255, 255, 0.5);
         top: 0;
         left: 0;
-        animation: pulse 2s infinite;
+        animation: pulse 2s infinite steps(60);
       }
     }
 
@@ -481,7 +493,7 @@
         border: 1px solid rgba(255, 255, 255, 0.5);
         top: 0;
         left: 0;
-        animation: pulse 2s infinite;
+        animation: pulse 2s infinite steps(60);
         animation-delay: 1s;
       }
     }
@@ -505,7 +517,7 @@
           border: 1px solid rgba(255, 255, 255, 0.5);
           top: 0;
           left: 0;
-          animation: pulse 2s infinite;
+          animation: pulse 2s infinite steps(60);
         }
       }
 
@@ -615,6 +627,11 @@
           @extend %affected-by-resize-stroke;
         }
 
+        &.outside-boundaries {
+          stroke: red;
+          stroke-width: 2px;
+        }
+
         &:hover {
           stroke-width: 2.5px; /* Thicker stroke on hover for better visibility */
           stroke-dasharray: 4 2; /* Tighter dash pattern on hover for better visibility */
@@ -717,7 +734,7 @@
           &.rotating path {
             stroke: rgba(255, 220, 0, 1);
             stroke-width: 3px;
-            animation: rotate-icon 1.5s infinite linear;
+            animation: rotate-icon 1.5s infinite steps(60);
           }
 
           @keyframes rotate-icon {
@@ -811,6 +828,11 @@
     pointer-events: all;
     min-width: 120px;
 
+    &.outside-boundaries {
+      background-color: rgba(255, 0, 0, 0.6) !important;
+      border: 1px solid rgba(255, 100, 100, 0.8) !important;
+    }
+
     .measurement-content {
       display: flex;
       flex-direction: column;
@@ -868,6 +890,7 @@
           @extend %see-more-link-style;
         }
       }
+
     }
 
     .unit-symbol {

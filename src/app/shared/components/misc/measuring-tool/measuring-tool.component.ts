@@ -1831,6 +1831,36 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.cdRef.markForCheck();
     this.exitMeasuringMode.emit();
   }
+  
+  /**
+   * Check if a point is outside the image boundaries
+   */
+  isPointOutsideImageBoundaries(x: number, y: number): boolean {
+    if (!this.isBrowser) {
+      return false;
+    }
+
+    const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+    if (!imageElement) {
+      return false;
+    }
+
+    const imageRect = imageElement.getBoundingClientRect();
+    return (
+      x < imageRect.left ||
+      x > imageRect.right ||
+      y < imageRect.top ||
+      y > imageRect.bottom
+    );
+  }
+
+  /**
+   * Check if any point of a measurement is outside the image boundaries
+   */
+  isMeasurementOutsideImageBoundaries(measurement: MeasurementData): boolean {
+    return this.isPointOutsideImageBoundaries(measurement.startX, measurement.startY) ||
+           this.isPointOutsideImageBoundaries(measurement.endX, measurement.endY);
+  }
 
   /**
    * Share measurements by encoding them in URL
