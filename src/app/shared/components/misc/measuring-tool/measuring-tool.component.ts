@@ -395,20 +395,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       return;
     }
 
-    // Get the offset of the image element
-    const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-    if (!imageElement) {
-      return;
-    }
-
-    // Check if the mouse down is within the bounds of the image
-    const imageRect = imageElement.getBoundingClientRect();
-    if (
-      event.clientX < imageRect.left ||
-      event.clientX > imageRect.right ||
-      event.clientY < imageRect.top ||
-      event.clientY > imageRect.bottom
-    ) {
+    // Check if we can proceed with measurement
+    if (!this._validateMeasurementArea(event)) {
       return;
     }
 
@@ -421,28 +409,58 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       return;
     }
 
-    // If we already have a start and end point, this is a new measurement
+    // Handle case when starting a new measurement while one is already complete
     if (this.measureStartPoint && this.measureEndPoint) {
-      // Reset for a new measurement
-      this.measureStartPoint = null;
-      this.measureEndPoint = null;
-      this.measureDistance = null;
-
-      // Reset resize warning state for new measurements
-      this.resetResizeWarningState();
+      this._resetCurrentMeasurement();
     }
 
-    // Store starting position to check if this is a click or drag
+    // Initialize tracking variables for detecting drag vs. click
     const startX = event.clientX;
     const startY = event.clientY;
 
-    // Keep track of whether we've moved enough to consider this a drag
-    let hasDraggedEnough = false;
-    const dragThreshold = 10; // Minimum pixels to move before considering it a drag
+    // Initialize the start point and prepare for measurement
+    this._initializeStartPoint(event);
 
-    // Track if we're in a drag operation (don't set flag yet)
-    let isDragging = false;
+    // Setup drag tracking and handlers
+    this._setupDragTracking(event, startX, startY);
+  }
 
+  /**
+   * Validates that the event is within the image boundaries
+   */
+  private _validateMeasurementArea(event: MouseEvent): boolean {
+    // Get the offset of the image element
+    const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+    if (!imageElement) {
+      return false;
+    }
+
+    // Check if the mouse down is within the bounds of the image
+    const imageRect = imageElement.getBoundingClientRect();
+    return !(
+      event.clientX < imageRect.left ||
+      event.clientX > imageRect.right ||
+      event.clientY < imageRect.top ||
+      event.clientY > imageRect.bottom
+    );
+  }
+
+  /**
+   * Reset the current measurement state for starting a new measurement
+   */
+  private _resetCurrentMeasurement(): void {
+    this.measureStartPoint = null;
+    this.measureEndPoint = null;
+    this.measureDistance = null;
+
+    // Reset resize warning state for new measurements
+    this.resetResizeWarningState();
+  }
+
+  /**
+   * Initialize the starting point for a measurement
+   */
+  private _initializeStartPoint(event: MouseEvent): void {
     // Set the start point on mousedown
     this.measureStartPoint = {
       x: event.clientX,
@@ -458,26 +476,47 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.mouseX = event.clientX;
     this.mouseY = event.clientY;
 
-    // If we have valid solution data, calculate celestial coordinates for this point
+    // Calculate celestial coordinates if possible
+    this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
+  }
+
+  /**
+   * Updates celestial coordinates for a measurement point
+   */
+  private _updatePointCelestialCoordinates(point: MeasurementPoint, x: number, y: number): void {
     if (this.isValidSolutionMatrix()) {
-      const coords = this.boundCalculateCoordinatesAtPoint(event.clientX, event.clientY);
+      const coords = this.boundCalculateCoordinatesAtPoint(x, y);
       if (coords) {
-        this.measureStartPoint.ra = coords.ra;
-        this.measureStartPoint.dec = coords.dec;
+        point.ra = coords.ra;
+        point.dec = coords.dec;
       } else {
         // If we can't calculate coordinates, set to null
-        this.measureStartPoint.ra = null;
-        this.measureStartPoint.dec = null;
+        point.ra = null;
+        point.dec = null;
       }
     } else {
       // If we don't have a valid solution matrix, set to null
-      this.measureStartPoint.ra = null;
-      this.measureStartPoint.dec = null;
+      point.ra = null;
+      point.dec = null;
     }
+  }
+
+  /**
+   * Setup drag tracking and handlers for measurement creation
+   */
+  private _setupDragTracking(event: MouseEvent, startX: number, startY: number): void {
+    // Keep track of whether we've moved enough to consider this a drag
+    let hasDraggedEnough = false;
+    const dragThreshold = 10; // Minimum pixels to move before considering it a drag
+
+    // Track if we're in a drag operation (don't set flag yet)
+    let isDragging = false;
 
     // Add mouse move event listener to track the mouse position
     const mouseMoveHandler = (moveEvent: MouseEvent) => {
-      // Calculate distance moved
+      this._handleMeasurementDragMove(moveEvent, startX, startY, dragThreshold, hasDraggedEnough, isDragging);
+      
+      // Update tracking variables based on movement
       const dx = moveEvent.clientX - startX;
       const dy = moveEvent.clientY - startY;
       const distanceMoved = Math.sqrt(dx * dx + dy * dy);
@@ -490,58 +529,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Set the drag flag to prevent the click handler from running
         this._dragInProgress = true;
       }
-
-      // Always update the mouse position for the dashed line preview
-      this.mouseX = moveEvent.clientX;
-      this.mouseY = moveEvent.clientY;
     };
 
     // Add mouse up event listener to complete the measurement
     const mouseUpHandler = (upEvent: MouseEvent) => {
-      // Calculate final distance moved
-      const dx = upEvent.clientX - startX;
-      const dy = upEvent.clientY - startY;
-      const distanceMoved = Math.sqrt(dx * dx + dy * dy);
-
-      // Only complete the measurement if we dragged far enough
-      if (hasDraggedEnough && isDragging) {
-        // Set the end point at the mouse up position
-        this.measureEndPoint = {
-          x: upEvent.clientX,
-          y: upEvent.clientY,
-          ra: null,
-          dec: null
-        };
-
-        // If we have valid solution data, calculate celestial coordinates for this point
-        if (this.isValidSolutionMatrix()) {
-          const coords = this.boundCalculateCoordinatesAtPoint(upEvent.clientX, upEvent.clientY);
-          if (coords) {
-            this.measureEndPoint.ra = coords.ra;
-            this.measureEndPoint.dec = coords.dec;
-          } else {
-            // If we can't calculate coordinates, set to null
-            this.measureEndPoint.ra = null;
-            this.measureEndPoint.dec = null;
-          }
-        } else {
-          // If we don't have a valid solution matrix, set to null
-          this.measureEndPoint.ra = null;
-          this.measureEndPoint.dec = null;
-        }
-
-        // Finalize the measurement
-        this._finalizeMeasurement();
-
-        // Set flag to prevent click handler from running
-        this._preventNextClick = true;
-      } else if (distanceMoved < dragThreshold) {
-        // If we didn't drag far enough, it's treated like a normal click
-        // Keep the start point set (so it appears immediately) but don't set end point
-        // The user can set the end point with a second click
-        this.measureEndPoint = null;
-      }
-
+      this._handleMeasurementDragEnd(upEvent, startX, startY, hasDraggedEnough, isDragging);
+      
       // Clean up event listeners
       document.removeEventListener("mousemove", mouseMoveHandler);
       document.removeEventListener("mouseup", mouseUpHandler);
@@ -561,138 +554,149 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   /**
+   * Handle mouse movement during measurement drag
+   */
+  private _handleMeasurementDragMove(
+    moveEvent: MouseEvent, 
+    startX: number, 
+    startY: number, 
+    dragThreshold: number,
+    hasDraggedEnough: boolean,
+    isDragging: boolean
+  ): void {
+    // Always update the mouse position for the dashed line preview
+    this.mouseX = moveEvent.clientX;
+    this.mouseY = moveEvent.clientY;
+  }
+
+  /**
+   * Handle the end of a measurement drag operation
+   */
+  private _handleMeasurementDragEnd(
+    upEvent: MouseEvent, 
+    startX: number, 
+    startY: number, 
+    hasDraggedEnough: boolean,
+    isDragging: boolean
+  ): void {
+    // Calculate final distance moved
+    const dx = upEvent.clientX - startX;
+    const dy = upEvent.clientY - startY;
+    const distanceMoved = Math.sqrt(dx * dx + dy * dy);
+    const dragThreshold = 10; // Minimum pixels to move before considering it a drag
+
+    // Only complete the measurement if we dragged far enough
+    if (hasDraggedEnough && isDragging) {
+      this._createEndPoint(upEvent);
+      this._finalizeMeasurement();
+      this._preventNextClick = true;
+    } else if (distanceMoved < dragThreshold) {
+      // If we didn't drag far enough, it's treated like a normal click
+      // Keep the start point set (so it appears immediately) but don't set end point
+      // The user can set the end point with a second click
+      this.measureEndPoint = null;
+    }
+  }
+
+  /**
+   * Create an end point for the measurement at the specified event position
+   */
+  private _createEndPoint(event: MouseEvent): void {
+    // Set the end point at the mouse up position
+    this.measureEndPoint = {
+      x: event.clientX,
+      y: event.clientY,
+      ra: null,
+      dec: null
+    };
+
+    // Calculate celestial coordinates if possible
+    this._updatePointCelestialCoordinates(this.measureEndPoint, event.clientX, event.clientY);
+  }
+
+  /**
    * Handle clicks on the measurement overlay to place points
    */
   handleMeasurementClick(event: MouseEvent): void {
     // Skip if this click should be prevented (e.g., it's part of a drag operation)
-    if (this._preventNextClick) {
+    if (this._preventNextClick || this._dragInProgress) {
       this._preventNextClick = false;
       return;
     }
 
-    // Skip if dragging is in progress
-    if (this._dragInProgress) {
+    // Check if we can proceed with measurement
+    if (!this._validateMeasurementArea(event)) {
       return;
     }
 
-    // Get the offset of the image element
-    const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-    if (!imageElement) {
-      return;
-    }
-
-    // Check if the click is within the bounds of the image
-    const imageRect = imageElement.getBoundingClientRect();
-    if (
-      event.clientX < imageRect.left ||
-      event.clientX > imageRect.right ||
-      event.clientY < imageRect.top ||
-      event.clientY > imageRect.bottom
-    ) {
-      return;
-    }
-
-    // If we have a completed measurement, start a new one
+    // Handle different measurement states
     if (this.measureStartPoint && this.measureEndPoint) {
-      this.measureStartPoint = null;
-      this.measureEndPoint = null;
-      this.measureDistance = null;
-
-      // Set first point immediately on this click
-      this.measureStartPoint = {
-        x: event.clientX,
-        y: event.clientY,
-        ra: null,
-        dec: null
-      };
-
-      // Initialize mouse position for dashed line display
-      this.mouseX = event.clientX;
-      this.mouseY = event.clientY;
-
-      // If we have valid solution data, calculate celestial coordinates for this point
-      if (this.isValidSolutionMatrix()) {
-        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX, event.clientY);
-        if (coords) {
-          this.measureStartPoint.ra = coords.ra;
-          this.measureStartPoint.dec = coords.dec;
-        } else {
-          // If we can't calculate coordinates, set to null
-          this.measureStartPoint.ra = null;
-          this.measureStartPoint.dec = null;
-        }
-      } else {
-        // If we don't have a valid solution matrix, set to null
-        this.measureStartPoint.ra = null;
-        this.measureStartPoint.dec = null;
-      }
-      return;
+      // We have a completed measurement, start a new one
+      this._handleNewMeasurementClick(event);
+    } else if (!this.measureStartPoint) {
+      // No measurement started yet, set first point
+      this._handleFirstPointClick(event);
+    } else if (!this.measureEndPoint) {
+      // First point set, now add second point and complete measurement
+      this._handleSecondPointClick(event);
     }
+  }
 
-    // Set first point if needed
-    if (!this.measureStartPoint) {
-      // Set start point
-      this.measureStartPoint = {
-        x: event.clientX,
-        y: event.clientY,
-        ra: null,
-        dec: null
-      };
+  /**
+   * Handle a click when starting a new measurement (resetting previous one)
+   */
+  private _handleNewMeasurementClick(event: MouseEvent): void {
+    // Reset current measurement
+    this._resetCurrentMeasurement();
 
-      // Emit event to signal measurement has started
-      this.measurementStarted.emit();
+    // Set first point immediately on this click
+    this.measureStartPoint = {
+      x: event.clientX,
+      y: event.clientY,
+      ra: null,
+      dec: null
+    };
 
-      // Initialize mouse position for dashed line display
-      this.mouseX = event.clientX;
-      this.mouseY = event.clientY;
+    // Initialize mouse position for dashed line display
+    this.mouseX = event.clientX;
+    this.mouseY = event.clientY;
 
-      // If we have valid solution data, calculate celestial coordinates for this point
-      if (this.isValidSolutionMatrix()) {
-        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX, event.clientY);
-        if (coords) {
-          this.measureStartPoint.ra = coords.ra;
-          this.measureStartPoint.dec = coords.dec;
-        } else {
-          // If we can't calculate coordinates, set to null
-          this.measureStartPoint.ra = null;
-          this.measureStartPoint.dec = null;
-        }
-      } else {
-        // If we don't have a valid solution matrix, set to null
-        this.measureStartPoint.ra = null;
-        this.measureStartPoint.dec = null;
-      }
-    }
-    // Set second point if we already have first point
-    else if (!this.measureEndPoint) {
-      // Set end point (for two-click measurements)
-      this.measureEndPoint = {
-        x: event.clientX,
-        y: event.clientY,
-        ra: null,
-        dec: null
-      };
+    // Calculate celestial coordinates if possible
+    this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
+  }
 
-      // If we have valid solution data, calculate celestial coordinates for this point
-      if (this.isValidSolutionMatrix()) {
-        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX, event.clientY);
-        if (coords) {
-          this.measureEndPoint.ra = coords.ra;
-          this.measureEndPoint.dec = coords.dec;
-        } else {
-          // If we can't calculate coordinates, set to null
-          this.measureEndPoint.ra = null;
-          this.measureEndPoint.dec = null;
-        }
-      } else {
-        // If we don't have a valid solution matrix, set to null
-        this.measureEndPoint.ra = null;
-        this.measureEndPoint.dec = null;
-      }
+  /**
+   * Handle the first click of a measurement to set the starting point
+   */
+  private _handleFirstPointClick(event: MouseEvent): void {
+    // Set start point
+    this.measureStartPoint = {
+      x: event.clientX,
+      y: event.clientY,
+      ra: null,
+      dec: null
+    };
 
-      // Finalize the measurement
-      this._finalizeMeasurement();
-    }
+    // Emit event to signal measurement has started
+    this.measurementStarted.emit();
+
+    // Initialize mouse position for dashed line display
+    this.mouseX = event.clientX;
+    this.mouseY = event.clientY;
+
+    // Calculate celestial coordinates if possible
+    this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
+  }
+
+  /**
+   * Handle the second click of a measurement to set the ending point
+   */
+  private _handleSecondPointClick(event: MouseEvent): void {
+    // Set end point (for two-click measurements)
+    this._createEndPoint(event);
+
+    // Finalize the measurement
+    this._finalizeMeasurement();
   }
 
   /**
@@ -780,70 +784,112 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     event.preventDefault();
 
-    // Update the position of the point being dragged, maintaining the original offset
     if (this.isDraggingPoint === "start" && this.measureStartPoint) {
-      this.measureStartPoint.x = event.clientX + this.dragOffsetX;
-      this.measureStartPoint.y = event.clientY + this.dragOffsetY;
-
-      // Update celestial coordinates if we have valid plate solution data
-      if (this.isValidSolutionMatrix()) {
-        // Account for rotation when calculating coordinates during drag
-        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
-        if (coords) {
-          this.measureStartPoint.ra = coords.ra;
-          this.measureStartPoint.dec = coords.dec;
-        }
-      }
-
-      // Update the distance calculation
-      if (this.measureEndPoint) {
-        const pixelDistance = this.calculateDistance(
-          this.measureStartPoint.x,
-          this.measureStartPoint.y,
-          this.measureEndPoint.x,
-          this.measureEndPoint.y
-        );
-
-        // Format the distance based on whether we have valid celestial coordinates
-        if (this.isValidSolutionMatrix() && this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
-          this.measureDistance = this.formatAngularDistance(pixelDistance);
-        } else {
-          this.measureDistance = `${Math.round(pixelDistance)} px`;
-        }
-      }
+      this._updateDraggedStartPoint(event);
     } else if (this.isDraggingPoint === "end" && this.measureEndPoint) {
-      this.measureEndPoint.x = event.clientX + this.dragOffsetX;
-      this.measureEndPoint.y = event.clientY + this.dragOffsetY;
-
-      // Update celestial coordinates if we have valid plate solution data
-      if (this.isValidSolutionMatrix()) {
-        // Account for rotation when calculating coordinates during drag
-        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
-        if (coords) {
-          this.measureEndPoint.ra = coords.ra;
-          this.measureEndPoint.dec = coords.dec;
-        }
-      }
-
-      // Update the distance calculation
-      if (this.measureStartPoint) {
-        const pixelDistance = this.calculateDistance(
-          this.measureStartPoint.x,
-          this.measureStartPoint.y,
-          this.measureEndPoint.x,
-          this.measureEndPoint.y
-        );
-
-        // Format the distance based on whether we have valid celestial coordinates
-        if (this.isValidSolutionMatrix() && this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
-          this.measureDistance = this.formatAngularDistance(pixelDistance);
-        } else {
-          this.measureDistance = `${Math.round(pixelDistance)} px`;
-        }
-      }
+      this._updateDraggedEndPoint(event);
     }
 
     // Force label position calculation and change detection
+    this._updateLabelPositions();
+  }
+
+  /**
+   * Update the start point position during drag
+   */
+  private _updateDraggedStartPoint(event: MouseEvent): void {
+    if (!this.measureStartPoint) {
+      return;
+    }
+
+    // Update point position
+    this.measureStartPoint.x = event.clientX + this.dragOffsetX;
+    this.measureStartPoint.y = event.clientY + this.dragOffsetY;
+
+    // Update celestial coordinates
+    if (this.isValidSolutionMatrix()) {
+      // Account for rotation when calculating coordinates during drag
+      const coords = this.boundCalculateCoordinatesAtPoint(
+        event.clientX + this.dragOffsetX, 
+        event.clientY + this.dragOffsetY, 
+        true
+      );
+      
+      if (coords) {
+        this.measureStartPoint.ra = coords.ra;
+        this.measureStartPoint.dec = coords.dec;
+      }
+    }
+
+    // Recalculate distance if we have an end point
+    if (this.measureEndPoint) {
+      this._recalculateMeasurementDistance();
+    }
+  }
+
+  /**
+   * Update the end point position during drag
+   */
+  private _updateDraggedEndPoint(event: MouseEvent): void {
+    if (!this.measureEndPoint) {
+      return;
+    }
+
+    // Update point position
+    this.measureEndPoint.x = event.clientX + this.dragOffsetX;
+    this.measureEndPoint.y = event.clientY + this.dragOffsetY;
+
+    // Update celestial coordinates
+    if (this.isValidSolutionMatrix()) {
+      // Account for rotation when calculating coordinates during drag
+      const coords = this.boundCalculateCoordinatesAtPoint(
+        event.clientX + this.dragOffsetX, 
+        event.clientY + this.dragOffsetY, 
+        true
+      );
+      
+      if (coords) {
+        this.measureEndPoint.ra = coords.ra;
+        this.measureEndPoint.dec = coords.dec;
+      }
+    }
+
+    // Recalculate distance if we have a start point
+    if (this.measureStartPoint) {
+      this._recalculateMeasurementDistance();
+    }
+  }
+
+  /**
+   * Recalculate the measurement distance after point movement
+   */
+  private _recalculateMeasurementDistance(): void {
+    if (!this.measureStartPoint || !this.measureEndPoint) {
+      return;
+    }
+
+    // Calculate pixel distance
+    const pixelDistance = this.calculateDistance(
+      this.measureStartPoint.x,
+      this.measureStartPoint.y,
+      this.measureEndPoint.x,
+      this.measureEndPoint.y
+    );
+
+    // Format the distance based on whether we have valid celestial coordinates
+    if (this.isValidSolutionMatrix() && 
+        this.measureStartPoint.ra !== null && 
+        this.measureEndPoint.ra !== null) {
+      this.measureDistance = this.formatAngularDistance(pixelDistance);
+    } else {
+      this.measureDistance = `${Math.round(pixelDistance)} px`;
+    }
+  }
+
+  /**
+   * Update label positions for start and end points
+   */
+  private _updateLabelPositions(): void {
     if (this.measureStartPoint && this.measureEndPoint) {
       const startLabelX = this.calculateStartLabelX();
       const startLabelY = this.calculateStartLabelY();
@@ -954,45 +1000,92 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     event.preventDefault();
 
-    // Extract the index from the drag state string (prevStart-1 or prevEnd-1 -> 1)
+    // Get the measurement data and point type
+    const measurementInfo = this._getPreviousMeasurementInfo();
+    if (!measurementInfo) {
+      return;
+    }
+
+    const { measurement, index, pointType } = measurementInfo;
+    
+    // Update the appropriate point based on drag type
+    if (pointType === "start") {
+      this._updatePreviousMeasurementStartPoint(measurement, event);
+    } else if (pointType === "end") {
+      this._updatePreviousMeasurementEndPoint(measurement, event);
+    }
+
+    // Update common properties
+    this._updatePreviousMeasurementProperties(measurement);
+  }
+
+  /**
+   * Extract measurement info from the drag state
+   */
+  private _getPreviousMeasurementInfo(): { measurement: MeasurementData, index: number, pointType: string } | null {
     const parts = this.isDraggingPoint.split("-");
     const index = parseInt(parts[1], 10);
 
     if (isNaN(index) || index < 0 || index >= this.previousMeasurements.length) {
-      return;
+      return null;
     }
 
     const measurement = this.previousMeasurements[index];
+    const pointType = this.isDraggingPoint.startsWith("prevStart") ? "start" : "end";
+    
+    return { measurement, index, pointType };
+  }
 
-    // Update the position of the point being dragged, maintaining the offset
-    if (this.isDraggingPoint.startsWith("prevStart")) {
-      measurement.startX = event.clientX + this.dragOffsetX;
-      measurement.startY = event.clientY + this.dragOffsetY;
+  /**
+   * Update the start point of a previous measurement
+   */
+  private _updatePreviousMeasurementStartPoint(measurement: MeasurementData, event: MouseEvent): void {
+    measurement.startX = event.clientX + this.dragOffsetX;
+    measurement.startY = event.clientY + this.dragOffsetY;
 
-      // Update celestial coordinates if we have valid plate solution data
-      if (this.isValidSolutionMatrix()) {
-        // Account for rotation when calculating coordinates
-        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
-        if (coords) {
-          measurement.startRa = coords.ra;
-          measurement.startDec = coords.dec;
-        }
-      }
-    } else if (this.isDraggingPoint.startsWith("prevEnd")) {
-      measurement.endX = event.clientX + this.dragOffsetX;
-      measurement.endY = event.clientY + this.dragOffsetY;
-
-      // Update celestial coordinates if we have valid plate solution data
-      if (this.isValidSolutionMatrix()) {
-        // Account for rotation when calculating coordinates
-        const coords = this.boundCalculateCoordinatesAtPoint(event.clientX + this.dragOffsetX, event.clientY + this.dragOffsetY, true);
-        if (coords) {
-          measurement.endRa = coords.ra;
-          measurement.endDec = coords.dec;
-        }
+    // Update celestial coordinates if we have valid plate solution data
+    if (this.isValidSolutionMatrix()) {
+      // Account for rotation when calculating coordinates
+      const coords = this.boundCalculateCoordinatesAtPoint(
+        event.clientX + this.dragOffsetX, 
+        event.clientY + this.dragOffsetY, 
+        true
+      );
+      
+      if (coords) {
+        measurement.startRa = coords.ra;
+        measurement.startDec = coords.dec;
       }
     }
+  }
 
+  /**
+   * Update the end point of a previous measurement
+   */
+  private _updatePreviousMeasurementEndPoint(measurement: MeasurementData, event: MouseEvent): void {
+    measurement.endX = event.clientX + this.dragOffsetX;
+    measurement.endY = event.clientY + this.dragOffsetY;
+
+    // Update celestial coordinates if we have valid plate solution data
+    if (this.isValidSolutionMatrix()) {
+      // Account for rotation when calculating coordinates
+      const coords = this.boundCalculateCoordinatesAtPoint(
+        event.clientX + this.dragOffsetX, 
+        event.clientY + this.dragOffsetY, 
+        true
+      );
+      
+      if (coords) {
+        measurement.endRa = coords.ra;
+        measurement.endDec = coords.dec;
+      }
+    }
+  }
+
+  /**
+   * Update shared properties for a measurement after point movement
+   */
+  private _updatePreviousMeasurementProperties(measurement: MeasurementData): void {
     // Update distance calculation
     const pixelDistance = this.calculateDistance(
       measurement.startX,
