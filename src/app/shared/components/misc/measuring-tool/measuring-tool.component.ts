@@ -1284,6 +1284,28 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       () => {
         // Modal closed with confirm button
         this.previousMeasurements = [];
+
+        // Remove the measurements parameter from the URL without exiting fullscreen
+        if (this.isBrowser) {
+          try {
+            // Get the current URL and preserve the hash (important for fullscreen view)
+            const currentUrl = window.location.href;
+            const urlWithoutHash = currentUrl.split("#")[0];
+            const hash = currentUrl.includes("#") ? "#" + currentUrl.split("#")[1] : "";
+            
+            // Create a URL tree without the measurements parameter
+            const urlTree = this.router.createUrlTree([], {
+              relativeTo: this.activatedRoute,
+              queryParams: { measurements: null },
+              queryParamsHandling: "merge"
+            });
+            
+            // Update the browser URL without navigation
+            window.history.replaceState({}, '', window.location.origin + urlTree.toString() + hash);
+          } catch (error) {
+            console.error("Failed to update URL:", error);
+          }
+        }
       },
       () => {
         // Modal dismissed, do nothing
@@ -1806,6 +1828,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Exit measuring mode
    */
   exitMeasuring(): void {
+    this.previousMeasurements = [];
+    this.cdRef.markForCheck();
     this.exitMeasuringMode.emit();
   }
 
@@ -3636,7 +3660,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     } catch (e) {
       console.error("Failed to decode measurements:", e);
       this.popNotificationsService.error(
-        this.translateService.instant("Failed to load shared measurements from URL: {{message}}", 
+        this.translateService.instant("Failed to load shared measurements from URL: {{message}}",
           { message: "Could not decode measurement data. The URL may be incomplete or invalid." })
       );
       this.hideLoadingIndicator();
@@ -3669,7 +3693,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
           // Create a full measurement data object from the data
           let startX, startY, endX, endY;
-          
+
           // We'll try to use celestial coordinates if possible, but we need to handle the case
           // where the coordinates can't be accurately converted to pixels
 
@@ -3678,68 +3702,68 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
             imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img") as HTMLElement;
           }
-          
+
           // If we don't have a valid image element, we can't properly place the measurement
           if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
             console.warn("No valid image element found, cannot place measurement");
             return;
           }
-          
+
           // Get the center coordinates from the image element
           const centerX = imageElement.getBoundingClientRect().width / 2;
           const centerY = imageElement.getBoundingClientRect().height / 2;
-          
+
           // If we have valid celestial coordinates and a solution matrix, use them to position the measurement
-          if (this.isValidSolutionMatrix() && 
-              m.sRa !== null && m.sDec !== null && 
+          if (this.isValidSolutionMatrix() &&
+              m.sRa !== null && m.sDec !== null &&
               m.eRa !== null && m.eDec !== null) {
             try {
-              console.debug("Using celestial coordinates to position measurement:", 
+              console.debug("Using celestial coordinates to position measurement:",
                 `Start: RA=${m.sRa.toFixed(6)}, Dec=${m.sDec.toFixed(6)}`,
                 `End: RA=${m.eRa.toFixed(6)}, Dec=${m.eDec.toFixed(6)}`);
-              
+
               // Calculate pixel positions for start and end points using recursive search with the solution
               const startPoint = this.astroUtilsService.calculatePixelPositionFromCoordinates(
-                m.sRa, m.sDec, 
+                m.sRa, m.sDec,
                 this.advancedSolutionMatrix,
                 imageElement
               );
-              
+
               const endPoint = this.astroUtilsService.calculatePixelPositionFromCoordinates(
                 m.eRa, m.eDec,
                 this.advancedSolutionMatrix,
                 imageElement
               );
-              
-              console.debug("Calculated positions:", 
-                startPoint ? `Start(${startPoint.x.toFixed(1)}, ${startPoint.y.toFixed(1)})` : "Start(null)", 
+
+              console.debug("Calculated positions:",
+                startPoint ? `Start(${startPoint.x.toFixed(1)}, ${startPoint.y.toFixed(1)})` : "Start(null)",
                 endPoint ? `End(${endPoint.x.toFixed(1)}, ${endPoint.y.toFixed(1)})` : "End(null)");
-              
+
               // If we successfully calculated both positions, use them
               if (startPoint && endPoint) {
                 startX = startPoint.x;
                 startY = startPoint.y;
                 endX = endPoint.x;
                 endY = endPoint.y;
-                console.debug("Positioned measurement using celestial coordinates at:", 
+                console.debug("Positioned measurement using celestial coordinates at:",
                   `Start: (${startX.toFixed(1)}, ${startY.toFixed(1)})`,
                   `End: (${endX.toFixed(1)}, ${endY.toFixed(1)})`);
               } else {
                 // Fall back to using the angular distance to create a properly sized measurement
                 console.debug("Could not calculate pixel positions directly, using angular distance instead");
-                
+
                 // Get the angular distance between the points
                 const angularDistance = this.astroUtilsService.calculateAngularDistance(
                   m.sRa, m.sDec, m.eRa, m.eDec
                 );
-                
+
                 // Convert to arcseconds
                 const arcseconds = angularDistance * 3600;
                 console.debug(`Angular distance: ${angularDistance.toFixed(6)}° (${arcseconds.toFixed(2)} arcsec)`);
-                
+
                 // Create a line of the proper length (this preserves the measurement size)
                 let scale = 100; // Default fallback length in pixels
-                
+
                 // Get the pixel scale from the solution
                 if (this.solution) {
                   const pixscale = this.astroUtilsService.getPixelScale(this.solution);
@@ -3748,16 +3772,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
                     console.debug(`Using pixel scale: ${pixscale.toFixed(2)} arcsec/pixel, resulting length: ${scale.toFixed(1)} pixels`);
                   }
                 }
-                
+
                 // Create a horizontal line starting from center with the correct length
                 startX = centerX - scale / 2;
                 startY = centerY;
                 endX = centerX + scale / 2;
                 endY = centerY;
-                console.debug("Positioned measurement at center with correct angular size:", 
+                console.debug("Positioned measurement at center with correct angular size:",
                   `Center at (${centerX.toFixed(1)}, ${centerY.toFixed(1)}), length: ${scale.toFixed(1)} pixels`);
               }
-              
+
               console.log("Created measurement with proper angular size at center of image");
             } catch (e) {
               // Fall back to pixel positions if anything goes wrong
@@ -3775,7 +3799,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             endY = m.eY;
             console.log("Using pixel positions (no coordinates or solution matrix)");
           }
-          
+
           const measurement: MeasurementData = {
             startX,
             startY,
@@ -3814,7 +3838,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             this.translateService.instant("Loaded {{count}} shared measurements.", { count: this.previousMeasurements.length })
           );
         }
-        
+
         // Clear loading indicator
         this.hideLoadingIndicator();
 
@@ -3837,21 +3861,21 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         processAndLoadMeasurements();
         return;
       }
-      
+
       // If we've exceeded max retries, try to process anyway
       if (retryCount >= maxRetries) {
         console.warn(`Solution matrix not ready after ${maxRetries} attempts. Trying to load measurements anyway.`);
         processAndLoadMeasurements();
         return;
       }
-      
+
       // Otherwise retry after a delay, with exponential backoff
       console.log(`Solution matrix not ready, retry attempt ${retryCount + 1} of ${maxRetries}`);
       setTimeout(() => {
         attemptWithRetry(retryCount + 1, maxRetries);
       }, 300 * Math.pow(1.5, retryCount)); // Exponential backoff starting at 300ms
     };
-    
+
     // Start the retry process
     attemptWithRetry();
   }
@@ -3952,7 +3976,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   private isValidSolutionMatrix(): boolean {
     return this.astroUtilsService.isValidSolutionMatrix(this.advancedSolutionMatrix);
   }
-  
+
   /**
    * Shows the loading indicator with guaranteed visibility
    * This method ensures the loading indicator appears through multiple
@@ -3962,11 +3986,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Set the flag
     this.loadingUrlMeasurements = true;
     console.debug("Setting loadingUrlMeasurements=true via showLoadingIndicator()");
-    
+
     // Force immediate change detection
     this.cdRef.markForCheck();
     this.cdRef.detectChanges();
-    
+
     // As a fallback, also ensure the indicator stays visible for at least a minimum time
     // This helps users see it even if operations finish very quickly
     setTimeout(() => {
@@ -3978,19 +4002,19 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       }
     }, 100);
   }
-  
+
   /**
    * Hides the loading indicator with guaranteed update
    */
   private hideLoadingIndicator(): void {
     this.loadingUrlMeasurements = false;
     console.debug("Setting loadingUrlMeasurements=false via hideLoadingIndicator()");
-    
+
     // Force change detection
     this.cdRef.markForCheck();
     this.cdRef.detectChanges();
   }
-  
+
   /**
    * Calculate the center coordinates of the image using the solution information
    * Returns the center RA (in hours) and Dec (in degrees) if available
@@ -4007,28 +4031,28 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           return { ra, dec };
         }
       }
-      
+
       // If no direct center coordinates, try to calculate center from image dimensions
       if (this.isValidSolutionMatrix() && this.imageElement?.nativeElement) {
-        const imageElement = this.imageElement.nativeElement.querySelector(".ngxImageZoomFullContainer img") as HTMLElement || 
+        const imageElement = this.imageElement.nativeElement.querySelector(".ngxImageZoomFullContainer img") as HTMLElement ||
                             this.imageElement.nativeElement.querySelector(".ngxImageZoomContainer img") as HTMLElement;
-        
+
         if (imageElement) {
           const centerX = imageElement.getBoundingClientRect().width / 2;
           const centerY = imageElement.getBoundingClientRect().height / 2;
-          
+
           // Calculate coordinates at the center point
           const centerCoords = this.astroUtilsService.calculateCoordinatesAtPoint(
             centerX, centerY, this.advancedSolutionMatrix, imageElement
           );
-          
+
           if (centerCoords) {
             console.debug(`Calculated center coordinates: RA=${centerCoords.ra.toFixed(4)}h, Dec=${centerCoords.dec.toFixed(4)}°`);
             return centerCoords;
           }
         }
       }
-      
+
       // Fallback to reasonable defaults
       console.debug("Using default center coordinates: RA=12h, Dec=0°");
       return { ra: 12, dec: 0 }; // Default to 12h RA, 0° Dec
@@ -4037,7 +4061,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       return null;
     }
   }
-  
+
   /**
    * Calculate pixel position from celestial coordinates using the solution matrix
    * This is the inverse operation of calculateCoordinatesAtPoint
@@ -4047,22 +4071,22 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this.isValidSolutionMatrix()) {
       return null;
     }
-    
+
     try {
       // Find the image element to get its dimensions
       let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
       if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
         imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
       }
-      
+
       if (!imageElement) {
         console.warn("Image element not found for coordinate conversion");
         return null;
       }
-      
+
       // Get the pixel position from the astro utils service
       return this.astroUtilsService.calculatePixelPositionFromCoordinates(
-        ra, 
+        ra,
         dec,
         this.advancedSolutionMatrix,
         imageElement as HTMLElement

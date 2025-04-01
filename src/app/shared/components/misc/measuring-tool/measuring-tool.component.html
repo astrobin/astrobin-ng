@@ -26,7 +26,7 @@
     </div>
 
     <!-- Once both points are selected, calculate perpendicular position for labels -->
-    <div *ngIf="measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null" 
+    <div *ngIf="measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null"
          class="marker-coordinates visible draggable-label"
          [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').x"
          [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').y"
@@ -41,7 +41,7 @@
        (mousedown)="handlePointDragStart($event, 'end')">
     <div class="marker-dot"></div>
     <!-- End point coordinates perpendicular to line -->
-    <div *ngIf="measureEndPoint.ra !== null && measureEndPoint.dec !== null" 
+    <div *ngIf="measureEndPoint.ra !== null && measureEndPoint.dec !== null"
          class="marker-coordinates visible draggable-label"
          [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').x"
          [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').y"
@@ -370,11 +370,11 @@
       <div *ngIf="measurement.name" class="measurement-name">
         {{ measurement.name }}
       </div>
-      
+
       <!-- Display the distance measurement -->
       <span class="measurement-text">
         {{ measurement.distance }}
-        <fa-icon *ngIf="measurement.distance.endsWith('px')" 
+        <fa-icon *ngIf="measurement.distance.endsWith('px')"
                 icon="info-circle"
                 class="info-icon ms-1"
                 [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
@@ -382,12 +382,12 @@
                 placement="top">
         </fa-icon>
       </span>
-      
+
       <!-- Display notes if they exist -->
       <div *ngIf="measurement.notes" class="measurement-notes">
         <span class="notes-content">{{ measurement.notes }}</span>
-        <a *ngIf="measurement.notes" 
-           href="#" 
+        <a *ngIf="measurement.notes"
+           href="#"
            class="see-more-link"
            (click)="openFullNotesModal($event, measurement.notes)"
            (mousedown)="$event.stopPropagation()"
@@ -661,11 +661,11 @@
       <div *ngIf="newMeasurementName" class="measurement-name">
         {{ newMeasurementName }}
       </div>
-      
+
       <!-- Display the distance measurement -->
       <span class="measurement-text">
         {{ measureDistance }}
-        <fa-icon *ngIf="measureDistance && measureDistance.endsWith('px')" 
+        <fa-icon *ngIf="measureDistance && measureDistance.endsWith('px')"
                 icon="info-circle"
                 class="info-icon ms-1"
                 [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
@@ -673,12 +673,12 @@
                 placement="top">
         </fa-icon>
       </span>
-      
+
       <!-- Display notes if they exist -->
       <div *ngIf="saveMeasurementNotes" class="measurement-notes">
         <span class="notes-content">{{ saveMeasurementNotes }}</span>
-        <a *ngIf="saveMeasurementNotes" 
-           href="#" 
+        <a *ngIf="saveMeasurementNotes"
+           href="#"
            class="see-more-link"
            (click)="openFullNotesModal($event, saveMeasurementNotes)"
            (mousedown)="$event.stopPropagation()"
@@ -714,7 +714,7 @@
               [style.pointer-events]="'auto'">
         <fa-icon icon="save" [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Saving measurements requires valid advanced plate-solving data' | translate) : ('Save measurement' | translate)" container="body"></fa-icon>
       </button>
-      
+
       <button type="button" class="btn-shape-action export-button"
               (click)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? openExportMeasurementModal($event, {startX: measureStartPoint.x, startY: measureStartPoint.y, endX: measureEndPoint.x, endY: measureEndPoint.y, midX: 0, midY: 0, distance: measureDistance, timestamp: Date.now(), startRa: measureStartPoint.ra, startDec: measureStartPoint.dec, endRa: measureEndPoint.ra, endDec: measureEndPoint.dec, startLabelX: 0, startLabelY: 0, endLabelX: 0, endLabelY: 0, showCircle: showCurrentCircle, showRectangle: showCurrentRectangle}) : $event.stopPropagation()"
               (mousedown)="$event.stopPropagation()"
@@ -731,7 +731,7 @@
   <!-- Coordinate labels for previous measurements -->
   <div *ngFor="let measurement of previousMeasurements; let i = index">
     <!-- Start point coordinates with perpendicular positioning -->
-    <div *ngIf="measurement.startRa !== null && measurement.startDec !== null" 
+    <div *ngIf="measurement.startRa !== null && measurement.startDec !== null"
          class="measure-coord-label visible draggable-label"
          [style.left.px]="measurement.startLabelX"
          [style.top.px]="measurement.startLabelY"
@@ -740,7 +740,7 @@
     </div>
 
     <!-- End point coordinates with perpendicular positioning -->
-    <div *ngIf="measurement.endRa !== null && measurement.endDec !== null" 
+    <div *ngIf="measurement.endRa !== null && measurement.endDec !== null"
          class="measure-coord-label visible draggable-label"
          [style.left.px]="measurement.endLabelX"
          [style.top.px]="measurement.endLabelY"
@@ -758,7 +758,7 @@
       {{ 'Saved' | translate }}
     </button>
 
-    <button class="btn btn-sm btn-outline-light" 
+    <button class="btn btn-sm btn-outline-light"
             (click)="shareMeasurements()"
             *ngIf="previousMeasurements.length > 0"
             title="{{ 'Share measurements' | translate }}">
@@ -766,17 +766,17 @@
       {{ 'Share' | translate }}
     </button>
 
-    <button class="btn btn-sm btn-outline-light" 
+    <button class="btn btn-sm btn-outline-light"
             (click)="clearAllMeasurements()"
             *ngIf="previousMeasurements.length > 0">
       <fa-icon icon="trash" class="me-1"></fa-icon>
       {{ 'Clear all' | translate }}
     </button>
 
-    <button class="btn btn-sm btn-outline-light" 
+    <button class="btn btn-sm btn-outline-light"
             (click)="exitMeasuring()">
       <fa-icon icon="times" class="me-1"></fa-icon>
-      {{ 'Exit measuring' | translate }}
+      {{ 'Exit measuring tool' | translate }}
     </button>
   </div>
 
@@ -802,13 +802,13 @@
             <input type="text" class="form-control" [(ngModel)]="newMeasurementName"
                    placeholder="{{ 'Measurement name' | translate }}">
           </div>
-          
+
           <!-- Notes input -->
           <div class="input-group input-group-sm mb-2">
             <textarea class="form-control" [(ngModel)]="saveMeasurementNotes" rows="2"
                      placeholder="{{ 'Measurement notes (optional)' | translate }}"></textarea>
           </div>
-          
+
           <!-- Save button -->
           <div class="input-group input-group-sm mb-2">
             <button class="btn btn-primary"
