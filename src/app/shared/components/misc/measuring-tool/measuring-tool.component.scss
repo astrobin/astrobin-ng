@@ -743,14 +743,12 @@
     }
 
     .shape-overlay {
-      fill: rgba(0, 0, 0, 0.2);
+      fill: none;
       pointer-events: none;
-      transition: fill 0.2s ease;
     }
 
-    /* Brighten the overlay slightly when dragging to provide feedback */
     .isDragging .shape-overlay {
-      fill: rgba(0, 0, 0, 0.15);
+      fill: none;
     }
 
     /* Dimension labels for rectangles */
