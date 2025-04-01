@@ -42,7 +42,7 @@
     font-size: 1rem;
     color: var(--white);
     transform-origin: 50% 55%;
-    animation: spin-and-pulse 2s infinite;
+    animation: spin-and-pulse 2s steps(60) infinite;
     text-shadow: 0 0 8px rgba(255, 255, 255, .75);
   }
 }

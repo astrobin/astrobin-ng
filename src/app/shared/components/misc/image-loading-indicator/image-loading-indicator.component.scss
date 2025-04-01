@@ -29,7 +29,7 @@
         rgba(50, 50, 50, 0.3) 75%,
         rgba(50, 50, 50, 0.05) 100%
     );
-    animation: loading 1s infinite linear;
+    animation: loading 1s infinite steps(60);
     will-change: transform;
     z-index: 1;
     transform: translateX(0);
