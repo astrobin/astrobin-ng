@@ -101,6 +101,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   newMeasurementName: string = "";
   saveMeasurementNotes: string = "";
   savedMeasurements: MeasurementPresetInterface[] = [];
+  // Constants for magic values
+  private readonly DRAG_THRESHOLD = 10; // Minimum pixels to move before considering it a drag
+  private readonly COORD_UPDATE_DEBOUNCE_MS = 100; // Update coordinates at most every 100ms
+  private readonly MEASUREMENT_SHAPE_COOKIE_NAME = "astrobin-fullscreen-measurement-shape"; // Cookie name for shape preference
+  private readonly CLICK_PREVENTION_TIMEOUT_MS = 100; // Timeout to prevent accidental double clicks
+  private readonly RESIZE_DEBOUNCE_MS = 300; // Debounce time for window resize events
+
   // Mouse tracking
   mouseX: number | null = null;
   mouseY: number | null = null;
@@ -141,7 +148,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     new Subject<MouseEvent>();
   private _windowResize$ = isPlatformBrowser(this.platformId) ?
     fromEvent<UIEvent>(window, "resize").pipe(
-      debounceTime(300),
+      debounceTime(this.RESIZE_DEBOUNCE_MS),
       takeUntil(this.destroyed$)
     ) :
     new Subject<UIEvent>();
@@ -151,11 +158,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   // Track the previous window dimensions to detect significant changes
   private _prevWindowWidth: number = 0;
   private _prevWindowHeight: number = 0;
-  // Cookie name for storing shape preferences
-  private readonly MEASUREMENT_SHAPE_COOKIE_NAME = "astrobin-fullscreen-measurement-shape";
   // For debouncing coordinate updates during drag
   private _lastCoordUpdateTime = 0;
-  private _coordUpdateDebounceMs = 100; // Update at most every 100ms
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -507,14 +511,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   private _setupDragTracking(event: MouseEvent, startX: number, startY: number): void {
     // Keep track of whether we've moved enough to consider this a drag
     let hasDraggedEnough = false;
-    const dragThreshold = 10; // Minimum pixels to move before considering it a drag
 
     // Track if we're in a drag operation (don't set flag yet)
     let isDragging = false;
 
     // Add mouse move event listener to track the mouse position
     const mouseMoveHandler = (moveEvent: MouseEvent) => {
-      this._handleMeasurementDragMove(moveEvent, startX, startY, dragThreshold, hasDraggedEnough, isDragging);
+      this._handleMeasurementDragMove(moveEvent, startX, startY, this.DRAG_THRESHOLD, hasDraggedEnough, isDragging);
       
       // Update tracking variables based on movement
       const dx = moveEvent.clientX - startX;
@@ -522,7 +525,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       const distanceMoved = Math.sqrt(dx * dx + dy * dy);
 
       // If we've moved enough, consider this a drag operation
-      if (distanceMoved >= dragThreshold) {
+      if (distanceMoved >= this.DRAG_THRESHOLD) {
         hasDraggedEnough = true;
         isDragging = true;
 
@@ -545,7 +548,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Small delay to prevent accidental double measurements
       setTimeout(() => {
         this._preventNextClick = false;
-      }, 100);
+      }, this.CLICK_PREVENTION_TIMEOUT_MS);
     };
 
     // Add the event listeners
@@ -583,14 +586,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     const dx = upEvent.clientX - startX;
     const dy = upEvent.clientY - startY;
     const distanceMoved = Math.sqrt(dx * dx + dy * dy);
-    const dragThreshold = 10; // Minimum pixels to move before considering it a drag
 
     // Only complete the measurement if we dragged far enough
     if (hasDraggedEnough && isDragging) {
       this._createEndPoint(upEvent);
       this._finalizeMeasurement();
       this._preventNextClick = true;
-    } else if (distanceMoved < dragThreshold) {
+    } else if (distanceMoved < this.DRAG_THRESHOLD) {
       // If we didn't drag far enough, it's treated like a normal click
       // Keep the start point set (so it appears immediately) but don't set end point
       // The user can set the end point with a second click
@@ -1230,7 +1232,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Update coordinates in real-time during drag, with debouncing
     // Only update if we have valid solution data and enough time has passed since last update
     const now = Date.now();
-    if (this.isValidSolutionMatrix() && (now - this._lastCoordUpdateTime > this._coordUpdateDebounceMs)) {
+    if (this.isValidSolutionMatrix() && (now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS)) {
       this._lastCoordUpdateTime = now;
 
       // Run in ngZone to ensure Angular detects the changes
@@ -1389,7 +1391,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Update coordinates in real-time during drag, with debouncing
     // Only update if we have solution data and enough time has passed since last update
     const now = Date.now();
-    if (this.advancedSolutionMatrix && (now - this._lastCoordUpdateTime > this._coordUpdateDebounceMs)) {
+    if (this.advancedSolutionMatrix && (now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS)) {
       this._lastCoordUpdateTime = now;
 
       // Run in ngZone to ensure Angular detects the changes
