@@ -5,7 +5,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { filter, map, take } from "rxjs/operators";
 import { forkJoin, Observable } from "rxjs";
@@ -42,7 +42,7 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
     );
   }
 
-  initFields(key: SearchAutoCompleteType, supportsExactMatch = false): void {
+  initFields(key: SearchAutoCompleteType, supportsExactMatch = false, supportsUsageType = false): void {
     this.editFields = [
       {
         key,
@@ -79,13 +79,56 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
             }
           },
           {
+            key: "usageType",
+            type: "ng-select",
+            wrappers: ["default-wrapper"],
+            hide: !supportsUsageType,
+            props: {
+              label: this.translateService.instant("Usage type"),
+              options: [
+                {
+                  value: EquipmentItemUsageType.IMAGING,
+                  label: this.translateService.instant("Imaging")
+                },
+                {
+                  value: EquipmentItemUsageType.GUIDING,
+                  label: this.translateService.instant("Guiding")
+                },
+                {
+                  value: EquipmentItemUsageType.ANY,
+                  label: this.translateService.instant("Any")
+                }
+              ],
+              searchable: false,
+              clearable: false,
+              required: true,
+              hideRequiredMarker: true
+            },
+            hooks: {
+              onInit: (field: FormlyFieldConfig) => {
+                if (this.value === null || this.value.usageType === undefined) {
+                  field.formControl.setValue(EquipmentItemUsageType.IMAGING, { emitEvent: false });
+                }
+              }
+            }
+          },
+          {
             key: "exactMatch",
             type: "toggle",
             wrappers: ["default-wrapper"],
             expressions: {
               className: () => {
                 let value = this.editForm.get(key).value.value;
-                return !value || value?.length > 1 || value?.length === 0 || !supportsExactMatch ? "d-none" : "";
+                return (
+                  !value ||
+                  value?.length > 1 ||
+                  value?.length === 0 ||
+                  !supportsExactMatch ||
+                  (
+                    supportsUsageType &&
+                    this.editForm.get(key).value.usageType !== EquipmentItemUsageType.IMAGING
+                  )
+                ) ? "d-none" : "";
               }
             },
             props: {
@@ -102,13 +145,19 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
     ];
   }
 
-  readonly valueTransformer: (value: { value: EquipmentItem["id"][], exactMatch: boolean, matchType: MatchType }) => Observable<{
+  readonly valueTransformer: (value: {
+    value: EquipmentItem["id"][],
+    exactMatch: boolean,
+    matchType: MatchType,
+    usageType?: boolean
+  }) => Observable<{
     value: {
       id: EquipmentItem["id"];
       name: string
     }[],
     exactMatch: boolean,
-    matchType: MatchType
+    matchType: MatchType,
+    usageType?: boolean
   }> = value => {
     return new Observable<{
       value: {
@@ -116,7 +165,8 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
         name: string
       }[],
       exactMatch: boolean,
-      matchType: MatchType
+      matchType: MatchType,
+      usageType?: boolean
     }>(observer => {
       const observables$ = value.value.map((id: EquipmentItem["id"]) =>
         this.actions$.pipe(
@@ -136,7 +186,8 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
             ) + " " + equipmentItem.name
           })),
           exactMatch: value.exactMatch,
-          matchType: value.matchType
+          matchType: value.matchType,
+          usageType: value.usageType
         };
         observer.next(newValue);
         observer.complete();
