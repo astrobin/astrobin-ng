@@ -388,3 +388,66 @@ export class CalculateLabelPositionPipe implements PipeTransform {
     return { x: newX, y: newY };
   }
 }
+
+@Pipe({
+  name: "isOutsideImageBoundaries",
+  pure: true
+})
+export class IsOutsideImageBoundariesPipe implements PipeTransform {
+  transform(
+    measurement: { startX: number; startY: number; endX: number; endY: number; } | 
+              { x: number; y: number; } | 
+              { isCurrentMeasurement: boolean; },
+    imageElement: HTMLElement | null,
+    startPoint?: { x: number; y: number; } | null,
+    endPoint?: { x: number; y: number; } | null
+  ): boolean {
+    // If no image element, we can't check boundaries
+    if (!imageElement) {
+      return false;
+    }
+
+    const imageRect = imageElement.getBoundingClientRect();
+
+    // Case 1: Checking a measurement object with startX, startY, endX, endY properties
+    if ('startX' in measurement && 'endX' in measurement) {
+      return (
+        measurement.startX < imageRect.left ||
+        measurement.startX > imageRect.right ||
+        measurement.startY < imageRect.top ||
+        measurement.startY > imageRect.bottom ||
+        measurement.endX < imageRect.left ||
+        measurement.endX > imageRect.right ||
+        measurement.endY < imageRect.top ||
+        measurement.endY > imageRect.bottom
+      );
+    }
+    
+    // Case 2: Checking a single point with x, y properties
+    if ('x' in measurement && 'y' in measurement) {
+      return (
+        measurement.x < imageRect.left ||
+        measurement.x > imageRect.right ||
+        measurement.y < imageRect.top ||
+        measurement.y > imageRect.bottom
+      );
+    }
+    
+    // Case 3: Current measurement check (using startPoint and endPoint)
+    if ('isCurrentMeasurement' in measurement && measurement.isCurrentMeasurement && startPoint && endPoint) {
+      return (
+        startPoint.x < imageRect.left ||
+        startPoint.x > imageRect.right ||
+        startPoint.y < imageRect.top ||
+        startPoint.y > imageRect.bottom ||
+        endPoint.x < imageRect.left ||
+        endPoint.x > imageRect.right ||
+        endPoint.y < imageRect.top ||
+        endPoint.y > imageRect.bottom
+      );
+    }
+    
+    // Default case, no valid parameters provided
+    return false;
+  }
+}

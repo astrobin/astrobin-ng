@@ -13,7 +13,7 @@ import { MeasurementPresetModule } from "./measurement-preset.module";
 import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-measurement-modal.component";
 import { ExportMeasurementModalComponent } from "./export-measurement-modal/export-measurement-modal.component";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
-import { CalculateDistancePipe, CalculateLabelPositionPipe, FormatCoordinatesCompactPipe, GetCelestialDistancePipe, GetMidpointPipe, MathAbsPipe, MathMaxPipe, MathMinPipe } from "./measuring-tool-pipes";
+import { CalculateDistancePipe, CalculateLabelPositionPipe, FormatCoordinatesCompactPipe, GetCelestialDistancePipe, GetMidpointPipe, IsOutsideImageBoundariesPipe, MathAbsPipe, MathMaxPipe, MathMinPipe } from "./measuring-tool-pipes";
 
 @NgModule({
   declarations: [
@@ -28,7 +28,8 @@ import { CalculateDistancePipe, CalculateLabelPositionPipe, FormatCoordinatesCom
     MathMaxPipe,
     MathAbsPipe,
     GetMidpointPipe,
-    CalculateLabelPositionPipe
+    CalculateLabelPositionPipe,
+    IsOutsideImageBoundariesPipe
   ],
   imports: [
     CommonModule,

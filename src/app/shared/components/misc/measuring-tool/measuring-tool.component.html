@@ -21,8 +21,9 @@
     <div class="marker-dot"></div>
     <!-- Start point coordinates with extended directional positioning -->
     <div *ngIf="!measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null" class="marker-coordinates initial-position visible"
-         style="position: absolute; top: -24px; left: -24px; transform: translateX(-50%);">
-      <small>{{ measureStartPoint.ra | formatCoordinatesCompact : measureStartPoint.dec }}</small>
+         style="position: absolute; top: -24px; left: -24px; transform: translateX(-50%);"
+         [class.outside-boundaries]="_checkPointOutsideBoundaries(measureStartPoint.x, measureStartPoint.y)">
+      <small>{{ _checkPointOutsideBoundaries(measureStartPoint.x, measureStartPoint.y) ? 'n/a' : (measureStartPoint.ra | formatCoordinatesCompact : measureStartPoint.dec) }}</small>
     </div>
 
     <!-- Once both points are selected, calculate perpendicular position for labels -->
@@ -30,8 +31,9 @@
          class="marker-coordinates visible draggable-label"
          [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').x"
          [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').y"
+         [class.outside-boundaries]="_checkPointOutsideBoundaries(measureStartPoint.x, measureStartPoint.y)"
          (mousedown)="handlePointDragStart($event, 'start')">
-      <small>{{ measureStartPoint.ra | formatCoordinatesCompact : measureStartPoint.dec }}</small>
+      <small>{{ _checkPointOutsideBoundaries(measureStartPoint.x, measureStartPoint.y) ? 'n/a' : (measureStartPoint.ra | formatCoordinatesCompact : measureStartPoint.dec) }}</small>
     </div>
   </div>
 
@@ -45,8 +47,9 @@
          class="marker-coordinates visible draggable-label"
          [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').x"
          [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').y"
+         [class.outside-boundaries]="_checkPointOutsideBoundaries(measureEndPoint.x, measureEndPoint.y)"
          (mousedown)="handlePointDragStart($event, 'end')">
-      <small>{{ measureEndPoint.ra | formatCoordinatesCompact : measureEndPoint.dec }}</small>
+      <small>{{ _checkPointOutsideBoundaries(measureEndPoint.x, measureEndPoint.y) ? 'n/a' : (measureEndPoint.ra | formatCoordinatesCompact : measureEndPoint.dec) }}</small>
     </div>
   </div>
 
@@ -199,7 +202,7 @@
         [attr.r]="(measurement.startX | calculateDistance:measurement.startY:measurement.endX:measurement.endY) / 2"
         class="measure-shape circle"
         [class.affected-by-resize]="measurementsAffectedByResize"
-        [class.outside-boundaries]="isMeasurementOutsideImageBoundaries(measurement)">
+        [class.outside-boundaries]="measurement.outOfBounds">
       </circle>
     </svg>
 
@@ -241,7 +244,7 @@
           [attr.height]="measurement.endY - measurement.startY | mathAbs"
           class="measure-shape rectangle"
           [class.affected-by-resize]="measurementsAffectedByResize"
-          [class.outside-boundaries]="isMeasurementOutsideImageBoundaries(measurement)">
+          [class.outside-boundaries]="measurement.outOfBounds">
         </rect>
 
         <!-- Width dimension label (inside rotated group) -->
@@ -362,7 +365,7 @@
   <div *ngFor="let measurement of previousMeasurements; let i = index"
        class="measure-distance previous-measurement"
        [class.affected-by-resize]="measurementsAffectedByResize"
-       [class.outside-boundaries]="isMeasurementOutsideImageBoundaries(measurement)"
+       [class.outside-boundaries]="measurement.outOfBounds"
        [style.left.px]="measurement.midX"
        [style.top.px]="measurement.midY"
        (mouseenter)="setMouseOverUIElement(true)"
@@ -501,8 +504,7 @@
       [attr.cy]="measureStartPoint.y | getMidpoint:measureEndPoint.y"
       [attr.r]="(measureStartPoint.x | calculateDistance:measureStartPoint.y:measureEndPoint.x:measureEndPoint.y) / 2"
       class="measure-shape circle current"
-      [class.outside-boundaries]="isPointOutsideImageBoundaries(measureStartPoint.x, measureStartPoint.y) || 
-                                isPointOutsideImageBoundaries(measureEndPoint.x, measureEndPoint.y)">
+      [class.outside-boundaries]="isCurrentMeasurementOutsideBoundaries">
     </circle>
   </svg>
 
@@ -544,8 +546,7 @@
         [attr.width]="measureEndPoint.x - measureStartPoint.x | mathAbs"
         [attr.height]="measureEndPoint.y - measureStartPoint.y | mathAbs"
         class="measure-shape rectangle current"
-        [class.outside-boundaries]="isPointOutsideImageBoundaries(measureStartPoint.x, measureStartPoint.y) || 
-                                  isPointOutsideImageBoundaries(measureEndPoint.x, measureEndPoint.y)">
+        [class.outside-boundaries]="isCurrentMeasurementOutsideBoundaries">
       </rect>
 
       <!-- Width dimension label -->
@@ -661,8 +662,7 @@
 
   <!-- Current measurement display -->
   <div *ngIf="measureDistance" class="measure-distance current-measurement"
-       [class.outside-boundaries]="isPointOutsideImageBoundaries(measureStartPoint.x, measureStartPoint.y) || 
-                               isPointOutsideImageBoundaries(measureEndPoint.x, measureEndPoint.y)"
+       [class.outside-boundaries]="isCurrentMeasurementOutsideBoundaries"
        [style.left.px]="(measureStartPoint.x + measureEndPoint.x) / 2"
        [style.top.px]="(measureStartPoint.y + measureEndPoint.y) / 2"
        (mouseenter)="setMouseOverUIElement(true)"
@@ -750,8 +750,9 @@
          class="measure-coord-label visible draggable-label"
          [style.left.px]="measurement.startLabelX"
          [style.top.px]="measurement.startLabelY"
+         [class.outside-boundaries]="_checkPointOutsideBoundaries(measurement.startX, measurement.startY)"
          (mousedown)="handlePreviousMeasurementDrag($event, i, 'start')">
-      <small>{{ measurement.startRa | formatCoordinatesCompact:measurement.startDec }}</small>
+      <small>{{ _checkPointOutsideBoundaries(measurement.startX, measurement.startY) ? 'n/a' : (measurement.startRa | formatCoordinatesCompact:measurement.startDec) }}</small>
     </div>
 
     <!-- End point coordinates with perpendicular positioning -->
@@ -759,8 +760,9 @@
          class="measure-coord-label visible draggable-label"
          [style.left.px]="measurement.endLabelX"
          [style.top.px]="measurement.endLabelY"
+         [class.outside-boundaries]="_checkPointOutsideBoundaries(measurement.endX, measurement.endY)"
          (mousedown)="handlePreviousMeasurementDrag($event, i, 'end')">
-      <small>{{ measurement.endRa | formatCoordinatesCompact:measurement.endDec }}</small>
+      <small>{{ _checkPointOutsideBoundaries(measurement.endX, measurement.endY) ? 'n/a' : (measurement.endRa | formatCoordinatesCompact:measurement.endDec) }}</small>
     </div>
   </div>
 
@@ -898,10 +900,7 @@
 <!-- Boundary warning template -->
 <ng-template #boundaryWarningTpl let-data>
   <div class="boundary-warning" 
-       *ngIf="data.isCurrentMeasurement ? 
-              (isPointOutsideImageBoundaries(measureStartPoint.x, measureStartPoint.y) || 
-               isPointOutsideImageBoundaries(measureEndPoint.x, measureEndPoint.y)) : 
-              isMeasurementOutsideImageBoundaries(data)">
+       *ngIf="data.isCurrentMeasurement ? isCurrentMeasurementOutsideBoundaries : data.outOfBounds">
     {{ 'Coordinates will not work outside the image\'s boundaries' | translate }}
   </div>
 </ng-template>

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { CookieService } from "ngx-cookie";
 import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
 import { AstroUtilsService } from "@core/services/astro-utils/astro-utils.service";
@@ -65,6 +65,7 @@ export interface MeasurementData {
   length?: number;                  // Length in pixels for recreating the measurement
   name?: string;                    // Name for the measurement
   notes?: string;                   // Optional user notes about the measurement
+  outOfBounds?: boolean;            // Flag indicating if any point is outside image boundaries
 }
 
 export interface SolutionMatrix {
@@ -79,7 +80,7 @@ export interface SolutionMatrix {
   templateUrl: "./measuring-tool.component.html",
   styleUrls: ["./measuring-tool.component.scss"]
 })
-export class MeasuringToolComponent extends BaseComponentDirective implements OnInit, OnDestroy {
+export class MeasuringToolComponent extends BaseComponentDirective implements OnInit, OnDestroy, AfterViewInit {
   @Input() active: boolean = false;
   @Input() imageElement: ElementRef<HTMLElement>;
   @Input() advancedSolutionMatrix: SolutionMatrix | null = null;
@@ -193,10 +194,15 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       return null;
     }
 
-    // Find the image element
-    let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
+    // Use the cached image element
+    let imageElement = this.cachedImageElement;
+    
+    // Fallback if cached element isn't available yet
     if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
-      imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+      imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
+      if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
+        imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+      }
     }
 
     if (!imageElement) {
@@ -237,6 +243,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     ).subscribe(presets => {
       this.savedMeasurements = presets;
     });
+
+    // We'll initialize image element in ngAfterViewInit
 
     // Check for shared measurements in the URL when component initializes
     if (this.isBrowser) {
@@ -422,6 +430,18 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
   }
 
+  ngAfterViewInit(): void {
+    if (this.isBrowser) {
+      // Initialize the cached image element after a delay to ensure DOM is ready
+      this.windowRefService.utilsService.delay(100).subscribe(() => {
+        this.cachedImageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+        
+        // After image element is cached, update boundary status
+        this.updateBoundaryStatus();
+      });
+    }
+  }
+  
   ngOnDestroy(): void {
     if (this.isBrowser) {
       // Complete all drag-related subjects
@@ -596,6 +616,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this._updateDraggedEndPoint(event);
     }
 
+    // Update boundary status during drag
+    this.updateBoundaryStatus();
+
     // Force label position calculation and change detection
     this._updateLabelPositions();
   }
@@ -717,6 +740,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Update common properties
     this._updatePreviousMeasurementProperties(measurement);
+    
+    // Update boundary status during drag in real-time
+    this.updateBoundaryStatus();
   }
 
   /**
@@ -726,6 +752,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this._dragInProgress) {
       return;
     }
+    
+    // Update boundary status after dragging
+    this.updateBoundaryStatus();
 
     event.preventDefault();
 
@@ -822,6 +851,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Update the drag start point for the next move event
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
+    
+    // Update boundary status during drag in real-time
+    this.updateBoundaryStatus();
 
     // Update coordinates in real-time during drag, with debouncing
     // Only update if we have valid solution data and enough time has passed since last update
@@ -871,6 +903,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this._dragInProgress) {
       return;
     }
+    
+    // Update boundary status after dragging
+    this.updateBoundaryStatus();
 
     event.preventDefault();
 
@@ -979,6 +1014,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Update the drag start point for the next move event
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
+    
+    // Update boundary status during drag in real-time
+    this.updateBoundaryStatus();
 
     // Update coordinates in real-time during drag, with debouncing
     // Only update if we have solution data and enough time has passed since last update
@@ -1037,6 +1075,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this._dragInProgress) {
       return;
     }
+    
+    // Update boundary status after dragging
+    this.updateBoundaryStatus();
 
     event.preventDefault();
 
@@ -1152,9 +1193,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.saveMeasurementShapePreference();
 
       // Force change detection cycle with a meaningful operation
-      setTimeout(() => {
+      this.windowRefService.utilsService.delay(0).subscribe(() => {
         console.log("Circle visualization toggled for measurement", index, ":", measurement.showCircle);
-      }, 0);
+      });
     }
   }
 
@@ -1192,9 +1233,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.saveMeasurementShapePreference();
 
       // Force change detection cycle with a meaningful operation
-      setTimeout(() => {
+      this.windowRefService.utilsService.delay(0).subscribe(() => {
         console.log("Rectangle visualization toggled for measurement", index, ":", measurement.showRectangle);
-      }, 0);
+      });
     }
   }
 
@@ -1223,9 +1264,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.saveMeasurementShapePreference();
 
     // Force change detection cycle with a meaningful operation
-    setTimeout(() => {
+    this.windowRefService.utilsService.delay(0).subscribe(() => {
       console.log("Current circle visualization toggled:", this.showCurrentCircle);
-    }, 0);
+    });
   }
 
   /**
@@ -1253,9 +1294,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.saveMeasurementShapePreference();
 
     // Force change detection cycle with a meaningful operation
-    setTimeout(() => {
+    this.windowRefService.utilsService.delay(0).subscribe(() => {
       console.log("Current rectangle visualization toggled:", this.showCurrentRectangle);
-    }, 0);
+    });
   }
 
   /**
@@ -1342,6 +1383,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Modal closed with confirm button
         // Remove the measurement
         this.previousMeasurements.splice(index, 1);
+        
+        // Update boundary status after deletion
+        this.updateBoundaryStatus();
       },
       () => {
         // Modal dismissed, do nothing
@@ -1832,20 +1876,22 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.exitMeasuringMode.emit();
   }
   
+  /** The cached image element for boundary checking */
+  cachedImageElement: HTMLElement | null = null;
+  
+  /** Flag for current measurement boundary check */
+  isCurrentMeasurementOutsideBoundaries: boolean = false;
+  
   /**
    * Check if a point is outside the image boundaries
+   * The method is prefixed with underscore but is still used directly in template
    */
-  isPointOutsideImageBoundaries(x: number, y: number): boolean {
-    if (!this.isBrowser) {
+  _checkPointOutsideBoundaries(x: number, y: number): boolean {
+    if (!this.isBrowser || !this.cachedImageElement) {
       return false;
     }
 
-    const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-    if (!imageElement) {
-      return false;
-    }
-
-    const imageRect = imageElement.getBoundingClientRect();
+    const imageRect = this.cachedImageElement.getBoundingClientRect();
     return (
       x < imageRect.left ||
       x > imageRect.right ||
@@ -1853,14 +1899,40 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       y > imageRect.bottom
     );
   }
-
+  
   /**
-   * Check if any point of a measurement is outside the image boundaries
+   * Public method to check if a point is outside the image boundaries
+   * Used by the template for current measurements
    */
-  isMeasurementOutsideImageBoundaries(measurement: MeasurementData): boolean {
-    return this.isPointOutsideImageBoundaries(measurement.startX, measurement.startY) ||
-           this.isPointOutsideImageBoundaries(measurement.endX, measurement.endY);
+  isPointOutsideImageBoundaries(x: number, y: number): boolean {
+    return this._checkPointOutsideBoundaries(x, y);
   }
+  
+  /**
+   * Updates boundary status flags for all measurements
+   * Call this whenever points move, not during every change detection cycle
+   */
+  updateBoundaryStatus(): void {
+    // Check current measurement
+    if (this.measureStartPoint && this.measureEndPoint) {
+      this.isCurrentMeasurementOutsideBoundaries = 
+        this._checkPointOutsideBoundaries(this.measureStartPoint.x, this.measureStartPoint.y) ||
+        this._checkPointOutsideBoundaries(this.measureEndPoint.x, this.measureEndPoint.y);
+    } else {
+      this.isCurrentMeasurementOutsideBoundaries = false;
+    }
+    
+    // Check each previous measurement and update its outOfBounds property
+    this.previousMeasurements.forEach(m => {
+      m.outOfBounds = 
+        this._checkPointOutsideBoundaries(m.startX, m.startY) ||
+        this._checkPointOutsideBoundaries(m.endX, m.endY);
+    });
+    
+    // Ensure change detection runs
+    this.cdRef.markForCheck();
+  }
+  
 
   /**
    * Share measurements by encoding them in URL
@@ -3237,6 +3309,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate celestial coordinates if possible
     this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
+    
+    // Update boundary status after adding the start point
+    this.updateBoundaryStatus();
   }
 
   /**
@@ -3374,6 +3449,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate celestial coordinates if possible
     this._updatePointCelestialCoordinates(this.measureEndPoint, event.clientX, event.clientY);
+    
+    // Update boundary status after adding the end point
+    this.updateBoundaryStatus();
   }
 
   /**
@@ -3397,6 +3475,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate celestial coordinates if possible
     this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
+    
+    // Update boundary status after adding the start point
+    this.updateBoundaryStatus();
   }
 
   /**
@@ -3420,6 +3501,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate celestial coordinates if possible
     this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
+    
+    // Update boundary status after adding the start point
+    this.updateBoundaryStatus();
   }
 
   /**
@@ -3431,6 +3515,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Finalize the measurement
     this._finalizeMeasurement();
+    
+    // Note: We don't need to call updateBoundaryStatus() here because
+    // _finalizeMeasurement will already call it after adding to previousMeasurements
   }
 
   /**
@@ -4022,14 +4109,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // As a fallback, also ensure the indicator stays visible for at least a minimum time
     // This helps users see it even if operations finish very quickly
-    setTimeout(() => {
+    this.windowRefService.utilsService.delay(100).subscribe(() => {
       // Ensure the indicator is still shown by forcing another change detection cycle
       if (this.loadingUrlMeasurements) {
         console.debug("Refreshing loading indicator visibility");
         this.cdRef.markForCheck();
         this.cdRef.detectChanges();
       }
-    }, 100);
+    });
   }
 
   /**
@@ -4183,6 +4270,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Calculate label positions
     this.updateCoordinateLabelPositions(measurementData);
 
+    // Check if the measurement is outside boundaries before adding it
+    measurementData.outOfBounds = 
+      this._checkPointOutsideBoundaries(measurementData.startX, measurementData.startY) ||
+      this._checkPointOutsideBoundaries(measurementData.endX, measurementData.endY);
+
     // Save measurement to previous list
     this.previousMeasurements.push(measurementData);
 
@@ -4201,6 +4293,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Keep the shape preference settings so they apply to the next measurement
     this.showCurrentCircle = currentCircle;
     this.showCurrentRectangle = currentRectangle;
+
+    // Update boundary status for all measurements
+    this.updateBoundaryStatus();
 
     // Emit the completed measurement
     this.measurementComplete.emit(measurementData);
