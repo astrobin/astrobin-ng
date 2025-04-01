@@ -132,7 +132,7 @@
     border-radius: 6px;
     color: white;
     pointer-events: all;
-    z-index: 4; /* Lower z-index so it doesn't appear in front of buttons */
+    z-index: 10;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 
     .panel-header {
