@@ -181,7 +181,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
   // Bound methods for use in pipes
   public boundCalculateCoordinatesAtPoint = (x: number, y: number, accountForRotation: boolean = false) => {
-    if (!this.isValidSolutionMatrix()) {
+    // Never attempt to access DOM in server-side rendering
+    if (!this.isBrowser || !this.isValidSolutionMatrix()) {
       return null;
     }
 
@@ -214,8 +215,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.loadMeasurementShapePreference();
-
+    // Always handle store subscriptions first as they're SSR-safe
     // Subscribe to state changes
     this.store$.pipe(
       select(selectShowSavedMeasurements),
@@ -240,6 +240,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.store$.dispatch(new LoadMeasurementPresets({ userId: user.id }));
       }
     });
+    
+    // Load browser-specific preferences
+    this.loadMeasurementShapePreference();
 
     // Only set up RxJS streams when in browser environment
     if (this.isBrowser) {
@@ -433,6 +436,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Validates that the event is within the image boundaries
    */
   private _validateMeasurementArea(event: MouseEvent): boolean {
+    // Ensure we're in browser environment before accessing DOM
+    if (!this.isBrowser) {
+      return false;
+    }
+    
     // Get the offset of the image element
     const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
     if (!imageElement) {
@@ -509,6 +517,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Setup drag tracking and handlers for measurement creation
    */
   private _setupDragTracking(event: MouseEvent, startX: number, startY: number): void {
+    // Only set up DOM listeners in browser environment
+    if (!this.isBrowser) {
+      return;
+    }
+    
     // Keep track of whether we've moved enough to consider this a drag
     let hasDraggedEnough = false;
 
@@ -3094,6 +3107,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Shows a warning if there are measurements visible
    */
   handleWindowResize(event: UIEvent): void {
+    // Ensure we're in browser environment before accessing window properties
     if (!this.isBrowser) {
       return;
     }
