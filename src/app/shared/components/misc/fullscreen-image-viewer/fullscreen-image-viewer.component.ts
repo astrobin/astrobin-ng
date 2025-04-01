@@ -356,6 +356,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     );
   }
 
+  protected get hasAdvancedSolutionMatrix(): boolean {
+    return !!this.advancedSolutionMatrix && !!this.advancedSolutionMatrix.matrixRect;
+  }
+
   @HostListener("document:click", ["$event"])
   onDocumentClick(event: MouseEvent): void {
     if (!this.isBrowser) {
@@ -478,7 +482,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             // On desktop, proceed with normal activation
             // Use a more robust approach to wait for the image zoom to be ready
             this._waitForImageZoomAndActivateMeasuring();
-            
+
             // Also log for debugging purposes
             console.debug('Detected measurements in URL, attempting to activate measuring tool');
           }
@@ -495,7 +499,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Start with an initial delay to allow image to load
     setTimeout(() => {
       console.debug('Checking if zoom component is ready for measuring tool activation');
-      
+
       // First check if zoom component is ready
       if (this._isZoomComponentReady()) {
         console.debug('Zoom component is ready, activating measuring tool');
@@ -507,14 +511,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         let attempts = 0;
         const maxAttempts = 8; // Increased from 5 to 8 to allow more chances for initialization
         const baseDelay = 300; // Base delay in ms
-        
+
         const checkInterval = setInterval(() => {
           attempts++;
-          
+
           // Calculate delay with exponential backoff
           const currentDelay = baseDelay * Math.pow(1.5, attempts - 1);
           console.debug(`Retry attempt ${attempts}/${maxAttempts} (delay: ${currentDelay.toFixed(0)}ms)`);
-          
+
           if (this._isZoomComponentReady()) {
             clearInterval(checkInterval);
             console.debug('Zoom component ready after retry, activating measuring tool');
@@ -547,7 +551,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * Check if the image zoom component is fully initialized and ready for use
    */
   private _isZoomComponentReady(): boolean {
-    return this.ngxImageZoom !== undefined && 
+    return this.ngxImageZoom !== undefined &&
            this.ngxImageZoom.zoomService !== undefined &&
            this.ngxImageZoom.zoomService.minZoomRatio !== undefined;
   }
@@ -868,7 +872,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     // Do nothing if the component is not being shown, in measuring mode, or if the image doesn't have an advanced solution
-    if (!this.show || this.isMeasuringMode || !this.hasAdvancedSolution) {
+    if (!this.show || !this.hasAdvancedSolution || !this.hasAdvancedSolutionMatrix) {
+      this.popNotificationsService.info(
+        this.translateService.instant("Coordinates are not available for this image.")
+      );
       return;
     }
 
@@ -1362,7 +1369,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // Reset to default zoom level
         this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
         this.ngxImageZoom.zoomService.zoomOff();
-        
+
         // Wait a bit for the zoom to reset before continuing
         setTimeout(() => {
           this.toggleMeasuringMode(event, false);
@@ -1892,17 +1899,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
-  /**
-   * Calculate the coordinates at the current mouse position
-   */
-
-  // Store last mouse event for recalculation
-  private _lastMouseEvent: MouseEvent;
-
   private _calculateMouseCoordinates(event: MouseEvent): void {
-    // Store the last mouse event
-    this._lastMouseEvent = event;
-
     // Don't calculate coordinates when using lens mode
     if (this.enableLens && this.ngxImageZoom?.zoomService?.zoomingEnabled) {
       this.mouseRa = null;

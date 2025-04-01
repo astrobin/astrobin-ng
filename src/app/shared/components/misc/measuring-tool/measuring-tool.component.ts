@@ -1290,16 +1290,15 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           try {
             // Get the current URL and preserve the hash (important for fullscreen view)
             const currentUrl = window.location.href;
-            const urlWithoutHash = currentUrl.split("#")[0];
             const hash = currentUrl.includes("#") ? "#" + currentUrl.split("#")[1] : "";
-            
+
             // Create a URL tree without the measurements parameter
             const urlTree = this.router.createUrlTree([], {
               relativeTo: this.activatedRoute,
               queryParams: { measurements: null },
               queryParamsHandling: "merge"
             });
-            
+
             // Update the browser URL without navigation
             window.history.replaceState({}, '', window.location.origin + urlTree.toString() + hash);
           } catch (error) {
@@ -2799,7 +2798,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    */
   clearAllAndCloseWarning(): void {
     // Clear all measurements
-    this.clearAllMeasurements();
+    this.previousMeasurements = [];
 
     // Close the warning
     this.closeResizeWarning();
