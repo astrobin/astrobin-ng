@@ -13,6 +13,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageService } from "@core/services/image/image.service";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { ActivatedRoute } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Coord, NgxImageZoomComponent } from "ngx-image-zoom";
 import { BehaviorSubject, combineLatest, Observable, of, Subscription } from "rxjs";
@@ -269,7 +270,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly popNotificationsService: PopNotificationsService,
     public readonly hostElementRef: ElementRef,
     public readonly coordinatesFormatter: CoordinatesFormatterService,
-    public readonly modalService: NgbModal
+    private activatedRoute: ActivatedRoute,
+    private modalService: NgbModal
   ) {
     super(store$);
 
@@ -456,6 +458,98 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   ngOnInit() {
     this._setZoomLensSize();
+
+    // Check if URL contains shared measurements - if so, auto-activate measuring tool
+    if (this.isBrowser) {
+      this.activatedRoute.queryParams.pipe(
+        take(1)
+      ).subscribe(params => {
+        if (params.measurements) {
+          // Check if this is a mobile device
+          if (this.deviceService.isMobile()) {
+            // On mobile, show info message that measuring tool is not available
+            this.popNotificationsService.info(
+              this.translateService.instant(
+                "Shared measurements cannot be displayed on mobile devices. Please view on desktop for the full measuring tool experience."
+              )
+            );
+            console.debug('Skipping measurement activation on mobile device');
+          } else {
+            // On desktop, proceed with normal activation
+            // Use a more robust approach to wait for the image zoom to be ready
+            this._waitForImageZoomAndActivateMeasuring();
+            
+            // Also log for debugging purposes
+            console.debug('Detected measurements in URL, attempting to activate measuring tool');
+          }
+        }
+      });
+    }
+  }
+
+  /**
+   * Wait for the image zoom component to be fully initialized before activating measuring tool
+   * This prevents the race condition that causes the warning about default zoom level
+   */
+  private _waitForImageZoomAndActivateMeasuring(): void {
+    // Start with an initial delay to allow image to load
+    setTimeout(() => {
+      console.debug('Checking if zoom component is ready for measuring tool activation');
+      
+      // First check if zoom component is ready
+      if (this._isZoomComponentReady()) {
+        console.debug('Zoom component is ready, activating measuring tool');
+        // If component is ready, activate the measuring tool with the shared URL flag
+        this.toggleMeasuringMode(undefined, true);
+      } else {
+        console.debug('Zoom component not ready, setting up retry mechanism');
+        // If not ready, set up a retry mechanism with exponential backoff
+        let attempts = 0;
+        const maxAttempts = 8; // Increased from 5 to 8 to allow more chances for initialization
+        const baseDelay = 300; // Base delay in ms
+        
+        const checkInterval = setInterval(() => {
+          attempts++;
+          
+          // Calculate delay with exponential backoff
+          const currentDelay = baseDelay * Math.pow(1.5, attempts - 1);
+          console.debug(`Retry attempt ${attempts}/${maxAttempts} (delay: ${currentDelay.toFixed(0)}ms)`);
+          
+          if (this._isZoomComponentReady()) {
+            clearInterval(checkInterval);
+            console.debug('Zoom component ready after retry, activating measuring tool');
+            this.toggleMeasuringMode(undefined, true);
+          } else if (attempts >= maxAttempts) {
+            // Give up after max attempts and try anyway
+            clearInterval(checkInterval);
+            console.warn('Image zoom component not fully initialized after maximum attempts, activating measuring tool anyway');
+            // Force the zoom to the default level before trying to activate measuring
+            if (this.ngxImageZoom?.zoomService) {
+              try {
+                this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio || 1.0;
+                this.ngxImageZoom.zoomService.zoomOff();
+                console.debug('Forced zoom to default level');
+              } catch (e) {
+                console.error('Failed to force zoom to default level:', e);
+              }
+            }
+            // Short delay after forcing zoom level
+            setTimeout(() => {
+              this.toggleMeasuringMode(undefined, true);
+            }, 100);
+          }
+        }, baseDelay); // Initial check interval
+      }
+    }, 800); // Increased initial delay to give image more time to load
+  }
+
+  /**
+   * Check if the image zoom component is fully initialized and ready for use
+   */
+  private _isZoomComponentReady(): boolean {
+    return this.ngxImageZoom !== undefined && 
+           this.ngxImageZoom.zoomService !== undefined &&
+           this.ngxImageZoom.zoomService.minZoomRatio !== undefined;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -1244,7 +1338,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.changeDetectorRef.markForCheck();
   }
 
-  protected toggleMeasuringMode(event?: MouseEvent): void {
+  protected toggleMeasuringMode(event?: MouseEvent, fromSharedUrl: boolean = false): void {
     // Prevent the event from propagating
     if (event) {
       event.preventDefault();
@@ -1262,9 +1356,26 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
+    // For shared URLs, we want to ensure we're at default zoom level first
+    if (fromSharedUrl && !this._isAtDefaultZoom() && this.ngxImageZoom?.zoomService) {
+      try {
+        // Reset to default zoom level
+        this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
+        this.ngxImageZoom.zoomService.zoomOff();
+        
+        // Wait a bit for the zoom to reset before continuing
+        setTimeout(() => {
+          this.toggleMeasuringMode(event, false);
+        }, 100);
+        return;
+      } catch (error) {
+        console.warn('Error attempting to reset zoom level for shared URL measurements:', error);
+      }
+    }
+
     // Don't allow measuring when zoomed in - only at default zoom level (fit to window)
     if (!this.isMeasuringMode && !this._isAtDefaultZoom()) {
-      // Store the notification reference so we can clear it when zoom changes
+      // Store the notification reference, so we can clear it when zoom changes
       this._measureZoomNotification = this.popNotificationsService.warning(
         this.translateService.instant("Measuring is only available at the default zoom level (fit to window).")
       );
@@ -1747,9 +1858,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * Check if the current zoom level is at the default (fit to window) level
    */
   private _isAtDefaultZoom(): boolean {
-    if (!this.ngxImageZoom || !this.ngxImageZoom.zoomService) {
-      // If zoom service is not available, we can't determine the default zoom
+    if (!this.ngxImageZoom || !this.ngxImageZoom.zoomService || this.ngxImageZoom.zoomService.minZoomRatio === undefined) {
+      // If zoom service is not available or minZoomRatio is not initialized, we can't determine the default zoom
       return false;
+    }
+
+    // When component is initializing, zoomScroll might not be set yet
+    if (this.zoomScroll === undefined || this.zoomScroll === null) {
+      // During initialization, assume we're at default zoom if magnification is at or close to minZoomRatio
+      if (this.ngxImageZoom.zoomService.magnification !== undefined) {
+        return Math.abs(this.ngxImageZoom.zoomService.magnification - this.ngxImageZoom.zoomService.minZoomRatio) <= 0.01;
+      }
+      // If even magnification is not set, assume we're at default zoom (initial state)
+      return true;
     }
 
     // Get the minimum zoom ratio (fit to window)

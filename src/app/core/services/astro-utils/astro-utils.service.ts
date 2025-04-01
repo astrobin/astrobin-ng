@@ -188,6 +188,225 @@ export class AstroUtilsService {
   }
 
   /**
+   * Convert celestial coordinates (RA/Dec) to pixel positions on the image using recursive search
+   *
+   * @param ra Right ascension in hours (0-24)
+   * @param dec Declination in degrees (-90 to +90)
+   * @param solutionMatrix The solution matrix for the image
+   * @param imageElement The image element to get dimensions from
+   * @returns Pixel coordinates {x,y} or null if conversion failed
+   */
+  calculatePixelPositionFromCoordinates(
+    ra: number,
+    dec: number,
+    solutionMatrix: SolutionMatrix,
+    imageElement: HTMLElement
+  ): { x: number; y: number } | null {
+    try {
+      if (!this._isBrowser || !this.isValidSolutionMatrix(solutionMatrix) || !imageElement) {
+        return null;
+      }
+
+      const imageRect = imageElement.getBoundingClientRect();
+      const imageWidth = imageRect.width;
+      const imageHeight = imageRect.height;
+
+      // Define the initial search area (the entire image)
+      const searchArea = {
+        minX: 0,
+        minY: 0,
+        maxX: imageWidth,
+        maxY: imageHeight
+      };
+
+      // Define search parameters
+      const maxIterations = 10; // Maximum iterations for the search
+      const targetPrecision = 1.0; // Target precision in pixels
+
+      // Start recursive search
+      const result = this._recursiveQuadrantSearch(
+        ra,
+        dec,
+        solutionMatrix,
+        imageElement,
+        searchArea,
+        maxIterations,
+        targetPrecision
+      );
+
+      if (!result) {
+        return null;
+      }
+
+      // Return the found coordinates
+      return {
+        x: result.x,
+        y: result.y
+      };
+    } catch (error) {
+      console.error("Error calculating pixel position from coordinates:", error);
+      return null;
+    }
+  }
+
+  /**
+   * Recursive quadrant search to find pixel coordinates for a given RA/Dec
+   *
+   * This method divides the search area into quadrants and recursively searches
+   * the quadrant that is closest to the target coordinates.
+   */
+  private _recursiveQuadrantSearch(
+    targetRa: number,
+    targetDec: number,
+    solutionMatrix: SolutionMatrix,
+    imageElement: HTMLElement,
+    searchArea: { minX: number, minY: number, maxX: number, maxY: number },
+    maxIterations: number,
+    targetPrecision: number,
+    currentIteration: number = 0
+  ): { x: number, y: number, iterations: number } | null {
+    try {
+      // Check for max iteration limit to prevent infinite recursion
+      if (currentIteration >= maxIterations) {
+        // Return the center of the current search area as best approximation
+        const centerX = (searchArea.minX + searchArea.maxX) / 2;
+        const centerY = (searchArea.minY + searchArea.maxY) / 2;
+        return { x: centerX, y: centerY, iterations: currentIteration };
+      }
+
+      // Calculate the current search area width and height
+      const areaWidth = searchArea.maxX - searchArea.minX;
+      const areaHeight = searchArea.maxY - searchArea.minY;
+
+      // If we've reached the target precision, return the current position
+      if (areaWidth <= targetPrecision && areaHeight <= targetPrecision) {
+        const finalX = (searchArea.minX + searchArea.maxX) / 2;
+        const finalY = (searchArea.minY + searchArea.maxY) / 2;
+        return { x: finalX, y: finalY, iterations: currentIteration };
+      }
+
+      // Calculate midpoints of the search area
+      const midX = (searchArea.minX + searchArea.maxX) / 2;
+      const midY = (searchArea.minY + searchArea.maxY) / 2;
+
+      // Define the four quadrants
+      const quadrants = [
+        { // Top-left
+          minX: searchArea.minX,
+          minY: searchArea.minY,
+          maxX: midX,
+          maxY: midY
+        },
+        { // Top-right
+          minX: midX,
+          minY: searchArea.minY,
+          maxX: searchArea.maxX,
+          maxY: midY
+        },
+        { // Bottom-left
+          minX: searchArea.minX,
+          minY: midY,
+          maxX: midX,
+          maxY: searchArea.maxY
+        },
+        { // Bottom-right
+          minX: midX,
+          minY: midY,
+          maxX: searchArea.maxX,
+          maxY: searchArea.maxY
+        }
+      ];
+
+      // Calculate celestial coordinates at the center of each quadrant
+      const quadrantCoordinates = quadrants.map(quadrant => {
+        const centerX = (quadrant.minX + quadrant.maxX) / 2;
+        const centerY = (quadrant.minY + quadrant.maxY) / 2;
+        const coordinates = this.calculateCoordinatesAtPoint(centerX, centerY, solutionMatrix, imageElement);
+        return {
+          quadrant,
+          coordinates,
+          centerX,
+          centerY
+        };
+      });
+
+      // Find the quadrant with the closest coordinates to our target
+      let closestQuadrant = null;
+      let minDistance = Number.MAX_VALUE;
+
+      for (const quadrantData of quadrantCoordinates) {
+        if (quadrantData.coordinates) {
+          // Calculate angular distance between current coordinates and target
+          const distance = this.calculateAngularDistance(
+            quadrantData.coordinates.ra,
+            quadrantData.coordinates.dec,
+            targetRa,
+            targetDec
+          );
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestQuadrant = quadrantData.quadrant;
+          }
+        }
+      }
+
+      // If we didn't find any valid quadrants, use current center as best approximation
+      if (!closestQuadrant) {
+        return {
+          x: (searchArea.minX + searchArea.maxX) / 2,
+          y: (searchArea.minY + searchArea.maxY) / 2,
+          iterations: currentIteration
+        };
+      }
+
+      // Recursively search the closest quadrant
+      return this._recursiveQuadrantSearch(
+        targetRa,
+        targetDec,
+        solutionMatrix,
+        imageElement,
+        closestQuadrant,
+        maxIterations,
+        targetPrecision,
+        currentIteration + 1
+      );
+    } catch (error) {
+      console.error("Error in recursive quadrant search:", error);
+      return null;
+    }
+  }
+
+  /**
+   * Convert degrees to radians
+   */
+  private degreesToRadians(degrees: number): number {
+    return degrees * Math.PI / 180;
+  }
+
+  /**
+   * Get the pixel scale (arcseconds per pixel) from a solution object
+   * @param solution The solution object containing plate solving information
+   * @returns The pixel scale in arcseconds per pixel or null if not available
+   */
+  getPixelScale(solution: any): number | null {
+    if (!solution) {
+      return null;
+    }
+
+    // First try to get the pre-calculated values
+    if (solution.advancedPixscale) {
+      return parseFloat(solution.advancedPixscale);
+    }
+
+    if (solution.pixscale) {
+      return parseFloat(solution.pixscale);
+    }
+
+    return null;
+  }
+
+  /**
    * Helper to stabilize floating-point values for consistent display
    */
   private stabilizeValue(value: number, decimals: number = 4): number {

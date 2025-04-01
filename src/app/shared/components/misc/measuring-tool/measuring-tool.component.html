@@ -1,3 +1,11 @@
+<!-- Loading indicator for URL measurements - placed as a sibling to ensure maximum visibility -->
+<div *ngIf="loadingUrlMeasurements" class="url-measurements-loading-indicator">
+  <div class="spinner-border text-light" role="status">
+    <span class="visually-hidden">{{ 'Loading measurements from URL...' | translate }}</span>
+  </div>
+  <div class="loading-text mt-2">{{ 'Loading measurements from URL...' | translate }}</div>
+</div>
+
 <div class="measuring-tool-container" *ngIf="active">
   <!-- Overlay for capturing clicks and drags during measuring mode -->
   <!-- Put this first so other elements can be on top of it -->
@@ -741,24 +749,34 @@
     </div>
   </div>
 
-  <!-- Measuring tool controls -->
+  <!-- Measuring tool controls - vertical layout -->
   <div class="measuring-controls-right">
-    <button *ngIf="currentUser$ | async" class="btn btn-sm btn-outline-light me-2"
+    <button *ngIf="currentUser$ | async" class="btn btn-sm btn-outline-light"
             (click)="toggleSavedMeasurements()"
             title="{{ 'Saved Measurements' | translate }}">
       <fa-icon icon="bookmark" class="me-1"></fa-icon>
       {{ 'Saved' | translate }}
     </button>
 
-    <button class="btn btn-sm btn-outline-light me-2" (click)="clearAllMeasurements()"
+    <button class="btn btn-sm btn-outline-light" 
+            (click)="shareMeasurements()"
+            *ngIf="previousMeasurements.length > 0"
+            title="{{ 'Share measurements' | translate }}">
+      <fa-icon icon="share-alt" class="me-1"></fa-icon>
+      {{ 'Share' | translate }}
+    </button>
+
+    <button class="btn btn-sm btn-outline-light" 
+            (click)="clearAllMeasurements()"
             *ngIf="previousMeasurements.length > 0">
       <fa-icon icon="trash" class="me-1"></fa-icon>
       {{ 'Clear all' | translate }}
     </button>
 
-    <button class="btn btn-sm btn-outline-light" (click)="exitMeasuring()">
+    <button class="btn btn-sm btn-outline-light" 
+            (click)="exitMeasuring()">
       <fa-icon icon="times" class="me-1"></fa-icon>
-      {{ 'Exit measuring tool' | translate }}
+      {{ 'Exit measuring' | translate }}
     </button>
   </div>
 

@@ -78,6 +78,40 @@
   display: contents;
 }
 
+// URL Measurements Loading Indicator
+.url-measurements-loading-indicator {
+  position: fixed; // Changed from absolute to fixed to ensure it's visible
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; // Highest z-index to appear above everything
+  background-color: rgba(0, 0, 0, 0.8); // Darker background for better visibility
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  min-width: 250px;
+  min-height: 150px;
+
+  .spinner-border {
+    width: 2rem;
+    height: 2rem;
+    border-width: 0.3em;
+  }
+
+  .loading-text {
+    color: white;
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-top: 15px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+}
+
 .measuring-tool-container {
   position: fixed;
   top: 0;
@@ -1038,8 +1072,11 @@
     top: 0.5rem;
     right: 0.75rem;
     display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     pointer-events: all;
     z-index: 10; /* Higher z-index to ensure buttons are clickable */
+    width: 170px; /* Fixed width for all buttons - increased to fit 'Exit measuring tool' */
 
     .btn-outline-light {
       background-color: rgba(0, 0, 0, 0.4);
@@ -1047,6 +1084,14 @@
       font-weight: 500;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
       color: white;
+      width: 100%; /* Full width */
+      text-align: left; /* Left-align text for better readability */
+      white-space: nowrap;
+      /* Removed overflow and text-overflow to ensure text is fully visible */
+      padding-left: 0.75rem; /* Add consistent left padding */
+
+      /* Remove any existing margin - replaced by gap in parent */
+      margin: 0 !important;
 
       &:hover {
         background-color: rgba(255, 255, 255, 0.8);

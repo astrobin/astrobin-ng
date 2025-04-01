@@ -20,6 +20,7 @@ import { InformationDialogComponent } from "@shared/components/misc/information-
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { ExportMeasurementModalComponent } from "./export-measurement-modal/export-measurement-modal.component";
+import { ActivatedRoute, Router } from "@angular/router";
 
 // Interface to represent a label's bounding box for collision detection
 interface LabelBoundingBox {
@@ -103,13 +104,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   newMeasurementName: string = "";
   saveMeasurementNotes: string = "";
   savedMeasurements: MeasurementPresetInterface[] = [];
-  // Constants for magic values
-  private readonly DRAG_THRESHOLD = 10; // Minimum pixels to move before considering it a drag
-  private readonly COORD_UPDATE_DEBOUNCE_MS = 100; // Update coordinates at most every 100ms
-  private readonly MEASUREMENT_SHAPE_COOKIE_NAME = "astrobin-fullscreen-measurement-shape"; // Cookie name for shape preference
-  private readonly CLICK_PREVENTION_TIMEOUT_MS = 100; // Timeout to prevent accidental double clicks
-  private readonly RESIZE_DEBOUNCE_MS = 300; // Debounce time for window resize events
-
+  // URL measurement loading state
+  loadingUrlMeasurements: boolean = false;
   // Mouse tracking
   mouseX: number | null = null;
   mouseY: number | null = null;
@@ -130,6 +126,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   protected readonly Math = Math;
   // Flag to detect browser environment
   protected isBrowser: boolean;
+  // Constants for magic values
+  private readonly DRAG_THRESHOLD = 10; // Minimum pixels to move before considering it a drag
+  private readonly COORD_UPDATE_DEBOUNCE_MS = 100; // Update coordinates at most every 100ms
+  private readonly MEASUREMENT_SHAPE_COOKIE_NAME = "astrobin-fullscreen-measurement-shape"; // Cookie name for shape preference
+  private readonly CLICK_PREVENTION_TIMEOUT_MS = 100; // Timeout to prevent accidental double clicks
+  private readonly RESIZE_DEBOUNCE_MS = 300; // Debounce time for window resize events
   // Bound event handlers
   // Subjects for controlling drag operations
   private _pointDragStart$ = new Subject<{ event: MouseEvent, point: string }>();
@@ -143,13 +145,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
   // Events streams
   private _documentMouseMove$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<MouseEvent>(document, "mousemove").pipe(takeUntil(this.destroyed$)) :
+    fromEvent<MouseEvent>(document, "mousemove", { passive: false }).pipe(takeUntil(this.destroyed$)) :
     new Subject<MouseEvent>();
   private _documentMouseUp$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<MouseEvent>(document, "mouseup").pipe(takeUntil(this.destroyed$)) :
+    fromEvent<MouseEvent>(document, "mouseup", { passive: false }).pipe(takeUntil(this.destroyed$)) :
     new Subject<MouseEvent>();
   private _windowResize$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<UIEvent>(window, "resize").pipe(
+    fromEvent<UIEvent>(window, "resize", { passive: false }).pipe(
       debounceTime(this.RESIZE_DEBOUNCE_MS),
       takeUntil(this.destroyed$)
     ) :
@@ -174,6 +176,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     private popNotificationsService: PopNotificationsService,
     private translateService: TranslateService,
     private windowRefService: WindowRefService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     super(store$);
@@ -234,6 +238,27 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.savedMeasurements = presets;
     });
 
+    // Check for shared measurements in the URL when component initializes
+    if (this.isBrowser) {
+      this.activatedRoute.queryParams.pipe(
+        take(1)
+      ).subscribe(params => {
+        if (params.measurements) {
+          try {
+            // Show loading indicator and ensure it's visible (force method for more reliability)
+            this.showLoadingIndicator();
+            this.loadMeasurementsFromUrl(params.measurements);
+          } catch (e) {
+            this.hideLoadingIndicator();
+            console.error("Failed to load shared measurements:", e);
+            this.popNotificationsService.error(
+              this.translateService.instant("Failed to load shared measurements: {{error}}", { error: e.message })
+            );
+          }
+        }
+      });
+    }
+
     // Load presets when the component initializes
     this.currentUser$.pipe(
       take(1),
@@ -271,6 +296,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           tap(() => this._dragInProgress = true),
           switchMap(({ event, point }) => this._documentMouseMove$.pipe(
             takeUntil(merge(this._pointDragEnd$, this.destroyed$)),
+            // Apply preventDefault directly in the observable chain
+            tap(moveEvent => {
+              moveEvent.preventDefault();
+            }),
             tap(moveEvent => this.handlePointDragMove(moveEvent))
           ))
         )
@@ -294,6 +323,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           tap(() => this._dragInProgress = true),
           switchMap(({ event, index, point }) => this._documentMouseMove$.pipe(
             takeUntil(merge(this._previousMeasurementDragEnd$, this.destroyed$)),
+            // Apply preventDefault directly in the observable chain
+            tap(moveEvent => {
+              moveEvent.preventDefault();
+            }),
             tap(moveEvent => this.handlePreviousMeasurementDragMove(moveEvent))
           ))
         )
@@ -317,6 +350,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           tap(() => this._dragInProgress = true),
           switchMap(({ event, index }) => this._documentMouseMove$.pipe(
             takeUntil(merge(this._shapeDragEnd$, this.destroyed$)),
+            // Apply preventDefault directly in the observable chain
+            // BEFORE passing the event to handlers
+            tap(moveEvent => {
+              if (this.isDraggingPoint?.startsWith("prevShape")) {
+                moveEvent.preventDefault();
+              }
+            }),
             tap(moveEvent => this.handleShapeDragMove(moveEvent))
           ))
         )
@@ -340,6 +380,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           tap(() => this._dragInProgress = true),
           switchMap(event => this._documentMouseMove$.pipe(
             takeUntil(merge(this._currentShapeDragEnd$, this.destroyed$)),
+            // Apply preventDefault directly in the observable chain
+            tap(moveEvent => {
+              moveEvent.preventDefault();
+            }),
             tap(moveEvent => this.handleCurrentShapeDragMove(moveEvent))
           ))
         )
@@ -436,203 +480,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   /**
-   * Validates that the event is within the image boundaries
-   */
-  private _validateMeasurementArea(event: MouseEvent): boolean {
-    // Ensure we're in browser environment before accessing DOM
-    if (!this.isBrowser) {
-      return false;
-    }
-
-    // Get the offset of the image element
-    const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-    if (!imageElement) {
-      return false;
-    }
-
-    // Check if the mouse down is within the bounds of the image
-    const imageRect = imageElement.getBoundingClientRect();
-    return !(
-      event.clientX < imageRect.left ||
-      event.clientX > imageRect.right ||
-      event.clientY < imageRect.top ||
-      event.clientY > imageRect.bottom
-    );
-  }
-
-  /**
-   * Reset the current measurement state for starting a new measurement
-   */
-  private _resetCurrentMeasurement(): void {
-    this.measureStartPoint = null;
-    this.measureEndPoint = null;
-    this.measureDistance = null;
-
-    // Reset resize warning state for new measurements
-    this.resetResizeWarningState();
-  }
-
-  /**
-   * Initialize the starting point for a measurement
-   */
-  private _initializeStartPoint(event: MouseEvent): void {
-    // Set the start point on mousedown
-    this.measureStartPoint = {
-      x: event.clientX,
-      y: event.clientY,
-      ra: null,
-      dec: null
-    };
-
-    // Emit event to signal measurement has started
-    this.measurementStarted.emit();
-
-    // Initialize mouse position to match the cursor position immediately
-    this.mouseX = event.clientX;
-    this.mouseY = event.clientY;
-
-    // Calculate celestial coordinates if possible
-    this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
-  }
-
-  /**
-   * Updates celestial coordinates for a measurement point
-   */
-  private _updatePointCelestialCoordinates(point: MeasurementPoint, x: number, y: number): void {
-    if (this.isValidSolutionMatrix()) {
-      const coords = this.boundCalculateCoordinatesAtPoint(x, y);
-      if (coords) {
-        point.ra = coords.ra;
-        point.dec = coords.dec;
-      } else {
-        // If we can't calculate coordinates, set to null
-        point.ra = null;
-        point.dec = null;
-      }
-    } else {
-      // If we don't have a valid solution matrix, set to null
-      point.ra = null;
-      point.dec = null;
-    }
-  }
-
-  /**
-   * Setup drag tracking and handlers for measurement creation
-   */
-  private _setupDragTracking(event: MouseEvent, startX: number, startY: number): void {
-    // Only set up DOM listeners in browser environment
-    if (!this.isBrowser) {
-      return;
-    }
-
-    // Keep track of whether we've moved enough to consider this a drag
-    let hasDraggedEnough = false;
-
-    // Track if we're in a drag operation (don't set flag yet)
-    let isDragging = false;
-
-    // Add mouse move event listener to track the mouse position
-    const mouseMoveHandler = (moveEvent: MouseEvent) => {
-      this._handleMeasurementDragMove(moveEvent, startX, startY, this.DRAG_THRESHOLD, hasDraggedEnough, isDragging);
-
-      // Update tracking variables based on movement
-      const dx = moveEvent.clientX - startX;
-      const dy = moveEvent.clientY - startY;
-      const distanceMoved = Math.sqrt(dx * dx + dy * dy);
-
-      // If we've moved enough, consider this a drag operation
-      if (distanceMoved >= this.DRAG_THRESHOLD) {
-        hasDraggedEnough = true;
-        isDragging = true;
-
-        // Set the drag flag to prevent the click handler from running
-        this._dragInProgress = true;
-      }
-    };
-
-    // Add mouse up event listener to complete the measurement
-    const mouseUpHandler = (upEvent: MouseEvent) => {
-      this._handleMeasurementDragEnd(upEvent, startX, startY, hasDraggedEnough, isDragging);
-
-      // Clean up event listeners
-      document.removeEventListener("mousemove", mouseMoveHandler);
-      document.removeEventListener("mouseup", mouseUpHandler);
-
-      // Reset drag state
-      this._dragInProgress = false;
-
-      // Small delay to prevent accidental double measurements
-      setTimeout(() => {
-        this._preventNextClick = false;
-      }, this.CLICK_PREVENTION_TIMEOUT_MS);
-    };
-
-    // Add the event listeners
-    document.addEventListener("mousemove", mouseMoveHandler);
-    document.addEventListener("mouseup", mouseUpHandler, { once: true });
-  }
-
-  /**
-   * Handle mouse movement during measurement drag
-   */
-  private _handleMeasurementDragMove(
-    moveEvent: MouseEvent,
-    startX: number,
-    startY: number,
-    dragThreshold: number,
-    hasDraggedEnough: boolean,
-    isDragging: boolean
-  ): void {
-    // Always update the mouse position for the dashed line preview
-    this.mouseX = moveEvent.clientX;
-    this.mouseY = moveEvent.clientY;
-  }
-
-  /**
-   * Handle the end of a measurement drag operation
-   */
-  private _handleMeasurementDragEnd(
-    upEvent: MouseEvent,
-    startX: number,
-    startY: number,
-    hasDraggedEnough: boolean,
-    isDragging: boolean
-  ): void {
-    // Calculate final distance moved
-    const dx = upEvent.clientX - startX;
-    const dy = upEvent.clientY - startY;
-    const distanceMoved = Math.sqrt(dx * dx + dy * dy);
-
-    // Only complete the measurement if we dragged far enough
-    if (hasDraggedEnough && isDragging) {
-      this._createEndPoint(upEvent);
-      this._finalizeMeasurement();
-      this._preventNextClick = true;
-    } else if (distanceMoved < this.DRAG_THRESHOLD) {
-      // If we didn't drag far enough, it's treated like a normal click
-      // Keep the start point set (so it appears immediately) but don't set end point
-      // The user can set the end point with a second click
-      this.measureEndPoint = null;
-    }
-  }
-
-  /**
-   * Create an end point for the measurement at the specified event position
-   */
-  private _createEndPoint(event: MouseEvent): void {
-    // Set the end point at the mouse up position
-    this.measureEndPoint = {
-      x: event.clientX,
-      y: event.clientY,
-      ra: null,
-      dec: null
-    };
-
-    // Calculate celestial coordinates if possible
-    this._updatePointCelestialCoordinates(this.measureEndPoint, event.clientX, event.clientY);
-  }
-
-  /**
    * Handle clicks on the measurement overlay to place points
    */
   handleMeasurementClick(event: MouseEvent): void {
@@ -658,63 +505,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // First point set, now add second point and complete measurement
       this._handleSecondPointClick(event);
     }
-  }
-
-  /**
-   * Handle a click when starting a new measurement (resetting previous one)
-   */
-  private _handleNewMeasurementClick(event: MouseEvent): void {
-    // Reset current measurement
-    this._resetCurrentMeasurement();
-
-    // Set first point immediately on this click
-    this.measureStartPoint = {
-      x: event.clientX,
-      y: event.clientY,
-      ra: null,
-      dec: null
-    };
-
-    // Initialize mouse position for dashed line display
-    this.mouseX = event.clientX;
-    this.mouseY = event.clientY;
-
-    // Calculate celestial coordinates if possible
-    this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
-  }
-
-  /**
-   * Handle the first click of a measurement to set the starting point
-   */
-  private _handleFirstPointClick(event: MouseEvent): void {
-    // Set start point
-    this.measureStartPoint = {
-      x: event.clientX,
-      y: event.clientY,
-      ra: null,
-      dec: null
-    };
-
-    // Emit event to signal measurement has started
-    this.measurementStarted.emit();
-
-    // Initialize mouse position for dashed line display
-    this.mouseX = event.clientX;
-    this.mouseY = event.clientY;
-
-    // Calculate celestial coordinates if possible
-    this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
-  }
-
-  /**
-   * Handle the second click of a measurement to set the ending point
-   */
-  private _handleSecondPointClick(event: MouseEvent): void {
-    // Set end point (for two-click measurements)
-    this._createEndPoint(event);
-
-    // Finalize the measurement
-    this._finalizeMeasurement();
   }
 
   /**
@@ -800,8 +590,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       return;
     }
 
-    event.preventDefault();
-
     if (this.isDraggingPoint === "start" && this.measureStartPoint) {
       this._updateDraggedStartPoint(event);
     } else if (this.isDraggingPoint === "end" && this.measureEndPoint) {
@@ -810,110 +598,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Force label position calculation and change detection
     this._updateLabelPositions();
-  }
-
-  /**
-   * Update the start point position during drag
-   */
-  private _updateDraggedStartPoint(event: MouseEvent): void {
-    if (!this.measureStartPoint) {
-      return;
-    }
-
-    // Update point position
-    this.measureStartPoint.x = event.clientX + this.dragOffsetX;
-    this.measureStartPoint.y = event.clientY + this.dragOffsetY;
-
-    // Update celestial coordinates
-    if (this.isValidSolutionMatrix()) {
-      // Account for rotation when calculating coordinates during drag
-      const coords = this.boundCalculateCoordinatesAtPoint(
-        event.clientX + this.dragOffsetX,
-        event.clientY + this.dragOffsetY,
-        true
-      );
-
-      if (coords) {
-        this.measureStartPoint.ra = coords.ra;
-        this.measureStartPoint.dec = coords.dec;
-      }
-    }
-
-    // Recalculate distance if we have an end point
-    if (this.measureEndPoint) {
-      this._recalculateMeasurementDistance();
-    }
-  }
-
-  /**
-   * Update the end point position during drag
-   */
-  private _updateDraggedEndPoint(event: MouseEvent): void {
-    if (!this.measureEndPoint) {
-      return;
-    }
-
-    // Update point position
-    this.measureEndPoint.x = event.clientX + this.dragOffsetX;
-    this.measureEndPoint.y = event.clientY + this.dragOffsetY;
-
-    // Update celestial coordinates
-    if (this.isValidSolutionMatrix()) {
-      // Account for rotation when calculating coordinates during drag
-      const coords = this.boundCalculateCoordinatesAtPoint(
-        event.clientX + this.dragOffsetX,
-        event.clientY + this.dragOffsetY,
-        true
-      );
-
-      if (coords) {
-        this.measureEndPoint.ra = coords.ra;
-        this.measureEndPoint.dec = coords.dec;
-      }
-    }
-
-    // Recalculate distance if we have a start point
-    if (this.measureStartPoint) {
-      this._recalculateMeasurementDistance();
-    }
-  }
-
-  /**
-   * Recalculate the measurement distance after point movement
-   */
-  private _recalculateMeasurementDistance(): void {
-    if (!this.measureStartPoint || !this.measureEndPoint) {
-      return;
-    }
-
-    // Calculate pixel distance
-    const pixelDistance = this.calculateDistance(
-      this.measureStartPoint.x,
-      this.measureStartPoint.y,
-      this.measureEndPoint.x,
-      this.measureEndPoint.y
-    );
-
-    // Format the distance based on whether we have valid celestial coordinates
-    if (this.isValidSolutionMatrix() &&
-        this.measureStartPoint.ra !== null &&
-        this.measureEndPoint.ra !== null) {
-      this.measureDistance = this.formatAngularDistance(pixelDistance);
-    } else {
-      this.measureDistance = `${Math.round(pixelDistance)} px`;
-    }
-  }
-
-  /**
-   * Update label positions for start and end points
-   */
-  private _updateLabelPositions(): void {
-    if (this.measureStartPoint && this.measureEndPoint) {
-      const startLabelX = this.calculateStartLabelX();
-      const startLabelY = this.calculateStartLabelY();
-      const endLabelX = this.calculateEndLabelX();
-      const endLabelY = this.calculateEndLabelY();
-    }
   }
 
   /**
@@ -1016,8 +700,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       return;
     }
 
-    event.preventDefault();
-
     // Get the measurement data and point type
     const measurementInfo = this._getPreviousMeasurementInfo();
     if (!measurementInfo) {
@@ -1035,108 +717,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Update common properties
     this._updatePreviousMeasurementProperties(measurement);
-  }
-
-  /**
-   * Extract measurement info from the drag state
-   */
-  private _getPreviousMeasurementInfo(): { measurement: MeasurementData, index: number, pointType: string } | null {
-    const parts = this.isDraggingPoint.split("-");
-    const index = parseInt(parts[1], 10);
-
-    if (isNaN(index) || index < 0 || index >= this.previousMeasurements.length) {
-      return null;
-    }
-
-    const measurement = this.previousMeasurements[index];
-    const pointType = this.isDraggingPoint.startsWith("prevStart") ? "start" : "end";
-
-    return { measurement, index, pointType };
-  }
-
-  /**
-   * Update the start point of a previous measurement
-   */
-  private _updatePreviousMeasurementStartPoint(measurement: MeasurementData, event: MouseEvent): void {
-    measurement.startX = event.clientX + this.dragOffsetX;
-    measurement.startY = event.clientY + this.dragOffsetY;
-
-    // Update celestial coordinates if we have valid plate solution data
-    if (this.isValidSolutionMatrix()) {
-      // Account for rotation when calculating coordinates
-      const coords = this.boundCalculateCoordinatesAtPoint(
-        event.clientX + this.dragOffsetX,
-        event.clientY + this.dragOffsetY,
-        true
-      );
-
-      if (coords) {
-        measurement.startRa = coords.ra;
-        measurement.startDec = coords.dec;
-      }
-    }
-  }
-
-  /**
-   * Update the end point of a previous measurement
-   */
-  private _updatePreviousMeasurementEndPoint(measurement: MeasurementData, event: MouseEvent): void {
-    measurement.endX = event.clientX + this.dragOffsetX;
-    measurement.endY = event.clientY + this.dragOffsetY;
-
-    // Update celestial coordinates if we have valid plate solution data
-    if (this.isValidSolutionMatrix()) {
-      // Account for rotation when calculating coordinates
-      const coords = this.boundCalculateCoordinatesAtPoint(
-        event.clientX + this.dragOffsetX,
-        event.clientY + this.dragOffsetY,
-        true
-      );
-
-      if (coords) {
-        measurement.endRa = coords.ra;
-        measurement.endDec = coords.dec;
-      }
-    }
-  }
-
-  /**
-   * Update shared properties for a measurement after point movement
-   */
-  private _updatePreviousMeasurementProperties(measurement: MeasurementData): void {
-    // Update distance calculation
-    const pixelDistance = this.calculateDistance(
-      measurement.startX,
-      measurement.startY,
-      measurement.endX,
-      measurement.endY
-    );
-
-    // Format the distance based on whether we have valid celestial coordinates
-    if (this.isValidSolutionMatrix() && measurement.startRa !== null && measurement.endRa !== null) {
-      // If we have RA/Dec coordinates, calculate angular distance
-      const angularDistance = this.astroUtilsService.calculateAngularDistance(
-        measurement.startRa,
-        measurement.startDec,
-        measurement.endRa,
-        measurement.endDec
-      );
-
-      // Convert to arcseconds and use consistent formatting
-      const arcseconds = angularDistance * 3600;
-
-      // Use the standardized astronomical angle formatter
-      measurement.distance = this.astroUtilsService.formatAstronomicalAngle(arcseconds);
-    } else {
-      measurement.distance = `${Math.round(pixelDistance)} px`;
-    }
-
-    // Update middle point for the distance label
-    measurement.midX = (measurement.startX + measurement.endX) / 2;
-    measurement.midY = (measurement.startY + measurement.endY) / 2;
-
-    // Update label positions
-    this.updateCoordinateLabelPositions(measurement);
   }
 
   /**
@@ -1208,8 +788,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this.isDraggingPoint || !this._dragInProgress || !this.isDraggingPoint.startsWith("prevShape")) {
       return;
     }
-
-    event.preventDefault();
 
     // Extract the index from the drag state string
     const parts = this.isDraggingPoint.split("-");
@@ -1383,8 +961,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this.isDraggingPoint || !this._dragInProgress || this.isDraggingPoint !== "currentShape") {
       return;
     }
-
-    event.preventDefault();
 
     if (!this.measureStartPoint || !this.measureEndPoint || !this.dragStartX || !this.dragStartY) {
       return;
@@ -2234,6 +1810,53 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   /**
+   * Share measurements by encoding them in URL
+   */
+  shareMeasurements(): void {
+    if (!this.isBrowser || this.previousMeasurements.length === 0) {
+      return;
+    }
+
+    try {
+      // Encode the measurements
+      const encodedData = this.encodeMeasurementsForUrl(this.previousMeasurements);
+
+      // Get the current URL and preserve the hash (important for fullscreen view)
+      const currentUrl = window.location.href;
+      const urlWithoutHash = currentUrl.split("#")[0];
+      const hash = currentUrl.includes("#") ? "#" + currentUrl.split("#")[1] : "";
+
+      // Create a new URL with the measurements parameter
+      const urlTree = this.router.createUrlTree([], {
+        relativeTo: this.activatedRoute,
+        queryParams: { measurements: encodedData },
+        queryParamsHandling: "merge"
+      });
+
+      // Combine everything to create the final URL
+      const shareUrl = window.location.origin + urlTree.toString() + hash;
+
+      // Copy the URL to clipboard
+      this.windowRefService.copyToClipboard(shareUrl).then(success => {
+        if (success) {
+          this.popNotificationsService.success(
+            this.translateService.instant("Share URL copied to clipboard. Send this URL to share your measurements.")
+          );
+        } else {
+          this.popNotificationsService.error(
+            this.translateService.instant("Failed to copy URL to clipboard.")
+          );
+        }
+      });
+    } catch (error) {
+      console.error("Failed to share measurements:", error);
+      this.popNotificationsService.error(
+        this.translateService.instant("Failed to create share URL.")
+      );
+    }
+  }
+
+  /**
    * Toggle the saved measurements panel visibility
    */
   toggleSavedMeasurements(event?: MouseEvent): void {
@@ -2396,7 +2019,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Open the modal
     try {
       const modalRef = this.modalService.open(SaveMeasurementModalComponent, {
-        keyboard: false,
+        keyboard: false
       });
       modalRef.componentInstance.measurementData = measurementData;
       modalRef.componentInstance.defaultName = defaultName;
@@ -3388,6 +3011,881 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     return y;
   }
 
+  /**
+   * Open a modal to export measurement coordinates
+   */
+  openExportMeasurementModal(event: MouseEvent, measurement: MeasurementData): void {
+    // Prevent the event from propagating to parent elements
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.isValidSolutionMatrix() || !measurement) {
+      return;
+    }
+
+    // Get the coordinates for all points of the measurement
+    let exportData = {
+      centerCoordinates: {
+        text: "N/A",
+        ra: null,
+        dec: null
+      },
+      corners: {
+        topLeft: {
+          text: "N/A",
+          ra: null,
+          dec: null
+        },
+        topRight: {
+          text: "N/A",
+          ra: null,
+          dec: null
+        },
+        bottomLeft: {
+          text: "N/A",
+          ra: null,
+          dec: null
+        },
+        bottomRight: {
+          text: "N/A",
+          ra: null,
+          dec: null
+        }
+      }
+    };
+
+    // Calculate center coordinates
+    const centerX = (measurement.startX + measurement.endX) / 2;
+    const centerY = (measurement.startY + measurement.endY) / 2;
+    const centerCoords = this.boundCalculateCoordinatesAtPoint(centerX, centerY);
+
+    if (centerCoords) {
+      exportData.centerCoordinates = {
+        text: this.coordinatesFormatter.formatCoordinatesVerbose(centerCoords.ra, centerCoords.dec),
+        ra: centerCoords.ra,
+        dec: centerCoords.dec
+      };
+    }
+
+    // For rectangle measurements, calculate the four corners
+    if (measurement.showRectangle) {
+      const minX = Math.min(measurement.startX, measurement.endX);
+      const maxX = Math.max(measurement.startX, measurement.endX);
+      const minY = Math.min(measurement.startY, measurement.endY);
+      const maxY = Math.max(measurement.startY, measurement.endY);
+
+      const topLeft = this.boundCalculateCoordinatesAtPoint(minX, minY);
+      const topRight = this.boundCalculateCoordinatesAtPoint(maxX, minY);
+      const bottomLeft = this.boundCalculateCoordinatesAtPoint(minX, maxY);
+      const bottomRight = this.boundCalculateCoordinatesAtPoint(maxX, maxY);
+
+      if (topLeft) {
+        exportData.corners.topLeft = {
+          text: this.coordinatesFormatter.formatCoordinatesVerbose(topLeft.ra, topLeft.dec),
+          ra: topLeft.ra,
+          dec: topLeft.dec
+        };
+      }
+
+      if (topRight) {
+        exportData.corners.topRight = {
+          text: this.coordinatesFormatter.formatCoordinatesVerbose(topRight.ra, topRight.dec),
+          ra: topRight.ra,
+          dec: topRight.dec
+        };
+      }
+
+      if (bottomLeft) {
+        exportData.corners.bottomLeft = {
+          text: this.coordinatesFormatter.formatCoordinatesVerbose(bottomLeft.ra, bottomLeft.dec),
+          ra: bottomLeft.ra,
+          dec: bottomLeft.dec
+        };
+      }
+
+      if (bottomRight) {
+        exportData.corners.bottomRight = {
+          text: this.coordinatesFormatter.formatCoordinatesVerbose(bottomRight.ra, bottomRight.dec),
+          ra: bottomRight.ra,
+          dec: bottomRight.dec
+        };
+      }
+    }
+
+    // Open the modal with the export data
+    const modalRef = this.modalService.open(ExportMeasurementModalComponent, {
+      centered: true,
+      size: "lg",
+      backdrop: true,
+      keyboard: false
+    });
+
+    modalRef.componentInstance.measurementData = exportData;
+    modalRef.componentInstance.windowRefService = this.windowRefService;
+    modalRef.componentInstance.translateService = this.translateService;
+    modalRef.componentInstance.coordinatesFormatter = this.coordinatesFormatter;
+  }
+
+  /**
+   * Validates that the event is within the image boundaries
+   */
+  private _validateMeasurementArea(event: MouseEvent): boolean {
+    // Ensure we're in browser environment before accessing DOM
+    if (!this.isBrowser) {
+      return false;
+    }
+
+    // Get the offset of the image element
+    const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+    if (!imageElement) {
+      return false;
+    }
+
+    // Check if the mouse down is within the bounds of the image
+    const imageRect = imageElement.getBoundingClientRect();
+    return !(
+      event.clientX < imageRect.left ||
+      event.clientX > imageRect.right ||
+      event.clientY < imageRect.top ||
+      event.clientY > imageRect.bottom
+    );
+  }
+
+  /**
+   * Reset the current measurement state for starting a new measurement
+   */
+  private _resetCurrentMeasurement(): void {
+    this.measureStartPoint = null;
+    this.measureEndPoint = null;
+    this.measureDistance = null;
+
+    // Reset resize warning state for new measurements
+    this.resetResizeWarningState();
+  }
+
+  /**
+   * Initialize the starting point for a measurement
+   */
+  private _initializeStartPoint(event: MouseEvent): void {
+    // Set the start point on mousedown
+    this.measureStartPoint = {
+      x: event.clientX,
+      y: event.clientY,
+      ra: null,
+      dec: null
+    };
+
+    // Emit event to signal measurement has started
+    this.measurementStarted.emit();
+
+    // Initialize mouse position to match the cursor position immediately
+    this.mouseX = event.clientX;
+    this.mouseY = event.clientY;
+
+    // Calculate celestial coordinates if possible
+    this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
+  }
+
+  /**
+   * Updates celestial coordinates for a measurement point
+   */
+  private _updatePointCelestialCoordinates(point: MeasurementPoint, x: number, y: number): void {
+    if (this.isValidSolutionMatrix()) {
+      const coords = this.boundCalculateCoordinatesAtPoint(x, y);
+      if (coords) {
+        point.ra = coords.ra;
+        point.dec = coords.dec;
+      } else {
+        // If we can't calculate coordinates, set to null
+        point.ra = null;
+        point.dec = null;
+      }
+    } else {
+      // If we don't have a valid solution matrix, set to null
+      point.ra = null;
+      point.dec = null;
+    }
+  }
+
+  /**
+   * Setup drag tracking and handlers for measurement creation
+   */
+  private _setupDragTracking(event: MouseEvent, startX: number, startY: number): void {
+    // Only set up DOM listeners in browser environment
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Keep track of whether we've moved enough to consider this a drag
+    let hasDraggedEnough = false;
+
+    // Track if we're in a drag operation (don't set flag yet)
+    let isDragging = false;
+
+    // Add mouse move event listener to track the mouse position
+    const mouseMoveHandler = (moveEvent: MouseEvent) => {
+      this._handleMeasurementDragMove(moveEvent, startX, startY, this.DRAG_THRESHOLD, hasDraggedEnough, isDragging);
+
+      // Update tracking variables based on movement
+      const dx = moveEvent.clientX - startX;
+      const dy = moveEvent.clientY - startY;
+      const distanceMoved = Math.sqrt(dx * dx + dy * dy);
+
+      // If we've moved enough, consider this a drag operation
+      if (distanceMoved >= this.DRAG_THRESHOLD) {
+        hasDraggedEnough = true;
+        isDragging = true;
+
+        // Set the drag flag to prevent the click handler from running
+        this._dragInProgress = true;
+      }
+    };
+
+    // Add mouse up event listener to complete the measurement
+    const mouseUpHandler = (upEvent: MouseEvent) => {
+      this._handleMeasurementDragEnd(upEvent, startX, startY, hasDraggedEnough, isDragging);
+
+      // Clean up event listeners
+      document.removeEventListener("mousemove", mouseMoveHandler);
+      document.removeEventListener("mouseup", mouseUpHandler);
+
+      // Reset drag state
+      this._dragInProgress = false;
+
+      // Small delay to prevent accidental double measurements
+      setTimeout(() => {
+        this._preventNextClick = false;
+      }, this.CLICK_PREVENTION_TIMEOUT_MS);
+    };
+
+    // Add the event listeners
+    document.addEventListener("mousemove", mouseMoveHandler);
+    document.addEventListener("mouseup", mouseUpHandler, { once: true });
+  }
+
+  /**
+   * Handle mouse movement during measurement drag
+   */
+  private _handleMeasurementDragMove(
+    moveEvent: MouseEvent,
+    startX: number,
+    startY: number,
+    dragThreshold: number,
+    hasDraggedEnough: boolean,
+    isDragging: boolean
+  ): void {
+    // Always update the mouse position for the dashed line preview
+    this.mouseX = moveEvent.clientX;
+    this.mouseY = moveEvent.clientY;
+  }
+
+  /**
+   * Handle the end of a measurement drag operation
+   */
+  private _handleMeasurementDragEnd(
+    upEvent: MouseEvent,
+    startX: number,
+    startY: number,
+    hasDraggedEnough: boolean,
+    isDragging: boolean
+  ): void {
+    // Calculate final distance moved
+    const dx = upEvent.clientX - startX;
+    const dy = upEvent.clientY - startY;
+    const distanceMoved = Math.sqrt(dx * dx + dy * dy);
+
+    // Only complete the measurement if we dragged far enough
+    if (hasDraggedEnough && isDragging) {
+      this._createEndPoint(upEvent);
+      this._finalizeMeasurement();
+      this._preventNextClick = true;
+    } else if (distanceMoved < this.DRAG_THRESHOLD) {
+      // If we didn't drag far enough, it's treated like a normal click
+      // Keep the start point set (so it appears immediately) but don't set end point
+      // The user can set the end point with a second click
+      this.measureEndPoint = null;
+    }
+  }
+
+  /**
+   * Create an end point for the measurement at the specified event position
+   */
+  private _createEndPoint(event: MouseEvent): void {
+    // Set the end point at the mouse up position
+    this.measureEndPoint = {
+      x: event.clientX,
+      y: event.clientY,
+      ra: null,
+      dec: null
+    };
+
+    // Calculate celestial coordinates if possible
+    this._updatePointCelestialCoordinates(this.measureEndPoint, event.clientX, event.clientY);
+  }
+
+  /**
+   * Handle a click when starting a new measurement (resetting previous one)
+   */
+  private _handleNewMeasurementClick(event: MouseEvent): void {
+    // Reset current measurement
+    this._resetCurrentMeasurement();
+
+    // Set first point immediately on this click
+    this.measureStartPoint = {
+      x: event.clientX,
+      y: event.clientY,
+      ra: null,
+      dec: null
+    };
+
+    // Initialize mouse position for dashed line display
+    this.mouseX = event.clientX;
+    this.mouseY = event.clientY;
+
+    // Calculate celestial coordinates if possible
+    this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
+  }
+
+  /**
+   * Handle the first click of a measurement to set the starting point
+   */
+  private _handleFirstPointClick(event: MouseEvent): void {
+    // Set start point
+    this.measureStartPoint = {
+      x: event.clientX,
+      y: event.clientY,
+      ra: null,
+      dec: null
+    };
+
+    // Emit event to signal measurement has started
+    this.measurementStarted.emit();
+
+    // Initialize mouse position for dashed line display
+    this.mouseX = event.clientX;
+    this.mouseY = event.clientY;
+
+    // Calculate celestial coordinates if possible
+    this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
+  }
+
+  /**
+   * Handle the second click of a measurement to set the ending point
+   */
+  private _handleSecondPointClick(event: MouseEvent): void {
+    // Set end point (for two-click measurements)
+    this._createEndPoint(event);
+
+    // Finalize the measurement
+    this._finalizeMeasurement();
+  }
+
+  /**
+   * Update the start point position during drag
+   */
+  private _updateDraggedStartPoint(event: MouseEvent): void {
+    if (!this.measureStartPoint) {
+      return;
+    }
+
+    // Update point position
+    this.measureStartPoint.x = event.clientX + this.dragOffsetX;
+    this.measureStartPoint.y = event.clientY + this.dragOffsetY;
+
+    // Update celestial coordinates
+    if (this.isValidSolutionMatrix()) {
+      // Account for rotation when calculating coordinates during drag
+      const coords = this.boundCalculateCoordinatesAtPoint(
+        event.clientX + this.dragOffsetX,
+        event.clientY + this.dragOffsetY,
+        true
+      );
+
+      if (coords) {
+        this.measureStartPoint.ra = coords.ra;
+        this.measureStartPoint.dec = coords.dec;
+      }
+    }
+
+    // Recalculate distance if we have an end point
+    if (this.measureEndPoint) {
+      this._recalculateMeasurementDistance();
+    }
+  }
+
+  /**
+   * Update the end point position during drag
+   */
+  private _updateDraggedEndPoint(event: MouseEvent): void {
+    if (!this.measureEndPoint) {
+      return;
+    }
+
+    // Update point position
+    this.measureEndPoint.x = event.clientX + this.dragOffsetX;
+    this.measureEndPoint.y = event.clientY + this.dragOffsetY;
+
+    // Update celestial coordinates
+    if (this.isValidSolutionMatrix()) {
+      // Account for rotation when calculating coordinates during drag
+      const coords = this.boundCalculateCoordinatesAtPoint(
+        event.clientX + this.dragOffsetX,
+        event.clientY + this.dragOffsetY,
+        true
+      );
+
+      if (coords) {
+        this.measureEndPoint.ra = coords.ra;
+        this.measureEndPoint.dec = coords.dec;
+      }
+    }
+
+    // Recalculate distance if we have a start point
+    if (this.measureStartPoint) {
+      this._recalculateMeasurementDistance();
+    }
+  }
+
+  /**
+   * Recalculate the measurement distance after point movement
+   */
+  private _recalculateMeasurementDistance(): void {
+    if (!this.measureStartPoint || !this.measureEndPoint) {
+      return;
+    }
+
+    // Calculate pixel distance
+    const pixelDistance = this.calculateDistance(
+      this.measureStartPoint.x,
+      this.measureStartPoint.y,
+      this.measureEndPoint.x,
+      this.measureEndPoint.y
+    );
+
+    // Format the distance based on whether we have valid celestial coordinates
+    if (this.isValidSolutionMatrix() &&
+      this.measureStartPoint.ra !== null &&
+      this.measureEndPoint.ra !== null) {
+      this.measureDistance = this.formatAngularDistance(pixelDistance);
+    } else {
+      this.measureDistance = `${Math.round(pixelDistance)} px`;
+    }
+  }
+
+  /**
+   * Update label positions for start and end points
+   */
+  private _updateLabelPositions(): void {
+    if (this.measureStartPoint && this.measureEndPoint) {
+      const startLabelX = this.calculateStartLabelX();
+      const startLabelY = this.calculateStartLabelY();
+      const endLabelX = this.calculateEndLabelX();
+      const endLabelY = this.calculateEndLabelY();
+    }
+  }
+
+  /**
+   * Extract measurement info from the drag state
+   */
+  private _getPreviousMeasurementInfo(): { measurement: MeasurementData, index: number, pointType: string } | null {
+    const parts = this.isDraggingPoint.split("-");
+    const index = parseInt(parts[1], 10);
+
+    if (isNaN(index) || index < 0 || index >= this.previousMeasurements.length) {
+      return null;
+    }
+
+    const measurement = this.previousMeasurements[index];
+    const pointType = this.isDraggingPoint.startsWith("prevStart") ? "start" : "end";
+
+    return { measurement, index, pointType };
+  }
+
+  /**
+   * Update the start point of a previous measurement
+   */
+  private _updatePreviousMeasurementStartPoint(measurement: MeasurementData, event: MouseEvent): void {
+    measurement.startX = event.clientX + this.dragOffsetX;
+    measurement.startY = event.clientY + this.dragOffsetY;
+
+    // Update celestial coordinates if we have valid plate solution data
+    if (this.isValidSolutionMatrix()) {
+      // Account for rotation when calculating coordinates
+      const coords = this.boundCalculateCoordinatesAtPoint(
+        event.clientX + this.dragOffsetX,
+        event.clientY + this.dragOffsetY,
+        true
+      );
+
+      if (coords) {
+        measurement.startRa = coords.ra;
+        measurement.startDec = coords.dec;
+      }
+    }
+  }
+
+  /**
+   * Update the end point of a previous measurement
+   */
+  private _updatePreviousMeasurementEndPoint(measurement: MeasurementData, event: MouseEvent): void {
+    measurement.endX = event.clientX + this.dragOffsetX;
+    measurement.endY = event.clientY + this.dragOffsetY;
+
+    // Update celestial coordinates if we have valid plate solution data
+    if (this.isValidSolutionMatrix()) {
+      // Account for rotation when calculating coordinates
+      const coords = this.boundCalculateCoordinatesAtPoint(
+        event.clientX + this.dragOffsetX,
+        event.clientY + this.dragOffsetY,
+        true
+      );
+
+      if (coords) {
+        measurement.endRa = coords.ra;
+        measurement.endDec = coords.dec;
+      }
+    }
+  }
+
+  /**
+   * Update shared properties for a measurement after point movement
+   */
+  private _updatePreviousMeasurementProperties(measurement: MeasurementData): void {
+    // Update distance calculation
+    const pixelDistance = this.calculateDistance(
+      measurement.startX,
+      measurement.startY,
+      measurement.endX,
+      measurement.endY
+    );
+
+    // Format the distance based on whether we have valid celestial coordinates
+    if (this.isValidSolutionMatrix() && measurement.startRa !== null && measurement.endRa !== null) {
+      // If we have RA/Dec coordinates, calculate angular distance
+      const angularDistance = this.astroUtilsService.calculateAngularDistance(
+        measurement.startRa,
+        measurement.startDec,
+        measurement.endRa,
+        measurement.endDec
+      );
+
+      // Convert to arcseconds and use consistent formatting
+      const arcseconds = angularDistance * 3600;
+
+      // Use the standardized astronomical angle formatter
+      measurement.distance = this.astroUtilsService.formatAstronomicalAngle(arcseconds);
+    } else {
+      measurement.distance = `${Math.round(pixelDistance)} px`;
+    }
+
+    // Update middle point for the distance label
+    measurement.midX = (measurement.startX + measurement.endX) / 2;
+    measurement.midY = (measurement.startY + measurement.endY) / 2;
+
+    // Update label positions
+    this.updateCoordinateLabelPositions(measurement);
+  }
+
+  /**
+   * Encode measurements for URL sharing
+   * We'll create a compact representation with only the necessary fields
+   */
+  private encodeMeasurementsForUrl(measurements: MeasurementData[]): string {
+    // Create a minimal representation of each measurement
+    const minimalMeasurements = measurements.map(m => {
+      return {
+        // Required for positioning
+        sX: Math.round(m.startX),
+        sY: Math.round(m.startY),
+        eX: Math.round(m.endX),
+        eY: Math.round(m.endY),
+
+        // Optional celestial coordinates (if available)
+        sRa: m.startRa !== null ? Number(m.startRa.toFixed(6)) : null,
+        sDec: m.startDec !== null ? Number(m.startDec.toFixed(6)) : null,
+        eRa: m.endRa !== null ? Number(m.endRa.toFixed(6)) : null,
+        eDec: m.endDec !== null ? Number(m.endDec.toFixed(6)) : null,
+
+        // Display options
+        sC: m.showCircle || false,
+        sR: m.showRectangle || false,
+
+        // Optional metadata (only if present)
+        n: m.name || undefined,
+        no: m.notes || undefined
+      };
+    });
+
+    // JSON stringify and compress using base64 encoding
+    return btoa(JSON.stringify(minimalMeasurements));
+  }
+
+  /**
+   * Load measurements from URL parameter
+   */
+  private loadMeasurementsFromUrl(encodedData: string): void {
+    // First, try to decode the data to avoid delays if it's invalid
+    let measurementsData;
+    try {
+      // Make sure the loading state is set
+      this.showLoadingIndicator();
+      measurementsData = JSON.parse(atob(encodedData));
+      if (!Array.isArray(measurementsData)) {
+        throw new Error("Invalid measurements data format");
+      }
+    } catch (e) {
+      console.error("Failed to decode measurements:", e);
+      this.popNotificationsService.error(
+        this.translateService.instant("Failed to load shared measurements from URL: {{message}}", 
+          { message: "Could not decode measurement data. The URL may be incomplete or invalid." })
+      );
+      this.hideLoadingIndicator();
+      return;
+    }
+
+    // Function to process and load the measurements
+    const processAndLoadMeasurements = () => {
+      try {
+        // Safety check for the solution matrix
+        if (!this.isValidSolutionMatrix()) {
+          console.warn("Solution matrix not ready yet during measurement loading");
+        }
+
+        // Clear existing measurements
+        this.previousMeasurements = [];
+
+        if (measurementsData.length === 0) {
+          return; // Nothing to load
+        }
+
+        // Reconstruct each measurement
+        measurementsData.forEach(m => {
+          // Validate required fields
+          if (typeof m.sX !== "number" || typeof m.sY !== "number" ||
+            typeof m.eX !== "number" || typeof m.eY !== "number") {
+            console.warn("Skipping invalid measurement with missing coordinates");
+            return;
+          }
+
+          // Create a full measurement data object from the data
+          let startX, startY, endX, endY;
+          
+          // We'll try to use celestial coordinates if possible, but we need to handle the case
+          // where the coordinates can't be accurately converted to pixels
+
+          // Get the image element for reference
+          let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img") as HTMLElement;
+          if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
+            imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img") as HTMLElement;
+          }
+          
+          // If we don't have a valid image element, we can't properly place the measurement
+          if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
+            console.warn("No valid image element found, cannot place measurement");
+            return;
+          }
+          
+          // Get the center coordinates from the image element
+          const centerX = imageElement.getBoundingClientRect().width / 2;
+          const centerY = imageElement.getBoundingClientRect().height / 2;
+          
+          // If we have valid celestial coordinates and a solution matrix, use them to position the measurement
+          if (this.isValidSolutionMatrix() && 
+              m.sRa !== null && m.sDec !== null && 
+              m.eRa !== null && m.eDec !== null) {
+            try {
+              console.debug("Using celestial coordinates to position measurement:", 
+                `Start: RA=${m.sRa.toFixed(6)}, Dec=${m.sDec.toFixed(6)}`,
+                `End: RA=${m.eRa.toFixed(6)}, Dec=${m.eDec.toFixed(6)}`);
+              
+              // Calculate pixel positions for start and end points using recursive search with the solution
+              const startPoint = this.astroUtilsService.calculatePixelPositionFromCoordinates(
+                m.sRa, m.sDec, 
+                this.advancedSolutionMatrix,
+                imageElement
+              );
+              
+              const endPoint = this.astroUtilsService.calculatePixelPositionFromCoordinates(
+                m.eRa, m.eDec,
+                this.advancedSolutionMatrix,
+                imageElement
+              );
+              
+              console.debug("Calculated positions:", 
+                startPoint ? `Start(${startPoint.x.toFixed(1)}, ${startPoint.y.toFixed(1)})` : "Start(null)", 
+                endPoint ? `End(${endPoint.x.toFixed(1)}, ${endPoint.y.toFixed(1)})` : "End(null)");
+              
+              // If we successfully calculated both positions, use them
+              if (startPoint && endPoint) {
+                startX = startPoint.x;
+                startY = startPoint.y;
+                endX = endPoint.x;
+                endY = endPoint.y;
+                console.debug("Positioned measurement using celestial coordinates at:", 
+                  `Start: (${startX.toFixed(1)}, ${startY.toFixed(1)})`,
+                  `End: (${endX.toFixed(1)}, ${endY.toFixed(1)})`);
+              } else {
+                // Fall back to using the angular distance to create a properly sized measurement
+                console.debug("Could not calculate pixel positions directly, using angular distance instead");
+                
+                // Get the angular distance between the points
+                const angularDistance = this.astroUtilsService.calculateAngularDistance(
+                  m.sRa, m.sDec, m.eRa, m.eDec
+                );
+                
+                // Convert to arcseconds
+                const arcseconds = angularDistance * 3600;
+                console.debug(`Angular distance: ${angularDistance.toFixed(6)}° (${arcseconds.toFixed(2)} arcsec)`);
+                
+                // Create a line of the proper length (this preserves the measurement size)
+                let scale = 100; // Default fallback length in pixels
+                
+                // Get the pixel scale from the solution
+                if (this.solution) {
+                  const pixscale = this.astroUtilsService.getPixelScale(this.solution);
+                  if (pixscale > 0) {
+                    scale = arcseconds / pixscale;
+                    console.debug(`Using pixel scale: ${pixscale.toFixed(2)} arcsec/pixel, resulting length: ${scale.toFixed(1)} pixels`);
+                  }
+                }
+                
+                // Create a horizontal line starting from center with the correct length
+                startX = centerX - scale / 2;
+                startY = centerY;
+                endX = centerX + scale / 2;
+                endY = centerY;
+                console.debug("Positioned measurement at center with correct angular size:", 
+                  `Center at (${centerX.toFixed(1)}, ${centerY.toFixed(1)}), length: ${scale.toFixed(1)} pixels`);
+              }
+              
+              console.log("Created measurement with proper angular size at center of image");
+            } catch (e) {
+              // Fall back to pixel positions if anything goes wrong
+              startX = m.sX;
+              startY = m.sY;
+              endX = m.eX;
+              endY = m.eY;
+              console.warn("Error creating measurement from celestial coordinates:", e);
+            }
+          } else {
+            // Fall back to pixel positions
+            startX = m.sX;
+            startY = m.sY;
+            endX = m.eX;
+            endY = m.eY;
+            console.log("Using pixel positions (no coordinates or solution matrix)");
+          }
+          
+          const measurement: MeasurementData = {
+            startX,
+            startY,
+            endX,
+            endY,
+            midX: (startX + endX) / 2,
+            midY: (startY + endY) / 2,
+            timestamp: Date.now(),
+            distance: this.calculateDistanceText(startX, startY, endX, endY, m.sRa, m.sDec, m.eRa, m.eDec),
+            startRa: m.sRa,
+            startDec: m.sDec,
+            endRa: m.eRa,
+            endDec: m.eDec,
+            showCircle: Boolean(m.sC),
+            showRectangle: Boolean(m.sR),
+            name: m.n || "",
+            notes: m.no || "",
+
+            // Initialize label positions
+            startLabelX: 0,
+            startLabelY: 0,
+            endLabelX: 0,
+            endLabelY: 0
+          };
+
+          // Calculate label positions (same logic as in updateCoordinateLabelPositions)
+          this.updateCoordinateLabelPositions(measurement);
+
+          // Add to previous measurements
+          this.previousMeasurements.push(measurement);
+        });
+
+        if (this.previousMeasurements.length > 0) {
+          // Show success notification
+          this.popNotificationsService.success(
+            this.translateService.instant("Loaded {{count}} shared measurements.", { count: this.previousMeasurements.length })
+          );
+        }
+        
+        // Clear loading indicator
+        this.hideLoadingIndicator();
+
+        // Update view
+        this.cdRef.markForCheck();
+      } catch (error) {
+        console.error("Failed to process measurements:", error);
+        this.popNotificationsService.error(
+          this.translateService.instant("Failed to load shared measurements from URL: {{message}}", { message: error.message })
+        );
+        // Clear loading indicator on error
+        this.hideLoadingIndicator();
+      }
+    };
+
+    // Implement a retry mechanism for solution matrix initialization
+    const attemptWithRetry = (retryCount = 0, maxRetries = 5) => {
+      // If solution matrix is valid, process immediately
+      if (this.isValidSolutionMatrix()) {
+        processAndLoadMeasurements();
+        return;
+      }
+      
+      // If we've exceeded max retries, try to process anyway
+      if (retryCount >= maxRetries) {
+        console.warn(`Solution matrix not ready after ${maxRetries} attempts. Trying to load measurements anyway.`);
+        processAndLoadMeasurements();
+        return;
+      }
+      
+      // Otherwise retry after a delay, with exponential backoff
+      console.log(`Solution matrix not ready, retry attempt ${retryCount + 1} of ${maxRetries}`);
+      setTimeout(() => {
+        attemptWithRetry(retryCount + 1, maxRetries);
+      }, 300 * Math.pow(1.5, retryCount)); // Exponential backoff starting at 300ms
+    };
+    
+    // Start the retry process
+    attemptWithRetry();
+  }
+
+  /**
+   * Helper method to calculate the displayed distance text
+   */
+  private calculateDistanceText(
+    startX: number, startY: number, endX: number, endY: number,
+    startRa: number | null, startDec: number | null,
+    endRa: number | null, endDec: number | null
+  ): string {
+    // Calculate pixel distance
+    const pixelDistance = Math.round(
+      Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2))
+    );
+
+    // If we have valid coordinates and solution matrix, calculate angular distance
+    if (this.isValidSolutionMatrix() &&
+      startRa !== null && startDec !== null &&
+      endRa !== null && endDec !== null) {
+      const angularDistance = this.astroUtilsService.calculateAngularDistance(
+        startRa, startDec, endRa, endDec
+      );
+
+      // Convert to arcseconds and format
+      const arcseconds = angularDistance * 3600;
+      return this.astroUtilsService.formatAstronomicalAngle(arcseconds);
+    }
+
+    // Fallback to pixel distance
+    return `${pixelDistance} px`;
+  }
+
   // Helper method to detect collisions between labels
   private doLabelsOverlap(label1: LabelBoundingBox, label2: LabelBoundingBox): boolean {
     return (
@@ -3453,6 +3951,126 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    */
   private isValidSolutionMatrix(): boolean {
     return this.astroUtilsService.isValidSolutionMatrix(this.advancedSolutionMatrix);
+  }
+  
+  /**
+   * Shows the loading indicator with guaranteed visibility
+   * This method ensures the loading indicator appears through multiple
+   * change detection strategies
+   */
+  private showLoadingIndicator(): void {
+    // Set the flag
+    this.loadingUrlMeasurements = true;
+    console.debug("Setting loadingUrlMeasurements=true via showLoadingIndicator()");
+    
+    // Force immediate change detection
+    this.cdRef.markForCheck();
+    this.cdRef.detectChanges();
+    
+    // As a fallback, also ensure the indicator stays visible for at least a minimum time
+    // This helps users see it even if operations finish very quickly
+    setTimeout(() => {
+      // Ensure the indicator is still shown by forcing another change detection cycle
+      if (this.loadingUrlMeasurements) {
+        console.debug("Refreshing loading indicator visibility");
+        this.cdRef.markForCheck();
+        this.cdRef.detectChanges();
+      }
+    }, 100);
+  }
+  
+  /**
+   * Hides the loading indicator with guaranteed update
+   */
+  private hideLoadingIndicator(): void {
+    this.loadingUrlMeasurements = false;
+    console.debug("Setting loadingUrlMeasurements=false via hideLoadingIndicator()");
+    
+    // Force change detection
+    this.cdRef.markForCheck();
+    this.cdRef.detectChanges();
+  }
+  
+  /**
+   * Calculate the center coordinates of the image using the solution information
+   * Returns the center RA (in hours) and Dec (in degrees) if available
+   */
+  private calculateCenterCoordinates(): { ra: number; dec: number } | null {
+    try {
+      // First try to get center coordinates from the solution if available
+      if (this.solution) {
+        if (this.solution.ra !== undefined && this.solution.dec !== undefined) {
+          // These could be string or number, make sure to parse to number
+          const ra = parseFloat(String(this.solution.ra)) / 15; // Convert from degrees to hours
+          const dec = parseFloat(String(this.solution.dec));
+          console.debug(`Using solution center coordinates: RA=${ra.toFixed(4)}h, Dec=${dec.toFixed(4)}°`);
+          return { ra, dec };
+        }
+      }
+      
+      // If no direct center coordinates, try to calculate center from image dimensions
+      if (this.isValidSolutionMatrix() && this.imageElement?.nativeElement) {
+        const imageElement = this.imageElement.nativeElement.querySelector(".ngxImageZoomFullContainer img") as HTMLElement || 
+                            this.imageElement.nativeElement.querySelector(".ngxImageZoomContainer img") as HTMLElement;
+        
+        if (imageElement) {
+          const centerX = imageElement.getBoundingClientRect().width / 2;
+          const centerY = imageElement.getBoundingClientRect().height / 2;
+          
+          // Calculate coordinates at the center point
+          const centerCoords = this.astroUtilsService.calculateCoordinatesAtPoint(
+            centerX, centerY, this.advancedSolutionMatrix, imageElement
+          );
+          
+          if (centerCoords) {
+            console.debug(`Calculated center coordinates: RA=${centerCoords.ra.toFixed(4)}h, Dec=${centerCoords.dec.toFixed(4)}°`);
+            return centerCoords;
+          }
+        }
+      }
+      
+      // Fallback to reasonable defaults
+      console.debug("Using default center coordinates: RA=12h, Dec=0°");
+      return { ra: 12, dec: 0 }; // Default to 12h RA, 0° Dec
+    } catch (error) {
+      console.error("Error calculating center coordinates:", error);
+      return null;
+    }
+  }
+  
+  /**
+   * Calculate pixel position from celestial coordinates using the solution matrix
+   * This is the inverse operation of calculateCoordinatesAtPoint
+   */
+  private _calculatePixelPositionFromCoordinates(ra: number, dec: number): { x: number, y: number } | null {
+    // Ensure we have a valid solution matrix
+    if (!this.isValidSolutionMatrix()) {
+      return null;
+    }
+    
+    try {
+      // Find the image element to get its dimensions
+      let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
+      if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
+        imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+      }
+      
+      if (!imageElement) {
+        console.warn("Image element not found for coordinate conversion");
+        return null;
+      }
+      
+      // Get the pixel position from the astro utils service
+      return this.astroUtilsService.calculatePixelPositionFromCoordinates(
+        ra, 
+        dec,
+        this.advancedSolutionMatrix,
+        imageElement as HTMLElement
+      );
+    } catch (error) {
+      console.error("Error converting coordinates to pixels:", error);
+      return null;
+    }
   }
 
   // Helper function to stabilize floating point values
@@ -3637,120 +4255,5 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Force change detection to ensure the modal appears immediately
     this.cdRef.detectChanges();
-  }
-
-  /**
-   * Open a modal to export measurement coordinates
-   */
-  openExportMeasurementModal(event: MouseEvent, measurement: MeasurementData): void {
-    // Prevent the event from propagating to parent elements
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (!this.isValidSolutionMatrix() || !measurement) {
-      return;
-    }
-
-    // Get the coordinates for all points of the measurement
-    let exportData = {
-      centerCoordinates: {
-        text: "N/A",
-        ra: null,
-        dec: null
-      },
-      corners: {
-        topLeft: {
-          text: "N/A",
-          ra: null,
-          dec: null
-        },
-        topRight: {
-          text: "N/A",
-          ra: null,
-          dec: null
-        },
-        bottomLeft: {
-          text: "N/A",
-          ra: null,
-          dec: null
-        },
-        bottomRight: {
-          text: "N/A",
-          ra: null,
-          dec: null
-        }
-      }
-    };
-
-    // Calculate center coordinates
-    const centerX = (measurement.startX + measurement.endX) / 2;
-    const centerY = (measurement.startY + measurement.endY) / 2;
-    const centerCoords = this.boundCalculateCoordinatesAtPoint(centerX, centerY);
-
-    if (centerCoords) {
-      exportData.centerCoordinates = {
-        text: this.coordinatesFormatter.formatCoordinatesVerbose(centerCoords.ra, centerCoords.dec),
-        ra: centerCoords.ra,
-        dec: centerCoords.dec
-      };
-    }
-
-    // For rectangle measurements, calculate the four corners
-    if (measurement.showRectangle) {
-      const minX = Math.min(measurement.startX, measurement.endX);
-      const maxX = Math.max(measurement.startX, measurement.endX);
-      const minY = Math.min(measurement.startY, measurement.endY);
-      const maxY = Math.max(measurement.startY, measurement.endY);
-
-      const topLeft = this.boundCalculateCoordinatesAtPoint(minX, minY);
-      const topRight = this.boundCalculateCoordinatesAtPoint(maxX, minY);
-      const bottomLeft = this.boundCalculateCoordinatesAtPoint(minX, maxY);
-      const bottomRight = this.boundCalculateCoordinatesAtPoint(maxX, maxY);
-
-      if (topLeft) {
-        exportData.corners.topLeft = {
-          text: this.coordinatesFormatter.formatCoordinatesVerbose(topLeft.ra, topLeft.dec),
-          ra: topLeft.ra,
-          dec: topLeft.dec
-        };
-      }
-
-      if (topRight) {
-        exportData.corners.topRight = {
-          text: this.coordinatesFormatter.formatCoordinatesVerbose(topRight.ra, topRight.dec),
-          ra: topRight.ra,
-          dec: topRight.dec
-        };
-      }
-
-      if (bottomLeft) {
-        exportData.corners.bottomLeft = {
-          text: this.coordinatesFormatter.formatCoordinatesVerbose(bottomLeft.ra, bottomLeft.dec),
-          ra: bottomLeft.ra,
-          dec: bottomLeft.dec
-        };
-      }
-
-      if (bottomRight) {
-        exportData.corners.bottomRight = {
-          text: this.coordinatesFormatter.formatCoordinatesVerbose(bottomRight.ra, bottomRight.dec),
-          ra: bottomRight.ra,
-          dec: bottomRight.dec
-        };
-      }
-    }
-
-    // Open the modal with the export data
-    const modalRef = this.modalService.open(ExportMeasurementModalComponent, {
-      centered: true,
-      size: 'lg',
-      backdrop: true,
-      keyboard: false
-    });
-
-    modalRef.componentInstance.measurementData = exportData;
-    modalRef.componentInstance.windowRefService = this.windowRefService;
-    modalRef.componentInstance.translateService = this.translateService;
-    modalRef.componentInstance.coordinatesFormatter = this.coordinatesFormatter;
   }
 }
