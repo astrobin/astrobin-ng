@@ -21,7 +21,7 @@ body {
       pointer-events: none;
     }
   }
-  
+
   &.image-viewer-closing {
     astrobin-root {
       // Show the content with a fade-in animation
@@ -57,7 +57,7 @@ body {
     content: " \2729";
     font-size: 2.5rem;
     transform-origin: 50% 55%;
-    animation: spin-and-pulse 2s infinite;
+    animation: spin-and-pulse 2s steps(60) infinite;
     text-shadow: 0 0 8px rgba(255, 255, 255, .75);
   }
 }

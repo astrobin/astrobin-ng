@@ -90,32 +90,6 @@ astrobin-toggle-property {
     line-height: 1.5rem;
   }
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    border: 0;
-    margin: 0;
-    background-image: linear-gradient(
-        -45deg,
-        rgba(255, 255, 255, 0.1) 25%,
-        transparent 25%,
-        transparent 50%,
-        rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0.1) 75%,
-        transparent 75%,
-        transparent
-    );
-    background-size: 25px 25px;
-    animation: slide 5s linear infinite;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity .5s ease;
-  }
-
   &.loading {
     pointer-events: none;
     overflow: hidden;
@@ -160,7 +134,30 @@ astrobin-toggle-property {
     }
 
     &:not(.btn-link):before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      border: 0;
+      margin: 0;
+      background-image: linear-gradient(
+          -45deg,
+          rgba(255, 255, 255, 0.1) 25%,
+          transparent 25%,
+          transparent 50%,
+          rgba(255, 255, 255, 0.1) 50%,
+          rgba(255, 255, 255, 0.1) 75%,
+          transparent 75%,
+          transparent
+      );
+      background-size: 25px 25px;
+      animation: slide 5s steps(60) infinite;
+      pointer-events: none;
       opacity: 1;
+      transition: opacity .5s ease;
+      transform: translateZ(0);
     }
   }
 

@@ -19,7 +19,7 @@
           transparent
       );
       background-size: 25px 25px;
-      animation: slide 5s linear infinite;
+      animation: slide 5s steps(60) infinite;
     }
 
     .search-form {
