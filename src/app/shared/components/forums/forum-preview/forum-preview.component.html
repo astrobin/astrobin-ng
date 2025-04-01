@@ -53,14 +53,14 @@
             <div class="started">
               <a [routerLink]="['/u', topic.username]">{{ topic.displayName }}</a>&middot;
               <abbr [attr.title]="topic.created | localDate">
-                {{ topic.created | localDate | timeago: true }}
+                {{ topic.created | localDate | timeago }}
               </abbr>
             </div>
             <div class="last-post">
               {{ "Last post by" | translate }}
               <a [routerLink]="['/u', topic.lastPostUsername]">{{ topic.lastPostUserDisplayName }}</a>&middot;
               <abbr [attr.title]="topic.lastPostTimestamp | localDate">
-                {{ topic.lastPostTimestamp | localDate | timeago: true }}
+                {{ topic.lastPostTimestamp | localDate | timeago }}
               </abbr>
             </div>
           </div>

@@ -164,11 +164,11 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                     {{ like.displayName || like.username }}
                   </a>
                   <div class="d-xl-none">
-                    {{ like.timestamp | localDate | timeago: true }}
+                    {{ like.timestamp | localDate | timeago }}
                   </div>
                 </td>
                 <td class="d-none d-xl-table-cell">
-                  {{ like.timestamp | localDate | timeago: true }}
+                  {{ like.timestamp | localDate | timeago }}
                 </td>
                 <td class="text-end">
                   <astrobin-toggle-property
@@ -237,11 +237,11 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                     {{ bookmark.displayName || bookmark.username }}
                   </a>
                   <div class="d-xl-none">
-                    {{ bookmark.timestamp | localDate | timeago: true }}
+                    {{ bookmark.timestamp | localDate | timeago }}
                   </div>
                 </td>
                 <td class="d-none d-xl-table-cell">
-                  {{ bookmark.timestamp | localDate | timeago: true }}
+                  {{ bookmark.timestamp | localDate | timeago }}
                 </td>
                 <td class="text-end">
                   <astrobin-toggle-property

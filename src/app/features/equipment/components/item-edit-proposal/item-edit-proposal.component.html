@@ -14,7 +14,7 @@
       <span [class]="editProposal.editProposalReviewStatus?.toLowerCase() || 'pending'" class="col-4 col-lg-3 status">
         {{ reviewStatusText }}
       </span>
-      <span class="col-3 d-none d-lg-inline timeago">{{ editProposal.created | localDate | timeago: true }}</span>
+      <span class="col-3 d-none d-lg-inline timeago">{{ editProposal.created | localDate | timeago }}</span>
     </div>
   </div>
 

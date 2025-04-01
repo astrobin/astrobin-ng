@@ -186,7 +186,7 @@
         <h5>
           {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.COMMUNITY_NOTES) }}
         </h5>
-        <div *ngIf="(item.communityNotes | BBCodeToHtml) | async as html; else communityNotesLoading" 
+        <div *ngIf="(item.communityNotes | BBCodeToHtml) | async as html; else communityNotesLoading"
              [innerHTML]="html" class="community-notes-content"></div>
         <ng-template #communityNotesLoading>
           <div class="community-notes-content">
@@ -219,7 +219,7 @@
         <p *ngIf="item.createdBy">
           <strong>{{ "Created by" | translate }}:</strong>
           <astrobin-username [user]="createdBy$ | async"></astrobin-username>
-          <abbr [attr.title]="item.created | localDate"> ({{ item.created | localDate | timeago: true }}) </abbr>
+          <abbr [attr.title]="item.created | localDate"> ({{ item.created | localDate | timeago }}) </abbr>
         </p>
 
         <p *ngIf="!item.reviewerDecision">
@@ -243,13 +243,13 @@
           <strong>{{ "Reviewed by" | translate }}:</strong>
           <astrobin-username [user]="reviewedBy$ | async"></astrobin-username>
           <abbr *ngIf="item.reviewedTimestamp" [attr.title]="item.reviewedTimestamp | localDate">
-            ({{ item.reviewedTimestamp | localDate | timeago: true }})
+            ({{ item.reviewedTimestamp | localDate | timeago }})
           </abbr>
         </p>
         <p *ngIf="lastUpdateVisible">
           <strong>{{ "Last update" | translate }}:</strong>
           <abbr [attr.title]="item.updated | localDate">
-            {{ item.updated | localDate | timeago: true }}
+            {{ item.updated | localDate | timeago }}
           </abbr>
         </p>
       </div>

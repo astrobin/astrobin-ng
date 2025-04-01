@@ -130,7 +130,7 @@
 
   <ng-template #createdTemplate let-notification>
     <abbr [attr.title]="notification.created | localDate" class="no-wrap">
-      {{ notification.created | localDate | timeago:true }}
+      {{ notification.created | localDate | timeago }}
     </abbr>
   </ng-template>
 
