@@ -583,4 +583,156 @@ export class CoordinatesFormatterService {
     );
   }
 
+  /**
+   * Format RA/Dec coordinates in verbose text format for export
+   * @param ra Right ascension in degrees or hours
+   * @param dec Declination in degrees
+   * @param format Optional format specification ('sexagesimal', 'decimal', 'hms_dms')
+   * @returns String with formatted coordinates
+   */
+  formatCoordinatesVerbose(ra: number, dec: number, format: string = 'sexagesimal'): string {
+    if (ra === null || dec === null) {
+      return "N/A";
+    }
+    
+    // Convert RA from degrees to hours if needed (RA is typically in hours, 0-24)
+    // If ra > 24, assume it's in degrees and convert
+    const raHours = ra > 24 ? ra / 15 : ra;
+    
+    // Format based on the requested format
+    switch (format) {
+      case 'decimal':
+        // Simple decimal format - keep 6 decimals for precision
+        return `${raHours.toFixed(6)}h, ${dec >= 0 ? '+' : ''}${dec.toFixed(6)}°`;
+        
+      case 'hms_dms':
+        // HMS/DMS format without symbols
+        // Calculate HMS components
+        const raHoursInt = Math.floor(raHours);
+        const raMinutesFull = (raHours - raHoursInt) * 60;
+        const raMinutesInt = Math.floor(raMinutesFull);
+        const raSecondsFull = (raMinutesFull - raMinutesInt) * 60;
+        const raSecondsRounded = Math.round(raSecondsFull);
+        
+        // Handle carryover when seconds round up to 60
+        let finalRaHours = raHoursInt;
+        let finalRaMinutes = raMinutesInt;
+        let finalRaSeconds = raSecondsRounded;
+
+        if (finalRaSeconds >= 60) {
+          finalRaSeconds = 0;
+          finalRaMinutes += 1;
+          
+          if (finalRaMinutes >= 60) {
+            finalRaMinutes = 0;
+            finalRaHours += 1;
+            
+            if (finalRaHours >= 24) {
+              finalRaHours = 0;
+            }
+          }
+        }
+        
+        // Calculate DMS components
+        const decDegrees = Math.abs(dec);
+        const decSign = dec >= 0 ? "+" : "-";
+        const decDegreesInt = Math.floor(decDegrees);
+        const decMinutesFull = (decDegrees - decDegreesInt) * 60;
+        const decMinutesInt = Math.floor(decMinutesFull);
+        const decSecondsFull = (decMinutesFull - decMinutesInt) * 60;
+        const decSecondsRounded = Math.round(decSecondsFull);
+        
+        // Handle carryover when seconds round up to 60
+        let finalDecDegrees = decDegreesInt;
+        let finalDecMinutes = decMinutesInt;
+        let finalDecSeconds = decSecondsRounded;
+
+        if (finalDecSeconds >= 60) {
+          finalDecSeconds = 0;
+          finalDecMinutes += 1;
+          
+          if (finalDecMinutes >= 60) {
+            finalDecMinutes = 0;
+            finalDecDegrees += 1;
+          }
+        }
+        
+        // Format the values with proper padding - use the final values with carryover handling
+        const paddedRaHours = finalRaHours.toString().padStart(2, "0");
+        const paddedRaMinutes = finalRaMinutes.toString().padStart(2, "0");
+        const paddedRaSeconds = finalRaSeconds.toString().padStart(2, "0");
+        
+        const paddedDecDegrees = finalDecDegrees.toString().padStart(2, "0");
+        const paddedDecMinutes = finalDecMinutes.toString().padStart(2, "0");
+        const paddedDecSeconds = finalDecSeconds.toString().padStart(2, "0");
+        
+        return `${paddedRaHours}:${paddedRaMinutes}:${paddedRaSeconds} ${decSign}${paddedDecDegrees}:${paddedDecMinutes}:${paddedDecSeconds}`;
+        
+      case 'sexagesimal':
+      default:
+        // Full sexagesimal format with symbols
+        // Calculate HMS components
+        const raHoursIntSex = Math.floor(raHours);
+        const raMinutesFullSex = (raHours - raHoursIntSex) * 60;
+        const raMinutesIntSex = Math.floor(raMinutesFullSex);
+        const raSecondsFullSex = (raMinutesFullSex - raMinutesIntSex) * 60;
+        const raSecondsRoundedSex = Math.round(raSecondsFullSex);
+        
+        // Handle carryover when seconds round up to 60
+        let finalRaHoursSex = raHoursIntSex;
+        let finalRaMinutesSex = raMinutesIntSex;
+        let finalRaSecondsSex = raSecondsRoundedSex;
+
+        if (finalRaSecondsSex >= 60) {
+          finalRaSecondsSex = 0;
+          finalRaMinutesSex += 1;
+          
+          if (finalRaMinutesSex >= 60) {
+            finalRaMinutesSex = 0;
+            finalRaHoursSex += 1;
+            
+            if (finalRaHoursSex >= 24) {
+              finalRaHoursSex = 0;
+            }
+          }
+        }
+        
+        // Calculate DMS components
+        const decDegreesSex = Math.abs(dec);
+        const decSignSex = dec >= 0 ? "+" : "-";
+        const decDegreesIntSex = Math.floor(decDegreesSex);
+        const decMinutesFullSex = (decDegreesSex - decDegreesIntSex) * 60;
+        const decMinutesIntSex = Math.floor(decMinutesFullSex);
+        const decSecondsFullSex = (decMinutesFullSex - decMinutesIntSex) * 60;
+        const decSecondsRoundedSex = Math.round(decSecondsFullSex);
+        
+        // Handle carryover when seconds round up to 60
+        let finalDecDegreesSex = decDegreesIntSex;
+        let finalDecMinutesSex = decMinutesIntSex;
+        let finalDecSecondsSex = decSecondsRoundedSex;
+
+        if (finalDecSecondsSex >= 60) {
+          finalDecSecondsSex = 0;
+          finalDecMinutesSex += 1;
+          
+          if (finalDecMinutesSex >= 60) {
+            finalDecMinutesSex = 0;
+            finalDecDegreesSex += 1;
+          }
+        }
+        
+        // Format the values with proper padding - use the final values with carryover handling
+        const paddedRaHoursSex = finalRaHoursSex.toString().padStart(2, "0");
+        const paddedRaMinutesSex = finalRaMinutesSex.toString().padStart(2, "0");
+        const paddedRaSecondsSex = finalRaSecondsSex.toString().padStart(2, "0");
+        
+        const paddedDecDegreeSex = finalDecDegreesSex.toString().padStart(2, "0");
+        const paddedDecMinutesSex = finalDecMinutesSex.toString().padStart(2, "0");
+        const paddedDecSecondsSex = finalDecSecondsSex.toString().padStart(2, "0");
+        
+        // Create the verbose text without RA/Dec labels
+        return `${paddedRaHoursSex}h ${paddedRaMinutesSex}m ${paddedRaSecondsSex}s, ${decSignSex}${paddedDecDegreeSex}° ${paddedDecMinutesSex}' ${paddedDecSecondsSex}"`;
+    }
+  }
+
 }

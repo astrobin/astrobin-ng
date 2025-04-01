@@ -32,14 +32,14 @@ describe("MeasuringToolComponent", () => {
       // Basic formatting
       formatCompact: jest.fn().mockReturnValue("00h 00m 00s, +00° 00' 00\""),
       formatAngle: jest.fn().mockReturnValue("00° 00' 00\""),
-      
+
       // Calculations
       calculateRawCoordinates: jest.fn().mockReturnValue({ ra: 10, dec: 20 }),
       calculateAngularDistance: jest.fn().mockReturnValue(1),
       calculateSeparationInArcSeconds: jest.fn().mockReturnValue(3600), // 1 degree in arcseconds
       convertPixelsToArcseconds: jest.fn().mockReturnValue(3600), // 1 degree in arcseconds
       pixelsToAngle: jest.fn().mockReturnValue(1), // 1 degree
-      
+
       // Mock component-specific methods the real service would have
       _formatStableAngularDistance: jest.fn().mockReturnValue("1°"),
       getHorizontalCelestialDistance: jest.fn().mockReturnValue("1°"),
@@ -96,11 +96,11 @@ describe("MeasuringToolComponent", () => {
     component.imageElement = new ElementRef(mockImageElement);
 
     // Mock the component's methods for calculating coordinates
-    jest.spyOn(component, 'calculateCoordinatesAtPoint').mockImplementation(() => {
+    jest.spyOn(component.astroUtilsService, 'calculateCoordinatesAtPoint').mockImplementation(() => {
       return { ra: 10, dec: 20 };
     });
-    
-    jest.spyOn(component, 'calculateAngularDistance').mockImplementation(() => {
+
+    jest.spyOn(component.astroUtilsService, 'calculateAngularDistance').mockImplementation(() => {
       return 1; // 1 degree
     });
 
@@ -137,7 +137,7 @@ describe("MeasuringToolComponent", () => {
     component.measureEndPoint = { x: 200, y: 200, ra: 11, dec: 21 };
 
     // Mock the formatAstronomicalAngle method
-    jest.spyOn(component, 'formatAstronomicalAngle').mockImplementation((arcseconds) => {
+    jest.spyOn(component.astroUtilsService, 'formatAstronomicalAngle').mockImplementation((arcseconds) => {
       if (arcseconds < 60) return `${arcseconds}″`;
       if (arcseconds < 3600) return `${Math.floor(arcseconds/60)}′ ${arcseconds%60}″`;
       return `${Math.floor(arcseconds/3600)}° ${Math.floor((arcseconds%3600)/60)}′ ${arcseconds%60}″`;
@@ -152,7 +152,7 @@ describe("MeasuringToolComponent", () => {
 
     // Now we can test with different values
     const smallDistance = component.formatAngularDistance(50);
-    const mediumDistance = component.formatAngularDistance(300); 
+    const mediumDistance = component.formatAngularDistance(300);
     const largeDistance = component.formatAngularDistance(1000);
 
     // These should be different because we mocked different responses
@@ -190,8 +190,8 @@ describe("MeasuringToolComponent", () => {
     }];
 
     // Mock the event with all required methods
-    const mockEvent = { 
-      preventDefault: jest.fn(), 
+    const mockEvent = {
+      preventDefault: jest.fn(),
       stopPropagation: jest.fn(),
       stopImmediatePropagation: jest.fn()
     };
@@ -261,7 +261,7 @@ describe("MeasuringToolComponent", () => {
 
     // Clear measurements
     component.clearAllMeasurements();
-    
+
     // Use setTimeout to handle the promise resolution
     setTimeout(() => {
       expect(component.previousMeasurements.length).toBe(0);
@@ -332,15 +332,15 @@ describe("MeasuringToolComponent", () => {
     });
 
     // Mock the event with all required methods
-    const mockEvent = { 
-      preventDefault: jest.fn(), 
+    const mockEvent = {
+      preventDefault: jest.fn(),
       stopPropagation: jest.fn(),
       stopImmediatePropagation: jest.fn()
     };
-    
+
     // Delete the first measurement
     component.deleteMeasurement(mockEvent as any, 0);
-    
+
     // Use setTimeout to handle the promise resolution
     setTimeout(() => {
       expect(component.previousMeasurements.length).toBe(1);
@@ -485,7 +485,7 @@ describe("MeasuringToolComponent", () => {
     // Call _finalizeMeasurement manually to simulate second click
     component['_finalizeMeasurement']();
     expect(component.measureDistance).toBe("141 px");
-    
+
     // Verify the measurement was saved and event emitted
     expect(component.previousMeasurements.length).toBe(1);
     expect(component.measurementComplete.emit).toHaveBeenCalled();

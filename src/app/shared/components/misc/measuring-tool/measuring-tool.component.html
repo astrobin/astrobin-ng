@@ -428,6 +428,20 @@
         ></fa-icon>
       </button>
 
+      <button type="button" class="btn-shape-action export-button"
+              (click)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? openExportMeasurementModal($event, measurement) : $event.stopPropagation()"
+              (mousedown)="$event.stopPropagation()"
+              (pointerdown)="$event.stopPropagation()"
+              [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
+              [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
+              [style.pointer-events]="'auto'">
+        <fa-icon
+          icon="file-export"
+          [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Exporting coordinates requires valid advanced plate-solving data' | translate) : ('Export coordinates' | translate)"
+          container="body"
+        ></fa-icon>
+      </button>
+
       <button type="button" class="btn-delete-measurement delete-button"
               (click)="deleteMeasurement($event, i)"
               (mousedown)="$event.stopPropagation()"
@@ -691,6 +705,16 @@
               [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
               [style.pointer-events]="'auto'">
         <fa-icon icon="save" [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Saving measurements requires valid advanced plate-solving data' | translate) : ('Save measurement' | translate)" container="body"></fa-icon>
+      </button>
+      
+      <button type="button" class="btn-shape-action export-button"
+              (click)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? openExportMeasurementModal($event, {startX: measureStartPoint.x, startY: measureStartPoint.y, endX: measureEndPoint.x, endY: measureEndPoint.y, midX: 0, midY: 0, distance: measureDistance, timestamp: Date.now(), startRa: measureStartPoint.ra, startDec: measureStartPoint.dec, endRa: measureEndPoint.ra, endDec: measureEndPoint.dec, startLabelX: 0, startLabelY: 0, endLabelX: 0, endLabelY: 0, showCircle: showCurrentCircle, showRectangle: showCurrentRectangle}) : $event.stopPropagation()"
+              (mousedown)="$event.stopPropagation()"
+              (pointerdown)="$event.stopPropagation()"
+              [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
+              [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
+              [style.pointer-events]="'auto'">
+        <fa-icon icon="file-export" [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Exporting coordinates requires valid advanced plate-solving data' | translate) : ('Export coordinates' | translate)" container="body"></fa-icon>
       </button>
     </div>
   </div>

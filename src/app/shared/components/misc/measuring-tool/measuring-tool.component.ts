@@ -18,6 +18,8 @@ import { SolutionInterface } from "@core/interfaces/solution.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { isPlatformBrowser } from "@angular/common";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ExportMeasurementModalComponent } from "./export-measurement-modal/export-measurement-modal.component";
 
 // Interface to represent a label's bounding box for collision detection
 interface LabelBoundingBox {
@@ -171,6 +173,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     private modalService: NgbModal,
     private popNotificationsService: PopNotificationsService,
     private translateService: TranslateService,
+    private windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     super(store$);
@@ -240,7 +243,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.store$.dispatch(new LoadMeasurementPresets({ userId: user.id }));
       }
     });
-    
+
     // Load browser-specific preferences
     this.loadMeasurementShapePreference();
 
@@ -440,7 +443,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this.isBrowser) {
       return false;
     }
-    
+
     // Get the offset of the image element
     const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
     if (!imageElement) {
@@ -521,7 +524,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this.isBrowser) {
       return;
     }
-    
+
     // Keep track of whether we've moved enough to consider this a drag
     let hasDraggedEnough = false;
 
@@ -531,7 +534,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Add mouse move event listener to track the mouse position
     const mouseMoveHandler = (moveEvent: MouseEvent) => {
       this._handleMeasurementDragMove(moveEvent, startX, startY, this.DRAG_THRESHOLD, hasDraggedEnough, isDragging);
-      
+
       // Update tracking variables based on movement
       const dx = moveEvent.clientX - startX;
       const dy = moveEvent.clientY - startY;
@@ -550,7 +553,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Add mouse up event listener to complete the measurement
     const mouseUpHandler = (upEvent: MouseEvent) => {
       this._handleMeasurementDragEnd(upEvent, startX, startY, hasDraggedEnough, isDragging);
-      
+
       // Clean up event listeners
       document.removeEventListener("mousemove", mouseMoveHandler);
       document.removeEventListener("mouseup", mouseUpHandler);
@@ -573,9 +576,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Handle mouse movement during measurement drag
    */
   private _handleMeasurementDragMove(
-    moveEvent: MouseEvent, 
-    startX: number, 
-    startY: number, 
+    moveEvent: MouseEvent,
+    startX: number,
+    startY: number,
     dragThreshold: number,
     hasDraggedEnough: boolean,
     isDragging: boolean
@@ -589,9 +592,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Handle the end of a measurement drag operation
    */
   private _handleMeasurementDragEnd(
-    upEvent: MouseEvent, 
-    startX: number, 
-    startY: number, 
+    upEvent: MouseEvent,
+    startX: number,
+    startY: number,
     hasDraggedEnough: boolean,
     isDragging: boolean
   ): void {
@@ -825,11 +828,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (this.isValidSolutionMatrix()) {
       // Account for rotation when calculating coordinates during drag
       const coords = this.boundCalculateCoordinatesAtPoint(
-        event.clientX + this.dragOffsetX, 
-        event.clientY + this.dragOffsetY, 
+        event.clientX + this.dragOffsetX,
+        event.clientY + this.dragOffsetY,
         true
       );
-      
+
       if (coords) {
         this.measureStartPoint.ra = coords.ra;
         this.measureStartPoint.dec = coords.dec;
@@ -858,11 +861,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (this.isValidSolutionMatrix()) {
       // Account for rotation when calculating coordinates during drag
       const coords = this.boundCalculateCoordinatesAtPoint(
-        event.clientX + this.dragOffsetX, 
-        event.clientY + this.dragOffsetY, 
+        event.clientX + this.dragOffsetX,
+        event.clientY + this.dragOffsetY,
         true
       );
-      
+
       if (coords) {
         this.measureEndPoint.ra = coords.ra;
         this.measureEndPoint.dec = coords.dec;
@@ -892,8 +895,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     );
 
     // Format the distance based on whether we have valid celestial coordinates
-    if (this.isValidSolutionMatrix() && 
-        this.measureStartPoint.ra !== null && 
+    if (this.isValidSolutionMatrix() &&
+        this.measureStartPoint.ra !== null &&
         this.measureEndPoint.ra !== null) {
       this.measureDistance = this.formatAngularDistance(pixelDistance);
     } else {
@@ -1022,7 +1025,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     const { measurement, index, pointType } = measurementInfo;
-    
+
     // Update the appropriate point based on drag type
     if (pointType === "start") {
       this._updatePreviousMeasurementStartPoint(measurement, event);
@@ -1047,7 +1050,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     const measurement = this.previousMeasurements[index];
     const pointType = this.isDraggingPoint.startsWith("prevStart") ? "start" : "end";
-    
+
     return { measurement, index, pointType };
   }
 
@@ -1062,11 +1065,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (this.isValidSolutionMatrix()) {
       // Account for rotation when calculating coordinates
       const coords = this.boundCalculateCoordinatesAtPoint(
-        event.clientX + this.dragOffsetX, 
-        event.clientY + this.dragOffsetY, 
+        event.clientX + this.dragOffsetX,
+        event.clientY + this.dragOffsetY,
         true
       );
-      
+
       if (coords) {
         measurement.startRa = coords.ra;
         measurement.startDec = coords.dec;
@@ -1085,11 +1088,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (this.isValidSolutionMatrix()) {
       // Account for rotation when calculating coordinates
       const coords = this.boundCalculateCoordinatesAtPoint(
-        event.clientX + this.dragOffsetX, 
-        event.clientY + this.dragOffsetY, 
+        event.clientX + this.dragOffsetX,
+        event.clientY + this.dragOffsetY,
         true
       );
-      
+
       if (coords) {
         measurement.endRa = coords.ra;
         measurement.endDec = coords.dec;
@@ -2392,7 +2395,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Open the modal
     try {
-      const modalRef = this.modalService.open(SaveMeasurementModalComponent);
+      const modalRef = this.modalService.open(SaveMeasurementModalComponent, {
+        keyboard: false,
+      });
       modalRef.componentInstance.measurementData = measurementData;
       modalRef.componentInstance.defaultName = defaultName;
 
@@ -2573,7 +2578,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Open the modal
       try {
-        const modalRef = this.modalService.open(SaveMeasurementModalComponent);
+        const modalRef = this.modalService.open(SaveMeasurementModalComponent, {
+          keyboard: false
+        });
         modalRef.componentInstance.measurementData = measurementData;
         modalRef.componentInstance.defaultName = defaultName;
 
@@ -3630,5 +3637,120 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Force change detection to ensure the modal appears immediately
     this.cdRef.detectChanges();
+  }
+
+  /**
+   * Open a modal to export measurement coordinates
+   */
+  openExportMeasurementModal(event: MouseEvent, measurement: MeasurementData): void {
+    // Prevent the event from propagating to parent elements
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.isValidSolutionMatrix() || !measurement) {
+      return;
+    }
+
+    // Get the coordinates for all points of the measurement
+    let exportData = {
+      centerCoordinates: {
+        text: "N/A",
+        ra: null,
+        dec: null
+      },
+      corners: {
+        topLeft: {
+          text: "N/A",
+          ra: null,
+          dec: null
+        },
+        topRight: {
+          text: "N/A",
+          ra: null,
+          dec: null
+        },
+        bottomLeft: {
+          text: "N/A",
+          ra: null,
+          dec: null
+        },
+        bottomRight: {
+          text: "N/A",
+          ra: null,
+          dec: null
+        }
+      }
+    };
+
+    // Calculate center coordinates
+    const centerX = (measurement.startX + measurement.endX) / 2;
+    const centerY = (measurement.startY + measurement.endY) / 2;
+    const centerCoords = this.boundCalculateCoordinatesAtPoint(centerX, centerY);
+
+    if (centerCoords) {
+      exportData.centerCoordinates = {
+        text: this.coordinatesFormatter.formatCoordinatesVerbose(centerCoords.ra, centerCoords.dec),
+        ra: centerCoords.ra,
+        dec: centerCoords.dec
+      };
+    }
+
+    // For rectangle measurements, calculate the four corners
+    if (measurement.showRectangle) {
+      const minX = Math.min(measurement.startX, measurement.endX);
+      const maxX = Math.max(measurement.startX, measurement.endX);
+      const minY = Math.min(measurement.startY, measurement.endY);
+      const maxY = Math.max(measurement.startY, measurement.endY);
+
+      const topLeft = this.boundCalculateCoordinatesAtPoint(minX, minY);
+      const topRight = this.boundCalculateCoordinatesAtPoint(maxX, minY);
+      const bottomLeft = this.boundCalculateCoordinatesAtPoint(minX, maxY);
+      const bottomRight = this.boundCalculateCoordinatesAtPoint(maxX, maxY);
+
+      if (topLeft) {
+        exportData.corners.topLeft = {
+          text: this.coordinatesFormatter.formatCoordinatesVerbose(topLeft.ra, topLeft.dec),
+          ra: topLeft.ra,
+          dec: topLeft.dec
+        };
+      }
+
+      if (topRight) {
+        exportData.corners.topRight = {
+          text: this.coordinatesFormatter.formatCoordinatesVerbose(topRight.ra, topRight.dec),
+          ra: topRight.ra,
+          dec: topRight.dec
+        };
+      }
+
+      if (bottomLeft) {
+        exportData.corners.bottomLeft = {
+          text: this.coordinatesFormatter.formatCoordinatesVerbose(bottomLeft.ra, bottomLeft.dec),
+          ra: bottomLeft.ra,
+          dec: bottomLeft.dec
+        };
+      }
+
+      if (bottomRight) {
+        exportData.corners.bottomRight = {
+          text: this.coordinatesFormatter.formatCoordinatesVerbose(bottomRight.ra, bottomRight.dec),
+          ra: bottomRight.ra,
+          dec: bottomRight.dec
+        };
+      }
+    }
+
+    // Open the modal with the export data
+    const modalRef = this.modalService.open(ExportMeasurementModalComponent, {
+      centered: true,
+      size: 'lg',
+      backdrop: true,
+      keyboard: false
+    });
+
+    modalRef.componentInstance.measurementData = exportData;
+    modalRef.componentInstance.windowRefService = this.windowRefService;
+    modalRef.componentInstance.translateService = this.translateService;
+    modalRef.componentInstance.coordinatesFormatter = this.coordinatesFormatter;
   }
 }

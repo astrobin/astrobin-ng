@@ -13,6 +13,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageService } from "@core/services/image/image.service";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Coord, NgxImageZoomComponent } from "ngx-image-zoom";
 import { BehaviorSubject, combineLatest, Observable, of, Subscription } from "rxjs";
 import { distinctUntilChanged, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
@@ -267,7 +268,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly swipeDownService: SwipeDownService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly hostElementRef: ElementRef,
-    public readonly coordinatesFormatter: CoordinatesFormatterService
+    public readonly coordinatesFormatter: CoordinatesFormatterService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
 
@@ -683,6 +685,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @HostListener("window:keyup.escape", ["$event"])
   hide(event: Event): void {
     if (!this.isBrowser) {
+      return;
+    }
+
+
+    // If there are open modals, let the modal handle the escape key. Do this before stopping propagation, otherwise
+    // the modal will close and this will always be false.
+    if (this.modalService.hasOpenModals()) {
+      this.modalService.dismissAll();
       return;
     }
 

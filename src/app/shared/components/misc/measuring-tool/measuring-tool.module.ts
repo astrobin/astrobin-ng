@@ -11,6 +11,7 @@ import { PipesModule } from "@shared/pipes/pipes.module";
 import { MeasuringToolComponent } from "./measuring-tool.component";
 import { MeasurementPresetModule } from "./measurement-preset.module";
 import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-measurement-modal.component";
+import { ExportMeasurementModalComponent } from "./export-measurement-modal/export-measurement-modal.component";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { CalculateDistancePipe, CalculateLabelPositionPipe, FormatCoordinatesCompactPipe, GetCelestialDistancePipe, GetMidpointPipe, MathAbsPipe, MathMaxPipe, MathMinPipe } from "./measuring-tool-pipes";
 
@@ -18,6 +19,7 @@ import { CalculateDistancePipe, CalculateLabelPositionPipe, FormatCoordinatesCom
   declarations: [
     MeasuringToolComponent,
     SaveMeasurementModalComponent,
+    ExportMeasurementModalComponent,
     // Custom pipes for template optimization
     CalculateDistancePipe,
     FormatCoordinatesCompactPipe,

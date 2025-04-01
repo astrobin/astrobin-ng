@@ -24,16 +24,57 @@ export class FormatCoordinatesCompactPipe implements PipeTransform {
 
     // Convert ra/dec to formatted strings
     const raHours = Math.floor(ra);
-    const raMinutes = Math.floor((ra - raHours) * 60);
-    const raSeconds = Math.floor(((ra - raHours) * 60 - raMinutes) * 60);
+    const raMinutesFull = (ra - raHours) * 60;
+    const raMinutes = Math.floor(raMinutesFull);
+    const raSecondsFull = (raMinutesFull - raMinutes) * 60;
+    // Round to nearest second for consistent display with verbose formatter
+    const raSeconds = Math.round(raSecondsFull);
 
-    const decDegrees = Math.floor(Math.abs(dec));
-    const decMinutes = Math.floor((Math.abs(dec) - decDegrees) * 60);
-    const decSeconds = Math.floor(((Math.abs(dec) - decDegrees) * 60 - decMinutes) * 60);
+    // Handle carryover when seconds round up to 60
+    let finalRaHours = raHours;
+    let finalRaMinutes = raMinutes;
+    let finalRaSeconds = raSeconds;
 
-    const sign = dec >= 0 ? "+" : "-";
+    if (finalRaSeconds >= 60) {
+      finalRaSeconds = 0;
+      finalRaMinutes += 1;
+      
+      if (finalRaMinutes >= 60) {
+        finalRaMinutes = 0;
+        finalRaHours += 1;
+        
+        if (finalRaHours >= 24) {
+          finalRaHours = 0;
+        }
+      }
+    }
 
-    return `${raHours.toString().padStart(2, "0")}h ${raMinutes.toString().padStart(2, "0")}m ${raSeconds.toString().padStart(2, "0")}s, ${sign}${decDegrees.toString().padStart(2, "0")}° ${decMinutes.toString().padStart(2, "0")}' ${decSeconds.toString().padStart(2, "0")}"`;
+    // Do the same for declination
+    const decDegrees = Math.abs(dec);
+    const decSign = dec >= 0 ? "+" : "-";
+    const decDegreesInt = Math.floor(decDegrees);
+    const decMinutesFull = (decDegrees - decDegreesInt) * 60;
+    const decMinutesInt = Math.floor(decMinutesFull);
+    const decSecondsFull = (decMinutesFull - decMinutesInt) * 60;
+    // Round to nearest second for consistent display
+    const decSeconds = Math.round(decSecondsFull);
+
+    // Handle carryover when seconds round up to 60
+    let finalDecDegrees = decDegreesInt;
+    let finalDecMinutes = decMinutesInt;
+    let finalDecSeconds = decSeconds;
+
+    if (finalDecSeconds >= 60) {
+      finalDecSeconds = 0;
+      finalDecMinutes += 1;
+      
+      if (finalDecMinutes >= 60) {
+        finalDecMinutes = 0;
+        finalDecDegrees += 1;
+      }
+    }
+
+    return `${finalRaHours.toString().padStart(2, "0")}h ${finalRaMinutes.toString().padStart(2, "0")}m ${finalRaSeconds.toString().padStart(2, "0")}s, ${decSign}${finalDecDegrees.toString().padStart(2, "0")}° ${finalDecMinutes.toString().padStart(2, "0")}' ${finalDecSeconds.toString().padStart(2, "0")}"`;
   }
 }
 
