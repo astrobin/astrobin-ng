@@ -266,12 +266,14 @@ export class AstroUtilsService {
     currentIteration: number = 0
   ): { x: number, y: number, iterations: number } | null {
     try {
+      const imageRect = imageElement.getBoundingClientRect();
+
       // Check for max iteration limit to prevent infinite recursion
       if (currentIteration >= maxIterations) {
         // Return the center of the current search area as best approximation
         const centerX = (searchArea.minX + searchArea.maxX) / 2;
         const centerY = (searchArea.minY + searchArea.maxY) / 2;
-        return { x: centerX, y: centerY, iterations: currentIteration };
+        return { x: imageRect.left + centerX, y: imageRect.top + centerY, iterations: currentIteration };
       }
 
       // Calculate the current search area width and height
@@ -282,7 +284,7 @@ export class AstroUtilsService {
       if (areaWidth <= targetPrecision && areaHeight <= targetPrecision) {
         const finalX = (searchArea.minX + searchArea.maxX) / 2;
         const finalY = (searchArea.minY + searchArea.maxY) / 2;
-        return { x: finalX, y: finalY, iterations: currentIteration };
+        return { x: imageRect.left + finalX, y: imageRect.top + finalY, iterations: currentIteration };
       }
 
       // Calculate midpoints of the search area
@@ -319,8 +321,8 @@ export class AstroUtilsService {
 
       // Calculate celestial coordinates at the center of each quadrant
       const quadrantCoordinates = quadrants.map(quadrant => {
-        const centerX = (quadrant.minX + quadrant.maxX) / 2;
-        const centerY = (quadrant.minY + quadrant.maxY) / 2;
+        const centerX = imageRect.left + ((quadrant.minX + quadrant.maxX) / 2);
+        const centerY = imageRect.top + ((quadrant.minY + quadrant.maxY) / 2);
         const coordinates = this.calculateCoordinatesAtPoint(centerX, centerY, solutionMatrix, imageElement);
         return {
           quadrant,
@@ -354,8 +356,8 @@ export class AstroUtilsService {
       // If we didn't find any valid quadrants, use current center as best approximation
       if (!closestQuadrant) {
         return {
-          x: (searchArea.minX + searchArea.maxX) / 2,
-          y: (searchArea.minY + searchArea.maxY) / 2,
+          x: imageRect.left + (searchArea.minX + searchArea.maxX) / 2,
+          y: imageRect.top + (searchArea.minY + searchArea.maxY) / 2,
           iterations: currentIteration
         };
       }
@@ -375,13 +377,6 @@ export class AstroUtilsService {
       console.error("Error in recursive quadrant search:", error);
       return null;
     }
-  }
-
-  /**
-   * Convert degrees to radians
-   */
-  private degreesToRadians(degrees: number): number {
-    return degrees * Math.PI / 180;
   }
 
   /**
