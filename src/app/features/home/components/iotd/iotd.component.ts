@@ -28,7 +28,7 @@ import { fadeInOut } from "@shared/animations";
             'background-image': 'url(' + iotd.thumbnail + ')',
             'background-position': objectPosition || '50% 50%',
             'background-repeat': 'no-repeat',
-            'background-size': objectScale ? objectScale * 100 + '%' : 'cover'
+            'background-size': 'cover'
           }"
           role="img"
           class="iotd-image"
