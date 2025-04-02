@@ -153,6 +153,7 @@ import { AvatarManagerComponent } from "@shared/components/misc/avatar-manager/a
 import { AvatarEditorComponent } from "@shared/components/misc/avatar-editor/avatar-editor.component";
 import { CoordinatesDisplayComponent } from "@shared/components/misc/coordinates-display/coordinates-display.component";
 import { MeasuringToolModule } from "@shared/components/misc/measuring-tool/measuring-tool.module";
+import { AnnotationToolModule } from "@shared/components/misc/annotation-tool/annotation-tool.module";
 
 const modules = [
   CommonModule,
@@ -165,6 +166,7 @@ const modules = [
   ImageCropperModule,
   LightboxModule,
   MeasuringToolModule,
+  AnnotationToolModule,
   NgbAccordionModule,
   NgbCarouselModule,
   NgbCollapseModule,

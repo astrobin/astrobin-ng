@@ -185,7 +185,7 @@
     <!-- Show appropriate messages based on image type -->
     <ng-container *ngIf="isGif && allowReal && real"
                   [ngTemplateOutlet]="gifNoZoomTemplate"></ng-container>
-    <ng-container *ngIf="!isGif && !isVeryLargeImage && allowReal && real && !canvasLoading"
+    <ng-container *ngIf="!isGif && !isVeryLargeImage && allowReal && real && !canvasLoading && !isMeasuringMode && !isAnnotationMode"
                   [ngTemplateOutlet]="pinchAndZoomInstructionTemplate"></ng-container>
     <ng-container *ngIf="hd && !allowReal"
                   [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
@@ -286,20 +286,20 @@
     ></ng-container>
 
     <ng-container *ngIf="!isVeryLargeImage && real && allowReal">
-      <!-- Zoom-related instructions -->
-      <ng-container *ngIf="!isMeasuringMode">
+      <!-- Zoom-related instructions - only show when not in measuring or annotation mode -->
+      <ng-container *ngIf="!isMeasuringMode && !isAnnotationMode">
         <ng-container
           *ngIf="zoomFrozen"
           [ngTemplateOutlet]="zoomFrozenInstructionTemplate"
         ></ng-container>
 
         <ng-container
-          *ngIf="!zoomFrozen && !zoomingEnabled && !showZoomIndicator && !isMeasuringMode"
+          *ngIf="!zoomFrozen && !zoomingEnabled && !showZoomIndicator"
           [ngTemplateOutlet]="clickAndScrollInstructionTemplate"
         ></ng-container>
 
         <ng-container
-          *ngIf="!zoomFrozen && zoomingEnabled && !showZoomIndicator && enableLens && !isMeasuringMode"
+          *ngIf="!zoomFrozen && zoomingEnabled && !showZoomIndicator && enableLens"
           [ngTemplateOutlet]="clickAgainToCloseLensInstructionTemplate"
         ></ng-container>
       </ng-container>
@@ -408,6 +408,18 @@
           <fa-icon icon="ruler"></fa-icon>
           <span>{{ (isMeasuringMode ? 'Cancel measurement' : 'Measure distance') | translate }}</span>
         </div>
+
+        <!-- Annotation tool toggle - available for all images -->
+        <div
+          *ngIf="!isGif"
+          class="kebab-menu-item"
+          (click)="toggleAnnotationMode($event); toggleKebabMenu($event)"
+          [class.disabled]="enableLens && zoomingEnabled"
+          [class.active]="isAnnotationMode"
+        >
+          <fa-icon icon="comment-alt"></fa-icon>
+          <span>{{ (isAnnotationMode ? 'Exit annotation mode' : 'Annotate image') | translate }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -442,6 +454,19 @@
     (measurementStarted)="measurementInProgress = true"
     (measurementComplete)="measurementInProgress = false"
   ></astrobin-measuring-tool>
+
+  <!-- Annotation tool component -->
+  <astrobin-annotation-tool
+    *ngIf="isAnnotationMode"
+    [active]="isAnnotationMode"
+    [imageElement]="ngxImageZoomEl"
+    [windowWidth]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
+    [windowHeight]="isBrowser ? windowRef.nativeWindow.innerHeight : 0"
+    [setMouseOverUIElement]="setMouseOverUIElement.bind(this)"
+    [naturalWidth]="revision?.w"
+    [naturalHeight]="revision?.h"
+    (exitAnnotationMode)="isAnnotationMode = false; changeDetectorRef.markForCheck()"
+  ></astrobin-annotation-tool>
 
   <!-- Coordinate display -->
   <div class="coordinates-wrapper" *ngIf="showCoordinates && mouseRa && mouseDec && !isGif && hasAdvancedSolutionMatrix"
@@ -502,6 +527,7 @@
   </div>
 
   <div class="astrobin-logo"
+       *ngIf="!isMeasuringMode && !isAnnotationMode"
        (mouseenter)="setMouseOverUIElement(true)"
        (mouseleave)="setMouseOverUIElement(false)">
     <a routerLink="/">
@@ -523,6 +549,7 @@
       <li><kbd>Z</kbd> <span>{{ 'Toggle Lens/Zoom mode' | translate }}</span></li>
       <li *ngIf="hasAdvancedSolution"><kbd>C</kbd> <span>{{ 'Toggle coordinates display' | translate }}</span></li>
       <li><kbd>D</kbd> <span>{{ 'Toggle distance measuring tool' | translate }}</span></li>
+      <li><kbd>N</kbd> <span>{{ 'Toggle annotation tool' | translate }}</span></li>
       <li><kbd>F</kbd> <span>{{ 'Freeze/unfreeze zoom position' | translate }}</span></li>
       <li><kbd>ESC</kbd> <span>{{ 'Exit current mode or close image' | translate }}</span></li>
     </ul>

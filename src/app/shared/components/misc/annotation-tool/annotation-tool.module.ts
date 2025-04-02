@@ -1,10 +1,12 @@
-import { NgModule } from "@angular/core";
+import { NgModule, forwardRef } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { TranslateModule } from "@ngx-translate/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { DirectivesModule } from "@shared/directives/directives.module";
+import { FormlyModule } from "@ngx-formly/core";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 
 import { AnnotationToolComponent } from "./annotation-tool.component";
 import { AnnotationService } from "./services/annotation.service";
@@ -19,8 +21,11 @@ import { AnnotationService } from "./services/annotation.service";
     FontAwesomeModule,
     FormsModule,
     NgbTooltipModule,
+    NgbModalModule,
     ReactiveFormsModule,
-    DirectivesModule
+    DirectivesModule,
+    FormlyModule,
+    FormlyBootstrapModule
   ],
   exports: [AnnotationToolComponent],
   providers: [AnnotationService]

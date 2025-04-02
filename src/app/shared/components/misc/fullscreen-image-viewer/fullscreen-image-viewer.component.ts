@@ -180,6 +180,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected showCurrentCircle: boolean = false;
   protected showCurrentRectangle: boolean = false;
 
+  // Annotation tool properties
+  protected isAnnotationMode: boolean = false;
+
   // Swipe-down properties
   protected touchStartY: { value: number } = { value: 0 };
   protected touchCurrentY: { value: number } = { value: 0 };
@@ -474,7 +477,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             // On mobile, show info message that measuring tool is not available
             this.popNotificationsService.info(
               this.translateService.instant(
-                "Shared measurements cannot be displayed on mobile devices. Please view on desktop for the full measuring tool experience."
+              "Shared measurements cannot be displayed on mobile devices. Please view on desktop for the full measuring tool experience."
               )
             );
             console.debug('Skipping measurement activation on mobile device');
@@ -814,6 +817,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
+    // If in annotation mode, exit annotation mode instead of closing fullscreen
+    if (this.isAnnotationMode) {
+      this.isAnnotationMode = false;
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
     // Clear mouse position to hide rulers
     this.mouseX = null;
     this.mouseY = null;
@@ -968,6 +978,38 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.changeDetectorRef.markForCheck();
   }
 
+  @HostListener("window:keyup.n", ["$event"])
+  toggleAnnotationMode(event: KeyboardEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Don't interfere with input fields
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+    ) {
+      return;
+    }
+
+    // Do nothing if the component is not being shown, in measuring mode, or if the image is a GIF
+    if (!this.show || this.isMeasuringMode || this.isGif) {
+      return;
+    }
+
+    // Toggle annotation mode
+    this.isAnnotationMode = !this.isAnnotationMode;
+
+    // When entering annotation mode, ensure we're at default zoom level
+    if (this.isAnnotationMode && !this._isAtDefaultZoom()) {
+      this.resetToDefaultZoom();
+    }
+
+    // Force change detection
+    this.changeDetectorRef.markForCheck();
+  }
+
   @HostListener("window:keyup.f", ["$event"])
   toggleZoomFreeze(event: KeyboardEvent | MouseEvent): void {
     if (!this.isBrowser) {
@@ -985,8 +1027,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       }
     }
 
-    // Do nothing if the component is not being shown or in measuring mode
-    if (!this.show || this.isMeasuringMode) {
+    // Do nothing if the component is not being shown, in measuring mode, or in annotation mode
+    if (!this.show || this.isMeasuringMode || this.isAnnotationMode) {
       return;
     }
 
@@ -1032,8 +1074,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * Handle wheel events and apply appropriate zoom behavior
    */
   protected onGlobalWheel(event: WheelEvent): void {
-    // Block wheel events during measuring mode
-    if (this.isMeasuringMode) {
+    // Block wheel events during measuring mode or annotation mode
+    if (this.isMeasuringMode || this.isAnnotationMode) {
       event.preventDefault();
       event.stopPropagation();
       return;
@@ -1185,7 +1227,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     // Only proxy if we have the zoom component, are in mouse mode, not in measuring mode, and are currently zooming
-    if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage && !this.isMeasuringMode) {
+    if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage && !this.isMeasuringMode && !this.isAnnotationMode) {
       // We need to convert global coordinates to coordinates relative to the image
       // Find the image and its position
       const zoomContainer = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomContainer");
@@ -1463,6 +1505,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected onPinchStart(event: HammerInput): void {
+    // Skip if in annotation mode
+    if (this.isAnnotationMode) {
+      return;
+    }
     if (this._animationFrame) {
       cancelAnimationFrame(this._animationFrame);
       this._animationFrame = null;
@@ -1484,6 +1530,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected onPinchMove(event: HammerInput): void {
+    // Skip if in annotation mode
+    if (this.isAnnotationMode) {
+      return;
+    }
     if (event.timeStamp - this._pinchLastTime < this.FRAME_INTERVAL) {
       return;
     }
@@ -1533,6 +1583,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected onPinchEnd(): void {
+    // Skip if in annotation mode
+    if (this.isAnnotationMode) {
+      return;
+    }
     this._lastTouchScale = this.touchScale;
     if (this.touchScale <= 1) {
       this._resetTouchZoom();
@@ -1543,6 +1597,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected onPanStart(event: HammerInput): void {
+    // Skip if in annotation mode
+    if (this.isAnnotationMode) {
+      return;
+    }
     if (this._animationFrame) {
       cancelAnimationFrame(this._animationFrame);
       this._animationFrame = null;
@@ -1571,6 +1629,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected onPanMove(event: HammerInput): void {
+    // Skip if in annotation mode
+    if (this.isAnnotationMode) {
+      return;
+    }
     if (this.touchScale <= 1 || event.timeStamp - this._panLastTime < this.FRAME_INTERVAL) {
       return;
     }
@@ -1586,6 +1648,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected onPanEnd(event: HammerInput) {
+    // Skip if in annotation mode
+    if (this.isAnnotationMode) {
+      return;
+    }
     if (this.touchScale <= 1) {
       return;
     }
@@ -1593,6 +1659,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected onDoubleTap(event: HammerInput): void {
+    // Skip if in annotation mode
+    if (this.isAnnotationMode) {
+      return;
+    }
     if (this.touchScale > 1) {
       this._animateZoom(1, 0, 0);
     } else {
@@ -2091,8 +2161,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     event.preventDefault();
     event.stopPropagation();
 
-    // Only handle zoom operations if not frozen and zoom component exists
-    if (this.zoomFrozen || !this.ngxImageZoom?.zoomService) {
+    // Only handle zoom operations if not frozen, not in measuring mode, not in annotation mode, and zoom component exists
+    if (this.zoomFrozen || this.isMeasuringMode || this.isAnnotationMode || !this.ngxImageZoom?.zoomService) {
       return;
     }
 
@@ -2201,7 +2271,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // This is needed because the Firefox pinch gesture doesn't always bubble up
         // to the container element properly
         document.addEventListener("wheel", (event: WheelEvent) => {
-          if (event.ctrlKey && !this.touchMode && this.show && !this.isVeryLargeImage && !this.zoomFrozen) {
+          if (event.ctrlKey && !this.touchMode && this.show && !this.isVeryLargeImage && !this.zoomFrozen && !this.isAnnotationMode) {
             // Always prevent browser zoom
             event.preventDefault();
             event.stopPropagation();

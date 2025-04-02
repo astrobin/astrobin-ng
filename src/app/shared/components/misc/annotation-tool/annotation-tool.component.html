@@ -1,13 +1,21 @@
 <div class="annotation-tool-container" [class.active]="active">
   <!-- Fixed toolbar - making it simpler and more bulletproof -->
   <div class="fixed-top-toolbar">
-    <h4>Create Annotation</h4>
     <div class="toolbar-buttons">
-      <button type="button" (click)="makeArrow()">Arrow</button>
-      <button type="button" (click)="makeRect()">Rectangle</button>
-      <button type="button" (click)="makeCircle()">Circle</button>
-      <button type="button" (click)="clearAll()">Clear</button>
-      <button type="button" (click)="exitAnnotationModeHandler()">Exit</button>
+      <button type="button" class="icon-button" title="Add Rectangle" (click)="makeRect()">
+        <fa-icon [icon]="['fas', 'square']"></fa-icon>
+      </button>
+      <button type="button" class="icon-button" title="Add Circle" (click)="makeCircle()">
+        <fa-icon [icon]="['fas', 'circle']"></fa-icon>
+      </button>
+      <button type="button" class="icon-button" title="{{ 'Clear All' | translate }}" 
+              [disabled]="annotations.length === 0" 
+              (click)="confirmClearAll()">
+        <fa-icon [icon]="['fas', 'trash']"></fa-icon>
+      </button>
+      <button type="button" class="icon-button" title="Exit Annotation Mode" (click)="exitAnnotationModeHandler()">
+        <fa-icon [icon]="['fas', 'times']"></fa-icon>
+      </button>
     </div>
   </div>
 
@@ -17,15 +25,21 @@
     <div class="annotation-layer">
       <!-- Rectangle annotations -->
       <div *ngFor="let ann of annotations"
-           [ngClass]="{'annotation': true, 'rectangle': ann.type === 'rectangle', 'circle': ann.type === 'circle', 'arrow': ann.type === 'arrow'}"
+           [ngClass]="{'annotation': true, 'rectangle': ann.type === 'rectangle', 'circle': ann.type === 'circle'}"
            [style.left.%]="getAnnotationLeft(ann)"
            [style.top.%]="getAnnotationTop(ann)"
            [style.width.%]="getAnnotationWidth(ann)"
            [style.height.%]="getAnnotationHeight(ann)"
-           [style.backgroundColor]="ann.color + '40'"
+           [style.paddingBottom.%]="ann.type === 'circle' ? getCircleAspectRatio(ann) : null"
+           [style.backgroundColor]="ann.color + '4D'"
            [style.borderColor]="ann.color"
            [class.active]="currentlyDragging === ann"
            (mousedown)="startDrag($event, ann, 'whole')">
+           
+           <!-- Title display -->
+           <div *ngIf="ann.title" class="annotation-title">
+             {{ ann.title }}
+           </div>
 
         <!-- Control points (corners) -->
         <div *ngIf="ann.type === 'rectangle'" class="control-points">
@@ -35,42 +49,23 @@
           <div class="control-point bottom-right" (mousedown)="startDrag($event, ann, 'br')"></div>
         </div>
 
-        <!-- Control points for circle -->
+        <!-- Control points for circle - only top handle -->
         <div *ngIf="ann.type === 'circle'" class="control-points">
-          <div class="control-point right" (mousedown)="startDrag($event, ann, 'resize')"></div>
+          <div class="control-point top" (mousedown)="startDrag($event, ann, 'resize')"></div>
         </div>
 
-        <!-- Control points for arrow -->
-        <div *ngIf="ann.type === 'arrow'" class="control-points">
-          <div class="control-point start"
-               [style.left.%]="getArrowStartX(ann)"
-               [style.top.%]="getArrowStartY(ann)"
-               (mousedown)="startDrag($event, ann, 'start')"></div>
-          <div class="control-point end"
-               [style.left.%]="getArrowEndX(ann)"
-               [style.top.%]="getArrowEndY(ann)"
-               (mousedown)="startDrag($event, ann, 'end')"></div>
-        </div>
-
-        <!-- Arrow line and head -->
-        <div *ngIf="ann.type === 'arrow'" class="arrow-line"
-             [style.backgroundColor]="ann.color"
-             [style.width.%]="getArrowLength(ann)"
-             [style.transform]="getArrowTransform(ann)">
-        </div>
-        <div *ngIf="ann.type === 'arrow'" class="arrow-head"
-             [style.borderLeftColor]="ann.color"
-             [style.left.%]="getArrowHeadX(ann)"
-             [style.top.%]="getArrowHeadY(ann)"
-             [style.transform]="getArrowHeadTransform(ann)">
-        </div>
+        <!-- Arrow mode has been removed -->
 
         <!-- Toolbar for each annotation -->
-        <div class="control-toolbar">
-          <button class="tool-button delete" (click)="deleteAnnotation(ann.id); $event.stopPropagation()">🗑️</button>
+        <div class="control-toolbar" (mousedown)="$event.stopPropagation()">
           <button class="tool-button message"
-                 [class.has-message]="ann.note"
-                 (click)="showMessageForm(ann.id); $event.stopPropagation()">💬</button>
+                  (click)="showMessageForm(ann.id, annotationFormModal); $event.stopPropagation()">
+            <fa-icon [icon]="['fas', 'file-alt']"></fa-icon>
+          </button>
+
+          <button class="tool-button delete" (click)="confirmDeleteAnnotation(ann.id); $event.stopPropagation()">
+            <fa-icon icon="trash"></fa-icon>
+          </button>
         </div>
       </div>
     </div>
@@ -80,13 +75,13 @@
       <!-- Preview of shape being drawn -->
       <div *ngIf="isDrawing && activeAnnotation" class="drawing-preview"
            [ngClass]="{'rectangle': activeAnnotation.shape.type === 'RECTANGLE',
-                       'circle': activeAnnotation.shape.type === 'CIRCLE',
-                       'arrow': activeAnnotation.shape.type === 'ARROW'}"
+                       'circle': activeAnnotation.shape.type === 'CIRCLE'}"
            [style.left.%]="getDrawingLeft()"
            [style.top.%]="getDrawingTop()"
            [style.width.%]="getDrawingWidth()"
-           [style.height.%]="getDrawingHeight()"
-           [style.backgroundColor]="activeAnnotation.shape.color + '40'"
+           [style.height.%]="activeAnnotation.shape.type === 'CIRCLE' ? 0 : getDrawingHeight()"
+           [style.paddingBottom.%]="activeAnnotation.shape.type === 'CIRCLE' ? getDrawingWidth() : null"
+           [style.backgroundColor]="activeAnnotation.shape.color + '4D'"
            [style.borderColor]="activeAnnotation.shape.color">
       </div>
     </div>
@@ -99,50 +94,26 @@
        (mouseup)="endDrag($event)"
        (mouseleave)="endDrag($event)"></div>
 
-  <!-- Message Form Modal - Using system styles -->
-  <div class="message-form-overlay" *ngIf="isMessageFormVisible" (click)="closeMessageForm()">
-    <div class="message-form-container" (click)="$event.stopPropagation()">
-      <div class="message-form-header">
-        <h4>Add/Edit Message</h4>
-        <button class="close-button" (click)="closeMessageForm()">×</button>
-      </div>
-      <div class="message-form-content">
-        <!-- Simple form when formly is not available -->
-        <div class="simple-form">
-          <div class="form-group">
-            <label for="annotation-message">Message</label>
-            <textarea
-              id="annotation-message"
-              class="form-control"
-              rows="5"
-              [(ngModel)]="messageModel.message"
-              placeholder="Enter a message for this annotation..."></textarea>
-          </div>
-          <div class="form-buttons">
-            <button type="button" class="btn btn-secondary" (click)="closeMessageForm()">Cancel</button>
-            <button type="button" class="btn btn-primary" (click)="submitMessageForm()">Save</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Annotation messages display -->
-  <div class="annotation-messages">
-    <div *ngFor="let ann of annotations" class="annotation-message" [style.display]="ann.note ? 'block' : 'none'">
-      <div class="message-bubble"
-           [style.left.%]="(ann.note?.position?.x || 50)"
-           [style.top.%]="(ann.note?.position?.y || 50)">
-        <div class="message-header">
-          <span class="message-type">{{ann.type}}</span>
-          <button type="button" class="close-message" (click)="annotationService.toggleNoteExpanded(ann.id)">
-            {{ann.note?.expanded ? '−' : '+'}}
-          </button>
-        </div>
-        <div class="message-content" *ngIf="ann.note?.expanded">
-          <p>{{ann.note?.text}}</p>
-        </div>
-      </div>
+  <!-- NgbModal Template -->
+  <ng-template #annotationFormModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">{{ (pendingShapeData ? 'Create Annotation' : 'Edit Annotation') | translate }}</h4>
+      <button type="button" class="close" [attr.aria-label]="'Close' | translate" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
-  </div>
+    <div class="modal-body">
+      <!-- Use ngx-formly form -->
+      <form [formGroup]="messageForm">
+        <formly-form [form]="messageForm" [fields]="messageFields" [model]="messageModel"></formly-form>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{ 'Cancel' | translate }}</button>
+      <button type="button" class="btn btn-primary" [disabled]="!messageForm.valid" (click)="validateAndCloseModal(modal, messageForm, messageForm.value, $event)">{{ 'Confirm' | translate }}</button>
+    </div>
+  </ng-template>
+
+  <!-- We've removed the message bubbles as requested -->
 </div>

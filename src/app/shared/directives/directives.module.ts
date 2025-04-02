@@ -12,6 +12,7 @@ import { CollapseAnimationDirective } from "@shared/directives/collapsed-animati
 import { DisableAutoFocusOnTouchDevicesDirective } from "./disable-auto-focus-on-touch-devices.directive";
 import { PreventScrollClickDirective } from "@shared/directives/prevent-scroll-click.directive";
 import { LazyBackgroundDirective } from "@shared/directives/lazy-background.directive";
+import { NgLetDirective } from "@shared/directives/ng-let.directive";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { LazyBackgroundDirective } from "@shared/directives/lazy-background.dire
     CollapseAnimationDirective,
     DisableAutoFocusOnTouchDevicesDirective,
     PreventScrollClickDirective,
-    LazyBackgroundDirective
+    LazyBackgroundDirective,
+    NgLetDirective
   ],
   exports: [
     EventPreventDefaultDirective,
@@ -40,7 +42,8 @@ import { LazyBackgroundDirective } from "@shared/directives/lazy-background.dire
     CollapseAnimationDirective,
     DisableAutoFocusOnTouchDevicesDirective,
     PreventScrollClickDirective,
-    LazyBackgroundDirective
+    LazyBackgroundDirective,
+    NgLetDirective
   ],
   imports: [CommonModule]
 })
