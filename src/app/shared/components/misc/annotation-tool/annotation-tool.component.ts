@@ -1107,9 +1107,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     const currentYPercent = ((event.clientY - rect.top) / rect.height) * 100;
 
     // Apply transformations based on shape type and drag mode
-    if (this.currentlyDragging.type === "arrow") {
-      this.handleArrowDrag(deltaXPercent, deltaYPercent, currentXPercent, currentYPercent);
-    } else if (this.currentlyDragging.type === "rectangle") {
+    if (this.currentlyDragging.type === "rectangle") {
       this.handleRectangleDrag(deltaXPercent, deltaYPercent, currentXPercent, currentYPercent);
     } else if (this.currentlyDragging.type === "circle") {
       this.handleCircleDrag(deltaXPercent, deltaYPercent, currentXPercent, currentYPercent);
@@ -1215,9 +1213,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     }
     // For other drag modes (resizing, control points) use the handlers
     else {
-      if (this.currentlyDragging.type === "arrow") {
-        this.handleArrowDrag(deltaXPercent, deltaYPercent, currentXPercent, currentYPercent);
-      } else if (this.currentlyDragging.type === "rectangle") {
+      if (this.currentlyDragging.type === "rectangle") {
         this.handleRectangleDrag(deltaXPercent, deltaYPercent, currentXPercent, currentYPercent);
       } else if (this.currentlyDragging.type === "circle") {
         this.handleCircleDrag(deltaXPercent, deltaYPercent, currentXPercent, currentYPercent);
