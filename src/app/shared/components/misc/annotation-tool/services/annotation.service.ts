@@ -9,21 +9,22 @@ import { AnnotationShapeType } from '../models/annotation-shape-type.enum';
 export class AnnotationService {
   // Available colors for annotations
   private readonly ANNOTATION_COLORS = [
+    '#FFFFFF', // White (default)
+    '#000000', // Black
     '#FF5252', // Red
     '#448AFF', // Blue
     '#4CAF50', // Green
     '#FFC107', // Amber
     '#9C27B0', // Purple
     '#00BCD4', // Cyan
-    '#FF9800', // Orange
-    '#607D8B'  // Blue-gray
+    '#FF9800'  // Orange
   ];
 
   // Store annotations in a BehaviorSubject for reactive updates
   private _annotations = new BehaviorSubject<Annotation[]>([]);
 
-  // Color rotation index
-  private _colorIndex = 0;
+  // Default to white
+  private _defaultColorIndex = 0;
 
   // Expose annotations as an Observable
   public readonly annotations$: Observable<Annotation[]> = this._annotations.asObservable();
@@ -41,7 +42,7 @@ export class AnnotationService {
       shape: {
         type: params.shapeType,
         points: params.points || [],
-        color: params.color || this.getNextColor(),
+        color: params.color || this.getDefaultColor(),
         lineWidth: params.lineWidth || 2
       },
       timestamp: Date.now()
@@ -251,7 +252,99 @@ export class AnnotationService {
    */
   public clearAllAnnotations(): void {
     this._annotations.next([]);
-    this._colorIndex = 0; // Reset color index
+  }
+
+  /**
+   * Convert legacy annotation format to the standardized Annotation interface
+   */
+  private convertToStandardFormat(annotation: any): Annotation | null {
+    try {
+      console.log("Converting annotation format:", annotation);
+      
+      if (!annotation || !annotation.id) {
+        return null;
+      }
+      
+      // Handle circle format
+      if (annotation.type === 'circle') {
+        return {
+          id: annotation.id,
+          timestamp: Date.now(),
+          shape: {
+            type: AnnotationShapeType.CIRCLE,
+            points: [
+              { x: annotation.cx, y: annotation.cy },  // Center point
+              { x: annotation.cx + annotation.r, y: annotation.cy }  // Point to determine radius
+            ],
+            color: annotation.color || this.getDefaultColor(),
+            lineWidth: 2
+          },
+          note: annotation.note ? annotation.note : annotation.title ? {
+            text: annotation.title,
+            position: { x: annotation.cx + annotation.r + 5, y: annotation.cy - 5 },
+            expanded: true
+          } : undefined
+        };
+      }
+      
+      // Handle rectangle format
+      if (annotation.type === 'rectangle') {
+        return {
+          id: annotation.id,
+          timestamp: Date.now(),
+          shape: {
+            type: AnnotationShapeType.RECTANGLE,
+            points: [
+              { x: annotation.x, y: annotation.y },  // Top-left corner
+              { x: annotation.x + annotation.width, y: annotation.y + annotation.height }  // Bottom-right corner
+            ],
+            color: annotation.color || this.getDefaultColor(),
+            lineWidth: 2
+          },
+          note: annotation.note ? annotation.note : annotation.title ? {
+            text: annotation.title,
+            position: { x: annotation.x + annotation.width + 5, y: annotation.y - 5 },
+            expanded: true
+          } : undefined
+        };
+      }
+      
+      // Handle arrow format
+      if (annotation.type === 'arrow') {
+        return {
+          id: annotation.id,
+          timestamp: Date.now(),
+          shape: {
+            type: AnnotationShapeType.ARROW,
+            points: [
+              { x: annotation.startX, y: annotation.startY },  // Start point
+              { x: annotation.endX, y: annotation.endY }  // End point
+            ],
+            color: annotation.color || this.getDefaultColor(),
+            lineWidth: 2
+          },
+          note: annotation.note ? annotation.note : annotation.title ? {
+            text: annotation.title,
+            position: { x: annotation.endX + 5, y: annotation.endY - 5 },
+            expanded: true
+          } : undefined
+        };
+      }
+      
+      // If it already matches the standard format, return as is
+      if (annotation.shape && annotation.shape.type && annotation.shape.points) {
+        // Make a copy and ensure the color is set
+        const standardAnnotation = {...annotation};
+        standardAnnotation.shape = {...standardAnnotation.shape, color: standardAnnotation.shape.color || this.getDefaultColor()};
+        return standardAnnotation;
+      }
+      
+      console.warn("Unknown annotation format:", annotation);
+      return null;
+    } catch (error) {
+      console.error("Error converting annotation format:", error);
+      return null;
+    }
   }
 
   /**
@@ -259,15 +352,41 @@ export class AnnotationService {
    */
   public getUrlParam(): string {
     const annotations = this._annotations.getValue();
-    if (annotations.length === 0) {
+    if (!annotations || annotations.length === 0) {
+      return '';
+    }
+
+    console.log("Original annotations:", annotations);
+    
+    // Convert annotations to standard format if needed
+    const standardizedAnnotations = annotations
+      .map(a => this.convertToStandardFormat(a))
+      .filter(a => a !== null) as Annotation[];
+      
+    console.log("Standardized annotations:", standardizedAnnotations);
+    
+    if (standardizedAnnotations.length === 0) {
+      console.error('Failed to convert annotations to standard format');
       return '';
     }
 
     // Convert to a compact format for URL
-    const compactData = annotations.map(a => this.serializeAnnotation(a));
+    const compactData = standardizedAnnotations
+      .map(a => this.serializeAnnotation(a))
+      .filter(a => a !== null); // Remove any null serialized annotations
+    
+    if (compactData.length === 0) {
+      console.error('Failed to serialize any annotations');
+      return '';
+    }
 
     // Convert to Base64 for URL-safe encoding
-    return btoa(JSON.stringify(compactData));
+    try {
+      return btoa(JSON.stringify(compactData));
+    } catch (error) {
+      console.error('Error encoding annotations for URL', error);
+      return '';
+    }
   }
 
   /**
@@ -284,12 +403,98 @@ export class AnnotationService {
 
       // Convert compact format back to annotations
       const annotations = compactData.map(d => this.deserializeAnnotation(d));
+      
+      // Convert annotations to display format
+      const displayReady = annotations.map(annotation => this.convertToDisplayFormat(annotation));
+
+      // Log for debugging
+      console.log('Loaded annotations from URL:', displayReady);
 
       // Set as current annotations
-      this._annotations.next(annotations);
+      this._annotations.next(displayReady);
     } catch (e) {
       console.error('Failed to parse annotation URL parameter', e);
       throw new Error('Invalid annotation data format');
+    }
+  }
+  
+  /**
+   * Convert an annotation from the internal format to the display format
+   * with properties like x, y, width, height, cx, cy, r, etc.
+   */
+  private convertToDisplayFormat(annotation: Annotation): any {
+    try {
+      const displayAnnotation: any = {
+        id: annotation.id,
+        timestamp: annotation.timestamp,
+        color: annotation.shape.color,
+        note: annotation.note,
+        title: annotation.note?.text || '' // Use note text as title if available
+      };
+
+      if (annotation.shape.type === AnnotationShapeType.RECTANGLE) {
+        displayAnnotation.type = 'rectangle';
+        
+        // Get the points that define the rectangle
+        const p1 = annotation.shape.points[0] || { x: 0, y: 0 };
+        const p2 = annotation.shape.points[1] || { x: 0, y: 0 };
+        
+        // Calculate rectangle properties
+        const left = Math.min(p1.x, p2.x);
+        const top = Math.min(p1.y, p2.y);
+        const width = Math.abs(p2.x - p1.x);
+        const height = Math.abs(p2.y - p1.y);
+        
+        // Assign to the display annotation
+        displayAnnotation.x = left;
+        displayAnnotation.y = top;
+        displayAnnotation.width = width;
+        displayAnnotation.height = height;
+      } 
+      else if (annotation.shape.type === AnnotationShapeType.CIRCLE) {
+        displayAnnotation.type = 'circle';
+        
+        // Get the points that define the circle
+        const center = annotation.shape.points[0] || { x: 50, y: 50 };
+        const radiusPoint = annotation.shape.points[1] || { x: 60, y: 50 };
+        
+        // Calculate circle properties
+        const dx = radiusPoint.x - center.x;
+        const dy = radiusPoint.y - center.y;
+        const radius = Math.sqrt(dx * dx + dy * dy);
+        
+        // Assign to the display annotation
+        displayAnnotation.cx = center.x;
+        displayAnnotation.cy = center.y;
+        displayAnnotation.r = radius;
+      }
+      else if (annotation.shape.type === AnnotationShapeType.ARROW) {
+        displayAnnotation.type = 'arrow';
+        
+        // Get the points that define the arrow
+        const start = annotation.shape.points[0] || { x: 35, y: 50 };
+        const end = annotation.shape.points[1] || { x: 65, y: 50 };
+        
+        // Assign to the display annotation
+        displayAnnotation.startX = start.x;
+        displayAnnotation.startY = start.y;
+        displayAnnotation.endX = end.x;
+        displayAnnotation.endY = end.y;
+      }
+      
+      console.log("Converted to display format:", displayAnnotation);
+      return displayAnnotation;
+    } catch (error) {
+      console.error('Error converting annotation to display format:', error, annotation);
+      return { 
+        id: annotation.id || this.generateUniqueId(),
+        type: 'rectangle', 
+        x: 10, 
+        y: 10, 
+        width: 20, 
+        height: 20,
+        color: this.getDefaultColor()
+      };
     }
   }
 
@@ -299,53 +504,35 @@ export class AnnotationService {
    * @param heightRatio Ratio of new height to old height
    */
   public recalculatePositionsAfterResize(widthRatio: number, heightRatio: number): void {
-    if (widthRatio === 1 && heightRatio === 1) {
-      return; // No change
-    }
-
+    // We don't need to recalculate positions since we're using percentages
+    // Percentages should scale automatically with the image
+    
+    // For legacy purposes, just make sure we maintain the same annotations
     const annotations = this._annotations.getValue();
     if (annotations.length === 0) {
       return;
     }
-
-    // Create updated annotations with adjusted positions
-    const updatedAnnotations = annotations.map(annotation => {
-      // Create a deep copy
-      const updated = { ...annotation };
-
-      // Update shape points
-      updated.shape = {
-        ...updated.shape,
-        points: updated.shape.points.map(point => ({
-          x: point.x, // Keep X as percentage
-          y: point.y  // Keep Y as percentage
-        }))
-      };
-
-      // Update note position if it exists
-      if (updated.note) {
-        updated.note = {
-          ...updated.note,
-          position: {
-            x: updated.note.position.x, // Keep X as percentage
-            y: updated.note.position.y  // Keep Y as percentage
-          }
-        };
-      }
-
-      return updated;
-    });
-
+    
+    console.log("Window resize detected, but no position recalculation needed since we use percentages.");
+    
+    // Notify of non-changes to trigger UI refresh
+    // This is a no-op as we're just ensuring references don't change
+    const updatedAnnotations = annotations.map(annotation => ({ ...annotation }));
     this._annotations.next(updatedAnnotations);
   }
 
   /**
-   * Get the next color in the rotation
+   * Get all available annotation colors
    */
-  public getNextColor(): string {
-    const color = this.ANNOTATION_COLORS[this._colorIndex];
-    this._colorIndex = (this._colorIndex + 1) % this.ANNOTATION_COLORS.length;
-    return color;
+  public getColors(): string[] {
+    return [...this.ANNOTATION_COLORS];
+  }
+  
+  /**
+   * Get the default color
+   */
+  public getDefaultColor(): string {
+    return this.ANNOTATION_COLORS[this._defaultColorIndex];
   }
 
   /**
@@ -419,26 +606,37 @@ export class AnnotationService {
    * Serialize an annotation to a compact format for URL storage
    */
   private serializeAnnotation(annotation: Annotation): any {
-    const compact: any = {
-      i: annotation.id,
-      t: annotation.timestamp,
-      s: {
-        t: this.serializeShapeType(annotation.shape.type),
-        p: annotation.shape.points.map(p => [this.roundToTwo(p.x), this.roundToTwo(p.y)]),
-        c: annotation.shape.color,
-        w: annotation.shape.lineWidth
-      }
-    };
-
-    if (annotation.note) {
-      compact.n = {
-        t: annotation.note.text,
-        p: [this.roundToTwo(annotation.note.position.x), this.roundToTwo(annotation.note.position.y)],
-        e: annotation.note.expanded ? 1 : 0
-      };
+    // Validate annotation structure to avoid TypeError
+    if (!annotation || !annotation.shape || !annotation.shape.type || !annotation.shape.points || !Array.isArray(annotation.shape.points)) {
+      console.error('Invalid annotation structure:', annotation);
+      return null;
     }
+    
+    try {
+      const compact: any = {
+        i: annotation.id,
+        t: annotation.timestamp,
+        s: {
+          t: this.serializeShapeType(annotation.shape.type),
+          p: annotation.shape.points.map(p => [this.roundToTwo(p.x), this.roundToTwo(p.y)]),
+          c: annotation.shape.color,
+          w: annotation.shape.lineWidth
+        }
+      };
 
-    return compact;
+      if (annotation.note) {
+        compact.n = {
+          t: annotation.note.text,
+          p: [this.roundToTwo(annotation.note.position.x), this.roundToTwo(annotation.note.position.y)],
+          e: annotation.note.expanded ? 1 : 0
+        };
+      }
+
+      return compact;
+    } catch (error) {
+      console.error('Error serializing annotation:', error, annotation);
+      return null;
+    }
   }
 
   /**
@@ -451,7 +649,7 @@ export class AnnotationService {
       shape: {
         type: this.deserializeShapeType(data.s.t),
         points: (data.s.p || []).map(p => ({ x: p[0], y: p[1] })),
-        color: data.s.c || this.getNextColor(),
+        color: data.s.c || this.getDefaultColor(),
         lineWidth: data.s.w || 2
       }
     };

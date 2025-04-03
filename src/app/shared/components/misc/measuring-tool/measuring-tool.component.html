@@ -6,18 +6,22 @@
   <div class="loading-text mt-2">{{ 'Loading measurements from URL...' | translate }}</div>
 </div>
 
-<div class="measuring-tool-container" *ngIf="active">
-  <!-- Overlay for capturing clicks and drags during measuring mode -->
+<div class="measuring-tool-container" *ngIf="active" data-ignore-swipe-down="true">
+  <!-- Overlay for capturing clicks/touches and drags during measuring mode -->
   <!-- Put this first so other elements can be on top of it -->
   <div class="measure-click-overlay"
        (click)="handleMeasurementClick($event)"
-       (mousedown)="handleMeasurementMouseDown($event)"></div>
+       (mousedown)="handleMeasurementMouseDown($event)"
+       (touchstart)="handleMeasurementTouchStart($event)"
+       (touchend)="handleMeasurementTouchEnd($event)"
+       (touchmove)="handleMeasurementTouchMove($event)"></div>
 
   <!-- Start and end markers -->
   <div *ngIf="measureStartPoint" class="measure-marker start-marker"
        [class.dragging]="isDraggingPoint === 'start'"
        [style.left.px]="measureStartPoint.x" [style.top.px]="measureStartPoint.y"
-       (mousedown)="handlePointDragStart($event, 'start')">
+       (mousedown)="handlePointDragStart($event, 'start')"
+       (touchstart)="handlePointTouchStart($event, 'start')">
     <div class="marker-dot"></div>
     <!-- Start point coordinates with extended directional positioning -->
     <div *ngIf="!measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null" class="marker-coordinates initial-position visible"
@@ -32,7 +36,8 @@
          [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').x"
          [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').y"
          [class.outside-boundaries]="_checkPointOutsideBoundaries(measureStartPoint.x, measureStartPoint.y)"
-         (mousedown)="handlePointDragStart($event, 'start')">
+         (mousedown)="handlePointDragStart($event, 'start')"
+         (touchstart)="handlePointTouchStart($event, 'start')">
       <small>{{ _checkPointOutsideBoundaries(measureStartPoint.x, measureStartPoint.y) ? 'n/a' : (measureStartPoint.ra | formatCoordinatesCompact : measureStartPoint.dec) }}</small>
     </div>
   </div>
@@ -40,7 +45,8 @@
   <div *ngIf="measureEndPoint" class="measure-marker end-marker"
        [class.dragging]="isDraggingPoint === 'end'"
        [style.left.px]="measureEndPoint.x" [style.top.px]="measureEndPoint.y"
-       (mousedown)="handlePointDragStart($event, 'end')">
+       (mousedown)="handlePointDragStart($event, 'end')"
+       (touchstart)="handlePointTouchStart($event, 'end')">
     <div class="marker-dot"></div>
     <!-- End point coordinates perpendicular to line -->
     <div *ngIf="measureEndPoint.ra !== null && measureEndPoint.dec !== null"
@@ -48,7 +54,8 @@
          [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').x"
          [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').y"
          [class.outside-boundaries]="_checkPointOutsideBoundaries(measureEndPoint.x, measureEndPoint.y)"
-         (mousedown)="handlePointDragStart($event, 'end')">
+         (mousedown)="handlePointDragStart($event, 'end')"
+         (touchstart)="handlePointTouchStart($event, 'end')">
       <small>{{ _checkPointOutsideBoundaries(measureEndPoint.x, measureEndPoint.y) ? 'n/a' : (measureEndPoint.ra | formatCoordinatesCompact : measureEndPoint.dec) }}</small>
     </div>
   </div>
@@ -155,7 +162,8 @@
          [class.dragging]="isDraggingPoint === 'prevStart-' + i"
          [style.left.px]="measurement.startX"
          [style.top.px]="measurement.startY"
-         (mousedown)="handlePreviousMeasurementDrag($event, i, 'start')">
+         (mousedown)="handlePreviousMeasurementDrag($event, i, 'start')"
+         (touchstart)="handlePreviousMeasurementTouchDrag($event, i, 'start')">
       <div class="marker-dot"></div>
     </div>
 
@@ -164,7 +172,8 @@
          [class.dragging]="isDraggingPoint === 'prevEnd-' + i"
          [style.left.px]="measurement.endX"
          [style.top.px]="measurement.endY"
-         (mousedown)="handlePreviousMeasurementDrag($event, i, 'end')">
+         (mousedown)="handlePreviousMeasurementDrag($event, i, 'end')"
+         (touchstart)="handlePreviousMeasurementTouchDrag($event, i, 'end')">
       <div class="marker-dot"></div>
     </div>
 
@@ -370,7 +379,8 @@
        [style.top.px]="measurement.midY"
        (mouseenter)="setMouseOverUIElement(true)"
        (mouseleave)="setMouseOverUIElement(false)"
-       (mousedown)="handleShapeDragStart($event, i, measurement.showCircle ? 'circle' : 'rectangle')">
+       (mousedown)="handleShapeDragStart($event, i, measurement.showCircle ? 'circle' : 'rectangle')"
+       (touchstart)="handleShapeTouchStart($event, i, measurement.showCircle ? 'circle' : 'rectangle')">
     <div class="measurement-content">
       <!-- Display name if it exists -->
       <div *ngIf="measurement.name" class="measurement-name">
@@ -385,7 +395,10 @@
                 class="info-icon ms-1"
                 [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
                 container="body"
-                placement="top">
+                placement="top"
+                triggers="manual"
+                #tpixelinfo="ngbTooltip"
+                (click)="toggleTooltip(tpixelinfo)">
         </fa-icon>
       </span>
 
@@ -408,7 +421,9 @@
               [class.active]="measurement.showCircle"
               (click)="toggleCircle($event, i)"
               (mousedown)="$event.stopPropagation()"
-              (pointerdown)="$event.stopPropagation()">
+              (pointerdown)="$event.stopPropagation()"
+              (touchend)="toggleCircle($event, i)"
+              (touchstart)="$event.stopPropagation()">
         <fa-icon
           icon="circle"
           [ngbTooltip]="'Draw circle' | translate"
@@ -420,7 +435,9 @@
               [class.active]="measurement.showRectangle"
               (click)="toggleRectangle($event, i)"
               (mousedown)="$event.stopPropagation()"
-              (pointerdown)="$event.stopPropagation()">
+              (pointerdown)="$event.stopPropagation()"
+              (touchend)="toggleRectangle($event, i)"
+              (touchstart)="$event.stopPropagation()">
         <fa-icon
           icon="square"
           [ngbTooltip]="'Draw rectangle' | translate"
@@ -432,6 +449,8 @@
               (click)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? savePreviousMeasurement($event, i) : $event.stopPropagation()"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
+              (touchend)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? savePreviousMeasurement($event, i) : $event.stopPropagation()"
+              (touchstart)="$event.stopPropagation()"
               [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
               [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
               [style.pointer-events]="'auto'">
@@ -439,6 +458,9 @@
           icon="save"
           [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Saving measurements requires valid advanced plate-solving data' | translate) : ('Save measurement' | translate)"
           container="body"
+          triggers="manual"
+          #tsave="ngbTooltip"
+          (click)="toggleTooltip(tsave)"
         ></fa-icon>
       </button>
 
@@ -446,6 +468,8 @@
               (click)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? openExportMeasurementModal($event, measurement) : $event.stopPropagation()"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
+              (touchend)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? openExportMeasurementModal($event, measurement) : $event.stopPropagation()"
+              (touchstart)="$event.stopPropagation()"
               [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
               [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
               [style.pointer-events]="'auto'">
@@ -453,13 +477,18 @@
           icon="file-export"
           [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Exporting coordinates requires valid advanced plate-solving data' | translate) : ('Export coordinates' | translate)"
           container="body"
+          triggers="manual"
+          #t="ngbTooltip"
+          (click)="toggleTooltip(t)"
         ></fa-icon>
       </button>
 
       <button type="button" class="btn-delete-measurement delete-button"
               (click)="deleteMeasurement($event, i)"
               (mousedown)="$event.stopPropagation()"
-              (pointerdown)="$event.stopPropagation()">
+              (pointerdown)="$event.stopPropagation()"
+              (touchend)="deleteMeasurement($event, i)"
+              (touchstart)="$event.stopPropagation()">
         <fa-icon
           icon="times"
           [ngbTooltip]="'Delete measurement' | translate"
@@ -667,7 +696,8 @@
        [style.top.px]="(measureStartPoint.y + measureEndPoint.y) / 2"
        (mouseenter)="setMouseOverUIElement(true)"
        (mouseleave)="setMouseOverUIElement(false)"
-       (mousedown)="handleCurrentShapeDragStart($event, showCurrentCircle ? 'circle' : 'rectangle')">
+       (mousedown)="handleCurrentShapeDragStart($event, showCurrentCircle ? 'circle' : 'rectangle')"
+       (touchstart)="handleCurrentShapeTouchStart($event, showCurrentCircle ? 'circle' : 'rectangle')">
     <div class="measurement-content">
       <!-- Display name if it exists -->
       <div *ngIf="newMeasurementName" class="measurement-name">
@@ -682,7 +712,10 @@
                 class="info-icon ms-1"
                 [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
                 container="body"
-                placement="top">
+                placement="top"
+                triggers="manual"
+                #tcurrentpixelinfo="ngbTooltip"
+                (click)="toggleTooltip(tcurrentpixelinfo)">
         </fa-icon>
       </span>
 
@@ -705,7 +738,9 @@
               [class.active]="showCurrentCircle"
               (click)="toggleCurrentCircle($event)"
               (mousedown)="$event.stopPropagation()"
-              (pointerdown)="$event.stopPropagation()">
+              (pointerdown)="$event.stopPropagation()"
+              (touchend)="toggleCurrentCircle($event)"
+              (touchstart)="$event.stopPropagation()">
         <fa-icon icon="circle" [ngbTooltip]="'Draw circle' | translate" container="body"></fa-icon>
       </button>
 
@@ -713,7 +748,9 @@
               [class.active]="showCurrentRectangle"
               (click)="toggleCurrentRectangle($event)"
               (mousedown)="$event.stopPropagation()"
-              (pointerdown)="$event.stopPropagation()">
+              (pointerdown)="$event.stopPropagation()"
+              (touchend)="toggleCurrentRectangle($event)"
+              (touchstart)="$event.stopPropagation()">
         <fa-icon icon="square" [ngbTooltip]="'Draw rectangle' | translate" container="body"></fa-icon>
       </button>
 
@@ -721,20 +758,34 @@
               (click)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? openSaveCurrentMeasurement($event) : $event.stopPropagation()"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
+              (touchend)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? openSaveCurrentMeasurement($event) : $event.stopPropagation()"
+              (touchstart)="$event.stopPropagation()"
               [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
               [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
               [style.pointer-events]="'auto'">
-        <fa-icon icon="save" [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Saving measurements requires valid advanced plate-solving data' | translate) : ('Save measurement' | translate)" container="body"></fa-icon>
+        <fa-icon icon="save" 
+        [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Saving measurements requires valid advanced plate-solving data' | translate) : ('Save measurement' | translate)" 
+        container="body"
+        triggers="manual"
+        #tsavecurrent="ngbTooltip"
+        (click)="toggleTooltip(tsavecurrent)"></fa-icon>
       </button>
 
       <button type="button" class="btn-shape-action export-button"
               (click)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? openExportMeasurementModal($event, {startX: measureStartPoint.x, startY: measureStartPoint.y, endX: measureEndPoint.x, endY: measureEndPoint.y, midX: 0, midY: 0, distance: measureDistance, timestamp: Date.now(), startRa: measureStartPoint.ra, startDec: measureStartPoint.dec, endRa: measureEndPoint.ra, endDec: measureEndPoint.dec, startLabelX: 0, startLabelY: 0, endLabelX: 0, endLabelY: 0, showCircle: showCurrentCircle, showRectangle: showCurrentRectangle}) : $event.stopPropagation()"
               (mousedown)="$event.stopPropagation()"
               (pointerdown)="$event.stopPropagation()"
+              (touchend)="advancedSolutionMatrix && advancedSolutionMatrix.raMatrix ? openExportMeasurementModal($event, {startX: measureStartPoint.x, startY: measureStartPoint.y, endX: measureEndPoint.x, endY: measureEndPoint.y, midX: 0, midY: 0, distance: measureDistance, timestamp: Date.now(), startRa: measureStartPoint.ra, startDec: measureStartPoint.dec, endRa: measureEndPoint.ra, endDec: measureEndPoint.dec, startLabelX: 0, startLabelY: 0, endLabelX: 0, endLabelY: 0, showCircle: showCurrentCircle, showRectangle: showCurrentRectangle}) : $event.stopPropagation()"
+              (touchstart)="$event.stopPropagation()"
               [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
               [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
               [style.pointer-events]="'auto'">
-        <fa-icon icon="file-export" [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Exporting coordinates requires valid advanced plate-solving data' | translate) : ('Export coordinates' | translate)" container="body"></fa-icon>
+        <fa-icon icon="file-export" 
+        [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Exporting coordinates requires valid advanced plate-solving data' | translate) : ('Export coordinates' | translate)" 
+        container="body"
+        triggers="manual"
+        #texportcurrent="ngbTooltip"
+        (click)="toggleTooltip(texportcurrent)"></fa-icon>
       </button>
     </div>
     
@@ -751,7 +802,8 @@
          [style.left.px]="measurement.startLabelX"
          [style.top.px]="measurement.startLabelY"
          [class.outside-boundaries]="_checkPointOutsideBoundaries(measurement.startX, measurement.startY)"
-         (mousedown)="handlePreviousMeasurementDrag($event, i, 'start')">
+         (mousedown)="handlePreviousMeasurementDrag($event, i, 'start')"
+         (touchstart)="handlePreviousMeasurementTouchDrag($event, i, 'start')">
       <small>{{ _checkPointOutsideBoundaries(measurement.startX, measurement.startY) ? 'n/a' : (measurement.startRa | formatCoordinatesCompact:measurement.startDec) }}</small>
     </div>
 
@@ -761,40 +813,61 @@
          [style.left.px]="measurement.endLabelX"
          [style.top.px]="measurement.endLabelY"
          [class.outside-boundaries]="_checkPointOutsideBoundaries(measurement.endX, measurement.endY)"
-         (mousedown)="handlePreviousMeasurementDrag($event, i, 'end')">
+         (mousedown)="handlePreviousMeasurementDrag($event, i, 'end')"
+         (touchstart)="handlePreviousMeasurementTouchDrag($event, i, 'end')">
       <small>{{ _checkPointOutsideBoundaries(measurement.endX, measurement.endY) ? 'n/a' : (measurement.endRa | formatCoordinatesCompact:measurement.endDec) }}</small>
     </div>
   </div>
 
-  <!-- Measuring tool controls - vertical layout -->
-  <div class="measuring-controls-right">
-    <button *ngIf="currentUser$ | async" class="btn btn-sm btn-outline-light"
-            (click)="toggleSavedMeasurements()"
-            title="{{ 'Saved Measurements' | translate }}">
-      <fa-icon icon="bookmark" class="me-1"></fa-icon>
-      {{ 'Saved' | translate }}
-    </button>
-
-    <button class="btn btn-sm btn-outline-light"
-            (click)="shareMeasurements()"
-            *ngIf="previousMeasurements.length > 0"
-            title="{{ 'Share measurements' | translate }}">
-      <fa-icon icon="share-alt" class="me-1"></fa-icon>
-      {{ 'Share' | translate }}
-    </button>
-
-    <button class="btn btn-sm btn-outline-light"
-            (click)="clearAllMeasurements()"
-            *ngIf="previousMeasurements.length > 0">
-      <fa-icon icon="trash" class="me-1"></fa-icon>
-      {{ 'Clear all' | translate }}
-    </button>
-
-    <button class="btn btn-sm btn-outline-light"
-            (click)="exitMeasuring()">
-      <fa-icon icon="times" class="me-1"></fa-icon>
-      {{ 'Exit measuring tool' | translate }}
-    </button>
+  <!-- Fixed toolbar at top center - matching annotation toolbar style -->
+  <div class="fixed-top-toolbar">
+    <div class="toolbar-buttons">
+      <!-- Saved measurements button -->
+      <button *ngIf="currentUser$ | async" 
+              type="button" 
+              class="icon-button" 
+              title="{{ 'Saved Measurements' | translate }}"
+              (click)="toggleSavedMeasurements()"
+              (touchstart)="$event.stopPropagation()"
+              (touchend)="toggleSavedMeasurements()">
+        <fa-icon [icon]="['fas', 'bookmark']"></fa-icon>
+      </button>
+      
+      <!-- Share measurements button -->
+      <button type="button" 
+              class="icon-button" 
+              title="{{ 'Share measurements' | translate }}"
+              [disabled]="previousMeasurements.length === 0"
+              (click)="shareMeasurements()"
+              (touchstart)="$event.stopPropagation()"
+              (touchend)="previousMeasurements.length > 0 ? shareMeasurements() : null">
+        <fa-icon [icon]="['fas', 'share-alt']"></fa-icon>
+      </button>
+      
+      <!-- Exit/Clear section with a visual separator -->
+      <div class="toolbar-separator"></div>
+      
+      <!-- Clear all measurements button -->
+      <button type="button" 
+              class="icon-button" 
+              title="{{ 'Clear all measurements' | translate }}"
+              [disabled]="previousMeasurements.length === 0"
+              (click)="clearAllMeasurements()"
+              (touchstart)="$event.stopPropagation()"
+              (touchend)="previousMeasurements.length > 0 ? clearAllMeasurements() : null">
+        <fa-icon [icon]="['fas', 'eraser']"></fa-icon>
+      </button>
+      
+      <!-- Exit button -->
+      <button type="button" 
+              class="icon-button exit-button" 
+              title="{{ 'Exit measuring tool' | translate }}"
+              (click)="exitMeasuring()"
+              (touchstart)="$event.stopPropagation()"
+              (touchend)="exitMeasuring()">
+        <fa-icon [icon]="['fas', 'times']"></fa-icon>
+      </button>
+    </div>
   </div>
 
   <!-- Saved Measurements Panel -->
@@ -829,11 +902,13 @@
           <!-- Save button -->
           <div class="input-group input-group-sm mb-2">
             <button class="btn btn-primary"
-                    (click)="advancedSolutionMatrix ? saveMeasurement() : null"
+                    (click)="advancedSolutionMatrix ? saveMeasurement() : toggleTooltip(tpanelsavebtn)"
                     [class.disabled]="!advancedSolutionMatrix"
                     [style.pointer-events]="'auto'"
                     [ngbTooltip]="!advancedSolutionMatrix ? ('Saving measurements requires advanced plate-solving data' | translate) : ('Save measurement' | translate)"
-                    container="body">
+                    container="body"
+                    triggers="manual"
+                    #tpanelsavebtn="ngbTooltip">
               <fa-icon icon="save" class="me-1"></fa-icon>
               {{ 'Save' | translate }}
             </button>
@@ -862,10 +937,20 @@
                     (click)="advancedSolutionMatrix ? loadMeasurement(preset) : null"
                     [class.disabled]="!advancedSolutionMatrix"
                     [style.pointer-events]="'auto'">
-              <fa-icon icon="arrow-right" [ngbTooltip]="!advancedSolutionMatrix ? ('Loading measurements requires advanced plate-solving data' | translate) : ('Load measurement' | translate)" container="body"></fa-icon>
+              <fa-icon icon="arrow-right" 
+                [ngbTooltip]="!advancedSolutionMatrix ? ('Loading measurements requires advanced plate-solving data' | translate) : ('Load measurement' | translate)" 
+                container="body"
+                triggers="manual"
+                #tloadmeasurement="ngbTooltip"
+                (click)="toggleTooltip(tloadmeasurement)"></fa-icon>
             </button>
             <button class="btn btn-sm btn-outline-danger" (click)="deleteSavedMeasurement(i)">
-              <fa-icon icon="trash-alt" [ngbTooltip]="'Delete saved measurement' | translate" container="body"></fa-icon>
+              <fa-icon icon="trash-alt" 
+                [ngbTooltip]="'Delete saved measurement' | translate" 
+                container="body"
+                triggers="manual"
+                #tdeletemeasurement="ngbTooltip"
+                (click)="toggleTooltip(tdeletemeasurement)"></fa-icon>
             </button>
           </div>
         </div>

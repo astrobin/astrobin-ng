@@ -1,29 +1,81 @@
-<div class="annotation-tool-container" [class.active]="active">
+<!-- Loading indicator for URL annotations -->
+<div *ngIf="loadingUrlAnnotations" class="url-annotations-loading-indicator">
+  <div class="spinner-border text-light" role="status">
+    <span class="visually-hidden">{{ 'Loading annotations from URL...' | translate }}</span>
+  </div>
+  <div class="loading-text mt-2">{{ 'Loading annotations from URL...' | translate }}</div>
+  
+  <!-- Skip loading button (immediate option for all devices) -->
+  <button class="btn btn-sm btn-primary mt-3" 
+          (click)="loadingUrlAnnotations = false; cdRef.markForCheck();">
+    {{ 'Show annotations now' | translate }}
+  </button>
+</div>
+
+<div class="annotation-tool-container" [class.active]="active" data-ignore-swipe-down="true">
   <!-- Fixed toolbar - making it simpler and more bulletproof -->
   <div class="fixed-top-toolbar">
     <div class="toolbar-buttons">
-      <button type="button" class="icon-button" title="Add Rectangle" (click)="makeRect()">
+      <!-- Drawing tools -->
+      <button type="button" class="icon-button" title="Add Rectangle" 
+              (click)="makeRect()"
+              (touchend)="makeRect()">
         <fa-icon [icon]="['fas', 'square']"></fa-icon>
       </button>
-      <button type="button" class="icon-button" title="Add Circle" (click)="makeCircle()">
+      <button type="button" class="icon-button" title="Add Circle" 
+              (click)="makeCircle()"
+              (touchend)="makeCircle()">
         <fa-icon [icon]="['fas', 'circle']"></fa-icon>
       </button>
-      <button type="button" class="icon-button" title="{{ 'Clear All' | translate }}" 
-              [disabled]="annotations.length === 0" 
-              (click)="confirmClearAll()">
-        <fa-icon [icon]="['fas', 'trash']"></fa-icon>
+      
+      <!-- Actions -->
+      <button *ngIf="isImageOwner && imageId"
+              type="button"
+              class="icon-button"
+              title="{{ 'Save Annotations' | translate }}"
+              [disabled]="annotations.length === 0"
+              (click)="saveAnnotations()"
+              (touchend)="annotations.length > 0 ? saveAnnotations() : null"
+              (touchstart)="$event.stopPropagation()">
+        <fa-icon [icon]="['fas', 'save']"></fa-icon>
       </button>
-      <button type="button" class="icon-button" title="Exit Annotation Mode" (click)="exitAnnotationModeHandler()">
+      <button type="button"
+              class="icon-button"
+              title="{{ 'Share Annotations' | translate }}"
+              [disabled]="annotations.length === 0"
+              (click)="shareAnnotations()"
+              (touchend)="annotations.length > 0 ? shareAnnotations() : null"
+              (touchstart)="$event.stopPropagation()">
+        <fa-icon [icon]="['fas', 'share-alt']"></fa-icon>
+      </button>
+      
+      <!-- Exit/Clear section with a visual separator -->
+      <div class="toolbar-separator"></div>
+      
+      <button type="button" 
+              class="icon-button" 
+              title="{{ 'Clear All' | translate }}"
+              [disabled]="annotations.length === 0"
+              (click)="confirmClearAll()"
+              (touchend)="annotations.length > 0 ? confirmClearAll() : null"
+              (touchstart)="$event.stopPropagation()">
+        <fa-icon [icon]="['fas', 'eraser']"></fa-icon>
+      </button>
+      <button type="button" class="icon-button exit-button" 
+              title="Exit Annotation Mode" 
+              (click)="exitAnnotationModeHandler()"
+              (touchend)="exitAnnotationModeHandler()"
+              (touchstart)="$event.stopPropagation()">
         <fa-icon [icon]="['fas', 'times']"></fa-icon>
       </button>
     </div>
   </div>
 
   <!-- Annotation container with HTML elements instead of SVG -->
-  <div class="annotation-container">
+  <div class="annotation-container" data-ignore-swipe-down="true">
     <!-- Annotations layer -->
-    <div class="annotation-layer">
-      <!-- Rectangle annotations -->
+    <div class="annotation-layer" data-ignore-swipe-down="true">
+      <!-- Rectangle annotations - only show when not loading -->
       <div *ngFor="let ann of annotations"
            [ngClass]="{'annotation': true, 'rectangle': ann.type === 'rectangle', 'circle': ann.type === 'circle'}"
            [style.left.%]="getAnnotationLeft(ann)"
@@ -34,8 +86,11 @@
            [style.backgroundColor]="ann.color + '4D'"
            [style.borderColor]="ann.color"
            [class.active]="currentlyDragging === ann"
-           (mousedown)="startDrag($event, ann, 'whole')">
-           
+           [style.visibility]="loadingUrlAnnotations ? 'hidden' : 'visible'"
+           data-ignore-swipe-down="true"
+           (mousedown)="startDrag($event, ann, 'whole')"
+           (touchstart)="startDragTouch($event, ann, 'whole')">
+
            <!-- Title display -->
            <div *ngIf="ann.title" class="annotation-title">
              {{ ann.title }}
@@ -43,21 +98,38 @@
 
         <!-- Control points (corners) -->
         <div *ngIf="ann.type === 'rectangle'" class="control-points">
-          <div class="control-point top-left" (mousedown)="startDrag($event, ann, 'tl')"></div>
-          <div class="control-point top-right" (mousedown)="startDrag($event, ann, 'tr')"></div>
-          <div class="control-point bottom-left" (mousedown)="startDrag($event, ann, 'bl')"></div>
-          <div class="control-point bottom-right" (mousedown)="startDrag($event, ann, 'br')"></div>
+          <div class="control-point top-left" 
+               data-ignore-swipe-down="true"
+               (mousedown)="startDrag($event, ann, 'tl')"
+               (touchstart)="startDragTouch($event, ann, 'tl')"></div>
+          <div class="control-point top-right" 
+               data-ignore-swipe-down="true"
+               (mousedown)="startDrag($event, ann, 'tr')"
+               (touchstart)="startDragTouch($event, ann, 'tr')"></div>
+          <div class="control-point bottom-left" 
+               data-ignore-swipe-down="true"
+               (mousedown)="startDrag($event, ann, 'bl')"
+               (touchstart)="startDragTouch($event, ann, 'bl')"></div>
+          <div class="control-point bottom-right" 
+               data-ignore-swipe-down="true"
+               (mousedown)="startDrag($event, ann, 'br')"
+               (touchstart)="startDragTouch($event, ann, 'br')"></div>
         </div>
 
         <!-- Control points for circle - only top handle -->
         <div *ngIf="ann.type === 'circle'" class="control-points">
-          <div class="control-point top" (mousedown)="startDrag($event, ann, 'resize')"></div>
+          <div class="control-point top" 
+               data-ignore-swipe-down="true"
+               (mousedown)="startDrag($event, ann, 'resize')"
+               (touchstart)="startDragTouch($event, ann, 'resize')"></div>
         </div>
 
         <!-- Arrow mode has been removed -->
 
         <!-- Toolbar for each annotation -->
-        <div class="control-toolbar" (mousedown)="$event.stopPropagation()">
+        <div class="control-toolbar" 
+             (mousedown)="$event.stopPropagation()" 
+             (touchstart)="$event.stopPropagation()">
           <button class="tool-button message"
                   (click)="showMessageForm(ann.id, annotationFormModal); $event.stopPropagation()">
             <fa-icon [icon]="['fas', 'file-alt']"></fa-icon>
@@ -70,8 +142,8 @@
       </div>
     </div>
 
-    <!-- Drawing overlay (for creating new shapes) -->
-    <div class="drawing-overlay" *ngIf="active && !currentlyDragging">
+    <!-- Drawing overlay (for creating new shapes) - hidden during loading -->
+    <div class="drawing-overlay" *ngIf="active && !currentlyDragging && !loadingUrlAnnotations">
       <!-- Preview of shape being drawn -->
       <div *ngIf="isDrawing && activeAnnotation" class="drawing-preview"
            [ngClass]="{'rectangle': activeAnnotation.shape.type === 'RECTANGLE',
@@ -87,18 +159,23 @@
     </div>
   </div>
 
-  <!-- Mouse event overlay -->
-  <div class="mouse-event-overlay" *ngIf="currentlyDragging"
+  <!-- Mouse event overlay - hidden during loading -->
+  <div class="mouse-event-overlay" *ngIf="currentlyDragging && !loadingUrlAnnotations"
        [style.cursor]="getCursorForDragMode()"
+       data-ignore-swipe-down="true"
        (mousemove)="dragMove($event)"
        (mouseup)="endDrag($event)"
-       (mouseleave)="endDrag($event)"></div>
+       (mouseleave)="endDrag($event)"
+       (touchmove)="dragMoveTouch($event)"
+       (touchend)="endDragTouch($event)"
+       (touchcancel)="endDragTouch($event)"></div>
 
 
   <!-- NgbModal Template -->
   <ng-template #annotationFormModal let-modal>
     <div class="modal-header">
-      <h4 class="modal-title">{{ (pendingShapeData ? 'Create Annotation' : 'Edit Annotation') | translate }}</h4>
+      <h4 class="modal-title" *ngIf="pendingShapeData">{{ 'Create annotation' | translate }}</h4>
+      <h4 class="modal-title" *ngIf="!pendingShapeData">{{ 'Edit annotation' | translate }}</h4>
       <button type="button" class="close" [attr.aria-label]="'Close' | translate" (click)="modal.dismiss()">
         <span aria-hidden="true">&times;</span>
       </button>

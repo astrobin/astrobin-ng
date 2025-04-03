@@ -1,3 +1,52 @@
+/* URL Annotations Loading Indicator - similar to the measuring tool's */
+.url-annotations-loading-indicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000; /* Higher than any other element */
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  min-width: 250px;
+  min-height: 150px;
+
+  .spinner-border {
+    width: 2rem;
+    height: 2rem;
+    border-width: 0.3em;
+  }
+
+  .loading-text {
+    color: white;
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-top: 15px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+  
+  .btn-outline-light {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    
+    &:hover, &:active, &:focus {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border-color: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
 .annotation-tool-container {
   position: absolute;
   top: 0;
@@ -9,6 +58,7 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  touch-action: none; /* Disable browser handling of all touch gestures */
 }
 
 .fixed-top-toolbar {
@@ -34,6 +84,14 @@
   justify-content: center;
   flex-wrap: nowrap;
   gap: 8px;
+  
+  .toolbar-separator {
+    width: 1px;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.3);
+    margin: 0 8px;
+    align-self: center;
+  }
 }
 
 .fixed-top-toolbar button,
@@ -95,17 +153,23 @@
       background-color: rgba(255, 255, 255, 0.1) !important;
     }
   }
+  
+  &.exit-button {
+    background-color: rgba(255, 255, 255, 0.08);
+    
+    &:hover:not(:disabled) {
+      background-color: rgba(255, 75, 75, 0.3);
+    }
+  }
 }
 
 /* HTML-based annotation styles */
 .annotation-container {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  /* Position and size will be set dynamically via JavaScript to match the image exactly */
   z-index: 1001;
   pointer-events: all;
+  overflow: visible; /* Allow annotations to overflow for notes that may go outside the image */
 }
 
 .annotation-layer {
@@ -123,6 +187,8 @@
   box-sizing: border-box;
   cursor: move;
   transform-origin: center center;
+  touch-action: none; /* Disable browser handling of all touch gestures */
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* Remove tap highlight on mobile */
 
   .annotation-title {
     position: absolute;
@@ -180,13 +246,14 @@
   .control-points {
     .control-point {
       position: absolute;
-      width: 12px;
-      height: 12px;
+      width: 20px; /* Increased size for better touch targets */
+      height: 20px; /* Increased size for better touch targets */
       background-color: white;
       border: 2px solid rgba(0, 0, 0, 0.5);
       border-radius: 50%;
       transform: translate(-50%, -50%);
       z-index: 1;
+      touch-action: none; /* Disable browser handling of all touch gestures */
 
       &.top-left {
         top: 0;
@@ -371,6 +438,7 @@
   z-index: 9999;
   cursor: inherit;
   background-color: transparent;
+  touch-action: none; /* Disable browser handling of all touch gestures */
 }
 
 /* Annotation messages styling */
@@ -383,3 +451,18 @@
   z-index: 1002;
   pointer-events: none; /* Allow clicks to pass through to underlying elements */
 }
+
+/* Add some special styles to improve touch dragging */
+.annotation-tool-container {
+  &.touch-drag-active {
+    .annotation-container, .annotation-layer {
+      pointer-events: all !important;
+    }
+    
+    .mouse-event-overlay {
+      visibility: visible !important;
+      z-index: 9999 !important;
+    }
+  }
+}
+

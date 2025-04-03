@@ -120,6 +120,93 @@
   height: 100%;
   pointer-events: none;
   z-index: 5;
+  
+  /* Fixed top toolbar - matching annotation toolbar style */
+  .fixed-top-toolbar {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+    width: auto;
+    text-align: center;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: all;
+  }
+  
+  .toolbar-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+    
+    .toolbar-separator {
+      width: 1px;
+      height: 24px;
+      background-color: rgba(255, 255, 255, 0.3);
+      margin: 0 8px;
+      align-self: center;
+    }
+  }
+  
+  .icon-button {
+    min-width: unset;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    z-index: 10001;
+    transition: all 0.2s ease;
+
+    fa-icon {
+      font-size: 16px;
+      color: white;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background-color: rgba(255, 255, 255, 0.1) !important;
+
+      &:hover, &:active {
+        transform: none;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+      }
+    }
+    
+    &.exit-button {
+      background-color: rgba(255, 255, 255, 0.08);
+      
+      &:hover:not(:disabled) {
+        background-color: rgba(255, 75, 75, 0.3);
+      }
+    }
+  }
 
   .boundary-warning {
     position: absolute;
@@ -135,16 +222,17 @@
 
   /* Saved Measurements Panel */
   .saved-measurements-panel {
-    position: absolute;
-    top: .5rem;
-    right: 220px; /* Position it to the left of the buttons */
+    position: fixed;
+    top: 75px; /* Position it below the top toolbar */
+    left: 50%;
+    transform: translateX(-50%);
     width: 380px;
     background-color: rgba(0, 0, 0, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
     color: white;
     pointer-events: all;
-    z-index: 10;
+    z-index: 9999;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 
     .panel-header {
@@ -1098,44 +1186,7 @@
     }
   }
 
-  .measuring-controls-right {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    pointer-events: all;
-    z-index: 10; /* Higher z-index to ensure buttons are clickable */
-    width: 200px;
-
-    .btn-outline-light {
-      background-color: rgba(0, 0, 0, 0.4);
-      border-color: rgba(255, 255, 255, 0.6);
-      font-weight: 500;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-      color: white;
-      width: 100%; /* Full width */
-      text-align: left; /* Left-align text for better readability */
-      white-space: nowrap;
-      /* Removed overflow and text-overflow to ensure text is fully visible */
-      padding-left: 0.75rem; /* Add consistent left padding */
-
-      /* Remove any existing margin - replaced by gap in parent */
-      margin: 0 !important;
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.8);
-        border-color: rgba(255, 255, 255, 0.9);
-        color: #000;
-        text-shadow: none;
-      }
-
-      &:focus, &:active {
-        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
-      }
-    }
-  }
+  /* Removed measuring-controls-right as it's replaced by the fixed-top-toolbar */
 }
 
 /* Coordinate labels for measurements (Top level) */

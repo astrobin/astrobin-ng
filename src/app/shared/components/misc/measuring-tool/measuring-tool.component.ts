@@ -81,8 +81,20 @@ export interface SolutionMatrix {
   styleUrls: ["./measuring-tool.component.scss"]
 })
 export class MeasuringToolComponent extends BaseComponentDirective implements OnInit, OnDestroy, AfterViewInit {
+  
+  /**
+   * Toggles the tooltip visibility when clicked
+   * @param tooltip The NgbTooltip instance
+   */
+  toggleTooltip(tooltip: any): void {
+    if (tooltip.isOpen()) {
+      tooltip.close();
+    } else {
+      tooltip.open();
+    }
+  }
   @Input() active: boolean = false;
-  @Input() imageElement: ElementRef<HTMLElement>;
+  @Input() imageElement: ElementRef<HTMLElement | HTMLImageElement>;
   @Input() advancedSolutionMatrix: SolutionMatrix | null = null;
   @Input() windowWidth: number;
   @Input() windowHeight: number;
@@ -165,6 +177,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   private _prevWindowHeight: number = 0;
   // For debouncing coordinate updates during drag
   private _lastCoordUpdateTime = 0;
+  
+  // Touch-specific state
+  private _isTouchDevice = false;
+  private _lastTouchEvent: TouchEvent = null;
+  private _touchStartTime = 0;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -199,10 +216,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     
     // Fallback if cached element isn't available yet
     if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
-      imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
-      if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
-        imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-      }
+      // Now we use the direct image element (no querySelector needed)
+      imageElement = this.imageElement?.nativeElement;
     }
 
     if (!imageElement) {
@@ -227,6 +242,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
   ngOnInit(): void {
     super.ngOnInit();
+
+    // Detect touch device
+    if (this.isBrowser) {
+      this._isTouchDevice = 'ontouchstart' in window || 
+                           navigator.maxTouchPoints > 0 ||
+                           (navigator as any).msMaxTouchPoints > 0;
+    }
 
     // Always handle store subscriptions first as they're SSR-safe
     // Subscribe to state changes
@@ -434,7 +456,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (this.isBrowser) {
       // Initialize the cached image element after a delay to ensure DOM is ready
       this.windowRefService.utilsService.delay(100).subscribe(() => {
-        this.cachedImageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+        // Now we use the direct image element (no querySelector needed)
+        this.cachedImageElement = this.imageElement?.nativeElement;
         
         // After image element is cached, update boundary status
         this.updateBoundaryStatus();
@@ -570,6 +593,165 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.mouseX = event.clientX;
     this.mouseY = event.clientY;
   }
+  
+  /**
+   * Handle touch start for measurements - only track position, don't create points yet
+   */
+  handleMeasurementTouchStart(event: TouchEvent): void {
+    // Prevent scrolling while interacting with the measuring tool
+    event.preventDefault();
+    
+    // Store the touch start time and event for subsequent handling
+    this._touchStartTime = Date.now();
+    this._lastTouchEvent = event;
+    
+    // Skip if this touch should be prevented
+    if (this._preventNextClick) {
+      this._preventNextClick = false;
+      return;
+    }
+    
+    if (event.touches.length === 1) {
+      const touch = event.touches[0];
+      
+      // Initialize tracking variables for detecting drag vs. tap
+      this.dragStartX = touch.clientX;
+      this.dragStartY = touch.clientY;
+      
+      // Track coordinates for visualization
+      this.mouseX = touch.clientX;
+      this.mouseY = touch.clientY;
+      
+      // Track this as the start of a potential drag - but don't create a point yet
+      // We'll wait to see if this is a drag or a tap
+      this._dragInProgress = true;
+    }
+  }
+
+  /**
+   * Handle touch move to track measurement & support drag-to-measure
+   */
+  handleMeasurementTouchMove(event: TouchEvent): void {
+    // Prevent scrolling during measurement
+    event.preventDefault();
+    
+    // Store the last touch event
+    this._lastTouchEvent = event;
+    
+    if (event.touches.length === 1) {
+      const touch = event.touches[0];
+      
+      // Update mouse position for live visualization
+      this.mouseX = touch.clientX;
+      this.mouseY = touch.clientY;
+      
+      // If we're dragging a point, we don't need to handle it here
+      // as it's already being handled by the touch listeners in handlePointTouchStart
+      if (this.isDraggingPoint) {
+        return;
+      }
+      
+      // If we're in a drag operation
+      if (this._dragInProgress && this.dragStartX !== null && this.dragStartY !== null) {
+        const deltaX = Math.abs(touch.clientX - this.dragStartX);
+        const deltaY = Math.abs(touch.clientY - this.dragStartY);
+        
+        // If we've moved enough, consider this a real drag and create start point if needed
+        if ((deltaX > this.DRAG_THRESHOLD || deltaY > this.DRAG_THRESHOLD) && !this._preventNextClick) {
+          this._preventNextClick = true; // Mark as a drag
+          
+          // Create a simulated mouse event for consistent handling
+          const simulatedEvent = new MouseEvent('touchmove', {
+            clientX: this.dragStartX, // Use the original start position
+            clientY: this.dragStartY,
+            bubbles: true,
+            cancelable: true,
+            view: window
+          });
+          
+          // Check if we can proceed with measurement
+          if (this._validateMeasurementArea(simulatedEvent)) {
+            // If already in the middle of a measurement, do nothing
+            if (this.measureStartPoint && !this.measureEndPoint) {
+              return;
+            }
+            
+            // Handle case when starting a new measurement while one is already complete
+            if (this.measureStartPoint && this.measureEndPoint) {
+              this._resetCurrentMeasurement();
+            }
+            
+            // Initialize the start point at the original touch position
+            this._initializeStartPoint(simulatedEvent);
+            this.measurementStarted.emit();
+            this.cdRef.markForCheck();
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Handle touch end - finalize drag-based measurements or handle single tap
+   */
+  handleMeasurementTouchEnd(event: TouchEvent): void {
+    // Get the final touch position
+    const touch = event.changedTouches[0];
+    if (!touch) {
+      this._dragInProgress = false;
+      return;
+    }
+    
+    // Create a simulated mouse event for consistent handling
+    const simulatedEvent = new MouseEvent('touchend', {
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+      bubbles: true,
+      cancelable: true,
+      view: window
+    });
+    
+    // Calculate touch duration
+    const touchDuration = Date.now() - this._touchStartTime;
+    const wasTap = touchDuration < 300 && !this._preventNextClick; // Short touch without significant movement
+    
+    if (wasTap) {
+      // If this was a tap (not a drag), simulate a click
+      if (this._validateMeasurementArea(simulatedEvent)) {
+        // Handle different measurement states - exactly like handleMeasurementClick
+        if (this.measureStartPoint && this.measureEndPoint) {
+          // We have a completed measurement, start a new one
+          this._handleNewMeasurementClick(simulatedEvent);
+        } else if (!this.measureStartPoint) {
+          // No measurement started yet, set first point
+          this._handleFirstPointClick(simulatedEvent);
+        } else if (!this.measureEndPoint) {
+          // First point set, now add second point and complete measurement
+          this._handleSecondPointClick(simulatedEvent);
+        }
+      }
+    } else if (this.measureStartPoint && !this.measureEndPoint && this._preventNextClick) {
+      // This was a drag, create end point at the current touch position
+      if (this._validateMeasurementArea(simulatedEvent)) {
+        // Create the end point
+        this._createEndPoint(simulatedEvent);
+        
+        // Finalize the measurement
+        this._finalizeMeasurement();
+      }
+    }
+    
+    // Reset state flags
+    this._dragInProgress = false;
+    this._preventNextClick = false;
+    
+    // Reset drag state if needed
+    if (this.isDraggingPoint) {
+      this.isDraggingPoint = null;
+    }
+    
+    this.cdRef.markForCheck();
+  }
 
   /**
    * Start dragging a measurement point
@@ -600,6 +782,116 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Trigger the drag start stream
     this._pointDragStart$.next({ event, point });
+  }
+  
+  /**
+   * Start touch-dragging a measurement point (start or end point)
+   */
+  handlePointTouchStart(event: TouchEvent, point: "start" | "end"): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.isDraggingPoint = point;
+    this._dragInProgress = true;
+
+    // Calculate offset between touch position and point position
+    if (event.touches.length === 1) {
+      const touch = event.touches[0];
+
+      if (point === "start" && this.measureStartPoint) {
+        this.dragOffsetX = this.measureStartPoint.x - touch.clientX;
+        this.dragOffsetY = this.measureStartPoint.y - touch.clientY;
+      } else if (point === "end" && this.measureEndPoint) {
+        this.dragOffsetX = this.measureEndPoint.x - touch.clientX;
+        this.dragOffsetY = this.measureEndPoint.y - touch.clientY;
+      } else {
+        this.dragOffsetX = 0;
+        this.dragOffsetY = 0;
+      }
+
+      this.dragStartX = touch.clientX;
+      this.dragStartY = touch.clientY;
+    }
+    
+    // Set up document-level touch handlers for the duration of this drag
+    const touchMoveHandler = (moveEvent: TouchEvent) => {
+      moveEvent.preventDefault();
+      
+      if (moveEvent.touches.length !== 1) return;
+      const moveTouch = moveEvent.touches[0];
+      
+      // Update the point position based on the touch
+      if (point === 'start' && this.measureStartPoint) {
+        this.measureStartPoint.x = moveTouch.clientX + this.dragOffsetX;
+        this.measureStartPoint.y = moveTouch.clientY + this.dragOffsetY;
+        
+        // Update celestial coordinates with debouncing
+        const now = Date.now();
+        if (now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS) {
+          this._lastCoordUpdateTime = now;
+          if (this.isValidSolutionMatrix()) {
+            const coords = this.boundCalculateCoordinatesAtPoint(
+              this.measureStartPoint.x, 
+              this.measureStartPoint.y
+            );
+            if (coords) {
+              this.measureStartPoint.ra = coords.ra;
+              this.measureStartPoint.dec = coords.dec;
+            }
+          }
+        }
+      } else if (point === 'end' && this.measureEndPoint) {
+        this.measureEndPoint.x = moveTouch.clientX + this.dragOffsetX;
+        this.measureEndPoint.y = moveTouch.clientY + this.dragOffsetY;
+        
+        // Update celestial coordinates with debouncing
+        const now = Date.now();
+        if (now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS) {
+          this._lastCoordUpdateTime = now;
+          if (this.isValidSolutionMatrix()) {
+            const coords = this.boundCalculateCoordinatesAtPoint(
+              this.measureEndPoint.x, 
+              this.measureEndPoint.y
+            );
+            if (coords) {
+              this.measureEndPoint.ra = coords.ra;
+              this.measureEndPoint.dec = coords.dec;
+            }
+          }
+        }
+      }
+      
+      // Recalculate distance if needed
+      if (this.measureStartPoint && this.measureEndPoint) {
+        this._recalculateMeasurementDistance();
+      }
+      
+      // Update boundary status
+      this.updateBoundaryStatus();
+      
+      // Force change detection
+      this.cdRef.markForCheck();
+    };
+    
+    const touchEndHandler = () => {
+      // Reset drag state
+      this._dragInProgress = false;
+      this.isDraggingPoint = null;
+      
+      // Clean up event listeners
+      document.removeEventListener('touchmove', touchMoveHandler);
+      document.removeEventListener('touchend', touchEndHandler);
+      
+      // Force change detection
+      this.cdRef.markForCheck();
+    };
+    
+    // Add event listeners for the duration of this drag
+    document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+    document.addEventListener('touchend', touchEndHandler, { passive: false });
+    
+    // Force change detection
+    this.cdRef.markForCheck();
   }
 
   /**
@@ -714,6 +1006,97 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Trigger the drag start stream
     this._previousMeasurementDragStart$.next({ event, index, point });
   }
+  
+  /**
+   * Start touch-dragging a previous measurement point
+   */
+  handlePreviousMeasurementTouchDrag(event: TouchEvent, index: number, point: "start" | "end"): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (event.touches.length !== 1) return;
+    
+    const touch = event.touches[0];
+    this.isDraggingPoint = `prev${point.charAt(0).toUpperCase() + point.slice(1)}-${index}`;
+
+    // Calculate offset between touch position and point position
+    if (index >= 0 && index < this.previousMeasurements.length) {
+      const measurement = this.previousMeasurements[index];
+      if (point === "start") {
+        this.dragOffsetX = measurement.startX - touch.clientX;
+        this.dragOffsetY = measurement.startY - touch.clientY;
+      } else if (point === "end") {
+        this.dragOffsetX = measurement.endX - touch.clientX;
+        this.dragOffsetY = measurement.endY - touch.clientY;
+      } else {
+        this.dragOffsetX = 0;
+        this.dragOffsetY = 0;
+      }
+    } else {
+      this.dragOffsetX = 0;
+      this.dragOffsetY = 0;
+    }
+
+    this.dragStartX = touch.clientX;
+    this.dragStartY = touch.clientY;
+
+    // Signal that dragging has started
+    this._preventNextClick = true;
+    
+    // Create a simulated mouse event for the drag handler
+    const simulatedEvent = new MouseEvent('touchstart', {
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+      bubbles: true,
+      cancelable: true,
+      view: window
+    });
+
+    // Trigger the drag start stream with simulated mouse event
+    this._previousMeasurementDragStart$.next({ event: simulatedEvent, index, point });
+    
+    // Set up document-level touch handlers for the duration of this drag
+    const touchMoveHandler = (moveEvent: TouchEvent) => {
+      moveEvent.preventDefault();
+      if (moveEvent.touches.length !== 1) return;
+      
+      const moveTouch = moveEvent.touches[0];
+      
+      // Create a simulated mouse event for move
+      const simulatedMoveEvent = new MouseEvent('touchmove', {
+        clientX: moveTouch.clientX,
+        clientY: moveTouch.clientY,
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      
+      // Update the previous measurement using the same logic as mouse
+      this.handlePreviousMeasurementDragMove(simulatedMoveEvent);
+    };
+    
+    const touchEndHandler = (endEvent: TouchEvent) => {
+      // Create a simulated mouse event for end
+      const simulatedEndEvent = new MouseEvent('touchend', {
+        clientX: endEvent.changedTouches[0]?.clientX || touch.clientX,
+        clientY: endEvent.changedTouches[0]?.clientY || touch.clientY,
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      
+      // Process the touch end as if it were a mouse up
+      this.handlePreviousMeasurementDragEnd(simulatedEndEvent);
+      
+      // Clean up event listeners
+      document.removeEventListener('touchmove', touchMoveHandler);
+      document.removeEventListener('touchend', touchEndHandler);
+    };
+    
+    // Add event listeners for the duration of this drag
+    document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+    document.addEventListener('touchend', touchEndHandler, { passive: false });
+  }
 
   /**
    * Handle previous measurement point drag movement
@@ -808,6 +1191,78 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Trigger the drag start stream
     this._shapeDragStart$.next({ event, index });
+  }
+  
+  /**
+   * Start touch-dragging a shape (circle or rectangle)
+   */
+  handleShapeTouchStart(event: TouchEvent, index: number, shapeType: "circle" | "rectangle"): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (event.touches.length !== 1) return;
+    
+    const touch = event.touches[0];
+    this.isDraggingPoint = `prevShape-${index}`;
+    this.dragStartX = touch.clientX;
+    this.dragStartY = touch.clientY;
+    
+    // Signal that dragging has started
+    this._preventNextClick = true;
+    
+    // Create a simulated mouse event for the drag handler
+    const simulatedEvent = new MouseEvent('touchstart', {
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+      bubbles: true,
+      cancelable: true,
+      view: window
+    });
+    
+    // Trigger the drag start stream with simulated mouse event
+    this._shapeDragStart$.next({ event: simulatedEvent, index });
+    
+    // Set up document-level touch handlers for the duration of this drag
+    const touchMoveHandler = (moveEvent: TouchEvent) => {
+      moveEvent.preventDefault();
+      if (moveEvent.touches.length !== 1) return;
+      
+      const moveTouch = moveEvent.touches[0];
+      
+      // Create a simulated mouse event for move
+      const simulatedMoveEvent = new MouseEvent('touchmove', {
+        clientX: moveTouch.clientX,
+        clientY: moveTouch.clientY,
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      
+      // Update the shape position using the same logic as mouse
+      this.handleShapeDragMove(simulatedMoveEvent);
+    };
+    
+    const touchEndHandler = (endEvent: TouchEvent) => {
+      // Create a simulated mouse event for end
+      const simulatedEndEvent = new MouseEvent('touchend', {
+        clientX: endEvent.changedTouches[0]?.clientX || touch.clientX,
+        clientY: endEvent.changedTouches[0]?.clientY || touch.clientY,
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      
+      // Process the touch end as if it were a mouse up
+      this.handleShapeDragEnd(simulatedEndEvent);
+      
+      // Clean up event listeners
+      document.removeEventListener('touchmove', touchMoveHandler);
+      document.removeEventListener('touchend', touchEndHandler);
+    };
+    
+    // Add event listeners for the duration of this drag
+    document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+    document.addEventListener('touchend', touchEndHandler, { passive: false });
   }
 
   /**
@@ -987,6 +1442,80 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Trigger the drag start stream
     this._currentShapeDragStart$.next(event);
+  }
+  
+  /**
+   * Start touch-dragging the current shape
+   */
+  handleCurrentShapeTouchStart(event: TouchEvent, shapeType: "circle" | "rectangle"): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (!this.measureStartPoint || !this.measureEndPoint || event.touches.length !== 1) {
+      return;
+    }
+    
+    const touch = event.touches[0];
+    this.isDraggingPoint = "currentShape";
+    this.dragStartX = touch.clientX;
+    this.dragStartY = touch.clientY;
+    
+    // Signal that dragging has started
+    this._preventNextClick = true;
+    
+    // Create a simulated mouse event for the drag handler
+    const simulatedEvent = new MouseEvent('touchstart', {
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+      bubbles: true,
+      cancelable: true,
+      view: window
+    });
+    
+    // Trigger the drag start stream with simulated mouse event
+    this._currentShapeDragStart$.next(simulatedEvent);
+    
+    // Set up document-level touch handlers for the duration of this drag
+    const touchMoveHandler = (moveEvent: TouchEvent) => {
+      moveEvent.preventDefault();
+      if (moveEvent.touches.length !== 1) return;
+      
+      const moveTouch = moveEvent.touches[0];
+      
+      // Create a simulated mouse event for move
+      const simulatedMoveEvent = new MouseEvent('touchmove', {
+        clientX: moveTouch.clientX,
+        clientY: moveTouch.clientY,
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      
+      // Update the current shape position using the same logic as mouse
+      this.handleCurrentShapeDragMove(simulatedMoveEvent);
+    };
+    
+    const touchEndHandler = (endEvent: TouchEvent) => {
+      // Create a simulated mouse event for end
+      const simulatedEndEvent = new MouseEvent('touchend', {
+        clientX: endEvent.changedTouches[0]?.clientX || touch.clientX,
+        clientY: endEvent.changedTouches[0]?.clientY || touch.clientY,
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      
+      // Process the touch end as if it were a mouse up
+      this.handleCurrentShapeDragEnd(simulatedEndEvent);
+      
+      // Clean up event listeners
+      document.removeEventListener('touchmove', touchMoveHandler);
+      document.removeEventListener('touchend', touchEndHandler);
+    };
+    
+    // Add event listeners for the duration of this drag
+    document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+    document.addEventListener('touchend', touchEndHandler, { passive: false });
   }
 
   /**
@@ -3260,8 +3789,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       return false;
     }
 
-    // Get the offset of the image element
-    const imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+    // Get the offset of the image element - use the cached element as we now have a direct reference
+    const imageElement = this.cachedImageElement;
     if (!imageElement) {
       return false;
     }
