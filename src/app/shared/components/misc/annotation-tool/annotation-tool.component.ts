@@ -28,10 +28,8 @@ import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.i
   styleUrls: ["./annotation-tool.component.scss"]
 })
 export class AnnotationToolComponent extends BaseComponentDirective implements OnInit, OnDestroy, AfterViewInit {
-  // Flag to prevent duplicate actions when both click and touchend fire
   private _lastActionTime = 0;
   private readonly ACTION_DEBOUNCE_MS = 300;
-  // Make environment available to template
   environment = environment;
   @Input() active: boolean = false;
   @Input() imageElement: ElementRef<HTMLElement>;
@@ -49,22 +47,13 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   // Types for template use
   readonly AnnotationShapeType = AnnotationShapeType;
 
-  // Flag to indicate whether annotations are being loaded
   loadingAnnotations: boolean = false;
-
-  // Flag for save button states
   savingAnnotations: boolean = false;
   saveSuccess: boolean = false;
-
-  // Active annotation being created/edited
   activeAnnotation: Annotation | null = null;
-
-  // Mode tracking
   isDrawing: boolean = false;
   isAddingNote: boolean = false;
   currentDrawingTool: AnnotationShapeType = AnnotationShapeType.RECTANGLE;
-
-  // Mouse tracking
   mouseX: number | null = null;
   mouseY: number | null = null;
 
@@ -107,10 +96,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   protected colors: string[] = [];
   // Flag to detect browser environment
   protected isBrowser: boolean;
-  // Constants for magic values
-  private readonly DRAG_THRESHOLD = 10; // Minimum pixels to move before considering it a drag
-  private readonly CLICK_PREVENTION_TIMEOUT_MS = 100; // Timeout to prevent accidental double clicks
-  private readonly RESIZE_DEBOUNCE_MS = 300; // Debounce time for window resize events
+  private readonly DRAG_THRESHOLD = 10;
+  private readonly CLICK_PREVENTION_TIMEOUT_MS = 100;
+  private readonly RESIZE_DEBOUNCE_MS = 300;
   // Subjects for controlling drag operations
   private _shapeDragStart$ = new Subject<{ event: MouseEvent, id: string }>();
   private _shapeDragEnd$ = new Subject<MouseEvent>();
