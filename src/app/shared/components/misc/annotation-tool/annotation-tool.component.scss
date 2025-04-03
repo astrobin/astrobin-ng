@@ -181,6 +181,14 @@
       color: white;
     }
   }
+  
+  &.help-button {
+    background-color: rgba(0, 123, 255, 0.2);
+    
+    &:hover:not(:disabled) {
+      background-color: rgba(0, 123, 255, 0.3);
+    }
+  }
 }
 
 /* HTML-based annotation styles */

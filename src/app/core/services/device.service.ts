@@ -199,18 +199,6 @@ export class DeviceService extends BaseService {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
 
-  isIOS(): boolean {
-    if (!this._isBrowser) {
-      return false;
-    }
-
-    if (typeof navigator === "undefined") {
-      return false;
-    }
-
-    return /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  }
-
   offcanvasPosition(): "bottom" | "end" {
     return this.smMax() ? "bottom" : "end";
   }

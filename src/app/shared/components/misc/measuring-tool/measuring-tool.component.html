@@ -822,6 +822,20 @@
   <!-- Fixed toolbar at top center - matching annotation toolbar style -->
   <div class="fixed-top-toolbar">
     <div class="toolbar-buttons">
+      <!-- Help button -->
+      <button type="button" class="icon-button help-button"
+              [ngbTooltip]="'Help' | translate"
+              placement="bottom"
+              container="body"
+              (click)="showHelp()"
+              (touchstart)="$event.stopPropagation()"
+              (touchend)="showHelp()">
+        <fa-icon [icon]="['fas', 'question']"></fa-icon>
+      </button>
+      
+      <!-- Separator after help button -->
+      <div class="toolbar-separator"></div>
+      
       <!-- Saved measurements button -->
       <button *ngIf="currentUser$ | async" 
               type="button" 

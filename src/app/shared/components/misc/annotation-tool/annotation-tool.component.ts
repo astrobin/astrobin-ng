@@ -19,6 +19,7 @@ import { FormBuilder, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { DeviceService } from "@core/services/device.service";
+import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 
 @Component({
   selector: "astrobin-annotation-tool",
@@ -172,7 +173,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   ngOnInit(): void {
     super.ngOnInit();
 
-    console.log("ANNOTATION TOOL INIT: Setting loading flag to false and clearing annotations");
+    // Setting loading flag to false and clearing annotations
     this.loadingUrlAnnotations = false;
     this.annotations = [];
     this.annotationService.clearAllAnnotations();
@@ -1503,11 +1504,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       successIndicator.textContent = this.translateService.instant("Shape created! Add a note...");
 
       document.body.appendChild(successIndicator);
-      setTimeout(() => {
+      this.utilsService.delay(1500).subscribe(() => {
         if (successIndicator.parentNode) {
           document.body.removeChild(successIndicator);
         }
-      }, 1500);
+      });
     }
 
     // Force change detection
@@ -1566,11 +1567,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       startMarker.classList.add("annotation-start-marker");
 
       document.body.appendChild(startMarker);
-      setTimeout(() => {
+      this.utilsService.delay(2000).subscribe(() => {
         if (startMarker.parentNode) {
           document.body.removeChild(startMarker);
         }
-      }, 2000);
+      });
     }
 
     // Force running change detection inside NgZone to make sure UI updates
@@ -1612,11 +1613,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       endMarker.classList.add("annotation-end-marker");
 
       document.body.appendChild(endMarker);
-      setTimeout(() => {
+      this.utilsService.delay(2000).subscribe(() => {
         if (endMarker.parentNode) {
           document.body.removeChild(endMarker);
         }
-      }, 2000);
+      });
     }
 
     // Update the final points
@@ -1697,11 +1698,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       successIndicator.textContent = this.translateService.instant("Shape created! Add a note...");
 
       document.body.appendChild(successIndicator);
-      setTimeout(() => {
+      this.utilsService.delay(1500).subscribe(() => {
         if (successIndicator.parentNode) {
           document.body.removeChild(successIndicator);
         }
-      }, 1500);
+      });
     }
 
     // Force running change detection inside NgZone to make sure UI updates
@@ -1879,9 +1880,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Prevent the next click event from being processed
     this._preventNextClick = true;
-    setTimeout(() => {
+    this.utilsService.delay(this.CLICK_PREVENTION_TIMEOUT_MS).subscribe(() => {
       this._preventNextClick = false;
-    }, this.CLICK_PREVENTION_TIMEOUT_MS);
+    });
 
     this.cdRef.markForCheck();
   }
@@ -1953,9 +1954,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Prevent the next click event from being processed
     this._preventNextClick = true;
-    setTimeout(() => {
+    this.utilsService.delay(this.CLICK_PREVENTION_TIMEOUT_MS).subscribe(() => {
       this._preventNextClick = false;
-    }, this.CLICK_PREVENTION_TIMEOUT_MS);
+    });
 
     this.cdRef.markForCheck();
   }
@@ -2005,18 +2006,17 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this.cdRef.markForCheck();
     this.cdRef.detectChanges();
 
-    // Use setTimeout to ensure changes are applied
-    setTimeout(() => {
-      console.log("TIMEOUT CHECK: annotations count =", this.annotations.length);
+    // Use delay to ensure changes are applied
+    this.utilsService.delay(100).subscribe(() => {
+      // Clear annotations
       this.annotations = [];
       this.annotationService.clearAllAnnotations();
       this.loadingUrlAnnotations = false;
       this.cdRef.markForCheck();
       this.cdRef.detectChanges();
 
-      // Check URL again to confirm changes
-      console.log("URL AFTER TIMEOUT:", this.windowRefService.nativeWindow.location.href);
-    }, 100);
+      // URL check complete
+    });
 
     // Then emit event to notify parent component
     this.exitAnnotationMode.emit();
@@ -2347,6 +2347,57 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   }
 
   /**
+   * Show help dialog with annotation tool instructions
+   */
+  showHelp(): void {
+    const modalRef = this.modalService.open(InformationDialogComponent, {
+      centered: true,
+      size: 'xxl'
+    });
+    
+    modalRef.componentInstance.title = this.translateService.instant("Annotation tool help");
+    
+    // Prepare detailed instructions for the annotation tool
+    const helpContent = `
+      <div class="annotation-help" style="font-size: 0.9rem;">
+        <h5>${this.translateService.instant("Getting started")}</h5>
+        <p>${this.translateService.instant("The annotation tool allows you to add shapes and notes to highlight important features in the image.")}</p>
+        
+        <h5>${this.translateService.instant("Creating annotations")}</h5>
+        <ul>
+          <li>${this.translateService.instant("Use the rectangle tool to create rectangular annotations")}</li>
+          <li>${this.translateService.instant("Use the circle tool to create circular annotations")}</li>
+          <li>${this.translateService.instant("Click and drag to draw the shape where you want it")}</li>
+        </ul>
+        
+        <h5>${this.translateService.instant("Editing annotations")}</h5>
+        <ul>
+          <li>${this.translateService.instant("Click and drag an annotation to move it")}</li>
+          <li>${this.translateService.instant("Use the control points (white circles) to resize a shape")}</li>
+          <li>${this.translateService.instant("Click the text icon to add or edit a title for your annotation")}</li>
+          <li>${this.translateService.instant("Click the trash icon to delete an annotation")}</li>
+        </ul>
+        
+        <h5>${this.translateService.instant("Sharing annotations")}</h5>
+        <ul>
+          <li>${this.translateService.instant("Click the share button to generate a URL that includes your annotations")}</li>
+          <li>${this.translateService.instant("The URL will be copied to your clipboard automatically")}</li>
+          <li>${this.translateService.instant("Anyone with the link can see your annotations without changing the original image")}</li>
+        </ul>
+        
+        <h5>${this.translateService.instant("Saving annotations (image owners only)")}</h5>
+        <ul>
+          <li>${this.translateService.instant("If you own this image, you can save annotations permanently")}</li>
+          <li>${this.translateService.instant("Click the save button to store your annotations with the image")}</li>
+          <li>${this.translateService.instant("Saved annotations will be visible to anyone viewing your image")}</li>
+        </ul>
+      </div>
+    `;
+    
+    modalRef.componentInstance.message = helpContent;
+  }
+
+  /**
    * Save annotations to the database (owner only)
    */
   saveAnnotations(): void {
@@ -2371,10 +2422,10 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
           this.cdRef.markForCheck();
           
           // Reset success indicator after 1.5 seconds
-          setTimeout(() => {
+          this.utilsService.delay(1500).subscribe(() => {
             this.saveSuccess = false;
             this.cdRef.markForCheck();
-          }, 1500);
+          });
         },
         error: err => {
           // Still show error in popup
@@ -2436,13 +2487,13 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
           this.cdRef.detectChanges();
 
           // Load after a brief delay to ensure indicator is visible
-          setTimeout(() => {
+          this.utilsService.delay(100).subscribe(() => {
             try {
               // Load the annotations
               this.annotationService.loadFromUrlParam(annotationsParam);
-              console.log("DIRECT LOADED ANNOTATIONS IN afterViewInit - count:", this.annotations.length);
+              // Annotations loaded successfully
             } catch (e) {
-              console.error("DIRECT ERROR loading annotations IN afterViewInit:", e);
+              // Error loading annotations
               // Clear on error
               this.annotations = [];
               this.annotationService.clearAllAnnotations();

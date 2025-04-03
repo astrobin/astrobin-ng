@@ -440,7 +440,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (this.isBrowser) {
       // Initialize the cached image element after a delay to ensure DOM is ready
       this.windowRefService.utilsService.delay(100).subscribe(() => {
-        console.log("MEASURING AFTER VIEW INIT - Setting cached image element");
+        // Setting cached image element
         // Now we use the direct image element (no querySelector needed)
         this.cachedImageElement = this.imageElement?.nativeElement;
         
@@ -463,18 +463,18 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       return;
     }
     
-    console.log("CHECKING FOR URL MEASUREMENTS");
+    // Checking for URL measurements
     
     // Get the current URL directly
     const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
     const measurementsParam = currentUrl.searchParams.get('measurements');
     
-    console.log("URL MEASUREMENTS CHECK:", currentUrl.toString());
-    console.log("MEASUREMENTS PARAM:", measurementsParam ? "present" : "not present");
+    // URL measurements check
+    // Checking measurements param present/not present
     
     if (measurementsParam && measurementsParam.trim() !== '') {
       try {
-        console.log("FOUND MEASUREMENTS IN URL - Loading...");
+        // Found measurements in URL - Loading
         
         // Set loading flag
         this.loadingUrlMeasurements = true;
@@ -485,26 +485,26 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.showLoadingIndicator();
         
         // Load after a brief delay to ensure indicator is visible
-        setTimeout(() => {
+        this.windowRefService.utilsService.delay(200).subscribe(() => {
           try {
             // Load the measurements with explicit error check
             this.loadMeasurementsFromUrl(measurementsParam);
-            console.log("SUCCESSFULLY LOADED MEASUREMENTS FROM URL - Count:", this.previousMeasurements.length);
+            // Successfully loaded measurements from URL
           } catch (e) {
-            console.error("FAILED TO LOAD MEASUREMENTS FROM URL:", e);
+            // Failed to load measurements from URL
             this.loadingUrlMeasurements = false;
             this.hideLoadingIndicator();
             this.popNotificationsService.error(
               this.translateService.instant("Failed to load shared measurements: {{error}}", { error: e.message })
             );
           }
-        }, 200);
+        });
       } catch (e) {
-        console.error("ERROR CHECKING URL MEASUREMENTS:", e);
+        // Error checking URL measurements
         this.loadingUrlMeasurements = false;
       }
     } else {
-      console.log("NO MEASUREMENTS FOUND IN URL");
+      // No measurements found in URL
     }
   }
   
@@ -1766,7 +1766,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Force change detection cycle with a meaningful operation
       this.windowRefService.utilsService.delay(0).subscribe(() => {
-        console.log("Circle visualization toggled for measurement", index, ":", measurement.showCircle);
+        // Circle visualization toggled for measurement
       });
     }
   }
@@ -1806,7 +1806,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Force change detection cycle with a meaningful operation
       this.windowRefService.utilsService.delay(0).subscribe(() => {
-        console.log("Rectangle visualization toggled for measurement", index, ":", measurement.showRectangle);
+        // Rectangle visualization toggled for measurement
       });
     }
   }
@@ -1837,7 +1837,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Force change detection cycle with a meaningful operation
     this.windowRefService.utilsService.delay(0).subscribe(() => {
-      console.log("Current circle visualization toggled:", this.showCurrentCircle);
+      // Current circle visualization toggled
     });
   }
 
@@ -1867,7 +1867,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Force change detection cycle with a meaningful operation
     this.windowRefService.utilsService.delay(0).subscribe(() => {
-      console.log("Current rectangle visualization toggled:", this.showCurrentRectangle);
+      // Current rectangle visualization toggled
     });
   }
 
@@ -2595,6 +2595,58 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.translateService.instant("Failed to create share URL.")
       );
     }
+  }
+
+  /**
+   * Show help dialog with measuring tool instructions
+   */
+  showHelp(): void {
+    const modalRef = this.modalService.open(InformationDialogComponent, {
+      centered: true,
+      size: 'xxl'
+    });
+    
+    modalRef.componentInstance.title = this.translateService.instant("Measuring tool help");
+    
+    // Prepare detailed instructions for the measuring tool
+    const helpContent = `
+      <div class="measuring-help" style="font-size: 0.9rem;">
+        <h5>${this.translateService.instant("Getting started")}</h5>
+        <p>${this.translateService.instant("The measuring tool allows you to measure distances and sizes of objects in the image.")}</p>
+        
+        <h5>${this.translateService.instant("Creating measurements")}</h5>
+        <ul>
+          <li>${this.translateService.instant("Click once to set your starting point")}</li>
+          <li>${this.translateService.instant("Click a second time to set the end point and complete the measurement")}</li>
+          <li>${this.translateService.instant("Alternatively, click and drag to create a measurement in one motion")}</li>
+          <li>${this.translateService.instant("For images with plate-solving data, the tool will show distance in astronomical units (arcseconds, arcminutes, or degrees)")}</li>
+          <li>${this.translateService.instant("For images without plate-solving data, distances will be shown in pixels")}</li>
+        </ul>
+        
+        <h5>${this.translateService.instant("Adjusting measurements")}</h5>
+        <ul>
+          <li>${this.translateService.instant("Click and drag any point to reposition it")}</li>
+          <li>${this.translateService.instant("Click and drag the middle of a measurement to move the entire line")}</li>
+          <li>${this.translateService.instant("Use the circle or rectangle buttons to change how a measurement is visualized")}</li>
+        </ul>
+        
+        <h5>${this.translateService.instant("Saving and sharing")}</h5>
+        <ul>
+          <li>${this.translateService.instant("Click the share button to generate a URL that includes your measurements")}</li>
+          <li>${this.translateService.instant("Click the bookmark button to view saved measurements (requires login)")}</li>
+          <li>${this.translateService.instant("Saved measurements can be loaded on any image with plate-solving data")}</li>
+        </ul>
+        
+        <h5>${this.translateService.instant("Tips")}</h5>
+        <ul>
+          <li>${this.translateService.instant("Hover over points to see their celestial coordinates (when available)")}</li>
+          <li>${this.translateService.instant("Window resizing may affect measurement accuracy — clear and recreate measurements if needed")}</li>
+          <li>${this.translateService.instant("Measurements outside image boundaries will show warnings and may have inaccurate coordinates")}</li>
+        </ul>
+      </div>
+    `;
+    
+    modalRef.componentInstance.message = helpContent;
   }
 
   /**
@@ -4015,7 +4067,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this._dragInProgress = false;
 
       // Small delay to prevent accidental double measurements
-      setTimeout(() => {
+      this.windowRefService.utilsService.delay(100).subscribe(() => {
         this._preventNextClick = false;
       }, this.CLICK_PREVENTION_TIMEOUT_MS);
     };
@@ -4617,7 +4669,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.cdRef.detectChanges();
           
           // After a brief delay, show success notification
-          setTimeout(() => {
+          this.windowRefService.utilsService.delay(100).subscribe(() => {
             this.cdRef.markForCheck();
             this.cdRef.detectChanges();
             
@@ -4662,7 +4714,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           }
           
           console.log("LOAD MEASUREMENTS - Will retry for image element");
-          setTimeout(() => {
+          this.windowRefService.utilsService.delay(500).subscribe(() => {
             attemptWithRetry(retryCount + 1, maxRetries);
           }, 300 * Math.pow(1.5, retryCount));
           return;
@@ -4685,7 +4737,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Otherwise retry after a delay, with exponential backoff
       console.log(`LOAD MEASUREMENTS - Solution matrix not ready, retry attempt ${retryCount + 1} of ${maxRetries}`);
-      setTimeout(() => {
+      this.windowRefService.utilsService.delay(300 * Math.pow(1.5, retryCount)).subscribe(() => {
         attemptWithRetry(retryCount + 1, maxRetries);
       }, 300 * Math.pow(1.5, retryCount)); // Exponential backoff starting at 300ms
     };
@@ -4816,7 +4868,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.cdRef.detectChanges();
     
     // Double-check in next JS event cycle to ensure it's visible
-    setTimeout(() => {
+    this.windowRefService.utilsService.delay(10).subscribe(() => {
       this.loadingUrlMeasurements = true;
       this.cdRef.markForCheck();
       this.cdRef.detectChanges();
@@ -4846,7 +4898,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.cdRef.detectChanges();
     
     // Double-check in next JS event cycle to ensure flag is properly cleared
-    setTimeout(() => {
+    this.windowRefService.utilsService.delay(300).subscribe(() => {
       this.loadingUrlMeasurements = false;
       this.cdRef.markForCheck();
       this.cdRef.detectChanges();

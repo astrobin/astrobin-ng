@@ -237,7 +237,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _realThumbnailSubscription: Subscription;
   private _currentFullscreenImageSubscription: Subscription;
   private _currentFullscreenImageEventSubscription: Subscription;
-  private _zoomIndicatorTimeout: number;
+  // No need for timeout reference with utilsService.delay
   private _zoomIndicatorTimeoutDuration = 1000;
   private _hdLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
@@ -404,9 +404,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // For non-touch mode, completely reinitialize the zoom component
     if (!this.touchMode && this.ngxImageZoom && !this.isVeryLargeImage) {
-      // Force zoom component reinitialization using setTimeout
+      // Force zoom component reinitialization using delay
       // This ensures DOM has updated before we try to access elements
-      this.windowRef.nativeWindow.setTimeout(() => {
+      this.utilsService.delay(100).subscribe(() => {
         // If we have access to _initImageZoom, call it directly
         if (typeof this._initImageZoom === "function") {
           this._initImageZoom(false); // Pass false to avoid keeping current zoom state
@@ -485,14 +485,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         if (params.measurements) {
           // Directly activate measuring mode - no need to wait for image zoom or check for mobile
           this.isMeasuringMode = true;
-          console.debug("Detected measurements in URL, activated measuring tool");
+          // Detected measurements in URL, activated measuring tool
         }
 
         // Handle annotations in URL
         if (params.annotations) {
           // Directly activate annotation mode - no need to wait for image zoom
           this.isAnnotationMode = true;
-          console.debug("Detected annotations in URL, activated annotation tool");
+          // Detected annotations in URL, activated annotation tool
         }
 
         // Force change detection to update templates
@@ -675,7 +675,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
-    console.debug("Static image loaded successfully");
+    // Static image loaded successfully
     this.isStaticImageLoaded = true;
 
     // Ensure change detection is triggered to update the UI
@@ -722,7 +722,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.ngxImageZoom.setMagnification = 1;
         this.ngxImageZoom.zoomService.zoomOn({ offsetX: 0, offsetY: 0 } as MouseEvent);
       } catch (e) {
-        console.error("Error in snapTo1x:", e);
+        // Error in snapTo1x: e
       }
     }
   }
@@ -1287,7 +1287,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // If opening the menu, add a click event listener to close it when clicking outside
     if (this.showKebabMenu && this.isBrowser) {
-      setTimeout(() => {
+      this.utilsService.delay(0).subscribe(() => {
         const closeMenuHandler = (e: MouseEvent) => {
           // Check if the click was outside the menu
           const kebabContainer = (event.target as HTMLElement).closest(".kebab-menu-container");
@@ -2796,7 +2796,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             })
             .catch(error => {
               // Log the error but continue with only the full resolution bitmap
-              console.warn("Failed to create downsampled bitmaps, using full resolution only:", error);
+              // Failed to create downsampled bitmaps, using full resolution only
             })
             .finally(() => {
               // Draw the canvas regardless of whether downsampling succeeded
@@ -2812,12 +2812,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             });
         })
           .catch(error => {
-            console.error("Failed to create any bitmap:", error);
+            // Failed to create any bitmap
             this.canvasLoading = false;
             this._realLoadingProgressSubject.next(100);
           });
       } catch (error) {
-        console.error("Failed to initialize canvas:", error);
+        // Failed to initialize canvas
       }
     };
 
@@ -2963,11 +2963,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   private _setZoomIndicatorTimeout(): void {
     if (isPlatformBrowser(this.platformId)) {
-      if (this._zoomIndicatorTimeout) {
-        clearTimeout(this._zoomIndicatorTimeout);
-      }
+      // No need to clear timeout when using utilsService.delay
 
-      this._zoomIndicatorTimeout = this.windowRef.nativeWindow.setTimeout(() => {
+      this.utilsService.delay(this._zoomIndicatorTimeoutDuration).subscribe(() => {
         this.showZoomIndicator = false;
         this.changeDetectorRef.markForCheck();
       }, this._zoomIndicatorTimeoutDuration);
