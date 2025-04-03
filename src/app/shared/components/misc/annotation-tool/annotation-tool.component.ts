@@ -48,6 +48,10 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   // Flag to indicate whether annotations are being loaded from URL
   loadingUrlAnnotations: boolean = false;
+  
+  // Flag for save button states
+  savingAnnotations: boolean = false;
+  saveSuccess: boolean = false;
 
   // Active annotation being created/edited
   activeAnnotation: Annotation | null = null;
@@ -2350,18 +2354,34 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       return;
     }
 
+    // Set saving state
+    this.savingAnnotations = true;
+    this.saveSuccess = false;
+    this.cdRef.markForCheck();
+
     const annotationsJson = JSON.stringify(this.annotations);
 
     this.imageApiService.setAnnotations(this.imageId, annotationsJson)
       .pipe(take(1))
       .subscribe({
         next: () => {
-          this.popNotificationsService.success(
-            this.translateService.instant("Annotations saved successfully")
-          );
+          // Show success indicator instead of popup notification
+          this.savingAnnotations = false;
+          this.saveSuccess = true;
+          this.cdRef.markForCheck();
+          
+          // Reset success indicator after 1.5 seconds
+          setTimeout(() => {
+            this.saveSuccess = false;
+            this.cdRef.markForCheck();
+          }, 1500);
         },
         error: err => {
+          // Still show error in popup
           console.error("Error saving annotations:", err);
+          this.savingAnnotations = false;
+          this.cdRef.markForCheck();
+          
           this.popNotificationsService.error(
             this.translateService.instant("Failed to save annotations: {{error}}",
               { error: err.message || this.translateService.instant("Unknown error") })

@@ -41,11 +41,15 @@
               [ngbTooltip]="'Save annotations' | translate"
               placement="bottom"
               container="body"
-              [disabled]="annotations.length === 0"
+              [disabled]="annotations.length === 0 || savingAnnotations"
+              [class.saving]="savingAnnotations"
+              [class.success]="saveSuccess"
               (click)="saveAnnotations()"
-              (touchend)="annotations.length > 0 ? saveAnnotations() : null"
+              (touchend)="annotations.length > 0 && !savingAnnotations ? saveAnnotations() : null"
               (touchstart)="$event.stopPropagation()">
-        <fa-icon [icon]="['fas', 'save']"></fa-icon>
+        <fa-icon *ngIf="!savingAnnotations && !saveSuccess" [icon]="['fas', 'save']"></fa-icon>
+        <fa-icon *ngIf="savingAnnotations" [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        <fa-icon *ngIf="!savingAnnotations && saveSuccess" [icon]="['fas', 'check']" class="save-success-icon"></fa-icon>
       </button>
       <button type="button"
               class="icon-button"
