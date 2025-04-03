@@ -24,14 +24,13 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { DeviceService } from "@core/services/device.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 
-// Interface to represent a label's bounding box for collision detection
 interface LabelBoundingBox {
   x: number;
   y: number;
   width: number;
   height: number;
-  priority: number; // Lower number = higher priority (less likely to be moved)
-  type: "point" | "dimension"; // Type of label for special handling
+  priority: number;
+  type: "point" | "dimension";
 }
 
 export interface MeasurementPoint {
@@ -60,14 +59,12 @@ export interface MeasurementData {
   endLabelY: number;
   showCircle?: boolean;
   showRectangle?: boolean;
-
-  // For saved measurements
-  widthArcseconds?: number | null;  // Width in arcseconds for rectangular measurements
-  heightArcseconds?: number | null; // Height in arcseconds for rectangular measurements
-  length?: number;                  // Length in pixels for recreating the measurement
-  name?: string;                    // Name for the measurement
-  notes?: string;                   // Optional user notes about the measurement
-  outOfBounds?: boolean;            // Flag indicating if any point is outside image boundaries
+  widthArcseconds?: number | null;
+  heightArcseconds?: number | null;
+  length?: number;
+  name?: string;
+  notes?: string;
+  outOfBounds?: boolean;
 }
 
 export interface SolutionMatrix {
@@ -111,48 +108,34 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
   @ViewChild("helpContent", { static: true }) helpContentRef: TemplateRef<any>;
 
-  // Measurement points
   measureStartPoint: MeasurementPoint | null = null;
   measureEndPoint: MeasurementPoint | null = null;
   measureDistance: string | null = null;
   previousMeasurements: MeasurementData[] = [];
-  // Saved measurements
   showSavedMeasurements: boolean = false;
   newMeasurementName: string = "";
   saveMeasurementNotes: string = "";
   savedMeasurements: MeasurementPresetInterface[] = [];
-  // URL measurement loading state
   loadingUrlMeasurements: boolean = false;
-  // Saved measurement loading state
   loadingMeasurement: boolean = false;
-  // Mouse tracking
   mouseX: number | null = null;
   mouseY: number | null = null;
-  // Drag functionality
   dragStartX: number | null = null;
   dragStartY: number | null = null;
   dragOffsetX: number = 0;
   dragOffsetY: number = 0;
   isDraggingPoint: "start" | "end" | string | null = null;
-  // Shape visualization
   showCurrentCircle: boolean = false;
   showCurrentRectangle: boolean = false;
-  // Flag to track if window has been resized (affecting measurement accuracy)
   public measurementsAffectedByResize: boolean = false;
-  // Flag to control the visibility of the resize warning modal
   public showResizeWarningModal: boolean = false;
-  // Constants
   protected readonly Math = Math;
-  // Flag to detect browser environment
   protected isBrowser: boolean;
-  // Constants for magic values
-  private readonly DRAG_THRESHOLD = 10; // Minimum pixels to move before considering it a drag
-  private readonly COORD_UPDATE_DEBOUNCE_MS = 100; // Update coordinates at most every 100ms
-  private readonly MEASUREMENT_SHAPE_COOKIE_NAME = "astrobin-fullscreen-measurement-shape"; // Cookie name for shape preference
-  private readonly CLICK_PREVENTION_TIMEOUT_MS = 100; // Timeout to prevent accidental double clicks
-  private readonly RESIZE_DEBOUNCE_MS = 300; // Debounce time for window resize events
-  // Bound event handlers
-  // Subjects for controlling drag operations
+  private readonly DRAG_THRESHOLD = 10;
+  private readonly COORD_UPDATE_DEBOUNCE_MS = 100;
+  private readonly MEASUREMENT_SHAPE_COOKIE_NAME = "astrobin-fullscreen-measurement-shape";
+  private readonly CLICK_PREVENTION_TIMEOUT_MS = 100;
+  private readonly RESIZE_DEBOUNCE_MS = 300;
   private _pointDragStart$ = new Subject<{ event: MouseEvent, point: string }>();
   private _pointDragEnd$ = new Subject<MouseEvent>();
   private _previousMeasurementDragStart$ = new Subject<{ event: MouseEvent, index: number, point: string }>();
@@ -161,8 +144,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   private _shapeDragEnd$ = new Subject<MouseEvent>();
   private _currentShapeDragStart$ = new Subject<MouseEvent>();
   private _currentShapeDragEnd$ = new Subject<MouseEvent>();
-
-  // Events streams
   private _documentMouseMove$ = isPlatformBrowser(this.platformId) ?
     fromEvent<MouseEvent>(document, "mousemove", { passive: false }).pipe(takeUntil(this.destroyed$)) :
     new Subject<MouseEvent>();
@@ -3154,14 +3135,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     });
   }
 
-  /**
-   * Load a saved measurement
-   */
   loadMeasurement(preset: MeasurementPresetInterface): void {
-    // Set loading state
     this.loadingMeasurement = true;
 
-    // Check if user is logged in
     let isLoggedIn = false;
     this.currentUser$.pipe(take(1)).subscribe(user => {
       isLoggedIn = !!user;
