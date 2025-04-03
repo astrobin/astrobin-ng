@@ -6,7 +6,7 @@
   <div class="loading-text mt-2">{{ 'Loading measurements from URL...' | translate }}</div>
 </div>
 
-<div class="measuring-tool-container" *ngIf="active" data-ignore-swipe-down="true">
+<div class="measuring-tool-container pointer-events-all" *ngIf="active" data-ignore-swipe-down="true">
   <!-- Overlay for capturing clicks/touches and drags during measuring mode -->
   <!-- Put this first so other elements can be on top of it -->
   <div class="measure-click-overlay"

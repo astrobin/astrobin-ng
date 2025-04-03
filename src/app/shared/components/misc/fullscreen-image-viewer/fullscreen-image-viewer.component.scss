@@ -332,6 +332,23 @@ $header-height: 63px;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10; // Higher z-index to overlay on top of canvas
+    background-color: black; // Black background to fully hide the canvas
+
+    /* When measuring mode is active, allow clicks to pass through to the measuring tool */
+    :host(.measuring-mode) & {
+      pointer-events: none; /* Make clicks pass through when in measuring mode */
+    }
+
+    /* Same for annotation mode */
+    :host(.annotation-mode) & {
+      pointer-events: none; /* Make clicks pass through when in annotation mode */
+    }
 
     .static-image {
       max-height: 100vh;
@@ -340,6 +357,11 @@ $header-height: 63px;
       display: block;
       user-select: none;
       object-fit: contain;
+
+      /* When in measuring or annotation mode, keep pointer events on the image */
+      :host(.measuring-mode) &, :host(.annotation-mode) & {
+        pointer-events: auto; /* But keep pointer events on the actual image */
+      }
 
       @supports (max-height: 100dvh) {
         max-height: 100dvh;
@@ -949,6 +971,56 @@ $header-height: 63px;
   /* Add styling for measuring mode */
   ::ng-deep img.measuring-mode {
     cursor: crosshair !important;
+  }
+
+  /* Higher z-index for measuring and annotation tools to overlay above static image */
+  .measure-annotation-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 15; /* Higher than static image container (10) */
+    pointer-events: all !important; /* Ensure tools receive all pointer events */
+  }
+
+  /* Helper class to ensure pointer events are captured */
+  .pointer-events-all {
+    pointer-events: all !important;
+  }
+
+  /* Ensure pointer events work correctly in measuring and annotation modes */
+  &.measuring-mode, &.annotation-mode {
+    ::ng-deep astrobin-measuring-tool, ::ng-deep astrobin-annotation-tool {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
+      pointer-events: all;
+    }
+
+    /* Make sure the static image allows clicks to pass through to the tools */
+    .static-image-container {
+      pointer-events: none !important;
+
+      .static-image {
+        pointer-events: none !important;
+      }
+    }
+  }
+
+  .static-template-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 4;
+    pointer-events: none;
   }
 
   &.standalone {

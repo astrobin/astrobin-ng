@@ -94,7 +94,7 @@
     [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
         icon: 'mouse-pointer',
-        message: 'Click on first point to begin measurement.' | translate
+        message: 'Click or start dragging to begin measurement.' | translate
       }"
   ></ng-container>
 </ng-template>
@@ -104,13 +104,13 @@
     [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
         icon: 'mouse-pointer',
-        message: 'Click on second point to complete measurement.' | translate
+        message: 'Click or release to complete measurement.' | translate
       }"
   ></ng-container>
 </ng-template>
 
 <ng-template #staticTemplate let-hd="hd" let-real="real">
-  <div class="position-relative w-100 h-100 d-flex justify-content-center align-items-center">
+  <div class="static-template-container w-100 h-100 d-flex justify-content-center align-items-center">
     <ng-container *ngIf="!hd && !real" [ngTemplateOutlet]="hdImageLoadingTemplate"></ng-container>
     <!-- Only show real thumbnail loading indicator if we're not in annotation/measuring mode
          When in these modes, we can use the HD image immediately while real loads in background -->
@@ -374,9 +374,6 @@
     *ngIf="(!isVeryLargeImage && allowReal && !!real)"
     class="fullscreen-view-menu"
   >
-    <!-- Measuring tool controls (moved to the right side) -->
-    <!-- Removed duplicate measuring controls - now handled by the measuring-tool component -->
-
     <!-- Kebab menu button - hidden during measuring or annotation mode -->
     <div class="kebab-menu-container" *ngIf="!isMeasuringMode && !isAnnotationMode"
          (mouseenter)="setMouseOverUIElement(true)"
@@ -473,6 +470,7 @@
   @fadeInOut
   [class.touch]="touchMode"
   [class.measuring-mode]="isMeasuringMode"
+  [class.annotation-mode]="isAnnotationMode"
   class="fullscreen-image-viewer h-100"
   (touchstart)="onTouchStart($event)"
   (touchmove)="onTouchMove($event)"
@@ -485,7 +483,7 @@
   <astrobin-measuring-tool
     *ngIf="isMeasuringMode && (isStaticImageLoaded || (!isMeasuringMode && !isAnnotationMode && ready))"
     [active]="isMeasuringMode"
-    [imageElement]="isMeasuringMode || isAnnotationMode ? staticImageEl : ngxImageZoomEl"
+    [imageElement]="staticImageEl"
     [advancedSolutionMatrix]="advancedSolutionMatrix"
     [windowWidth]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
     [windowHeight]="isBrowser ? windowRef.nativeWindow.innerHeight : 0"
@@ -496,6 +494,7 @@
     (exitMeasuringMode)="toggleMeasuringMode()"
     (measurementStarted)="measurementInProgress = true"
     (measurementComplete)="measurementInProgress = false"
+    class="measure-annotation-overlay"
   ></astrobin-measuring-tool>
 
   <!-- Annotation tool component -->
@@ -510,7 +509,8 @@
     [naturalHeight]="revision?.h"
     [imageId]="id"
     [isImageOwner]="isImageOwner"
-    (exitAnnotationMode)="isAnnotationMode = false; changeDetectorRef.markForCheck()"
+    (exitAnnotationMode)="onExitAnnotationMode()"
+    class="measure-annotation-overlay"
   ></astrobin-annotation-tool>
 
   <!-- Coordinate display -->
@@ -549,30 +549,28 @@
       real: realThumbnail
     } as thumbnails"
   >
-    <!-- Use the staticTemplate for measuring and annotation modes instead of zoom templates -->
-    <ng-container *ngIf="isMeasuringMode || isAnnotationMode">
+    <!-- Always render the touch or non-touch canvas-based viewer in the background -->
+    <ng-container
+      *ngIf="touchMode && !isGif"
+      [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
+      [ngTemplateOutlet]="touchDeviceTemplate"
+    >
+    </ng-container>
+
+    <ng-container *ngIf="!touchMode || isGif">
       <ng-container
         [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
-        [ngTemplateOutlet]="staticTemplate"
+        [ngTemplateOutlet]="nonTouchDeviceTemplate"
       >
       </ng-container>
     </ng-container>
 
-    <!-- Use normal templates for standard viewing -->
-    <ng-container *ngIf="!isMeasuringMode && !isAnnotationMode">
+    <!-- Show the static template on top when in measuring or annotation mode -->
+    <ng-container *ngIf="isMeasuringMode || isAnnotationMode" class="static-overlay">
       <ng-container
-        *ngIf="touchMode && !isGif"
         [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
-        [ngTemplateOutlet]="touchDeviceTemplate"
+        [ngTemplateOutlet]="staticTemplate"
       >
-      </ng-container>
-
-      <ng-container *ngIf="!touchMode || isGif">
-        <ng-container
-          [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
-          [ngTemplateOutlet]="nonTouchDeviceTemplate"
-        >
-        </ng-container>
       </ng-container>
     </ng-container>
   </ng-container>

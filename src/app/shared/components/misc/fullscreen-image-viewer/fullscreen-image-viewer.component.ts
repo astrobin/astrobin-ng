@@ -922,6 +922,18 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.changeDetectorRef.markForCheck();
   }
 
+  /**
+   * Handle exiting annotation mode - when exiting, the canvas is already in the DOM
+   * because we keep both the static image and canvas rendered at all times
+   */
+  onExitAnnotationMode(): void {
+    // Set annotation mode to false
+    this.isAnnotationMode = false;
+
+    // Force change detection to update the DOM
+    this.changeDetectorRef.markForCheck();
+  }
+
   @HostListener("window:keyup.n", ["$event"])
   toggleAnnotationMode(event: KeyboardEvent | MouseEvent): void {
     if (!this.isBrowser) {
@@ -1337,10 +1349,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Hide any tooltips before toggling
     this._clearTooltips();
-
-    // No longer needed with static template approach:
-    // - Don't need to check if we're in lens mode
-    // - Don't need to check if we're at default zoom
 
     // Toggle measuring mode
     this.isMeasuringMode = !this.isMeasuringMode;
