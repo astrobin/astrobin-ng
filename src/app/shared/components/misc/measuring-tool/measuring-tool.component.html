@@ -1047,7 +1047,7 @@
 <ng-template #boundaryWarningTpl let-data>
   <div class="boundary-warning"
        *ngIf="data.isCurrentMeasurement ? isCurrentMeasurementOutsideBoundaries : data.outOfBounds">
-    {{ 'Coordinates will not work outside the image\'s boundaries' | translate }}
+    {{ 'Coordinates and measurements will not work outside the image\'s boundaries' | translate }}
   </div>
 </ng-template>
 
