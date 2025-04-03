@@ -20,6 +20,7 @@ import { FormBuilder, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { DeviceService } from "@core/services/device.service";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-annotation-tool",
@@ -41,7 +42,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   @Input() naturalHeight: number;
   @Input() imageId: number;
   @Input() isImageOwner: boolean = false;
-  @Input() revision: any;
+  @Input() revision: ImageInterface | ImageRevisionInterface;
 
   @Output() exitAnnotationMode = new EventEmitter<void>();
 
@@ -2000,7 +2001,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
    * Save annotations to the database (owner only)
    */
   saveAnnotations(): void {
-    if (!this.isImageOwner || !this.imageId) {
+    if (!this.isImageOwner || !this.revision || !this.revision.pk) {
       return;
     }
 
@@ -2010,34 +2011,41 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this.cdRef.markForCheck();
 
     const annotationsJson = JSON.stringify(this.annotations);
+    
+    // Choose the appropriate method based on whether we're dealing with a revision or an image
+    let saveMethod;
+    if (this.revision.hasOwnProperty('label')) {
+      saveMethod = this.imageApiService.setRevisionAnnotations(this.revision.pk, annotationsJson);
+    } else {
+      saveMethod = this.imageApiService.setAnnotations(this.revision.pk, annotationsJson);
+    }
 
-    this.imageApiService.setAnnotations(this.imageId, annotationsJson)
-      .pipe(take(1))
-      .subscribe({
-        next: () => {
-          // Show success indicator instead of popup notification
-          this.savingAnnotations = false;
-          this.saveSuccess = true;
+    // Now use the selected method with a single set of success/error handlers
+    saveMethod.pipe(take(1)).subscribe({
+      next: () => {
+        // Show success indicator
+        this.savingAnnotations = false;
+        this.saveSuccess = true;
+        this.cdRef.markForCheck();
+
+        // Reset success indicator after 1.5 seconds
+        this.utilsService.delay(1500).subscribe(() => {
+          this.saveSuccess = false;
           this.cdRef.markForCheck();
+        });
+      },
+      error: err => {
+        // Show error in popup
+        console.error("Error saving annotations:", err);
+        this.savingAnnotations = false;
+        this.cdRef.markForCheck();
 
-          // Reset success indicator after 1.5 seconds
-          this.utilsService.delay(1500).subscribe(() => {
-            this.saveSuccess = false;
-            this.cdRef.markForCheck();
-          });
-        },
-        error: err => {
-          // Still show error in popup
-          console.error("Error saving annotations:", err);
-          this.savingAnnotations = false;
-          this.cdRef.markForCheck();
-
-          this.popNotificationsService.error(
-            this.translateService.instant("Failed to save annotations: {{error}}",
-              { error: err.message || this.translateService.instant("Unknown error") })
-          );
-        }
-      });
+        this.popNotificationsService.error(
+          this.translateService.instant("Failed to save annotations: {{error}}",
+            { error: err.message || this.translateService.instant("Unknown error") })
+        );
+      }
+    });
   }
 
   /**

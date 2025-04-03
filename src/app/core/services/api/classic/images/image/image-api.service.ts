@@ -250,6 +250,10 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/set-annotations/`, { annotations });
   }
 
+  setRevisionAnnotations(pk: ImageRevisionInterface["pk"], annotations: string): Observable<ImageRevisionInterface> {
+    return this.http.patch<ImageRevisionInterface>(`${this.configUrl}/image-revision/${pk}/set-annotations/`, { annotations });
+  }
+
   getUsersWhoLikeImage(
     pk: ImageInterface["pk"],
     q: string,
