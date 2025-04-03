@@ -371,7 +371,7 @@
 
 <ng-template #zoomModesTemplate let-real="real">
   <div
-    *ngIf="(!isVeryLargeImage && allowReal && !!real)"
+    *ngIf="(!isVeryLargeImage && (!!hdThumbnail || (allowReal && !!real)))"
     class="fullscreen-view-menu"
   >
     <!-- Kebab menu button - hidden during measuring or annotation mode -->
