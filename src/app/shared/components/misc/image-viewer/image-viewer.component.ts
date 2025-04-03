@@ -149,6 +149,7 @@ export class ImageViewerComponent
   protected isDraggingMoon = false;
   protected moonImageSrc: string = "/assets/images/moon-250.png?v=1"; // Default, will be updated
   protected isMoonImageLoaded = false; // Track if the actual moon image has loaded
+  protected hasAnnotations = false; // Track if the current revision has annotations
   protected advancedSolutionMatrix: {
     matrixRect: string;
     matrixDelta: number;
@@ -156,6 +157,7 @@ export class ImageViewerComponent
     decMatrix: string;
   };
   protected loadingAdvancedSolutionMatrix = false;
+  protected isImageOwner = false;
   protected mouseHoverRa: string;
   protected mouseHoverDec: string;
   protected mouseHoverGalacticRa: string;
@@ -186,6 +188,7 @@ export class ImageViewerComponent
   protected translatedDescription: SafeHtml;
   protected readonly isBrowser: boolean;
   protected readonly MouseHoverImageOptions = MouseHoverImageOptions;
+  private _mouseOverUIElement = false; // Track when mouse is over UI elements
   private _preloadMoonImageAttemptCount = 0; // Track number of preload attempts
   private _preloadedMoonImage: HTMLImageElement = null; // Store the preloaded image element
   private _moonStartDragPosition = { x: 0, y: 0 };
@@ -541,10 +544,18 @@ export class ImageViewerComponent
     this._replaceIdWithHash();
     this._checkForCachedTranslation();
 
+    // Check if revision has annotations
+    this.hasAnnotations = !!(this.revision && this.revision.annotations && this.revision.annotations.trim() !== '');
+
     // Proactively preload the moon image if this is a plate-solved image
     if (this.revision?.solution?.pixscale) {
       this._preloadMoonImage();
     }
+
+    // Check if the current user is the image owner
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      this.isImageOwner = !!user && user.id === this.image.user;
+    });
 
     // Updates to the current image.
     this.store$.pipe(
@@ -698,6 +709,9 @@ export class ImageViewerComponent
     this._setSolutionMouseHoverImage();
     this._setShowPlateSolvingBanner();
     this._updateNorthArrowRotation();
+
+    // Update annotations status for the new revision
+    this.hasAnnotations = !!(this.revision && this.revision.annotations && this.revision.annotations.trim() !== '');
 
     // Preload moon image for the new revision if it has a solution
     if (this.revision?.solution?.pixscale) {
@@ -1013,6 +1027,66 @@ export class ImageViewerComponent
     // Clear the cached translation
     const imageId = this.image.hash || this.image.pk.toString();
     this.contentTranslateService.clearTranslation("image-description", imageId);
+  }
+
+  /**
+   * Helper method to check if conditions for showing readonly annotations are met
+   */
+  protected shouldShowReadonlyAnnotations(): boolean {
+    return this.hasAnnotations &&
+      this.imageFileLoaded &&
+      !this.adjustmentEditorVisible;
+  }
+
+  /**
+   * Safely gets the image element for the readonly annotation tool
+   */
+  protected getReadonlyAnnotationImageElement(): ElementRef<HTMLElement> | null {
+    if (!this.imageArea || !this.imageArea.nativeElement) {
+      return null;
+    }
+
+    try {
+      // First try to get the main image element (most reliable once it's loaded)
+      const mainImgElement = this.imageArea.nativeElement.querySelector('astrobin-image img');
+      
+      if (mainImgElement && mainImgElement.complete && mainImgElement.naturalWidth > 0) {
+        // Image is loaded and ready
+        return new ElementRef(mainImgElement);
+      }
+      
+      // If we couldn't find the main image or it's not loaded yet, look for alternatives
+      const fallbackSelectors = [
+        'astrobin-image img.astrobin-image', // Try the main image with a more specific selector
+        '.image-area-body astrobin-image img', // Try with a different parent path
+        '.image-area-body img', // Any image in the image area
+        'img' // Last resort: any image
+      ];
+      
+      for (const selector of fallbackSelectors) {
+        const element = this.imageArea.nativeElement.querySelector(selector);
+        if (element && element.complete && element.naturalWidth > 0) {
+          console.log(`Found image element using selector: ${selector}`);
+          return new ElementRef(element);
+        }
+      }
+      
+      console.warn('No suitable image element found for annotations - might retry later');
+      return null;
+    } catch (e) {
+      console.warn('Error finding image element for annotations:', e);
+      return null;
+    }
+  }
+
+  /**
+   * Helper method for annotation tool to track when mouse is over UI elements
+   * This prevents interactions with the image when hovering buttons or controls
+   */
+  protected setMouseOverUIElement(value: boolean): void {
+    // This is used by the annotation tool to know when the mouse is over UI elements
+    // to prevent unwanted interactions with the image
+    this._mouseOverUIElement = value;
   }
 
   // Preload moon image in memory

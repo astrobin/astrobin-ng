@@ -41,6 +41,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   @Input() imageId: number;
   @Input() isImageOwner: boolean = false;
   @Input() revision: ImageInterface | ImageRevisionInterface;
+  @Input() readonly: boolean = false;
 
   @Output() exitAnnotationMode = new EventEmitter<void>();
 
@@ -166,16 +167,20 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   ngOnInit(): void {
     super.ngOnInit();
 
-    // Setting loading flag to false and clearing annotations
+    // Setting loading flag to false
     this.loadingAnnotations = false;
-    this.annotations = [];
-    this.annotationService.clearAllAnnotations();
+    
+    // Only clear annotations if not in readonly mode
+    if (!this.readonly) {
+      this.annotations = [];
+      this.annotationService.clearAllAnnotations();
+    }
 
     // Get available colors
     this.colors = this.annotationService.getColors();
 
-    // Add listeners for touch events to improve dragging on mobile devices
-    if (this.isBrowser) {
+    // Add listeners for touch events to improve dragging on mobile devices, but only if not in readonly mode
+    if (this.isBrowser && !this.readonly) {
       // Prevent default touch behavior on mobile devices
       document.addEventListener('touchmove', this.preventTouchDefault, { passive: false });
 
@@ -199,9 +204,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Check for shared annotations in the URL when component initializes
     if (this.isBrowser) {
-      // IMPORTANT: Force clear all annotations first
-      this.annotations = [];
-      this.annotationService.clearAllAnnotations();
+      if (!this.readonly) {
+        // In edit mode, force clear all annotations first
+        this.annotations = [];
+        this.annotationService.clearAllAnnotations();
+      }
 
       // DIRECT CHECK: Get annotations param directly from current URL
       const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
@@ -326,6 +333,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   ngAfterViewInit(): void {
     if (this.isBrowser) {
+      console.log("ngAfterViewInit - readonly mode:", this.readonly);
+      console.log("Has imageElement input:", !!this.imageElement);
+
       // Try to find the image element immediately
       this.tryFindImageElement();
       this.updateAnnotationContainerSize();
@@ -340,7 +350,14 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         }
         this.updateAnnotationContainerSize();
 
-        // Handle URL annotations if present
+        // Special handling for readonly mode - we need to load annotations from revision
+        if (this.readonly && this.revision && this.revision.annotations) {
+          console.log("Readonly mode with annotations - loading from revision");
+          // Force load annotations from revision
+          this.loadSavedAnnotations();
+        }
+
+        // Handle annotations if present (from URL or from revision in readonly mode)
         if (this.annotations && this.annotations.length > 0 && this.loadingAnnotations) {
           if (this.cachedImageElement) {
             // If we have found the image element, hide loading after a short delay
@@ -397,44 +414,83 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       }
     }
 
-    // Get the actual displayed image dimensions
-    const imageBounds = this.cachedImageElement.getBoundingClientRect();
+    // Safely get the dimensions with try-catch to handle any potential errors
+    let imageBounds;
+    try {
+      imageBounds = this.cachedImageElement.getBoundingClientRect();
+    } catch (e) {
+      console.warn('Error getting image element bounds:', e);
+      return;
+    }
 
     // Skip if image element has no dimensions yet
-    if (imageBounds.width === 0 || imageBounds.height === 0) {
+    if (!imageBounds || imageBounds.width === 0 || imageBounds.height === 0) {
       console.warn('Image element has zero dimensions, unable to size annotation container');
       return;
     }
 
     // Find the annotation container
-    const annotationContainer = document.querySelector('.annotation-container') as HTMLElement;
+    let annotationContainer;
+    try {
+      annotationContainer = document.querySelector('.annotation-container') as HTMLElement;
+    } catch (e) {
+      console.warn('Error finding annotation container:', e);
+      return;
+    }
+    
     if (!annotationContainer) {
       console.warn('Annotation container not found');
       return;
     }
 
     // Find the annotation layer
-    const annotationLayer = document.querySelector('.annotation-layer') as HTMLElement;
+    let annotationLayer;
+    try {
+      annotationLayer = document.querySelector('.annotation-layer') as HTMLElement;
+    } catch (e) {
+      console.warn('Error finding annotation layer:', e);
+      return;
+    }
+    
     if (!annotationLayer) {
       console.warn('Annotation layer not found');
       return;
     }
 
     console.log('Updating annotation container size to match image:',
-      { width: imageBounds.width, height: imageBounds.height, top: imageBounds.top, left: imageBounds.left });
+      { 
+        width: imageBounds.width, 
+        height: imageBounds.height, 
+        top: imageBounds.top, 
+        left: imageBounds.left,
+        readonly: this.readonly
+      });
 
-    // Set container sizing and position to exactly match the image
-    annotationContainer.style.position = 'absolute';
-    annotationContainer.style.width = `${imageBounds.width}px`;
-    annotationContainer.style.height = `${imageBounds.height}px`;
-    annotationContainer.style.top = `${imageBounds.top}px`;
-    annotationContainer.style.left = `${imageBounds.left}px`;
+    try {
+      // Set container sizing and position to exactly match the image
+      annotationContainer.style.position = 'absolute';
+      annotationContainer.style.width = `${imageBounds.width}px`;
+      annotationContainer.style.height = `${imageBounds.height}px`;
+      annotationContainer.style.top = `${imageBounds.top}px`;
+      annotationContainer.style.left = `${imageBounds.left}px`;
 
-    // Position the layer to fill the container
-    annotationLayer.style.width = '100%';
-    annotationLayer.style.height = '100%';
-    annotationLayer.style.top = '0';
-    annotationLayer.style.left = '0';
+      // Position the layer to fill the container
+      annotationLayer.style.width = '100%';
+      annotationLayer.style.height = '100%';
+      annotationLayer.style.top = '0';
+      annotationLayer.style.left = '0';
+      
+      // If we're in readonly mode, set appropriate z-index via style
+      // This is in addition to the class-based approach, for extra safety
+      if (this.readonly) {
+        annotationContainer.style.zIndex = '15';
+        annotationContainer.style.pointerEvents = 'none';
+        annotationLayer.style.zIndex = '15';
+        annotationLayer.style.pointerEvents = 'none';
+      }
+    } catch (e) {
+      console.warn('Error setting annotation container styles:', e);
+    }
   }
 
   // Prevent default behavior for touch events
@@ -1939,8 +1995,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
    * Helper to try various methods to find the image element
    */
   private tryFindImageElement(): void {
-    // Try from the provided imageElement reference first
-    if (this.imageElement?.nativeElement) {
+    // Safely check if imageElement reference exists and is valid
+    if (this.imageElement && this.imageElement.nativeElement) {
       // Check if we're using the static image approach (direct img element)
       if (this.imageElement.nativeElement instanceof HTMLImageElement) {
         console.log("Using static image approach with direct img element");
@@ -1954,7 +2010,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
       // Old approach with zoom container
       // First try to get the actual visible image element in the zoom container
-      this.cachedImageElement = this.imageElement.nativeElement.querySelector(".ngxImageZoomContainer img");
+      try {
+        this.cachedImageElement = this.imageElement.nativeElement.querySelector(".ngxImageZoomContainer img");
+      } catch (e) {
+        console.warn("Error finding image element with querySelector:", e);
+      }
 
       // Log the dimensions of what we found
       if (this.cachedImageElement) {
@@ -1978,13 +2038,17 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         ];
 
         for (const selector of selectors) {
-          const element = this.imageElement.nativeElement.querySelector(selector);
-          if (element && element.getBoundingClientRect().width > 0) {
-            this.cachedImageElement = element as HTMLElement;
-            const rect = element.getBoundingClientRect();
-            console.log(`Found element with selector: ${selector}`,
-              { width: rect.width, height: rect.height, element });
-            break;
+          try {
+            const element = this.imageElement.nativeElement.querySelector(selector);
+            if (element && element.getBoundingClientRect().width > 0) {
+              this.cachedImageElement = element as HTMLElement;
+              const rect = element.getBoundingClientRect();
+              console.log(`Found element with selector: ${selector}`,
+                { width: rect.width, height: rect.height, element });
+              break;
+            }
+          } catch (e) {
+            console.warn(`Error finding image element with selector ${selector}:`, e);
           }
         }
       }
@@ -1994,24 +2058,56 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     if (!this.cachedImageElement || this.cachedImageElement.getBoundingClientRect().width === 0) {
       console.log("Trying document-wide search...");
 
-      const selectors = [
-        ".fullscreen-image-viewer .ngxImageZoomContainer img", // Primary target
-        ".fullscreen-image-viewer img.ngxImageZoomThumbnail",
-        ".fullscreen-image-viewer img.ngxImageZoomFullImage",
-        ".fullscreen-image-viewer .ngxImageZoomFullContainer img",
-        ".fullscreen-image-viewer canvas", // Canvas fallback - moved up for touch mode
-        ".fullscreen-image-viewer img:not([hidden])", // Any visible image in the viewer
-        ".fullscreen-image-viewer img" // Any image in the viewer
-      ];
+      // Define selectors based on whether we're in fullscreen or regular image viewer
+      let viewerSelectors: string[];
+      
+      // Check if we're in fullscreen or regular image viewer mode
+      const isFullscreen = document.querySelector(".fullscreen-image-viewer") !== null;
+      const isRegularViewer = document.querySelector("astrobin-image-viewer") !== null;
+      
+      if (isFullscreen) {
+        viewerSelectors = [
+          ".fullscreen-image-viewer .ngxImageZoomContainer img",
+          ".fullscreen-image-viewer img.ngxImageZoomThumbnail",
+          ".fullscreen-image-viewer img.ngxImageZoomFullImage",
+          ".fullscreen-image-viewer .ngxImageZoomFullContainer img",
+          ".fullscreen-image-viewer canvas",
+          ".fullscreen-image-viewer img:not([hidden])",
+          ".fullscreen-image-viewer img" 
+        ];
+      } else if (isRegularViewer) {
+        viewerSelectors = [
+          "astrobin-image-viewer .astrobin-image img",
+          "astrobin-image-viewer img",
+          "astrobin-image img",
+          "astrobin-image-viewer canvas",
+          ".image-container img"
+        ];
+      } else {
+        // Fallback selectors if we can't determine the viewer type
+        viewerSelectors = [
+          ".ngxImageZoomContainer img",
+          "img.ngxImageZoomThumbnail",
+          "img.ngxImageZoomFullImage",
+          ".ngxImageZoomFullContainer img",
+          "canvas",
+          "img:not([hidden])",
+          "img"
+        ];
+      }
 
-      for (const selector of selectors) {
-        const element = document.querySelector(selector);
-        if (element && element.getBoundingClientRect().width > 0) {
-          this.cachedImageElement = element as HTMLElement;
-          const rect = element.getBoundingClientRect();
-          console.log(`Found element with document-wide selector: ${selector}`,
-            { width: rect.width, height: rect.height, element, tagName: element.tagName });
-          break;
+      for (const selector of viewerSelectors) {
+        try {
+          const element = document.querySelector(selector);
+          if (element && element.getBoundingClientRect().width > 0) {
+            this.cachedImageElement = element as HTMLElement;
+            const rect = element.getBoundingClientRect();
+            console.log(`Found element with document-wide selector: ${selector}`,
+              { width: rect.width, height: rect.height, element, tagName: element.tagName });
+            break;
+          }
+        } catch (e) {
+          console.warn(`Error finding element with document-wide selector ${selector}:`, e);
         }
       }
     }
@@ -2022,16 +2118,21 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
       const canvasSelectors = [
         ".fullscreen-image-viewer canvas",
+        "astrobin-image-viewer canvas",
         "canvas.touchRealCanvas",
         "canvas"
       ];
 
       for (const selector of canvasSelectors) {
-        const element = document.querySelector(selector);
-        if (element && element.getBoundingClientRect().width > 0) {
-          console.log(`Found canvas element with selector: ${selector}`, element);
-          this.cachedImageElement = element as HTMLElement;
-          break;
+        try {
+          const element = document.querySelector(selector);
+          if (element && element.getBoundingClientRect().width > 0) {
+            console.log(`Found canvas element with selector: ${selector}`, element);
+            this.cachedImageElement = element as HTMLElement;
+            break;
+          }
+        } catch (e) {
+          console.warn(`Error finding canvas element with selector ${selector}:`, e);
         }
       }
     }
@@ -2272,6 +2373,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
         // Log current state of annotations right after loading
         console.log("Immediate annotations after loading:", this.annotations);
+        console.log("Readonly mode:", this.readonly);
 
         // Add a small delay to ensure UI updates
         this.utilsService.delay(300).subscribe(() => {
@@ -2281,6 +2383,15 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
           // Force check if annotations container is properly positioned
           this.updateAnnotationContainerSize();
+
+          // Make sure the annotations are visible in readonly mode
+          if (this.readonly) {
+            // Position the annotations container immediately after loading
+            this.windowRefService.utilsService.delay(100).subscribe(() => {
+              this.updateAnnotationContainerSize();
+              this.cdRef.markForCheck();
+            });
+          }
 
           this.cdRef.markForCheck();
         });

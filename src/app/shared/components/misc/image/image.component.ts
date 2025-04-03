@@ -252,11 +252,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         this.revision = this.imageService.getRevision(image, this.revisionLabel);
         this.changeDetectorRef.markForCheck();
 
-        if (this.thumbnailUrl && !this.revision.videoFile) {
-          this.loaded.emit();
-          return;
-        }
-
         this.image = image;
         this.id = image.pk;
         this._loadThumbnail();
@@ -289,11 +284,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   onClick(event: MouseEvent) {
     event.preventDefault();
     this.imageClick.emit(event);
-  }
-
-  onTouchstart(event: TouchEvent) {
-    event.preventDefault();
-    this.imageTouchstart.emit(event);
   }
 
   private _getImageObject(): Observable<ImageInterface> {
@@ -336,8 +326,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
           if (this.revision.videoFile) {
             this._insertVideoJs();
-          } else {
-            this.loaded.emit();
           }
 
           this.changeDetectorRef.markForCheck();
@@ -369,8 +357,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
         if (this.revision.videoFile) {
           this._insertVideoJs();
-        } else {
-          this.loaded.emit();
         }
 
         this.changeDetectorRef.markForCheck();

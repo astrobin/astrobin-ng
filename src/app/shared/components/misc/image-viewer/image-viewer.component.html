@@ -244,6 +244,31 @@
         [revisionLabel]="revisionLabel"
       ></astrobin-image>
 
+      <!-- Annotation tool in readonly mode to show saved annotations -->
+      <div
+        *ngIf="shouldShowReadonlyAnnotations() && imageArea && imageFileLoaded"
+        class="mouse-hover-container annotation-container"
+        (intentionalClick)="enterFullscreen($event)"
+        astrobinPreventScrollClick
+      >
+        <astrobin-annotation-tool
+          [active]="true"
+          [readonly]="true"
+          [imageElement]="getReadonlyAnnotationImageElement()"
+          [windowWidth]="isBrowser ? windowRefService.nativeWindow.innerWidth : 0"
+          [windowHeight]="isBrowser ? windowRefService.nativeWindow.innerHeight : 0"
+          [setMouseOverUIElement]="setMouseOverUIElement.bind(this)"
+          [naturalWidth]="revision?.w"
+          [naturalHeight]="revision?.h"
+          [imageId]="image?.pk"
+          [isImageOwner]="isImageOwner"
+          [revision]="revision"
+          (mouseenter)="onImageMouseEnter($event)"
+          (mouseleave)="onImageMouseLeave($event)"
+          class="mouse-hover ready annotation-overlay readonly"
+        ></astrobin-annotation-tool>
+      </div>
+
       <!--
         If the mouse-hover settings indicate a non-solution mouse-hover, we always show it on hover. Except if the
         solution mouse-hover is being forced.

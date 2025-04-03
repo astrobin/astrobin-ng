@@ -10,7 +10,7 @@
   justify-content: center;
   z-index: 10000; /* Higher than any other element */
   background-color: rgba(0, 0, 0, 0.8);
-  padding: 30px;
+  padding: 1rem;
   border-radius: 10px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
   border: 2px solid rgba(255, 255, 255, 0.2);
@@ -18,15 +18,14 @@
   min-height: 150px;
 
   .spinner-border {
-    width: 2rem;
-    height: 2rem;
-    border-width: 0.3em;
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.2em;
   }
 
   .loading-text {
-    color: white;
+    color: var(--lightestGrey);
     font-weight: 500;
-    font-size: 1.1rem;
     margin-top: 15px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   }
@@ -59,6 +58,13 @@
   -moz-user-select: none;
   -ms-user-select: none;
   touch-action: none; /* Disable browser handling of all touch gestures */
+
+  /* Specific styles for readonly mode */
+  &.readonly-mode {
+    z-index: 15; /* Higher z-index to ensure annotations are visible */
+    pointer-events: none; /* Don't capture any pointer events in readonly mode */
+    touch-action: auto; /* Allow default touch behavior in readonly mode */
+  }
 }
 
 .fixed-top-toolbar {
@@ -194,10 +200,17 @@
 /* HTML-based annotation styles */
 .annotation-container {
   position: absolute;
-  /* Position and size will be set dynamically via JavaScript to match the image exactly */
   z-index: 1001;
+  width: 100%;
+  height: 100%;
   pointer-events: all;
   overflow: visible; /* Allow annotations to overflow for notes that may go outside the image */
+
+  /* Readonly specific styles */
+  &.readonly {
+    z-index: 15; /* Higher z-index to ensure annotations are visible */
+    pointer-events: none; /* Don't capture pointer events in readonly mode */
+  }
 }
 
 .annotation-layer {
@@ -207,6 +220,12 @@
   width: 100%;
   height: 100%;
   z-index: 1002;
+
+  /* Readonly specific styles */
+  &.readonly {
+    z-index: 15; /* Higher z-index to ensure annotations are visible */
+    pointer-events: none; /* Don't capture pointer events in readonly mode */
+  }
 }
 
 .annotation {
@@ -217,6 +236,22 @@
   transform-origin: center center;
   touch-action: none; /* Disable browser handling of all touch gestures */
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* Remove tap highlight on mobile */
+
+  &.readonly {
+    cursor: default;
+    pointer-events: none;
+    border-width: 1px; /* Thinner border for readonly mode */
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.3); /* Subtle glow to make annotations visible */
+    opacity: 0.9; /* Slightly more transparent in readonly mode */
+
+    /* Make the annotation title look different in readonly mode */
+    .annotation-title {
+      font-size: 9px; /* Slightly smaller title */
+      opacity: 0.9;
+      background-color: rgba(0, 0, 0, 0.65); /* Slightly more transparent */
+      padding: 3px 6px;
+    }
+  }
 
   .annotation-title {
     position: absolute;

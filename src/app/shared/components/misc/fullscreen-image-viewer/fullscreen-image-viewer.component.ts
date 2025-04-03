@@ -189,6 +189,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   // Annotation tool properties
   protected isAnnotationMode: boolean = false;
+  protected hasAnnotations: boolean = false;
 
   // Swipe-down properties
   protected touchStartY: { value: number } = { value: 0 };
@@ -2506,6 +2507,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.naturalWidth = this.revision.w;
         this.naturalHeight = this.revision.h;
         this.maxZoom = image.maxZoom || image.defaultMaxZoom || 8;
+        
+        // Check if revision has annotations
+        this.hasAnnotations = !!(this.revision && this.revision.annotations && this.revision.annotations.trim() !== '');
 
         // Load solution matrix for coordinate calculation
         if (this.revision?.solution?.id) {

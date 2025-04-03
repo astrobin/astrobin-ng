@@ -791,7 +791,8 @@ $largeViewPortBreakpoint: 2561px;
         }
 
         .mouse-hover.ready,
-        .mouse-hover.ready + .mouse-hover-svg-overlay {
+        .mouse-hover.ready + .mouse-hover-svg-overlay,
+        .annotation-container .annotation-overlay.mouse-hover.ready {
           opacity: 1 !important;
           pointer-events: auto;
         }
@@ -801,10 +802,54 @@ $largeViewPortBreakpoint: 2561px;
           opacity: .75 !important;
         }
       }
+      
+      /* Annotation overlay styling */
+      .annotation-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 15;
+        pointer-events: all !important;
+        
+        &.readonly {
+          z-index: 15; /* Same z-index as regular overlays to ensure visibility */
+          pointer-events: none !important; /* Don't capture any mouse events */
+        }
+      }
+      
+      /* Container for wrapping annotations */
+      .annotation-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        
+        &.mouse-hover-container {
+          z-index: 15; /* Match other z-indexes */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+         
+          .annotation-overlay.readonly {
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.3s;
+            
+            &.ready {
+              cursor: zoom-in;
+            }
+          }
+        }
+      }
 
       &.force-view-mousehover {
         .mouse-hover.ready,
-        .mouse-hover.ready + .mouse-hover-svg-overlay {
+        .mouse-hover.ready + .mouse-hover-svg-overlay,
+        .annotation-container .annotation-overlay.mouse-hover.ready {
           opacity: 1 !important;
           pointer-events: auto;
         }

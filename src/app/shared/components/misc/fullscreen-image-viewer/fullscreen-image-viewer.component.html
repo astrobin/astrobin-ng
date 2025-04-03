@@ -496,7 +496,7 @@
     class="measure-annotation-overlay"
   ></astrobin-measuring-tool>
 
-  <!-- Annotation tool component -->
+  <!-- Annotation tool component - active mode -->
   <astrobin-annotation-tool
     *ngIf="isAnnotationMode && isStaticImageLoaded"
     [active]="isAnnotationMode"
@@ -511,6 +511,23 @@
     [revision]="revision"
     (exitAnnotationMode)="onExitAnnotationMode()"
     class="measure-annotation-overlay"
+  ></astrobin-annotation-tool>
+  
+  <!-- Annotation tool component - readonly mode to show saved annotations -->
+  <astrobin-annotation-tool
+    *ngIf="!isAnnotationMode && hasAnnotations && isStaticImageLoaded && ready"
+    [active]="true"
+    [readonly]="true"
+    [imageElement]="staticImageEl"
+    [windowWidth]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
+    [windowHeight]="isBrowser ? windowRef.nativeWindow.innerHeight : 0"
+    [setMouseOverUIElement]="setMouseOverUIElement.bind(this)"
+    [naturalWidth]="revision?.w"
+    [naturalHeight]="revision?.h"
+    [imageId]="id"
+    [isImageOwner]="isImageOwner"
+    [revision]="revision"
+    class="measure-annotation-overlay readonly"
   ></astrobin-annotation-tool>
 
   <!-- Coordinate display -->

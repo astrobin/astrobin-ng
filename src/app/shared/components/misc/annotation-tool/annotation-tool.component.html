@@ -4,12 +4,6 @@
     <span class="visually-hidden">{{ 'Loading annotations...' | translate }}</span>
   </div>
   <div class="loading-text mt-2">{{ 'Loading annotations...' | translate }}</div>
-
-  <!-- Skip loading button (immediate option for all devices) -->
-  <button class="btn btn-sm btn-primary mt-3"
-          (click)="loadingAnnotations = false; cdRef.markForCheck();">
-    {{ 'Show annotations now' | translate }}
-  </button>
 </div>
 
 <!-- Help content template -->
@@ -55,9 +49,9 @@
   </div>
 </ng-template>
 
-<div class="annotation-tool-container pointer-events-all" [class.active]="active" data-ignore-swipe-down="true">
-  <!-- Fixed toolbar - making it simpler and more bulletproof -->
-  <div class="fixed-top-toolbar">
+<div class="annotation-tool-container pointer-events-all" [class.active]="active" [class.readonly-mode]="readonly" data-ignore-swipe-down="true">
+  <!-- Fixed toolbar - only shown when not in readonly mode -->
+  <div class="fixed-top-toolbar" *ngIf="!readonly">
     <div class="toolbar-buttons">
       <!-- Help button -->
       <button type="button" class="icon-button help-button"
@@ -146,11 +140,11 @@
   </div>
 
   <!-- Annotation container with HTML elements instead of SVG -->
-  <div class="annotation-container" data-ignore-swipe-down="true">
+  <div class="annotation-container" [class.readonly]="readonly" data-ignore-swipe-down="true">
     <!-- Annotations layer -->
-    <div class="annotation-layer" data-ignore-swipe-down="true">
+    <div class="annotation-layer" [class.readonly]="readonly" data-ignore-swipe-down="true">
       <div *ngFor="let ann of annotations"
-           [ngClass]="{'annotation': true, 'rectangle': ann.type === 'rectangle', 'circle': ann.type === 'circle'}"
+           [ngClass]="{'annotation': true, 'rectangle': ann.type === 'rectangle', 'circle': ann.type === 'circle', 'readonly': readonly}"
            [style.left.%]="getAnnotationLeft(ann)"
            [style.top.%]="getAnnotationTop(ann)"
            [style.width.%]="getAnnotationWidth(ann)"
@@ -161,16 +155,16 @@
            [class.active]="currentlyDragging === ann"
            [style.visibility]="loadingAnnotations ? 'hidden' : 'visible'"
            data-ignore-swipe-down="true"
-           (mousedown)="startDrag($event, ann, 'whole')"
-           (touchstart)="startDragTouch($event, ann, 'whole')">
+           (mousedown)="!readonly && startDrag($event, ann, 'whole')"
+           (touchstart)="!readonly && startDragTouch($event, ann, 'whole')">
 
            <!-- Title display -->
            <div *ngIf="ann.title" class="annotation-title">
              {{ ann.title }}
            </div>
 
-        <!-- Control points (corners) -->
-        <div *ngIf="ann.type === 'rectangle'" class="control-points">
+        <!-- Control points (corners) - only visible when not in readonly mode -->
+        <div *ngIf="ann.type === 'rectangle' && !readonly" class="control-points">
           <div class="control-point top-left"
                data-ignore-swipe-down="true"
                (mousedown)="startDrag($event, ann, 'tl')"
@@ -189,17 +183,16 @@
                (touchstart)="startDragTouch($event, ann, 'br')"></div>
         </div>
 
-        <!-- Control points for circle - only top handle -->
-        <div *ngIf="ann.type === 'circle'" class="control-points">
+        <!-- Control points for circle - only top handle and only visible when not in readonly mode -->
+        <div *ngIf="ann.type === 'circle' && !readonly" class="control-points">
           <div class="control-point top"
                data-ignore-swipe-down="true"
                (mousedown)="startDrag($event, ann, 'resize')"
                (touchstart)="startDragTouch($event, ann, 'resize')"></div>
         </div>
 
-
-        <!-- Toolbar for each annotation -->
-        <div class="control-toolbar"
+        <!-- Toolbar for each annotation - only visible when not in readonly mode -->
+        <div *ngIf="!readonly" class="control-toolbar"
              (mousedown)="$event.stopPropagation()"
              (touchstart)="$event.stopPropagation()">
           <button class="tool-button message"
@@ -214,8 +207,8 @@
       </div>
     </div>
 
-    <!-- Drawing overlay (for creating new shapes) - hidden during loading -->
-    <div class="drawing-overlay" *ngIf="active && !currentlyDragging && !loadingAnnotations">
+    <!-- Drawing overlay (for creating new shapes) - hidden during loading or in readonly mode -->
+    <div class="drawing-overlay" *ngIf="active && !readonly && !currentlyDragging && !loadingAnnotations">
       <!-- Preview of shape being drawn -->
       <div *ngIf="isDrawing && activeAnnotation" class="drawing-preview"
            [ngClass]="{'rectangle': activeAnnotation.shape.type === 'RECTANGLE',
@@ -231,8 +224,8 @@
     </div>
   </div>
 
-  <!-- Mouse event overlay - hidden during loading -->
-  <div class="mouse-event-overlay" *ngIf="currentlyDragging && !loadingAnnotations"
+  <!-- Mouse event overlay - hidden during loading or in readonly mode -->
+  <div class="mouse-event-overlay" *ngIf="!readonly && currentlyDragging && !loadingAnnotations"
        [style.cursor]="getCursorForDragMode()"
        data-ignore-swipe-down="true"
        (mousemove)="dragMove($event)"

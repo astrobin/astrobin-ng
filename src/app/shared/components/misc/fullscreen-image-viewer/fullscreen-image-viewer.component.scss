@@ -991,6 +991,11 @@ $header-height: 63px;
     height: 100%;
     z-index: 15; /* Higher than static image container (10) */
     pointer-events: all !important; /* Ensure tools receive all pointer events */
+    
+    &.readonly {
+      z-index: 5; /* Below the normal overlays, just above the images */
+      pointer-events: none !important; /* Don't capture any mouse events */
+    }
   }
 
   /* Helper class to ensure pointer events are captured */
