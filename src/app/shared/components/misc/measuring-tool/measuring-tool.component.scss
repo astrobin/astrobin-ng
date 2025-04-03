@@ -120,7 +120,7 @@
   height: 100%;
   pointer-events: none;
   z-index: 5;
-  
+
   /* Fixed top toolbar - matching annotation toolbar style */
   .fixed-top-toolbar {
     position: fixed;
@@ -140,13 +140,13 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     pointer-events: all;
   }
-  
+
   .toolbar-buttons {
     display: flex;
     justify-content: center;
     flex-wrap: nowrap;
     gap: 8px;
-    
+
     .toolbar-separator {
       width: 1px;
       height: 24px;
@@ -155,7 +155,7 @@
       align-self: center;
     }
   }
-  
+
   .icon-button {
     min-width: unset;
     width: 42px;
@@ -198,10 +198,10 @@
         background-color: rgba(255, 255, 255, 0.1) !important;
       }
     }
-    
+
     &.exit-button {
       background-color: rgba(255, 255, 255, 0.08);
-      
+
       &:hover:not(:disabled) {
         background-color: rgba(255, 75, 75, 0.3);
       }
@@ -223,7 +223,7 @@
   /* Saved Measurements Panel */
   .saved-measurements-panel {
     position: fixed;
-    top: 75px; /* Position it below the top toolbar */
+    top: 90px; /* Position it below the top toolbar */
     left: 50%;
     transform: translateX(-50%);
     width: 380px;
@@ -551,7 +551,7 @@
       &.marker-debug {
         background-color: rgba(255, 0, 0, 0.7);
       }
-      
+
       /* Red background for coordinates outside boundaries */
       &.outside-boundaries {
         background-color: rgba(255, 0, 0, 0.8) !important;
@@ -1200,7 +1200,7 @@
   &.visible { @extend %coordinate-label-visible; }
 
   /* Position is managed by our label positioning functions in the component */
-  
+
   /* Red background for coordinates outside boundaries */
   &.outside-boundaries {
     background-color: rgba(255, 0, 0, 0.8) !important;

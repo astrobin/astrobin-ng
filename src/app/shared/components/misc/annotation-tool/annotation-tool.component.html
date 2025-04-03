@@ -17,12 +17,18 @@
   <div class="fixed-top-toolbar">
     <div class="toolbar-buttons">
       <!-- Drawing tools -->
-      <button type="button" class="icon-button" title="Add Rectangle" 
+      <button type="button" class="icon-button"
+              [ngbTooltip]="'Add rectangle' | translate"
+              placement="bottom"
+              container="body"
               (click)="makeRect()"
               (touchend)="makeRect()">
         <fa-icon [icon]="['fas', 'square']"></fa-icon>
       </button>
-      <button type="button" class="icon-button" title="Add Circle" 
+      <button type="button" class="icon-button"
+              [ngbTooltip]="'Add circle' | translate"
+              placement="bottom"
+              container="body"
               (click)="makeCircle()"
               (touchend)="makeCircle()">
         <fa-icon [icon]="['fas', 'circle']"></fa-icon>
@@ -32,7 +38,9 @@
       <button *ngIf="isImageOwner && imageId"
               type="button"
               class="icon-button"
-              title="{{ 'Save Annotations' | translate }}"
+              [ngbTooltip]="'Save annotations' | translate"
+              placement="bottom"
+              container="body"
               [disabled]="annotations.length === 0"
               (click)="saveAnnotations()"
               (touchend)="annotations.length > 0 ? saveAnnotations() : null"
@@ -41,7 +49,9 @@
       </button>
       <button type="button"
               class="icon-button"
-              title="{{ 'Share Annotations' | translate }}"
+              [ngbTooltip]="'Share annotations' | translate"
+              placement="bottom"
+              container="body"
               [disabled]="annotations.length === 0"
               (click)="annotations.length > 0 ? shareAnnotations() : null"
               (touchstart)="$event.stopPropagation()"
@@ -53,16 +63,20 @@
       <div class="toolbar-separator"></div>
       
       <button type="button" 
-              class="icon-button" 
-              title="{{ 'Clear All' | translate }}"
+              class="icon-button"
+              [ngbTooltip]="'Clear all' | translate"
+              placement="bottom"
+              container="body"
               [disabled]="annotations.length === 0"
               (click)="confirmClearAll()"
               (touchend)="annotations.length > 0 ? confirmClearAll() : null"
               (touchstart)="$event.stopPropagation()">
         <fa-icon [icon]="['fas', 'eraser']"></fa-icon>
       </button>
-      <button type="button" class="icon-button exit-button" 
-              title="Exit Annotation Mode" 
+      <button type="button" class="icon-button exit-button"
+              [ngbTooltip]="'Exit annotation mode' | translate"
+              placement="bottom"
+              container="body"
               (click)="exitAnnotationModeHandler(); annotationService.clearAllAnnotations()"
               (touchend)="exitAnnotationModeHandler(); annotationService.clearAllAnnotations()"
               (touchstart)="$event.stopPropagation()">

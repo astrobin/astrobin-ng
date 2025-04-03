@@ -260,11 +260,11 @@ export class AnnotationService {
   private convertToStandardFormat(annotation: any): Annotation | null {
     try {
       console.log("Converting annotation format:", annotation);
-      
+
       if (!annotation || !annotation.id) {
         return null;
       }
-      
+
       // Handle circle format
       if (annotation.type === 'circle') {
         return {
@@ -286,7 +286,7 @@ export class AnnotationService {
           } : undefined
         };
       }
-      
+
       // Handle rectangle format
       if (annotation.type === 'rectangle') {
         return {
@@ -308,7 +308,7 @@ export class AnnotationService {
           } : undefined
         };
       }
-      
+
       // Handle arrow format
       if (annotation.type === 'arrow') {
         return {
@@ -330,7 +330,7 @@ export class AnnotationService {
           } : undefined
         };
       }
-      
+
       // If it already matches the standard format, return as is
       if (annotation.shape && annotation.shape.type && annotation.shape.points) {
         // Make a copy and ensure the color is set
@@ -338,7 +338,7 @@ export class AnnotationService {
         standardAnnotation.shape = {...standardAnnotation.shape, color: standardAnnotation.shape.color || this.getDefaultColor()};
         return standardAnnotation;
       }
-      
+
       console.warn("Unknown annotation format:", annotation);
       return null;
     } catch (error) {
@@ -357,14 +357,14 @@ export class AnnotationService {
     }
 
     console.log("Original annotations:", annotations);
-    
+
     // Convert annotations to standard format if needed
     const standardizedAnnotations = annotations
       .map(a => this.convertToStandardFormat(a))
       .filter(a => a !== null) as Annotation[];
-      
+
     console.log("Standardized annotations:", standardizedAnnotations);
-    
+
     if (standardizedAnnotations.length === 0) {
       console.error('Failed to convert annotations to standard format');
       return '';
@@ -374,7 +374,7 @@ export class AnnotationService {
     const compactData = standardizedAnnotations
       .map(a => this.serializeAnnotation(a))
       .filter(a => a !== null); // Remove any null serialized annotations
-    
+
     if (compactData.length === 0) {
       console.error('Failed to serialize any annotations');
       return '';
@@ -403,7 +403,7 @@ export class AnnotationService {
 
       // Convert compact format back to annotations
       const annotations = compactData.map(d => this.deserializeAnnotation(d));
-      
+
       // Convert annotations to display format
       const displayReady = annotations.map(annotation => this.convertToDisplayFormat(annotation));
 
@@ -417,7 +417,7 @@ export class AnnotationService {
       throw new Error('Invalid annotation data format');
     }
   }
-  
+
   /**
    * Convert an annotation from the internal format to the display format
    * with properties like x, y, width, height, cx, cy, r, etc.
@@ -434,35 +434,35 @@ export class AnnotationService {
 
       if (annotation.shape.type === AnnotationShapeType.RECTANGLE) {
         displayAnnotation.type = 'rectangle';
-        
+
         // Get the points that define the rectangle
         const p1 = annotation.shape.points[0] || { x: 0, y: 0 };
         const p2 = annotation.shape.points[1] || { x: 0, y: 0 };
-        
+
         // Calculate rectangle properties
         const left = Math.min(p1.x, p2.x);
         const top = Math.min(p1.y, p2.y);
         const width = Math.abs(p2.x - p1.x);
         const height = Math.abs(p2.y - p1.y);
-        
+
         // Assign to the display annotation
         displayAnnotation.x = left;
         displayAnnotation.y = top;
         displayAnnotation.width = width;
         displayAnnotation.height = height;
-      } 
+      }
       else if (annotation.shape.type === AnnotationShapeType.CIRCLE) {
         displayAnnotation.type = 'circle';
-        
+
         // Get the points that define the circle
         const center = annotation.shape.points[0] || { x: 50, y: 50 };
         const radiusPoint = annotation.shape.points[1] || { x: 60, y: 50 };
-        
+
         // Calculate circle properties
         const dx = radiusPoint.x - center.x;
         const dy = radiusPoint.y - center.y;
         const radius = Math.sqrt(dx * dx + dy * dy);
-        
+
         // Assign to the display annotation
         displayAnnotation.cx = center.x;
         displayAnnotation.cy = center.y;
@@ -470,28 +470,28 @@ export class AnnotationService {
       }
       else if (annotation.shape.type === AnnotationShapeType.ARROW) {
         displayAnnotation.type = 'arrow';
-        
+
         // Get the points that define the arrow
         const start = annotation.shape.points[0] || { x: 35, y: 50 };
         const end = annotation.shape.points[1] || { x: 65, y: 50 };
-        
+
         // Assign to the display annotation
         displayAnnotation.startX = start.x;
         displayAnnotation.startY = start.y;
         displayAnnotation.endX = end.x;
         displayAnnotation.endY = end.y;
       }
-      
+
       console.log("Converted to display format:", displayAnnotation);
       return displayAnnotation;
     } catch (error) {
       console.error('Error converting annotation to display format:', error, annotation);
-      return { 
+      return {
         id: annotation.id || this.generateUniqueId(),
-        type: 'rectangle', 
-        x: 10, 
-        y: 10, 
-        width: 20, 
+        type: 'rectangle',
+        x: 10,
+        y: 10,
+        width: 20,
         height: 20,
         color: this.getDefaultColor()
       };
@@ -506,15 +506,15 @@ export class AnnotationService {
   public recalculatePositionsAfterResize(widthRatio: number, heightRatio: number): void {
     // We don't need to recalculate positions since we're using percentages
     // Percentages should scale automatically with the image
-    
+
     // For legacy purposes, just make sure we maintain the same annotations
     const annotations = this._annotations.getValue();
     if (annotations.length === 0) {
       return;
     }
-    
+
     console.log("Window resize detected, but no position recalculation needed since we use percentages.");
-    
+
     // Notify of non-changes to trigger UI refresh
     // This is a no-op as we're just ensuring references don't change
     const updatedAnnotations = annotations.map(annotation => ({ ...annotation }));
@@ -527,7 +527,7 @@ export class AnnotationService {
   public getColors(): string[] {
     return [...this.ANNOTATION_COLORS];
   }
-  
+
   /**
    * Get the default color
    */
@@ -611,7 +611,7 @@ export class AnnotationService {
       console.error('Invalid annotation structure:', annotation);
       return null;
     }
-    
+
     try {
       const compact: any = {
         i: annotation.id,

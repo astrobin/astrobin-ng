@@ -825,8 +825,10 @@
       <!-- Saved measurements button -->
       <button *ngIf="currentUser$ | async" 
               type="button" 
-              class="icon-button" 
-              title="{{ 'Saved Measurements' | translate }}"
+              class="icon-button"
+              [ngbTooltip]="'Saved measurements' | translate"
+              placement="bottom"
+              container="body"
               (click)="toggleSavedMeasurements()"
               (touchstart)="$event.stopPropagation()"
               (touchend)="toggleSavedMeasurements()">
@@ -835,8 +837,10 @@
       
       <!-- Share measurements button -->
       <button type="button" 
-              class="icon-button" 
-              title="{{ 'Share measurements' | translate }}"
+              class="icon-button"
+              [ngbTooltip]="'Share measurements' | translate"
+              placement="bottom"
+              container="body"
               [disabled]="previousMeasurements.length === 0"
               (click)="previousMeasurements.length > 0 ? shareMeasurements() : null"
               (touchstart)="$event.stopPropagation()"
@@ -849,8 +853,10 @@
       
       <!-- Clear all measurements button -->
       <button type="button" 
-              class="icon-button" 
-              title="{{ 'Clear all measurements' | translate }}"
+              class="icon-button"
+              [ngbTooltip]="'Clear all measurements' | translate"
+              placement="bottom"
+              container="body"
               [disabled]="previousMeasurements.length === 0"
               (click)="clearAllMeasurements()"
               (touchstart)="$event.stopPropagation()"
@@ -860,8 +866,10 @@
       
       <!-- Exit button -->
       <button type="button" 
-              class="icon-button exit-button" 
-              title="{{ 'Exit measuring tool' | translate }}"
+              class="icon-button exit-button"
+              [ngbTooltip]="'Exit measuring tool' | translate"
+              placement="bottom"
+              container="body"
               (click)="exitMeasuring()"
               (touchstart)="$event.stopPropagation()"
               (touchend)="exitMeasuring()">
@@ -873,7 +881,7 @@
   <!-- Saved Measurements Panel -->
   <div class="saved-measurements-panel" *ngIf="showSavedMeasurements">
     <div class="panel-header">
-      <h5>{{ 'Saved Measurements' | translate }}</h5>
+      <h5>{{ 'Saved measurements' | translate }}</h5>
       <button class="btn btn-sm btn-link text-muted" (click)="toggleSavedMeasurements()">
         <fa-icon icon="times"></fa-icon>
       </button>
@@ -935,14 +943,16 @@
           <div class="measurement-actions" *ngIf="currentUser$ | async">
             <button class="btn btn-sm btn-outline-light"
                     (click)="advancedSolutionMatrix ? loadMeasurement(preset) : null"
-                    [class.disabled]="!advancedSolutionMatrix"
+                    [class.disabled]="!advancedSolutionMatrix || loadingMeasurement"
+                    [class.loading]="loadingMeasurement"
                     [style.pointer-events]="'auto'">
-              <fa-icon icon="arrow-right" 
+              <fa-icon *ngIf="!loadingMeasurement" icon="arrow-right" 
                 [ngbTooltip]="!advancedSolutionMatrix ? ('Loading measurements requires advanced plate-solving data' | translate) : ('Load measurement' | translate)" 
                 container="body"
                 triggers="manual"
                 #tloadmeasurement="ngbTooltip"
                 (click)="toggleTooltip(tloadmeasurement)"></fa-icon>
+              <fa-icon *ngIf="loadingMeasurement" icon="spinner" [spin]="true"></fa-icon>
             </button>
             <button class="btn btn-sm btn-outline-danger" (click)="deleteSavedMeasurement(i)">
               <fa-icon icon="trash-alt" 
@@ -967,7 +977,7 @@
 <div *ngIf="showResizeWarningModal" class="resize-warning-modal">
   <div class="resize-warning-content">
     <div class="warning-header">
-      <h5>{{ 'Window Resized' | translate }}</h5>
+      <h5>{{ 'Window resized' | translate }}</h5>
     </div>
     <div class="warning-body">
       <p>
@@ -976,7 +986,7 @@
     </div>
     <div class="warning-footer">
       <button class="btn btn-danger" (click)="clearAllAndCloseWarning()">
-        {{ 'Clear All Measurements' | translate }}
+        {{ 'Clear all measurements' | translate }}
       </button>
     </div>
   </div>

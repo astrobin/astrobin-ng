@@ -119,6 +119,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   savedMeasurements: MeasurementPresetInterface[] = [];
   // URL measurement loading state
   loadingUrlMeasurements: boolean = false;
+  // Saved measurement loading state
+  loadingMeasurement: boolean = false;
   // Mouse tracking
   mouseX: number | null = null;
   mouseY: number | null = null;
@@ -268,33 +270,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // We'll initialize image element in ngAfterViewInit
 
-    // Check for shared measurements in the URL when component initializes
-    if (this.isBrowser) {
-      this.activatedRoute.queryParams.pipe(
-        take(1)
-      ).subscribe(params => {
-        if (params.measurements) {
-          try {
-            // Explicitly set loading flag and ensure it's visible
-            this.loadingUrlMeasurements = true;
-            // Force immediate change detection
-            this.cdRef.markForCheck();
-            this.cdRef.detectChanges();
-            
-            // Show loading indicator and ensure it's visible (force method for more reliability)
-            this.showLoadingIndicator();
-            this.loadMeasurementsFromUrl(params.measurements);
-          } catch (e) {
-            this.loadingUrlMeasurements = false;
-            this.hideLoadingIndicator();
-            console.error("Failed to load shared measurements:", e);
-            this.popNotificationsService.error(
-              this.translateService.instant("Failed to load shared measurements: {{error}}", { error: e.message })
-            );
-          }
-        }
-      });
-    }
+    // URL measurement loading moved to ngAfterViewInit
+    // This is crucial because we need the image element to be ready first
 
     // Load presets when the component initializes
     this.currentUser$.pipe(
@@ -463,12 +440,71 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (this.isBrowser) {
       // Initialize the cached image element after a delay to ensure DOM is ready
       this.windowRefService.utilsService.delay(100).subscribe(() => {
+        console.log("MEASURING AFTER VIEW INIT - Setting cached image element");
         // Now we use the direct image element (no querySelector needed)
         this.cachedImageElement = this.imageElement?.nativeElement;
         
         // After image element is cached, update boundary status
         this.updateBoundaryStatus();
+        
+        // IMPORTANT: Check for measurements in URL AFTER the image element is available
+        // This is critical for correct positioning of measurements
+        this.checkForUrlMeasurements();
       });
+    }
+  }
+  
+  /**
+   * Check for measurements in URL and load them if found
+   * This needs to happen after the image element is available
+   */
+  private checkForUrlMeasurements(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    
+    console.log("CHECKING FOR URL MEASUREMENTS");
+    
+    // Get the current URL directly
+    const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
+    const measurementsParam = currentUrl.searchParams.get('measurements');
+    
+    console.log("URL MEASUREMENTS CHECK:", currentUrl.toString());
+    console.log("MEASUREMENTS PARAM:", measurementsParam ? "present" : "not present");
+    
+    if (measurementsParam && measurementsParam.trim() !== '') {
+      try {
+        console.log("FOUND MEASUREMENTS IN URL - Loading...");
+        
+        // Set loading flag
+        this.loadingUrlMeasurements = true;
+        this.cdRef.markForCheck();
+        this.cdRef.detectChanges();
+        
+        // Show loading indicator
+        this.showLoadingIndicator();
+        
+        // Load after a brief delay to ensure indicator is visible
+        setTimeout(() => {
+          try {
+            // Load the measurements with explicit error check
+            this.loadMeasurementsFromUrl(measurementsParam);
+            console.log("SUCCESSFULLY LOADED MEASUREMENTS FROM URL - Count:", this.previousMeasurements.length);
+          } catch (e) {
+            console.error("FAILED TO LOAD MEASUREMENTS FROM URL:", e);
+            this.loadingUrlMeasurements = false;
+            this.hideLoadingIndicator();
+            this.popNotificationsService.error(
+              this.translateService.instant("Failed to load shared measurements: {{error}}", { error: e.message })
+            );
+          }
+        }, 200);
+      } catch (e) {
+        console.error("ERROR CHECKING URL MEASUREMENTS:", e);
+        this.loadingUrlMeasurements = false;
+      }
+    } else {
+      console.log("NO MEASUREMENTS FOUND IN URL");
     }
   }
   
@@ -2407,20 +2443,38 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Exit measuring mode
    */
   exitMeasuring(): void {
-    // Remove measurements query param if it exists
+    console.log("EXIT MEASURING MODE CALLED");
+    
+    // DIRECT APPROACH: Remove measurements parameter via window.history
     if (this.isBrowser) {
-      const currentUrl = this.windowRefService.getCurrentUrl();
-      if (currentUrl.searchParams.has('measurements')) {
-        // Remove the measurements parameter
-        currentUrl.searchParams.delete('measurements');
-        // Update the URL without navigation
-        this.windowRefService.replaceState({}, currentUrl.toString());
+      try {
+        // Get the current URL directly
+        const location = this.windowRefService.nativeWindow.location;
+        const currentUrl = new URL(location.href);
+        
+        console.log("MEASUREMENTS - BEFORE EXIT URL UPDATE:", currentUrl.toString());
+        
+        // Remove measurements parameter if it exists
+        if (currentUrl.searchParams.has('measurements')) {
+          // Remove the measurements parameter
+          currentUrl.searchParams.delete('measurements');
+          
+          // Apply the change directly to history
+          this.windowRefService.nativeWindow.history.replaceState({}, '', currentUrl.toString());
+          
+          console.log("MEASUREMENTS - AFTER EXIT URL UPDATE:", this.windowRefService.nativeWindow.location.href);
+        }
+      } catch (e) {
+        console.error("Error removing measurements parameter from URL:", e);
       }
     }
     
     // Clear measurements and exit
     this.previousMeasurements = [];
     this.cdRef.markForCheck();
+    this.cdRef.detectChanges(); // Force immediate update
+    
+    // Emit event to notify parent component
     this.exitMeasuringMode.emit();
   }
   
@@ -2494,27 +2548,25 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Encode the measurements
       const encodedData = this.encodeMeasurementsForUrl(this.previousMeasurements);
 
-      // Get the current URL and preserve the hash (important for fullscreen view)
-      const currentUrl = this.windowRefService.getCurrentUrl();
-      const hash = this.windowRefService.nativeWindow.location.hash;
+      // DIRECT APPROACH: Get the current URL through the window reference
+      const location = this.windowRefService.nativeWindow.location;
+      const currentUrl = new URL(location.href);
+      
+      console.log("MEASUREMENTS - BEFORE URL UPDATE:", currentUrl.toString());
+      
+      // Set the measurements parameter directly
+      currentUrl.searchParams.set('measurements', encodedData);
+      
+      // Apply the change directly to the URL without navigation
+      this.windowRefService.nativeWindow.history.replaceState({}, '', currentUrl.toString());
+      
+      console.log("MEASUREMENTS - AFTER URL UPDATE:", this.windowRefService.nativeWindow.location.href);
 
-      // Create a new URL with the measurements parameter
-      const urlTree = this.router.createUrlTree([], {
-        relativeTo: this.activatedRoute,
-        queryParams: { measurements: encodedData },
-        queryParamsHandling: "merge"
-      });
-
-      // Combine everything to create the final URL
-      const shareUrl = this.windowRefService.nativeWindow.location.origin + urlTree.toString() + hash;
-
-      // Skip interim message and go straight to the update and copy
-
-      // Update the URL without navigating
-      this.windowRefService.replaceState({}, currentUrl.toString());
-
-      // Copy the URL to clipboard with a slight delay to ensure URL is updated first
+      // Copy the updated URL to clipboard with a slight delay to ensure URL change is processed
       this.windowRefService.utilsService.delay(200).subscribe(() => {
+        // Get the final URL directly from the window location
+        const shareUrl = this.windowRefService.nativeWindow.location.href;
+        
         // Use the WindowRefService's copyToClipboard method which handles fallbacks properly
         this.windowRefService.copyToClipboard(shareUrl)
           .then(success => {
@@ -3084,6 +3136,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Load a saved measurement
    */
   loadMeasurement(preset: MeasurementPresetInterface): void {
+    // Set loading state
+    this.loadingMeasurement = true;
+    
     // Check if user is logged in
     let isLoggedIn = false;
     this.currentUser$.pipe(take(1)).subscribe(user => {
@@ -3091,6 +3146,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     });
 
     if (!isLoggedIn) {
+      this.loadingMeasurement = false;
       return;
     }
 
@@ -3101,22 +3157,27 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           "Measurement presets cannot be loaded on images without advanced plate-solving data. Use the measuring tool to create pixel-based measurements instead."
         )
       );
+      this.loadingMeasurement = false;
       return;
     }
 
-    // We need to find the image element for proper centering
-    let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
-
-    if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
-      imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-    }
+    // Use the direct image element reference - no querySelector needed
+    let imageElement = this.imageElement?.nativeElement;
 
     if (!imageElement) {
       this.popNotificationsService.error(
         this.translateService.instant("Cannot locate image element")
       );
+      this.loadingMeasurement = false;
       return;
     }
+    
+    console.log("IMAGE ELEMENT STATUS:", {
+      available: !!imageElement,
+      width: imageElement?.getBoundingClientRect()?.width || 0,
+      height: imageElement?.getBoundingClientRect()?.height || 0,
+      tagName: imageElement?.tagName
+    });
 
     // Get the center of the image for positioning, not the viewport
     const imgRect = imageElement.getBoundingClientRect();
@@ -3349,11 +3410,20 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.measureStartPoint = null;
       this.measureEndPoint = null;
       this.measureDistance = null;
+      
+      // Close the saved measurements panel
+      if (this.showSavedMeasurements) {
+        this.toggleSavedMeasurements();
+      }
+      
+      // Reset loading state
+      this.loadingMeasurement = false;
     } else {
       // No arcsecond dimensions in preset
       this.popNotificationsService.error(
         this.translateService.instant("Invalid measurement preset: missing width/height dimensions")
       );
+      this.loadingMeasurement = false;
       return;
     }
   }
@@ -4335,7 +4405,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.loadingUrlMeasurements = true; // CRITICAL: Set loading flag directly
       this.showLoadingIndicator();
       
-      measurementsData = JSON.parse(atob(encodedData));
+      console.log("DECODING MEASUREMENTS FROM URL - Base64 length:", encodedData.length);
+      
+      // First decode from base64
+      const decodedString = atob(encodedData);
+      console.log("DECODED MEASUREMENTS STRING - Length:", decodedString.length);
+      
+      // Then parse as JSON
+      measurementsData = JSON.parse(decodedString);
+      console.log("PARSED MEASUREMENTS - Type:", Array.isArray(measurementsData) ? 'Array' : typeof measurementsData, "Length:", Array.isArray(measurementsData) ? measurementsData.length : 0);
+      
       if (!Array.isArray(measurementsData)) {
         throw new Error("Invalid measurements data format");
       }
@@ -4380,11 +4459,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           // We'll try to use celestial coordinates if possible, but we need to handle the case
           // where the coordinates can't be accurately converted to pixels
 
-          // Get the image element for reference
-          let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img") as HTMLElement;
-          if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
-            imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img") as HTMLElement;
-          }
+          // Get the image element for reference - use it directly since we changed to static image
+          let imageElement = this.imageElement?.nativeElement as HTMLElement;
+          
+          // Log image element status
+          console.log("IMAGE ELEMENT STATUS:", {
+            available: !!imageElement,
+            width: imageElement?.getBoundingClientRect()?.width || 0,
+            height: imageElement?.getBoundingClientRect()?.height || 0,
+            tagName: imageElement?.tagName
+          });
 
           // If we don't have a valid image element, we can't properly place the measurement
           if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
@@ -4513,13 +4597,35 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
           // Add to previous measurements
           this.previousMeasurements.push(measurement);
+          
+          // Log the added measurement for debugging
+          console.log("ADDED MEASUREMENT:", {
+            startX: measurement.startX,
+            startY: measurement.startY,
+            endX: measurement.endX,
+            endY: measurement.endY,
+            distance: measurement.distance,
+            hasCelestialCoords: !!(measurement.startRa && measurement.startDec && measurement.endRa && measurement.endDec)
+          });
         });
 
         if (this.previousMeasurements.length > 0) {
-          // Show success notification
-          this.popNotificationsService.success(
-            this.translateService.instant("Loaded {{count}} shared measurements.", { count: this.previousMeasurements.length })
-          );
+          console.log("SUCCESSFULLY ADDED MEASUREMENTS - Count:", this.previousMeasurements.length);
+          
+          // Force change detection to make sure measurements appear
+          this.cdRef.markForCheck();
+          this.cdRef.detectChanges();
+          
+          // After a brief delay, show success notification
+          setTimeout(() => {
+            this.cdRef.markForCheck();
+            this.cdRef.detectChanges();
+            
+            // Show success notification
+            this.popNotificationsService.success(
+              this.translateService.instant("Loaded {{count}} shared measurements.", { count: this.previousMeasurements.length })
+            );
+          }, 100);
         }
 
         // Clear loading indicator
@@ -4541,27 +4647,51 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Implement a retry mechanism for solution matrix initialization
     const attemptWithRetry = (retryCount = 0, maxRetries = 5) => {
-      // If solution matrix is valid, process immediately
+      console.log(`LOAD MEASUREMENTS - Attempt ${retryCount + 1} of ${maxRetries + 1}`);
+      
+      // Check if the image element is available first
+      if (!this.cachedImageElement) {
+        console.warn("LOAD MEASUREMENTS - Image element not available yet, trying to find it");
+        this.cachedImageElement = this.imageElement?.nativeElement;
+        
+        if (!this.cachedImageElement) {
+          if (retryCount >= maxRetries) {
+            console.warn("LOAD MEASUREMENTS - Image element never became available, trying without it");
+            processAndLoadMeasurements();
+            return;
+          }
+          
+          console.log("LOAD MEASUREMENTS - Will retry for image element");
+          setTimeout(() => {
+            attemptWithRetry(retryCount + 1, maxRetries);
+          }, 300 * Math.pow(1.5, retryCount));
+          return;
+        }
+      }
+      
+      // Image element is available, now check solution matrix
       if (this.isValidSolutionMatrix()) {
+        console.log("LOAD MEASUREMENTS - Solution matrix is valid, processing measurements");
         processAndLoadMeasurements();
         return;
       }
 
       // If we've exceeded max retries, try to process anyway
       if (retryCount >= maxRetries) {
-        console.warn(`Solution matrix not ready after ${maxRetries} attempts. Trying to load measurements anyway.`);
+        console.warn(`LOAD MEASUREMENTS - Solution matrix not ready after ${maxRetries} attempts. Trying to load measurements anyway.`);
         processAndLoadMeasurements();
         return;
       }
 
       // Otherwise retry after a delay, with exponential backoff
-      console.log(`Solution matrix not ready, retry attempt ${retryCount + 1} of ${maxRetries}`);
+      console.log(`LOAD MEASUREMENTS - Solution matrix not ready, retry attempt ${retryCount + 1} of ${maxRetries}`);
       setTimeout(() => {
         attemptWithRetry(retryCount + 1, maxRetries);
       }, 300 * Math.pow(1.5, retryCount)); // Exponential backoff starting at 300ms
     };
 
     // Start the retry process
+    console.log("LOAD MEASUREMENTS - Starting retry process");
     attemptWithRetry();
   }
 
@@ -4659,7 +4789,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * @returns true if the matrix is valid and can be used for calculations
    */
   private isValidSolutionMatrix(): boolean {
-    return this.astroUtilsService.isValidSolutionMatrix(this.advancedSolutionMatrix);
+    const isValid = this.astroUtilsService.isValidSolutionMatrix(this.advancedSolutionMatrix);
+    
+    // Add detailed logging to troubleshoot solution matrix issues
+    console.log("SOLUTION MATRIX STATUS:", {
+      hasMatrix: !!this.advancedSolutionMatrix,
+      isValid: isValid,
+      serviceAvailable: !!this.astroUtilsService
+    });
+    
+    return isValid;
   }
 
   /**
@@ -4733,8 +4872,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // If no direct center coordinates, try to calculate center from image dimensions
       if (this.isValidSolutionMatrix() && this.imageElement?.nativeElement) {
-        const imageElement = this.imageElement.nativeElement.querySelector(".ngxImageZoomFullContainer img") as HTMLElement ||
-                            this.imageElement.nativeElement.querySelector(".ngxImageZoomContainer img") as HTMLElement;
+        // Use the image element directly - it's already the static image
+        const imageElement = this.imageElement.nativeElement as HTMLElement;
+        
+        // Log image element status for debugging
+        console.log("CENTER COORDINATES - IMAGE ELEMENT:", {
+          available: !!imageElement,
+          width: imageElement?.getBoundingClientRect()?.width || 0,
+          height: imageElement?.getBoundingClientRect()?.height || 0,
+          tagName: imageElement?.tagName
+        });
 
         if (imageElement) {
           const centerX = imageElement.getBoundingClientRect().width / 2;
@@ -4772,11 +4919,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     try {
-      // Find the image element to get its dimensions
-      let imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
-      if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
-        imageElement = this.imageElement?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-      }
+      // Use the image element directly - it's already the static image
+      let imageElement = this.imageElement?.nativeElement;
+      
+      // Log image element status for debugging
+      console.log("PIXEL POSITION - IMAGE ELEMENT:", {
+        available: !!imageElement,
+        width: imageElement?.getBoundingClientRect()?.width || 0,
+        height: imageElement?.getBoundingClientRect()?.height || 0,
+        tagName: imageElement?.tagName
+      });
 
       if (!imageElement) {
         console.warn("Image element not found for coordinate conversion");

@@ -246,8 +246,8 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/remove-collaborator/`, { userId });
   }
 
-  saveAnnotations(pk: ImageInterface["pk"], annotations: string): Observable<ImageInterface> {
-    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/save-annotations/`, { annotations });
+  setAnnotations(pk: ImageInterface["pk"], annotations: string): Observable<ImageInterface> {
+    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/set-annotations/`, { annotations });
   }
 
   getUsersWhoLikeImage(
