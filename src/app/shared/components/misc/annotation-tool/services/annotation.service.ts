@@ -261,27 +261,40 @@ export class AnnotationService {
     try {
       console.log("Converting annotation format:", annotation);
 
-      if (!annotation || !annotation.id) {
+      if (!annotation) {
+        console.error("Null or undefined annotation");
         return null;
+      }
+
+      if (!annotation.id) {
+        console.error("Annotation missing ID property:", annotation);
+        // Generate an ID since it's missing
+        annotation.id = this.generateUniqueId();
+        console.log("Generated ID for annotation:", annotation.id);
       }
 
       // Handle circle format
       if (annotation.type === 'circle') {
+        console.log("Converting circle annotation");
+        if (annotation.cx === undefined || annotation.cy === undefined || annotation.r === undefined) {
+          console.error("Circle annotation missing required properties:", annotation);
+        }
+
         return {
           id: annotation.id,
           timestamp: Date.now(),
           shape: {
             type: AnnotationShapeType.CIRCLE,
             points: [
-              { x: annotation.cx, y: annotation.cy },  // Center point
-              { x: annotation.cx + annotation.r, y: annotation.cy }  // Point to determine radius
+              { x: annotation.cx || 50, y: annotation.cy || 50 },  // Center point
+              { x: (annotation.cx || 50) + (annotation.r || 10), y: annotation.cy || 50 }  // Point to determine radius
             ],
             color: annotation.color || this.getDefaultColor(),
             lineWidth: 2
           },
           note: annotation.note ? annotation.note : annotation.title ? {
             text: annotation.title,
-            position: { x: annotation.cx + annotation.r + 5, y: annotation.cy - 5 },
+            position: { x: (annotation.cx || 50) + (annotation.r || 10) + 5, y: (annotation.cy || 50) - 5 },
             expanded: true
           } : undefined
         };
@@ -289,21 +302,27 @@ export class AnnotationService {
 
       // Handle rectangle format
       if (annotation.type === 'rectangle') {
+        console.log("Converting rectangle annotation");
+        if (annotation.x === undefined || annotation.y === undefined ||
+            annotation.width === undefined || annotation.height === undefined) {
+          console.error("Rectangle annotation missing required properties:", annotation);
+        }
+
         return {
           id: annotation.id,
           timestamp: Date.now(),
           shape: {
             type: AnnotationShapeType.RECTANGLE,
             points: [
-              { x: annotation.x, y: annotation.y },  // Top-left corner
-              { x: annotation.x + annotation.width, y: annotation.y + annotation.height }  // Bottom-right corner
+              { x: annotation.x || 10, y: annotation.y || 10 },  // Top-left corner
+              { x: (annotation.x || 10) + (annotation.width || 20), y: (annotation.y || 10) + (annotation.height || 20) }  // Bottom-right corner
             ],
             color: annotation.color || this.getDefaultColor(),
             lineWidth: 2
           },
           note: annotation.note ? annotation.note : annotation.title ? {
             text: annotation.title,
-            position: { x: annotation.x + annotation.width + 5, y: annotation.y - 5 },
+            position: { x: (annotation.x || 10) + (annotation.width || 20) + 5, y: (annotation.y || 10) - 5 },
             expanded: true
           } : undefined
         };
@@ -311,21 +330,27 @@ export class AnnotationService {
 
       // Handle arrow format
       if (annotation.type === 'arrow') {
+        console.log("Converting arrow annotation");
+        if (annotation.startX === undefined || annotation.startY === undefined ||
+            annotation.endX === undefined || annotation.endY === undefined) {
+          console.error("Arrow annotation missing required properties:", annotation);
+        }
+
         return {
           id: annotation.id,
           timestamp: Date.now(),
           shape: {
             type: AnnotationShapeType.ARROW,
             points: [
-              { x: annotation.startX, y: annotation.startY },  // Start point
-              { x: annotation.endX, y: annotation.endY }  // End point
+              { x: annotation.startX || 35, y: annotation.startY || 50 },  // Start point
+              { x: annotation.endX || 65, y: annotation.endY || 50 }  // End point
             ],
             color: annotation.color || this.getDefaultColor(),
             lineWidth: 2
           },
           note: annotation.note ? annotation.note : annotation.title ? {
             text: annotation.title,
-            position: { x: annotation.endX + 5, y: annotation.endY - 5 },
+            position: { x: (annotation.endX || 65) + 5, y: (annotation.endY || 50) - 5 },
             expanded: true
           } : undefined
         };
@@ -333,6 +358,7 @@ export class AnnotationService {
 
       // If it already matches the standard format, return as is
       if (annotation.shape && annotation.shape.type && annotation.shape.points) {
+        console.log("Annotation already in standard format");
         // Make a copy and ensure the color is set
         const standardAnnotation = {...annotation};
         standardAnnotation.shape = {...standardAnnotation.shape, color: standardAnnotation.shape.color || this.getDefaultColor()};
@@ -340,6 +366,7 @@ export class AnnotationService {
       }
 
       console.warn("Unknown annotation format:", annotation);
+
       return null;
     } catch (error) {
       console.error("Error converting annotation format:", error);
@@ -407,14 +434,57 @@ export class AnnotationService {
       // Convert annotations to display format
       const displayReady = annotations.map(annotation => this.convertToDisplayFormat(annotation));
 
-      // Log for debugging
-      console.log('Loaded annotations from URL:', displayReady);
-
       // Set as current annotations
       this._annotations.next(displayReady);
     } catch (e) {
       console.error('Failed to parse annotation URL parameter', e);
       throw new Error('Invalid annotation data format');
+    }
+  }
+
+  /**
+   * Load annotations from a JSON string
+   * @param jsonString The JSON string containing the annotations
+   */
+  public loadFromJsonString(jsonString: string): void {
+    try {
+      // Parse JSON string
+      console.log("loadFromJsonString called with string:", jsonString);
+      const annotationsData = JSON.parse(jsonString);
+      console.log("Parsed annotations data:", annotationsData);
+
+      // If it's already in the right format, use it directly
+      if (Array.isArray(annotationsData)) {
+        console.log("Data is an array with", annotationsData.length, "items");
+
+        // Convert each annotation to display format if needed
+        const displayReady = annotationsData.map(annotation => {
+          // Check if it needs conversion to standard format first
+          console.log("Processing annotation:", annotation);
+          const standardFormat = this.convertToStandardFormat(annotation);
+
+          if (standardFormat) {
+            console.log("Converted to standard format:", standardFormat);
+            const displayFormat = this.convertToDisplayFormat(standardFormat);
+            console.log("Converted to display format:", displayFormat);
+            return displayFormat;
+          }
+          // If already in display format, use as is
+          console.log("Using original format:", annotation);
+          return annotation;
+        }).filter(ann => ann !== null && ann !== undefined);
+
+        console.log("Final displayReady annotations:", displayReady);
+
+        // Set as current annotations
+        this._annotations.next(displayReady);
+      } else {
+        console.error("Annotations data is not an array:", annotationsData);
+        throw new Error('Annotations data is not an array');
+      }
+    } catch (e) {
+      console.error('Failed to parse annotations JSON string', e);
+      throw new Error('Invalid annotations data format');
     }
   }
 

@@ -20,7 +20,6 @@ import { FormBuilder, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { DeviceService } from "@core/services/device.service";
-import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 
 @Component({
   selector: "astrobin-annotation-tool",
@@ -42,14 +41,15 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   @Input() naturalHeight: number;
   @Input() imageId: number;
   @Input() isImageOwner: boolean = false;
+  @Input() revision: any;
 
   @Output() exitAnnotationMode = new EventEmitter<void>();
 
   // Types for template use
   readonly AnnotationShapeType = AnnotationShapeType;
 
-  // Flag to indicate whether annotations are being loaded from URL
-  loadingUrlAnnotations: boolean = false;
+  // Flag to indicate whether annotations are being loaded
+  loadingAnnotations: boolean = false;
 
   // Flag for save button states
   savingAnnotations: boolean = false;
@@ -178,7 +178,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     super.ngOnInit();
 
     // Setting loading flag to false and clearing annotations
-    this.loadingUrlAnnotations = false;
+    this.loadingAnnotations = false;
     this.annotations = [];
     this.annotationService.clearAllAnnotations();
 
@@ -218,19 +218,14 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
       const annotationsParam = currentUrl.searchParams.get('annotations');
 
-      console.log("DIRECT URL CHECK:", currentUrl.toString());
-      console.log("DIRECT PARAM CHECK - annotations=", annotationsParam ? "present" : "not present");
-
-      // Only proceed if we actually have an annotations parameter with content
+      // First priority: Check for annotations in URL parameter
       if (annotationsParam && annotationsParam.trim() !== '') {
-        console.log("DIRECT FOUND ANNOTATIONS - length:", annotationsParam.length);
-
+        // URL parameter takes precedence over saved annotations
         try {
           // Load the annotations
           this.annotationService.loadFromUrlParam(annotationsParam);
-          console.log("DIRECT LOADED ANNOTATIONS - count:", this.annotations.length);
         } catch (e) {
-          console.error("DIRECT ERROR loading annotations:", e);
+          // Handle error loading annotations from URL
           this.popNotificationsService.error(
             this.translateService.instant("Failed to load annotations: {{error}}", { error: e.message })
           );
@@ -239,11 +234,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
           this.annotations = [];
           this.annotationService.clearAllAnnotations();
         }
-      } else {
-        // No annotations in URL, make sure to clear any existing ones
-        console.log("NO ANNOTATIONS FOUND IN DIRECT URL CHECK");
-        this.annotations = [];
-        this.annotationService.clearAllAnnotations();
+      } else if (this.revision && this.revision.annotations) {
+        // Second priority: If no URL annotations, load from revision object
+        this.loadSavedAnnotations();
       }
     }
 
@@ -344,11 +337,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   ngAfterViewInit(): void {
     if (this.isBrowser) {
-      // Show loading indicator immediately if annotations in URL
-      if (this.active) {
-        this.checkForAnnotationsInUrlParamsAndShow();
-      }
-
       // Try to find the image element immediately
       this.tryFindImageElement();
       this.updateAnnotationContainerSize();
@@ -364,11 +352,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         this.updateAnnotationContainerSize();
 
         // Handle URL annotations if present
-        if (this.annotations && this.annotations.length > 0 && this.loadingUrlAnnotations) {
+        if (this.annotations && this.annotations.length > 0 && this.loadingAnnotations) {
           if (this.cachedImageElement) {
             // If we have found the image element, hide loading after a short delay
             this.windowRefService.utilsService.delay(300).subscribe(() => {
-              this.loadingUrlAnnotations = false;
+              this.loadingAnnotations = false;
               this.cdRef.markForCheck();
             });
           } else {
@@ -379,7 +367,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
               // Hide loading anyway after another short delay
               this.windowRefService.utilsService.delay(200).subscribe(() => {
-                this.loadingUrlAnnotations = false;
+                this.loadingAnnotations = false;
                 this.cdRef.markForCheck();
               });
             });
@@ -1372,364 +1360,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   }
 
   /**
-   * Create a rectangle annotation
-   */
-  createRectangle(): void {
-    console.log("createRectangle called");
-
-    // Create a new annotation for a rectangle
-    const annotation = this.annotationService.createAnnotation({
-      shapeType: AnnotationShapeType.RECTANGLE,
-      color: this.annotationService.getDefaultColor()
-    });
-
-    console.log("Created rectangle annotation:", annotation);
-
-    // Set rectangle points (centered rectangle)
-    this.annotationService.updateAnnotationShape(annotation.id, {
-      points: [
-        { x: 35, y: 35 },
-        { x: 65, y: 65 } // Center rectangle
-      ]
-    });
-
-    // Set as active annotation and activate note editor
-    this.activeAnnotation = annotation;
-    this.isAddingNote = true;
-
-    // Force change detection
-    this.ngZone.run(() => {
-      this.cdRef.markForCheck();
-    });
-  }
-
-  /**
-   * Create a circle annotation
-   */
-  createCircle(): void {
-    console.log("createCircle called");
-
-    // Create a new annotation for a circle
-    const annotation = this.annotationService.createAnnotation({
-      shapeType: AnnotationShapeType.CIRCLE,
-      color: this.annotationService.getDefaultColor()
-    });
-
-    console.log("Created circle annotation:", annotation);
-
-    // Set circle points (centered circle with radius)
-    this.annotationService.updateAnnotationShape(annotation.id, {
-      points: [
-        { x: 50, y: 50 }, // Center
-        { x: 65, y: 50 }  // Point on circumference (radius = 15%)
-      ]
-    });
-
-    // Set as active annotation and activate note editor
-    this.activeAnnotation = annotation;
-    this.isAddingNote = true;
-
-    // Force change detection
-    this.ngZone.run(() => {
-      this.cdRef.markForCheck();
-    });
-  }
-
-  /**
-   * Create a default-sized shape without drawing (legacy)
-   */
-  createDefaultShape(event: MouseEvent): void {
-    console.log("createDefaultShape called");
-
-    if (this.isDrawing || this.isAddingNote) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    // Create a new annotation with the current drawing tool
-    const annotation = this.annotationService.createAnnotation({
-      shapeType: this.currentDrawingTool,
-      color: this.annotationService.getDefaultColor()
-    });
-
-    console.log("Created annotation:", annotation);
-
-    // Get the center of the view
-    const containerElement = document.querySelector(".fullscreen-image-viewer") || document.body;
-    const containerBounds = containerElement.getBoundingClientRect();
-    const centerX = 50; // Use percentage (middle of the container)
-    const centerY = 50;
-
-    // Apply defaults based on shape type
-    if (this.currentDrawingTool === AnnotationShapeType.ARROW) {
-      this.annotationService.updateAnnotationShape(annotation.id, {
-        points: [
-          { x: centerX - 15, y: centerY },
-          { x: centerX + 15, y: centerY } // Horizontal arrow in the center
-        ]
-      });
-    } else if (this.currentDrawingTool === AnnotationShapeType.RECTANGLE) {
-      this.annotationService.updateAnnotationShape(annotation.id, {
-        points: [
-          { x: centerX - 12.5, y: centerY - 10 },
-          { x: centerX + 12.5, y: centerY + 10 }
-        ]
-      });
-    } else if (this.currentDrawingTool === AnnotationShapeType.CIRCLE) {
-      this.annotationService.updateAnnotationShape(annotation.id, {
-        points: [
-          { x: centerX, y: centerY },
-          { x: centerX + 12, y: centerY } // Creates a circle with radius 12% of width
-        ]
-      });
-    }
-
-    console.log("Updated to default shape:", annotation);
-
-    // Set as active annotation to add note
-    this.activeAnnotation = annotation;
-    this.isAddingNote = true;
-
-    // Visual feedback
-    if (this.isBrowser) {
-      const successIndicator = document.createElement("div");
-      successIndicator.style.position = "fixed";
-      successIndicator.style.top = "50%";
-      successIndicator.style.left = "50%";
-      successIndicator.style.transform = "translate(-50%, -50%)";
-      successIndicator.style.padding = "15px 30px";
-      successIndicator.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-      successIndicator.style.color = "white";
-      successIndicator.style.borderRadius = "4px";
-      successIndicator.style.zIndex = "9999";
-      successIndicator.style.fontWeight = "bold";
-      successIndicator.textContent = this.translateService.instant("Shape created! Add a note...");
-
-      document.body.appendChild(successIndicator);
-      this.utilsService.delay(1500).subscribe(() => {
-        if (successIndicator.parentNode) {
-          document.body.removeChild(successIndicator);
-        }
-      });
-    }
-
-    // Force change detection
-    this.ngZone.run(() => {
-      this.cdRef.markForCheck();
-    });
-  }
-
-  /**
-   * Start drawing a new shape annotation
-   */
-  startDrawing(event: MouseEvent, shapeType: AnnotationShapeType): void {
-    console.log("startDrawing called", { event, shapeType, active: this.active, dragInProgress: this._dragInProgress });
-
-    if (!this.active || this._dragInProgress) {
-      console.log("Drawing prevented - not active or drag in progress");
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    console.log("Starting to draw...");
-    this.isDrawing = true;
-
-    // Store starting mouse coordinates for later distance calculation
-    this.dragStartX = event.clientX;
-    this.dragStartY = event.clientY;
-
-    this.activeAnnotation = this.annotationService.createAnnotation({
-      shapeType: shapeType,
-      color: this.annotationService.getDefaultColor()
-    });
-
-    console.log("Created annotation:", this.activeAnnotation);
-
-    // Initialize the starting point of the shape
-    this.updateActiveAnnotationPoints(event);
-
-    console.log("After updating points:", this.activeAnnotation);
-
-    // Add a visual cue to show where the drawing started
-    if (this.isBrowser) {
-      const startMarker = document.createElement("div");
-      startMarker.style.position = "absolute";
-      startMarker.style.width = "15px";
-      startMarker.style.height = "15px";
-      startMarker.style.borderRadius = "50%";
-      startMarker.style.border = `2px solid ${this.activeAnnotation.shape.color}`;
-      startMarker.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
-      startMarker.style.left = (event.clientX - 7) + "px";
-      startMarker.style.top = (event.clientY - 7) + "px";
-      startMarker.style.zIndex = "9999";
-      startMarker.style.pointerEvents = "none";
-      startMarker.style.boxShadow = "0 0 5px rgba(0, 0, 0, 0.5)";
-      startMarker.classList.add("annotation-start-marker");
-
-      document.body.appendChild(startMarker);
-      this.utilsService.delay(2000).subscribe(() => {
-        if (startMarker.parentNode) {
-          document.body.removeChild(startMarker);
-        }
-      });
-    }
-
-    // Force running change detection inside NgZone to make sure UI updates
-    this.ngZone.run(() => {
-      this.cdRef.markForCheck();
-    });
-  }
-
-  /**
-   * Complete the current drawing operation
-   */
-  finishDrawing(event: MouseEvent): void {
-    console.log("finishDrawing called", { isDrawing: this.isDrawing, activeAnnotation: this.activeAnnotation });
-
-    if (!this.isDrawing || !this.activeAnnotation) {
-      console.log("Finish drawing prevented - not drawing or no active annotation");
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    console.log("Finishing drawing...");
-
-    // Add a visual indicator where the mouse was released
-    if (this.isBrowser) {
-      const endMarker = document.createElement("div");
-      endMarker.style.position = "absolute";
-      endMarker.style.width = "15px";
-      endMarker.style.height = "15px";
-      endMarker.style.borderRadius = "50%";
-      endMarker.style.border = `2px solid ${this.activeAnnotation.shape.color}`;
-      endMarker.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
-      endMarker.style.left = (event.clientX - 7) + "px";
-      endMarker.style.top = (event.clientY - 7) + "px";
-      endMarker.style.zIndex = "9999";
-      endMarker.style.pointerEvents = "none";
-      endMarker.style.boxShadow = "0 0 5px rgba(0, 0, 0, 0.5)";
-      endMarker.classList.add("annotation-end-marker");
-
-      document.body.appendChild(endMarker);
-      this.utilsService.delay(2000).subscribe(() => {
-        if (endMarker.parentNode) {
-          document.body.removeChild(endMarker);
-        }
-      });
-    }
-
-    // Update the final points
-    this.updateActiveAnnotationPoints(event);
-
-    console.log("Final points updated:", this.activeAnnotation);
-
-    // Calculate the actual distance moved with the mouse (in pixels)
-    const pixelDistance = Math.sqrt(
-      Math.pow(event.clientX - this.dragStartX, 2) +
-      Math.pow(event.clientY - this.dragStartY, 2)
-    );
-
-    console.log("Mouse distance in pixels:", pixelDistance);
-
-    // If the mouse barely moved, create a default-sized shape instead
-    if (pixelDistance < 10) {
-      console.log("Mouse barely moved, creating default-sized shape");
-
-      // For a default arrow, make it point right and be 25% of container width
-      if (this.activeAnnotation.shape.type === AnnotationShapeType.ARROW) {
-        const startX = this.activeAnnotation.shape.points[0].x;
-        const startY = this.activeAnnotation.shape.points[0].y;
-
-        this.annotationService.updateAnnotationShape(this.activeAnnotation.id, {
-          points: [
-            { x: startX, y: startY },
-            { x: startX + 25, y: startY } // Create a horizontal arrow to the right
-          ]
-        });
-      }
-      // For a default rectangle, make it 15% of container width/height
-      else if (this.activeAnnotation.shape.type === AnnotationShapeType.RECTANGLE) {
-        const startX = this.activeAnnotation.shape.points[0].x;
-        const startY = this.activeAnnotation.shape.points[0].y;
-
-        this.annotationService.updateAnnotationShape(this.activeAnnotation.id, {
-          points: [
-            { x: startX, y: startY },
-            { x: startX + 15, y: startY + 15 }
-          ]
-        });
-      }
-      // For a default circle, make radius 8% of container width
-      else if (this.activeAnnotation.shape.type === AnnotationShapeType.CIRCLE) {
-        const startX = this.activeAnnotation.shape.points[0].x;
-        const startY = this.activeAnnotation.shape.points[0].y;
-
-        this.annotationService.updateAnnotationShape(this.activeAnnotation.id, {
-          points: [
-            { x: startX, y: startY },
-            { x: startX + 8, y: startY } // Create a circle with radius 8% of width
-          ]
-        });
-      }
-
-      console.log("Updated to default shape:", this.activeAnnotation);
-    }
-
-    console.log("Drawing finished, preparing to add note");
-    // Finish the shape and prepare to add a note
-    this.isDrawing = false;
-    this.isAddingNote = true;
-
-    // Create an element to visually indicate success
-    if (this.isBrowser) {
-      const successIndicator = document.createElement("div");
-      successIndicator.style.position = "fixed";
-      successIndicator.style.top = "50%";
-      successIndicator.style.left = "50%";
-      successIndicator.style.transform = "translate(-50%, -50%)";
-      successIndicator.style.padding = "15px 30px";
-      successIndicator.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-      successIndicator.style.color = "white";
-      successIndicator.style.borderRadius = "4px";
-      successIndicator.style.zIndex = "9999";
-      successIndicator.style.fontWeight = "bold";
-      successIndicator.textContent = this.translateService.instant("Shape created! Add a note...");
-
-      document.body.appendChild(successIndicator);
-      this.utilsService.delay(1500).subscribe(() => {
-        if (successIndicator.parentNode) {
-          document.body.removeChild(successIndicator);
-        }
-      });
-    }
-
-    // Force running change detection inside NgZone to make sure UI updates
-    this.ngZone.run(() => {
-      this.cdRef.markForCheck();
-    });
-  }
-
-  /**
-   * Add a note to the current annotation
-   */
-  addNoteToAnnotation(text: string): void {
-    if (!this.activeAnnotation) {
-      return;
-    }
-
-    this.annotationService.addNoteToAnnotation(this.activeAnnotation.id, text);
-    this.isAddingNote = false;
-    this.activeAnnotation = null;
-    this.cdRef.markForCheck();
-  }
-
-  /**
    * Cancel the current annotation creation
    */
   cancelAnnotation(): void {
@@ -2002,7 +1632,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     }
 
     // Ensure loading flag is disabled
-    this.loadingUrlAnnotations = false;
+    this.loadingAnnotations = false;
 
     console.log("AFTER CLEAR: annotations count =", this.annotations.length);
 
@@ -2015,7 +1645,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       // Clear annotations
       this.annotations = [];
       this.annotationService.clearAllAnnotations();
-      this.loadingUrlAnnotations = false;
+      this.loadingAnnotations = false;
       this.cdRef.markForCheck();
       this.cdRef.detectChanges();
 
@@ -2411,89 +2041,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   }
 
   /**
-   * Clear all annotations
-   */
-  clearAllAnnotations(): void {
-    this.annotationService.clearAllAnnotations();
-
-    // Also update the URL to remove the annotations parameter
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams: { annotations: null },
-      queryParamsHandling: 'merge'
-    });
-
-    this.cdRef.markForCheck();
-  }
-
-  /**
-   * Check for annotations in URL and show loading indicator if needed
-   */
-  private checkForAnnotationsInUrlParamsAndShow(): void {
-    console.log("CHECK FOR ANNOTATIONS IN URL - START");
-
-    // Clear all annotations first, regardless of URL
-    this.annotations = [];
-    this.annotationService.clearAllAnnotations();
-    this.loadingUrlAnnotations = false;
-
-    if (this.isBrowser) {
-      // DIRECT APPROACH: Get the annotations parameter directly from the URL
-      try {
-        const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
-        const annotationsParam = currentUrl.searchParams.get('annotations');
-
-        console.log("DIRECT URL CHECK IN afterViewInit:", currentUrl.toString());
-        console.log("DIRECT PARAM CHECK IN afterViewInit - annotations=", annotationsParam ? "present" : "not present");
-
-        // Only proceed if we actually have an annotations parameter with content
-        if (annotationsParam && annotationsParam.trim() !== '') {
-          console.log("DIRECT FOUND ANNOTATIONS IN afterViewInit - length:", annotationsParam.length);
-
-          // Show loading indicator
-          this.loadingUrlAnnotations = true;
-          this.cdRef.markForCheck();
-          this.cdRef.detectChanges();
-
-          // Load after a brief delay to ensure indicator is visible
-          this.utilsService.delay(100).subscribe(() => {
-            try {
-              // Load the annotations
-              this.annotationService.loadFromUrlParam(annotationsParam);
-              // Annotations loaded successfully
-            } catch (e) {
-              // Error loading annotations
-              // Clear on error
-              this.annotations = [];
-              this.annotationService.clearAllAnnotations();
-            } finally {
-              // Always hide the indicator after loading or error
-              this.loadingUrlAnnotations = false;
-              this.cdRef.markForCheck();
-              this.cdRef.detectChanges();
-            }
-          });
-        } else {
-          // No annotations in URL, make sure everything is cleared
-          console.log("NO ANNOTATIONS FOUND IN DIRECT URL CHECK IN afterViewInit");
-          this.annotations = [];
-          this.annotationService.clearAllAnnotations();
-          this.loadingUrlAnnotations = false;
-          this.cdRef.markForCheck();
-          this.cdRef.detectChanges();
-        }
-      } catch (e) {
-        console.error("Error checking URL for annotations:", e);
-        this.loadingUrlAnnotations = false;
-        this.annotations = [];
-        this.annotationService.clearAllAnnotations();
-      }
-    }
-
-    console.log("CHECK FOR ANNOTATIONS IN URL - END");
-  }
-
-  /**
    * Helper to try various methods to find the image element
    */
   private tryFindImageElement(): void {
@@ -2828,5 +2375,73 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         }
       }
     ];
+  }
+
+  /**
+   * Load saved annotations from the revision object
+   */
+  private loadSavedAnnotations(): void {
+    console.log("loadSavedAnnotations called with revision:", this.revision);
+
+    if (!this.revision) {
+      console.log("No revision object provided");
+      return;
+    }
+
+    if (!this.revision.annotations) {
+      console.log("No annotations found in revision object");
+      return;
+    }
+
+    // Assume we might be loading annotations - set flag for visual indicator
+    this.loadingAnnotations = true;
+    console.log("Loading annotations from revision, setting loadingAnnotations=true");
+
+    // Force the loading indicator to be cleared after 3 seconds as a failsafe
+    this.utilsService.delay(3000).subscribe(() => {
+      if (this.loadingAnnotations) {
+        console.log("Failsafe: Force clearing loadingAnnotations after timeout");
+        this.loadingAnnotations = false;
+        this.cdRef.markForCheck();
+      }
+    });
+
+    try {
+      console.log("Revision annotations content:", this.revision.annotations);
+
+      // Load the annotations directly from the revision object
+      if (typeof this.revision.annotations === 'string' && this.revision.annotations.trim() !== '') {
+        console.log("Calling annotationService.loadFromJsonString");
+        // Use loadFromJsonString since the annotations in the revision are already in JSON format
+        this.annotationService.loadFromJsonString(this.revision.annotations);
+
+        // Log current state of annotations right after loading
+        console.log("Immediate annotations after loading:", this.annotations);
+
+        // Add a small delay to ensure UI updates
+        this.utilsService.delay(300).subscribe(() => {
+          console.log("After delay, setting loadingAnnotations=false");
+          this.loadingAnnotations = false;
+          console.log("Current annotations array:", this.annotations);
+
+          // Force check if annotations container is properly positioned
+          this.updateAnnotationContainerSize();
+
+          this.cdRef.markForCheck();
+        });
+      } else {
+        // No annotations in the revision, just clear the loading state
+        console.log("Empty annotations string, setting loadingAnnotations=false");
+        this.loadingAnnotations = false;
+        this.cdRef.markForCheck();
+      }
+    } catch (e) {
+      // Handle error loading annotations
+      console.error("Error loading annotations from revision:", e);
+      this.loadingAnnotations = false;
+      this.annotations = [];
+      this.annotationService.clearAllAnnotations();
+      this.cdRef.markForCheck();
+    }
   }
 }

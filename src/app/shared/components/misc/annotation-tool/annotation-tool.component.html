@@ -1,13 +1,13 @@
 <!-- Loading indicator for URL annotations -->
-<div *ngIf="loadingUrlAnnotations" class="url-annotations-loading-indicator">
+<div *ngIf="loadingAnnotations" class="url-annotations-loading-indicator">
   <div class="spinner-border text-light" role="status">
-    <span class="visually-hidden">{{ 'Loading annotations from URL...' | translate }}</span>
+    <span class="visually-hidden">{{ 'Loading annotations...' | translate }}</span>
   </div>
-  <div class="loading-text mt-2">{{ 'Loading annotations from URL...' | translate }}</div>
-  
+  <div class="loading-text mt-2">{{ 'Loading annotations...' | translate }}</div>
+
   <!-- Skip loading button (immediate option for all devices) -->
-  <button class="btn btn-sm btn-primary mt-3" 
-          (click)="loadingUrlAnnotations = false; cdRef.markForCheck();">
+  <button class="btn btn-sm btn-primary mt-3"
+          (click)="loadingAnnotations = false; cdRef.markForCheck();">
     {{ 'Show annotations now' | translate }}
   </button>
 </div>
@@ -22,14 +22,14 @@
     <div class="annotation-help" style="font-size: 0.9rem;">
       <h5>{{ "Getting started" | translate }}</h5>
       <p>{{ "The annotation tool allows you to add shapes and notes to highlight important features in the image." | translate }}</p>
-      
+
       <h5>{{ "Creating annotations" | translate }}</h5>
       <ul>
         <li>{{ "Use the rectangle tool to create rectangular annotations" | translate }}</li>
         <li>{{ "Use the circle tool to create circular annotations" | translate }}</li>
         <li>{{ "Click and drag to draw the shape where you want it" | translate }}</li>
       </ul>
-      
+
       <h5>{{ "Editing annotations" | translate }}</h5>
       <ul>
         <li>{{ "Click and drag an annotation to move it" | translate }}</li>
@@ -37,14 +37,14 @@
         <li>{{ "Click the text icon to add or edit a title for your annotation" | translate }}</li>
         <li>{{ "Click the trash icon to delete an annotation" | translate }}</li>
       </ul>
-      
+
       <h5>{{ "Sharing annotations" | translate }}</h5>
       <ul>
         <li>{{ "Click the share button to generate a URL that includes your annotations" | translate }}</li>
         <li>{{ "The URL will be copied to your clipboard automatically" | translate }}</li>
         <li>{{ "Anyone with the link can see your annotations without changing the original image" | translate }}</li>
       </ul>
-      
+
       <h5>{{ "Saving annotations (image owners only)" | translate }}</h5>
       <ul>
         <li>{{ "If you own this image, you can save annotations permanently" | translate }}</li>
@@ -68,10 +68,10 @@
               (touchend)="showHelp()">
         <fa-icon [icon]="['fas', 'question']"></fa-icon>
       </button>
-      
+
       <!-- Separator after help button -->
       <div class="toolbar-separator"></div>
-      
+
       <!-- Drawing tools -->
       <button type="button" class="icon-button"
               [ngbTooltip]="'Add rectangle' | translate"
@@ -89,7 +89,7 @@
               (touchend)="makeCircle()">
         <fa-icon [icon]="['fas', 'circle']"></fa-icon>
       </button>
-      
+
       <!-- Actions -->
       <button *ngIf="isImageOwner && imageId"
               type="button"
@@ -118,11 +118,11 @@
               (touchend)="annotations.length > 0 ? shareAnnotations() : null">
         <fa-icon [icon]="['fas', 'share-alt']"></fa-icon>
       </button>
-      
+
       <!-- Exit/Clear section with a visual separator -->
       <div class="toolbar-separator"></div>
-      
-      <button type="button" 
+
+      <button type="button"
               class="icon-button"
               [ngbTooltip]="'Clear all' | translate"
               placement="bottom"
@@ -149,7 +149,6 @@
   <div class="annotation-container" data-ignore-swipe-down="true">
     <!-- Annotations layer -->
     <div class="annotation-layer" data-ignore-swipe-down="true">
-      <!-- Rectangle annotations - only show when not loading -->
       <div *ngFor="let ann of annotations"
            [ngClass]="{'annotation': true, 'rectangle': ann.type === 'rectangle', 'circle': ann.type === 'circle'}"
            [style.left.%]="getAnnotationLeft(ann)"
@@ -160,7 +159,7 @@
            [style.backgroundColor]="ann.color + '4D'"
            [style.borderColor]="ann.color"
            [class.active]="currentlyDragging === ann"
-           [style.visibility]="loadingUrlAnnotations ? 'hidden' : 'visible'"
+           [style.visibility]="loadingAnnotations ? 'hidden' : 'visible'"
            data-ignore-swipe-down="true"
            (mousedown)="startDrag($event, ann, 'whole')"
            (touchstart)="startDragTouch($event, ann, 'whole')">
@@ -172,19 +171,19 @@
 
         <!-- Control points (corners) -->
         <div *ngIf="ann.type === 'rectangle'" class="control-points">
-          <div class="control-point top-left" 
+          <div class="control-point top-left"
                data-ignore-swipe-down="true"
                (mousedown)="startDrag($event, ann, 'tl')"
                (touchstart)="startDragTouch($event, ann, 'tl')"></div>
-          <div class="control-point top-right" 
+          <div class="control-point top-right"
                data-ignore-swipe-down="true"
                (mousedown)="startDrag($event, ann, 'tr')"
                (touchstart)="startDragTouch($event, ann, 'tr')"></div>
-          <div class="control-point bottom-left" 
+          <div class="control-point bottom-left"
                data-ignore-swipe-down="true"
                (mousedown)="startDrag($event, ann, 'bl')"
                (touchstart)="startDragTouch($event, ann, 'bl')"></div>
-          <div class="control-point bottom-right" 
+          <div class="control-point bottom-right"
                data-ignore-swipe-down="true"
                (mousedown)="startDrag($event, ann, 'br')"
                (touchstart)="startDragTouch($event, ann, 'br')"></div>
@@ -192,7 +191,7 @@
 
         <!-- Control points for circle - only top handle -->
         <div *ngIf="ann.type === 'circle'" class="control-points">
-          <div class="control-point top" 
+          <div class="control-point top"
                data-ignore-swipe-down="true"
                (mousedown)="startDrag($event, ann, 'resize')"
                (touchstart)="startDragTouch($event, ann, 'resize')"></div>
@@ -201,8 +200,8 @@
         <!-- Arrow mode has been removed -->
 
         <!-- Toolbar for each annotation -->
-        <div class="control-toolbar" 
-             (mousedown)="$event.stopPropagation()" 
+        <div class="control-toolbar"
+             (mousedown)="$event.stopPropagation()"
              (touchstart)="$event.stopPropagation()">
           <button class="tool-button message"
                   (click)="showMessageForm(ann.id, annotationFormModal); $event.stopPropagation()">
@@ -217,7 +216,7 @@
     </div>
 
     <!-- Drawing overlay (for creating new shapes) - hidden during loading -->
-    <div class="drawing-overlay" *ngIf="active && !currentlyDragging && !loadingUrlAnnotations">
+    <div class="drawing-overlay" *ngIf="active && !currentlyDragging && !loadingAnnotations">
       <!-- Preview of shape being drawn -->
       <div *ngIf="isDrawing && activeAnnotation" class="drawing-preview"
            [ngClass]="{'rectangle': activeAnnotation.shape.type === 'RECTANGLE',
@@ -234,7 +233,7 @@
   </div>
 
   <!-- Mouse event overlay - hidden during loading -->
-  <div class="mouse-event-overlay" *ngIf="currentlyDragging && !loadingUrlAnnotations"
+  <div class="mouse-event-overlay" *ngIf="currentlyDragging && !loadingAnnotations"
        [style.cursor]="getCursorForDragMode()"
        data-ignore-swipe-down="true"
        (mousemove)="dragMove($event)"
