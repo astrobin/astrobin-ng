@@ -3269,6 +3269,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.popNotificationsService.error(
           this.translateService.instant("Measurement is too small for this image.")
         );
+        this.loadingMeasurement = false;
         return;
       }
 
@@ -3285,6 +3286,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.popNotificationsService.error(
           this.translateService.instant("Measurement could not be placed within the image boundaries.")
         );
+        this.loadingMeasurement = false;
         return;
       }
 
@@ -3308,12 +3310,26 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       if (startCoords) {
         this.measureStartPoint.ra = startCoords.ra;
         this.measureStartPoint.dec = startCoords.dec;
+      } else {
+        // Could not calculate coordinates at start point
+        this.popNotificationsService.error(
+          this.translateService.instant("Could not calculate coordinates at start point")
+        );
+        this.loadingMeasurement = false;
+        return;
       }
 
       const endCoords = this.boundCalculateCoordinatesAtPoint(endX, endY);
       if (endCoords) {
         this.measureEndPoint.ra = endCoords.ra;
         this.measureEndPoint.dec = endCoords.dec;
+      } else {
+        // Could not calculate coordinates at end point
+        this.popNotificationsService.error(
+          this.translateService.instant("Could not calculate coordinates at end point")
+        );
+        this.loadingMeasurement = false;
+        return;
       }
 
       // First improve the accuracy of point placement using the known exact width/height
@@ -3385,6 +3401,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.popNotificationsService.error(
           this.translateService.instant("Could not calculate distance for the measurement")
         );
+        this.loadingMeasurement = false;
         return;
       }
 
