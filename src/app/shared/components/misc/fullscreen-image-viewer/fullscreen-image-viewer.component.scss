@@ -559,6 +559,13 @@ $header-height: 63px;
     left: 50%;
     transform: translateX(-50%);
     opacity: .5;
+    transition: top 0.3s ease, bottom 0.3s ease;
+    z-index: 5;
+    
+    &.bottom-position {
+      top: auto;
+      bottom: 1rem;
+    }
 
     img {
       height: 2rem;

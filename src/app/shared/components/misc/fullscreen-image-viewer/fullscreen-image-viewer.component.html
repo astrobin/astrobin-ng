@@ -583,8 +583,7 @@
     <fa-icon icon="down-left-and-up-right-to-center"></fa-icon>
   </div>
 
-  <div class="astrobin-logo"
-       *ngIf="!isMeasuringMode && !isAnnotationMode"
+  <div class="astrobin-logo" [ngClass]="{'bottom-position': isMeasuringMode || isAnnotationMode}"
        (mouseenter)="setMouseOverUIElement(true)"
        (mouseleave)="setMouseOverUIElement(false)">
     <a routerLink="/">
