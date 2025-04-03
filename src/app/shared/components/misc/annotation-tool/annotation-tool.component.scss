@@ -181,10 +181,10 @@
       color: white;
     }
   }
-  
+
   &.help-button {
     background-color: rgba(0, 123, 255, 0.2);
-    
+
     &:hover:not(:disabled) {
       background-color: rgba(0, 123, 255, 0.3);
     }
@@ -467,6 +467,14 @@
   cursor: inherit;
   background-color: transparent;
   touch-action: none; /* Disable browser handling of all touch gestures */
+}
+
+/* Custom help offcanvas width */
+::ng-deep .help-offcanvas {
+  &:not(.offcanvas-bottom) {
+    width: 50vw !important;
+    max-width: 600px;
+  }
 }
 
 /* Annotation messages styling */

@@ -283,6 +283,7 @@ export interface ImageInterface {
   finalGalleryThumbnail?: string;
   isPlayable?: boolean;  // Only set by the gallery serializer.
   detectedLanguage?: string;
+  annotations?: string;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;
@@ -310,6 +311,7 @@ export interface ImageRevisionInterface {
   thumbnails: ImageThumbnailInterface[];
   mouseHoverImage: MouseHoverImageOptions | ImageRevisionInterface["label"];
   squareCropping: string;
+  annotations?: string;
 }
 
 export const ORIGINAL_REVISION_LABEL = "0";

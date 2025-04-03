@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { CookieService } from "ngx-cookie";
 import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
 import { AstroUtilsService } from "@core/services/astro-utils/astro-utils.service";
@@ -12,7 +12,7 @@ import { MeasurementPresetInterface } from "./measurement-preset.interface";
 import { debounceTime, filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { fromEvent, merge, Subject } from "rxjs";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-measurement-modal.component";
 import { SolutionInterface } from "@core/interfaces/solution.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
@@ -21,6 +21,8 @@ import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { ExportMeasurementModalComponent } from "./export-measurement-modal/export-measurement-modal.component";
 import { ActivatedRoute, Router } from "@angular/router";
+import { DeviceService } from "@core/services/device.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 // Interface to represent a label's bounding box for collision detection
 interface LabelBoundingBox {
@@ -81,7 +83,7 @@ export interface SolutionMatrix {
   styleUrls: ["./measuring-tool.component.scss"]
 })
 export class MeasuringToolComponent extends BaseComponentDirective implements OnInit, OnDestroy, AfterViewInit {
-  
+
   /**
    * Toggles the tooltip visibility when clicked
    * @param tooltip The NgbTooltip instance
@@ -106,6 +108,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   @Output() exitMeasuringMode = new EventEmitter<void>();
   @Output() measurementStarted = new EventEmitter<void>();
   @Output() measurementComplete = new EventEmitter<MeasurementData>();
+
+  @ViewChild("helpContent", { static: true }) helpContentRef: TemplateRef<any>;
 
   // Measurement points
   measureStartPoint: MeasurementPoint | null = null;
@@ -179,7 +183,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   private _prevWindowHeight: number = 0;
   // For debouncing coordinate updates during drag
   private _lastCoordUpdateTime = 0;
-  
+
   // Touch-specific state
   private _isTouchDevice = false;
   private _lastTouchEvent: TouchEvent = null;
@@ -192,7 +196,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     public readonly astroUtilsService: AstroUtilsService,
     public readonly cdRef: ChangeDetectorRef,
     public readonly ngZone: NgZone,
+    public readonly utilsService: UtilsService,
+    public readonly deviceService: DeviceService,
     private modalService: NgbModal,
+    private offcanvasService: NgbOffcanvas,
     private popNotificationsService: PopNotificationsService,
     private translateService: TranslateService,
     private windowRefService: WindowRefService,
@@ -215,7 +222,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Use the cached image element
     let imageElement = this.cachedImageElement;
-    
+
     // Fallback if cached element isn't available yet
     if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
       // Now we use the direct image element (no querySelector needed)
@@ -247,7 +254,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Detect touch device
     if (this.isBrowser) {
-      this._isTouchDevice = 'ontouchstart' in window || 
+      this._isTouchDevice = 'ontouchstart' in window ||
                            navigator.maxTouchPoints > 0 ||
                            (navigator as any).msMaxTouchPoints > 0;
     }
@@ -443,17 +450,17 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Setting cached image element
         // Now we use the direct image element (no querySelector needed)
         this.cachedImageElement = this.imageElement?.nativeElement;
-        
+
         // After image element is cached, update boundary status
         this.updateBoundaryStatus();
-        
+
         // IMPORTANT: Check for measurements in URL AFTER the image element is available
         // This is critical for correct positioning of measurements
         this.checkForUrlMeasurements();
       });
     }
   }
-  
+
   /**
    * Check for measurements in URL and load them if found
    * This needs to happen after the image element is available
@@ -462,28 +469,28 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this.isBrowser) {
       return;
     }
-    
+
     // Checking for URL measurements
-    
+
     // Get the current URL directly
     const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
     const measurementsParam = currentUrl.searchParams.get('measurements');
-    
+
     // URL measurements check
     // Checking measurements param present/not present
-    
+
     if (measurementsParam && measurementsParam.trim() !== '') {
       try {
         // Found measurements in URL - Loading
-        
+
         // Set loading flag
         this.loadingUrlMeasurements = true;
         this.cdRef.markForCheck();
         this.cdRef.detectChanges();
-        
+
         // Show loading indicator
         this.showLoadingIndicator();
-        
+
         // Load after a brief delay to ensure indicator is visible
         this.windowRefService.utilsService.delay(200).subscribe(() => {
           try {
@@ -507,7 +514,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // No measurements found in URL
     }
   }
-  
+
   ngOnDestroy(): void {
     if (this.isBrowser) {
       // Complete all drag-related subjects
@@ -636,35 +643,35 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.mouseX = event.clientX;
     this.mouseY = event.clientY;
   }
-  
+
   /**
    * Handle touch start for measurements - only track position, don't create points yet
    */
   handleMeasurementTouchStart(event: TouchEvent): void {
     // Prevent scrolling while interacting with the measuring tool
     event.preventDefault();
-    
+
     // Store the touch start time and event for subsequent handling
     this._touchStartTime = Date.now();
     this._lastTouchEvent = event;
-    
+
     // Skip if this touch should be prevented
     if (this._preventNextClick) {
       this._preventNextClick = false;
       return;
     }
-    
+
     if (event.touches.length === 1) {
       const touch = event.touches[0];
-      
+
       // Initialize tracking variables for detecting drag vs. tap
       this.dragStartX = touch.clientX;
       this.dragStartY = touch.clientY;
-      
+
       // Track coordinates for visualization
       this.mouseX = touch.clientX;
       this.mouseY = touch.clientY;
-      
+
       // Track this as the start of a potential drag - but don't create a point yet
       // We'll wait to see if this is a drag or a tap
       this._dragInProgress = true;
@@ -677,32 +684,32 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   handleMeasurementTouchMove(event: TouchEvent): void {
     // Prevent scrolling during measurement
     event.preventDefault();
-    
+
     // Store the last touch event
     this._lastTouchEvent = event;
-    
+
     if (event.touches.length === 1) {
       const touch = event.touches[0];
-      
+
       // Update mouse position for live visualization
       this.mouseX = touch.clientX;
       this.mouseY = touch.clientY;
-      
+
       // If we're dragging a point, we don't need to handle it here
       // as it's already being handled by the touch listeners in handlePointTouchStart
       if (this.isDraggingPoint) {
         return;
       }
-      
+
       // If we're in a drag operation
       if (this._dragInProgress && this.dragStartX !== null && this.dragStartY !== null) {
         const deltaX = Math.abs(touch.clientX - this.dragStartX);
         const deltaY = Math.abs(touch.clientY - this.dragStartY);
-        
+
         // If we've moved enough, consider this a real drag and create start point if needed
         if ((deltaX > this.DRAG_THRESHOLD || deltaY > this.DRAG_THRESHOLD) && !this._preventNextClick) {
           this._preventNextClick = true; // Mark as a drag
-          
+
           // Create a simulated mouse event for consistent handling
           const simulatedEvent = new MouseEvent('touchmove', {
             clientX: this.dragStartX, // Use the original start position
@@ -711,19 +718,19 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             cancelable: true,
             view: window
           });
-          
+
           // Check if we can proceed with measurement
           if (this._validateMeasurementArea(simulatedEvent)) {
             // If already in the middle of a measurement, do nothing
             if (this.measureStartPoint && !this.measureEndPoint) {
               return;
             }
-            
+
             // Handle case when starting a new measurement while one is already complete
             if (this.measureStartPoint && this.measureEndPoint) {
               this._resetCurrentMeasurement();
             }
-            
+
             // Initialize the start point at the original touch position
             this._initializeStartPoint(simulatedEvent);
             this.measurementStarted.emit();
@@ -744,7 +751,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this._dragInProgress = false;
       return;
     }
-    
+
     // Create a simulated mouse event for consistent handling
     const simulatedEvent = new MouseEvent('touchend', {
       clientX: touch.clientX,
@@ -753,11 +760,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       cancelable: true,
       view: window
     });
-    
+
     // Calculate touch duration
     const touchDuration = Date.now() - this._touchStartTime;
     const wasTap = touchDuration < 300 && !this._preventNextClick; // Short touch without significant movement
-    
+
     if (wasTap) {
       // If this was a tap (not a drag), simulate a click
       if (this._validateMeasurementArea(simulatedEvent)) {
@@ -778,21 +785,21 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       if (this._validateMeasurementArea(simulatedEvent)) {
         // Create the end point
         this._createEndPoint(simulatedEvent);
-        
+
         // Finalize the measurement
         this._finalizeMeasurement();
       }
     }
-    
+
     // Reset state flags
     this._dragInProgress = false;
     this._preventNextClick = false;
-    
+
     // Reset drag state if needed
     if (this.isDraggingPoint) {
       this.isDraggingPoint = null;
     }
-    
+
     this.cdRef.markForCheck();
   }
 
@@ -826,7 +833,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Trigger the drag start stream
     this._pointDragStart$.next({ event, point });
   }
-  
+
   /**
    * Start touch-dragging a measurement point (start or end point)
    */
@@ -855,26 +862,26 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.dragStartX = touch.clientX;
       this.dragStartY = touch.clientY;
     }
-    
+
     // Set up document-level touch handlers for the duration of this drag
     const touchMoveHandler = (moveEvent: TouchEvent) => {
       moveEvent.preventDefault();
-      
+
       if (moveEvent.touches.length !== 1) return;
       const moveTouch = moveEvent.touches[0];
-      
+
       // Update the point position based on the touch
       if (point === 'start' && this.measureStartPoint) {
         this.measureStartPoint.x = moveTouch.clientX + this.dragOffsetX;
         this.measureStartPoint.y = moveTouch.clientY + this.dragOffsetY;
-        
+
         // Update celestial coordinates with debouncing
         const now = Date.now();
         if (now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS) {
           this._lastCoordUpdateTime = now;
           if (this.isValidSolutionMatrix()) {
             const coords = this.boundCalculateCoordinatesAtPoint(
-              this.measureStartPoint.x, 
+              this.measureStartPoint.x,
               this.measureStartPoint.y
             );
             if (coords) {
@@ -886,14 +893,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       } else if (point === 'end' && this.measureEndPoint) {
         this.measureEndPoint.x = moveTouch.clientX + this.dragOffsetX;
         this.measureEndPoint.y = moveTouch.clientY + this.dragOffsetY;
-        
+
         // Update celestial coordinates with debouncing
         const now = Date.now();
         if (now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS) {
           this._lastCoordUpdateTime = now;
           if (this.isValidSolutionMatrix()) {
             const coords = this.boundCalculateCoordinatesAtPoint(
-              this.measureEndPoint.x, 
+              this.measureEndPoint.x,
               this.measureEndPoint.y
             );
             if (coords) {
@@ -903,36 +910,36 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           }
         }
       }
-      
+
       // Recalculate distance if needed
       if (this.measureStartPoint && this.measureEndPoint) {
         this._recalculateMeasurementDistance();
       }
-      
+
       // Update boundary status
       this.updateBoundaryStatus();
-      
+
       // Force change detection
       this.cdRef.markForCheck();
     };
-    
+
     const touchEndHandler = () => {
       // Reset drag state
       this._dragInProgress = false;
       this.isDraggingPoint = null;
-      
+
       // Clean up event listeners
       document.removeEventListener('touchmove', touchMoveHandler);
       document.removeEventListener('touchend', touchEndHandler);
-      
+
       // Force change detection
       this.cdRef.markForCheck();
     };
-    
+
     // Add event listeners for the duration of this drag
     document.addEventListener('touchmove', touchMoveHandler, { passive: false });
     document.addEventListener('touchend', touchEndHandler, { passive: false });
-    
+
     // Force change detection
     this.cdRef.markForCheck();
   }
@@ -1049,7 +1056,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Trigger the drag start stream
     this._previousMeasurementDragStart$.next({ event, index, point });
   }
-  
+
   /**
    * Start touch-dragging a previous measurement point
    */
@@ -1058,7 +1065,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     event.stopPropagation();
 
     if (event.touches.length !== 1) return;
-    
+
     const touch = event.touches[0];
     this.isDraggingPoint = `prev${point.charAt(0).toUpperCase() + point.slice(1)}-${index}`;
 
@@ -1085,7 +1092,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Signal that dragging has started
     this._preventNextClick = true;
-    
+
     // Create a simulated mouse event for the drag handler
     const simulatedEvent = new MouseEvent('touchstart', {
       clientX: touch.clientX,
@@ -1097,14 +1104,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Trigger the drag start stream with simulated mouse event
     this._previousMeasurementDragStart$.next({ event: simulatedEvent, index, point });
-    
+
     // Set up document-level touch handlers for the duration of this drag
     const touchMoveHandler = (moveEvent: TouchEvent) => {
       moveEvent.preventDefault();
       if (moveEvent.touches.length !== 1) return;
-      
+
       const moveTouch = moveEvent.touches[0];
-      
+
       // Create a simulated mouse event for move
       const simulatedMoveEvent = new MouseEvent('touchmove', {
         clientX: moveTouch.clientX,
@@ -1113,11 +1120,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         cancelable: true,
         view: window
       });
-      
+
       // Update the previous measurement using the same logic as mouse
       this.handlePreviousMeasurementDragMove(simulatedMoveEvent);
     };
-    
+
     const touchEndHandler = (endEvent: TouchEvent) => {
       // Create a simulated mouse event for end
       const simulatedEndEvent = new MouseEvent('touchend', {
@@ -1127,15 +1134,15 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         cancelable: true,
         view: window
       });
-      
+
       // Process the touch end as if it were a mouse up
       this.handlePreviousMeasurementDragEnd(simulatedEndEvent);
-      
+
       // Clean up event listeners
       document.removeEventListener('touchmove', touchMoveHandler);
       document.removeEventListener('touchend', touchEndHandler);
     };
-    
+
     // Add event listeners for the duration of this drag
     document.addEventListener('touchmove', touchMoveHandler, { passive: false });
     document.addEventListener('touchend', touchEndHandler, { passive: false });
@@ -1166,7 +1173,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Update common properties
     this._updatePreviousMeasurementProperties(measurement);
-    
+
     // Update boundary status during drag in real-time
     this.updateBoundaryStatus();
   }
@@ -1178,7 +1185,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this._dragInProgress) {
       return;
     }
-    
+
     // Update boundary status after dragging
     this.updateBoundaryStatus();
 
@@ -1235,24 +1242,24 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Trigger the drag start stream
     this._shapeDragStart$.next({ event, index });
   }
-  
+
   /**
    * Start touch-dragging a shape (circle or rectangle)
    */
   handleShapeTouchStart(event: TouchEvent, index: number, shapeType: "circle" | "rectangle"): void {
     event.preventDefault();
     event.stopPropagation();
-    
+
     if (event.touches.length !== 1) return;
-    
+
     const touch = event.touches[0];
     this.isDraggingPoint = `prevShape-${index}`;
     this.dragStartX = touch.clientX;
     this.dragStartY = touch.clientY;
-    
+
     // Signal that dragging has started
     this._preventNextClick = true;
-    
+
     // Create a simulated mouse event for the drag handler
     const simulatedEvent = new MouseEvent('touchstart', {
       clientX: touch.clientX,
@@ -1261,17 +1268,17 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       cancelable: true,
       view: window
     });
-    
+
     // Trigger the drag start stream with simulated mouse event
     this._shapeDragStart$.next({ event: simulatedEvent, index });
-    
+
     // Set up document-level touch handlers for the duration of this drag
     const touchMoveHandler = (moveEvent: TouchEvent) => {
       moveEvent.preventDefault();
       if (moveEvent.touches.length !== 1) return;
-      
+
       const moveTouch = moveEvent.touches[0];
-      
+
       // Create a simulated mouse event for move
       const simulatedMoveEvent = new MouseEvent('touchmove', {
         clientX: moveTouch.clientX,
@@ -1280,11 +1287,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         cancelable: true,
         view: window
       });
-      
+
       // Update the shape position using the same logic as mouse
       this.handleShapeDragMove(simulatedMoveEvent);
     };
-    
+
     const touchEndHandler = (endEvent: TouchEvent) => {
       // Create a simulated mouse event for end
       const simulatedEndEvent = new MouseEvent('touchend', {
@@ -1294,15 +1301,15 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         cancelable: true,
         view: window
       });
-      
+
       // Process the touch end as if it were a mouse up
       this.handleShapeDragEnd(simulatedEndEvent);
-      
+
       // Clean up event listeners
       document.removeEventListener('touchmove', touchMoveHandler);
       document.removeEventListener('touchend', touchEndHandler);
     };
-    
+
     // Add event listeners for the duration of this drag
     document.addEventListener('touchmove', touchMoveHandler, { passive: false });
     document.addEventListener('touchend', touchEndHandler, { passive: false });
@@ -1349,7 +1356,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Update the drag start point for the next move event
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
-    
+
     // Update boundary status during drag in real-time
     this.updateBoundaryStatus();
 
@@ -1401,7 +1408,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this._dragInProgress) {
       return;
     }
-    
+
     // Update boundary status after dragging
     this.updateBoundaryStatus();
 
@@ -1486,26 +1493,26 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Trigger the drag start stream
     this._currentShapeDragStart$.next(event);
   }
-  
+
   /**
    * Start touch-dragging the current shape
    */
   handleCurrentShapeTouchStart(event: TouchEvent, shapeType: "circle" | "rectangle"): void {
     event.preventDefault();
     event.stopPropagation();
-    
+
     if (!this.measureStartPoint || !this.measureEndPoint || event.touches.length !== 1) {
       return;
     }
-    
+
     const touch = event.touches[0];
     this.isDraggingPoint = "currentShape";
     this.dragStartX = touch.clientX;
     this.dragStartY = touch.clientY;
-    
+
     // Signal that dragging has started
     this._preventNextClick = true;
-    
+
     // Create a simulated mouse event for the drag handler
     const simulatedEvent = new MouseEvent('touchstart', {
       clientX: touch.clientX,
@@ -1514,17 +1521,17 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       cancelable: true,
       view: window
     });
-    
+
     // Trigger the drag start stream with simulated mouse event
     this._currentShapeDragStart$.next(simulatedEvent);
-    
+
     // Set up document-level touch handlers for the duration of this drag
     const touchMoveHandler = (moveEvent: TouchEvent) => {
       moveEvent.preventDefault();
       if (moveEvent.touches.length !== 1) return;
-      
+
       const moveTouch = moveEvent.touches[0];
-      
+
       // Create a simulated mouse event for move
       const simulatedMoveEvent = new MouseEvent('touchmove', {
         clientX: moveTouch.clientX,
@@ -1533,11 +1540,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         cancelable: true,
         view: window
       });
-      
+
       // Update the current shape position using the same logic as mouse
       this.handleCurrentShapeDragMove(simulatedMoveEvent);
     };
-    
+
     const touchEndHandler = (endEvent: TouchEvent) => {
       // Create a simulated mouse event for end
       const simulatedEndEvent = new MouseEvent('touchend', {
@@ -1547,15 +1554,15 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         cancelable: true,
         view: window
       });
-      
+
       // Process the touch end as if it were a mouse up
       this.handleCurrentShapeDragEnd(simulatedEndEvent);
-      
+
       // Clean up event listeners
       document.removeEventListener('touchmove', touchMoveHandler);
       document.removeEventListener('touchend', touchEndHandler);
     };
-    
+
     // Add event listeners for the duration of this drag
     document.addEventListener('touchmove', touchMoveHandler, { passive: false });
     document.addEventListener('touchend', touchEndHandler, { passive: false });
@@ -1586,7 +1593,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Update the drag start point for the next move event
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
-    
+
     // Update boundary status during drag in real-time
     this.updateBoundaryStatus();
 
@@ -1647,7 +1654,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this._dragInProgress) {
       return;
     }
-    
+
     // Update boundary status after dragging
     this.updateBoundaryStatus();
 
@@ -1955,7 +1962,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Modal closed with confirm button
         // Remove the measurement
         this.previousMeasurements.splice(index, 1);
-        
+
         // Update boundary status after deletion
         this.updateBoundaryStatus();
       },
@@ -2444,46 +2451,46 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    */
   exitMeasuring(): void {
     console.log("EXIT MEASURING MODE CALLED");
-    
+
     // DIRECT APPROACH: Remove measurements parameter via window.history
     if (this.isBrowser) {
       try {
         // Get the current URL directly
         const location = this.windowRefService.nativeWindow.location;
         const currentUrl = new URL(location.href);
-        
+
         console.log("MEASUREMENTS - BEFORE EXIT URL UPDATE:", currentUrl.toString());
-        
+
         // Remove measurements parameter if it exists
         if (currentUrl.searchParams.has('measurements')) {
           // Remove the measurements parameter
           currentUrl.searchParams.delete('measurements');
-          
+
           // Apply the change directly to history
           this.windowRefService.nativeWindow.history.replaceState({}, '', currentUrl.toString());
-          
+
           console.log("MEASUREMENTS - AFTER EXIT URL UPDATE:", this.windowRefService.nativeWindow.location.href);
         }
       } catch (e) {
         console.error("Error removing measurements parameter from URL:", e);
       }
     }
-    
+
     // Clear measurements and exit
     this.previousMeasurements = [];
     this.cdRef.markForCheck();
     this.cdRef.detectChanges(); // Force immediate update
-    
+
     // Emit event to notify parent component
     this.exitMeasuringMode.emit();
   }
-  
+
   /** The cached image element for boundary checking */
   cachedImageElement: HTMLElement | null = null;
-  
+
   /** Flag for current measurement boundary check */
   isCurrentMeasurementOutsideBoundaries: boolean = false;
-  
+
   /**
    * Check if a point is outside the image boundaries
    * The method is prefixed with underscore but is still used directly in template
@@ -2501,7 +2508,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       y > imageRect.bottom
     );
   }
-  
+
   /**
    * Public method to check if a point is outside the image boundaries
    * Used by the template for current measurements
@@ -2509,7 +2516,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   isPointOutsideImageBoundaries(x: number, y: number): boolean {
     return this._checkPointOutsideBoundaries(x, y);
   }
-  
+
   /**
    * Updates boundary status flags for all measurements
    * Call this whenever points move, not during every change detection cycle
@@ -2517,24 +2524,24 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   updateBoundaryStatus(): void {
     // Check current measurement
     if (this.measureStartPoint && this.measureEndPoint) {
-      this.isCurrentMeasurementOutsideBoundaries = 
+      this.isCurrentMeasurementOutsideBoundaries =
         this._checkPointOutsideBoundaries(this.measureStartPoint.x, this.measureStartPoint.y) ||
         this._checkPointOutsideBoundaries(this.measureEndPoint.x, this.measureEndPoint.y);
     } else {
       this.isCurrentMeasurementOutsideBoundaries = false;
     }
-    
+
     // Check each previous measurement and update its outOfBounds property
     this.previousMeasurements.forEach(m => {
-      m.outOfBounds = 
+      m.outOfBounds =
         this._checkPointOutsideBoundaries(m.startX, m.startY) ||
         this._checkPointOutsideBoundaries(m.endX, m.endY);
     });
-    
+
     // Ensure change detection runs
     this.cdRef.markForCheck();
   }
-  
+
 
   /**
    * Share measurements by encoding them in URL
@@ -2551,22 +2558,22 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // DIRECT APPROACH: Get the current URL through the window reference
       const location = this.windowRefService.nativeWindow.location;
       const currentUrl = new URL(location.href);
-      
+
       console.log("MEASUREMENTS - BEFORE URL UPDATE:", currentUrl.toString());
-      
+
       // Set the measurements parameter directly
       currentUrl.searchParams.set('measurements', encodedData);
-      
+
       // Apply the change directly to the URL without navigation
       this.windowRefService.nativeWindow.history.replaceState({}, '', currentUrl.toString());
-      
+
       console.log("MEASUREMENTS - AFTER URL UPDATE:", this.windowRefService.nativeWindow.location.href);
 
       // Copy the updated URL to clipboard with a slight delay to ensure URL change is processed
       this.windowRefService.utilsService.delay(200).subscribe(() => {
         // Get the final URL directly from the window location
         const shareUrl = this.windowRefService.nativeWindow.location.href;
-        
+
         // Use the WindowRefService's copyToClipboard method which handles fallbacks properly
         this.windowRefService.copyToClipboard(shareUrl)
           .then(success => {
@@ -2601,52 +2608,15 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Show help dialog with measuring tool instructions
    */
   showHelp(): void {
-    const modalRef = this.modalService.open(InformationDialogComponent, {
-      centered: true,
-      size: 'xxl'
+    if (!this.isBrowser) {
+      return;
+    }
+
+    this.offcanvasService.open(this.helpContentRef, {
+      position: this.deviceService.offcanvasPosition(),
+      panelClass: 'image-viewer-offcanvas help-offcanvas',
+      backdropClass: 'image-viewer-offcanvas-backdrop'
     });
-    
-    modalRef.componentInstance.title = this.translateService.instant("Measuring tool help");
-    
-    // Prepare detailed instructions for the measuring tool
-    const helpContent = `
-      <div class="measuring-help" style="font-size: 0.9rem;">
-        <h5>${this.translateService.instant("Getting started")}</h5>
-        <p>${this.translateService.instant("The measuring tool allows you to measure distances and sizes of objects in the image.")}</p>
-        
-        <h5>${this.translateService.instant("Creating measurements")}</h5>
-        <ul>
-          <li>${this.translateService.instant("Click once to set your starting point")}</li>
-          <li>${this.translateService.instant("Click a second time to set the end point and complete the measurement")}</li>
-          <li>${this.translateService.instant("Alternatively, click and drag to create a measurement in one motion")}</li>
-          <li>${this.translateService.instant("For images with plate-solving data, the tool will show distance in astronomical units (arcseconds, arcminutes, or degrees)")}</li>
-          <li>${this.translateService.instant("For images without plate-solving data, distances will be shown in pixels")}</li>
-        </ul>
-        
-        <h5>${this.translateService.instant("Adjusting measurements")}</h5>
-        <ul>
-          <li>${this.translateService.instant("Click and drag any point to reposition it")}</li>
-          <li>${this.translateService.instant("Click and drag the middle of a measurement to move the entire line")}</li>
-          <li>${this.translateService.instant("Use the circle or rectangle buttons to change how a measurement is visualized")}</li>
-        </ul>
-        
-        <h5>${this.translateService.instant("Saving and sharing")}</h5>
-        <ul>
-          <li>${this.translateService.instant("Click the share button to generate a URL that includes your measurements")}</li>
-          <li>${this.translateService.instant("Click the bookmark button to view saved measurements (requires login)")}</li>
-          <li>${this.translateService.instant("Saved measurements can be loaded on any image with plate-solving data")}</li>
-        </ul>
-        
-        <h5>${this.translateService.instant("Tips")}</h5>
-        <ul>
-          <li>${this.translateService.instant("Hover over points to see their celestial coordinates (when available)")}</li>
-          <li>${this.translateService.instant("Window resizing may affect measurement accuracy — clear and recreate measurements if needed")}</li>
-          <li>${this.translateService.instant("Measurements outside image boundaries will show warnings and may have inaccurate coordinates")}</li>
-        </ul>
-      </div>
-    `;
-    
-    modalRef.componentInstance.message = helpContent;
   }
 
   /**
@@ -3190,7 +3160,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   loadMeasurement(preset: MeasurementPresetInterface): void {
     // Set loading state
     this.loadingMeasurement = true;
-    
+
     // Check if user is logged in
     let isLoggedIn = false;
     this.currentUser$.pipe(take(1)).subscribe(user => {
@@ -3223,7 +3193,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.loadingMeasurement = false;
       return;
     }
-    
+
     console.log("IMAGE ELEMENT STATUS:", {
       available: !!imageElement,
       width: imageElement?.getBoundingClientRect()?.width || 0,
@@ -3462,12 +3432,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.measureStartPoint = null;
       this.measureEndPoint = null;
       this.measureDistance = null;
-      
+
       // Close the saved measurements panel
       if (this.showSavedMeasurements) {
         this.toggleSavedMeasurements();
       }
-      
+
       // Reset loading state
       this.loadingMeasurement = false;
     } else {
@@ -3995,7 +3965,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate celestial coordinates if possible
     this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
-    
+
     // Update boundary status after adding the start point
     this.updateBoundaryStatus();
   }
@@ -4069,7 +4039,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Small delay to prevent accidental double measurements
       this.windowRefService.utilsService.delay(100).subscribe(() => {
         this._preventNextClick = false;
-      }, this.CLICK_PREVENTION_TIMEOUT_MS);
+      });
     };
 
     // Add the event listeners
@@ -4135,7 +4105,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate celestial coordinates if possible
     this._updatePointCelestialCoordinates(this.measureEndPoint, event.clientX, event.clientY);
-    
+
     // Update boundary status after adding the end point
     this.updateBoundaryStatus();
   }
@@ -4161,7 +4131,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate celestial coordinates if possible
     this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
-    
+
     // Update boundary status after adding the start point
     this.updateBoundaryStatus();
   }
@@ -4187,7 +4157,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate celestial coordinates if possible
     this._updatePointCelestialCoordinates(this.measureStartPoint, event.clientX, event.clientY);
-    
+
     // Update boundary status after adding the start point
     this.updateBoundaryStatus();
   }
@@ -4201,7 +4171,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Finalize the measurement
     this._finalizeMeasurement();
-    
+
     // Note: We don't need to call updateBoundaryStatus() here because
     // _finalizeMeasurement will already call it after adding to previousMeasurements
   }
@@ -4456,17 +4426,17 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Make sure the loading state is set
       this.loadingUrlMeasurements = true; // CRITICAL: Set loading flag directly
       this.showLoadingIndicator();
-      
+
       console.log("DECODING MEASUREMENTS FROM URL - Base64 length:", encodedData.length);
-      
+
       // First decode from base64
       const decodedString = atob(encodedData);
       console.log("DECODED MEASUREMENTS STRING - Length:", decodedString.length);
-      
+
       // Then parse as JSON
       measurementsData = JSON.parse(decodedString);
       console.log("PARSED MEASUREMENTS - Type:", Array.isArray(measurementsData) ? 'Array' : typeof measurementsData, "Length:", Array.isArray(measurementsData) ? measurementsData.length : 0);
-      
+
       if (!Array.isArray(measurementsData)) {
         throw new Error("Invalid measurements data format");
       }
@@ -4513,7 +4483,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
           // Get the image element for reference - use it directly since we changed to static image
           let imageElement = this.imageElement?.nativeElement as HTMLElement;
-          
+
           // Log image element status
           console.log("IMAGE ELEMENT STATUS:", {
             available: !!imageElement,
@@ -4649,7 +4619,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
           // Add to previous measurements
           this.previousMeasurements.push(measurement);
-          
+
           // Log the added measurement for debugging
           console.log("ADDED MEASUREMENT:", {
             startX: measurement.startX,
@@ -4663,21 +4633,21 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
         if (this.previousMeasurements.length > 0) {
           console.log("SUCCESSFULLY ADDED MEASUREMENTS - Count:", this.previousMeasurements.length);
-          
+
           // Force change detection to make sure measurements appear
           this.cdRef.markForCheck();
           this.cdRef.detectChanges();
-          
+
           // After a brief delay, show success notification
           this.windowRefService.utilsService.delay(100).subscribe(() => {
             this.cdRef.markForCheck();
             this.cdRef.detectChanges();
-            
+
             // Show success notification
             this.popNotificationsService.success(
               this.translateService.instant("Loaded {{count}} shared measurements.", { count: this.previousMeasurements.length })
             );
-          }, 100);
+          });
         }
 
         // Clear loading indicator
@@ -4692,7 +4662,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.translateService.instant("Failed to load shared measurements from URL: {{message}}", { message: error.message })
         );
         // Clear loading indicator on error
-        this.loadingUrlMeasurements = false; // CRITICAL: Clear loading flag directly 
+        this.loadingUrlMeasurements = false; // CRITICAL: Clear loading flag directly
         this.hideLoadingIndicator();
       }
     };
@@ -4700,27 +4670,27 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Implement a retry mechanism for solution matrix initialization
     const attemptWithRetry = (retryCount = 0, maxRetries = 5) => {
       console.log(`LOAD MEASUREMENTS - Attempt ${retryCount + 1} of ${maxRetries + 1}`);
-      
+
       // Check if the image element is available first
       if (!this.cachedImageElement) {
         console.warn("LOAD MEASUREMENTS - Image element not available yet, trying to find it");
         this.cachedImageElement = this.imageElement?.nativeElement;
-        
+
         if (!this.cachedImageElement) {
           if (retryCount >= maxRetries) {
             console.warn("LOAD MEASUREMENTS - Image element never became available, trying without it");
             processAndLoadMeasurements();
             return;
           }
-          
+
           console.log("LOAD MEASUREMENTS - Will retry for image element");
-          this.windowRefService.utilsService.delay(500).subscribe(() => {
+          this.windowRefService.utilsService.delay(300 * Math.pow(1.5, retryCount)).subscribe(() => {
             attemptWithRetry(retryCount + 1, maxRetries);
-          }, 300 * Math.pow(1.5, retryCount));
+          });
           return;
         }
       }
-      
+
       // Image element is available, now check solution matrix
       if (this.isValidSolutionMatrix()) {
         console.log("LOAD MEASUREMENTS - Solution matrix is valid, processing measurements");
@@ -4739,7 +4709,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       console.log(`LOAD MEASUREMENTS - Solution matrix not ready, retry attempt ${retryCount + 1} of ${maxRetries}`);
       this.windowRefService.utilsService.delay(300 * Math.pow(1.5, retryCount)).subscribe(() => {
         attemptWithRetry(retryCount + 1, maxRetries);
-      }, 300 * Math.pow(1.5, retryCount)); // Exponential backoff starting at 300ms
+      }); // Exponential backoff starting at 300ms
     };
 
     // Start the retry process
@@ -4842,14 +4812,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    */
   private isValidSolutionMatrix(): boolean {
     const isValid = this.astroUtilsService.isValidSolutionMatrix(this.advancedSolutionMatrix);
-    
+
     // Add detailed logging to troubleshoot solution matrix issues
     console.log("SOLUTION MATRIX STATUS:", {
       hasMatrix: !!this.advancedSolutionMatrix,
       isValid: isValid,
       serviceAvailable: !!this.astroUtilsService
     });
-    
+
     return isValid;
   }
 
@@ -4866,13 +4836,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Force immediate change detection
     this.cdRef.markForCheck();
     this.cdRef.detectChanges();
-    
+
     // Double-check in next JS event cycle to ensure it's visible
     this.windowRefService.utilsService.delay(10).subscribe(() => {
       this.loadingUrlMeasurements = true;
       this.cdRef.markForCheck();
       this.cdRef.detectChanges();
-    }, 0);
+    });
 
     // As a fallback, also ensure the indicator stays visible for at least a minimum time
     // This helps users see it even if operations finish very quickly
@@ -4896,113 +4866,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Force change detection
     this.cdRef.markForCheck();
     this.cdRef.detectChanges();
-    
+
     // Double-check in next JS event cycle to ensure flag is properly cleared
     this.windowRefService.utilsService.delay(300).subscribe(() => {
       this.loadingUrlMeasurements = false;
       this.cdRef.markForCheck();
       this.cdRef.detectChanges();
-    }, 0);
-  }
-
-  /**
-   * Calculate the center coordinates of the image using the solution information
-   * Returns the center RA (in hours) and Dec (in degrees) if available
-   */
-  private calculateCenterCoordinates(): { ra: number; dec: number } | null {
-    try {
-      // First try to get center coordinates from the solution if available
-      if (this.solution) {
-        if (this.solution.ra !== undefined && this.solution.dec !== undefined) {
-          // These could be string or number, make sure to parse to number
-          const ra = parseFloat(String(this.solution.ra)) / 15; // Convert from degrees to hours
-          const dec = parseFloat(String(this.solution.dec));
-          console.debug(`Using solution center coordinates: RA=${ra.toFixed(4)}h, Dec=${dec.toFixed(4)}°`);
-          return { ra, dec };
-        }
-      }
-
-      // If no direct center coordinates, try to calculate center from image dimensions
-      if (this.isValidSolutionMatrix() && this.imageElement?.nativeElement) {
-        // Use the image element directly - it's already the static image
-        const imageElement = this.imageElement.nativeElement as HTMLElement;
-        
-        // Log image element status for debugging
-        console.log("CENTER COORDINATES - IMAGE ELEMENT:", {
-          available: !!imageElement,
-          width: imageElement?.getBoundingClientRect()?.width || 0,
-          height: imageElement?.getBoundingClientRect()?.height || 0,
-          tagName: imageElement?.tagName
-        });
-
-        if (imageElement) {
-          const centerX = imageElement.getBoundingClientRect().width / 2;
-          const centerY = imageElement.getBoundingClientRect().height / 2;
-
-          // Calculate coordinates at the center point
-          const centerCoords = this.astroUtilsService.calculateCoordinatesAtPoint(
-            centerX, centerY, this.advancedSolutionMatrix, imageElement
-          );
-
-          if (centerCoords) {
-            console.debug(`Calculated center coordinates: RA=${centerCoords.ra.toFixed(4)}h, Dec=${centerCoords.dec.toFixed(4)}°`);
-            return centerCoords;
-          }
-        }
-      }
-
-      // Fallback to reasonable defaults
-      console.debug("Using default center coordinates: RA=12h, Dec=0°");
-      return { ra: 12, dec: 0 }; // Default to 12h RA, 0° Dec
-    } catch (error) {
-      console.error("Error calculating center coordinates:", error);
-      return null;
-    }
-  }
-
-  /**
-   * Calculate pixel position from celestial coordinates using the solution matrix
-   * This is the inverse operation of calculateCoordinatesAtPoint
-   */
-  private _calculatePixelPositionFromCoordinates(ra: number, dec: number): { x: number, y: number } | null {
-    // Ensure we have a valid solution matrix
-    if (!this.isValidSolutionMatrix()) {
-      return null;
-    }
-
-    try {
-      // Use the image element directly - it's already the static image
-      let imageElement = this.imageElement?.nativeElement;
-      
-      // Log image element status for debugging
-      console.log("PIXEL POSITION - IMAGE ELEMENT:", {
-        available: !!imageElement,
-        width: imageElement?.getBoundingClientRect()?.width || 0,
-        height: imageElement?.getBoundingClientRect()?.height || 0,
-        tagName: imageElement?.tagName
-      });
-
-      if (!imageElement) {
-        console.warn("Image element not found for coordinate conversion");
-        return null;
-      }
-
-      // Get the pixel position from the astro utils service
-      return this.astroUtilsService.calculatePixelPositionFromCoordinates(
-        ra,
-        dec,
-        this.advancedSolutionMatrix,
-        imageElement as HTMLElement
-      );
-    } catch (error) {
-      console.error("Error converting coordinates to pixels:", error);
-      return null;
-    }
-  }
-
-  // Helper function to stabilize floating point values
-  private _stabilizeValue(value: number, decimals: number = 4): number {
-    return parseFloat(value.toFixed(decimals));
+    });
   }
 
   /**
@@ -5058,7 +4928,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this.updateCoordinateLabelPositions(measurementData);
 
     // Check if the measurement is outside boundaries before adding it
-    measurementData.outOfBounds = 
+    measurementData.outOfBounds =
       this._checkPointOutsideBoundaries(measurementData.startX, measurementData.startY) ||
       this._checkPointOutsideBoundaries(measurementData.endX, measurementData.endY);
 

@@ -6,6 +6,43 @@
   <div class="loading-text mt-2">{{ 'Loading measurements from URL...' | translate }}</div>
 </div>
 
+<!-- Help content template -->
+<ng-template #helpContent let-offcanvasRef>
+  <div class="offcanvas-header">
+    <h3 class="mb-0">{{ "Measuring tool help" | translate }}</h3>
+    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvasRef.dismiss()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="measuring-help" style="font-size: 0.9rem;">
+      <h5>{{ "Getting started" | translate }}</h5>
+      <p>{{ "The measuring tool allows you to measure distances and sizes of objects in the image." | translate }}</p>
+
+      <h5>{{ "Creating measurements" | translate }}</h5>
+      <ul>
+        <li>{{ "Click once to set your starting point" | translate }}</li>
+        <li>{{ "Click a second time to set the end point and complete the measurement" | translate }}</li>
+        <li>{{ "Alternatively, click and drag to create a measurement in one motion" | translate }}</li>
+        <li>{{ "For images with plate-solving data, the tool will show distance in astronomical units (arcseconds, arcminutes, or degrees)" | translate }}</li>
+        <li>{{ "For images without plate-solving data, distances will be shown in pixels" | translate }}</li>
+      </ul>
+
+      <h5>{{ "Adjusting measurements" | translate }}</h5>
+      <ul>
+        <li>{{ "Click and drag any point to reposition it" | translate }}</li>
+        <li>{{ "Click and drag the middle of a measurement to move the entire line" | translate }}</li>
+        <li>{{ "Use the circle or rectangle buttons to change how a measurement is visualized" | translate }}</li>
+      </ul>
+
+      <h5>{{ "Saving and sharing" | translate }}</h5>
+      <ul>
+        <li>{{ "Click the share button to generate a URL that includes your measurements" | translate }}</li>
+        <li>{{ "Click the bookmark button to view saved measurements (requires login)" | translate }}</li>
+        <li>{{ "Saved measurements can be loaded on any image with plate-solving data" | translate }}</li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
+
 <div class="measuring-tool-container pointer-events-all" *ngIf="active" data-ignore-swipe-down="true">
   <!-- Overlay for capturing clicks/touches and drags during measuring mode -->
   <!-- Put this first so other elements can be on top of it -->
@@ -496,7 +533,7 @@
         ></fa-icon>
       </button>
     </div>
-    
+
     <!-- Include boundary warning template -->
     <ng-container *ngTemplateOutlet="boundaryWarningTpl; context: {$implicit: measurement}"></ng-container>
   </div>
@@ -763,8 +800,8 @@
               [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
               [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
               [style.pointer-events]="'auto'">
-        <fa-icon icon="save" 
-        [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Saving measurements requires valid advanced plate-solving data' | translate) : ('Save measurement' | translate)" 
+        <fa-icon icon="save"
+        [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Saving measurements requires valid advanced plate-solving data' | translate) : ('Save measurement' | translate)"
         container="body"
         triggers="manual"
         #tsavecurrent="ngbTooltip"
@@ -780,15 +817,15 @@
               [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
               [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
               [style.pointer-events]="'auto'">
-        <fa-icon icon="file-export" 
-        [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Exporting coordinates requires valid advanced plate-solving data' | translate) : ('Export coordinates' | translate)" 
+        <fa-icon icon="file-export"
+        [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Exporting coordinates requires valid advanced plate-solving data' | translate) : ('Export coordinates' | translate)"
         container="body"
         triggers="manual"
         #texportcurrent="ngbTooltip"
         (click)="toggleTooltip(texportcurrent)"></fa-icon>
       </button>
     </div>
-    
+
     <!-- Include boundary warning template for current measurement -->
     <ng-container *ngTemplateOutlet="boundaryWarningTpl; context: {$implicit: {isCurrentMeasurement: true}}"></ng-container>
   </div>
@@ -832,13 +869,13 @@
               (touchend)="showHelp()">
         <fa-icon [icon]="['fas', 'question']"></fa-icon>
       </button>
-      
+
       <!-- Separator after help button -->
       <div class="toolbar-separator"></div>
-      
+
       <!-- Saved measurements button -->
-      <button *ngIf="currentUser$ | async" 
-              type="button" 
+      <button *ngIf="currentUser$ | async"
+              type="button"
               class="icon-button"
               [ngbTooltip]="'Saved measurements' | translate"
               placement="bottom"
@@ -848,9 +885,9 @@
               (touchend)="toggleSavedMeasurements()">
         <fa-icon [icon]="['fas', 'bookmark']"></fa-icon>
       </button>
-      
+
       <!-- Share measurements button -->
-      <button type="button" 
+      <button type="button"
               class="icon-button"
               [ngbTooltip]="'Share measurements' | translate"
               placement="bottom"
@@ -861,12 +898,12 @@
               (touchend)="previousMeasurements.length > 0 ? shareMeasurements() : null">
         <fa-icon [icon]="['fas', 'share-alt']"></fa-icon>
       </button>
-      
+
       <!-- Exit/Clear section with a visual separator -->
       <div class="toolbar-separator"></div>
-      
+
       <!-- Clear all measurements button -->
-      <button type="button" 
+      <button type="button"
               class="icon-button"
               [ngbTooltip]="'Clear all measurements' | translate"
               placement="bottom"
@@ -877,9 +914,9 @@
               (touchend)="previousMeasurements.length > 0 ? clearAllMeasurements() : null">
         <fa-icon [icon]="['fas', 'eraser']"></fa-icon>
       </button>
-      
+
       <!-- Exit button -->
-      <button type="button" 
+      <button type="button"
               class="icon-button exit-button"
               [ngbTooltip]="'Exit measuring tool' | translate"
               placement="bottom"
@@ -960,8 +997,8 @@
                     [class.disabled]="!advancedSolutionMatrix || loadingMeasurement"
                     [class.loading]="loadingMeasurement"
                     [style.pointer-events]="'auto'">
-              <fa-icon *ngIf="!loadingMeasurement" icon="arrow-right" 
-                [ngbTooltip]="!advancedSolutionMatrix ? ('Loading measurements requires advanced plate-solving data' | translate) : ('Load measurement' | translate)" 
+              <fa-icon *ngIf="!loadingMeasurement" icon="arrow-right"
+                [ngbTooltip]="!advancedSolutionMatrix ? ('Loading measurements requires advanced plate-solving data' | translate) : ('Load measurement' | translate)"
                 container="body"
                 triggers="manual"
                 #tloadmeasurement="ngbTooltip"
@@ -969,8 +1006,8 @@
               <fa-icon *ngIf="loadingMeasurement" icon="spinner" [spin]="true"></fa-icon>
             </button>
             <button class="btn btn-sm btn-outline-danger" (click)="deleteSavedMeasurement(i)">
-              <fa-icon icon="trash-alt" 
-                [ngbTooltip]="'Delete saved measurement' | translate" 
+              <fa-icon icon="trash-alt"
+                [ngbTooltip]="'Delete saved measurement' | translate"
                 container="body"
                 triggers="manual"
                 #tdeletemeasurement="ngbTooltip"
@@ -1008,7 +1045,7 @@
 
 <!-- Boundary warning template -->
 <ng-template #boundaryWarningTpl let-data>
-  <div class="boundary-warning" 
+  <div class="boundary-warning"
        *ngIf="data.isCurrentMeasurement ? isCurrentMeasurementOutsideBoundaries : data.outOfBounds">
     {{ 'Coordinates will not work outside the image\'s boundaries' | translate }}
   </div>

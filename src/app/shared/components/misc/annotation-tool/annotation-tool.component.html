@@ -12,6 +12,49 @@
   </button>
 </div>
 
+<!-- Help content template -->
+<ng-template #helpContent let-offcanvasRef>
+  <div class="offcanvas-header">
+    <h3 class="mb-0">{{ "Annotation tool help" | translate }}</h3>
+    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvasRef.dismiss()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="annotation-help" style="font-size: 0.9rem;">
+      <h5>{{ "Getting started" | translate }}</h5>
+      <p>{{ "The annotation tool allows you to add shapes and notes to highlight important features in the image." | translate }}</p>
+      
+      <h5>{{ "Creating annotations" | translate }}</h5>
+      <ul>
+        <li>{{ "Use the rectangle tool to create rectangular annotations" | translate }}</li>
+        <li>{{ "Use the circle tool to create circular annotations" | translate }}</li>
+        <li>{{ "Click and drag to draw the shape where you want it" | translate }}</li>
+      </ul>
+      
+      <h5>{{ "Editing annotations" | translate }}</h5>
+      <ul>
+        <li>{{ "Click and drag an annotation to move it" | translate }}</li>
+        <li>{{ "Use the control points (white circles) to resize a shape" | translate }}</li>
+        <li>{{ "Click the text icon to add or edit a title for your annotation" | translate }}</li>
+        <li>{{ "Click the trash icon to delete an annotation" | translate }}</li>
+      </ul>
+      
+      <h5>{{ "Sharing annotations" | translate }}</h5>
+      <ul>
+        <li>{{ "Click the share button to generate a URL that includes your annotations" | translate }}</li>
+        <li>{{ "The URL will be copied to your clipboard automatically" | translate }}</li>
+        <li>{{ "Anyone with the link can see your annotations without changing the original image" | translate }}</li>
+      </ul>
+      
+      <h5>{{ "Saving annotations (image owners only)" | translate }}</h5>
+      <ul>
+        <li>{{ "If you own this image, you can save annotations permanently" | translate }}</li>
+        <li>{{ "Click the save button to store your annotations with the image" | translate }}</li>
+        <li>{{ "Saved annotations will be visible to anyone viewing your image" | translate }}</li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
+
 <div class="annotation-tool-container pointer-events-all" [class.active]="active" data-ignore-swipe-down="true">
   <!-- Fixed toolbar - making it simpler and more bulletproof -->
   <div class="fixed-top-toolbar">

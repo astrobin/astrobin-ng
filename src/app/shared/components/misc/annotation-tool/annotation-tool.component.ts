@@ -9,9 +9,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { debounceTime, filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { fromEvent, merge, Subject } from "rxjs";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { isPlatformBrowser } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { Annotation } from "./models/annotation.model";
 import { AnnotationService } from "./services/annotation.service";
 import { AnnotationShapeType } from "./models/annotation-shape-type.enum";
@@ -49,7 +50,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   // Flag to indicate whether annotations are being loaded from URL
   loadingUrlAnnotations: boolean = false;
-  
+
   // Flag for save button states
   savingAnnotations: boolean = false;
   saveSuccess: boolean = false;
@@ -98,6 +99,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   currentAnnotationId: string | null = null;
   pendingShapeData: any = null;
   @ViewChild("annotationFormModal", { static: true }) annotationFormModalRef: TemplateRef<any>;
+  @ViewChild("helpContent", { static: true }) helpContentRef: TemplateRef<any>;
   // Constants for reference in templates
   protected readonly Math = Math;
   // Colors for the color picker
@@ -139,7 +141,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     public readonly ngZone: NgZone,
     public readonly annotationService: AnnotationService,
     public readonly deviceService: DeviceService,
+    public readonly utilsService: UtilsService,
     private modalService: NgbModal,
+    private offcanvasService: NgbOffcanvas,
     private popNotificationsService: PopNotificationsService,
     private translateService: TranslateService,
     private windowRefService: WindowRefService,
@@ -2347,54 +2351,19 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   }
 
   /**
-   * Show help dialog with annotation tool instructions
+   * Show help instructions in an offcanvas panel
    */
   showHelp(): void {
-    const modalRef = this.modalService.open(InformationDialogComponent, {
-      centered: true,
-      size: 'xxl'
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Open the offcanvas using the template reference
+    this.offcanvasService.open(this.helpContentRef, {
+      position: this.deviceService.offcanvasPosition(),
+      panelClass: 'image-viewer-offcanvas help-offcanvas',
+      backdropClass: 'image-viewer-offcanvas-backdrop'
     });
-    
-    modalRef.componentInstance.title = this.translateService.instant("Annotation tool help");
-    
-    // Prepare detailed instructions for the annotation tool
-    const helpContent = `
-      <div class="annotation-help" style="font-size: 0.9rem;">
-        <h5>${this.translateService.instant("Getting started")}</h5>
-        <p>${this.translateService.instant("The annotation tool allows you to add shapes and notes to highlight important features in the image.")}</p>
-        
-        <h5>${this.translateService.instant("Creating annotations")}</h5>
-        <ul>
-          <li>${this.translateService.instant("Use the rectangle tool to create rectangular annotations")}</li>
-          <li>${this.translateService.instant("Use the circle tool to create circular annotations")}</li>
-          <li>${this.translateService.instant("Click and drag to draw the shape where you want it")}</li>
-        </ul>
-        
-        <h5>${this.translateService.instant("Editing annotations")}</h5>
-        <ul>
-          <li>${this.translateService.instant("Click and drag an annotation to move it")}</li>
-          <li>${this.translateService.instant("Use the control points (white circles) to resize a shape")}</li>
-          <li>${this.translateService.instant("Click the text icon to add or edit a title for your annotation")}</li>
-          <li>${this.translateService.instant("Click the trash icon to delete an annotation")}</li>
-        </ul>
-        
-        <h5>${this.translateService.instant("Sharing annotations")}</h5>
-        <ul>
-          <li>${this.translateService.instant("Click the share button to generate a URL that includes your annotations")}</li>
-          <li>${this.translateService.instant("The URL will be copied to your clipboard automatically")}</li>
-          <li>${this.translateService.instant("Anyone with the link can see your annotations without changing the original image")}</li>
-        </ul>
-        
-        <h5>${this.translateService.instant("Saving annotations (image owners only)")}</h5>
-        <ul>
-          <li>${this.translateService.instant("If you own this image, you can save annotations permanently")}</li>
-          <li>${this.translateService.instant("Click the save button to store your annotations with the image")}</li>
-          <li>${this.translateService.instant("Saved annotations will be visible to anyone viewing your image")}</li>
-        </ul>
-      </div>
-    `;
-    
-    modalRef.componentInstance.message = helpContent;
   }
 
   /**
@@ -2420,7 +2389,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
           this.savingAnnotations = false;
           this.saveSuccess = true;
           this.cdRef.markForCheck();
-          
+
           // Reset success indicator after 1.5 seconds
           this.utilsService.delay(1500).subscribe(() => {
             this.saveSuccess = false;
@@ -2432,7 +2401,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
           console.error("Error saving annotations:", err);
           this.savingAnnotations = false;
           this.cdRef.markForCheck();
-          
+
           this.popNotificationsService.error(
             this.translateService.instant("Failed to save annotations: {{error}}",
               { error: err.message || this.translateService.instant("Unknown error") })
@@ -2503,7 +2472,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
               this.cdRef.markForCheck();
               this.cdRef.detectChanges();
             }
-          }, 100);
+          });
         } else {
           // No annotations in URL, make sure everything is cleared
           console.log("NO ANNOTATIONS FOUND IN DIRECT URL CHECK IN afterViewInit");

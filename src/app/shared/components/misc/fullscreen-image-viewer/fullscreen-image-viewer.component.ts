@@ -438,7 +438,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
         // Force change detection to update UI
         this.changeDetectorRef.markForCheck();
-      }, 100);
+      });
     }
 
     // Redraw canvas with updated dimensions
@@ -2968,7 +2968,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.utilsService.delay(this._zoomIndicatorTimeoutDuration).subscribe(() => {
         this.showZoomIndicator = false;
         this.changeDetectorRef.markForCheck();
-      }, this._zoomIndicatorTimeoutDuration);
+      });
     }
   }
 
