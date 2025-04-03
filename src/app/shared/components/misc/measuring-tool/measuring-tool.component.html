@@ -838,7 +838,7 @@
               class="icon-button" 
               title="{{ 'Share measurements' | translate }}"
               [disabled]="previousMeasurements.length === 0"
-              (click)="shareMeasurements()"
+              (click)="previousMeasurements.length > 0 ? shareMeasurements() : null"
               (touchstart)="$event.stopPropagation()"
               (touchend)="previousMeasurements.length > 0 ? shareMeasurements() : null">
         <fa-icon [icon]="['fas', 'share-alt']"></fa-icon>

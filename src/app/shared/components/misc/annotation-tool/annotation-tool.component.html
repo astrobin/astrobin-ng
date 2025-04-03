@@ -43,9 +43,9 @@
               class="icon-button"
               title="{{ 'Share Annotations' | translate }}"
               [disabled]="annotations.length === 0"
-              (click)="shareAnnotations()"
-              (touchend)="annotations.length > 0 ? shareAnnotations() : null"
-              (touchstart)="$event.stopPropagation()">
+              (click)="annotations.length > 0 ? shareAnnotations() : null"
+              (touchstart)="$event.stopPropagation()"
+              (touchend)="annotations.length > 0 ? shareAnnotations() : null">
         <fa-icon [icon]="['fas', 'share-alt']"></fa-icon>
       </button>
       
@@ -63,8 +63,8 @@
       </button>
       <button type="button" class="icon-button exit-button" 
               title="Exit Annotation Mode" 
-              (click)="exitAnnotationModeHandler()"
-              (touchend)="exitAnnotationModeHandler()"
+              (click)="exitAnnotationModeHandler(); annotationService.clearAllAnnotations()"
+              (touchend)="exitAnnotationModeHandler(); annotationService.clearAllAnnotations()"
               (touchstart)="$event.stopPropagation()">
         <fa-icon [icon]="['fas', 'times']"></fa-icon>
       </button>

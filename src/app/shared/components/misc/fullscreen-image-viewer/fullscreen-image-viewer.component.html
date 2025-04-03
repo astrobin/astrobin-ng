@@ -436,7 +436,8 @@
           [class.disabled]="enableLens && zoomingEnabled"
         >
           <fa-icon icon="crosshairs"></fa-icon>
-          <span>{{ (showCoordinates ? 'Hide coordinates' : 'Show coordinates') | translate }}</span>
+          <span *ngIf="showCoordinates">{{ 'Hide coordinates' | translate }}</span>
+          <span *ngIf="!showCoordinates">{{ 'Show coordinates' | translate }}</span>
         </div>
 
         <!-- Measuring tool toggle - available for all images -->
@@ -447,7 +448,7 @@
           [class.active]="isMeasuringMode"
         >
           <fa-icon icon="ruler"></fa-icon>
-          <span>{{ (isMeasuringMode ? 'Cancel measurement' : 'Measure distance') | translate }}</span>
+          <span>{{ 'Measure distances' | translate }}</span>
         </div>
 
         <!-- Annotation tool toggle - available for all images -->
@@ -457,8 +458,8 @@
           (click)="toggleAnnotationMode($event); toggleKebabMenu($event)"
           [class.active]="isAnnotationMode"
         >
-          <fa-icon icon="comment-alt"></fa-icon>
-          <span>{{ (isAnnotationMode ? 'Exit annotation mode' : 'Annotate image') | translate }}</span>
+          <fa-icon icon="file-text"></fa-icon>
+          <span>{{ 'Annotate image' | translate }}</span>
         </div>
       </div>
     </div>

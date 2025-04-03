@@ -167,6 +167,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   ngOnInit(): void {
     super.ngOnInit();
+    
+    console.log("ANNOTATION TOOL INIT: Setting loading flag to false and clearing annotations");
+    this.loadingUrlAnnotations = false;
+    this.annotations = [];
+    this.annotationService.clearAllAnnotations();
 
     // Get available colors
     this.colors = this.annotationService.getColors();
@@ -196,20 +201,41 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Check for shared annotations in the URL when component initializes
     if (this.isBrowser) {
-      this.activatedRoute.queryParams.pipe(
-        take(1)
-      ).subscribe(params => {
-        if (params.annotations) {
-          try {
-            this.annotationService.loadFromUrlParam(params.annotations);
-          } catch (e) {
-            console.error("Failed to load shared annotations:", e);
-            this.popNotificationsService.error(
-              this.translateService.instant("Failed to load shared annotations: {{error}}", { error: e.message })
-            );
-          }
+      // IMPORTANT: Force clear all annotations first
+      this.annotations = [];
+      this.annotationService.clearAllAnnotations();
+      
+      // DIRECT CHECK: Get annotations param directly from current URL
+      const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
+      const annotationsParam = currentUrl.searchParams.get('annotations');
+      
+      console.log("DIRECT URL CHECK:", currentUrl.toString());
+      console.log("DIRECT PARAM CHECK - annotations=", annotationsParam ? "present" : "not present");
+      
+      // Only proceed if we actually have an annotations parameter with content
+      if (annotationsParam && annotationsParam.trim() !== '') {
+        console.log("DIRECT FOUND ANNOTATIONS - length:", annotationsParam.length);
+        
+        try {
+          // Load the annotations
+          this.annotationService.loadFromUrlParam(annotationsParam);
+          console.log("DIRECT LOADED ANNOTATIONS - count:", this.annotations.length);
+        } catch (e) {
+          console.error("DIRECT ERROR loading annotations:", e);
+          this.popNotificationsService.error(
+            this.translateService.instant("Failed to load annotations: {{error}}", { error: e.message })
+          );
+          
+          // Make sure annotations are cleared on error
+          this.annotations = [];
+          this.annotationService.clearAllAnnotations();
         }
-      });
+      } else {
+        // No annotations in URL, make sure to clear any existing ones
+        console.log("NO ANNOTATIONS FOUND IN DIRECT URL CHECK");
+        this.annotations = [];
+        this.annotationService.clearAllAnnotations();
+      }
     }
 
     // Initialize formly form with validators
@@ -1934,8 +1960,59 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
    * Exit annotation mode
    */
   exitAnnotationModeHandler(): void {
+    console.log("EXIT ANNOTATION MODE HANDLER CALLED");
+    
     // First clean up any active drawing
     this.cancelAnnotation();
+    
+    // Save a direct reference to native window for manipulating the URL
+    if (this.isBrowser) {
+      try {
+        // DIRECT APPROACH: Manipulate the URL without Angular's routing
+        const location = this.windowRefService.nativeWindow.location;
+        const url = new URL(location.href);
+        
+        console.log("BEFORE URL CHANGE:", url.toString());
+        
+        // Remove annotations param
+        url.searchParams.delete('annotations');
+        
+        // Apply the change directly to history
+        this.windowRefService.nativeWindow.history.replaceState({}, '', url.toString());
+        
+        console.log("AFTER URL CHANGE:", this.windowRefService.nativeWindow.location.href);
+      } catch (e) {
+        console.error("Error manipulating URL:", e);
+      }
+    }
+
+    // MOST IMPORTANT: Force clear all annotations in the component and service multiple times
+    for (let i = 0; i < 3; i++) {
+      this.annotations = [];
+      this.annotationService.clearAllAnnotations();
+    }
+    
+    // Ensure loading flag is disabled
+    this.loadingUrlAnnotations = false;
+    
+    console.log("AFTER CLEAR: annotations count =", this.annotations.length);
+    
+    // Force immediate change detection to update UI
+    this.cdRef.markForCheck();
+    this.cdRef.detectChanges();
+    
+    // Use setTimeout to ensure changes are applied
+    setTimeout(() => {
+      console.log("TIMEOUT CHECK: annotations count =", this.annotations.length);
+      this.annotations = [];
+      this.annotationService.clearAllAnnotations();
+      this.loadingUrlAnnotations = false;
+      this.cdRef.markForCheck();
+      this.cdRef.detectChanges();
+      
+      // Check URL again to confirm changes
+      console.log("URL AFTER TIMEOUT:", this.windowRefService.nativeWindow.location.href);
+    }, 100);
 
     // Then emit event to notify parent component
     this.exitAnnotationMode.emit();
@@ -2225,27 +2302,42 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       return;
     }
 
-    // Get the current URL
-    const currentUrl = this.windowRefService.getCurrentUrl();
-
     // Add or update the annotations parameter without navigation
-    currentUrl.searchParams.set('annotations', urlParam);
-
-    // Use window history to update the URL without navigation or page reload
     if (this.isBrowser) {
+      // Skip interim message and go straight to the update and copy
+      
+      // Get the current URL
+      const currentUrl = this.windowRefService.getCurrentUrl();
+      
+      // Update the annotations parameter
+      currentUrl.searchParams.set('annotations', urlParam);
+      
+      // Update the URL without navigation
       this.windowRefService.replaceState({}, currentUrl.toString());
 
-      // Copy the URL to clipboard
-      this.windowRefService.copyToClipboard(currentUrl.toString()).then(success => {
-        if (success) {
-          this.popNotificationsService.success(
-            this.translateService.instant("URL with annotations copied to clipboard")
-          );
-        } else {
-          this.popNotificationsService.success(
-            this.translateService.instant("Annotations URL has been updated. You can now share this page.")
-          );
-        }
+      // Copy the URL to clipboard with a slight delay to ensure URL is updated
+      this.windowRefService.utilsService.delay(200).subscribe(() => {
+        // Use the WindowRefService's copyToClipboard method which handles fallbacks properly
+        this.windowRefService.copyToClipboard(currentUrl.toString())
+          .then(success => {
+            if (success) {
+              this.popNotificationsService.success(
+                this.translateService.instant("URL with annotations copied to clipboard")
+              );
+            } else {
+              // Fall back to just updating the URL if clipboard access failed
+              this.popNotificationsService.info(
+                this.translateService.instant("Annotations URL has been updated. You can now share this page.")
+              );
+            }
+          })
+          .catch(error => {
+            console.error("Error copying to clipboard:", error);
+            // Still provide feedback even if clipboard fails
+            this.popNotificationsService.info(
+              this.translateService.instant("Annotations URL has been updated. You can now share this page.")
+            );
+          });
       });
     }
   }
@@ -2298,38 +2390,67 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
    * Check for annotations in URL and show loading indicator if needed
    */
   private checkForAnnotationsInUrlParamsAndShow(): void {
+    console.log("CHECK FOR ANNOTATIONS IN URL - START");
+    
+    // Clear all annotations first, regardless of URL
+    this.annotations = [];
+    this.annotationService.clearAllAnnotations();
+    this.loadingUrlAnnotations = false;
+    
     if (this.isBrowser) {
-      this.activatedRoute.queryParams.pipe(
-        take(1)
-      ).subscribe(params => {
-        // If there are annotations in the URL, show loading indicator
-        if (params.annotations) {
-          console.log("Found annotations in URL");
-
-          // Check if we're using the static image approach (direct image element)
-          // If the image element is the direct img (not a container), we can skip loading indicator
-          const isStaticImageApproach = this.imageElement?.nativeElement instanceof HTMLImageElement;
-
-          if (isStaticImageApproach) {
-            // Static image approach - no need for loading indicator
-            console.log("Using static image approach, skipping loading indicator");
-            this.loadingUrlAnnotations = false;
-          } else {
-            // Old approach with zoom component - show loading indicator
-            console.log("Using zoom approach, showing loading indicator");
-            // Show loading indicator for a fixed time (800ms max)
-            this.loadingUrlAnnotations = true;
-            this.cdRef.markForCheck();
-
-            // Automatically hide loading after a fixed time no matter what
-            this.windowRefService.utilsService.delay(800).subscribe(() => {
+      // DIRECT APPROACH: Get the annotations parameter directly from the URL
+      try {
+        const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
+        const annotationsParam = currentUrl.searchParams.get('annotations');
+        
+        console.log("DIRECT URL CHECK IN afterViewInit:", currentUrl.toString());
+        console.log("DIRECT PARAM CHECK IN afterViewInit - annotations=", annotationsParam ? "present" : "not present");
+        
+        // Only proceed if we actually have an annotations parameter with content
+        if (annotationsParam && annotationsParam.trim() !== '') {
+          console.log("DIRECT FOUND ANNOTATIONS IN afterViewInit - length:", annotationsParam.length);
+          
+          // Show loading indicator
+          this.loadingUrlAnnotations = true;
+          this.cdRef.markForCheck();
+          this.cdRef.detectChanges();
+          
+          // Load after a brief delay to ensure indicator is visible
+          setTimeout(() => {
+            try {
+              // Load the annotations
+              this.annotationService.loadFromUrlParam(annotationsParam);
+              console.log("DIRECT LOADED ANNOTATIONS IN afterViewInit - count:", this.annotations.length);
+            } catch (e) {
+              console.error("DIRECT ERROR loading annotations IN afterViewInit:", e);
+              // Clear on error
+              this.annotations = [];
+              this.annotationService.clearAllAnnotations();
+            } finally {
+              // Always hide the indicator after loading or error
               this.loadingUrlAnnotations = false;
               this.cdRef.markForCheck();
-            });
-          }
+              this.cdRef.detectChanges();
+            }
+          }, 100);
+        } else {
+          // No annotations in URL, make sure everything is cleared
+          console.log("NO ANNOTATIONS FOUND IN DIRECT URL CHECK IN afterViewInit");
+          this.annotations = [];
+          this.annotationService.clearAllAnnotations();
+          this.loadingUrlAnnotations = false;
+          this.cdRef.markForCheck();
+          this.cdRef.detectChanges();
         }
-      });
+      } catch (e) {
+        console.error("Error checking URL for annotations:", e);
+        this.loadingUrlAnnotations = false;
+        this.annotations = [];
+        this.annotationService.clearAllAnnotations();
+      }
     }
+    
+    console.log("CHECK FOR ANNOTATIONS IN URL - END");
   }
 
   /**

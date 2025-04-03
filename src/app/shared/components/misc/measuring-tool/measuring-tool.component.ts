@@ -275,10 +275,17 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       ).subscribe(params => {
         if (params.measurements) {
           try {
+            // Explicitly set loading flag and ensure it's visible
+            this.loadingUrlMeasurements = true;
+            // Force immediate change detection
+            this.cdRef.markForCheck();
+            this.cdRef.detectChanges();
+            
             // Show loading indicator and ensure it's visible (force method for more reliability)
             this.showLoadingIndicator();
             this.loadMeasurementsFromUrl(params.measurements);
           } catch (e) {
+            this.loadingUrlMeasurements = false;
             this.hideLoadingIndicator();
             console.error("Failed to load shared measurements:", e);
             this.popNotificationsService.error(
@@ -2400,6 +2407,18 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Exit measuring mode
    */
   exitMeasuring(): void {
+    // Remove measurements query param if it exists
+    if (this.isBrowser) {
+      const currentUrl = this.windowRefService.getCurrentUrl();
+      if (currentUrl.searchParams.has('measurements')) {
+        // Remove the measurements parameter
+        currentUrl.searchParams.delete('measurements');
+        // Update the URL without navigation
+        this.windowRefService.replaceState({}, currentUrl.toString());
+      }
+    }
+    
+    // Clear measurements and exit
     this.previousMeasurements = [];
     this.cdRef.markForCheck();
     this.exitMeasuringMode.emit();
@@ -2476,9 +2495,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       const encodedData = this.encodeMeasurementsForUrl(this.previousMeasurements);
 
       // Get the current URL and preserve the hash (important for fullscreen view)
-      const currentUrl = window.location.href;
-      const urlWithoutHash = currentUrl.split("#")[0];
-      const hash = currentUrl.includes("#") ? "#" + currentUrl.split("#")[1] : "";
+      const currentUrl = this.windowRefService.getCurrentUrl();
+      const hash = this.windowRefService.nativeWindow.location.hash;
 
       // Create a new URL with the measurements parameter
       const urlTree = this.router.createUrlTree([], {
@@ -2488,19 +2506,36 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       });
 
       // Combine everything to create the final URL
-      const shareUrl = window.location.origin + urlTree.toString() + hash;
+      const shareUrl = this.windowRefService.nativeWindow.location.origin + urlTree.toString() + hash;
 
-      // Copy the URL to clipboard
-      this.windowRefService.copyToClipboard(shareUrl).then(success => {
-        if (success) {
-          this.popNotificationsService.success(
-            this.translateService.instant("Share URL copied to clipboard. Send this URL to share your measurements.")
-          );
-        } else {
-          this.popNotificationsService.error(
-            this.translateService.instant("Failed to copy URL to clipboard.")
-          );
-        }
+      // Skip interim message and go straight to the update and copy
+
+      // Update the URL without navigating
+      this.windowRefService.replaceState({}, currentUrl.toString());
+
+      // Copy the URL to clipboard with a slight delay to ensure URL is updated first
+      this.windowRefService.utilsService.delay(200).subscribe(() => {
+        // Use the WindowRefService's copyToClipboard method which handles fallbacks properly
+        this.windowRefService.copyToClipboard(shareUrl)
+          .then(success => {
+            if (success) {
+              this.popNotificationsService.success(
+                this.translateService.instant("Share URL copied to clipboard. Send this URL to share your measurements.")
+              );
+            } else {
+              // Still provide useful feedback if clipboard access failed but URL was updated
+              this.popNotificationsService.info(
+                this.translateService.instant("Measurements URL has been updated. You can now share this page.")
+              );
+            }
+          })
+          .catch(error => {
+            console.error("Failed to copy to clipboard:", error);
+            // Still provide useful feedback even if clipboard access failed
+            this.popNotificationsService.info(
+              this.translateService.instant("Measurements URL has been updated. You can now share this page.")
+            );
+          });
       });
     } catch (error) {
       console.error("Failed to share measurements:", error);
@@ -4297,7 +4332,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     let measurementsData;
     try {
       // Make sure the loading state is set
+      this.loadingUrlMeasurements = true; // CRITICAL: Set loading flag directly
       this.showLoadingIndicator();
+      
       measurementsData = JSON.parse(atob(encodedData));
       if (!Array.isArray(measurementsData)) {
         throw new Error("Invalid measurements data format");
@@ -4308,6 +4345,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.translateService.instant("Failed to load shared measurements from URL: {{message}}",
           { message: "Could not decode measurement data. The URL may be incomplete or invalid." })
       );
+      this.loadingUrlMeasurements = false; // CRITICAL: Clear loading flag directly
       this.hideLoadingIndicator();
       return;
     }
@@ -4485,6 +4523,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         }
 
         // Clear loading indicator
+        this.loadingUrlMeasurements = false; // CRITICAL: Clear loading flag directly
         this.hideLoadingIndicator();
 
         // Update view
@@ -4495,6 +4534,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.translateService.instant("Failed to load shared measurements from URL: {{message}}", { message: error.message })
         );
         // Clear loading indicator on error
+        this.loadingUrlMeasurements = false; // CRITICAL: Clear loading flag directly 
         this.hideLoadingIndicator();
       }
     };
@@ -4628,13 +4668,20 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * change detection strategies
    */
   private showLoadingIndicator(): void {
-    // Set the flag
+    // Set the flag (ensure it's set)
     this.loadingUrlMeasurements = true;
     console.debug("Setting loadingUrlMeasurements=true via showLoadingIndicator()");
 
     // Force immediate change detection
     this.cdRef.markForCheck();
     this.cdRef.detectChanges();
+    
+    // Double-check in next JS event cycle to ensure it's visible
+    setTimeout(() => {
+      this.loadingUrlMeasurements = true;
+      this.cdRef.markForCheck();
+      this.cdRef.detectChanges();
+    }, 0);
 
     // As a fallback, also ensure the indicator stays visible for at least a minimum time
     // This helps users see it even if operations finish very quickly
@@ -4658,6 +4705,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Force change detection
     this.cdRef.markForCheck();
     this.cdRef.detectChanges();
+    
+    // Double-check in next JS event cycle to ensure flag is properly cleared
+    setTimeout(() => {
+      this.loadingUrlMeasurements = false;
+      this.cdRef.markForCheck();
+      this.cdRef.detectChanges();
+    }, 0);
   }
 
   /**
