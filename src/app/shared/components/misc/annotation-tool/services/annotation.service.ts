@@ -328,33 +328,6 @@ export class AnnotationService {
         };
       }
 
-      // Handle arrow format
-      if (annotation.type === 'arrow') {
-        console.log("Converting arrow annotation");
-        if (annotation.startX === undefined || annotation.startY === undefined ||
-            annotation.endX === undefined || annotation.endY === undefined) {
-          console.error("Arrow annotation missing required properties:", annotation);
-        }
-
-        return {
-          id: annotation.id,
-          timestamp: Date.now(),
-          shape: {
-            type: AnnotationShapeType.ARROW,
-            points: [
-              { x: annotation.startX || 35, y: annotation.startY || 50 },  // Start point
-              { x: annotation.endX || 65, y: annotation.endY || 50 }  // End point
-            ],
-            color: annotation.color || this.getDefaultColor(),
-            lineWidth: 2
-          },
-          note: annotation.note ? annotation.note : annotation.title ? {
-            text: annotation.title,
-            position: { x: (annotation.endX || 65) + 5, y: (annotation.endY || 50) - 5 },
-            expanded: true
-          } : undefined
-        };
-      }
 
       // If it already matches the standard format, return as is
       if (annotation.shape && annotation.shape.type && annotation.shape.points) {
@@ -538,19 +511,6 @@ export class AnnotationService {
         displayAnnotation.cy = center.y;
         displayAnnotation.r = radius;
       }
-      else if (annotation.shape.type === AnnotationShapeType.ARROW) {
-        displayAnnotation.type = 'arrow';
-
-        // Get the points that define the arrow
-        const start = annotation.shape.points[0] || { x: 35, y: 50 };
-        const end = annotation.shape.points[1] || { x: 65, y: 50 };
-
-        // Assign to the display annotation
-        displayAnnotation.startX = start.x;
-        displayAnnotation.startY = start.y;
-        displayAnnotation.endX = end.x;
-        displayAnnotation.endY = end.y;
-      }
 
       console.log("Converted to display format:", displayAnnotation);
       return displayAnnotation;
@@ -614,15 +574,6 @@ export class AnnotationService {
     }
 
     switch (annotation.shape.type) {
-      case AnnotationShapeType.ARROW: {
-        // Place the note near the end of the arrow (target)
-        const endPoint = annotation.shape.points[1] || annotation.shape.points[0];
-        return {
-          x: Math.min(Math.max(endPoint.x + 5, 0), 95),
-          y: Math.min(Math.max(endPoint.y - 5, 0), 95)
-        };
-      }
-
       case AnnotationShapeType.RECTANGLE: {
         // Place the note at the top-right corner of the rectangle
         const startPoint = annotation.shape.points[0];
@@ -743,11 +694,10 @@ export class AnnotationService {
    */
   private serializeShapeType(type: AnnotationShapeType): number {
     switch (type) {
-      case AnnotationShapeType.ARROW: return 0;
       case AnnotationShapeType.RECTANGLE: return 1;
       case AnnotationShapeType.CIRCLE: return 2;
       case AnnotationShapeType.CUSTOM_PATH: return 3;
-      default: return 0;
+      default: return 1;
     }
   }
 
@@ -756,11 +706,10 @@ export class AnnotationService {
    */
   private deserializeShapeType(type: number): AnnotationShapeType {
     switch (type) {
-      case 0: return AnnotationShapeType.ARROW;
       case 1: return AnnotationShapeType.RECTANGLE;
       case 2: return AnnotationShapeType.CIRCLE;
       case 3: return AnnotationShapeType.CUSTOM_PATH;
-      default: return AnnotationShapeType.ARROW;
+      default: return AnnotationShapeType.RECTANGLE;
     }
   }
 

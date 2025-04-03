@@ -62,7 +62,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   // Mode tracking
   isDrawing: boolean = false;
   isAddingNote: boolean = false;
-  currentDrawingTool: AnnotationShapeType = AnnotationShapeType.ARROW;
+  currentDrawingTool: AnnotationShapeType = AnnotationShapeType.RECTANGLE;
 
   // Mouse tracking
   mouseX: number | null = null;
@@ -718,52 +718,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     return 0;
   }
 
-  // Arrow specific helpers
-  getArrowStartX(ann: any): number {
-    return (ann.startX - this.getAnnotationLeft(ann)) * 100 / this.getAnnotationWidth(ann);
-  }
-
-  getArrowStartY(ann: any): number {
-    return (ann.startY - this.getAnnotationTop(ann)) * 100 / this.getAnnotationHeight(ann);
-  }
-
-  getArrowEndX(ann: any): number {
-    return (ann.endX - this.getAnnotationLeft(ann)) * 100 / this.getAnnotationWidth(ann);
-  }
-
-  getArrowEndY(ann: any): number {
-    return (ann.endY - this.getAnnotationTop(ann)) * 100 / this.getAnnotationHeight(ann);
-  }
-
-  getArrowLength(ann: any): number {
-    // Calculate the length of the arrow line
-    const dx = ann.endX - ann.startX;
-    const dy = ann.endY - ann.startY;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
-
-  getArrowTransform(ann: any): string {
-    // Calculate angle of the arrow line
-    const angle = Math.atan2(ann.endY - ann.startY, ann.endX - ann.startX) * 180 / Math.PI;
-    // Position the arrow line at the start point
-    const startXPercent = this.getArrowStartX(ann);
-    const startYPercent = this.getArrowStartY(ann);
-    return `rotate(${angle}deg) translate(${startXPercent}%, ${startYPercent}%)`;
-  }
-
-  getArrowHeadX(ann: any): number {
-    return this.getArrowEndX(ann);
-  }
-
-  getArrowHeadY(ann: any): number {
-    return this.getArrowEndY(ann);
-  }
-
-  getArrowHeadTransform(ann: any): string {
-    // Calculate angle of the arrow head
-    const angle = Math.atan2(ann.endY - ann.startY, ann.endX - ann.startX) * 180 / Math.PI;
-    return `rotate(${angle}deg)`;
-  }
 
   // Drawing preview helpers
   getDrawingLeft(): number {
@@ -783,11 +737,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         const centerX = points[0].x;
         const radiusX = Math.abs(points[1].x - centerX);
         return centerX - radiusX;
-      }
-    } else if (shape.type === AnnotationShapeType.ARROW) {
-      const points = shape.points;
-      if (points.length >= 2) {
-        return Math.min(points[0].x, points[1].x);
       }
     }
     return 0;
@@ -811,11 +760,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         const radiusY = Math.abs(points[1].y - centerY);
         return centerY - radiusY;
       }
-    } else if (shape.type === AnnotationShapeType.ARROW) {
-      const points = shape.points;
-      if (points.length >= 2) {
-        return Math.min(points[0].y, points[1].y);
-      }
     }
     return 0;
   }
@@ -838,11 +782,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         const radiusX = Math.abs(points[1].x - centerX);
         return radiusX * 2;
       }
-    } else if (shape.type === AnnotationShapeType.ARROW) {
-      const points = shape.points;
-      if (points.length >= 2) {
-        return Math.abs(points[1].x - points[0].x);
-      }
     }
     return 0;
   }
@@ -864,11 +803,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         const centerY = points[0].y;
         const radiusY = Math.abs(points[1].y - centerY);
         return radiusY * 2;
-      }
-    } else if (shape.type === AnnotationShapeType.ARROW) {
-      const points = shape.points;
-      if (points.length >= 2) {
-        return Math.abs(points[1].y - points[0].y);
       }
     }
     return 0;
@@ -1328,37 +1262,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this.cdRef.detectChanges();
   }
 
-  /**
-   * Old method - Create an arrow annotation
-   */
-  createArrow(): void {
-    console.log("createArrow called");
-
-    // Create a new annotation for an arrow
-    const annotation = this.annotationService.createAnnotation({
-      shapeType: AnnotationShapeType.ARROW,
-      color: this.annotationService.getDefaultColor()
-    });
-
-    console.log("Created arrow annotation:", annotation);
-
-    // Set arrow points (center horizontal arrow)
-    this.annotationService.updateAnnotationShape(annotation.id, {
-      points: [
-        { x: 35, y: 50 },
-        { x: 65, y: 50 } // Horizontal arrow across the center
-      ]
-    });
-
-    // Set as active annotation and activate note editor
-    this.activeAnnotation = annotation;
-    this.isAddingNote = true;
-
-    // Force change detection
-    this.ngZone.run(() => {
-      this.cdRef.markForCheck();
-    });
-  }
 
   /**
    * Cancel the current annotation creation
@@ -2259,29 +2162,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this.cdRef.detectChanges();
   }
 
-  /**
-   * Handle arrow dragging and control points
-   */
-  private handleArrowDrag(deltaXPercent: number, deltaYPercent: number, currentXPercent: number, currentYPercent: number): void {
-    if (this.dragMode === "whole") {
-      // Move the entire arrow by the delta percentage
-      this.currentlyDragging.startX = this.dragStartShapeX + deltaXPercent;
-      this.currentlyDragging.startY = this.dragStartShapeY + deltaYPercent;
-      this.currentlyDragging.endX = this.dragStartShapeWidth + deltaXPercent;
-      this.currentlyDragging.endY = this.dragStartShapeHeight + deltaYPercent;
-    } else if (this.dragMode === "start") {
-      // Move just the start point of the arrow to the current mouse position
-      this.currentlyDragging.startX = this.dragStartShapeX + deltaXPercent;
-      this.currentlyDragging.startY = this.dragStartShapeY + deltaYPercent;
-    } else if (this.dragMode === "end") {
-      // Move just the end point of the arrow to the current mouse position
-      this.currentlyDragging.endX = this.dragStartShapeWidth + deltaXPercent;
-      this.currentlyDragging.endY = this.dragStartShapeHeight + deltaYPercent;
-    }
-
-    // Force redraw to update HTML positioning with new values
-    this.cdRef.detectChanges();
-  }
 
   /**
    * Private helper to update annotation points after position calculation
@@ -2291,24 +2171,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Update the annotation's shape points based on the shape type
     switch (this.activeAnnotation.shape.type) {
-      case AnnotationShapeType.ARROW:
-        // For an arrow, we only need to update the end point (target)
-        if (this.activeAnnotation.shape.points.length === 0) {
-          // If no points, add the start point first
-          this.annotationService.updateAnnotationShape(this.activeAnnotation.id, {
-            points: [{ x: relX, y: relY }, { x: relX, y: relY }]
-          });
-        } else {
-          // Otherwise, update the end point
-          this.annotationService.updateAnnotationShape(this.activeAnnotation.id, {
-            points: [
-              this.activeAnnotation.shape.points[0],
-              { x: relX, y: relY }
-            ]
-          });
-        }
-        break;
-
+  
       case AnnotationShapeType.RECTANGLE:
         // For a rectangle, we store the start and end points to define the rectangle
         if (this.activeAnnotation.shape.points.length === 0) {
