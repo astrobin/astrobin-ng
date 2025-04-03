@@ -374,7 +374,6 @@
     *ngIf="(!isVeryLargeImage && (!!hdThumbnail || (allowReal && !!real)))"
     class="fullscreen-view-menu"
   >
-    <!-- Kebab menu button - hidden during measuring or annotation mode -->
     <div class="kebab-menu-container" *ngIf="!isMeasuringMode && !isAnnotationMode"
          (mouseenter)="setMouseOverUIElement(true)"
          (mouseleave)="setMouseOverUIElement(false)">
@@ -382,7 +381,6 @@
         <fa-icon icon="ellipsis-vertical"></fa-icon>
       </button>
 
-      <!-- Dropdown menu -->
       <div class="kebab-dropdown" [class.show]="showKebabMenu">
         <!-- Keyboard shortcuts button - hide on touch devices -->
         <div
