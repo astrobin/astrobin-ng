@@ -1,5 +1,9 @@
 @import "../../../../styles/breakpoints";
 
+.nav {
+  font-size: .9rem;
+}
+
 .nav-item {
   position: relative;
   min-height: 3rem;
@@ -12,11 +16,6 @@
     display: flex;
     align-items: center;
     gap: .5rem;
-
-    img {
-      width: 2rem;
-      margin: 0;
-    }
 
     .type-label {
       flex-grow: 1;

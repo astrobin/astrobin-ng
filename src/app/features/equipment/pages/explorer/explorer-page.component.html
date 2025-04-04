@@ -36,12 +36,12 @@
     <small><ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container></small>
   </ng-container>
 
-  <div class="row g-0 g-md-4">
-    <div *ngIf="breakpointMdMin" class="col-md-4">
+  <div class="row g-0 g-3">
+    <div *ngIf="breakpointMdMin" class="col-md-4 col-xl-3">
       <ng-container [ngTemplateOutlet]="navTemplate"></ng-container>
     </div>
 
-    <div class="col-md-8">
+    <div class="col-md-8 col-xl-9">
       <astrobin-equipment-explorer
         #explorer
         (creationMode)="creationMode = $event"

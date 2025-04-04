@@ -186,7 +186,7 @@
         <h5>
           {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.COMMUNITY_NOTES) }}
         </h5>
-        <div *ngIf="(item.communityNotes | BBCodeToHtml) | async as html; else communityNotesLoading" 
+        <div *ngIf="(item.communityNotes | BBCodeToHtml) | async as html; else communityNotesLoading"
              [innerHTML]="html" class="community-notes-content"></div>
         <ng-template #communityNotesLoading>
           <div class="community-notes-content">
