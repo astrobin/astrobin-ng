@@ -30,7 +30,7 @@
         </span>
 
           <span [attr.data-test-value]="comment.created" class="timestamp">
-          {{ comment.created | localDate | timeago: true }}
+          {{ comment.created | localDate | timeago }}
         </span>
 
           <astrobin-toggle-property

@@ -25,7 +25,7 @@ import { imageFeatureKey, imageReducer } from "@features/image/store/image.reduc
 import { ImagePageComponent } from "@features/image/pages/image/image-page.component";
 import { ImageEditRevisionPageComponent } from "@features/image/pages/edit-revision/image-edit-revision-page.component";
 import { ImagePlateSolvingSettingsPageComponent } from "@features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+// import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 
 @NgModule({
   declarations: [

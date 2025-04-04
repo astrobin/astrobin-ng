@@ -95,6 +95,20 @@ import { DeviceService } from "@core/services/device.service";
         icon="sliders"
       ></fa-icon>
     </button>
+    
+    <button
+      *ngIf="isImageOwner"
+      (click)="editAnnotations.emit()"
+      astrobinEventPreventDefault
+      astrobinEventStopPropagation
+      class="annotations-editor-button btn btn-link text-light"
+    >
+      <fa-icon
+        [ngbTooltip]="'Edit annotations' | translate"
+        container="body"
+        icon="file-text"
+      ></fa-icon>
+    </button>
 
     <ng-template #skyplotModalTemplate>
       <div class="modal-body">
@@ -130,6 +144,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
   @Input() inlineSvg: SafeHtml;
   @Input() forceViewMouseHover: boolean;
   @Input() moonOverlayActive = false;
+  @Input() isImageOwner = false;
 
   // Only for desktops.
   @Output() toggleAnnotationsOnMouseHover = new EventEmitter<void>();
@@ -141,6 +156,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
 
   @Output() showAdjustmentsEditor = new EventEmitter<void>();
   @Output() toggleMoonOverlay = new EventEmitter<void>();
+  @Output() editAnnotations = new EventEmitter<void>();
 
   @ViewChild("skyplotModalTemplate")
   skyplotModalTemplate: TemplateRef<any>;

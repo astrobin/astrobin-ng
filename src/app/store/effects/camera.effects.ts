@@ -24,7 +24,7 @@ export class CameraEffects {
               )
               : this.cameraApiService.get(action.payload).pipe(
                 map(camera => new LoadCameraSuccess(camera)),
-                catchError(error => EMPTY)
+                catchError(_error => EMPTY)
               )
           )
         )

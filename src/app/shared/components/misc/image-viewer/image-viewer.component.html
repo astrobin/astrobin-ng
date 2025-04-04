@@ -194,6 +194,7 @@
           (toggleViewMouseHover)="toggleViewMouseHover()"
           (showAdjustmentsEditor)="adjustmentEditorVisible = true"
           (toggleMoonOverlay)="toggleMoonOverlay()"
+          (editAnnotations)="startAnnotationMode()"
           [image]="image"
           [revisionLabel]="revisionLabel"
           [hasMouseHover]="
@@ -204,6 +205,7 @@
           [allowTogglingAnnotationsOnMouseHover]="revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION"
           [forceViewMouseHover]="forceViewMouseHover"
           [moonOverlayActive]="showMoonOverlay"
+          [isImageOwner]="isImageOwner"
           class="additional-buttons"
         >
         </astrobin-image-viewer-additional-buttons>
@@ -218,11 +220,13 @@
       </button>
 
       <astrobin-fullscreen-image-viewer
+        #fullscreenViewer
         *ngIf="standalone && supportsFullscreen"
         [id]="image.pk"
         [eagerLoading]="true"
         [revisionLabel]="revisionLabel"
         [standalone]="standalone"
+        [externalSolutionMatrix]="advancedSolutionMatrix"
         (exitFullscreen)="exitFullscreen()"
       ></astrobin-fullscreen-image-viewer>
 
@@ -241,6 +245,31 @@
         [image]="image"
         [revisionLabel]="revisionLabel"
       ></astrobin-image>
+
+      <!-- Annotation tool in readonly mode to show saved annotations -->
+      <div
+        *ngIf="shouldShowReadonlyAnnotations() && imageArea && imageFileLoaded"
+        class="mouse-hover-container annotation-container"
+        (intentionalClick)="enterFullscreen($event)"
+        astrobinPreventScrollClick
+      >
+        <astrobin-annotation-tool
+          [active]="true"
+          [readonly]="true"
+          [imageElement]="getReadonlyAnnotationImageElement()"
+          [windowWidth]="isBrowser ? windowRefService.nativeWindow.innerWidth : 0"
+          [windowHeight]="isBrowser ? windowRefService.nativeWindow.innerHeight : 0"
+          [setMouseOverUIElement]="setMouseOverUIElement.bind(this)"
+          [naturalWidth]="revision?.w"
+          [naturalHeight]="revision?.h"
+          [imageId]="image?.pk"
+          [isImageOwner]="isImageOwner"
+          [revision]="revision"
+          (mouseenter)="onImageMouseEnter($event)"
+          (mouseleave)="onImageMouseLeave($event)"
+          class="mouse-hover ready annotation-overlay readonly"
+        ></astrobin-annotation-tool>
+      </div>
 
       <!--
         If the mouse-hover settings indicate a non-solution mouse-hover, we always show it on hover. Except if the
@@ -316,27 +345,16 @@
             *ngIf="!advancedSolutionMatrix && loadingAdvancedSolutionMatrix"
           ></astrobin-loading-indicator>
 
-          <div *ngIf="!!advancedSolutionMatrix" class="mouse-hover-svg-overlay-coordinates">
-            <div
-              class="ra-dec d-flex gap-2"
-              ngbTooltip="RA/Dec"
-            >
-              <span [innerHTML]="mouseHoverRa"></span>
-              <span [innerHTML]="mouseHoverDec"></span>
-            </div>
-
-            <div
-              class="galactic d-flex gap-2"
-              [ngbTooltip]="'Galactic coordinates' | translate"
-            >
-              <span [innerHTML]="mouseHoverGalacticRa"></span>
-              <span [innerHTML]="mouseHoverGalacticDec"></span>
-            </div>
-          </div>
-
-          <span>
-            Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
-          </span>
+          <astrobin-coordinates-display
+            *ngIf="!!advancedSolutionMatrix"
+            [raHtml]="mouseHoverRa"
+            [decHtml]="mouseHoverDec"
+            [galacticRaHtml]="mouseHoverGalacticRa"
+            [galacticDecHtml]="mouseHoverGalacticDec"
+            [showGalactic]="true"
+            [showAttribution]="true"
+            ngbTooltip="RA/Dec"
+          ></astrobin-coordinates-display>
         </div>
 
         <div

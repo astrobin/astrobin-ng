@@ -263,7 +263,7 @@ export class EquipmentMarketplaceService extends BaseService {
       });
 
     // Check for removed line items
-    previousLineItemsMap.forEach((item, id) => {
+    previousLineItemsMap.forEach((_item, id) => {
       if (!updatedLineItemsMap.has(id)) {
         removedLineItems.push(previousLineItemsMap.get(id)!);
       }
@@ -431,7 +431,7 @@ export class EquipmentMarketplaceService extends BaseService {
     this.store$
       .select(selectCurrentUser)
       .pipe(take(1))
-      .subscribe(currentUser => {
+      .subscribe(_currentUser => {
         const dispatchSequentially = (index: number) => {
           if (index >= offers.length) {
             this.loadingService.setLoading(false);

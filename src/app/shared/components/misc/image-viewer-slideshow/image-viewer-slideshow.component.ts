@@ -261,7 +261,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     );
   }
 
-  protected onTouchEnd(event: TouchEvent): void {
+  protected onTouchEnd(_event: TouchEvent): void {
     if (this.fullscreen) {
       return;
     }
@@ -344,7 +344,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   setNavigationContext(newContext: ImageViewerNavigationContext) {
     if (this.navigationContext) {
-      this.navigationContext = newContext.map((item, index) => {
+      this.navigationContext = newContext.map(item => {
         const existingItem = this.navigationContext.find(i => i.imageId === item.imageId);
         if (existingItem) {
           return existingItem;
@@ -514,7 +514,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     });
   }
 
-  protected contextTrackByFn(index: number, item: ImageViewerNavigationContextItem) {
+  protected contextTrackByFn(_index: number, item: ImageViewerNavigationContextItem) {
     return item.imageId;
   }
 

@@ -3,7 +3,6 @@
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
 import { Action } from "@ngrx/store";

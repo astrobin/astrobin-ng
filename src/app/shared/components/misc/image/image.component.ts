@@ -252,11 +252,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         this.revision = this.imageService.getRevision(image, this.revisionLabel);
         this.changeDetectorRef.markForCheck();
 
-        if (this.thumbnailUrl && !this.revision.videoFile) {
-          this.loaded.emit();
-          return;
-        }
-
         this.image = image;
         this.id = image.pk;
         this._loadThumbnail();
@@ -275,7 +270,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     this.store$.dispatch(new LoadImage({ imageId: this.id }));
   }
 
-  onLoad(event) {
+  onLoad(_event) {
     if (this._autoLoadSubscription) {
       this._autoLoadSubscription.unsubscribe();
       this._autoLoadSubscription = null;
@@ -289,11 +284,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   onClick(event: MouseEvent) {
     event.preventDefault();
     this.imageClick.emit(event);
-  }
-
-  onTouchstart(event: TouchEvent) {
-    event.preventDefault();
-    this.imageTouchstart.emit(event);
   }
 
   private _getImageObject(): Observable<ImageInterface> {
@@ -336,8 +326,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
           if (this.revision.videoFile) {
             this._insertVideoJs();
-          } else {
-            this.loaded.emit();
           }
 
           this.changeDetectorRef.markForCheck();
@@ -369,8 +357,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
         if (this.revision.videoFile) {
           this._insertVideoJs();
-        } else {
-          this.loaded.emit();
         }
 
         this.changeDetectorRef.markForCheck();
@@ -554,7 +540,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
               filter(image => !!image),
               take(1)
             )
-            .subscribe(image => {
+            .subscribe(_image => {
               this.load();
               this.changeDetectorRef.markForCheck();
             });

@@ -8,7 +8,7 @@ import {
   AcceptCollaboratorRequest, AcceptCollaboratorRequestFailure, AcceptCollaboratorRequestSuccess, DeleteImage, DeleteImageFailure, DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, DenyCollaboratorRequest, DenyCollaboratorRequestFailure, DenyCollaboratorRequestSuccess, FindImages, FindImagesFailure, FindImagesSuccess, ForceCheckImageAutoLoad, ForceCheckTogglePropertyAutoLoad, LoadImage, LoadImageFailure, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, RemoveCollaborator, RemoveCollaboratorFailure, RemoveCollaboratorSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, SubmitImageForIotdTpConsideration, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UndeleteImage, UndeleteImageFailure, UndeleteImageSuccess, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess
 } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
-import { LoadSolution, LoadSolutionFailure, LoadSolutions, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
+import { LoadSolution, LoadSolutionFailure, LoadSolutionMatrix, LoadSolutionMatrixFailure, LoadSolutionMatrixStart, LoadSolutionMatrixSuccess, LoadSolutions, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
 import { LoadThumbnail, LoadThumbnailCancel, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
 import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
@@ -101,6 +101,11 @@ export enum AppActionTypes {
 
   LOAD_SOLUTIONS = "[App] Load solutions",
   LOAD_SOLUTIONS_SUCCESS = "[App] Load solutions success",
+
+  LOAD_SOLUTION_MATRIX = "[App] Load solution matrix",
+  LOAD_SOLUTION_MATRIX_SUCCESS = "[App] Load solution matrix success",
+  LOAD_SOLUTION_MATRIX_FAILURE = "[App] Load solution matrix failure",
+  LOAD_SOLUTION_MATRIX_START = "[App] Load solution matrix start",
 
   LOAD_TELESCOPE = "[App] Load telescope",
   LOAD_TELESCOPE_SUCCESS = "[App] Load telescope success",
@@ -261,6 +266,10 @@ export type All =
   | LoadSolutionFailure
   | LoadSolutions
   | LoadSolutionsSuccess
+  | LoadSolutionMatrix
+  | LoadSolutionMatrixSuccess
+  | LoadSolutionMatrixFailure
+  | LoadSolutionMatrixStart
   | LoadTelescope
   | LoadTelescopeSuccess
   | LoadCamera

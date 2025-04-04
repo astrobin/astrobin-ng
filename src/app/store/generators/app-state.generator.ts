@@ -47,6 +47,8 @@ export class AppStateGenerator {
       remoteSourceAffiliates: [],
       groups: [],
       collections: [],
+      solutionMatrices: {},
+      solutionMatricesLoading: new Set<number>(),
     };
   }
 }

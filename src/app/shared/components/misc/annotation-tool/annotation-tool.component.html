@@ -1,0 +1,261 @@
+<!-- Loading indicator for URL annotations -->
+<div *ngIf="loadingAnnotations" class="url-annotations-loading-indicator">
+  <div class="spinner-border text-light" role="status">
+    <span class="visually-hidden">{{ 'Loading annotations...' | translate }}</span>
+  </div>
+  <div class="loading-text mt-2">{{ 'Loading annotations...' | translate }}</div>
+</div>
+
+<!-- Help content template -->
+<ng-template #helpContent let-offcanvasRef>
+  <div class="offcanvas-header">
+    <h3 class="mb-0">{{ "Annotation tool help" | translate }}</h3>
+    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvasRef.dismiss()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="annotation-help" style="font-size: 0.9rem;">
+      <h5>{{ "Getting started" | translate }}</h5>
+      <p>{{ "The annotation tool allows you to add shapes and notes to highlight important features in the image." | translate }}</p>
+
+      <h5>{{ "Creating annotations" | translate }}</h5>
+      <ul>
+        <li>{{ "Use the rectangle tool to create rectangular annotations" | translate }}</li>
+        <li>{{ "Use the circle tool to create circular annotations" | translate }}</li>
+        <li>{{ "Click and drag to draw the shape where you want it" | translate }}</li>
+      </ul>
+
+      <h5>{{ "Editing annotations" | translate }}</h5>
+      <ul>
+        <li>{{ "Click and drag an annotation to move it" | translate }}</li>
+        <li>{{ "Use the control points (white circles) to resize a shape" | translate }}</li>
+        <li>{{ "Click the text icon to add or edit a title for your annotation" | translate }}</li>
+        <li>{{ "Click the trash icon to delete an annotation" | translate }}</li>
+      </ul>
+
+      <h5>{{ "Sharing annotations" | translate }}</h5>
+      <ul>
+        <li>{{ "Click the share button to generate a URL that includes your annotations" | translate }}</li>
+        <li>{{ "The URL will be copied to your clipboard automatically" | translate }}</li>
+        <li>{{ "Anyone with the link can see your annotations without changing the original image" | translate }}</li>
+      </ul>
+
+      <h5>{{ "Saving annotations (image owners only)" | translate }}</h5>
+      <ul>
+        <li>{{ "If you own this image, you can save annotations permanently" | translate }}</li>
+        <li>{{ "Click the save button to store your annotations with the image" | translate }}</li>
+        <li>{{ "Saved annotations will be visible to anyone viewing your image" | translate }}</li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
+
+<div class="annotation-tool-container pointer-events-all" [class.active]="active" [class.readonly-mode]="readonly" data-ignore-swipe-down="true">
+  <!-- Fixed toolbar - only shown when not in readonly mode -->
+  <div class="fixed-top-toolbar" *ngIf="!readonly">
+    <div class="toolbar-buttons">
+      <!-- Help button -->
+      <button type="button" class="icon-button help-button"
+              [ngbTooltip]="'Help' | translate"
+              placement="bottom"
+              container="body"
+              (click)="showHelp()"
+              (touchend)="showHelp()">
+        <fa-icon [icon]="['fas', 'question']"></fa-icon>
+      </button>
+
+      <!-- Separator after help button -->
+      <div class="toolbar-separator"></div>
+
+      <!-- Drawing tools -->
+      <button type="button" class="icon-button"
+              [ngbTooltip]="'Add rectangle' | translate"
+              placement="bottom"
+              container="body"
+              (click)="makeRect()"
+              (touchend)="makeRect()">
+        <fa-icon [icon]="['fas', 'square']"></fa-icon>
+      </button>
+      <button type="button" class="icon-button"
+              [ngbTooltip]="'Add circle' | translate"
+              placement="bottom"
+              container="body"
+              (click)="makeCircle()"
+              (touchend)="makeCircle()">
+        <fa-icon [icon]="['fas', 'circle']"></fa-icon>
+      </button>
+
+      <!-- Actions -->
+      <button *ngIf="isImageOwner && imageId"
+              type="button"
+              class="icon-button"
+              [ngbTooltip]="'Save annotations' | translate"
+              placement="bottom"
+              container="body"
+              [disabled]="annotations.length === 0 || savingAnnotations"
+              [class.saving]="savingAnnotations"
+              [class.success]="saveSuccess"
+              (click)="saveAnnotations()"
+              (touchend)="annotations.length > 0 && !savingAnnotations ? saveAnnotations() : null"
+              (touchstart)="$event.stopPropagation()">
+        <fa-icon *ngIf="!savingAnnotations && !saveSuccess" [icon]="['fas', 'save']"></fa-icon>
+        <fa-icon *ngIf="savingAnnotations" [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        <fa-icon *ngIf="!savingAnnotations && saveSuccess" [icon]="['fas', 'check']" class="save-success-icon"></fa-icon>
+      </button>
+      <button type="button"
+              class="icon-button"
+              [ngbTooltip]="'Share annotations' | translate"
+              placement="bottom"
+              container="body"
+              [disabled]="annotations.length === 0"
+              (click)="annotations.length > 0 ? shareAnnotations() : null"
+              (touchstart)="$event.stopPropagation()"
+              (touchend)="annotations.length > 0 ? shareAnnotations() : null">
+        <fa-icon [icon]="['fas', 'share-alt']"></fa-icon>
+      </button>
+
+      <!-- Exit/Clear section with a visual separator -->
+      <div class="toolbar-separator"></div>
+
+      <button type="button"
+              class="icon-button"
+              [ngbTooltip]="'Clear all' | translate"
+              placement="bottom"
+              container="body"
+              [disabled]="annotations.length === 0"
+              (click)="confirmClearAll()"
+              (touchend)="annotations.length > 0 ? confirmClearAll() : null"
+              (touchstart)="$event.stopPropagation()">
+        <fa-icon [icon]="['fas', 'eraser']"></fa-icon>
+      </button>
+      <button type="button" class="icon-button exit-button"
+              [ngbTooltip]="'Exit annotation mode' | translate"
+              placement="bottom"
+              container="body"
+              (click)="exitAnnotationModeHandler(); annotationService.clearAllAnnotations()"
+              (touchend)="exitAnnotationModeHandler(); annotationService.clearAllAnnotations()"
+              (touchstart)="$event.stopPropagation()">
+        <fa-icon [icon]="['fas', 'times']"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Annotation container with HTML elements instead of SVG -->
+  <div class="annotation-container" [class.readonly]="readonly" data-ignore-swipe-down="true">
+    <!-- Annotations layer -->
+    <div class="annotation-layer" [class.readonly]="readonly" data-ignore-swipe-down="true">
+      <div *ngFor="let ann of annotations"
+           [ngClass]="{'annotation': true, 'rectangle': ann.type === 'rectangle', 'circle': ann.type === 'circle', 'readonly': readonly}"
+           [style.left.%]="getAnnotationLeft(ann)"
+           [style.top.%]="getAnnotationTop(ann)"
+           [style.width.%]="getAnnotationWidth(ann)"
+           [style.height.%]="getAnnotationHeight(ann)"
+           [style.paddingBottom.%]="ann.type === 'circle' ? getCircleAspectRatio(ann) : null"
+           [style.backgroundColor]="ann.color + '4D'"
+           [style.borderColor]="ann.color"
+           [class.active]="currentlyDragging === ann"
+           [style.visibility]="loadingAnnotations ? 'hidden' : 'visible'"
+           data-ignore-swipe-down="true"
+           (mousedown)="!readonly && startDrag($event, ann, 'whole')"
+           (touchstart)="!readonly && startDragTouch($event, ann, 'whole')">
+
+           <!-- Title display -->
+           <div *ngIf="ann.title" class="annotation-title">
+             {{ ann.title }}
+           </div>
+
+        <!-- Control points (corners) - only visible when not in readonly mode -->
+        <div *ngIf="ann.type === 'rectangle' && !readonly" class="control-points">
+          <div class="control-point top-left"
+               data-ignore-swipe-down="true"
+               (mousedown)="startDrag($event, ann, 'tl')"
+               (touchstart)="startDragTouch($event, ann, 'tl')"></div>
+          <div class="control-point top-right"
+               data-ignore-swipe-down="true"
+               (mousedown)="startDrag($event, ann, 'tr')"
+               (touchstart)="startDragTouch($event, ann, 'tr')"></div>
+          <div class="control-point bottom-left"
+               data-ignore-swipe-down="true"
+               (mousedown)="startDrag($event, ann, 'bl')"
+               (touchstart)="startDragTouch($event, ann, 'bl')"></div>
+          <div class="control-point bottom-right"
+               data-ignore-swipe-down="true"
+               (mousedown)="startDrag($event, ann, 'br')"
+               (touchstart)="startDragTouch($event, ann, 'br')"></div>
+        </div>
+
+        <!-- Control points for circle - only top handle and only visible when not in readonly mode -->
+        <div *ngIf="ann.type === 'circle' && !readonly" class="control-points">
+          <div class="control-point top"
+               data-ignore-swipe-down="true"
+               (mousedown)="startDrag($event, ann, 'resize')"
+               (touchstart)="startDragTouch($event, ann, 'resize')"></div>
+        </div>
+
+        <!-- Toolbar for each annotation - only visible when not in readonly mode -->
+        <div *ngIf="!readonly" class="control-toolbar"
+             (mousedown)="$event.stopPropagation()"
+             (touchstart)="$event.stopPropagation()">
+          <button class="tool-button message"
+                  (click)="showMessageForm(ann.id, annotationFormModal); $event.stopPropagation()">
+            <fa-icon [icon]="['fas', 'file-alt']"></fa-icon>
+          </button>
+
+          <button class="tool-button delete" (click)="confirmDeleteAnnotation(ann.id); $event.stopPropagation()">
+            <fa-icon icon="trash"></fa-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawing overlay (for creating new shapes) - hidden during loading or in readonly mode -->
+    <div class="drawing-overlay" *ngIf="active && !readonly && !currentlyDragging && !loadingAnnotations">
+      <!-- Preview of shape being drawn -->
+      <div *ngIf="isDrawing && activeAnnotation" class="drawing-preview"
+           [ngClass]="{'rectangle': activeAnnotation.shape.type === 'RECTANGLE',
+                       'circle': activeAnnotation.shape.type === 'CIRCLE'}"
+           [style.left.%]="getDrawingLeft()"
+           [style.top.%]="getDrawingTop()"
+           [style.width.%]="getDrawingWidth()"
+           [style.height.%]="activeAnnotation.shape.type === 'CIRCLE' ? 0 : getDrawingHeight()"
+           [style.paddingBottom.%]="activeAnnotation.shape.type === 'CIRCLE' ? getDrawingWidth() : null"
+           [style.backgroundColor]="activeAnnotation.shape.color + '4D'"
+           [style.borderColor]="activeAnnotation.shape.color">
+      </div>
+    </div>
+  </div>
+
+  <!-- Mouse event overlay - hidden during loading or in readonly mode -->
+  <div class="mouse-event-overlay" *ngIf="!readonly && currentlyDragging && !loadingAnnotations"
+       [style.cursor]="getCursorForDragMode()"
+       data-ignore-swipe-down="true"
+       (mousemove)="dragMove($event)"
+       (mouseup)="endDrag($event)"
+       (mouseleave)="endDrag($event)"
+       (touchmove)="dragMoveTouch($event)"
+       (touchend)="endDragTouch($event)"
+       (touchcancel)="endDragTouch($event)"></div>
+
+
+  <!-- NgbModal Template -->
+  <ng-template #annotationFormModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" *ngIf="pendingShapeData">{{ 'Create annotation' | translate }}</h4>
+      <h4 class="modal-title" *ngIf="!pendingShapeData">{{ 'Edit annotation' | translate }}</h4>
+      <button type="button" class="close" [attr.aria-label]="'Close' | translate" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- Use ngx-formly form -->
+      <form [formGroup]="messageForm">
+        <formly-form [form]="messageForm" [fields]="messageFields" [model]="messageModel"></formly-form>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{ 'Cancel' | translate }}</button>
+      <button type="button" class="btn btn-primary" [disabled]="!messageForm.valid" (click)="validateAndCloseModal(modal, messageForm, messageForm.value, $event)">{{ 'Confirm' | translate }}</button>
+    </div>
+  </ng-template>
+
+  <!-- We've removed the message bubbles as requested -->
+</div>

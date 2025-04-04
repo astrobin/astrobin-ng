@@ -41,7 +41,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                 container="body"
                 class="license-icon"
               ></fa-icon>
-              {{ publicationDate | localDate | timeago:true }}
+              {{ publicationDate | localDate | timeago }}
             </span>
 
             <span class="view-count">

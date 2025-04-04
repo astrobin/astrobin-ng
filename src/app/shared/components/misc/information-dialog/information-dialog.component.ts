@@ -13,6 +13,12 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 export class InformationDialogComponent extends BaseComponentDirective {
   @Input()
   message: string;
+  
+  @Input()
+  title: string = "Please note";
+  
+  @Input()
+  messageClass: string;
 
   constructor(
     public readonly store$: Store<MainState>,

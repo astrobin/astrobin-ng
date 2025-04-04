@@ -41,3 +41,40 @@ export class LoadSolutionsSuccess implements PayloadActionInterface {
   constructor(public payload: SolutionInterface[]) {
   }
 }
+
+export class LoadSolutionMatrix implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_SOLUTION_MATRIX;
+
+  constructor(public payload: {
+    solutionId: SolutionInterface["id"];
+  }) {
+  }
+}
+
+export class LoadSolutionMatrixSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_SOLUTION_MATRIX_SUCCESS;
+
+  constructor(public payload: {
+    solutionId: SolutionInterface["id"];
+    matrix: any;
+  }) {
+  }
+}
+
+export class LoadSolutionMatrixFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_SOLUTION_MATRIX_FAILURE;
+  
+  constructor(public payload: {
+    solutionId: SolutionInterface["id"];
+  }) {
+  }
+}
+
+export class LoadSolutionMatrixStart implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_SOLUTION_MATRIX_START;
+  
+  constructor(public payload: {
+    solutionId: SolutionInterface["id"];
+  }) {
+  }
+}

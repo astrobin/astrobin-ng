@@ -191,10 +191,11 @@ export class ImageApiService extends BaseClassicApiService {
   }
 
   download(
-    pk: ImageInterface["pk"],
-    revisionLabel: ImageRevisionInterface["label"],
-    version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations"
+    _pk: ImageInterface["pk"],
+    _revisionLabel: ImageRevisionInterface["label"],
+    _version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations"
   ): void {
+    // Method is a stub, params are unused intentionally
   }
 
   deleteUncompressedSourceFile(pk: ImageInterface["pk"]): Observable<ImageInterface> {
@@ -243,6 +244,14 @@ export class ImageApiService extends BaseClassicApiService {
 
   removeCollaborator(pk: ImageInterface["pk"], userId: UserInterface["id"]): Observable<ImageInterface> {
     return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/remove-collaborator/`, { userId });
+  }
+
+  setAnnotations(pk: ImageInterface["pk"], annotations: string): Observable<ImageInterface> {
+    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/set-annotations/`, { annotations });
+  }
+
+  setRevisionAnnotations(pk: ImageRevisionInterface["pk"], annotations: string): Observable<ImageRevisionInterface> {
+    return this.http.patch<ImageRevisionInterface>(`${this.configUrl}/image-revision/${pk}/set-annotations/`, { annotations });
   }
 
   getUsersWhoLikeImage(

@@ -178,7 +178,7 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
     SwipeDownToCloseService,
     {
       provide: APP_INITIALIZER,
-      useFactory: (swipeDownToCloseService: SwipeDownToCloseService) => {
+      useFactory: (_swipeDownToCloseService: SwipeDownToCloseService) => {
         return () => {
           // The service is initialized in its constructor
           return Promise.resolve();

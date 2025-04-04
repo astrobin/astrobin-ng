@@ -101,7 +101,7 @@ ngMocks.defaultMock(UsernameService, () => ({
 }));
 
 ngMocks.defaultMock(UserService, () => ({
-  isInGroup: jest.fn().mockImplementation((user: UserInterface, name: string) => name === "found")
+  isInGroup: jest.fn().mockImplementation((_user: UserInterface, name: string) => name === "found")
 }));
 
 ngMocks.defaultMock(JsonApiService, () => ({

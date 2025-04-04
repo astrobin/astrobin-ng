@@ -101,7 +101,6 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     const modalRef = this.modalService.open(ConfirmationDialogComponent);
     const instance = modalRef.componentInstance;
     instance.message = this.translate.instant(
-      "You are about to delete the uncompressed source file that you associated to this image. " +
       "This action cannot be undone."
     );
 

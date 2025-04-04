@@ -1,0 +1,10 @@
+<div class="color-options">
+  <div
+    *ngFor="let color of colors"
+    class="color-option"
+    [class.selected]="formControl.value === color"
+    [style.background-color]="color"
+    (click)="selectColor(color)"
+    title="'Select color' | translate">
+  </div>
+</div>

@@ -23,6 +23,7 @@
     (intentionalClick)="onClick($event)"
     (mouseenter)="imageMouseEnter.emit($event)"
     (mouseleave)="imageMouseLeave.emit($event)"
+    (touchstart)="imageTouchstart.emit($event)"
     [alt]="image.title"
     [src]="thumbnailUrl"
     [style.max-width.px]="revision?.w"

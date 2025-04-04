@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpRequest, HttpEvent, HttpResponse } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { PaymentInterface } from "@core/interfaces/payment.interface";
@@ -10,7 +10,7 @@ import { BackendTogglePropertyInterface, BackendUserInterface, BackendUserProfil
 import { CommonApiServiceInterface } from "@core/services/api/classic/common/common-api.service-interface";
 import { LoadingService } from "@core/services/loading.service";
 import { Observable, of } from "rxjs";
-import { catchError, map, filter } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
 import { BaseClassicApiService } from "../base-classic-api.service";
 import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
