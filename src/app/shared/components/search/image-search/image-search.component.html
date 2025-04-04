@@ -36,7 +36,10 @@
                   class="link"
                   target="_blank"
                 >
-                  <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
+                  <img [src]="item.imageUrl || item.retailer.logo" [alt]="item.retailer.name" class="image" />
+                  <span *ngIf="item.listingType === EquipmentItemListingType.PAIRS_WELL" class="pairs-well-badge">
+                    {{ 'Pairs well!' | translate }}
+                  </span>
                 </a>
               </div>
             </ng-container>

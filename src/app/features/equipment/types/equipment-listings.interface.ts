@@ -4,6 +4,11 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { StockStatus } from "@features/equipment/types/stock-status.type";
 
+export enum EquipmentItemListingType {
+  SELLS = "SELLS",
+  PAIRS_WELL = "PAIRS_WELL",
+}
+
 export interface EquipmentRetailerInterface {
   id: number;
   created: string;
@@ -30,11 +35,14 @@ export interface EquipmentItemListingInterface {
   id: number;
   created: string;
   updated: string;
+  listingType: EquipmentItemListingType;
   url: string;
   urlDe: string | null;
+  imageUrl: string | null;
   createdBy: UserInterface["id"] | null;
   itemType: EquipmentItemType;
   item: EquipmentItem["id"];
+  itemFullName: string;
   name: string;
   retailer: EquipmentRetailerInterface;
   stockStatus?: StockStatus;

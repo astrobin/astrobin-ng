@@ -56,7 +56,7 @@
     *ngIf="
     showRetailers &&
     item.listings.allowFullRetailerIntegration &&
-    (item.listings.itemListings.length || item.listings.brandListings.length)
+    (sellsListings.length || pairsWellListings.length || item.listings.brandListings.length)
   "
     (click)="openRetailersOffcanvas()"
     astrobinEventPreventDefault
@@ -91,31 +91,59 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
   </div>
   <div class="offcanvas-body offcanvas-retailers">
-    <div class="alert alert-dark mb-4">
-      <fa-icon icon="heart"></fa-icon>
-      <span>{{ "Please support AstroBin by shopping at one of our partners!" | translate }}</span>
-    </div>
-
-    <div *ngIf="item.listings.itemListings.length; else brandsTemplate">
-      <div *ngFor="let listing of item.listings.itemListings" class="retailer">
-        <a [href]="listing.url" target="_blank" class="no-external-link-icon">
-          <img *ngIf="listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
-          <span *ngIf="!listing.retailer.logo">{{ listing.retailer.name }}</span>
-        </a>
+    <!-- SELLS listings -->
+    <ng-container *ngIf="sellsListings.length > 0">
+      <div class="alert alert-dark mb-4">
+        <fa-icon icon="heart"></fa-icon>
+        <span>{{ "Support AstroBin by shopping at one of our partners" | translate }}</span>
       </div>
-    </div>
+
+      <div class="mb-4">
+        <div *ngFor="let listing of sellsListings" class="retailer">
+          <a [href]="listing.url" target="_blank" class="no-external-link-icon">
+            <img *ngIf="listing.imageUrl" [src]="listing.imageUrl" alt="" />
+            <img *ngIf="!listing.imageUrl && listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
+            <span *ngIf="!listing.imageUrl && !listing.retailer.logo">{{ listing.retailer.name }}</span>
+          </a>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- PAIRS_WELL listings -->
+    <ng-container *ngIf="pairsWellListings.length > 0">
+      <div class="alert alert-dark mb-4">
+        <fa-icon icon="link"></fa-icon>
+        <span>{{ "Pair well with this" | translate }}</span>
+      </div>
+
+      <div class="mb-4">
+        <div *ngFor="let listing of pairsWellListings" class="retailer">
+          <a [href]="listing.url" target="_blank" class="no-external-link-icon">
+            <img *ngIf="listing.imageUrl" [src]="listing.imageUrl" alt="" />
+            <img *ngIf="!listing.imageUrl && listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
+            <span *ngIf="!listing.imageUrl && !listing.retailer.logo">{{ listing.retailer.name }}</span>
+          </a>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Brand listings -->
+    <ng-container *ngIf="item.listings.brandListings?.length > 0 && !sellsListings.length && !pairsWellListings.length">
+      <div class="alert alert-dark mb-4">
+        <fa-icon icon="heart"></fa-icon>
+        <span>{{ "Support AstroBin by shopping at one of our partners" | translate }}</span>
+      </div>
+
+      <div>
+        <div *ngFor="let listing of item.listings.brandListings" class="retailer">
+          <a [href]="listing.url" target="_blank" class="no-external-link-icon">
+            <img *ngIf="listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
+            <span *ngIf="!listing.retailer.logo">{{ listing.retailer.name }}</span>
+          </a>
+        </div>
+      </div>
+    </ng-container>
   </div>
-
-  <ng-template #brandsTemplate>
-    <div *ngIf="item.listings.brandListings">
-      <div *ngFor="let listing of item.listings.brandListings" class="retailer">
-        <a [href]="listing.url" target="_blank" class="no-external-link-icon">
-          <img *ngIf="listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
-          <span *ngIf="!listing.retailer.logo">{{ listing.retailer.name }}</span>
-        </a>
-      </div>
-    </div>
-  </ng-template>
 </ng-template>
 
 <ng-template #itemSummaryPopoverTemplate let-pop="ngbPopover">
