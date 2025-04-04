@@ -108,7 +108,7 @@
 </ng-template>
 
 <ng-template #listingFull let-listing="listing">
-  <ng-container *ngIf="!!listing.retailer.logo; else noLogoTemplate">
+  <ng-container *ngIf="!!listing.retailer.logo || !!listing.imageUrl; else noLogoTemplate">
     <a
       [href]="urlWithTags(listing)"
       [ngbTooltip]="listing.retailer.name"
