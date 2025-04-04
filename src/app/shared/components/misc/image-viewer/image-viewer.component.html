@@ -194,6 +194,7 @@
           (toggleViewMouseHover)="toggleViewMouseHover()"
           (showAdjustmentsEditor)="adjustmentEditorVisible = true"
           (toggleMoonOverlay)="toggleMoonOverlay()"
+          (editAnnotations)="startAnnotationMode()"
           [image]="image"
           [revisionLabel]="revisionLabel"
           [hasMouseHover]="
@@ -204,6 +205,7 @@
           [allowTogglingAnnotationsOnMouseHover]="revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION"
           [forceViewMouseHover]="forceViewMouseHover"
           [moonOverlayActive]="showMoonOverlay"
+          [isImageOwner]="isImageOwner"
           class="additional-buttons"
         >
         </astrobin-image-viewer-additional-buttons>

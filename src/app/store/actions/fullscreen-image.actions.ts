@@ -17,7 +17,8 @@ export class ShowFullscreenImage implements PayloadActionInterface {
         matrixDelta: number;
         raMatrix: string;
         decMatrix: string;
-      }
+      },
+      annotationMode?: boolean
     }
   ) {
   }

@@ -725,6 +725,42 @@ export class ImageViewerComponent
     this.forceViewMouseHover = !this.forceViewMouseHover;
     this.showNorthArrow = this.forceViewMouseHover;
   }
+  
+  /**
+   * Start annotation mode for creating/editing annotations
+   */
+  protected startAnnotationMode(): void {
+    if (this.isBrowser && this.image) {
+      // Get the solution matrix if available to pass to the fullscreen viewer
+      const solutionMatrixToPass = this.loadingAdvancedSolutionMatrix ? null : this.advancedSolutionMatrix;
+      
+      // Enter fullscreen with annotation mode enabled
+      this.store$.dispatch(new ShowFullscreenImage({
+        imageId: this.image.pk,
+        event: null,
+        externalSolutionMatrix: solutionMatrixToPass,
+        annotationMode: true // Signal to the fullscreen viewer to start annotation mode
+      }));
+      
+      this.viewingFullscreenImage = true;
+      this.changeDetectorRef.markForCheck();
+      this.toggleFullscreen.emit(true);
+      
+      // Update URL
+      if (this.isBrowser) {
+        const location_ = this.windowRefService.nativeWindow.location;
+        this.windowRefService.pushState(
+          {
+            imageId: this.image.hash || this.image.pk,
+            revisionLabel: this.revisionLabel,
+            fullscreen: true,
+            annotationMode: true
+          },
+          `${location_.pathname}${location_.search}#fullscreen-annotations`
+        );
+      }
+    }
+  }
 
   protected resetMoonOverlay(): void {
     this.showMoonOverlay = false;
