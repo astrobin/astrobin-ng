@@ -24,7 +24,7 @@ import { WindowRefService } from "@core/services/window-ref.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 
-const PROHIBITED_WORDS = [
+const PROHIBITED_DIY_WORDS = [
   // English
   "diy",
   "do-it-yourself",
@@ -141,7 +141,7 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
         asyncValidators: {
           prohibitedWords: {
             expression: (control: FormControl) => {
-              for (const word of PROHIBITED_WORDS) {
+              for (const word of PROHIBITED_DIY_WORDS) {
                 if (control.value.toLowerCase().indexOf(word) > -1) {
                   return of(false);
                 }
@@ -150,7 +150,7 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
               return of(true);
             },
             message: (error, field: FormlyFieldConfig) => {
-              for (const word of PROHIBITED_WORDS) {
+              for (const word of PROHIBITED_DIY_WORDS) {
                 if (field.formControl.value.toLowerCase().indexOf(word) > -1) {
                   return this.translateService.instant(
                     `Your usage of the word "{{0}}" suggests that you are trying to add a DIY item. The AstroBin
@@ -162,6 +162,19 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
                   );
                 }
               }
+            }
+          },
+          nina: {
+            expression: (control: FormControl) => {
+              return of(
+                control.value.toLowerCase().indexOf("nina") === -1
+              );
+            },
+            message: (error, field: FormlyFieldConfig) => {
+              return this.translateService.instant(
+                `N.I.N.A. is a software and not a brand, and it does not need to be added again. Please ` +
+                `search for it as: 'Stefan Berg Nighttime Imaging 'N' Astronomy (N.I.N.A. / NINA)'.`
+              );
             }
           },
           teleskopExpress: {
