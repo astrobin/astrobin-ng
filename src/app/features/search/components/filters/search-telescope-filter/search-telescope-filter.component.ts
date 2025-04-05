@@ -33,6 +33,6 @@ export class SearchTelescopeFilterComponent extends SearchBaseEquipmentFilterCom
     public readonly actions$: Actions
   ) {
     super(store$, translateService, domSanitizer, modalService, searchFilterService, actions$);
-    this.initFields(SearchTelescopeFilterComponent.key, true);
+    this.initFields(SearchTelescopeFilterComponent.key, true, true);
   }
 }
