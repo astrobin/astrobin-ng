@@ -31,7 +31,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             <span class="original-filename" [innerHTML]="image.uploaderName"></span>
           </small>
 
-          <small class="justify-content-center justify-content-sm-start">
+          <small class="justify-content-center justify-content-sm-start flex-wrap">
             <span *ngIf="publicationDate">
               <fa-icon
                 *ngIf="licenseIcon && licenseTooltip"

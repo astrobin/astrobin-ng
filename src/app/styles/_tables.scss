@@ -81,8 +81,7 @@
 
   tbody tr td {
     display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
+    @include flex-gap(row, .5rem);
     padding: .5rem 1rem;
     width: auto;
     border-bottom-width: 0;

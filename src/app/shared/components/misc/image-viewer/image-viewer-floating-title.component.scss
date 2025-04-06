@@ -43,6 +43,6 @@
   }
 
   astrobin-image-viewer-social-buttons ::ng-deep .buttons {
-    gap: .75rem !important;
+    @include flex-gap(row, .75rem, true);
   }
 }

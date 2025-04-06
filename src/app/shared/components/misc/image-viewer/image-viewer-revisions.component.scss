@@ -1,4 +1,5 @@
 @import "src/app/styles/breakpoints";
+@import "src/app/styles/mixins";
 
 :host {
   .revisions {
@@ -11,7 +12,7 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: .5rem;
+    @include flex-gap(row, .5rem);
     padding: 1rem;
 
     .revision {
@@ -96,15 +97,15 @@
           border-color: var(--accentColor);
         }
       }
-      
+
       &.deleting {
         pointer-events: none;
-        
+
         img {
           opacity: 0.5;
           filter: grayscale(50%);
         }
-        
+
         .loading-overlay {
           position: absolute;
           top: 0;

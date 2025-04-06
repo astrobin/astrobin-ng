@@ -76,7 +76,7 @@
 ::ng-deep astrobin-toggle-button.gallery-settings  {
   flex-direction: row-reverse;
   justify-content: space-between;
-  gap: 1rem;
+  @include flex-gap(row, 1rem);
   width: 100%;
 
   ng-toggle {

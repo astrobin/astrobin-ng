@@ -1,5 +1,5 @@
-@import "mixins";
 @import "breakpoints";
+@import "mixins";
 
 .modal {
   &.fullscreen {
@@ -27,7 +27,7 @@
 
   .modal-header {
     @include darkest-background-texture;
-    gap: 1rem;
+    @include flex-gap(row, 1rem);
 
     .close {
       border: 0;

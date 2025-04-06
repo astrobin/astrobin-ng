@@ -1,3 +1,5 @@
+@import "../../../../styles/mixins";
+
 .buttons {
   ::ng-deep {
     .ng-fa-icon,
@@ -8,7 +10,7 @@
     .btn:not(.btn-link) {
       display: flex;
       align-items: center;
-      gap: .5rem;
+      @include flex-gap(row, .5rem);
       background: var(--accentColor);
       color: var(--textOnAccentColor);
       border-radius: .25rem;

@@ -33,7 +33,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
       class="metadata-section bg-transparent"
     >
       <div class="metadata-item objects-in-field">
-        <div class="metadata-label">
+        <div class="metadata-label flex-wrap">
           <a
             *ngFor="let item of objectsInField"
             (click)="objectInFieldClicked($event, item)"
@@ -61,7 +61,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
         <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
       </div>
       <div class="offcanvas-body">
-        <ul>
+        <ul class="flex-wrap">
           <li *ngFor="let item of moreObjectsInField">
             <a (click)="objectInFieldClicked($event, item)" href="#" class="value">
               <span class="name" [innerHTML]="item | highlight: highlightTerms"></span>

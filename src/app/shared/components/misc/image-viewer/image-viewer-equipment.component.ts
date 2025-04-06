@@ -55,7 +55,7 @@ import { ImageInfoService } from "@core/services/image/image-info.service";
         collapseAnimation
         class="metadata-section w-100"
       >
-        <div class="equipment-section">
+        <div class="equipment-section flex-wrap">
           <table class="table table-sm table-mobile-support mb-0">
             <tbody>
             <ng-container *ngFor="let attr of imagingAttributes">
@@ -66,7 +66,7 @@ import { ImageInfoService } from "@core/services/image/image-info.service";
                   </div>
                 </th>
                 <td>
-                  <div class="equipment-container">
+                  <div class="equipment-container flex-wrap">
                     <astrobin-image-viewer-equipment-items
                       [attr]="attr"
                       [attrToIcon]="attrToIcon"
@@ -76,7 +76,9 @@ import { ImageInfoService } from "@core/services/image/image-info.service";
                       [items]="this[attr]"
                       [legacyEquipmentUrl]="legacyEquipmentUrl.bind(this)"
                       (equipmentItemClicked)="equipmentItemClicked($event.event, $event.item)"
-                      (legacyEquipmentItemClicked)="legacyEquipmentItemClicked($event.event, $event.item)">
+                      (legacyEquipmentItemClicked)="legacyEquipmentItemClicked($event.event, $event.item)"
+                      class="flex-wrap"
+                    >
                     </astrobin-image-viewer-equipment-items>
                   </div>
                 </td>

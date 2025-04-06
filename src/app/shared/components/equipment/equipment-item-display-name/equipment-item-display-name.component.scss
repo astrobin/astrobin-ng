@@ -3,7 +3,7 @@
 :host {
   display: inline-flex;
   align-items: center;
-  gap: .5rem;
+  @include flex-gap(row, .5rem);
   position: relative;
 
 
@@ -14,7 +14,7 @@
   }
 
   .brand-name-icons {
-    gap: .25rem;
+    @include flex-gap(row, .25rem);
   }
 
   .brand {

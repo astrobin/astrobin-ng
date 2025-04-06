@@ -29,7 +29,7 @@
                   class="me-2"
                 ></span>
               </div>
-              <div class="list">
+              <div class="list flex-wrap">
                 <a
                   *ngFor="let item of itemListings"
                   [href]="item.url"
@@ -52,7 +52,7 @@
                   class="me-2"
                 ></span>
               </div>
-              <div class="list">
+              <div class="list flex-wrap">
                 <a
                   *ngFor="let item of brandListings"
                   [href]="item.url"
@@ -76,7 +76,7 @@
                 class="me-2"
               ></span>
             </div>
-            <div class="list">
+            <div class="list flex-wrap">
               <a
                 *ngFor="let item of marketplaceLineItems"
                 [routerLink]="['/equipment/marketplace/listing', item.listingHash]"
