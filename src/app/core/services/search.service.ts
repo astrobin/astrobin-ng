@@ -6,7 +6,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { map, tap } from "rxjs/operators";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { SearchFilterCategory, SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
@@ -519,7 +519,8 @@ export class SearchService extends BaseService {
                 value: {
                   value: [value],
                   exactMatch: true,
-                  matchType: null
+                  matchType: null,
+                  usageType: EquipmentItemUsageType.IMAGING
                 },
                 minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.TELESCOPE)
               };
@@ -563,7 +564,8 @@ export class SearchService extends BaseService {
                 value: {
                   value: [value],
                   exactMatch: true,
-                  matchType: null
+                  matchType: null,
+                  usageType: EquipmentItemUsageType.IMAGING
                 },
                 minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.SENSOR)
               };
@@ -607,7 +609,8 @@ export class SearchService extends BaseService {
                 value: {
                   value: [value],
                   exactMatch: true,
-                  matchType: null
+                  matchType: null,
+                  usageType: EquipmentItemUsageType.IMAGING
                 },
                 minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.CAMERA)
               };

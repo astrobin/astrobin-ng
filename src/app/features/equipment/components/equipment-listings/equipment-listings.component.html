@@ -1,4 +1,4 @@
-<div *ngIf="listings.itemListings.length > 0" class="card mb-4">
+<div *ngIf="sellsListings.length > 0" class="card mb-lg-4">
   <div class="card-header">
     <ng-container *ngTemplateOutlet="itemCardHeaderTemplate"></ng-container>
   </div>
@@ -6,6 +6,23 @@
   <div class="card-body">
     <div class="listings">
       <ng-container *ngTemplateOutlet="itemCardBodyTemplate"></ng-container>
+    </div>
+  </div>
+
+  <div class="card-footer flex-row">
+    <fa-icon (click)="infoButtonClicked()" icon="info-circle"></fa-icon>
+    <fa-icon (click)="removeButtonClicked()" icon="times"></fa-icon>
+  </div>
+</div>
+
+<div *ngIf="pairsWellListings.length > 0" class="card mb-lg-4">
+  <div class="card-header">
+    <ng-container *ngTemplateOutlet="pairsWellCardHeaderTemplate"></ng-container>
+  </div>
+
+  <div class="card-body">
+    <div class="listings">
+      <ng-container *ngTemplateOutlet="pairsWellCardBodyTemplate"></ng-container>
     </div>
   </div>
 
@@ -37,15 +54,23 @@
 </ng-template>
 
 <ng-template #cardHeaderItemListingsFullTemplate>
-  <span [innerHTML]="shopItemLabel"></span>
+  <span [innerHTML]="'From our sponsors' | translate"></span>
 </ng-template>
 
 <ng-template #cardHeaderItemListingsLiteTemplate>
   <span [innerHTML]="'Known stock availability for' | translate"></span>
 </ng-template>
 
+<ng-template #cardHeaderItemListingsPairsWellFullTemplate>
+  <span [innerHTML]="'Pair well with this' | translate"></span>
+</ng-template>
+
+<ng-template #cardHeaderItemListingsPairsWellLiteTemplate>
+  <span [innerHTML]="'Equipment that pairs well with this' | translate"></span>
+</ng-template>
+
 <ng-template #cardHeaderBrandListingsFullTemplate>
-  <span [innerHTML]="shopBrandLabel"></span>
+  <span [innerHTML]="'From our sponsors' | translate"></span>
 </ng-template>
 
 <ng-template #cardHeaderBrandListingsLiteTemplate>
@@ -72,8 +97,18 @@
   <!-- TODO -->
 </ng-template>
 
+<ng-template #cardBodyItemListingsPairsWellFullTemplate>
+  <div *ngFor="let listing of pairsWellListings" class="listing">
+    <ng-container [ngTemplateOutletContext]="{listing}" [ngTemplateOutlet]="listingFull"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #cardBodyItemListingsPairsWellLiteTemplate>
+  <!-- TODO -->
+</ng-template>
+
 <ng-template #listingFull let-listing="listing">
-  <ng-container *ngIf="!!listing.retailer.logo; else noLogoTemplate">
+  <ng-container *ngIf="!!listing.retailer.logo || !!listing.imageUrl; else noLogoTemplate">
     <a
       [href]="urlWithTags(listing)"
       [ngbTooltip]="listing.retailer.name"
@@ -81,7 +116,8 @@
       class="with-logo"
       target="_blank"
     >
-      <img [alt]="listing.retailer.name" [src]="listing.retailer.logo" />
+      <img *ngIf="listing.imageUrl" [alt]="listing.name" [src]="listing.imageUrl" />
+      <img *ngIf="!listing.imageUrl" [alt]="listing.retailer.name" [src]="listing.retailer.logo" />
     </a>
 
     <div *ngIf="!!listing.stockStatus" class="stock-status">

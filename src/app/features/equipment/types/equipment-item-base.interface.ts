@@ -16,7 +16,8 @@ export enum EquipmentItemType {
 
 export enum EquipmentItemUsageType {
   IMAGING = "IMAGING",
-  GUIDING = "GUIDING"
+  GUIDING = "GUIDING",
+  ANY = "ANY"
 }
 
 export enum EquipmentItemReviewerDecision {

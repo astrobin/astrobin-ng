@@ -34,6 +34,6 @@ export class SearchCameraFilterComponent extends SearchBaseEquipmentFilterCompon
     public readonly actions$: Actions
   ) {
     super(store$, translateService, domSanitizer, modalService, searchFilterService, actions$);
-    this.initFields(SearchCameraFilterComponent.key, true);
+    this.initFields(SearchCameraFilterComponent.key, true, true);
   }
 }

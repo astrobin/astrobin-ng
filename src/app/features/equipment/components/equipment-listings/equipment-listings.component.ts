@@ -3,11 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import {
-  EquipmentBrandListingInterface,
-  EquipmentItemListingInterface,
-  EquipmentListingsInterface
-} from "@features/equipment/types/equipment-listings.interface";
+import { EquipmentBrandListingInterface, EquipmentItemListingInterface, EquipmentItemListingType, EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -41,8 +37,14 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
   itemCardHeaderTemplate: TemplateRef<any>;
   itemCardBodyTemplate: TemplateRef<any>;
 
+  pairsWellCardHeaderTemplate: TemplateRef<any>;
+  pairsWellCardBodyTemplate: TemplateRef<any>;
+
   brandCardHeaderTemplate: TemplateRef<any>;
   brandCardBodyTemplate: TemplateRef<any>;
+
+  protected sellsListings: EquipmentItemListingInterface[] = [];
+  protected pairsWellListings: EquipmentItemListingInterface[] = [];
 
   @ViewChild("loadingTemplate")
   private _loadingTemplate: TemplateRef<any>;
@@ -52,6 +54,18 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
 
   @ViewChild("cardHeaderItemListingsLiteTemplate")
   private _cardHeaderItemListingsLiteTemplate: TemplateRef<any>;
+
+  @ViewChild("cardHeaderItemListingsPairsWellFullTemplate")
+  private _cardHeaderItemListingsPairsWellFullTemplate: TemplateRef<any>;
+
+  @ViewChild("cardHeaderItemListingsPairsWellLiteTemplate")
+  private _cardHeaderItemListingsPairsWellLiteTemplate: TemplateRef<any>;
+
+  @ViewChild("cardBodyItemListingsPairsWellFullTemplate")
+  private _cardBodyItemListingsPairsWellFullTemplate: TemplateRef<any>;
+
+  @ViewChild("cardBodyItemListingsPairsWellLiteTemplate")
+  private _cardBodyItemListingsPairsWellLiteTemplate: TemplateRef<any>;
 
   @ViewChild("cardHeaderBrandListingsFullTemplate")
   private _cardHeaderBrandListingsFullTemplate: TemplateRef<any>;
@@ -85,26 +99,16 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
     super(store$);
   }
 
-  get shopItemLabel(): string {
-    return this.translateService.instant("AstroBin sponsors that sell {{0}}", {
-      0: `${this.item.brandName} ${this.item.name}`
-    });
-  }
-
-  get shopBrandLabel(): string {
-    return this.translateService.instant("AstroBin sponsors that sell {{0}}", {
-      0: this.item ? this.item.brandName : this.brand.name
-    });
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (!!changes.listings && !changes.listings.firstChange) {
+      this._setListings();
       this._setCardTemplates();
     }
   }
 
   ngOnInit(): void {
     this.utilsService.delay(1).subscribe(() => {
+      this._setListings();
       this._setCardTemplates();
     });
   }
@@ -159,12 +163,22 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
     });
   }
 
+  private _setListings() {
+    this.sellsListings = this.listings.itemListings.filter(listing => listing.listingType === EquipmentItemListingType.SELLS);
+    this.pairsWellListings = this.listings.itemListings.filter(listing => listing.listingType === EquipmentItemListingType.PAIRS_WELL);
+  }
+
   private _setCardTemplates(): void {
     if (!!this.listings) {
       if (this.listings.allowFullRetailerIntegration) {
-        if (this.listings.itemListings.length > 0) {
+        if (this.sellsListings.length > 0) {
           this.itemCardHeaderTemplate = this._cardHeaderItemListingsFullTemplate;
           this.itemCardBodyTemplate = this._cardBodyItemListingsFullTemplate;
+        }
+
+        if (this.pairsWellListings.length > 0) {
+          this.pairsWellCardHeaderTemplate = this._cardHeaderItemListingsPairsWellFullTemplate;
+          this.pairsWellCardBodyTemplate = this._cardBodyItemListingsPairsWellFullTemplate;
         }
 
         if (this.listings.brandListings.length > 0) {
@@ -172,9 +186,14 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
           this.brandCardBodyTemplate = this._cardBodyBrandListingsFullTemplate;
         }
       } else {
-        if (this.listings.itemListings.length > 0) {
+        if (this.sellsListings.length > 0) {
           this.itemCardHeaderTemplate = this._cardHeaderItemListingsLiteTemplate;
           this.itemCardBodyTemplate = this._cardBodyItemListingsLiteTemplate;
+        }
+
+        if (this.pairsWellListings.length > 0) {
+          this.pairsWellCardHeaderTemplate = this._cardHeaderItemListingsPairsWellLiteTemplate;
+          this.pairsWellCardBodyTemplate = this._cardBodyItemListingsPairsWellLiteTemplate;
         }
 
         if (this.listings.brandListings.length > 0) {
@@ -190,6 +209,14 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
 
     if (!this.itemCardBodyTemplate) {
       this.itemCardBodyTemplate = this._loadingTemplate;
+    }
+
+    if (!this.pairsWellCardHeaderTemplate) {
+      this.pairsWellCardHeaderTemplate = this._loadingTemplate;
+    }
+
+    if (!this.pairsWellCardBodyTemplate) {
+      this.pairsWellCardBodyTemplate = this._loadingTemplate;
     }
 
     if (!this.brandCardHeaderTemplate) {
