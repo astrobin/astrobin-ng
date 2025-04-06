@@ -13,6 +13,7 @@ import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { DeviceService } from "@core/services/device.service";
+import { EquipmentItemListingInterface, EquipmentItemListingType } from "@features/equipment/types/equipment-listings.interface";
 
 @Component({
   selector: "astrobin-equipment-item-display-name",
@@ -22,6 +23,10 @@ import { DeviceService } from "@core/services/device.service";
 })
 export class EquipmentItemDisplayNameComponent extends BaseComponentDirective implements OnChanges {
   readonly EquipmentItemReviewerDecision = EquipmentItemReviewerDecision;
+  readonly EquipmentItemListingType = EquipmentItemListingType;
+  
+  protected sellsListings: EquipmentItemListingInterface[] = [];
+  protected pairsWellListings: EquipmentItemListingInterface[] = [];
 
   @Input()
   itemId: EquipmentItem["id"];
@@ -142,10 +147,29 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
         )
         .subscribe((item: EquipmentItem) => {
           this.item = item;
+          
+          if (!!this.item.listings && !!this.item.listings.itemListings) {
+            this.sellsListings = this.item.listings.itemListings.filter(
+              listing => listing.listingType === EquipmentItemListingType.SELLS
+            );
+            this.pairsWellListings = this.item.listings.itemListings.filter(
+              listing => listing.listingType === EquipmentItemListingType.PAIRS_WELL
+            );
+          }
+          
           _onChanges(item);
           this.changeDetectorRef.markForCheck();
         });
     } else {
+      if (!!this.item.listings && !!this.item.listings.itemListings) {
+        this.sellsListings = this.item.listings.itemListings.filter(
+          listing => listing.listingType === EquipmentItemListingType.SELLS
+        );
+        this.pairsWellListings = this.item.listings.itemListings.filter(
+          listing => listing.listingType === EquipmentItemListingType.PAIRS_WELL
+        );
+      }
+      
       _onChanges(this.item);
     }
   }

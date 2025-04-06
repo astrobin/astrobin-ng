@@ -27,6 +27,7 @@
   > a {
     display: block;
     cursor: pointer;
+    position: relative;
 
     &.with-logo {
       &:after {

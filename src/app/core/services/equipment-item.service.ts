@@ -92,6 +92,9 @@ export class EquipmentItemService extends BaseService {
         return this.translateService.instant("Imaging");
       case EquipmentItemUsageType.GUIDING:
         return this.translateService.instant("Guiding");
+      case EquipmentItemUsageType.ANY:
+      default:
+        return this.translateService.instant("Any");
     }
   }
 
@@ -490,10 +493,11 @@ export class EquipmentItemService extends BaseService {
     return `${this.classicRoutesService.SEARCH}?${urlParams.toString()}`;
   }
 
-  getSearchParams(item: EquipmentItem, ordering?: string): string {
+  getSearchParams(item: EquipmentItem, ordering?: string, usageType?: EquipmentItemUsageType): string {
     return this.searchService.modelToParams({
-      itemId: item.id,
-      itemType: item.klass,
+      itemId: item.id, // Deprecated
+      itemType: item.klass, // Deprecated
+      usageType, // Deprecated
       ordering,
       [item.klass.toLowerCase()]: {
         value: [{
@@ -501,7 +505,8 @@ export class EquipmentItemService extends BaseService {
           name: (item.brandName || this.translateService.instant("DIY")) + " " + item.name
         }],
         exactMatch: true,
-        matchType: null
+        matchType: null,
+        usageType
       }
     });
   }

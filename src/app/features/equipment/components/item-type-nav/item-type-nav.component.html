@@ -12,10 +12,6 @@
         ngbNavLink
         routerLink="{{ routingBasePath }}/brand"
       >
-        <img
-          [alt]="'Brands' | translate"
-          src="/assets/images/brand-placeholder.png?v=2"
-        />
         <span class="type-label">
           {{ "Brands" | translate }} / {{ "Companies" | translate }}
         </span>
@@ -35,12 +31,6 @@
       ngbNavLink
       routerLink="{{ routingBasePath }}/{{ type.value.toLowerCase() }}"
     >
-      <img
-        alt="{{ type.label }}"
-        class="type-icon"
-        src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png?v=2"
-      />
-
       <span class="type-label">
         {{ type.label }}
       </span>
@@ -116,11 +106,6 @@
         ngbNavLink
         routerLink="{{ routingBasePath }}/contributors"
       >
-        <img
-          [alt]="'Contributors' | translate"
-          class="contributors-icon"
-          [src]="defaultAvatarUrl"
-        />
         <span class="type-label">
           {{ "Contributors" | translate }}
         </span>

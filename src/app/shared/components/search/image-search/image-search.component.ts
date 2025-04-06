@@ -11,7 +11,7 @@ import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/t
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { ImageViewerService } from "@core/services/image-viewer.service";
 import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
+import { EquipmentBrandListingInterface, EquipmentItemListingInterface, EquipmentItemListingType } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
@@ -88,6 +88,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
   protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
   protected readonly Array = Array;
+  protected readonly EquipmentItemListingType = EquipmentItemListingType;
   protected marketplaceMessage = this.translateService.instant(
     "We found some items relevant to your search for sale on our marketplace!"
   );

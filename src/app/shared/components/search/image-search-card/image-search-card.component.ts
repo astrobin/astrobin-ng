@@ -96,7 +96,15 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
   }
 
   setUsageType(usageType: EquipmentItemUsageType): void {
-    this.model = { ...this.model, usageType, page: 1 };
+    this.model = {
+      ...this.model,
+      [this.model.itemType]: {
+        ...this.model[this.model.itemType],
+        usageType
+      },
+      usageType,
+      page: 1
+    };
     this.updateSearchUrl();
   }
 
@@ -124,7 +132,7 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
           filter(item => !!item),
           take(1)
         ).subscribe(item => {
-          const params = this.equipmentItemService.getSearchParams(item, this.model.ordering);
+          const params = this.equipmentItemService.getSearchParams(item, this.model.ordering, this.model.usageType);
           this.searchUrl = `/search?p=${params}`;
           this.changeDetectorRef.markForCheck();
         });

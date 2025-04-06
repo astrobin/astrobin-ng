@@ -1865,8 +1865,6 @@ export class ImageViewerComponent
       return;
     }
 
-    const adManager = scrollArea.querySelector("astrobin-ad-manager") as HTMLElement | null;
-    const adManagerHeight = adManager && adManager.querySelector(".ad-container").classList.contains("ad-rendered") ? adManager.offsetHeight : 0;
     const siteHeader = document.querySelector("astrobin-header > nav") as HTMLElement | null;
     const siteHeaderHeight = siteHeader && hasSiteHeader ? siteHeader.offsetHeight : 0;
     const mobileMenu = imageViewer.querySelector("astrobin-mobile-menu") as HTMLElement | null;
@@ -1882,7 +1880,7 @@ export class ImageViewerComponent
 
       if (sideToSideLayout) {
         // The position is relative to the data area.
-        translateYValue = `${adManagerHeight + mobileMenuHeight - 1}px`;
+        translateYValue = `${mobileMenuHeight - 1}px`;
       } else {
         // The position is relative to the main area.
         translateYValue = `${siteHeaderHeight + mobileMenuHeight - 1}px`;
