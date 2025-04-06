@@ -53,12 +53,29 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1000;
+  z-index: 1000; /* Reset to original value */
   user-select: none; /* Prevent text selection while using the annotation tool */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   touch-action: none; /* Disable browser handling of all touch gestures */
+  pointer-events: none; /* Don't capture pointer events when not active */
+
+  &.pointer-events-all {
+    pointer-events: all; /* Only capture pointer events when active */
+  }
+
+  /* Toolbar should only be visible in edit mode */
+  .fixed-top-toolbar {
+    display: block;
+    pointer-events: all; /* Always allow toolbar interaction */
+  }
+}
+
+/* Full-screen viewer specific styles */
+::ng-deep .fullscreen-image-viewer .measure-annotation-overlay {
+  display: block !important; /* Always show annotation overlay in fullscreen mode */
+  z-index: 1500 !important; /* Make sure it's above the image */
 }
 
 .fixed-top-toolbar {
@@ -71,7 +88,7 @@
   padding: 10px;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  z-index: 10000;
+  z-index: 10000; /* Original value - very high to be above everything else */
   width: auto;
   text-align: center;
   backdrop-filter: blur(4px);
@@ -193,11 +210,23 @@
 
 /* HTML-based annotation styles */
 .annotation-container {
-  position: absolute;
-  /* Position and size will be set dynamically via JavaScript to match the image exactly */
-  z-index: 1001;
+  position: fixed; /* Using fixed position for consistency with letterboxing calculations */
+  /* Position and size will be set dynamically via JavaScript to match the actual displayed image area */
+  z-index: 1001; /* Original z-index value */
+  width: 100%;
+  height: 100%;
   pointer-events: all;
   overflow: visible; /* Allow annotations to overflow for notes that may go outside the image */
+  /* Add a subtle outline to help debug letterboxing (will be barely visible) */
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: opacity 0.2s ease;
+
+  /* Hide annotations during window resize for better performance and cleaner UX */
+  &.hidden-during-resize {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s ease;
+  }
 }
 
 .annotation-layer {
@@ -218,6 +247,12 @@
   touch-action: none; /* Disable browser handling of all touch gestures */
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* Remove tap highlight on mobile */
 
+  /* Read-only annotations styling */
+  &.read-only {
+    cursor: default;
+    pointer-events: none; /* Prevent any interaction with the shape */
+  }
+
   .annotation-title {
     position: absolute;
     bottom: calc(100% + 0.5rem); // Some space between title and shape (0.5rem)
@@ -227,7 +262,7 @@
     min-width: 180px; // Minimum width for the title
     font-size: 10px;
     text-align: center;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(0, 0, 0, 0.9); // Darker background for better contrast
     color: white;
     padding: 4px 8px;
     border-radius: 4px;
@@ -236,6 +271,7 @@
     box-sizing: border-box;
     pointer-events: none; // Allow click-through on the title
     line-height: 1.3;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5); // Add shadow for visual separation
   }
 
   &.rectangle {
@@ -463,7 +499,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 9999;
+  z-index: 9999; /* Original high value */
   cursor: inherit;
   background-color: transparent;
   touch-action: none; /* Disable browser handling of all touch gestures */
@@ -474,6 +510,32 @@
   &:not(.offcanvas-bottom) {
     width: 50vw !important;
     max-width: 600px;
+  }
+}
+
+/* Global styles to hide UI elements when annotation tool is active in regular image viewer */
+::ng-deep body.annotation-mode-active {
+  /* Hide specific elements in the regular image viewer */
+  .regular-image-viewer .moon-scale,
+  .regular-image-viewer .celestial-north-indicator,
+  .regular-image-viewer .close-button,
+  .regular-image-viewer .toolbar-buttons:not(.annotation-toolbar),
+  .regular-image-viewer .action-buttons,
+  .regular-image-viewer .measure-buttons,
+  .regular-image-viewer .solution-overlay,
+  .regular-image-viewer .plate-solving-button,
+  .regular-image-viewer .menu-button,
+  .regular-image-viewer .image-navigation,
+  .regular-image-viewer .image-toolbar,
+  .regular-image-viewer .revision-thumbnails,
+  .regular-image-viewer .revision-nav {
+    display: none !important;
+  }
+
+  /* Ensure the annotation container is visible */
+  .annotation-container {
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 }
 

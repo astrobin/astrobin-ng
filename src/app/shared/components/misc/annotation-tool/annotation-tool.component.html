@@ -55,11 +55,11 @@
   </div>
 </ng-template>
 
-<div class="annotation-tool-container pointer-events-all" [class.active]="active" data-ignore-swipe-down="true">
-  <!-- Fixed toolbar - making it simpler and more bulletproof -->
-  <div class="fixed-top-toolbar">
-    <div class="toolbar-buttons">
-      <!-- Help button -->
+<div class="annotation-tool-container" [class.pointer-events-all]="active" [class.active]="active" data-ignore-swipe-down="true">
+  <!-- Fixed toolbar - only visible in edit mode -->
+  <div class="fixed-top-toolbar" *ngIf="!readOnly">
+    <div class="toolbar-buttons annotation-toolbar">
+      <!-- Help button - always visible -->
       <button type="button" class="icon-button help-button"
               [ngbTooltip]="'Help' | translate"
               placement="bottom"
@@ -69,44 +69,62 @@
         <fa-icon [icon]="['fas', 'question']"></fa-icon>
       </button>
 
+      <!-- Fullscreen button - only in regular view -->
+      <button *ngIf="isRegularView"
+              type="button" 
+              class="icon-button fullscreen-button"
+              [ngbTooltip]="'Enter fullscreen' | translate"
+              placement="bottom"
+              container="body"
+              (click)="requestFullscreenMode.emit()"
+              (touchend)="requestFullscreenMode.emit()">
+        <fa-icon [icon]="['fas', 'expand']"></fa-icon>
+      </button>
+
       <!-- Separator after help button -->
       <div class="toolbar-separator"></div>
 
-      <!-- Drawing tools -->
-      <button type="button" class="icon-button"
-              [ngbTooltip]="'Add rectangle' | translate"
-              placement="bottom"
-              container="body"
-              (click)="makeRect()"
-              (touchend)="makeRect()">
-        <fa-icon [icon]="['fas', 'square']"></fa-icon>
-      </button>
-      <button type="button" class="icon-button"
-              [ngbTooltip]="'Add circle' | translate"
-              placement="bottom"
-              container="body"
-              (click)="makeCircle()"
-              (touchend)="makeCircle()">
-        <fa-icon [icon]="['fas', 'circle']"></fa-icon>
-      </button>
+      <!-- Drawing tools - only visible in edit mode -->
+      <ng-container *ngIf="!readOnly">
+        <button type="button" class="icon-button"
+                [ngbTooltip]="'Add rectangle' | translate"
+                placement="bottom"
+                container="body"
+                (click)="makeRect()"
+                (touchend)="makeRect()">
+          <fa-icon [icon]="['fas', 'square']"></fa-icon>
+        </button>
+        <button type="button" class="icon-button"
+                [ngbTooltip]="'Add circle' | translate"
+                placement="bottom"
+                container="body"
+                (click)="makeCircle()"
+                (touchend)="makeCircle()">
+          <fa-icon [icon]="['fas', 'circle']"></fa-icon>
+        </button>
+      </ng-container>
 
-      <!-- Actions -->
-      <button *ngIf="isImageOwner && imageId"
-              type="button"
-              class="icon-button"
-              [ngbTooltip]="'Save annotations' | translate"
-              placement="bottom"
-              container="body"
-              [disabled]="annotations.length === 0 || savingAnnotations"
-              [class.saving]="savingAnnotations"
-              [class.success]="saveSuccess"
-              (click)="saveAnnotations()"
-              (touchend)="annotations.length > 0 && !savingAnnotations ? saveAnnotations() : null"
-              (touchstart)="$event.stopPropagation()">
-        <fa-icon *ngIf="!savingAnnotations && !saveSuccess" [icon]="['fas', 'save']"></fa-icon>
-        <fa-icon *ngIf="savingAnnotations" [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
-        <fa-icon *ngIf="!savingAnnotations && saveSuccess" [icon]="['fas', 'check']" class="save-success-icon"></fa-icon>
-      </button>
+      <!-- Actions - conditionally visible -->
+      <ng-container *ngIf="!readOnly">
+        <button *ngIf="isImageOwner && imageId"
+                type="button"
+                class="icon-button"
+                [ngbTooltip]="'Save annotations' | translate"
+                placement="bottom"
+                container="body"
+                [disabled]="annotations.length === 0 || savingAnnotations"
+                [class.saving]="savingAnnotations"
+                [class.success]="saveSuccess"
+                (click)="saveAnnotations()"
+                (touchend)="annotations.length > 0 && !savingAnnotations ? saveAnnotations() : null"
+                (touchstart)="$event.stopPropagation()">
+          <fa-icon *ngIf="!savingAnnotations && !saveSuccess" [icon]="['fas', 'save']"></fa-icon>
+          <fa-icon *ngIf="savingAnnotations" [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+          <fa-icon *ngIf="!savingAnnotations && saveSuccess" [icon]="['fas', 'check']" class="save-success-icon"></fa-icon>
+        </button>
+      </ng-container>
+      
+      <!-- Share button always visible -->
       <button type="button"
               class="icon-button"
               [ngbTooltip]="'Share annotations' | translate"
@@ -122,17 +140,22 @@
       <!-- Exit/Clear section with a visual separator -->
       <div class="toolbar-separator"></div>
 
-      <button type="button"
-              class="icon-button"
-              [ngbTooltip]="'Clear all' | translate"
-              placement="bottom"
-              container="body"
-              [disabled]="annotations.length === 0"
-              (click)="confirmClearAll()"
-              (touchend)="annotations.length > 0 ? confirmClearAll() : null"
-              (touchstart)="$event.stopPropagation()">
-        <fa-icon [icon]="['fas', 'eraser']"></fa-icon>
-      </button>
+      <!-- Clear button only in edit mode -->
+      <ng-container *ngIf="!readOnly">
+        <button type="button"
+                class="icon-button"
+                [ngbTooltip]="'Clear all' | translate"
+                placement="bottom"
+                container="body"
+                [disabled]="annotations.length === 0"
+                (click)="confirmClearAll()"
+                (touchend)="annotations.length > 0 ? confirmClearAll() : null"
+                (touchstart)="$event.stopPropagation()">
+          <fa-icon [icon]="['fas', 'eraser']"></fa-icon>
+        </button>
+      </ng-container>
+      
+      <!-- Exit button always visible -->
       <button type="button" class="icon-button exit-button"
               [ngbTooltip]="'Exit annotation mode' | translate"
               placement="bottom"
@@ -146,11 +169,12 @@
   </div>
 
   <!-- Annotation container with HTML elements instead of SVG -->
-  <div class="annotation-container" data-ignore-swipe-down="true">
+  <!-- Hide annotations during resizing to improve performance and visual experience -->
+  <div class="annotation-container" data-ignore-swipe-down="true" style="z-index: 999;" [class.hidden-during-resize]="_isResizing">
     <!-- Annotations layer -->
     <div class="annotation-layer" data-ignore-swipe-down="true">
       <div *ngFor="let ann of annotations"
-           [ngClass]="{'annotation': true, 'rectangle': ann.type === 'rectangle', 'circle': ann.type === 'circle'}"
+           [ngClass]="{'annotation': true, 'rectangle': ann.type === 'rectangle', 'circle': ann.type === 'circle', 'read-only': readOnly}"
            [style.left.%]="getAnnotationLeft(ann)"
            [style.top.%]="getAnnotationTop(ann)"
            [style.width.%]="getAnnotationWidth(ann)"
@@ -161,16 +185,16 @@
            [class.active]="currentlyDragging === ann"
            [style.visibility]="loadingAnnotations ? 'hidden' : 'visible'"
            data-ignore-swipe-down="true"
-           (mousedown)="startDrag($event, ann, 'whole')"
-           (touchstart)="startDragTouch($event, ann, 'whole')">
+           (mousedown)="!readOnly && startDrag($event, ann, 'whole')"
+           (touchstart)="!readOnly && startDragTouch($event, ann, 'whole')">
 
            <!-- Title display -->
            <div *ngIf="ann.title" class="annotation-title">
              {{ ann.title }}
            </div>
 
-        <!-- Control points (corners) -->
-        <div *ngIf="ann.type === 'rectangle'" class="control-points">
+        <!-- Control points (corners) - only in edit mode -->
+        <div *ngIf="ann.type === 'rectangle' && !readOnly" class="control-points">
           <div class="control-point top-left"
                data-ignore-swipe-down="true"
                (mousedown)="startDrag($event, ann, 'tl')"
@@ -189,8 +213,8 @@
                (touchstart)="startDragTouch($event, ann, 'br')"></div>
         </div>
 
-        <!-- Control points for circle - only top handle -->
-        <div *ngIf="ann.type === 'circle'" class="control-points">
+        <!-- Control points for circle - only top handle - only in edit mode -->
+        <div *ngIf="ann.type === 'circle' && !readOnly" class="control-points">
           <div class="control-point top"
                data-ignore-swipe-down="true"
                (mousedown)="startDrag($event, ann, 'resize')"
@@ -199,8 +223,8 @@
 
         <!-- Arrow mode has been removed -->
 
-        <!-- Toolbar for each annotation -->
-        <div class="control-toolbar"
+        <!-- Toolbar for each annotation - only in edit mode -->
+        <div *ngIf="!readOnly" class="control-toolbar"
              (mousedown)="$event.stopPropagation()"
              (touchstart)="$event.stopPropagation()">
           <button class="tool-button message"

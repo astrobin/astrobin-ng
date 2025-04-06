@@ -4,7 +4,7 @@
 
 <div
   *ngIf="!!image" [hidden]="!imageObjectLoaded"
-  class="main-area-container overflow-hidden d-flex flex-column w-100 h-100"
+  class="main-area-container regular-image-viewer overflow-hidden d-flex flex-column w-100 h-100"
 >
   <astrobin-mobile-menu
     (menuClose)="onMobileMenuClose()"
@@ -194,6 +194,8 @@
           (toggleViewMouseHover)="toggleViewMouseHover()"
           (showAdjustmentsEditor)="adjustmentEditorVisible = true"
           (toggleMoonOverlay)="toggleMoonOverlay()"
+          (toggleAnnotations)="toggleAnnotationMode($event)"
+          (toggleAnnotationEditMode)="toggleAnnotationEditMode()"
           [image]="image"
           [revisionLabel]="revisionLabel"
           [hasMouseHover]="
@@ -204,6 +206,8 @@
           [allowTogglingAnnotationsOnMouseHover]="revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION"
           [forceViewMouseHover]="forceViewMouseHover"
           [moonOverlayActive]="showMoonOverlay"
+          [annotationsActive]="isAnnotationMode"
+          [annotationsReadOnly]="annotationReadOnlyMode"
           class="additional-buttons"
         >
         </astrobin-image-viewer-additional-buttons>
@@ -227,6 +231,26 @@
         [externalSolutionMatrix]="advancedSolutionMatrix"
         (exitFullscreen)="exitFullscreen()"
       ></astrobin-fullscreen-image-viewer>
+      
+      <!-- Annotation tool component -->
+      <astrobin-annotation-tool
+        *ngIf="isBrowser && isAnnotationMode && imageFileLoaded"
+        [active]="isAnnotationMode" 
+        [readOnly]="annotationReadOnlyMode"
+        [imageElement]="imageElementForAnnotation"
+        [windowWidth]="windowRefService.nativeWindow.innerWidth"
+        [windowHeight]="windowRefService.nativeWindow.innerHeight"
+        [setMouseOverUIElement]="setMouseOverUIElement.bind(this)"
+        [naturalWidth]="revision?.w"
+        [naturalHeight]="revision?.h"
+        [imageId]="image.pk"
+        [isImageOwner]="currentUserIsImageOwner"
+        [revision]="revision"
+        [isRegularView]="true"
+        (exitAnnotationMode)="onExitAnnotationMode()"
+        (requestFullscreenMode)="enterFullscreen($event)"
+        class="measure-annotation-overlay"
+      ></astrobin-annotation-tool>
 
       <astrobin-image
         #imageComponent
@@ -297,6 +321,7 @@
       <div
         *ngIf="
           imageFileLoaded &&
+          !isAnnotationMode &&
           (revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION || forceViewAnnotationsMouseHover) &&
           inlineSvg
         "

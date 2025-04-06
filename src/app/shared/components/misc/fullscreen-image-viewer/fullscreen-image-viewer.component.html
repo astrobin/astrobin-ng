@@ -502,6 +502,7 @@
   <astrobin-annotation-tool
     *ngIf="isAnnotationMode && isStaticImageLoaded"
     [active]="isAnnotationMode"
+    [readOnly]="annotationReadOnlyMode"
     [imageElement]="staticImageEl"
     [windowWidth]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
     [windowHeight]="isBrowser ? windowRef.nativeWindow.innerHeight : 0"

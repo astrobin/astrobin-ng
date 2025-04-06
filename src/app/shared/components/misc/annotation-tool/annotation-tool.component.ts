@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { environment } from "@env/environment";
 import { CookieService } from "ngx-cookie";
 import { WindowRefService } from "@core/services/window-ref.service";
@@ -7,16 +7,15 @@ import { MainState } from "@app/store/state";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { debounceTime, filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { fromEvent, merge, Subject } from "rxjs";
+import { fromEvent, merge, Subject, Subscription } from "rxjs";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { isPlatformBrowser } from "@angular/common";
-import { ActivatedRoute, Router } from "@angular/router";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { Annotation } from "./models/annotation.model";
 import { AnnotationService } from "./services/annotation.service";
 import { AnnotationShapeType } from "./models/annotation-shape-type.enum";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { DeviceService } from "@core/services/device.service";
@@ -27,14 +26,12 @@ import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.i
   templateUrl: "./annotation-tool.component.html",
   styleUrls: ["./annotation-tool.component.scss"]
 })
-export class AnnotationToolComponent extends BaseComponentDirective implements OnInit, OnDestroy, AfterViewInit {
-  // Flag to prevent duplicate actions when both click and touchend fire
-  private _lastActionTime = 0;
-  private readonly ACTION_DEBOUNCE_MS = 300;
+export class AnnotationToolComponent extends BaseComponentDirective implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   // Make environment available to template
   environment = environment;
   @Input() active: boolean = false;
-  @Input() imageElement: ElementRef<HTMLElement>;
+  @Input() readOnly: boolean = false;
+  @Input() imageElement: HTMLElement; // This is directly the HTML element to annotate
   @Input() windowWidth: number;
   @Input() windowHeight: number;
   @Input() setMouseOverUIElement: (value: boolean) => void;
@@ -43,36 +40,28 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   @Input() imageId: number;
   @Input() isImageOwner: boolean = false;
   @Input() revision: ImageInterface | ImageRevisionInterface;
-
+  @Input() isRegularView: boolean = true; // Default to true - we're in regular view, not fullscreen
   @Output() exitAnnotationMode = new EventEmitter<void>();
-
+  @Output() annotationModeActive = new EventEmitter<boolean>(); // Emitted when annotation mode changes
+  @Output() requestFullscreenMode = new EventEmitter<void>(); // Emitted when requesting fullscreen from regular viewer
   // Types for template use
   readonly AnnotationShapeType = AnnotationShapeType;
-
   // Flag to indicate whether annotations are being loaded
   loadingAnnotations: boolean = false;
-
   // Flag for save button states
   savingAnnotations: boolean = false;
   saveSuccess: boolean = false;
-
   // Active annotation being created/edited
   activeAnnotation: Annotation | null = null;
-
   // Mode tracking
   isDrawing: boolean = false;
   isAddingNote: boolean = false;
-  currentDrawingTool: AnnotationShapeType = AnnotationShapeType.ARROW;
-
   // Mouse tracking
   mouseX: number | null = null;
   mouseY: number | null = null;
-
   // Drag functionality
   dragStartX: number | null = null;
   dragStartY: number | null = null;
-  dragOffsetX: number = 0;
-  dragOffsetY: number = 0;
   isDraggingItem: string | null = null;
   // Local array to directly track annotations
   annotations = [];
@@ -107,10 +96,14 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   protected colors: string[] = [];
   // Flag to detect browser environment
   protected isBrowser: boolean;
+  // Flag to prevent duplicate actions when both click and touchend fire
+  private _lastActionTime = 0;
+  private readonly ACTION_DEBOUNCE_MS = 300;
   // Constants for magic values
   private readonly DRAG_THRESHOLD = 10; // Minimum pixels to move before considering it a drag
   private readonly CLICK_PREVENTION_TIMEOUT_MS = 100; // Timeout to prevent accidental double clicks
   private readonly RESIZE_DEBOUNCE_MS = 300; // Debounce time for window resize events
+  private _isResizing = false; // Flag to track when window is being resized
   // Subjects for controlling drag operations
   private _shapeDragStart$ = new Subject<{ event: MouseEvent, id: string }>();
   private _shapeDragEnd$ = new Subject<MouseEvent>();
@@ -130,10 +123,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     ) :
     new Subject<UIEvent>();
   private _dragInProgress = false;
-  private _preventNextClick = false;
-  // For keeping track of window dimensions to reposition annotations on resize
-  private _prevWindowWidth: number = 0;
-  private _prevWindowHeight: number = 0;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -148,9 +137,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     private popNotificationsService: PopNotificationsService,
     private translateService: TranslateService,
     private windowRefService: WindowRefService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private formBuilder: FormBuilder,
     private imageApiService: ImageApiService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
@@ -175,6 +161,22 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this._cachedImageElement = element;
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    // Emit annotation mode active status whenever it changes
+    if (changes.active) {
+      this.annotationModeActive.emit(this.active);
+      
+      // Add or remove a class on the body element to hide UI elements
+      if (this.isBrowser && typeof document !== "undefined") {
+        if (this.active) {
+          document.body.classList.add('annotation-mode-active');
+        } else {
+          document.body.classList.remove('annotation-mode-active');
+        }
+      }
+    }
+  }
+
   ngOnInit(): void {
     super.ngOnInit();
 
@@ -185,20 +187,46 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Get available colors
     this.colors = this.annotationService.getColors();
+    
+    // Initialize scroll stream now that isBrowser is set
+    this._windowScroll$ = this.isBrowser ? 
+      fromEvent(window, 'scroll', { passive: true }).pipe(
+        takeUntil(this.destroyed$)
+      ) : 
+      new Subject<Event>();
+      
+    // Create a stream for immediate resize start events (no debounce)
+    if (this.isBrowser) {
+      fromEvent(window, 'resize').pipe(
+        takeUntil(this.destroyed$)
+      ).subscribe(() => {
+        // Set resizing flag as soon as resize starts
+        this._isResizing = true;
+        this.cdRef.markForCheck();
+      });
+    }
+    
+    // Emit initial annotation mode active status
+    this.annotationModeActive.emit(this.active);
+    
+    // Initialize body class based on initial active state
+    if (this.isBrowser && typeof document !== "undefined" && this.active) {
+      document.body.classList.add('annotation-mode-active');
+    }
 
     // Add listeners for touch events to improve dragging on mobile devices
     if (this.isBrowser) {
       // Prevent default touch behavior on mobile devices
-      document.addEventListener('touchmove', this.preventTouchDefault, { passive: false });
+      document.addEventListener("touchmove", this.preventTouchDefault, { passive: false });
 
       // Add document-level touchmove handler for better dragging experience
-      document.addEventListener('touchmove', this.handleDocumentTouchMove, { passive: false });
+      document.addEventListener("touchmove", this.handleDocumentTouchMove, { passive: false });
 
       // Add document-level touchend handler to ensure drag operations complete properly
-      document.addEventListener('touchend', this.handleDocumentTouchEnd, { passive: false });
+      document.addEventListener("touchend", this.handleDocumentTouchEnd, { passive: false });
 
       // Add document-level touchcancel handler for edge cases (e.g., alerts during drag)
-      document.addEventListener('touchcancel', this.handleDocumentTouchEnd, { passive: false });
+      document.addEventListener("touchcancel", this.handleDocumentTouchEnd, { passive: false });
     }
 
     // Subscribe to the annotations$ observable to keep local array in sync
@@ -217,10 +245,10 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
       // DIRECT CHECK: Get annotations param directly from current URL
       const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
-      const annotationsParam = currentUrl.searchParams.get('annotations');
+      const annotationsParam = currentUrl.searchParams.get("annotations");
 
       // First priority: Check for annotations in URL parameter
-      if (annotationsParam && annotationsParam.trim() !== '') {
+      if (annotationsParam && annotationsParam.trim() !== "") {
         // URL parameter takes precedence over saved annotations
         try {
           // Load the annotations
@@ -263,10 +291,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       this._windowResize$
         .pipe(takeUntil(this.destroyed$))
         .subscribe(event => this.handleWindowResize(event));
-
-      // Initialize previous window dimensions
-      this._prevWindowWidth = window.innerWidth;
-      this._prevWindowHeight = window.innerHeight;
 
       // Set up shape drag handling
       this._shapeDragStart$
@@ -338,9 +362,13 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   ngAfterViewInit(): void {
     if (this.isBrowser) {
-      // Try to find the image element immediately
+      // Try to find the image element immediately, but don't force an update yet
       this.tryFindImageElement();
-      this.updateAnnotationContainerSize();
+      
+      // Give the image element a moment to be properly rendered before trying to size the container
+      this.windowRefService.utilsService.delay(50).subscribe(() => {
+        this.updateAnnotationContainerSize();
+      });
 
       // Initialize the cached image element after a short delay to ensure DOM is ready
       this.windowRefService.utilsService.delay(200).subscribe(() => {
@@ -378,100 +406,54 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
       // Set up a resize observer on the image element to ensure annotations scale correctly
       this.windowRefService.utilsService.delay(500).subscribe(() => {
-        if (this.cachedImageElement) {
-          const resizeObserver = new ResizeObserver(entries => {
-            // Update the annotation container size when the image resizes
-            this.updateAnnotationContainerSize();
-          });
+        // Verify we have a valid DOM Element for the ResizeObserver
+        if (this.cachedImageElement && 
+            this.cachedImageElement.nodeType === Node.ELEMENT_NODE && 
+            typeof this.cachedImageElement.getBoundingClientRect === 'function') {
+          
+          try {
+            const resizeObserver = new ResizeObserver(entries => {
+              // Update the annotation container size when the image resizes
+              this.updateAnnotationContainerSize();
+            });
 
-          resizeObserver.observe(this.cachedImageElement);
+            resizeObserver.observe(this.cachedImageElement);
+            console.log("ResizeObserver attached to image element");
+          } catch (error) {
+            console.warn("Failed to set up ResizeObserver:", error);
+            
+            // Fallback: Use window resize events to update annotations
+            if (this.isBrowser && typeof window !== "undefined") {
+              console.log("Using window resize fallback instead of ResizeObserver");
+            }
+          }
+        } else {
+          console.warn("Cannot set up ResizeObserver: Invalid image element");
         }
       });
 
-      // Also set up a window resize handler to update on window resize
-      if (typeof window !== 'undefined') {
-        window.addEventListener('resize', () => {
-          this.updateAnnotationContainerSize();
-        });
-      }
+      // Subscribe to the debounced window resize stream, using the existing handler
+      this._windowResize$.subscribe(event => {
+        // First force a recalculation of the image element
+        this.tryFindImageElement();
+        // Then call the existing handler
+        this.handleWindowResize(event);
+        // Reset the resizing flag after the resize is complete (debounced)
+        this._isResizing = false;
+        this.cdRef.markForCheck();
+      });
+      
+      this._windowScroll$.subscribe(() => {
+        this.updateAnnotationContainerSize();
+      });
     }
   }
 
-  /**
-   * Update the annotation container size to match the image element
-   */
-  private updateAnnotationContainerSize(): void {
-    if (!this.cachedImageElement) {
-      this.tryFindImageElement();
-      if (!this.cachedImageElement) {
-        console.warn('No image element found to size annotation container');
-        return;
-      }
-    }
-
-    // Get the actual displayed image dimensions
-    const imageBounds = this.cachedImageElement.getBoundingClientRect();
-
-    // Skip if image element has no dimensions yet
-    if (imageBounds.width === 0 || imageBounds.height === 0) {
-      console.warn('Image element has zero dimensions, unable to size annotation container');
-      return;
-    }
-
-    // Find the annotation container
-    const annotationContainer = document.querySelector('.annotation-container') as HTMLElement;
-    if (!annotationContainer) {
-      console.warn('Annotation container not found');
-      return;
-    }
-
-    // Find the annotation layer
-    const annotationLayer = document.querySelector('.annotation-layer') as HTMLElement;
-    if (!annotationLayer) {
-      console.warn('Annotation layer not found');
-      return;
-    }
-
-    console.log('Updating annotation container size to match image:',
-      { width: imageBounds.width, height: imageBounds.height, top: imageBounds.top, left: imageBounds.left });
-
-    // Set container sizing and position to exactly match the image
-    annotationContainer.style.position = 'absolute';
-    annotationContainer.style.width = `${imageBounds.width}px`;
-    annotationContainer.style.height = `${imageBounds.height}px`;
-    annotationContainer.style.top = `${imageBounds.top}px`;
-    annotationContainer.style.left = `${imageBounds.left}px`;
-
-    // Position the layer to fill the container
-    annotationLayer.style.width = '100%';
-    annotationLayer.style.height = '100%';
-    annotationLayer.style.top = '0';
-    annotationLayer.style.left = '0';
-  }
-
-  // Prevent default behavior for touch events
-  private preventTouchDefault = (e: TouchEvent) => {
-    // Only prevent default if we're actively dragging
-    if (this.currentlyDragging) {
-      e.preventDefault();
-    }
-  };
-
-  // Handle touch moves at the document level
-  private handleDocumentTouchMove = (e: TouchEvent) => {
-    if (this.currentlyDragging && e.touches.length === 1) {
-      // Call our dragMoveTouch method directly
-      this.dragMoveTouch(e);
-    }
-  };
-
-  // Handle touch end at the document level
-  private handleDocumentTouchEnd = (e: TouchEvent) => {
-    if (this.currentlyDragging) {
-      // Call our endDragTouch method directly
-      this.endDragTouch(e);
-    }
-  };
+  // We'll define these in ngOnInit after isBrowser is initialized
+  private _windowScroll$: Subject<Event> | any;
+    
+  // Subscription for image load events
+  private _imageLoadSubscription: Subscription = null;
 
   ngOnDestroy(): void {
     if (this.isBrowser) {
@@ -480,15 +462,28 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       this._shapeDragEnd$.complete();
       this._noteDragStart$.complete();
       this._noteDragEnd$.complete();
+      
+      // All subscriptions using takeUntil(this.destroyed$) will be automatically cleaned up
+      // when super.ngOnDestroy() is called, which completes this.destroyed$
+      
+      // Clean up any other subscriptions
+      if (this._imageLoadSubscription) {
+        this._imageLoadSubscription.unsubscribe();
+        this._imageLoadSubscription = null;
+      }
 
-      // Remove event listeners
-      document.removeEventListener('touchmove', this.preventTouchDefault);
-      document.removeEventListener('touchmove', this.handleDocumentTouchMove);
-      document.removeEventListener('touchend', this.handleDocumentTouchEnd);
-      document.removeEventListener('touchcancel', this.handleDocumentTouchEnd);
+      // Remove document event listeners
+      document.removeEventListener("touchmove", this.preventTouchDefault);
+      document.removeEventListener("touchmove", this.handleDocumentTouchMove);
+      document.removeEventListener("touchend", this.handleDocumentTouchEnd);
+      document.removeEventListener("touchcancel", this.handleDocumentTouchEnd);
+      
+      // Make sure to remove the body class when component is destroyed
+      document.body.classList.remove('annotation-mode-active');
     }
 
     // Call parent class ngOnDestroy - this will also complete the destroyed$ subject
+    // which will clean up all our RxJS pipes using takeUntil(this.destroyed$)
     super.ngOnDestroy();
   }
 
@@ -541,10 +536,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Update the annotation container to match the image dimensions
     this.updateAnnotationContainerSize();
-
-    // Store the new dimensions
-    this._prevWindowWidth = window.innerWidth;
-    this._prevWindowHeight = window.innerHeight;
 
     this.cdRef.markForCheck();
   }
@@ -601,8 +592,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     console.log("Prepared rectangle shape data:", shapeData);
   }
-
-  // Arrow mode has been removed
 
   /**
    * Prepare a circle annotation and open the form
@@ -697,6 +686,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     }
     return 0;
   }
+
+  // Arrow mode has been removed
 
   // Get the height of an annotation
   getAnnotationHeight(ann: any): number {
@@ -905,7 +896,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     }
 
     // Import dynamically to avoid circular dependency
-    import('@shared/components/misc/confirmation-dialog/confirmation-dialog.component').then(module => {
+    import("@shared/components/misc/confirmation-dialog/confirmation-dialog.component").then(module => {
       const modalRef = this.modalService.open(module.ConfirmationDialogComponent);
       const componentInstance = modalRef.componentInstance;
 
@@ -928,15 +919,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   }
 
   /**
-   * Clear all annotations (internal method without confirmation)
-   */
-  private clearAll(): void {
-    console.log("clearAll called");
-    this.annotationService.clearAllAnnotations();
-    this.cdRef.detectChanges();
-  }
-
-  /**
    * Confirm deletion of an annotation
    */
   confirmDeleteAnnotation(id: string): void {
@@ -946,7 +928,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     }
 
     // Import dynamically to avoid circular dependency
-    import('@shared/components/misc/confirmation-dialog/confirmation-dialog.component').then(module => {
+    import("@shared/components/misc/confirmation-dialog/confirmation-dialog.component").then(module => {
       const modalRef = this.modalService.open(module.ConfirmationDialogComponent);
       const componentInstance = modalRef.componentInstance;
 
@@ -1119,9 +1101,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     }
 
     // Add this to the body to capture all touch events
-    if (this.isBrowser && typeof document !== 'undefined') {
+    if (this.isBrowser && typeof document !== "undefined") {
       // Apply the custom class to highlight that touch drag is active
-      document.body.classList.add('annotation-touch-drag-active');
+      document.body.classList.add("annotation-touch-drag-active");
     }
 
     // Force change detection to update the UI immediately
@@ -1320,8 +1302,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this.dragMode = "whole";
 
     // Remove touch drag active class if present
-    if (this.isBrowser && typeof document !== 'undefined') {
-      document.body.classList.remove('annotation-touch-drag-active');
+    if (this.isBrowser && typeof document !== "undefined") {
+      document.body.classList.remove("annotation-touch-drag-active");
     }
 
     // Force UI update
@@ -1513,12 +1495,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this.dragStartX = null;
     this.dragStartY = null;
 
-    // Prevent the next click event from being processed
-    this._preventNextClick = true;
-    this.utilsService.delay(this.CLICK_PREVENTION_TIMEOUT_MS).subscribe(() => {
-      this._preventNextClick = false;
-    });
-
     this.cdRef.markForCheck();
   }
 
@@ -1569,8 +1545,22 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     const deltaPercentX = (deltaX / imageBounds.width) * 100;
     const deltaPercentY = (deltaY / imageBounds.height) * 100;
 
-    // Move the note by the delta percentages
-    this.annotationService.moveAnnotationNote(id, deltaPercentX, deltaPercentY);
+    // Find the note in the annotations array
+    const annotation = this.annotations.find(ann => ann.id === id.replace('note-', ''));
+    if (!annotation || !annotation.note) {
+      return;
+    }
+    
+    // Calculate the new note position 
+    const newX = Math.min(100, Math.max(0, annotation.note.position.x + deltaPercentX));
+    const newY = Math.min(100, Math.max(0, annotation.note.position.y + deltaPercentY));
+    
+    // Calculate deltas that keep the note within bounds
+    const boundsRespectingDeltaX = newX - annotation.note.position.x;
+    const boundsRespectingDeltaY = newY - annotation.note.position.y;
+    
+    // Use the bounded deltas to move the note
+    this.annotationService.moveAnnotationNote(id, boundsRespectingDeltaX, boundsRespectingDeltaY);
 
     // Reset the drag start position
     this.dragStartX = event.clientX;
@@ -1586,12 +1576,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this.isDraggingItem = null;
     this.dragStartX = null;
     this.dragStartY = null;
-
-    // Prevent the next click event from being processed
-    this._preventNextClick = true;
-    this.utilsService.delay(this.CLICK_PREVENTION_TIMEOUT_MS).subscribe(() => {
-      this._preventNextClick = false;
-    });
 
     this.cdRef.markForCheck();
   }
@@ -1615,10 +1599,10 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         console.log("BEFORE URL CHANGE:", url.toString());
 
         // Remove annotations param
-        url.searchParams.delete('annotations');
+        url.searchParams.delete("annotations");
 
         // Apply the change directly to history
-        this.windowRefService.nativeWindow.history.replaceState({}, '', url.toString());
+        this.windowRefService.nativeWindow.history.replaceState({}, "", url.toString());
 
         console.log("AFTER URL CHANGE:", this.windowRefService.nativeWindow.location.href);
       } catch (e) {
@@ -1653,8 +1637,14 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       // URL check complete
     });
 
-    // Then emit event to notify parent component
+    // Remove the body class to show UI elements again
+    if (this.isBrowser && typeof document !== "undefined") {
+      document.body.classList.remove('annotation-mode-active');
+    }
+
+    // Then emit events to notify parent component
     this.exitAnnotationMode.emit();
+    this.annotationModeActive.emit(false);
   }
 
   /**
@@ -1714,41 +1704,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         this.pendingShapeData = null;
       }
     );
-  }
-
-  /**
-   * Create annotation from pending data and form result
-   */
-  private createAnnotationFromPendingData(formData: any): void {
-    if (!this.pendingShapeData) {
-      console.warn("No pending shape data found");
-      return;
-    }
-
-    // Create a new annotation with the pending shape data
-    const newAnnotation = {
-      id: this.pendingShapeData.type + "_" + Date.now(),
-      ...this.pendingShapeData,
-      color: formData.color || this.annotationService.getDefaultColor(),
-      title: formData.title,
-      note: formData.message ? {
-        text: formData.message,
-        position: { x: 50, y: 20 },
-        expanded: true
-      } : null
-    };
-
-    // Add to our local array
-    this.annotations.push(newAnnotation);
-
-    // Reset pending data
-    this.pendingShapeData = null;
-
-    console.log("Created new annotation:", newAnnotation);
-    console.log("Current annotations:", this.annotations);
-
-    // Force UI update
-    this.cdRef.detectChanges();
   }
 
   /**
@@ -1949,7 +1904,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       const currentUrl = this.windowRefService.getCurrentUrl();
 
       // Update the annotations parameter
-      currentUrl.searchParams.set('annotations', urlParam);
+      currentUrl.searchParams.set("annotations", urlParam);
 
       // Update the URL without navigation
       this.windowRefService.replaceState({}, currentUrl.toString());
@@ -1992,8 +1947,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     // Open the offcanvas using the template reference
     this.offcanvasService.open(this.helpContentRef, {
       position: this.deviceService.offcanvasPosition(),
-      panelClass: 'image-viewer-offcanvas help-offcanvas',
-      backdropClass: 'image-viewer-offcanvas-backdrop'
+      panelClass: "image-viewer-offcanvas help-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop"
     });
   }
 
@@ -2011,10 +1966,10 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this.cdRef.markForCheck();
 
     const annotationsJson = JSON.stringify(this.annotations);
-    
+
     // Choose the appropriate method based on whether we're dealing with a revision or an image
     let saveMethod;
-    if (this.revision.hasOwnProperty('label')) {
+    if (this.revision.hasOwnProperty("label")) {
       saveMethod = this.imageApiService.setRevisionAnnotations(this.revision.pk, annotationsJson);
     } else {
       saveMethod = this.imageApiService.setAnnotations(this.revision.pk, annotationsJson);
@@ -2049,125 +2004,315 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   }
 
   /**
-   * Helper to try various methods to find the image element
+   * Update the annotation container size to match the actual displayed image, accounting for letterboxing
    */
-  private tryFindImageElement(): void {
-    // Try from the provided imageElement reference first
-    if (this.imageElement?.nativeElement) {
-      // Check if we're using the static image approach (direct img element)
-      if (this.imageElement.nativeElement instanceof HTMLImageElement) {
-        console.log("Using static image approach with direct img element");
-        // Just use the element directly
-        this.cachedImageElement = this.imageElement.nativeElement;
-        const rect = this.cachedImageElement.getBoundingClientRect();
-        console.log("Using static image element with dimensions:",
-          { width: rect.width, height: rect.height, element: this.cachedImageElement });
+  private updateAnnotationContainerSize(): void {
+    // Make sure we have a valid image element
+    if (!this.cachedImageElement) {
+      this.tryFindImageElement();
+      if (!this.cachedImageElement) {
+        console.warn("No image element found to size annotation container");
         return;
       }
+    }
+    
+    // Verify the cached element is a valid DOM element with getBoundingClientRect method
+    if (!this.cachedImageElement || 
+        this.cachedImageElement.nodeType !== Node.ELEMENT_NODE || 
+        typeof this.cachedImageElement.getBoundingClientRect !== 'function') {
+      console.warn("Cached image element is not a valid DOM element or doesn't support getBoundingClientRect");
+      return;
+    }
 
-      // Old approach with zoom container
-      // First try to get the actual visible image element in the zoom container
-      this.cachedImageElement = this.imageElement.nativeElement.querySelector(".ngxImageZoomContainer img");
+    // Get the container element that holds the image - needed to calculate letterboxing
+    const imageContainer = this.cachedImageElement.parentElement;
+    if (!imageContainer) {
+      console.warn("Cannot find image container element");
+      return;
+    }
 
-      // Log the dimensions of what we found
-      if (this.cachedImageElement) {
+    // Verify the container element is a valid DOM element with getBoundingClientRect method
+    if (typeof imageContainer.getBoundingClientRect !== 'function') {
+      console.warn("Image container element doesn't support getBoundingClientRect");
+      return;
+    }
+
+    // Get the bounds of both the container and the image itself
+    const containerBounds = imageContainer.getBoundingClientRect();
+    const imageBounds = this.cachedImageElement.getBoundingClientRect();
+
+    // Skip if image element has no dimensions yet
+    if (imageBounds.width === 0 || imageBounds.height === 0 || containerBounds.width === 0 || containerBounds.height === 0) {
+      console.warn("Image or container has zero dimensions, unable to size annotation container");
+      return;
+    }
+
+    // Find the annotation container
+    const annotationContainer = document.querySelector(".annotation-container") as HTMLElement;
+    if (!annotationContainer) {
+      console.warn("Annotation container not found");
+      return;
+    }
+
+    // Find the annotation layer
+    const annotationLayer = document.querySelector(".annotation-layer") as HTMLElement;
+    if (!annotationLayer) {
+      console.warn("Annotation layer not found");
+      return;
+    }
+
+    // Get the natural dimensions of the image from our inputs, or use the element attributes
+    const naturalWidth = this.naturalWidth || parseInt(this.cachedImageElement.getAttribute('naturalWidth')) || this.revision?.w;
+    const naturalHeight = this.naturalHeight || parseInt(this.cachedImageElement.getAttribute('naturalHeight')) || this.revision?.h;
+
+    // Calculate letterboxing and actual displayed image dimensions
+    const { displayWidth, displayHeight, offsetX, offsetY } = this.calculateLetterboxedDimensions(
+      containerBounds.width, 
+      containerBounds.height,
+      naturalWidth, 
+      naturalHeight, 
+      imageBounds
+    );
+
+    // Since getBoundingClientRect returns positions relative to the viewport,
+    // we can use position:fixed to position our container relative to the viewport
+    const viewportTop = containerBounds.top + offsetY;
+    const viewportLeft = containerBounds.left + offsetX;
+
+    console.log("Updating annotation container to match letterboxed image:", {
+      containerBounds,
+      displayWidth,
+      displayHeight,
+      offsetX,
+      offsetY,
+      viewportTop,
+      viewportLeft
+    });
+
+    // Set container sizing and position to exactly match the displayed portion of the image
+    // using position:fixed so we're always positioning relative to the viewport
+    // This avoids scroll position calculations and should work with fixed headers
+    annotationContainer.style.position = "fixed";
+    annotationContainer.style.width = `${displayWidth}px`;
+    annotationContainer.style.height = `${displayHeight}px`;
+    annotationContainer.style.top = `${viewportTop}px`;
+    annotationContainer.style.left = `${viewportLeft}px`;
+
+    // Store these dimensions for percentage calculations
+    this.containerWidth = displayWidth;
+    this.containerHeight = displayHeight;
+
+    // Position the layer to fill the container
+    annotationLayer.style.width = "100%";
+    annotationLayer.style.height = "100%";
+    annotationLayer.style.top = "0";
+    annotationLayer.style.left = "0";
+  }
+
+  /**
+   * Calculate the dimensions and position of the actual displayed image area,
+   * accounting for letterboxing (black bars) added to maintain aspect ratio
+   */
+  private calculateLetterboxedDimensions(
+    containerWidth: number,
+    containerHeight: number,
+    naturalWidth: number,
+    naturalHeight: number,
+    imageBounds: DOMRect
+  ): { displayWidth: number; displayHeight: number; offsetX: number; offsetY: number } {
+    // If we don't have natural dimensions, use the actual image bounds as fallback
+    if (!naturalWidth || !naturalHeight) {
+      return {
+        displayWidth: imageBounds.width,
+        displayHeight: imageBounds.height,
+        offsetX: 0,
+        offsetY: 0
+      };
+    }
+
+    // Calculate natural aspect ratio
+    const naturalAspectRatio = naturalWidth / naturalHeight;
+    const containerAspectRatio = containerWidth / containerHeight;
+
+    let displayWidth: number;
+    let displayHeight: number;
+    let offsetX: number;
+    let offsetY: number;
+
+    // Determine if the image is letterboxed horizontally or vertically
+    if (naturalAspectRatio > containerAspectRatio) {
+      // Image is wider than container (horizontal letterboxing - black bars on top and bottom)
+      displayWidth = containerWidth;
+      displayHeight = containerWidth / naturalAspectRatio;
+      offsetX = 0;
+      offsetY = (containerHeight - displayHeight) / 2;
+    } else {
+      // Image is taller than container (vertical letterboxing - black bars on left and right)
+      displayHeight = containerHeight;
+      displayWidth = containerHeight * naturalAspectRatio;
+      offsetX = (containerWidth - displayWidth) / 2;
+      offsetY = 0;
+    }
+
+    // If the image is smaller than the container in both dimensions (no scaling up),
+    // just center it without stretching
+    if (naturalWidth <= containerWidth && naturalHeight <= containerHeight) {
+      displayWidth = naturalWidth;
+      displayHeight = naturalHeight;
+      offsetX = (containerWidth - displayWidth) / 2;
+      offsetY = (containerHeight - displayHeight) / 2;
+    }
+
+    // Verify against actual image bounds as a sanity check - if there's a big difference,
+    // fallback to the actual bounds
+    const boundsDifference = Math.abs(displayWidth - imageBounds.width) + Math.abs(displayHeight - imageBounds.height);
+    if (boundsDifference > 10) { // Allow a small tolerance for rounding errors
+      console.warn("Calculated letterbox dimensions differ from actual image bounds, using actual bounds as fallback");
+      return {
+        displayWidth: imageBounds.width,
+        displayHeight: imageBounds.height,
+        offsetX: 0,
+        offsetY: 0
+      };
+    }
+
+    return { displayWidth, displayHeight, offsetX, offsetY };
+  }
+
+  // Prevent default behavior for touch events
+  private preventTouchDefault = (e: TouchEvent) => {
+    // Only prevent default if we're actively dragging
+    if (this.currentlyDragging) {
+      e.preventDefault();
+    }
+  };
+
+  // Handle touch moves at the document level
+  private handleDocumentTouchMove = (e: TouchEvent) => {
+    if (this.currentlyDragging && e.touches.length === 1) {
+      // Call our dragMoveTouch method directly
+      this.dragMoveTouch(e);
+    }
+  };
+
+  // Handle touch end at the document level
+  private handleDocumentTouchEnd = (e: TouchEvent) => {
+    if (this.currentlyDragging) {
+      // Call our endDragTouch method directly
+      this.endDragTouch(e);
+    }
+  };
+
+  /**
+   * Clear all annotations (internal method without confirmation)
+   */
+  private clearAll(): void {
+    console.log("clearAll called");
+    this.annotationService.clearAllAnnotations();
+    this.cdRef.detectChanges();
+  }
+
+  /**
+   * Create annotation from pending data and form result
+   */
+  private createAnnotationFromPendingData(formData: any): void {
+    if (!this.pendingShapeData) {
+      console.warn("No pending shape data found");
+      return;
+    }
+
+    // Create a new annotation with the pending shape data
+    const newAnnotation = {
+      id: this.pendingShapeData.type + "_" + Date.now(),
+      ...this.pendingShapeData,
+      color: formData.color || this.annotationService.getDefaultColor(),
+      title: formData.title,
+      note: formData.message ? {
+        text: formData.message,
+        position: { x: 50, y: 20 },
+        expanded: true
+      } : null
+    };
+
+    // Add to our local array
+    this.annotations.push(newAnnotation);
+
+    // Reset pending data
+    this.pendingShapeData = null;
+
+    console.log("Created new annotation:", newAnnotation);
+    console.log("Current annotations:", this.annotations);
+
+    // Force UI update
+    this.cdRef.detectChanges();
+  }
+
+  /**
+   * Sets up the cached image element from the directly provided HTMLElement
+   * and sets up load event listener for dynamic image loading
+   */
+  private tryFindImageElement(): void {
+    // Use the directly provided image element
+    if (this.imageElement) {
+      this.cachedImageElement = this.imageElement;
+      
+      // Verify the cached element is a valid DOM element with getBoundingClientRect method
+      if (this.cachedImageElement && 
+          this.cachedImageElement.nodeType === Node.ELEMENT_NODE && 
+          typeof this.cachedImageElement.getBoundingClientRect === 'function') {
+        
         const rect = this.cachedImageElement.getBoundingClientRect();
-        console.log("Found cached image element with dimensions:",
-          { width: rect.width, height: rect.height, element: this.cachedImageElement });
-      }
-
-      // If we can't find it with the first selector, or it has no dimensions, try alternatives
-      if (!this.cachedImageElement || this.cachedImageElement.getBoundingClientRect().width === 0) {
-        console.log("Trying alternative selectors...");
-
-        // Try common selectors based on the viewer implementation, ordered by likelihood of being the main image
-        const selectors = [
-          "img.ngxImageZoomThumbnail", // Original image in the zoom component
-          "img.ngxImageZoomFullImage", // Zoomed image
-          ".ngxImageZoomFullContainer img", // Another potential zoomed image
-          "canvas", // Canvas element (if image is rendered in canvas) - moved up for touch mode
-          "img:not([hidden])", // Any visible image
-          "img" // Any image
-        ];
-
-        for (const selector of selectors) {
-          const element = this.imageElement.nativeElement.querySelector(selector);
-          if (element && element.getBoundingClientRect().width > 0) {
-            this.cachedImageElement = element as HTMLElement;
-            const rect = element.getBoundingClientRect();
-            console.log(`Found element with selector: ${selector}`,
-              { width: rect.width, height: rect.height, element });
-            break;
+        console.log("Using provided image element with dimensions:",
+          { width: rect.width, height: rect.height });
+        
+        // Extract natural dimensions if available (for better letterboxing calculations)
+        if (this.cachedImageElement instanceof HTMLImageElement) {
+          // If the image is already loaded, get its natural dimensions
+          if (this.cachedImageElement.naturalWidth && !this.naturalWidth) {
+            this.naturalWidth = this.cachedImageElement.naturalWidth;
+            this.naturalHeight = this.cachedImageElement.naturalHeight;
+            console.log("Using natural dimensions from loaded image element:",
+              { width: this.naturalWidth, height: this.naturalHeight });
           }
         }
+      } else {
+        console.warn("Provided imageElement is not a valid DOM element or doesn't support getBoundingClientRect");
       }
-    }
-
-    // If still not found, try document-wide search focusing on visible elements with dimensions
-    if (!this.cachedImageElement || this.cachedImageElement.getBoundingClientRect().width === 0) {
-      console.log("Trying document-wide search...");
-
-      const selectors = [
-        ".fullscreen-image-viewer .ngxImageZoomContainer img", // Primary target
-        ".fullscreen-image-viewer img.ngxImageZoomThumbnail",
-        ".fullscreen-image-viewer img.ngxImageZoomFullImage",
-        ".fullscreen-image-viewer .ngxImageZoomFullContainer img",
-        ".fullscreen-image-viewer canvas", // Canvas fallback - moved up for touch mode
-        ".fullscreen-image-viewer img:not([hidden])", // Any visible image in the viewer
-        ".fullscreen-image-viewer img" // Any image in the viewer
-      ];
-
-      for (const selector of selectors) {
-        const element = document.querySelector(selector);
-        if (element && element.getBoundingClientRect().width > 0) {
-          this.cachedImageElement = element as HTMLElement;
-          const rect = element.getBoundingClientRect();
-          console.log(`Found element with document-wide selector: ${selector}`,
-            { width: rect.width, height: rect.height, element, tagName: element.tagName });
-          break;
-        }
-      }
-    }
-
-    // Specific handling for touch mode - explicitly try to find canvas which may load later
-    if (this.deviceService.isTouchEnabled() && (!this.cachedImageElement || this.cachedImageElement.tagName !== 'CANVAS')) {
-      console.log("Touch device detected - specifically searching for canvas element");
-
-      const canvasSelectors = [
-        ".fullscreen-image-viewer canvas",
-        "canvas.touchRealCanvas",
-        "canvas"
-      ];
-
-      for (const selector of canvasSelectors) {
-        const element = document.querySelector(selector);
-        if (element && element.getBoundingClientRect().width > 0) {
-          console.log(`Found canvas element with selector: ${selector}`, element);
-          this.cachedImageElement = element as HTMLElement;
-          break;
-        }
-      }
-    }
-
-    // If we found an element, check and store its natural dimensions for future reference
-    if (this.cachedImageElement) {
-      if (this.cachedImageElement instanceof HTMLImageElement && this.cachedImageElement.naturalWidth && !this.naturalWidth) {
-        this.naturalWidth = this.cachedImageElement.naturalWidth;
-        this.naturalHeight = this.cachedImageElement.naturalHeight;
-        console.log("Updated natural dimensions from image:",
-          { width: this.naturalWidth, height: this.naturalHeight });
-      } else if (this.cachedImageElement instanceof HTMLCanvasElement) {
-        console.log("Canvas element found, dimensions:", {
+      
+      // Use RxJS fromEvent for the image load event if it's an HTMLImageElement
+      // Create a new stream if we haven't attached the event handler yet
+      if (!this._imageLoadSubscription && this.isBrowser && 
+          this.cachedImageElement instanceof HTMLImageElement &&
+          typeof this.cachedImageElement.addEventListener === 'function') {
+          
+        this._imageLoadSubscription = fromEvent(this.cachedImageElement, 'load')
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(() => {
+            console.log("Image loaded (RxJS), updating annotation container");
+            
+            // Update natural dimensions from the newly loaded image
+            if (this.cachedImageElement instanceof HTMLImageElement) {
+              this.naturalWidth = this.cachedImageElement.naturalWidth;
+              this.naturalHeight = this.cachedImageElement.naturalHeight;
+            }
+            
+            // Update annotation container size after a short delay to ensure image is rendered
+            this.utilsService.delay(100).subscribe(() => {
+              this.updateAnnotationContainerSize();
+            });
+          });
+      } else if (this.cachedImageElement instanceof HTMLCanvasElement && 
+                typeof this.cachedImageElement.getBoundingClientRect === 'function') {
+        const canvasRect = this.cachedImageElement.getBoundingClientRect();
+        console.log("Canvas element provided:", {
           width: this.cachedImageElement.width,
           height: this.cachedImageElement.height,
-          displayWidth: this.cachedImageElement.getBoundingClientRect().width,
-          displayHeight: this.cachedImageElement.getBoundingClientRect().height
+          displayWidth: canvasRect.width,
+          displayHeight: canvasRect.height
         });
       }
-    }
-    // If still no element found with dimensions, use fallback mechanisms
-    else {
-      console.warn("Could not find any suitable image element with dimensions, will use fallbacks when drawing");
+    } else {
+      console.warn("No image element provided for annotations");
     }
   }
 
@@ -2175,43 +2320,87 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
    * Handle rectangle dragging and resizing
    */
   private handleRectangleDrag(deltaXPercent: number, deltaYPercent: number, currentXPercent: number, currentYPercent: number): void {
+    // First, get the original rectangle dimensions and position
+    const originalLeft = this.dragStartShapeX;
+    const originalTop = this.dragStartShapeY;
+    const originalRight = originalLeft + this.dragStartShapeWidth;
+    const originalBottom = originalTop + this.dragStartShapeHeight;
+    
+    let newLeft = originalLeft;
+    let newTop = originalTop;
+    let newRight = originalRight;
+    let newBottom = originalBottom;
+    
     if (this.dragMode === "whole") {
-      // Move the entire rectangle
-      this.currentlyDragging.x = this.dragStartShapeX + deltaXPercent;
-      this.currentlyDragging.y = this.dragStartShapeY + deltaYPercent;
+      // Calculate new position for the entire rectangle
+      newLeft = originalLeft + deltaXPercent;
+      newTop = originalTop + deltaYPercent;
+      newRight = originalRight + deltaXPercent;
+      newBottom = originalBottom + deltaYPercent;
+      
+      // Keep the rectangle within the image bounds
+      if (newLeft < 0) {
+        // If left edge is outside, adjust both left and right
+        const adjustment = -newLeft;
+        newLeft = 0;
+        newRight = Math.min(100, originalRight - originalLeft);
+      } else if (newRight > 100) {
+        // If right edge is outside, adjust both right and left
+        const adjustment = newRight - 100;
+        newRight = 100;
+        newLeft = Math.max(0, 100 - (originalRight - originalLeft));
+      }
+      
+      if (newTop < 0) {
+        // If top edge is outside, adjust both top and bottom
+        const adjustment = -newTop;
+        newTop = 0;
+        newBottom = Math.min(100, originalBottom - originalTop);
+      } else if (newBottom > 100) {
+        // If bottom edge is outside, adjust both bottom and top
+        const adjustment = newBottom - 100;
+        newBottom = 100;
+        newTop = Math.max(0, 100 - (originalBottom - originalTop));
+      }
+      
+      // Update the rectangle attributes
+      this.currentlyDragging.x = newLeft;
+      this.currentlyDragging.y = newTop;
+      this.currentlyDragging.width = newRight - newLeft;
+      this.currentlyDragging.height = newBottom - newTop;
     } else {
       // Handle corner resizing
-      // First, get the original rectangle dimensions and position
-      const originalLeft = this.dragStartShapeX;
-      const originalTop = this.dragStartShapeY;
-      const originalRight = originalLeft + this.dragStartShapeWidth;
-      const originalBottom = originalTop + this.dragStartShapeHeight;
-
-      // Determine new corner positions based on the drag mode
-      let newLeft = originalLeft;
-      let newTop = originalTop;
-      let newRight = originalRight;
-      let newBottom = originalBottom;
-
       switch (this.dragMode) {
         case "tl": // Top-left
           newLeft = Math.min(originalRight - this.MIN_SIZE_PERCENT, originalLeft + deltaXPercent);
           newTop = Math.min(originalBottom - this.MIN_SIZE_PERCENT, originalTop + deltaYPercent);
+          // Constrain to image boundaries
+          newLeft = Math.max(0, newLeft);
+          newTop = Math.max(0, newTop);
           break;
 
         case "tr": // Top-right
           newRight = Math.max(originalLeft + this.MIN_SIZE_PERCENT, originalRight + deltaXPercent);
           newTop = Math.min(originalBottom - this.MIN_SIZE_PERCENT, originalTop + deltaYPercent);
+          // Constrain to image boundaries
+          newRight = Math.min(100, newRight);
+          newTop = Math.max(0, newTop);
           break;
 
         case "bl": // Bottom-left
           newLeft = Math.min(originalRight - this.MIN_SIZE_PERCENT, originalLeft + deltaXPercent);
           newBottom = Math.max(originalTop + this.MIN_SIZE_PERCENT, originalBottom + deltaYPercent);
+          // Constrain to image boundaries
+          newLeft = Math.max(0, newLeft);
+          newBottom = Math.min(100, newBottom);
           break;
 
         case "br": // Bottom-right
           newRight = Math.max(originalLeft + this.MIN_SIZE_PERCENT, originalRight + deltaXPercent);
           newBottom = Math.max(originalTop + this.MIN_SIZE_PERCENT, originalBottom + deltaYPercent);
+          // Constrain to image boundaries
+          newRight = Math.min(100, newRight);
+          newBottom = Math.min(100, newBottom);
           break;
       }
 
@@ -2231,9 +2420,18 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
    */
   private handleCircleDrag(deltaXPercent: number, deltaYPercent: number, currentXPercent: number, currentYPercent: number): void {
     if (this.dragMode === "whole" || this.dragMode === "center") {
-      // Move the entire circle
-      this.currentlyDragging.cx = this.dragStartShapeX + deltaXPercent;
-      this.currentlyDragging.cy = this.dragStartShapeY + deltaYPercent;
+      // Calculate new center position
+      let newCx = this.dragStartShapeX + deltaXPercent;
+      let newCy = this.dragStartShapeY + deltaYPercent;
+      const radius = this.currentlyDragging.r;
+      
+      // Keep the circle within image bounds, accounting for radius
+      newCx = Math.max(radius, Math.min(100 - radius, newCx));
+      newCy = Math.max(radius, Math.min(100 - radius, newCy));
+      
+      // Update circle position
+      this.currentlyDragging.cx = newCx;
+      this.currentlyDragging.cy = newCy;
     } else if (this.dragMode === "resize") {
       // We simply use the direct distance between current mouse position and center
       const cx = +this.currentlyDragging.cx;
@@ -2244,13 +2442,25 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       const dy = currentYPercent - cy;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      // Set the radius directly to the distance with a minimum size
-      this.currentlyDragging.r = Math.max(this.MIN_RADIUS_PERCENT, distance);
+      // Calculate maximum allowed radius based on distance to image edges
+      const maxDistanceToEdge = Math.min(
+        cx,                 // Distance to left edge
+        100 - cx,           // Distance to right edge
+        cy,                 // Distance to top edge
+        100 - cy            // Distance to bottom edge
+      );
+      
+      // Set the radius to the distance, but constrained by both min size and image boundaries
+      this.currentlyDragging.r = Math.min(
+        maxDistanceToEdge,
+        Math.max(this.MIN_RADIUS_PERCENT, distance)
+      );
 
       console.log("Circle resize:", {
         center: { x: cx, y: cy },
         mouse: { x: currentXPercent, y: currentYPercent },
         distance: distance,
+        maxAllowed: maxDistanceToEdge,
         newRadius: this.currentlyDragging.r
       });
     }
@@ -2264,19 +2474,50 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
    */
   private handleArrowDrag(deltaXPercent: number, deltaYPercent: number, currentXPercent: number, currentYPercent: number): void {
     if (this.dragMode === "whole") {
-      // Move the entire arrow by the delta percentage
-      this.currentlyDragging.startX = this.dragStartShapeX + deltaXPercent;
-      this.currentlyDragging.startY = this.dragStartShapeY + deltaYPercent;
-      this.currentlyDragging.endX = this.dragStartShapeWidth + deltaXPercent;
-      this.currentlyDragging.endY = this.dragStartShapeHeight + deltaYPercent;
+      // Calculate new positions
+      let newStartX = this.dragStartShapeX + deltaXPercent;
+      let newStartY = this.dragStartShapeY + deltaYPercent;
+      let newEndX = this.dragStartShapeWidth + deltaXPercent;
+      let newEndY = this.dragStartShapeHeight + deltaYPercent;
+      
+      // Check if any point is outside the image bounds
+      if (newStartX < 0 || newStartX > 100 || newEndX < 0 || newEndX > 100 ||
+          newStartY < 0 || newStartY > 100 || newEndY < 0 || newEndY > 100) {
+        
+        // Calculate how much to adjust to keep within bounds
+        let adjustX = 0;
+        let adjustY = 0;
+        
+        if (newStartX < 0) adjustX = Math.max(adjustX, -newStartX);
+        if (newEndX < 0) adjustX = Math.max(adjustX, -newEndX);
+        if (newStartX > 100) adjustX = Math.min(adjustX, 100 - newStartX);
+        if (newEndX > 100) adjustX = Math.min(adjustX, 100 - newEndX);
+        
+        if (newStartY < 0) adjustY = Math.max(adjustY, -newStartY);
+        if (newEndY < 0) adjustY = Math.max(adjustY, -newEndY);
+        if (newStartY > 100) adjustY = Math.min(adjustY, 100 - newStartY);
+        if (newEndY > 100) adjustY = Math.min(adjustY, 100 - newEndY);
+        
+        // Apply adjustments
+        newStartX += adjustX;
+        newEndX += adjustX;
+        newStartY += adjustY;
+        newEndY += adjustY;
+      }
+      
+      // Update arrow points
+      this.currentlyDragging.startX = Math.max(0, Math.min(100, newStartX));
+      this.currentlyDragging.startY = Math.max(0, Math.min(100, newStartY));
+      this.currentlyDragging.endX = Math.max(0, Math.min(100, newEndX));
+      this.currentlyDragging.endY = Math.max(0, Math.min(100, newEndY));
     } else if (this.dragMode === "start") {
-      // Move just the start point of the arrow to the current mouse position
-      this.currentlyDragging.startX = this.dragStartShapeX + deltaXPercent;
-      this.currentlyDragging.startY = this.dragStartShapeY + deltaYPercent;
+      // Move just the start point, constrained to image bounds
+      this.currentlyDragging.startX = Math.max(0, Math.min(100, this.dragStartShapeX + deltaXPercent));
+      this.currentlyDragging.startY = Math.max(0, Math.min(100, this.dragStartShapeY + deltaYPercent));
     } else if (this.dragMode === "end") {
-      // Move just the end point of the arrow to the current mouse position
-      this.currentlyDragging.endX = this.dragStartShapeWidth + deltaXPercent;
-      this.currentlyDragging.endY = this.dragStartShapeHeight + deltaYPercent;
+      // Move just the end point, constrained to image bounds
+      this.currentlyDragging.endX = Math.max(0, Math.min(100, this.dragStartShapeWidth + deltaXPercent));
+      this.currentlyDragging.endY = Math.max(0, Math.min(100, this.dragStartShapeHeight + deltaYPercent));
     }
 
     // Force redraw to update HTML positioning with new values
@@ -2360,7 +2601,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
           label: this.translateService.instant("Title"),
           placeholder: this.translateService.instant("Enter a title (max 50 characters)"),
           required: true,
-          maxLength: 50,
+          maxLength: 50
         }
       },
       {
@@ -2370,7 +2611,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         props: {
           label: this.translateService.instant("Description"),
           placeholder: this.translateService.instant("Enter a description for this annotation"),
-          rows: 4,
+          rows: 4
         }
       },
       {
@@ -2379,7 +2620,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         wrappers: ["default-wrapper"],
         props: {
           label: this.translateService.instant("Color"),
-          colors: this.colors,
+          colors: this.colors
         }
       }
     ];
@@ -2418,7 +2659,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       console.log("Revision annotations content:", this.revision.annotations);
 
       // Load the annotations directly from the revision object
-      if (typeof this.revision.annotations === 'string' && this.revision.annotations.trim() !== '') {
+      if (typeof this.revision.annotations === "string" && this.revision.annotations.trim() !== "") {
         console.log("Calling annotationService.loadFromJsonString");
         // Use loadFromJsonString since the annotations in the revision are already in JSON format
         this.annotationService.loadFromJsonString(this.revision.annotations);

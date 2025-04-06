@@ -95,6 +95,37 @@ import { DeviceService } from "@core/services/device.service";
         icon="sliders"
       ></fa-icon>
     </button>
+    
+    <!-- Annotation mode toggle button -->
+    <button
+      (click)="toggleAnnotations.emit($event)"
+      astrobinEventPreventDefault
+      class="annotation-mode-button btn btn-link"
+      [class.active-annotation]="annotationsActive"
+      [class.text-light]="!annotationsActive"
+    >
+      <fa-icon
+        [ngbTooltip]="annotationsActive ? ('Exit annotation mode' | translate) : ('Show annotations' | translate)"
+        container="body"
+        icon="file-text"
+      ></fa-icon>
+    </button>
+    
+    <!-- Annotation edit mode button - only visible when in annotation mode -->
+    <button
+      *ngIf="annotationsActive"
+      (click)="toggleAnnotationEditMode.emit()"
+      astrobinEventPreventDefault
+      class="annotation-edit-mode-button btn btn-link"
+      [class.active-edit]="!annotationsReadOnly"
+      [class.text-light]="annotationsReadOnly"
+    >
+      <fa-icon
+        [ngbTooltip]="annotationsReadOnly ? ('Enable editing' | translate) : ('Disable editing' | translate)"
+        container="body"
+        icon="pencil-alt"
+      ></fa-icon>
+    </button>
 
     <ng-template #skyplotModalTemplate>
       <div class="modal-body">
@@ -130,6 +161,8 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
   @Input() inlineSvg: SafeHtml;
   @Input() forceViewMouseHover: boolean;
   @Input() moonOverlayActive = false;
+  @Input() annotationsActive = false;
+  @Input() annotationsReadOnly = true;
 
   // Only for desktops.
   @Output() toggleAnnotationsOnMouseHover = new EventEmitter<void>();
@@ -141,6 +174,8 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
 
   @Output() showAdjustmentsEditor = new EventEmitter<void>();
   @Output() toggleMoonOverlay = new EventEmitter<void>();
+  @Output() toggleAnnotations = new EventEmitter<MouseEvent>();
+  @Output() toggleAnnotationEditMode = new EventEmitter<void>();
 
   @ViewChild("skyplotModalTemplate")
   skyplotModalTemplate: TemplateRef<any>;

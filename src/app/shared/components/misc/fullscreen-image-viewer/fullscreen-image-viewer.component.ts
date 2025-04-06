@@ -189,6 +189,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   // Annotation tool properties
   protected isAnnotationMode: boolean = false;
+  protected annotationReadOnlyMode: boolean = true; // Default to read-only mode
 
   // Swipe-down properties
   protected touchStartY: { value: number } = { value: 0 };
@@ -929,8 +930,23 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   onExitAnnotationMode(): void {
     // Set annotation mode to false
     this.isAnnotationMode = false;
+    
+    // Reset to read-only mode for next time
+    this.annotationReadOnlyMode = true;
 
     // Force change detection to update the DOM
+    this.changeDetectorRef.markForCheck();
+  }
+  
+  /**
+   * Toggle annotation edit mode between read-only and editable
+   */
+  toggleAnnotationEditMode(): void {
+    if (!this.isAnnotationMode) {
+      return;
+    }
+    
+    this.annotationReadOnlyMode = !this.annotationReadOnlyMode;
     this.changeDetectorRef.markForCheck();
   }
 

@@ -186,11 +186,17 @@ export class ImageViewerComponent
   protected translatedDescription: SafeHtml;
   protected readonly isBrowser: boolean;
   protected readonly MouseHoverImageOptions = MouseHoverImageOptions;
+  protected isAnnotationMode: boolean = false;
+  protected annotationReadOnlyMode: boolean = true; // Default to read-only mode
+  protected currentUserIsImageOwner: boolean = false;
+  protected imageElementForAnnotation: HTMLElement = null;
+  protected isMouseOverUIElement: boolean = false;
   private _preloadMoonImageAttemptCount = 0; // Track number of preload attempts
   private _preloadedMoonImage: HTMLImageElement = null; // Store the preloaded image element
   private _moonStartDragPosition = { x: 0, y: 0 };
   private _dataAreaScrollEventSubscription: Subscription;
   private _hideFullscreenImageSubscription: Subscription;
+  private _previousMouseHoverState: { forceViewMouseHover: boolean, forceViewAnnotationsMouseHover: boolean } = null;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
   private _activeOffcanvas: NgbOffcanvasRef;
 
@@ -242,6 +248,7 @@ export class ImageViewerComponent
   ngOnInit(): void {
     this._initImageAlias();
     this._initContentTypes();
+    this._initCurrentUserIsImageOwner();
 
     this.offcanvasService.activeInstance.pipe(takeUntil(this.destroyed$)).subscribe(activeOffcanvas => {
       this._activeOffcanvas = activeOffcanvas;
@@ -375,6 +382,11 @@ export class ImageViewerComponent
       this.adjustmentEditorVisible = false;
       return;
     }
+    
+    if (this.isAnnotationMode) {
+      this.onExitAnnotationMode();
+      return;
+    }
 
     if (this._activeOffcanvas) {
       this._activeOffcanvas.dismiss();
@@ -465,6 +477,9 @@ export class ImageViewerComponent
       event.stopPropagation();
     }
 
+    // Don't do anything if annotation mode is active
+    if (this.isAnnotationMode) return;
+
     this.onToggleAnnotationsOnMouseHoverEnter();
     this._onMouseHoverSvgLoad();
   }
@@ -483,6 +498,9 @@ export class ImageViewerComponent
       event.preventDefault();
       event.stopPropagation();
     }
+
+    // Don't do anything if annotation mode is active
+    if (this.isAnnotationMode) return;
 
     this.onToggleAnnotationsOnMouseHoverLeave();
   }
@@ -540,6 +558,9 @@ export class ImageViewerComponent
     this._setShowPlateSolvingBanner();
     this._replaceIdWithHash();
     this._checkForCachedTranslation();
+    
+    // Check if we should auto-enter annotation mode
+    this._checkAndShowAnnotations();
 
     // Proactively preload the moon image if this is a plate-solved image
     if (this.revision?.solution?.pixscale) {
@@ -584,12 +605,50 @@ export class ImageViewerComponent
 
   protected onImageLoaded(): void {
     this.imageFileLoaded = true;
+    
+    // Get image element for annotation tool when the image is loaded
+    if (this.isBrowser && this.imageArea) {
+      const imgElement = this.imageArea.nativeElement.querySelector('.image-area astrobin-image img');
+      if (imgElement) {
+        this.imageElementForAnnotation = imgElement;
+        
+        // Check if we should activate annotation mode now that the image is loaded
+        if (!this.isAnnotationMode) {
+          // Check for annotations in URL
+          const hasAnnotationsInUrl = new URL(this.windowRefService.nativeWindow.location.href).searchParams.has('annotations');
+          
+          // Check for annotations in revision
+          const hasAnnotationsInRevision = this.revision && !!this.revision.annotations && 
+            this.revision.annotations.trim() !== '' && this.revision.annotations !== '[]';
+            
+          if (hasAnnotationsInUrl || hasAnnotationsInRevision) {
+            console.log("Enabling annotation mode on image load - found annotations in", 
+              hasAnnotationsInUrl ? "URL" : "revision");
+            
+            // Activate annotation mode
+            this._previousMouseHoverState = {
+              forceViewMouseHover: this.forceViewMouseHover,
+              forceViewAnnotationsMouseHover: this.forceViewAnnotationsMouseHover
+            };
+            
+            // Disable mouse hover features
+            this.forceViewMouseHover = false;
+            this.forceViewAnnotationsMouseHover = false;
+            
+            // Enter annotation mode
+            this.isAnnotationMode = true;
+            this.changeDetectorRef.markForCheck();
+          }
+        }
+      }
+    }
   }
 
   protected onImageMouseEnter(event: MouseEvent): void {
     event.preventDefault();
 
-    if (this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC()) {
+    // Skip mouse hover effects in touch mode or if annotation mode is active
+    if ((this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC()) || this.isAnnotationMode) {
       return;
     }
 
@@ -631,8 +690,8 @@ export class ImageViewerComponent
       return;
     }
 
-    if (this.loadingAdvancedSolutionMatrix) {
-      // Still loading, don't attempt to calculate coordinates
+    if (this.loadingAdvancedSolutionMatrix || this.isAnnotationMode) {
+      // Skip if still loading or if annotation mode is active
       return;
     }
 
@@ -1629,6 +1688,119 @@ export class ImageViewerComponent
     }
   }
 
+  private _initCurrentUserIsImageOwner() {
+    this.currentUser$.pipe(
+      filter(user => !!user),
+      takeUntil(this.destroyed$)
+    ).subscribe(user => {
+      if (this.image && user) {
+        this.currentUserIsImageOwner = user.id === this.image.user;
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+  
+  /**
+   * Utility method to set UI element hover state
+   * Used by child components to indicate when mouse is over UI elements
+   */
+  protected setMouseOverUIElement(value: boolean): void {
+    this.isMouseOverUIElement = value;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  /**
+   * Handle N keypress to toggle annotation mode
+   */
+  @HostListener("window:keyup.n", ["$event"])
+  toggleAnnotationMode(event: KeyboardEvent | MouseEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Don't interfere with input fields if this is a keyboard event
+    if (event instanceof KeyboardEvent) {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+      ) {
+        return;
+      }
+    }
+
+    // Do nothing if the component is not active or if the revision is a GIF
+    if (!this.active || (this.revision && this.revision.videoFile && this.revision.videoFile.toLowerCase().endsWith('.gif'))) {
+      return;
+    }
+
+    // Check if there are annotations in the URL or on the image
+    const hasAnnotationsInUrl = this.isBrowser && new URL(this.windowRefService.nativeWindow.location.href).searchParams.has('annotations');
+    const hasAnnotationsOnImage = this.revision && !!this.revision.annotations;
+    
+    // If we're enabling annotation mode, check if we should disable mouse-hover
+    if (!this.isAnnotationMode) {
+      // Store the previous state to restore later
+      this._previousMouseHoverState = {
+        forceViewMouseHover: this.forceViewMouseHover,
+        forceViewAnnotationsMouseHover: this.forceViewAnnotationsMouseHover
+      };
+      
+      // If the image has annotations loaded from URL or set on the image
+      if (hasAnnotationsInUrl || hasAnnotationsOnImage) {
+        // Disable mouse hover while in annotation mode
+        this.forceViewMouseHover = false;
+        this.forceViewAnnotationsMouseHover = false;
+      }
+    } else {
+      // Restore previous mouse-hover state when exiting annotation mode
+      if (this._previousMouseHoverState) {
+        this.forceViewMouseHover = this._previousMouseHoverState.forceViewMouseHover;
+        this.forceViewAnnotationsMouseHover = this._previousMouseHoverState.forceViewAnnotationsMouseHover;
+      }
+    }
+    
+    // Toggle annotation mode
+    this.isAnnotationMode = !this.isAnnotationMode;
+    
+    // Force change detection
+    this.changeDetectorRef.markForCheck();
+  }
+  
+  /**
+   * Handle exiting annotation mode - when exiting, the annotations are cleared
+   * from the URL, and the tool emits this event to indicate it's done
+   */
+  onExitAnnotationMode(): void {
+    // Set annotation mode to false
+    this.isAnnotationMode = false;
+    
+    // Reset to read-only mode for next time
+    this.annotationReadOnlyMode = true;
+    
+    // Restore previous mouse-hover state when exiting annotation mode
+    if (this._previousMouseHoverState) {
+      this.forceViewMouseHover = this._previousMouseHoverState.forceViewMouseHover;
+      this.forceViewAnnotationsMouseHover = this._previousMouseHoverState.forceViewAnnotationsMouseHover;
+      this._previousMouseHoverState = null;
+    }
+    
+    // Force change detection to update the DOM
+    this.changeDetectorRef.markForCheck();
+  }
+  
+  /**
+   * Toggle annotation edit mode between read-only and editable
+   */
+  toggleAnnotationEditMode(): void {
+    if (!this.isAnnotationMode) {
+      return;
+    }
+    
+    this.annotationReadOnlyMode = !this.annotationReadOnlyMode;
+    this.changeDetectorRef.markForCheck();
+  }
+
   private _initAutoOpenFullscreen() {
     if (this.isBrowser) {
       const hash = this.windowRefService.nativeWindow.location.hash;
@@ -1729,6 +1901,50 @@ export class ImageViewerComponent
       // Load the cached translation
       this._loadTranslatedDescription();
     }
+  }
+  
+  /**
+   * Check if the image or revision has annotations and show them
+   */
+  private _checkAndShowAnnotations(): void {
+    if (!this.isBrowser || !this.image) {
+      return;
+    }
+    
+    // Check for annotations in URL
+    const hasAnnotationsInUrl = this.isBrowser && 
+      new URL(this.windowRefService.nativeWindow.location.href).searchParams.has('annotations');
+      
+    // Wait for revision to be fully initialized
+    this.utilsService.delay(100).subscribe(() => {
+      // Check for annotations in revision or image
+      const hasAnnotationsInRevision = this.revision && !!this.revision.annotations && 
+        this.revision.annotations.trim() !== '' && this.revision.annotations !== '[]';
+      
+      if (hasAnnotationsInUrl || hasAnnotationsInRevision) {
+        console.log("Automatically enabling annotation mode - annotations found in", 
+          hasAnnotationsInUrl ? "URL" : "revision");
+          
+        // Wait for the image to load since we need the image element
+        this.utilsService.delay(500).subscribe(() => {
+          if (this.imageFileLoaded && this.imageElementForAnnotation) {
+            // Activate annotation mode
+            this._previousMouseHoverState = {
+              forceViewMouseHover: this.forceViewMouseHover,
+              forceViewAnnotationsMouseHover: this.forceViewAnnotationsMouseHover
+            };
+            
+            // Disable mouse hover features
+            this.forceViewMouseHover = false;
+            this.forceViewAnnotationsMouseHover = false;
+            
+            // Enter annotation mode
+            this.isAnnotationMode = true;
+            this.changeDetectorRef.markForCheck();
+          }
+        });
+      }
+    });
   }
 
   private _updateSupportsFullscreen(): void {
