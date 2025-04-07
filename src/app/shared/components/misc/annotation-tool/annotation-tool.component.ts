@@ -77,7 +77,7 @@ interface Annotation {
 export class CastPipe implements PipeTransform {
   transform(value: any, type: string): any {
     // Just return the value - the actual casting is just for TypeScript
-    return value; 
+    return value;
   }
 }
 
@@ -223,7 +223,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       if (this.isBrowser && typeof document !== "undefined") {
         if (this.active) {
           document.body.classList.add('annotation-mode-active');
-          
+
           // If we're entering annotation mode and we have a revision with annotations, load them
           if (this.revision && this.revision.annotations && this.revision.annotations.trim() !== '') {
             this.loadSavedAnnotations();
@@ -233,16 +233,16 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         }
       }
     }
-    
+
     // Handle URL annotations input changes
     if (changes.hasUrlAnnotations && changes.hasUrlAnnotations.currentValue) {
       console.log("URL annotations detected in annotation tool component:", this.hasUrlAnnotations);
-      
+
       // Force visibility and ensure the component knows we're in URL annotation mode
       if (this.elementRef && this.elementRef.nativeElement) {
         this.elementRef.nativeElement.classList.add('has-url-annotations');
       }
-      
+
       // Force a change detection cycle
       this.cdRef.markForCheck();
     }
@@ -262,7 +262,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         // Consider that a saved empty array is still a "saved state"
         // So we only check if it is an Array, not the length
         this.hasSavedAnnotations = Array.isArray(annotations);
-        
+
         // If the revision has annotations and we're in annotation mode, load them
         // BUT only if there are no URL annotations (URL annotations should trump saved annotations)
         if (this.active && this.revision.annotations && this.revision.annotations.trim() !== '' && !this.hasUrlAnnotations) {
@@ -290,7 +290,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     ).subscribe(annotations => {
       // Consider any array (even empty) as a saved state
       this.hasSavedAnnotations = Array.isArray(annotations);
-      
+
       // Debug annotations to see if they have message property
       if (annotations.length > 0) {
         console.log("Annotations updated:", annotations);
@@ -368,12 +368,12 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         try {
           // Load the annotations
           this.annotationService.loadFromUrlParam(annotationsParam);
-          
+
           // Update UI after annotations are loaded
           setTimeout(() => {
             this.cdRef.markForCheck();
           }, 100);
-          
+
         } catch (e) {
           // Handle error loading annotations from URL
           this.popNotificationsService.error(
@@ -1032,7 +1032,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     if (!annotation) {
       return;
     }
-    
+
     // Debug the annotation to verify we're accessing the right property
     console.log("Showing info for annotation:", {
       id: annotation.id,
@@ -1046,15 +1046,15 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         size: 'sm',
         centered: true
       });
-      
+
       const componentInstance = modalRef.componentInstance;
-      
+
       // Use the annotation title as the dialog title
       componentInstance.title = annotation.title || this.translateService.instant("Annotation");
-      
+
       // Use the message property for the description
       componentInstance.message = annotation.message || "";
-      
+
       // Use the file-alt icon instead of the default info icon
       componentInstance.iconName = "file-alt";
     });
@@ -1709,7 +1709,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       message: "", // Start with empty message
       color: shapeData.color || this.annotationService.getDefaultColor()
     };
-    
+
     console.log("Creating new annotation with initial form model:", this.messageModel);
 
     // Reset the form and prepare it for a new entry
@@ -1753,18 +1753,18 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Initialize message form fields first to ensure they exist
     this.initMessageFormFields(false);
-    
+
     // Reset form and enable it for editing
     this.messageForm.reset();
     this.messageForm.enable();
-    
+
     // Initialize the model with existing title, message, and color
     this.messageModel = {
       title: annotation.title || "",
       message: annotation.message || "",
       color: annotation.color || this.annotationService.getDefaultColor()
     };
-    
+
     console.log("Form model initialized with values:", this.messageModel);
 
     // Open the modal with the template reference
@@ -1792,9 +1792,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
    * Validate form and close modal only if valid
    */
   validateAndCloseModal(modal: any, form: FormGroup, formData: any, event?: MouseEvent): void {
-    console.log("Validating form...", { 
-      valid: form.valid, 
-      formData, 
+    console.log("Validating form...", {
+      valid: form.valid,
+      formData,
       model: this.messageModel,
       title: this.messageModel.title,
       message: this.messageModel.message
@@ -1807,9 +1807,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         message: (form.get('message')?.value || this.messageModel.message || '').trim(),
         color: form.get('color')?.value || this.messageModel.color
       };
-      
+
       console.log("Closing modal with form data:", formResult);
-      
+
       // Close the modal with the clean copied data
       modal.close(formResult);
     } else {
@@ -1850,13 +1850,13 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     console.log("submitMessageForm received raw formData:", formData);
 
     // Safely extract values with proper null handling
-    const title = (formData?.title || '').trim();  
+    const title = (formData?.title || '').trim();
     const messageText = (formData?.message || '').trim();
 
-    console.log("Processing form with separate values:", { 
-      title: title, 
+    console.log("Processing form with separate values:", {
+      title: title,
       message: messageText,
-      color: formData.color 
+      color: formData.color
     });
 
     // No need for custom validation as it's handled by formly
@@ -1870,21 +1870,21 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       console.log("Found annotation to update:", annotation);
 
       // No need for casting as we're using our own simple annotation interface
-      
+
       console.log("Updating annotation:", {
         title: title,
         message: messageText
       });
-      
+
       // Update the annotation properties directly
       annotation.title = title;
       annotation.message = messageText;
-      
+
       // Update the color if changed
       if (formData.color) {
         annotation.color = formData.color;
       }
-      
+
       console.log("Annotation updated successfully");
 
       console.log("Updated annotation with title, color, and message:", annotation);
@@ -1955,8 +1955,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Add or update the annotations parameter without navigation
     if (this.isBrowser) {
-      // Skip interim message and go straight to the update and copy
-
       // Get the current URL
       const currentUrl = this.windowRefService.getCurrentUrl();
 
@@ -1973,29 +1971,74 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       // Update the URL without navigation but keep the current hash for user
       this.windowRefService.replaceState({}, currentUrl.toString());
 
-      // Copy the URL to clipboard with a slight delay to ensure URL is updated
-      this.windowRefService.utilsService.delay(200).subscribe(() => {
-        // Use the WindowRefService's copyToClipboard method which handles fallbacks properly
-        this.windowRefService.copyToClipboard(shareableUrl.toString())
-          .then(success => {
-            if (success) {
-              this.popNotificationsService.success(
-                this.translateService.instant("URL with annotations copied to clipboard")
-              );
-            } else {
-              // Fall back to just updating the URL if clipboard access failed
-              this.popNotificationsService.info(
-                this.translateService.instant("Annotations URL has been updated. You can now share this page.")
-              );
+      // Show information dialog with explanation
+      import("@shared/components/misc/information-dialog/information-dialog.component").then(module => {
+        const modalRef = this.modalService.open(module.InformationDialogComponent, {
+          size: 'md',
+          centered: true
+        });
+
+        const componentInstance = modalRef.componentInstance;
+
+        // Set the title and icon
+        componentInstance.title = this.translateService.instant("Share nnotations");
+        componentInstance.iconName = "share-alt";
+
+        // Set the explanation message
+        let message = this.translateService.instant(
+          "The link now includes your annotations. Just share it if you want others to see them."
+        );
+
+        // Add note about link-based annotations
+        message += "\n\n" + this.translateService.instant(
+          "Heads up: The annotations aren't saved anywhere - only this exact link shows them."
+        );
+
+        // Add extra note for image owners about saving
+        if (this.isImageOwner && this.imageId) {
+          message += "\n\n" + this.translateService.instant(
+            "As the image owner, you can use the Save button to permanently add these annotations to the image."
+          );
+        }
+
+        // Set the message
+        componentInstance.message = message;
+
+        // Add custom buttons
+        componentInstance.buttons = [
+          {
+            label: this.translateService.instant("Copy Link"),
+            class: "btn-primary",
+            callback: () => {
+              this.windowRefService.copyToClipboard(shareableUrl.toString())
+                .then(success => {
+                  if (success) {
+                    this.popNotificationsService.success(
+                      this.translateService.instant("Link with annotations copied to clipboard")
+                    );
+                  } else {
+                    this.popNotificationsService.info(
+                      this.translateService.instant("Please copy the URL from your browser's address bar")
+                    );
+                  }
+                })
+                .catch(error => {
+                  console.error("Error copying to clipboard:", error);
+                  this.popNotificationsService.info(
+                    this.translateService.instant("Please copy the URL from your browser's address bar")
+                  );
+                });
+              modalRef.close();
             }
-          })
-          .catch(error => {
-            console.error("Error copying to clipboard:", error);
-            // Still provide feedback even if clipboard fails
-            this.popNotificationsService.info(
-              this.translateService.instant("Annotations URL has been updated. You can now share this page.")
-            );
-          });
+          },
+          {
+            label: this.translateService.instant("Close"),
+            class: "btn-outline-secondary",
+            callback: () => {
+              modalRef.close();
+            }
+          }
+        ];
       });
     }
   }
@@ -2026,7 +2069,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Check if the image already has saved annotations
     const alreadyHasAnnotations = this.hasSavedAnnotations;
-    
+
     if (alreadyHasAnnotations) {
       // If the image already has annotations, skip the confirmation and proceed directly
       this._performSaveAnnotations();
@@ -2091,7 +2134,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
           const isRevision = 'image' in this.revision;
           const imagePk = isRevision ? (this.revision as ImageRevisionInterface).image : this.revision.pk;
           const revisionLabel = isRevision ? (this.revision as ImageRevisionInterface).label : null;
-          
+
           this.store$.dispatch(new actions.UpdateAnnotations({
             pk: imagePk,
             revisionLabel: revisionLabel,
@@ -2249,15 +2292,15 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     const title = (formData?.title || '').trim();
     const message = (formData?.message || '').trim();
 
-    console.log("Form data received:", { 
-      title: title, 
-      message: message, 
-      formDataRaw: formData 
+    console.log("Form data received:", {
+      title: title,
+      message: message,
+      formDataRaw: formData
     });
 
     // Simple debug log
     console.log("Creating annotation:", { title, message });
-    
+
     // Create the annotation object - all simple properties, no nesting
     const newAnnotation: Annotation = {
       id: this.pendingShapeData.type + "_" + Date.now(),
@@ -2453,30 +2496,30 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       // Get the circle's center
       const cx = +this.currentlyDragging.cx;
       const cy = +this.currentlyDragging.cy;
-      
+
       // For resize, we need to calculate the change in radius based on the drag delta
       // instead of directly setting it to the distance from center to current mouse position
-      
+
       // Calculate the start distance (from center to drag start point)
       // We use the initial radius as the starting distance
       const startRadius = this.dragStartShapeRadius;
-      
+
       // Calculate the change in distance from the center based on the mouse movement
       // Project the delta onto the line from center to the resize handle
       // This gives a more predictable resize experience
-      
+
       // First, calculate the baseline direction vector from center to top of circle
       // (The top is where the resize handle is located)
       const baselineX = 0;
       const baselineY = -1; // Up direction
-      
+
       // Now calculate the projection of the mouse delta onto this baseline
       // This gives us how much the resize handle has moved along the radial direction
       const radiusDelta = -deltaYPercent; // Negative because moving up increases radius
-      
+
       // Calculate the new radius by adding the delta to the starting radius
       let newRadius = startRadius + radiusDelta;
-      
+
       // Calculate maximum allowed radius based on distance to image edges
       const maxDistanceToEdge = Math.min(
         cx,                 // Distance to left edge
@@ -2690,7 +2733,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     // Assume we might be loading annotations - set flag for visual indicator
     this.loadingAnnotations = true;
     console.log("Loading annotations from revision, setting loadingAnnotations=true");
-    
+
     // Clear existing annotations before loading new ones
     this.annotations = [];
     this.annotationService.clearAllAnnotations();
@@ -2722,7 +2765,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         this.utilsService.delay(300).subscribe(() => {
           console.log("After delay, setting loadingAnnotations=false");
           this.loadingAnnotations = false;
-          
+
           // Annotations loaded successfully
           console.log("Current annotations array:", this.annotations);
 

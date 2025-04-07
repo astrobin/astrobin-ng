@@ -2680,8 +2680,6 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Get the current URL through the window reference service
       const currentUrl = this.windowRefService.getCurrentUrl();
 
-      console.log("MEASUREMENTS - BEFORE URL UPDATE:", currentUrl.toString());
-
       // Set the measurements parameter directly
       currentUrl.searchParams.set('measurements', encodedData);
 
@@ -2694,42 +2692,75 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         shareableUrl.hash = "#fullscreen";
       }
 
-      console.log("MEASUREMENTS - MODIFIED URL:", currentUrl.toString());
-      console.log("MEASUREMENTS - SHAREABLE URL:", shareableUrl.toString());
-
       // Update the URL without navigation but keep the current hash for the user
       this.windowRefService.replaceState({}, currentUrl.toString());
 
-      console.log("MEASUREMENTS - AFTER URL UPDATE:", this.windowRefService.nativeWindow.location.href);
-
-      // Copy the URL to clipboard with a slight delay to ensure URL is updated
-      this.windowRefService.utilsService.delay(200).subscribe(() => {
-        // Use the WindowRefService's copyToClipboard method with the shareable URL
-        this.windowRefService.copyToClipboard(shareableUrl.toString())
-          .then(success => {
-            if (success) {
-              this.popNotificationsService.success(
-                this.translateService.instant("Share URL copied to clipboard. Send this URL to share your measurements.")
-              );
-            } else {
-              // Still provide useful feedback if clipboard access failed but URL was updated
-              this.popNotificationsService.info(
-                this.translateService.instant("Measurements URL has been updated. You can now share this page.")
-              );
+      // Show information dialog with explanation
+      import("@shared/components/misc/information-dialog/information-dialog.component").then(module => {
+        const modalRef = this.modalService.open(module.InformationDialogComponent, {
+          size: 'md',
+          centered: true
+        });
+        
+        const componentInstance = modalRef.componentInstance;
+        
+        // Set the title and icon
+        componentInstance.title = this.translateService.instant("Share Measurements");
+        componentInstance.iconName = "share-alt";
+        
+        // Set the explanation message
+        let message = this.translateService.instant(
+          "The link now includes your measurements. Just share it if you want others to see them."
+        );
+        
+        // Add note about link-based measurements
+        message += "\n\n" + this.translateService.instant(
+          "Heads up: The measurements aren't saved anywhere—only this exact link shows them."
+        );
+        
+        // Set the message
+        componentInstance.message = message;
+        
+        // Add custom buttons
+        componentInstance.buttons = [
+          {
+            label: this.translateService.instant("Copy Link"),
+            class: "btn-primary",
+            callback: () => {
+              this.windowRefService.copyToClipboard(shareableUrl.toString())
+                .then(success => {
+                  if (success) {
+                    this.popNotificationsService.success(
+                      this.translateService.instant("Link with measurements copied to clipboard")
+                    );
+                  } else {
+                    this.popNotificationsService.info(
+                      this.translateService.instant("Please copy the link from your browser's address bar")
+                    );
+                  }
+                })
+                .catch(error => {
+                  console.error("Error copying to clipboard:", error);
+                  this.popNotificationsService.info(
+                    this.translateService.instant("Please copy the link from your browser's address bar")
+                  );
+                });
+              modalRef.close();
             }
-          })
-          .catch(error => {
-            console.error("Failed to copy to clipboard:", error);
-            // Still provide useful feedback even if clipboard access failed
-            this.popNotificationsService.info(
-              this.translateService.instant("Measurements URL has been updated. You can now share this page.")
-            );
-          });
+          },
+          {
+            label: this.translateService.instant("Close"),
+            class: "btn-outline-secondary",
+            callback: () => {
+              modalRef.close();
+            }
+          }
+        ];
       });
     } catch (error) {
       console.error("Failed to share measurements:", error);
       this.popNotificationsService.error(
-        this.translateService.instant("Failed to create share URL.")
+        this.translateService.instant("Failed to create share link")
       );
     }
   }
