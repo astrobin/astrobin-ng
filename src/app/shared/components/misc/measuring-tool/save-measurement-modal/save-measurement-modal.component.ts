@@ -37,8 +37,17 @@ export class SaveMeasurementModalComponent extends BaseComponentDirective implem
   ngOnInit(): void {
     // Initialize the model with default values
     this.model.name = this.defaultName || '';
-    
+
     this.fields = [
+      {
+        template: `
+          <div class="alert alert-dark mb-3">
+            <small>
+              ${this.translateService.instant('Saved measurements store only the distance and relative positions of measurement points. When loaded on another image, they will be placed in the center and can be repositioned freely.')}
+            </small>
+          </div>
+        `
+      },
       {
         key: 'name',
         type: 'input',

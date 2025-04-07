@@ -84,17 +84,6 @@ export interface SolutionMatrix {
 })
 export class MeasuringToolComponent extends BaseComponentDirective implements OnInit, OnDestroy, AfterViewInit {
 
-  /**
-   * Toggles the tooltip visibility when clicked
-   * @param tooltip The NgbTooltip instance
-   */
-  toggleTooltip(tooltip: any): void {
-    if (tooltip.isOpen()) {
-      tooltip.close();
-    } else {
-      tooltip.open();
-    }
-  }
   @Input() active: boolean = false;
   @Input() imageElement: HTMLElement | ElementRef<HTMLElement | HTMLImageElement>;
   @Input() advancedSolutionMatrix: SolutionMatrix | null = null;
@@ -2761,10 +2750,15 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   /**
    * Toggle the saved measurements panel visibility
    */
-  toggleSavedMeasurements(event?: MouseEvent): void {
+  toggleSavedMeasurements(event?: MouseEvent | TouchEvent): void {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
+      
+      // Blur the button to hide tooltip
+      if (event.currentTarget) {
+        (event.currentTarget as HTMLElement).blur();
+      }
     }
 
     // Check if user is logged in
@@ -3313,7 +3307,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (this.advancedSolutionMatrix) {
       this.loadMeasurement(preset).catch(error => {
         console.error("Error loading measurement:", error);
+        this.loadingMeasurement = false;
+        this.popNotificationsService.error(
+          this.translateService.instant("Failed to load measurement")
+        );
       });
+    } else {
+      // Reset loading state if we can't even begin loading
+      this.loadingMeasurement = false;
     }
   }
 
@@ -3455,6 +3456,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.popNotificationsService.error(
           this.translateService.instant("Error calculating coordinates at image center")
         );
+        this.loadingMeasurement = false;
         return;
       }
 
@@ -3462,6 +3464,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.popNotificationsService.error(
           this.translateService.instant("Invalid pixel scale in image solution")
         );
+        this.loadingMeasurement = false;
         return;
       }
 
@@ -3474,6 +3477,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.popNotificationsService.error(
           this.translateService.instant("Invalid plate scale in image solution")
         );
+        this.loadingMeasurement = false;
         return;
       }
 
@@ -3508,6 +3512,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.popNotificationsService.error(
           this.translateService.instant("Measurement is too small for this image.")
         );
+        this.loadingMeasurement = false;
         return;
       }
 
@@ -3524,6 +3529,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.popNotificationsService.error(
           this.translateService.instant("Measurement could not be placed within the image boundaries.")
         );
+        this.loadingMeasurement = false;
         return;
       }
 
@@ -3624,6 +3630,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.popNotificationsService.error(
           this.translateService.instant("Could not calculate distance for the measurement")
         );
+        this.loadingMeasurement = false;
         return;
       }
 

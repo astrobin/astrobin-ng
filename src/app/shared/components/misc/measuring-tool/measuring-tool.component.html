@@ -432,10 +432,7 @@
                 class="info-icon ms-1"
                 [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
                 container="body"
-                placement="top"
-                triggers="manual"
-                #tpixelinfo="ngbTooltip"
-                (click)="toggleTooltip(tpixelinfo)">
+                placement="top">
         </fa-icon>
       </span>
 
@@ -495,9 +492,6 @@
           icon="save"
           [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Saving measurements requires valid advanced plate-solving data' | translate) : ('Save measurement' | translate)"
           container="body"
-          triggers="manual"
-          #tsave="ngbTooltip"
-          (click)="toggleTooltip(tsave)"
         ></fa-icon>
       </button>
 
@@ -514,9 +508,6 @@
           icon="file-export"
           [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Exporting coordinates requires valid advanced plate-solving data' | translate) : ('Export coordinates' | translate)"
           container="body"
-          triggers="manual"
-          #t="ngbTooltip"
-          (click)="toggleTooltip(t)"
         ></fa-icon>
       </button>
 
@@ -749,10 +740,7 @@
                 class="info-icon ms-1"
                 [ngbTooltip]="'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.' | translate"
                 container="body"
-                placement="top"
-                triggers="manual"
-                #tcurrentpixelinfo="ngbTooltip"
-                (click)="toggleTooltip(tcurrentpixelinfo)">
+                placement="top">
         </fa-icon>
       </span>
 
@@ -802,10 +790,7 @@
               [style.pointer-events]="'auto'">
         <fa-icon icon="save"
         [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Saving measurements requires valid advanced plate-solving data' | translate) : ('Save measurement' | translate)"
-        container="body"
-        triggers="manual"
-        #tsavecurrent="ngbTooltip"
-        (click)="toggleTooltip(tsavecurrent)"></fa-icon>
+        container="body"></fa-icon>
       </button>
 
       <button type="button" class="btn-shape-action export-button"
@@ -819,10 +804,7 @@
               [style.pointer-events]="'auto'">
         <fa-icon icon="file-export"
         [ngbTooltip]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? ('Exporting coordinates requires valid advanced plate-solving data' | translate) : ('Export coordinates' | translate)"
-        container="body"
-        triggers="manual"
-        #texportcurrent="ngbTooltip"
-        (click)="toggleTooltip(texportcurrent)"></fa-icon>
+        container="body"></fa-icon>
       </button>
     </div>
 
@@ -880,9 +862,9 @@
               [ngbTooltip]="'Saved measurements' | translate"
               placement="bottom"
               container="body"
-              (click)="toggleSavedMeasurements()"
+              (click)="toggleSavedMeasurements($event)"
               (touchstart)="$event.stopPropagation()"
-              (touchend)="toggleSavedMeasurements()">
+              (touchend)="toggleSavedMeasurements($event)">
         <fa-icon [icon]="['fas', 'bookmark']"></fa-icon>
       </button>
 
@@ -933,7 +915,7 @@
   <div class="saved-measurements-panel" *ngIf="showSavedMeasurements">
     <div class="panel-header">
       <h5>{{ 'Saved measurements' | translate }}</h5>
-      <button class="btn btn-sm btn-link text-muted" (click)="toggleSavedMeasurements()">
+      <button class="btn btn-sm btn-link text-muted" (click)="toggleSavedMeasurements($event)">
         <fa-icon icon="times"></fa-icon>
       </button>
     </div>
@@ -961,13 +943,11 @@
           <!-- Save button -->
           <div class="input-group input-group-sm mb-2">
             <button class="btn btn-primary"
-                    (click)="advancedSolutionMatrix ? saveMeasurement() : toggleTooltip(tpanelsavebtn)"
+                    (click)="advancedSolutionMatrix ? saveMeasurement() : null"
                     [class.disabled]="!advancedSolutionMatrix"
                     [style.pointer-events]="'auto'"
                     [ngbTooltip]="!advancedSolutionMatrix ? ('Saving measurements requires advanced plate-solving data' | translate) : ('Save measurement' | translate)"
-                    container="body"
-                    triggers="manual"
-                    #tpanelsavebtn="ngbTooltip">
+                    container="body">
               <fa-icon icon="save" class="me-1"></fa-icon>
               {{ 'Save' | translate }}
             </button>
@@ -999,19 +979,13 @@
                     [style.pointer-events]="'auto'">
               <fa-icon *ngIf="!loadingMeasurement" icon="arrow-right"
                 [ngbTooltip]="!advancedSolutionMatrix ? ('Loading measurements requires advanced plate-solving data' | translate) : ('Load measurement' | translate)"
-                container="body"
-                triggers="manual"
-                #tloadmeasurement="ngbTooltip"
-                (click)="toggleTooltip(tloadmeasurement)"></fa-icon>
+                container="body"></fa-icon>
               <fa-icon *ngIf="loadingMeasurement" icon="spinner" [spin]="true"></fa-icon>
             </button>
             <button class="btn btn-sm btn-outline-danger" (click)="deleteSavedMeasurement(i)">
               <fa-icon icon="trash-alt"
                 [ngbTooltip]="'Delete saved measurement' | translate"
-                container="body"
-                triggers="manual"
-                #tdeletemeasurement="ngbTooltip"
-                (click)="toggleTooltip(tdeletemeasurement)"></fa-icon>
+                container="body"></fa-icon>
             </button>
           </div>
         </div>
