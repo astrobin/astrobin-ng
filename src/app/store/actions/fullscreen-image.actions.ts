@@ -18,7 +18,8 @@ export class ShowFullscreenImage implements PayloadActionInterface {
         raMatrix: string;
         decMatrix: string;
       },
-      enableAnnotations?: boolean
+      enableAnnotations?: boolean,
+      allowZoom?: boolean
     }
   ) {
   }

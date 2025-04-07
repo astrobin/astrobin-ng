@@ -74,9 +74,10 @@
     #imageArea
     class="image-area"
     [class.force-view-mousehover]="forceViewMouseHover"
-    [class.force-view-annotations-mousehover]="forceViewAnnotationsMouseHover"
+    [class.force-view-annotations-mousehover]="forceViewAnnotationsMouseHover || hasUrlAnnotations"
     [class.adjustment-editor-visible]="adjustmentEditorVisible"
     [class.has-top-banner]="image && image.isIotd"
+    [class.has-url-annotations]="hasUrlAnnotations"
     (mouseenter)="revision?.solution && !adjustmentEditorVisible && (showNorthArrow = true)"
     (mouseleave)="showNorthArrow = false"
   >
@@ -208,6 +209,7 @@
           [moonOverlayActive]="showMoonOverlay"
           [annotationsActive]="isAnnotationMode"
           [annotationsReadOnly]="annotationReadOnlyMode"
+          [hasUrlAnnotations]="hasUrlAnnotations"
           class="additional-buttons"
         >
         </astrobin-image-viewer-additional-buttons>
@@ -234,8 +236,8 @@
       
       <!-- Annotation tool component - always read-only in regular view -->
       <astrobin-annotation-tool
-        *ngIf="isBrowser && isAnnotationMode && imageFileLoaded"
-        [active]="isAnnotationMode" 
+        *ngIf="isBrowser && (isAnnotationMode || hasUrlAnnotations) && imageFileLoaded"
+        [active]="isAnnotationMode || hasUrlAnnotations" 
         [readOnly]="true"
         [imageElement]="imageElementForAnnotation"
         [windowWidth]="windowRefService.nativeWindow.innerWidth"

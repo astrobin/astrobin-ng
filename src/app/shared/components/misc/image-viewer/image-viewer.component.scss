@@ -20,6 +20,12 @@ $largeViewPortBreakpoint: 2561px;
 }
 
 :host {
+  &.has-url-annotations {
+    // Apply directly to the measure-annotation-overlay inside this host
+    .measure-annotation-overlay {
+      opacity: 1 !important; // Always visible for URL annotations, highest priority
+    }
+  }
   width: 100%;
   height: 100%;
   background-color: var(--black);

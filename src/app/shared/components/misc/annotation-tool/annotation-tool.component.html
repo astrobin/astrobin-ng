@@ -70,19 +70,6 @@
         <fa-icon [icon]="['fas', 'question']"></fa-icon>
       </button>
 
-      <!-- Fullscreen button - only in regular view -->
-      <button *ngIf="isRegularView"
-              type="button"
-              class="icon-button fullscreen-button"
-              [ngbTooltip]="'Enter fullscreen' | translate"
-              placement="bottom"
-              container="body"
-              [disabled]="savingAnnotations"
-              (click)="requestFullscreenMode.emit()"
-              (touchend)="requestFullscreenMode.emit()">
-        <fa-icon [icon]="['fas', 'expand']"></fa-icon>
-      </button>
-
       <!-- Separator after help button -->
       <div class="toolbar-separator"></div>
 
@@ -312,7 +299,7 @@
         <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{ 'Cancel' | translate }}</button>
         <button type="button" class="btn btn-primary" [disabled]="!messageForm.valid" (click)="validateAndCloseModal(modal, messageForm, messageForm.value, $event)">{{ 'Confirm' | translate }}</button>
       </ng-container>
-      
+
       <!-- In read-only view mode, just show a close button -->
       <ng-container *ngIf="messageForm.disabled">
         <button type="button" class="btn btn-primary" (click)="modal.dismiss()">{{ 'Close' | translate }}</button>

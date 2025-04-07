@@ -84,6 +84,21 @@ $header-height: 63px;
     opacity: 1;
     pointer-events: all;
   }
+  
+  &.zoom-disabled {
+    .touch-real-container {
+      pointer-events: none !important;
+    }
+    
+    .image-zoom {
+      pointer-events: none !important;
+    }
+    
+    // Show the static image instead
+    .static-image-container {
+      pointer-events: all;
+    }
+  }
 
   @supports (height: 100dvh) {
     height: 100dvh;

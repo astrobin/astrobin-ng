@@ -128,6 +128,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected realThumbnailLoading = false;
   protected ready = false;
   protected allowReal = false;
+  protected allowZoom = true;
   protected touchScale = 1;
   protected actualTouchZoom: number = null;
   protected isTransforming = false;
@@ -338,6 +339,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   get standaloneClass() {
     return this.standalone;
   }
+  
+  @HostBinding("class.zoom-disabled")
+  get zoomDisabledClass() {
+    return !this.allowZoom;
+  }
 
   get zoomingEnabled(): boolean {
     return this.ngxImageZoom?.zoomService.zoomingEnabled;
@@ -372,6 +378,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   protected get hasAdvancedSolutionMatrix(): boolean {
     return !!this.advancedSolutionMatrix && !!this.advancedSolutionMatrix.matrixRect;
+  }
+  
+  protected get canZoom(): boolean {
+    return this.allowZoom && this.allowReal;
   }
 
   @HostListener("document:click", ["$event"])
@@ -619,6 +629,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           filter((action: any) => action.payload && action.payload.imageId === this.id),
           take(1)
         ).subscribe((action: any) => {
+          // Check if zoom is allowed (based on owner's settings)
+          if (action.payload.hasOwnProperty('allowZoom')) {
+            this.allowZoom = action.payload.allowZoom;
+          }
+          
           if (action.payload.enableAnnotations) {
             // Enable annotation mode after a short delay to ensure component is fully initialized
             this.utilsService.delay(300).subscribe(() => {
@@ -1099,6 +1114,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       event.stopPropagation();
       return;
     }
+    
+    // If zoom is disabled by image owner, prevent zooming
+    if (!this.allowZoom) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    
     // If the event has ctrlKey, it's a pinch gesture in Firefox or zoom in other browsers
     // Always prevent browser zoom
     if (event.ctrlKey) {

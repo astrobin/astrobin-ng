@@ -192,6 +192,7 @@ export class ImageViewerComponent
   protected imageElementForAnnotation: HTMLElement = null;
   protected isMouseOverUIElement: boolean = false;
   protected hasSavedAnnotations: boolean = false; // Flag for saved annotations
+  protected hasUrlAnnotations: boolean = false; // Flag for annotations loaded from URL
   private _preloadMoonImageAttemptCount = 0; // Track number of preload attempts
   private _preloadedMoonImage: HTMLImageElement = null; // Store the preloaded image element
   private _moonStartDragPosition = { x: 0, y: 0 };
@@ -250,11 +251,32 @@ export class ImageViewerComponent
   get hostHasSavedAnnotations() {
     return this.hasSavedAnnotations;
   }
+  
+  @HostBinding("class.has-url-annotations")
+  get hostHasUrlAnnotations() {
+    return this.hasUrlAnnotations;
+  }
 
   ngOnInit(): void {
     this._initImageAlias();
     this._initContentTypes();
     this._initCurrentUserIsImageOwner();
+
+    // Check if URL has annotations parameter
+    if (this.isBrowser) {
+      const urlParams = new URL(this.windowRefService.nativeWindow.location.href).searchParams;
+      if (urlParams.has('annotations')) {
+        // Set URL annotations flag
+        this.hasUrlAnnotations = true;
+        
+        // Auto-enable annotation mode when URL has annotations
+        this.isAnnotationMode = true;
+        this.forceViewAnnotationsMouseHover = true;
+        this.forceViewMouseHover = true;
+        
+        console.log('URL has annotations, enabling annotations with hasUrlAnnotations =', this.hasUrlAnnotations);
+      }
+    }
 
     this.offcanvasService.activeInstance.pipe(takeUntil(this.destroyed$)).subscribe(activeOffcanvas => {
       this._activeOffcanvas = activeOffcanvas;
@@ -611,14 +633,18 @@ export class ImageViewerComponent
   }
 
   onToggleAnnotationsOnMouseHoverEnter(): void {
+    // Always enable forced view for URL annotations
     this.forceViewAnnotationsMouseHover = true;
     this.forceViewMouseHover = true;
     this._onMouseHoverSvgLoad();
   }
 
   onToggleAnnotationsOnMouseHoverLeave(): void {
-    this.forceViewAnnotationsMouseHover = false;
-    this.forceViewMouseHover = false;
+    // If we have URL annotations, don't disable the forced view on mouse leave
+    if (!this.hasUrlAnnotations) {
+      this.forceViewAnnotationsMouseHover = false;
+      this.forceViewMouseHover = false;
+    }
   }
 
   // Mobile menu event handlers
@@ -644,6 +670,9 @@ export class ImageViewerComponent
           // Check for annotations in URL
           const hasAnnotationsInUrl = new URL(this.windowRefService.nativeWindow.location.href).searchParams.has('annotations');
           
+          // Update the URL annotations flag
+          this.hasUrlAnnotations = hasAnnotationsInUrl;
+          
           // Check for annotations in revision
           const hasAnnotationsInRevision = this.revision && !!this.revision.annotations && 
             this.revision.annotations.trim() !== '' && this.revision.annotations !== '[]';
@@ -652,15 +681,21 @@ export class ImageViewerComponent
             console.log("Enabling annotation mode on image load - found annotations in", 
               hasAnnotationsInUrl ? "URL" : "revision");
             
-            // Activate annotation mode
-            this._previousMouseHoverState = {
-              forceViewMouseHover: this.forceViewMouseHover,
-              forceViewAnnotationsMouseHover: this.forceViewAnnotationsMouseHover
-            };
-            
-            // Disable mouse hover features
-            this.forceViewMouseHover = false;
-            this.forceViewAnnotationsMouseHover = false;
+            if (hasAnnotationsInUrl) {
+              // For URL annotations, keep them always visible
+              this.forceViewAnnotationsMouseHover = true;
+              this.forceViewMouseHover = true;
+            } else {
+              // For saved annotations, use standard behavior with mouse hover
+              this._previousMouseHoverState = {
+                forceViewMouseHover: this.forceViewMouseHover,
+                forceViewAnnotationsMouseHover: this.forceViewAnnotationsMouseHover
+              };
+              
+              // Disable mouse hover features
+              this.forceViewMouseHover = false;
+              this.forceViewAnnotationsMouseHover = false;
+            }
             
             // Enter annotation mode
             this.isAnnotationMode = true;
@@ -964,13 +999,6 @@ export class ImageViewerComponent
           (limit === FullSizeLimitationDisplayOptions.ME && !!user && user.id === this.image.user)
         );
 
-        if (!allowReal) {
-          this.popNotificationsService.info(
-            this.translateService.instant("Zoom disabled by the image owner.")
-          );
-          return;
-        }
-
         // Pass the loaded matrix to the fullscreen component to avoid race conditions
         const solutionMatrixToPass = this.loadingAdvancedSolutionMatrix ? null : this.advancedSolutionMatrix;
 
@@ -984,11 +1012,19 @@ export class ImageViewerComponent
           }
         }
 
+        // Show a notification if zoom is disabled
+        if (!allowReal) {
+          this.popNotificationsService.info(
+            this.translateService.instant("Zoom disabled by the image owner.")
+          );
+        }
+
         this.store$.dispatch(new ShowFullscreenImage({
           imageId: this.image.pk,
           event,
           externalSolutionMatrix: solutionMatrixToPass,
-          enableAnnotations // Add this flag to the payload
+          enableAnnotations, // Add this flag to the payload
+          allowZoom: allowReal // Pass zoom permission flag
         }));
         this.viewingFullscreenImage = true;
 
@@ -1842,6 +1878,15 @@ export class ImageViewerComponent
       this._previousMouseHoverState = null;
     }
     
+    // Check if the URL still has annotations
+    if (this.isBrowser) {
+      const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
+      if (!currentUrl.searchParams.has('annotations')) {
+        // URL no longer has annotations, so clear the flag
+        this.hasUrlAnnotations = false;
+      }
+    }
+    
     // Check for saved annotations again to properly update the state
     this._checkForSavedAnnotations();
     
@@ -1977,6 +2022,9 @@ export class ImageViewerComponent
     // Check for annotations in URL
     const hasAnnotationsInUrl = this.isBrowser && 
       new URL(this.windowRefService.nativeWindow.location.href).searchParams.has('annotations');
+    
+    // Set the flag for URL annotations
+    this.hasUrlAnnotations = hasAnnotationsInUrl;
       
     // Wait for revision to be fully initialized
     this.utilsService.delay(100).subscribe(() => {

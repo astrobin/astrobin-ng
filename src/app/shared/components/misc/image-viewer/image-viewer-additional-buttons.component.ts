@@ -82,12 +82,15 @@ import { DeviceService } from "@core/services/device.service";
     <button
       *ngIf="!revision?.videoFile"
       (click)="toggleAnnotations.emit($event)"
+      (mouseenter)="hasUrlAnnotations && onToggleAnnotationsOnMouseHoverEnter.emit()"
+      (mouseleave)="hasUrlAnnotations && onToggleAnnotationsOnMouseHoverLeave.emit()"
       astrobinEventPreventDefault
       class="annotation-mode-button btn btn-link"
       [class.text-light]="true"
+      [class.active]="hasUrlAnnotations"
     >
       <fa-icon
-        [ngbTooltip]="'Annotation tool' | translate"
+        [ngbTooltip]="hasUrlAnnotations ? ('Annotations from URL available' | translate) : ('Annotation tool' | translate)"
         container="body"
         icon="file-text"
       ></fa-icon>
@@ -147,6 +150,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
   @Input() moonOverlayActive = false;
   @Input() annotationsActive = false;
   @Input() annotationsReadOnly = true;
+  @Input() hasUrlAnnotations = false;
 
   // Only for desktops.
   @Output() toggleAnnotationsOnMouseHover = new EventEmitter<void>();
