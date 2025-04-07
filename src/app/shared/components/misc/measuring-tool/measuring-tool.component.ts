@@ -114,6 +114,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   loadingUrlMeasurements: boolean = false;
   // Saved measurement loading state
   loadingMeasurement: boolean = false;
+  // ID of the measurement currently being loaded
+  loadingMeasurementId: number = null;
   // Mouse tracking
   mouseX: number | null = null;
   mouseY: number | null = null;
@@ -225,7 +227,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         }
         console.log("Using direct image element in coordinates calculation");
       }
-      
+
       // If still no element, try direct DOM query
       if (!imageElement) {
         const staticImage = document.querySelector(".static-image") as HTMLElement;
@@ -258,24 +260,24 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     try {
       // Check solution matrix format to avoid common errors
       const solutionMatrix = this.advancedSolutionMatrix;
-      
+
       if (!solutionMatrix || !solutionMatrix.raMatrix || !solutionMatrix.decMatrix) {
         console.error("Invalid solution matrix format:", solutionMatrix);
         return null;
       }
-      
+
       // Log the parameters for debugging
       if (x < 0 || y < 0) {
         console.warn("Potentially invalid coordinate point:", { x, y });
       }
-      
+
       // Verify the image element is properly positioned
       const rect = imageElement.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) {
         console.error("Invalid image element dimensions:", rect);
         return null;
       }
-      
+
       // Use the service to calculate coordinates
       const result = this.astroUtilsService.calculateCoordinatesAtPoint(
         x,
@@ -283,13 +285,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         solutionMatrix,
         imageElement as HTMLElement
       );
-      
+
       // Validate result
       if (result && (isNaN(result.ra) || isNaN(result.dec))) {
         console.error("Invalid coordinate result:", result);
         return null;
       }
-      
+
       return result;
     } catch (error) {
       console.error("Error calculating coordinates:", error);
@@ -512,11 +514,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             // It's already an HTMLElement
             this.cachedImageElement = this.imageElement;
           }
-          
+
           console.log("Found image element for measuring tool:", this.cachedImageElement);
         } else {
           console.warn("Image element not found on first try - retrying with longer delay");
-          
+
           // Try again after a longer delay
           this.windowRefService.utilsService.delay(500).subscribe(() => {
             if (this.imageElement) {
@@ -551,10 +553,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
                 }
               }
             }
-            
+
             // After image element is cached, update boundary status
             this.updateBoundaryStatus();
-            
+
             // IMPORTANT: Check for measurements in URL AFTER the image element is available
             // This is critical for correct positioning of measurements
             this.checkForUrlMeasurements();
@@ -2581,14 +2583,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         const currentUrl = new URL(location.href);
 
         console.log("MEASUREMENTS - BEFORE EXIT URL UPDATE:", currentUrl.toString());
-        
+
         // Remove the measurements parameter from the URL
         if (currentUrl.searchParams.has('measurements')) {
           currentUrl.searchParams.delete('measurements');
-          
+
           // Update the URL without navigation using WindowRefService
           this.windowRefService.replaceState({}, currentUrl.toString());
-          
+
           console.log("MEASUREMENTS - AFTER EXIT URL UPDATE:", this.windowRefService.nativeWindow.location.href);
         }
       } catch (e) {
@@ -2686,7 +2688,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // For measurements we MUST keep the #fullscreen hash as measurements only work in fullscreen view
       // Create a shareable URL that retains the fullscreen hash if it exists
       const shareableUrl = new URL(currentUrl.toString());
-      
+
       // If fullscreen hash doesn't exist, add it since measurements only work in fullscreen view
       if (shareableUrl.hash !== '#fullscreen') {
         shareableUrl.hash = "#fullscreen";
@@ -2754,24 +2756,30 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (event) {
       event.preventDefault();
       event.stopPropagation();
-      
+
       // Blur the button to hide tooltip
       if (event.currentTarget) {
         (event.currentTarget as HTMLElement).blur();
       }
     }
 
-    // Check if user is logged in
-    let isLoggedIn = false;
     this.currentUser$.pipe(take(1)).subscribe(user => {
-      isLoggedIn = !!user;
+      if (!user) {
+        return;
+      }
+
+      // Check if the image has advanced plate-solving data
+      if (!(this.advancedSolutionMatrix && this.advancedSolutionMatrix.raMatrix)) {
+        this.popNotificationsService.error(
+          this.translateService.instant(
+            "Saved measurements require advanced plate-solving data."
+          )
+        );
+        return;
+      }
+
+      this.store$.dispatch(new ToggleSavedMeasurements());
     });
-
-    if (!isLoggedIn) {
-      return;
-    }
-
-    this.store$.dispatch(new ToggleSavedMeasurements());
   }
 
   /**
@@ -3162,7 +3170,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Get the name from options or use the current new measurement name
     const measurementName = options?.name || this.newMeasurementName;
-    
+
     // Check if we have all the required data
     if (!measurementName || !this.measureDistance || !this.measureStartPoint || !this.measureEndPoint) {
       return;
@@ -3304,17 +3312,32 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    */
   // Synchronous wrapper for loadMeasurement to use in templates
   loadMeasurementWrapper(preset: MeasurementPresetInterface): void {
+    // Immediately set the loading state for this specific measurement
+    this.loadingMeasurement = true;
+    this.loadingMeasurementId = preset.id;
+
     if (this.advancedSolutionMatrix) {
       this.loadMeasurement(preset).catch(error => {
         console.error("Error loading measurement:", error);
         this.loadingMeasurement = false;
+        this.loadingMeasurementId = null;
+        // Force change detection
+        this.cdRef.detectChanges();
         this.popNotificationsService.error(
           this.translateService.instant("Failed to load measurement")
         );
       });
     } else {
-      // Reset loading state if we can't even begin loading
+      // If we don't have a valid solution matrix, show error and reset loading state
+      this.popNotificationsService.error(
+        this.translateService.instant(
+          "Cannot load measurement on an image without advanced plate-solving data."
+        )
+      );
       this.loadingMeasurement = false;
+      this.loadingMeasurementId = null;
+      // Force change detection
+      this.cdRef.detectChanges();
     }
   }
 
@@ -3330,6 +3353,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     if (!isLoggedIn) {
       this.loadingMeasurement = false;
+      this.loadingMeasurementId = null;
+      // Force change detection
+      this.cdRef.detectChanges();
       return;
     }
 
@@ -3337,10 +3363,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!this.advancedSolutionMatrix) {
       this.popNotificationsService.error(
         this.translateService.instant(
-          "Measurement presets cannot be loaded on images without advanced plate-solving data. Use the measuring tool to create pixel-based measurements instead."
+          "Cannot load measurement on an image without advanced plate-solving data."
         )
       );
       this.loadingMeasurement = false;
+      this.loadingMeasurementId = null;
       return;
     }
 
@@ -3359,6 +3386,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.translateService.instant("Cannot locate image element")
       );
       this.loadingMeasurement = false;
+      this.loadingMeasurementId = null;
       return;
     }
 
@@ -3383,17 +3411,17 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       let centerCoords = null;
       let attempts = 0;
       const maxAttempts = 3;
-      
+
       while (!centerCoords && attempts < maxAttempts) {
         attempts++;
-        
+
         try {
           // Add a small random offset on retries to avoid edge cases
           const offsetX = attempts > 1 ? (Math.random() * 10 - 5) : 0;
           const offsetY = attempts > 1 ? (Math.random() * 10 - 5) : 0;
-          
+
           centerCoords = this.boundCalculateCoordinatesAtPoint(centerX + offsetX, centerY + offsetY);
-          
+
           if (centerCoords) {
             console.log(`Got coordinates on attempt ${attempts}: RA=${centerCoords.ra}, DEC=${centerCoords.dec}`);
           } else if (attempts < maxAttempts) {
@@ -3408,56 +3436,22 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           }
         }
       }
-      
+
       if (!centerCoords) {
         console.error("Failed to calculate image center coordinates after", maxAttempts, "attempts");
-        
-        // Try a different approach - use preset coordinates if available
-        if (preset.startRa !== null && preset.startDec !== null && 
-            preset.endRa !== null && preset.endDec !== null) {
-          
-          console.log("Using preset celestial coordinates instead");
-          // Skip the arcsecond placement and use the raw RA/Dec values
-          
-          // Create a basic pixel-based rectangle in the center of the image
-          const sideLength = Math.min(imgRect.width, imgRect.height) * 0.3; // Use 30% of the image size
-          
-          // This will be a fallback measurement - we'll update these with accurate RA/Dec later
-          this.measureStartPoint = {
-            x: centerX - sideLength/2,
-            y: centerY - sideLength/2,
-            ra: preset.startRa,
-            dec: preset.startDec
-          };
-          
-          this.measureEndPoint = {
-            x: centerX + sideLength/2,
-            y: centerY + sideLength/2,
-            ra: preset.endRa,
-            dec: preset.endDec
-          };
-          
-          // We need to update the measurement with calculated width/height
-          this.saveMeasurement({
-            name: preset.name,
-            notes: preset.notes,
-            showRectangle: preset.showRectangle,
-            showCircle: preset.showCircle
-          });
-          
-          this.popNotificationsService.success(
-            this.translateService.instant("Measurement loaded from saved coordinates")
-          );
-          
-          return;
-        }
-        
-        // If we can't use preset coordinates either, show the error
+
+        // Since we require advanced plate-solving data, any failure here means we can't load the measurement
+        // Even if the preset has RA/Dec values, without valid plate-solving we can't properly place it
         this.popNotificationsService.error(
-          this.translateService.instant("Error calculating coordinates at image center")
+          this.translateService.instant("Cannot load measurement on an image without advanced plate-solving data.")
         );
         this.loadingMeasurement = false;
+        this.loadingMeasurementId = null;
+        // Force change detection
+        this.cdRef.detectChanges();
         return;
+
+        // Removed fallback code that was incorrectly showing success message without proper loading
       }
 
       if (!this.solution.advancedPixscale) {
@@ -3465,6 +3459,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.translateService.instant("Invalid pixel scale in image solution")
         );
         this.loadingMeasurement = false;
+        this.loadingMeasurementId = null;
+        // Force change detection
+        this.cdRef.detectChanges();
         return;
       }
 
@@ -3478,6 +3475,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.translateService.instant("Invalid plate scale in image solution")
         );
         this.loadingMeasurement = false;
+        this.loadingMeasurementId = null;
+        // Force change detection
+        this.cdRef.detectChanges();
         return;
       }
 
@@ -3513,6 +3513,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.translateService.instant("Measurement is too small for this image.")
         );
         this.loadingMeasurement = false;
+        this.loadingMeasurementId = null;
+        // Force change detection
+        this.cdRef.detectChanges();
         return;
       }
 
@@ -3530,6 +3533,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.translateService.instant("Measurement could not be placed within the image boundaries.")
         );
         this.loadingMeasurement = false;
+        this.loadingMeasurementId = null;
+        // Force change detection
+        this.cdRef.detectChanges();
         return;
       }
 
@@ -3631,6 +3637,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.translateService.instant("Could not calculate distance for the measurement")
         );
         this.loadingMeasurement = false;
+        this.loadingMeasurementId = null;
+        // Force change detection
+        this.cdRef.detectChanges();
         return;
       }
 
@@ -3686,12 +3695,18 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Reset loading state
       this.loadingMeasurement = false;
+      this.loadingMeasurementId = null;
+      // Force change detection
+      this.cdRef.detectChanges();
     } else {
       // No arcsecond dimensions in preset
       this.popNotificationsService.error(
         this.translateService.instant("Invalid measurement preset: missing width/height dimensions")
       );
       this.loadingMeasurement = false;
+      this.loadingMeasurementId = null;
+      // Force change detection
+      this.cdRef.detectChanges();
       return;
     }
   }

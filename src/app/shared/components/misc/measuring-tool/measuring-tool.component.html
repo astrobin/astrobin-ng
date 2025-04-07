@@ -859,12 +859,13 @@
       <button *ngIf="currentUser$ | async"
               type="button"
               class="icon-button"
-              [ngbTooltip]="'Saved measurements' | translate"
+              [ngbTooltip]="advancedSolutionMatrix ? ('Saved measurements' | translate) : ('Saved measurements require advanced plate-solving data' | translate)"
               placement="bottom"
               container="body"
-              (click)="toggleSavedMeasurements($event)"
+              [disabled]="!advancedSolutionMatrix"
+              (click)="advancedSolutionMatrix ? toggleSavedMeasurements($event) : null"
               (touchstart)="$event.stopPropagation()"
-              (touchend)="toggleSavedMeasurements($event)">
+              (touchend)="advancedSolutionMatrix ? toggleSavedMeasurements($event) : null">
         <fa-icon [icon]="['fas', 'bookmark']"></fa-icon>
       </button>
 
@@ -961,8 +962,8 @@
           {{ 'No saved measurements yet.' | translate }}
         </p>
 
-        <div class="alert alert-info mb-2" *ngIf="!advancedSolutionMatrix && savedMeasurements.length > 0">
-          <small>{{ 'This image lacks advanced plate-solving data required to use saved measurements. Measurements are displayed for reference only.' | translate }}</small>
+        <div class="alert alert-warning mb-2" *ngIf="!advancedSolutionMatrix && savedMeasurements.length > 0">
+          <small>{{ 'This image lacks advanced plate-solving data required to use saved measurements. You cannot load measurements on this image.' | translate }}</small>
         </div>
 
         <div class="measurement-item" *ngFor="let preset of savedMeasurements; let i = index">
@@ -974,13 +975,13 @@
           <div class="measurement-actions" *ngIf="currentUser$ | async">
             <button class="btn btn-sm btn-outline-light"
                     (click)="loadMeasurementWrapper(preset)"
-                    [class.disabled]="!advancedSolutionMatrix || loadingMeasurement"
-                    [class.loading]="loadingMeasurement"
+                    [class.disabled]="!advancedSolutionMatrix || loadingMeasurementId === preset.id"
+                    [class.loading]="loadingMeasurementId === preset.id"
                     [style.pointer-events]="'auto'">
-              <fa-icon *ngIf="!loadingMeasurement" icon="arrow-right"
+              <fa-icon *ngIf="loadingMeasurementId !== preset.id" icon="arrow-right"
                 [ngbTooltip]="!advancedSolutionMatrix ? ('Loading measurements requires advanced plate-solving data' | translate) : ('Load measurement' | translate)"
                 container="body"></fa-icon>
-              <fa-icon *ngIf="loadingMeasurement" icon="spinner" [spin]="true"></fa-icon>
+              <fa-icon *ngIf="loadingMeasurementId === preset.id" icon="spinner" [spin]="true"></fa-icon>
             </button>
             <button class="btn btn-sm btn-outline-danger" (click)="deleteSavedMeasurement(i)">
               <fa-icon icon="trash-alt"
