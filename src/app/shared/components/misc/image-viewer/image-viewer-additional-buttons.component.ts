@@ -78,6 +78,21 @@ import { DeviceService } from "@core/services/device.service";
       ></fa-icon>
     </button>
 
+    <!-- Annotation button - opens fullscreen mode with annotations -->
+    <button
+      *ngIf="!revision?.videoFile"
+      (click)="toggleAnnotations.emit($event)"
+      astrobinEventPreventDefault
+      class="annotation-mode-button btn btn-link"
+      [class.text-light]="true"
+    >
+      <fa-icon
+        [ngbTooltip]="'Annotation tool' | translate"
+        container="body"
+        icon="file-text"
+      ></fa-icon>
+    </button>
+
     <button
       *ngIf="
         image.allowImageAdjustmentsWidget === true || (
@@ -93,20 +108,6 @@ import { DeviceService } from "@core/services/device.service";
         [ngbTooltip]="'Image adjustments' | translate"
         container="body"
         icon="sliders"
-      ></fa-icon>
-    </button>
-
-    <!-- Annotation button - opens fullscreen mode with annotations -->
-    <button
-      (click)="toggleAnnotations.emit($event)"
-      astrobinEventPreventDefault
-      class="annotation-mode-button btn btn-link"
-      [class.text-light]="true"
-    >
-      <fa-icon
-        [ngbTooltip]="'Annotation tool' | translate"
-        container="body"
-        icon="file-text"
       ></fa-icon>
     </button>
 

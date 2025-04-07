@@ -4,6 +4,8 @@ import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingService } from "@core/services/loading.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { faInfoCircle, faFileAlt } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "astrobin-confirmation-dialog",
@@ -19,6 +21,20 @@ export class InformationDialogComponent extends BaseComponentDirective {
   
   @Input()
   messageClass: string;
+  
+  @Input()
+  iconName: string = "info-circle";
+  
+  // Map for common icons
+  private readonly iconMap: { [key: string]: IconDefinition } = {
+    "info-circle": faInfoCircle,
+    "file-alt": faFileAlt
+  };
+  
+  // Get the icon definition based on the provided name
+  get icon(): IconDefinition {
+    return this.iconMap[this.iconName] || faInfoCircle;
+  }
 
   constructor(
     public readonly store$: Store<MainState>,

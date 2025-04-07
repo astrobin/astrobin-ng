@@ -19,21 +19,13 @@ export interface AnnotationShape {
 }
 
 /**
- * Represents a text note in an annotation
- */
-export interface AnnotationNote {
-  text: string;
-  position: AnnotationPoint;
-  expanded: boolean;
-}
-
-/**
- * Represents a complete annotation with shape and optional note
+ * Represents a complete annotation with shape and optional title and message
  */
 export interface Annotation {
   id: string;
   shape: AnnotationShape;
-  note?: AnnotationNote;
+  title?: string;
+  message?: string;
   timestamp: number;
 }
 
@@ -45,10 +37,8 @@ export interface CreateAnnotationParams {
   points?: AnnotationPoint[];
   color: string;
   lineWidth?: number;
-  note?: {
-    text: string;
-    position?: AnnotationPoint;
-  };
+  title?: string;
+  message?: string;
 }
 
 /**
@@ -62,10 +52,9 @@ export interface UpdateAnnotationShapeParams {
 }
 
 /**
- * Parameters for updating an annotation note
+ * Parameters for updating an annotation message
  */
-export interface UpdateAnnotationNoteParams {
-  text?: string;
-  position?: AnnotationPoint;
-  expanded?: boolean;
+export interface UpdateAnnotationMessageParams {
+  title?: string;
+  message?: string;
 }

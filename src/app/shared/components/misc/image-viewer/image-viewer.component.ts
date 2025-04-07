@@ -406,7 +406,8 @@ export class ImageViewerComponent
       return;
     }
     
-    if (this.isAnnotationMode) {
+    if (this.isAnnotationMode && !this.annotationReadOnlyMode) {
+      // Only exit annotation mode when not in read-only mode
       this.onExitAnnotationMode();
       return;
     }
@@ -1778,8 +1779,8 @@ export class ImageViewerComponent
       }
     }
 
-    // Do nothing if the component is not active or if the revision is a GIF
-    if (!this.active || (this.revision && this.revision.videoFile && this.revision.videoFile.toLowerCase().endsWith('.gif'))) {
+    // Do nothing if the component is not active or if the revision is a video file
+    if (!this.active || (this.revision && this.revision.videoFile)) {
       return;
     }
 

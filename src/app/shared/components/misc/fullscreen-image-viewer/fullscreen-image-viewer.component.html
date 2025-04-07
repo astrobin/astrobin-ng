@@ -451,9 +451,9 @@
           <span>{{ 'Measure distances' | translate }}</span>
         </div>
 
-        <!-- Annotation tool toggle - available for all images -->
+        <!-- Annotation tool toggle - available for images that are not videos or GIFs -->
         <div
-          *ngIf="!isGif"
+          *ngIf="!isGif && !revision?.videoFile"
           class="kebab-menu-item"
           (click)="toggleAnnotationMode($event); toggleKebabMenu($event)"
           [class.active]="isAnnotationMode"

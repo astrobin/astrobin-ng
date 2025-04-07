@@ -64,6 +64,7 @@
               [ngbTooltip]="'Help' | translate"
               placement="bottom"
               container="body"
+              [disabled]="savingAnnotations"
               (click)="showHelp()"
               (touchend)="showHelp()">
         <fa-icon [icon]="['fas', 'question']"></fa-icon>
@@ -76,6 +77,7 @@
               [ngbTooltip]="'Enter fullscreen' | translate"
               placement="bottom"
               container="body"
+              [disabled]="savingAnnotations"
               (click)="requestFullscreenMode.emit()"
               (touchend)="requestFullscreenMode.emit()">
         <fa-icon [icon]="['fas', 'expand']"></fa-icon>
@@ -90,6 +92,7 @@
                 [ngbTooltip]="'Add rectangle' | translate"
                 placement="bottom"
                 container="body"
+                [disabled]="savingAnnotations"
                 (click)="makeRect()"
                 (touchend)="makeRect()">
           <fa-icon [icon]="['fas', 'square']"></fa-icon>
@@ -98,6 +101,7 @@
                 [ngbTooltip]="'Add circle' | translate"
                 placement="bottom"
                 container="body"
+                [disabled]="savingAnnotations"
                 (click)="makeCircle()"
                 (touchend)="makeCircle()">
           <fa-icon [icon]="['fas', 'circle']"></fa-icon>
@@ -130,6 +134,7 @@
               [ngbTooltip]="'Share annotations' | translate"
               placement="bottom"
               container="body"
+              [disabled]="savingAnnotations"
               (click)="shareAnnotations()"
               (touchstart)="$event.stopPropagation()"
               (touchend)="shareAnnotations()">
@@ -146,7 +151,7 @@
                 [ngbTooltip]="'Clear all' | translate"
                 placement="bottom"
                 container="body"
-                [disabled]="annotations.length === 0"
+                [disabled]="annotations.length === 0 || savingAnnotations"
                 (click)="annotations.length > 0 ? confirmClearAll() : null"
                 (touchend)="annotations.length > 0 ? confirmClearAll() : null"
                 (touchstart)="$event.stopPropagation()">
@@ -159,6 +164,7 @@
               [ngbTooltip]="'Exit annotation mode' | translate"
               placement="bottom"
               container="body"
+              [disabled]="savingAnnotations"
               (click)="exitAnnotationModeHandler(); annotationService.clearAllAnnotations()"
               (touchend)="exitAnnotationModeHandler(); annotationService.clearAllAnnotations()"
               (touchstart)="$event.stopPropagation()">
@@ -222,6 +228,23 @@
 
         <!-- Arrow mode has been removed -->
 
+        <!-- Show info icon when there's a description (message) -->
+        <div *ngIf="readOnly && ann.message" class="control-toolbar readonly-toolbar read-only-icon"
+             (mousedown)="$event.stopPropagation()"
+             (touchstart)="$event.stopPropagation()">
+          <!-- Debug info -->
+          <span style="display: none">
+            {{ann.id}} - Has message: {{!!ann.message}} - Message: {{ann.message}}
+          </span>
+          <button class="tool-button message"
+                  [ngbTooltip]="'View annotation details' | translate"
+                  placement="bottom"
+                  container="body"
+                  (click)="showAnnotationInfo(ann); $event.stopPropagation()">
+            <fa-icon [icon]="['fas', 'file-alt']"></fa-icon>
+          </button>
+        </div>
+
         <!-- Toolbar for each annotation - only in edit mode -->
         <div *ngIf="!readOnly" class="control-toolbar"
              (mousedown)="$event.stopPropagation()"
@@ -271,7 +294,8 @@
   <ng-template #annotationFormModal let-modal>
     <div class="modal-header">
       <h4 class="modal-title" *ngIf="pendingShapeData">{{ 'Create annotation' | translate }}</h4>
-      <h4 class="modal-title" *ngIf="!pendingShapeData">{{ 'Edit annotation' | translate }}</h4>
+      <h4 class="modal-title" *ngIf="!pendingShapeData && messageModel?.title && messageForm.disabled">{{ messageModel.title }}</h4>
+      <h4 class="modal-title" *ngIf="!pendingShapeData && !messageForm.disabled">{{ 'Edit annotation' | translate }}</h4>
       <button type="button" class="close" [attr.aria-label]="'Close' | translate" (click)="modal.dismiss()">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -283,8 +307,16 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{ 'Cancel' | translate }}</button>
-      <button type="button" class="btn btn-primary" [disabled]="!messageForm.valid" (click)="validateAndCloseModal(modal, messageForm, messageForm.value, $event)">{{ 'Confirm' | translate }}</button>
+      <!-- Show different buttons based on edit vs view mode -->
+      <ng-container *ngIf="!messageForm.disabled">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{ 'Cancel' | translate }}</button>
+        <button type="button" class="btn btn-primary" [disabled]="!messageForm.valid" (click)="validateAndCloseModal(modal, messageForm, messageForm.value, $event)">{{ 'Confirm' | translate }}</button>
+      </ng-container>
+      
+      <!-- In read-only view mode, just show a close button -->
+      <ng-container *ngIf="messageForm.disabled">
+        <button type="button" class="btn btn-primary" (click)="modal.dismiss()">{{ 'Close' | translate }}</button>
+      </ng-container>
     </div>
   </ng-template>
 

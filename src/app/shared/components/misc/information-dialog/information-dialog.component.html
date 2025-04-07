@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title" id="information-dialog-modal">
-    <fa-icon icon="info-circle"></fa-icon>
+    <fa-icon [icon]="icon"></fa-icon>
     {{ title | translate }}
   </h4>
   <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">

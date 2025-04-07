@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Annotation, AnnotationPoint, CreateAnnotationParams, UpdateAnnotationNoteParams, UpdateAnnotationShapeParams } from '../models/annotation.model';
+import { Annotation, AnnotationPoint, CreateAnnotationParams, UpdateAnnotationShapeParams, UpdateAnnotationMessageParams } from '../models/annotation.model';
 import { AnnotationShapeType } from '../models/annotation-shape-type.enum';
 
 @Injectable({
@@ -48,13 +48,13 @@ export class AnnotationService {
       timestamp: Date.now()
     };
 
-    // Add note if provided
-    if (params.note) {
-      annotation.note = {
-        text: params.note.text,
-        position: params.note.position || this.getDefaultNotePosition(),
-        expanded: true
-      };
+    // Add title and message if provided
+    if (params.title) {
+      annotation.title = params.title;
+    }
+    
+    if (params.message) {
+      annotation.message = params.message;
     }
 
     // Add to the list of annotations
@@ -65,33 +65,28 @@ export class AnnotationService {
   }
 
   /**
-   * Adds a note to an existing annotation
+   * Set title and message of an existing annotation
    * @param id The ID of the annotation
-   * @param text The text content of the note
+   * @param title The title of the annotation
+   * @param message The message content of the annotation
    */
-  public addNoteToAnnotation(id: string, text: string): void {
+  public setAnnotationTitleAndMessage(id: string, title: string, message: string): void {
     const annotations = this._annotations.getValue();
     const index = annotations.findIndex(a => a.id === id);
 
     if (index !== -1) {
       const annotation = { ...annotations[index] };
 
-      // If text is empty, use a placeholder
-      const noteText = text.trim() !== '' ? text : 'Annotation ' + (index + 1);
-
-      // Create note or update existing note
-      annotation.note = {
-        text: noteText,
-        position: annotation.note?.position || this.getNotePositionForShape(annotation),
-        expanded: true
-      };
+      // Update title and message
+      annotation.title = title || '';
+      annotation.message = message || '';
 
       // Update the annotation
       const updatedAnnotations = [...annotations];
       updatedAnnotations[index] = annotation;
       this._annotations.next(updatedAnnotations);
 
-      console.log('Added note to annotation:', annotation);
+      console.log('Updated annotation title and message:', annotation);
     } else {
       console.warn('Could not find annotation with ID:', id);
     }
@@ -124,22 +119,25 @@ export class AnnotationService {
   }
 
   /**
-   * Updates an annotation's note
+   * Updates an annotation's message details
    * @param id The ID of the annotation
    * @param params The parameters to update
    */
-  public updateAnnotationNote(id: string, params: UpdateAnnotationNoteParams): void {
+  public updateAnnotationMessage(id: string, params: UpdateAnnotationMessageParams): void {
     const annotations = this._annotations.getValue();
     const index = annotations.findIndex(a => a.id === id);
 
-    if (index !== -1 && annotations[index].note) {
+    if (index !== -1) {
       const annotation = { ...annotations[index] };
-      annotation.note = {
-        ...annotation.note,
-        ...(params.text !== undefined ? { text: params.text } : {}),
-        ...(params.position !== undefined ? { position: params.position } : {}),
-        ...(params.expanded !== undefined ? { expanded: params.expanded } : {})
-      };
+      
+      // Update title and message if provided
+      if (params.title !== undefined) {
+        annotation.title = params.title;
+      }
+      
+      if (params.message !== undefined) {
+        annotation.message = params.message;
+      }
 
       // Update the annotation
       const updatedAnnotations = [...annotations];
@@ -148,27 +146,8 @@ export class AnnotationService {
     }
   }
 
-  /**
-   * Toggle a note's expanded state
-   * @param id The ID of the annotation
-   */
-  public toggleNoteExpanded(id: string): void {
-    const annotations = this._annotations.getValue();
-    const index = annotations.findIndex(a => a.id === id);
-
-    if (index !== -1 && annotations[index].note) {
-      const annotation = { ...annotations[index] };
-      annotation.note = {
-        ...annotation.note,
-        expanded: !annotation.note.expanded
-      };
-
-      // Update the annotation
-      const updatedAnnotations = [...annotations];
-      updatedAnnotations[index] = annotation;
-      this._annotations.next(updatedAnnotations);
-    }
-  }
+  // Note: toggleNoteExpanded method removed as part of simplification
+  // We no longer need note.expanded since we're using a modal for displaying messages
 
   /**
    * Removes an annotation
@@ -201,17 +180,6 @@ export class AnnotationService {
         }))
       };
 
-      // If note exists, move it too to maintain the relationship
-      if (annotation.note) {
-        annotation.note = {
-          ...annotation.note,
-          position: {
-            x: Math.max(0, Math.min(100, annotation.note.position.x + deltaX)),
-            y: Math.max(0, Math.min(100, annotation.note.position.y + deltaY))
-          }
-        };
-      }
-
       // Update the annotation
       const updatedAnnotations = [...annotations];
       updatedAnnotations[index] = annotation;
@@ -219,33 +187,8 @@ export class AnnotationService {
     }
   }
 
-  /**
-   * Moves just an annotation's note by the specified delta
-   * @param id The ID of the annotation
-   * @param deltaX Percentage delta X to move
-   * @param deltaY Percentage delta Y to move
-   */
-  public moveAnnotationNote(id: string, deltaX: number, deltaY: number): void {
-    const annotations = this._annotations.getValue();
-    const index = annotations.findIndex(a => a.id === id);
-
-    if (index !== -1 && annotations[index].note) {
-      const annotation = { ...annotations[index] };
-
-      annotation.note = {
-        ...annotation.note,
-        position: {
-          x: Math.max(0, Math.min(100, annotation.note.position.x + deltaX)),
-          y: Math.max(0, Math.min(100, annotation.note.position.y + deltaY))
-        }
-      };
-
-      // Update the annotation
-      const updatedAnnotations = [...annotations];
-      updatedAnnotations[index] = annotation;
-      this._annotations.next(updatedAnnotations);
-    }
-  }
+  // Note: moveAnnotationNote method removed as part of simplification
+  // We no longer have separate note position with the simplified model
 
   /**
    * Clear all annotations
@@ -273,6 +216,10 @@ export class AnnotationService {
         console.log("Generated ID for annotation:", annotation.id);
       }
 
+      // Extract title and message from direct properties
+      let title = annotation.title || '';
+      let message = annotation.message || '';
+
       // Handle circle format
       if (annotation.type === 'circle') {
         console.log("Converting circle annotation");
@@ -292,11 +239,8 @@ export class AnnotationService {
             color: annotation.color || this.getDefaultColor(),
             lineWidth: 2
           },
-          note: annotation.note ? annotation.note : annotation.title ? {
-            text: annotation.title,
-            position: { x: (annotation.cx || 50) + (annotation.r || 10) + 5, y: (annotation.cy || 50) - 5 },
-            expanded: true
-          } : undefined
+          title: title,
+          message: message
         };
       }
 
@@ -320,11 +264,8 @@ export class AnnotationService {
             color: annotation.color || this.getDefaultColor(),
             lineWidth: 2
           },
-          note: annotation.note ? annotation.note : annotation.title ? {
-            text: annotation.title,
-            position: { x: (annotation.x || 10) + (annotation.width || 20) + 5, y: (annotation.y || 10) - 5 },
-            expanded: true
-          } : undefined
+          title: title,
+          message: message
         };
       }
 
@@ -348,11 +289,8 @@ export class AnnotationService {
             color: annotation.color || this.getDefaultColor(),
             lineWidth: 2
           },
-          note: annotation.note ? annotation.note : annotation.title ? {
-            text: annotation.title,
-            position: { x: (annotation.endX || 65) + 5, y: (annotation.endY || 50) - 5 },
-            expanded: true
-          } : undefined
+          title: title,
+          message: message
         };
       }
 
@@ -498,8 +436,8 @@ export class AnnotationService {
         id: annotation.id,
         timestamp: annotation.timestamp,
         color: annotation.shape.color,
-        note: annotation.note,
-        title: annotation.note?.text || '' // Use note text as title if available
+        title: annotation.title || '',
+        message: annotation.message || ''
       };
 
       if (annotation.shape.type === AnnotationShapeType.RECTANGLE) {
@@ -605,65 +543,8 @@ export class AnnotationService {
     return this.ANNOTATION_COLORS[this._defaultColorIndex];
   }
 
-  /**
-   * Create a default position for a note based on the shape
-   */
-  private getNotePositionForShape(annotation: Annotation): AnnotationPoint {
-    if (!annotation.shape.points.length) {
-      return { x: 50, y: 50 }; // Default center
-    }
-
-    switch (annotation.shape.type) {
-      case AnnotationShapeType.ARROW: {
-        // Place the note near the end of the arrow (target)
-        const endPoint = annotation.shape.points[1] || annotation.shape.points[0];
-        return {
-          x: Math.min(Math.max(endPoint.x + 5, 0), 95),
-          y: Math.min(Math.max(endPoint.y - 5, 0), 95)
-        };
-      }
-
-      case AnnotationShapeType.RECTANGLE: {
-        // Place the note at the top-right corner of the rectangle
-        const startPoint = annotation.shape.points[0];
-        const endPoint = annotation.shape.points[1] || startPoint;
-
-        const topRightX = Math.max(startPoint.x, endPoint.x);
-        const topRightY = Math.min(startPoint.y, endPoint.y);
-
-        return {
-          x: Math.min(topRightX + 5, 95),
-          y: Math.max(topRightY - 5, 5)
-        };
-      }
-
-      case AnnotationShapeType.CIRCLE: {
-        // Place the note at the top-right of the circle
-        const centerPoint = annotation.shape.points[0];
-        const radiusPoint = annotation.shape.points[1] || centerPoint;
-
-        // Calculate the radius
-        const dx = radiusPoint.x - centerPoint.x;
-        const dy = radiusPoint.y - centerPoint.y;
-        const radius = Math.sqrt(dx * dx + dy * dy);
-
-        return {
-          x: Math.min(centerPoint.x + radius + 5, 95),
-          y: Math.max(centerPoint.y - radius - 5, 5)
-        };
-      }
-
-      default:
-        return { x: 50, y: 50 }; // Default center
-    }
-  }
-
-  /**
-   * Get a default position for a new note
-   */
-  private getDefaultNotePosition(): AnnotationPoint {
-    return { x: 50, y: 30 };
-  }
+  // Note: getNotePositionForShape and getDefaultNotePosition methods removed as part of simplification
+  // We no longer have separate note positions with the simplified model
 
   /**
    * Generate a unique ID for an annotation
@@ -694,12 +575,13 @@ export class AnnotationService {
         }
       };
 
-      if (annotation.note) {
-        compact.n = {
-          t: annotation.note.text,
-          p: [this.roundToTwo(annotation.note.position.x), this.roundToTwo(annotation.note.position.y)],
-          e: annotation.note.expanded ? 1 : 0
-        };
+      // Add title and message if they exist
+      if (annotation.title) {
+        compact.title = annotation.title;
+      }
+      
+      if (annotation.message) {
+        compact.msg = annotation.message;
       }
 
       return compact;
@@ -724,15 +606,13 @@ export class AnnotationService {
       }
     };
 
-    if (data.n) {
-      annotation.note = {
-        text: data.n.t || '',
-        position: {
-          x: data.n.p[0],
-          y: data.n.p[1]
-        },
-        expanded: data.n.e === 1
-      };
+    // Add title and message if they exist in the data
+    if (data.title) {
+      annotation.title = data.title;
+    }
+    
+    if (data.msg) {
+      annotation.message = data.msg;
     }
 
     return annotation;
