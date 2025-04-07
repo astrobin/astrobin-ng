@@ -233,7 +233,7 @@
   /* Add a subtle outline to help debug letterboxing (will be barely visible) */
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   transition: opacity 0.2s ease;
-  
+
   /* Apply special styling when parent has URL annotations */
   .has-url-annotations & {
     opacity: 1 !important;
@@ -281,7 +281,7 @@
     cursor: default;
     pointer-events: all; /* Allow interaction for shapes with titles */
     opacity: 0.9; /* Slightly more transparent to indicate read-only state */
-    
+
     /* Specifically allow interaction with the readonly toolbar */
     .readonly-toolbar {
       pointer-events: all;
@@ -451,14 +451,14 @@
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    
+
     /* Special styling for read-only toolbar */
     &.readonly-toolbar {
       opacity: 0.75;
       bottom: -40px;
       padding: 4px 6px;
       pointer-events: all; /* Need to capture clicks in read-only mode */
-      
+
       /* Make sure it's always visible in read-only mode */
       &.read-only-icon {
         position: absolute;
@@ -477,7 +477,7 @@
         justify-content: center;
         box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.4);
-        
+
         .tool-button {
           padding: 0 !important;
           background: none !important;
@@ -486,13 +486,13 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          
+
           fa-icon {
             font-size: 14px;
             color: rgba(255, 255, 255, 0.9);
           }
         }
-        
+
         &:hover {
           opacity: 1;
           transform: translate(-50%, 30%) scale(1.1);
@@ -607,19 +607,8 @@
 /* Global styles to hide UI elements when annotation tool is active in regular image viewer */
 ::ng-deep body.annotation-mode-active {
   /* Hide specific elements in the regular image viewer */
-  .regular-image-viewer .moon-scale,
-  .regular-image-viewer .celestial-north-indicator,
-  .regular-image-viewer .close-button,
-  .regular-image-viewer .toolbar-buttons:not(.annotation-toolbar),
-  .regular-image-viewer .action-buttons,
-  .regular-image-viewer .measure-buttons,
-  .regular-image-viewer .solution-overlay,
-  .regular-image-viewer .plate-solving-button,
-  .regular-image-viewer .menu-button,
-  .regular-image-viewer .image-navigation,
-  .regular-image-viewer .image-toolbar,
-  .regular-image-viewer .revision-thumbnails,
-  .regular-image-viewer .revision-nav {
+  .regular-image-viewer .north-arrow-container,
+  .regular-image-viewer .solution-overlay {
     display: none !important;
   }
 
