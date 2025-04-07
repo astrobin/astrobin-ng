@@ -1,9 +1,81 @@
 :host {
   position: absolute;
+  transition: all 0.3s ease;
+  
+  .btn-container {
+    display: flex;
+    flex-direction: row;
+    transition: all 0.3s ease;
+    
+    // Collapsed state - only show toggle button
+    &.collapsed {
+      .toggle-buttons-btn {
+        background: rgba(0, 0, 0, 0.6);
+        opacity: 0.9;
+        transform: translateX(0);
+      }
+      
+      .buttons-wrapper {
+        width: 0;
+        opacity: 0;
+        transform: translateX(20px);
+        pointer-events: none;
+      }
+    }
+    
+    // Expanded state
+    &.expanded {
+      .toggle-buttons-btn {
+        opacity: 0;  // Hide the chevron when expanded
+        transform: translateX(-10px);
+        transition: opacity 0.1s ease, transform 0.1s ease; // Make chevron disappear quickly
+        display: none !important; // Completely remove from DOM flow immediately
+        visibility: hidden; // Ensure it's completely hidden
+      }
+      
+      .buttons-wrapper {
+        width: auto;
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+    }
+  }
+  
+  // Button to toggle collapsed/expanded state
+  .toggle-buttons-btn {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 0.25rem;
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1032;
+    transition: all 0.3s ease;
+    transform-origin: center;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+  }
+  
+  // Container for all action buttons
+  .buttons-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    overflow: hidden;
+    transition: opacity 0.2s ease, transform 0.2s ease, width 0s;  // Make buttons appear immediately
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 0.25rem;
+    padding: 0 0.5rem;
+    margin-right: 0;  // Remove margin since chevron is gone when expanded
+    position: relative; // Ensure proper positioning
+  }
 
   .btn {
     margin: 0 !important;
-
+    background: transparent;
+    
     .ng-fa-icon {
       margin: 0 !important;
       transition: color .25s;
@@ -37,6 +109,22 @@
 
     .force-toggle-annotations-on-mousehover-button {
       display: none;
+    }
+    
+    // On touch devices, make the chevron button more visible and larger for easier touch
+    .btn-container {
+      &.collapsed .toggle-buttons-btn {
+        opacity: 0.9;
+        padding: 0.75rem;  // Larger touch target
+      }
+      
+      // Auto-hide tools after longer timeout on touch devices
+      &.expanded {
+        .buttons-wrapper {
+          // Add some extra space around buttons
+          padding: 0.5rem 0.75rem;
+        }
+      }
     }
   }
 }

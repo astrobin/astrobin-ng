@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnChanges, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostListener, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { SafeHtml } from "@angular/platform-browser";
 import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -7,126 +7,148 @@ import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageService } from "@core/services/image/image.service";
 import { TranslateService } from "@ngx-translate/core";
 import { DeviceService } from "@core/services/device.service";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-image-viewer-additional-buttons",
   template: `
-    <button
-      *ngIf="isTouchOnly && hasMouseHover"
-      (click)="toggleViewMouseHover.emit()"
-      astrobinEventPreventDefault
-      class="force-view-mousehover-button btn btn-link text-light"
-      [class.active]="forceViewMouseHover"
-    >
-      <fa-icon icon="computer-mouse"></fa-icon>
-    </button>
-
-    <button
-      *ngIf="!isTouchOnly && hasMouseHover"
-      (click)="allowTogglingAnnotationsOnMouseHover && toggleAnnotationsOnMouseHover.emit()"
-      (mouseenter)="onToggleAnnotationsOnMouseHoverEnter.emit()"
-      (mouseleave)="onToggleAnnotationsOnMouseHoverLeave.emit()"
-      astrobinEventPreventDefault
-      class="force-toggle-annotations-on-mousehover-button btn btn-link text-light"
-      [class.active]="allowTogglingAnnotationsOnMouseHover && showAnnotationsOnMouseHover"
-      [class.disabled]="!allowTogglingAnnotationsOnMouseHover"
-    >
-      <fa-icon
-        [ngbTooltip]="toggleAnnotationsOnMouseHoverTooltip"
+    <div class="btn-container" 
+         [class.collapsed]="isCollapsed" 
+         [class.expanded]="!isCollapsed"
+         (mouseenter)="handleMouseEnter()"
+         (mouseleave)="handleMouseLeave()">
+      
+      <!-- Toggle button - only visible when collapsed -->
+      <button *ngIf="isCollapsed"
+        (click)="toggleCollapse($event)"
+        astrobinEventPreventDefault
+        class="toggle-buttons-btn"
+        [ngbTooltip]="'Show tools' | translate"
         container="body"
-        icon="crosshairs"
-      ></fa-icon>
-    </button>
+      >
+        <fa-icon icon="chevron-left"></fa-icon>
+      </button>
+      
+      <!-- Buttons wrapper - expandable container -->
+      <div class="buttons-wrapper">
+        <button
+          *ngIf="isTouchOnly && hasMouseHover"
+          (click)="toggleViewMouseHover.emit()"
+          astrobinEventPreventDefault
+          class="force-view-mousehover-button btn btn-link text-light"
+          [class.active]="forceViewMouseHover"
+        >
+          <fa-icon icon="computer-mouse"></fa-icon>
+        </button>
 
-    <button
-      *ngIf="revision?.solution?.pixscale"
-      (click)="toggleMoonOverlay.emit()"
-      astrobinEventPreventDefault
-      class="moon-scale-button btn btn-link"
-      [class.active-moon]="moonOverlayActive"
-      [class.text-light]="!moonOverlayActive"
-    >
-      <fa-icon
-        [ngbTooltip]="moonOverlayActive ? hideMoonScaleTooltip : showMoonScaleTooltip"
-        container="body"
-        icon="moon"
-      ></fa-icon>
-    </button>
+        <button
+          *ngIf="!isTouchOnly && hasMouseHover"
+          (click)="allowTogglingAnnotationsOnMouseHover && toggleAnnotationsOnMouseHover.emit()"
+          (mouseenter)="onToggleAnnotationsOnMouseHoverEnter.emit()"
+          (mouseleave)="onToggleAnnotationsOnMouseHoverLeave.emit()"
+          astrobinEventPreventDefault
+          class="force-toggle-annotations-on-mousehover-button btn btn-link text-light"
+          [class.active]="allowTogglingAnnotationsOnMouseHover && showAnnotationsOnMouseHover"
+          [class.disabled]="!allowTogglingAnnotationsOnMouseHover"
+        >
+          <fa-icon
+            [ngbTooltip]="toggleAnnotationsOnMouseHoverTooltip"
+            container="body"
+            icon="crosshairs"
+          ></fa-icon>
+        </button>
 
-    <button
-      *ngIf="revision?.solution && (revision?.solution.skyplotZoom1 || revision?.solution.pixinsightFindingChart)"
-      (click)="openSkyplot()"
-      astrobinEventPreventDefault
-      class="skyplot-button btn btn-link text-light"
-    >
-      <fa-icon
-        [ngbTooltip]="'View sky map' | translate"
-        container="body"
-        icon="map"
-      ></fa-icon>
-    </button>
+        <button
+          *ngIf="revision?.solution?.pixscale"
+          (click)="toggleMoonOverlay.emit()"
+          astrobinEventPreventDefault
+          class="moon-scale-button btn btn-link"
+          [class.active-moon]="moonOverlayActive"
+          [class.text-light]="!moonOverlayActive"
+        >
+          <fa-icon
+            [ngbTooltip]="moonOverlayActive ? hideMoonScaleTooltip : showMoonScaleTooltip"
+            container="body"
+            icon="moon"
+          ></fa-icon>
+        </button>
 
-    <button
-      *ngIf="!revision?.videoFile"
-      class="histogram-button btn btn-link text-light"
-      (click)="openHistogram()"
-    >
-      <fa-icon
-        [ngbTooltip]="'View histogram' | translate"
-        container="body"
-        icon="chart-simple"
-      ></fa-icon>
-    </button>
+        <button
+          *ngIf="revision?.solution && (revision?.solution.skyplotZoom1 || revision?.solution.pixinsightFindingChart)"
+          (click)="openSkyplot()"
+          astrobinEventPreventDefault
+          class="skyplot-button btn btn-link text-light"
+        >
+          <fa-icon
+            [ngbTooltip]="'View sky map' | translate"
+            container="body"
+            icon="map"
+          ></fa-icon>
+        </button>
 
-    <!-- Measurement tool button - opens fullscreen mode with measurement tool -->
-    <button
-      *ngIf="!revision?.videoFile"
-      (click)="toggleMeasurementTool.emit($event)"
-      astrobinEventPreventDefault
-      class="measurement-tool-button btn btn-link text-light"
-    >
-      <fa-icon
-        [ngbTooltip]="'Measurement tool' | translate"
-        container="body"
-        icon="ruler"
-      ></fa-icon>
-    </button>
+        <button
+          *ngIf="!revision?.videoFile"
+          class="histogram-button btn btn-link text-light"
+          (click)="openHistogram()"
+        >
+          <fa-icon
+            [ngbTooltip]="'View histogram' | translate"
+            container="body"
+            icon="chart-simple"
+          ></fa-icon>
+        </button>
 
-    <!-- Annotation button - opens fullscreen mode with annotations -->
-    <button
-      *ngIf="!revision?.videoFile"
-      (click)="toggleAnnotations.emit($event)"
-      (mouseenter)="hasUrlAnnotations && onToggleAnnotationsOnMouseHoverEnter.emit()"
-      (mouseleave)="hasUrlAnnotations && onToggleAnnotationsOnMouseHoverLeave.emit()"
-      astrobinEventPreventDefault
-      class="annotation-mode-button btn btn-link"
-      [class.text-light]="true"
-      [class.active]="hasUrlAnnotations"
-    >
-      <fa-icon
-        [ngbTooltip]="hasUrlAnnotations ? ('Annotations from URL available' | translate) : ('Annotation tool' | translate)"
-        container="body"
-        icon="file-text"
-      ></fa-icon>
-    </button>
+        <!-- Measurement tool button - opens fullscreen mode with measurement tool -->
+        <button
+          *ngIf="!revision?.videoFile"
+          (click)="toggleMeasurementTool.emit($event)"
+          astrobinEventPreventDefault
+          class="measurement-tool-button btn btn-link text-light"
+        >
+          <fa-icon
+            [ngbTooltip]="'Measurement tool' | translate"
+            container="body"
+            icon="ruler"
+          ></fa-icon>
+        </button>
 
-    <button
-      *ngIf="
-        image.allowImageAdjustmentsWidget === true || (
-          image.allowImageAdjustmentsWidget === null &&
-          image.defaultAllowImageAdjustmentsWidget
-        )"
-      (click)="showAdjustmentsEditor.emit()"
-      astrobinEventPreventDefault
-      astrobinEventStopPropagation
-      class="adjustments-editor-button btn btn-link text-light d-none d-md-block"
-    >
-      <fa-icon
-        [ngbTooltip]="'Image adjustments' | translate"
-        container="body"
-        icon="sliders"
-      ></fa-icon>
-    </button>
+        <!-- Annotation button - opens fullscreen mode with annotations -->
+        <button
+          *ngIf="!revision?.videoFile"
+          (click)="toggleAnnotations.emit($event)"
+          (mouseenter)="hasUrlAnnotations && onToggleAnnotationsOnMouseHoverEnter.emit()"
+          (mouseleave)="hasUrlAnnotations && onToggleAnnotationsOnMouseHoverLeave.emit()"
+          astrobinEventPreventDefault
+          class="annotation-mode-button btn btn-link"
+          [class.text-light]="true"
+          [class.active]="hasUrlAnnotations"
+        >
+          <fa-icon
+            [ngbTooltip]="hasUrlAnnotations ? ('Annotations from URL available' | translate) : ('Annotation tool' | translate)"
+            container="body"
+            icon="file-text"
+          ></fa-icon>
+        </button>
+
+        <button
+          *ngIf="
+            image.allowImageAdjustmentsWidget === true || (
+              image.allowImageAdjustmentsWidget === null &&
+              image.defaultAllowImageAdjustmentsWidget
+            )"
+          (click)="showAdjustmentsEditor.emit()"
+          astrobinEventPreventDefault
+          astrobinEventStopPropagation
+          class="adjustments-editor-button btn btn-link text-light d-none d-md-block"
+        >
+          <fa-icon
+            [ngbTooltip]="'Image adjustments' | translate"
+            container="body"
+            icon="sliders"
+          ></fa-icon>
+        </button>
+      </div>
+    </div>
 
     <ng-template #skyplotModalTemplate>
       <div class="modal-body">
@@ -152,7 +174,7 @@ import { DeviceService } from "@core/services/device.service";
   styleUrls: ["./image-viewer-additional-buttons.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageViewerAdditionalButtonComponent implements OnChanges {
+export class ImageViewerAdditionalButtonComponent implements OnChanges, OnInit {
   @Input() image: ImageInterface;
   @Input() revisionLabel: string;
 
@@ -195,6 +217,11 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
   protected toggleAnnotationsOnMouseHoverTooltip: string;
   protected showMoonScaleTooltip: string;
   protected hideMoonScaleTooltip: string;
+  
+  // Collapsible state
+  protected isCollapsed = true;
+  private _hoverTimeout: any;
+  private _touchTimeout: any;
 
   constructor(
     public readonly modalService: NgbModal,
@@ -203,12 +230,19 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly translateService: TranslateService,
     public readonly deviceService: DeviceService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
+    this.isBrowser = isPlatformBrowser(platformId);
     this.isTouchOnly = this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC();
 
     // Initialize tooltip texts for i18n extraction
     this.showMoonScaleTooltip = this.translateService.instant("Show Moon scale (M)");
     this.hideMoonScaleTooltip = this.translateService.instant("Hide Moon scale (M)");
+  }
+  
+  ngOnInit(): void {
+    // Start collapsed
+    this.isCollapsed = true;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -245,6 +279,89 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
       this.histogram = thumbnail.url;
       this.changeDetectorRef.markForCheck();
     });
+  }
+  
+  /**
+   * Show tools when clicking the chevron button
+   */
+  toggleCollapse(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Always expand, never collapse on click
+    this.isCollapsed = false;
+    this.changeDetectorRef.markForCheck();
+    
+    // Clear any pending timeouts
+    if (this._hoverTimeout) {
+      clearTimeout(this._hoverTimeout);
+      this._hoverTimeout = null;
+    }
+    
+    // For touch devices, auto-hide after a longer timeout
+    if (this.isTouchOnly) {
+      // Clear any existing timeouts
+      if (this._touchTimeout) {
+        clearTimeout(this._touchTimeout);
+      }
+      
+      // Set a timeout to auto-collapse on touch devices
+      this._touchTimeout = setTimeout(() => {
+        this.isCollapsed = true;
+        this.changeDetectorRef.markForCheck();
+      }, 3000); // 3 seconds is enough time to interact with buttons
+    }
+  }
+  
+  /**
+   * Handle mouse enter - expand immediately
+   * Only applies to non-touch devices
+   */
+  handleMouseEnter(): void {
+    // Only auto-expand on non-touch devices
+    if (!this.isTouchOnly && this.isCollapsed) {
+      // Clear any pending collapse timeout
+      if (this._hoverTimeout) {
+        clearTimeout(this._hoverTimeout);
+      }
+      
+      // Expand immediately without delay
+      this.isCollapsed = false;
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+  
+  /**
+   * Handle mouse leave - collapse after a delay
+   * Only applies to non-touch devices
+   */
+  handleMouseLeave(): void {
+    // Only auto-collapse on non-touch devices
+    if (!this.isTouchOnly && !this.isCollapsed) {
+      // Clear any pending expand timeout
+      if (this._hoverTimeout) {
+        clearTimeout(this._hoverTimeout);
+      }
+      
+      // Set a longer delay before collapsing to allow user to move cursor to the buttons
+      this._hoverTimeout = setTimeout(() => {
+        this.isCollapsed = true;
+        this.changeDetectorRef.markForCheck();
+      }, 1000);
+    }
+  }
+  
+  /**
+   * Cleanup any timeouts when component is destroyed
+   */
+  ngOnDestroy(): void {
+    if (this._hoverTimeout) {
+      clearTimeout(this._hoverTimeout);
+    }
+    
+    if (this._touchTimeout) {
+      clearTimeout(this._touchTimeout);
+    }
   }
 
   private _updateToggleAnnotationsOnMouseHoverTooltip(): void {
