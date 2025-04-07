@@ -1,4 +1,5 @@
 @import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
 
 $header-height: 63px;
 
@@ -349,7 +350,7 @@ $header-height: 63px;
     right: .75rem;
     transform: scale(.9);
     display: flex;
-    gap: .5rem;
+    @include flex-gap(row, .5rem);
 
     > div {
       &:first-child:not(:last-child) {

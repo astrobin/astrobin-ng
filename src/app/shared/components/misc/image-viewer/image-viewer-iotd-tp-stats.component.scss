@@ -1,3 +1,5 @@
+@import "../../../../styles/mixins";
+
 .iotd-stats-accordion {
   .image-iotd-tp-stats-item {
     width: 100%;
@@ -5,7 +7,7 @@
     justify-content: space-between;
     align-items: center;
     padding-right: 1rem;
-    gap: 1rem;
+    @include flex-gap(row, 1rem);
 
     .name {
       color: var(--lightestGrey);

@@ -4,7 +4,7 @@
 .search-results {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  @include flex-gap(row, 1rem);
 
   ::ng-deep .highlight {
     @include highlight;
@@ -63,7 +63,7 @@
         .followers {
           display: flex;
           flex-direction: column;
-          gap: .25rem;
+          @include flex-gap(column, .25rem);
           text-align: center;
         }
       }

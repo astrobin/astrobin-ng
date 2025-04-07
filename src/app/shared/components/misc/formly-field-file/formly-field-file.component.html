@@ -4,7 +4,7 @@
   [class.multiple]="props.multiple"
   [class.image]="!!props.image"
   cdkDropListGroup
-  class="upload-container"
+  class="upload-container flex-wrap"
 >
   <astrobin-loading-indicator *ngIf="(loadingService.loading$ | async) === true"></astrobin-loading-indicator>
 

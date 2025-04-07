@@ -219,7 +219,7 @@ astrobin-toggle-property {
     position: fixed;
     display: flex;
     flex-direction: row;
-    gap: .25rem;
+    @include flex-gap(row, .25rem);
     bottom: 0;
     left: 0;
     width: 100%;

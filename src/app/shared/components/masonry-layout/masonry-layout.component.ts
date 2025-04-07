@@ -10,7 +10,7 @@ import { distinctUntilChanged, takeUntil } from "rxjs/operators";
   template: `
     <div
       #container
-      class="masonry-container"
+      class="masonry-container d-flex flex-wrap flex-row"
       [class.ready]="!!containerWidth && !!layout"
       [class.small]="layout === 'small'"
       [class.medium]="layout === 'medium'"

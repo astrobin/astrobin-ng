@@ -75,7 +75,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
           "
         >
           <ng-container *ngIf="photographers?.length > 0; else loadingTemplate">
-            <div *ngIf="photographers.length > 1" class="avatars flex-grow-1">
+            <div *ngIf="photographers.length > 1" class="avatars flex-wrap flex-grow-1">
               <a
                 *ngFor="let user of photographers"
                 (click)="avatarClicked($event, user)"

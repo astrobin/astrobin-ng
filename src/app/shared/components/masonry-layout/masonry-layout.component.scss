@@ -1,4 +1,5 @@
 @import "../../../styles/breakpoints";
+@import "../../../styles/mixins";
 
 $min-clamp: 0.6;
 $max-clamp: 1;
@@ -52,8 +53,6 @@ $xl-factor: 1.8;
 }
 
 .masonry-container {
-  display: flex;
-  flex-flow: row wrap;
   width: 100%;
   contain: paint layout;
   transform: translateZ(0);
@@ -65,34 +64,33 @@ $xl-factor: 1.8;
   }
 
   &.small {
-    gap: calc(
+    @include flex-gap(row, calc(
       var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) * #{$small-factor}
-    );
+    ));
   }
 
   &.medium {
-    gap: calc(
+    @include flex-gap(row, calc(
       var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp})
-    );
+    ));
   }
 
   &.large {
-    gap: calc(
+    @include flex-gap(row, calc(
       var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) * #{$large-factor}
-    );
+    ));
   }
 
   &.xl {
-    // Large factor used intentionally.
-    gap: calc(
+    @include flex-gap(row, calc(
       var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) * #{$large-factor}
-    );
+    ));
   }
 
-  // Default, same as medium
-  gap: calc(
-    var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor},#{$max-clamp})
-  );
+  // Default (same as medium)
+  @include flex-gap(row, calc(
+    var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp})
+  ));
 }
 
 .masonry-item {

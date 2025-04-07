@@ -114,7 +114,7 @@ $largeViewPortBreakpoint: 2561px;
 
     .metadata-section {
       display: flex;
-      gap: .75rem;
+      @include flex-gap(row, .75rem);
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
@@ -124,7 +124,7 @@ $largeViewPortBreakpoint: 2561px;
       .metadata-item {
         display: flex;
         align-items: center;
-        gap: .5rem;
+        @include flex-gap(row, .5rem);
         position: relative;
         max-width: 100%;
 
@@ -285,7 +285,7 @@ $largeViewPortBreakpoint: 2561px;
       flex-direction: column;
       position: relative;
       width: 60%;
-      height: 100%;
+      height: 100vh;
       touch-action: manipulation;
       pointer-events: auto;
       background: black; // Real black as opposed to var(--black), for maximum contrast.
@@ -447,7 +447,7 @@ $largeViewPortBreakpoint: 2561px;
             .moon-controls {
               display: flex;
               align-items: center;
-              gap: .375rem;
+              @include flex-gap(row, .375rem);
             }
 
             .icon-btn {
@@ -606,7 +606,7 @@ $largeViewPortBreakpoint: 2561px;
         top: .75rem;
         right: .75rem;
         display: flex;
-        gap: .5rem;
+        @include flex-gap(row, .5rem);
         flex-wrap: nowrap;
       }
 
@@ -918,6 +918,7 @@ $largeViewPortBreakpoint: 2561px;
       .data-area {
         @include darker-background-texture;
         height: 100%;
+        max-height: 100vh; // Safari 13 bug
         padding: 2rem;
         display: flex;
         flex-direction: column;
@@ -1051,6 +1052,7 @@ $largeViewPortBreakpoint: 2561px;
         .data-area {
           // This makes it so the search components don't think this is the scrollable area.
           overflow-y: hidden;
+          max-height: unset !important;
         }
       }
     }
@@ -1089,6 +1091,18 @@ $largeViewPortBreakpoint: 2561px;
     width: 100%;
     overflow: hidden;
     z-index: 1029;
+
+    .image-area {
+      height: calc(100vh - 63px) !important;
+    }
+
+    .data-area {
+      max-height: calc(100vh - 63px) !important;
+
+      @include portrait-layout {
+        max-height: unset !important;
+      }
+    }
   }
 
   @media (max-width: $sm-max) {

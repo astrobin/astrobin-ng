@@ -1,4 +1,5 @@
 @import "src/app/styles/breakpoints";
+@import "src/app/styles/mixins";
 
 .avatar-manager-container {
   height: 100%;
@@ -150,7 +151,7 @@
 
             .upload-actions {
               display: flex;
-              gap: .5rem;
+              @include flex-gap(row, .5rem);
 
               @media (max-width: $sm-max) {
                 width: 100%;
@@ -211,7 +212,7 @@
 
                 .transform-actions {
                   display: flex;
-                  gap: .5rem;
+                  @include flex-gap(row, .5rem);
 
                   button {
                     width: 32px;
@@ -246,14 +247,14 @@
 
                 @media (max-width: $sm-max) {
                   flex-direction: column;
-                  gap: 1rem;
+                  @include flex-gap(column, 1rem);
                   align-items: center;
                   padding: 1.5rem;
                 }
 
                 .preview-actions {
                   display: flex;
-                  gap: .75rem;
+                  @include flex-gap(row, .75rem);
                   flex-shrink: 0;
 
                   @media (max-width: $sm-max) {

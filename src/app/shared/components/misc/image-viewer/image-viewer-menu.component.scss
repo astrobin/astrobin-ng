@@ -1,10 +1,12 @@
+@import "../../../../styles/mixins";
+
 :host {
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100%;
   overflow-y: auto;
-  gap: 1px;
+  @include flex-gap(column, 1px);
 }
 
 ::ng-deep .image-iotd-tp-stats-offcanvas {

@@ -6,7 +6,7 @@
        shouldCheckHorizontal: false
      }"
   (visibilityChange)="onVisibilityChange($event)"
-  class="search-results"
+  class="search-results flex-wrap"
 >
   <ng-container *ngIf="!initialLoading; else loadingTemplate">
     <ng-container *ngIf="results !== null; else loadingTemplate">

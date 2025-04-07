@@ -72,6 +72,7 @@
     "buffer": "6.0.3",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.1",
+    "classlist.js": "1.1.20150312",
     "core-js": "3.40.0",
     "country-js": "0.10.0",
     "dotenv": "16.4.7",
@@ -99,6 +100,7 @@
     "rimraf": "4.4.1",
     "rxjs": "7.8.1",
     "tslib": "2.8.1",
+    "web-animations-js": "2.3.2",
     "webpack-bundle-tracker": "1.8.1",
     "zone.js": "0.13.3"
   },

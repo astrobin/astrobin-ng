@@ -1,11 +1,11 @@
 @import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
 
 :host {
   .equipment-section {
     width: 100% !important;
     display: flex;
-    flex-wrap: wrap;
-    gap: .375rem;
+    @include flex-gap(row, .375rem);
 
     .table {
       width: 100%;
@@ -29,8 +29,7 @@
       td {
         .equipment-container {
           display: flex;
-          flex-wrap: wrap;
-          gap: .375rem;
+          @include flex-gap(row, .375rem);
         }
       }
 

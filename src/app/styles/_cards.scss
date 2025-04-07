@@ -90,7 +90,7 @@
     justify-content: end;
     flex-direction: row;
     align-items: center;
-    gap: .25rem;
+    @include flex-gap(row, .25rem);
 
     .middot-separator {
       &:after {

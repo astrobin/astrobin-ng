@@ -28,7 +28,7 @@ interface RevisionDataInterface {
   selector: "astrobin-image-viewer-revisions",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div *ngIf="revisionData && revisionData.length > 1" class="revisions">
+      <div *ngIf="revisionData && revisionData.length > 1" class="revisions flex-wrap">
         <div
           *ngFor="let revision of revisionData"
           (click)="!revision.deleting && onRevisionSelected(revision.label)"
