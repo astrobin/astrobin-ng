@@ -1,6 +1,7 @@
 :host {
   position: absolute;
   transition: all 0.3s ease;
+  z-index: 2200; /* Higher than annotation layer (1500) and lower than moon (2000) */
   
   .btn-container {
     display: flex;
