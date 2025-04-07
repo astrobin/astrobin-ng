@@ -2331,15 +2331,33 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       this.currentlyDragging.cx = newCx;
       this.currentlyDragging.cy = newCy;
     } else if (this.dragMode === "resize") {
-      // We simply use the direct distance between current mouse position and center
+      // Get the circle's center
       const cx = +this.currentlyDragging.cx;
       const cy = +this.currentlyDragging.cy;
-
-      // Calculate distance from center to mouse (simple Pythagorean distance)
-      const dx = currentXPercent - cx;
-      const dy = currentYPercent - cy;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
+      
+      // For resize, we need to calculate the change in radius based on the drag delta
+      // instead of directly setting it to the distance from center to current mouse position
+      
+      // Calculate the start distance (from center to drag start point)
+      // We use the initial radius as the starting distance
+      const startRadius = this.dragStartShapeRadius;
+      
+      // Calculate the change in distance from the center based on the mouse movement
+      // Project the delta onto the line from center to the resize handle
+      // This gives a more predictable resize experience
+      
+      // First, calculate the baseline direction vector from center to top of circle
+      // (The top is where the resize handle is located)
+      const baselineX = 0;
+      const baselineY = -1; // Up direction
+      
+      // Now calculate the projection of the mouse delta onto this baseline
+      // This gives us how much the resize handle has moved along the radial direction
+      const radiusDelta = -deltaYPercent; // Negative because moving up increases radius
+      
+      // Calculate the new radius by adding the delta to the starting radius
+      let newRadius = startRadius + radiusDelta;
+      
       // Calculate maximum allowed radius based on distance to image edges
       const maxDistanceToEdge = Math.min(
         cx,                 // Distance to left edge
@@ -2348,18 +2366,18 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         100 - cy            // Distance to bottom edge
       );
 
-      // Set the radius to the distance, but constrained by both min size and image boundaries
+      // Set the radius, but constrained by both min size and image boundaries
       this.currentlyDragging.r = Math.min(
         maxDistanceToEdge,
-        Math.max(this.MIN_RADIUS_PERCENT, distance)
+        Math.max(this.MIN_RADIUS_PERCENT, newRadius)
       );
 
       console.log("Circle resize:", {
         center: { x: cx, y: cy },
-        mouse: { x: currentXPercent, y: currentYPercent },
-        distance: distance,
-        maxAllowed: maxDistanceToEdge,
-        newRadius: this.currentlyDragging.r
+        startRadius: startRadius,
+        radiusDelta: radiusDelta,
+        newRadius: this.currentlyDragging.r,
+        maxAllowed: maxDistanceToEdge
       });
     }
 

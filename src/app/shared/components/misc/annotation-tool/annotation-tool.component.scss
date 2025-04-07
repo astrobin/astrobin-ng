@@ -279,15 +279,13 @@
     left: 50%; // Align with the shape directly
     transform: translateX(-50%);
     max-width: 100%; // Match the width of the shape exactly
-    min-width: 180px; // Minimum width for the title
     font-size: 10px;
     text-align: center;
-    background-color: rgba(0, 0, 0, 0.9); // Darker background for better contrast
-    color: white;
+    color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 4px 8px;
     border-radius: 4px;
     white-space: normal; // Allow wrapping
-    word-break: break-word; // Break long words if needed
     box-sizing: border-box;
     pointer-events: none; // Allow click-through on the title
     line-height: 1.3;
