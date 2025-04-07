@@ -78,6 +78,20 @@ import { DeviceService } from "@core/services/device.service";
       ></fa-icon>
     </button>
 
+    <!-- Measurement tool button - opens fullscreen mode with measurement tool -->
+    <button
+      *ngIf="!revision?.videoFile"
+      (click)="toggleMeasurementTool.emit($event)"
+      astrobinEventPreventDefault
+      class="measurement-tool-button btn btn-link text-light"
+    >
+      <fa-icon
+        [ngbTooltip]="'Measurement tool' | translate"
+        container="body"
+        icon="ruler"
+      ></fa-icon>
+    </button>
+
     <!-- Annotation button - opens fullscreen mode with annotations -->
     <button
       *ngIf="!revision?.videoFile"
@@ -162,6 +176,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
 
   @Output() showAdjustmentsEditor = new EventEmitter<void>();
   @Output() toggleMoonOverlay = new EventEmitter<void>();
+  @Output() toggleMeasurementTool = new EventEmitter<MouseEvent>();
   @Output() toggleAnnotations = new EventEmitter<MouseEvent>();
   @Output() toggleAnnotationEditMode = new EventEmitter<void>();
 

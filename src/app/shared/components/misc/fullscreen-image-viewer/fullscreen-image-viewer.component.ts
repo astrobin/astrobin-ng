@@ -489,18 +489,32 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Check if URL contains shared measurements or annotations
     if (this.isBrowser) {
+      // Check URL directly for measurements and annotations parameters
+      const currentUrl = new URL(this.windowRef.nativeWindow.location.href);
+      const measurementsParam = currentUrl.searchParams.get('measurements');
+      const annotationsParam = currentUrl.searchParams.get('annotations');
+      
+      console.log("URL PARAMETERS CHECK:", { 
+        measurementsParam,
+        annotationsParam,
+        url: currentUrl.toString()
+      });
+      
+      // First, check with the router's query params
       this.activatedRoute.queryParams.pipe(
         take(1)
       ).subscribe(params => {
         // Handle measurements in URL
-        if (params.measurements) {
+        if (params.measurements || measurementsParam) {
+          console.log("FOUND MEASUREMENTS PARAMETER - Activating measuring mode");
           // Directly activate measuring mode - no need to wait for image zoom or check for mobile
           this.isMeasuringMode = true;
           // Detected measurements in URL, activated measuring tool
         }
 
         // Handle annotations in URL
-        if (params.annotations) {
+        if (params.annotations || annotationsParam) {
+          console.log("FOUND ANNOTATIONS PARAMETER - Activating annotation mode");
           // Directly activate annotation mode - no need to wait for image zoom
           this.isAnnotationMode = true;
           // Enable editing - annotations are always editable in fullscreen
@@ -699,6 +713,22 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   onImagesLoaded(loaded: boolean) {
     this.ready = loaded;
     this._initImageZoom();
+    
+    // Check for measurements parameter in URL after images are loaded
+    if (this.isBrowser && loaded) {
+      const currentUrl = new URL(this.windowRef.nativeWindow.location.href);
+      const measurementsParam = currentUrl.searchParams.get('measurements');
+      
+      if (measurementsParam && !this.isMeasuringMode) {
+        console.log("Found measurements parameter after images loaded - Activating measuring tool");
+        // Activate measuring mode after a slight delay to ensure all components are ready
+        this.utilsService.delay(100).subscribe(() => {
+          this.isMeasuringMode = true;
+          this.changeDetectorRef.markForCheck();
+        });
+      }
+    }
+    
     this.changeDetectorRef.markForCheck();
   }
 
@@ -713,6 +743,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Static image loaded successfully
     this.isStaticImageLoaded = true;
+    
+    // Check for measurements parameter in URL after static image is loaded
+    const currentUrl = new URL(this.windowRef.nativeWindow.location.href);
+    const measurementsParam = currentUrl.searchParams.get('measurements');
+    
+    if (measurementsParam && !this.isMeasuringMode) {
+      console.log("Found measurements parameter after static image loaded - Activating measuring tool");
+      // Activate measuring mode after a slight delay to ensure all components are ready
+      this.utilsService.delay(100).subscribe(() => {
+        this.isMeasuringMode = true;
+        this.changeDetectorRef.markForCheck();
+      });
+    }
 
     // Ensure change detection is triggered to update the UI
     this.changeDetectorRef.markForCheck();
@@ -816,6 +859,26 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Clean up all styles and classes
     this._cleanupHostStyles();
+
+    // Clean up URL parameters when exiting
+    if (this.isBrowser) {
+      try {
+        // Get the current URL
+        const location = this.windowRef.nativeWindow.location;
+        const currentUrl = new URL(location.href);
+
+        // Remove the measurements parameter if it exists
+        if (currentUrl.searchParams.has('measurements')) {
+          console.log("Removing measurements parameter from URL when exiting fullscreen");
+          currentUrl.searchParams.delete('measurements');
+          
+          // Update the URL without navigation
+          this.windowRef.replaceState({}, currentUrl.toString());
+        }
+      } catch (e) {
+        console.error("Error removing measurements parameter from URL:", e);
+      }
+    }
 
     this.popNotificationsService.clear();
 
@@ -1447,6 +1510,26 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Reset mouse position tracking
       this.mouseX = null;
       this.mouseY = null;
+      
+      // Clean up URL parameters when exiting measuring mode
+      if (this.isBrowser) {
+        try {
+          // Get the current URL
+          const location = this.windowRef.nativeWindow.location;
+          const currentUrl = new URL(location.href);
+
+          // Remove the measurements parameter if it exists
+          if (currentUrl.searchParams.has('measurements')) {
+            console.log("Removing measurements parameter from URL when exiting measuring mode");
+            currentUrl.searchParams.delete('measurements');
+            
+            // Update the URL without navigation
+            this.windowRef.replaceState({}, currentUrl.toString());
+          }
+        } catch (e) {
+          console.error("Error removing measurements parameter from URL:", e);
+        }
+      }
     }
 
     this.changeDetectorRef.markForCheck();

@@ -990,7 +990,10 @@ export class ImageViewerComponent
     this.changeDetectorRef.markForCheck();
   }
 
-  protected enterFullscreen(event: MouseEvent | TouchEvent | null): void {
+  protected enterFullscreen(
+    event: MouseEvent | TouchEvent | null, 
+    options: { activateMeasurementTool?: boolean } = {}
+  ): void {
     if (event) {
       event.preventDefault();
     }
@@ -1052,13 +1055,28 @@ export class ImageViewerComponent
         if (this.isBrowser) {
           // Add fullscreen to the URL
           const location_ = this.windowRefService.nativeWindow.location;
+          
+          // Create URL for fullscreen, optionally adding the measurements parameter
+          let fullscreenUrl = `${location_.pathname}${location_.search}`;
+          
+          // If we should activate the measurement tool, add 'measurements=1' to URL
+          if (options.activateMeasurementTool) {
+            const urlObj = new URL(location_.href);
+            urlObj.searchParams.set('measurements', '1');
+            fullscreenUrl = `${urlObj.pathname}${urlObj.search}`;
+          }
+          
+          // Add the fullscreen hash
+          fullscreenUrl += '#fullscreen';
+          
           this.windowRefService.pushState(
             {
               imageId: this.image.hash || this.image.pk,
               revisionLabel: this.revisionLabel,
-              fullscreen: true
+              fullscreen: true,
+              measurementTool: options.activateMeasurementTool || false
             },
-            `${location_.pathname}${location_.search}#fullscreen`
+            fullscreenUrl
           );
         }
       }
@@ -1814,6 +1832,19 @@ export class ImageViewerComponent
    * Handle N keypress or button click for annotations
    */
   @HostListener("window:keyup.n", ["$event"])
+  enterFullscreenWithMeasurementTool(event: MouseEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    
+    // Prevent default behavior
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Enter fullscreen with measurement tool activated
+    this.enterFullscreen(event, { activateMeasurementTool: true });
+  }
+
   toggleAnnotationMode(event: KeyboardEvent | MouseEvent): void {
     if (!this.isBrowser) {
       return;

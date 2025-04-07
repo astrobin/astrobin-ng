@@ -603,7 +603,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     if (measurementsParam && measurementsParam.trim() !== '') {
       try {
-        // Found measurements in URL - Loading
+        // Check if this is just an activation flag (measurements=1) or actual measurement data
+        if (measurementsParam === '1') {
+          // This is just a flag to activate the measuring tool, not actual measurement data
+          console.log("Measurements flag found in URL - activating tool without loading data");
+          // No need to attempt loading measurements
+          return;
+        }
+
+        // Found measurements data in URL - Loading
+        console.log("Found actual measurement data in URL - attempting to load");
 
         // Set loading flag
         this.loadingUrlMeasurements = true;
@@ -634,6 +643,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       }
     } else {
       // No measurements found in URL
+      console.log("No measurements parameter found in URL");
     }
   }
 
@@ -2582,15 +2592,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         const currentUrl = new URL(location.href);
 
         console.log("MEASUREMENTS - BEFORE EXIT URL UPDATE:", currentUrl.toString());
-
-        // Remove measurements parameter if it exists
+        
+        // Remove the measurements parameter from the URL
         if (currentUrl.searchParams.has('measurements')) {
-          // Remove the measurements parameter
           currentUrl.searchParams.delete('measurements');
-
-          // Apply the change directly to history
-          this.windowRefService.nativeWindow.history.replaceState({}, '', currentUrl.toString());
-
+          
+          // Update the URL without navigation using WindowRefService
+          this.windowRefService.replaceState({}, currentUrl.toString());
+          
           console.log("MEASUREMENTS - AFTER EXIT URL UPDATE:", this.windowRefService.nativeWindow.location.href);
         }
       } catch (e) {
