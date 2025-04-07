@@ -232,11 +232,11 @@
         (exitFullscreen)="exitFullscreen()"
       ></astrobin-fullscreen-image-viewer>
       
-      <!-- Annotation tool component -->
+      <!-- Annotation tool component - always read-only in regular view -->
       <astrobin-annotation-tool
         *ngIf="isBrowser && isAnnotationMode && imageFileLoaded"
         [active]="isAnnotationMode" 
-        [readOnly]="annotationReadOnlyMode"
+        [readOnly]="true"
         [imageElement]="imageElementForAnnotation"
         [windowWidth]="windowRefService.nativeWindow.innerWidth"
         [windowHeight]="windowRefService.nativeWindow.innerHeight"

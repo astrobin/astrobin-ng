@@ -391,3 +391,14 @@ export class RemoveCollaboratorFailure implements PayloadActionInterface {
   constructor(public payload: { pk: ImageInterface["pk"]; userId: UserInterface["id"], error: any }) {
   }
 }
+
+export class UpdateAnnotations implements PayloadActionInterface {
+  readonly type = AppActionTypes.UPDATE_ANNOTATIONS;
+
+  constructor(public payload: { 
+    pk: ImageInterface["pk"];
+    revisionLabel?: ImageRevisionInterface["label"]; 
+    annotations: string;
+  }) {
+  }
+}

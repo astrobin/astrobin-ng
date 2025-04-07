@@ -95,35 +95,18 @@ import { DeviceService } from "@core/services/device.service";
         icon="sliders"
       ></fa-icon>
     </button>
-    
-    <!-- Annotation mode toggle button -->
+
+    <!-- Annotation button - opens fullscreen mode with annotations -->
     <button
       (click)="toggleAnnotations.emit($event)"
       astrobinEventPreventDefault
       class="annotation-mode-button btn btn-link"
-      [class.active-annotation]="annotationsActive"
-      [class.text-light]="!annotationsActive"
+      [class.text-light]="true"
     >
       <fa-icon
-        [ngbTooltip]="annotationsActive ? ('Exit annotation mode' | translate) : ('Show annotations' | translate)"
+        [ngbTooltip]="'Annotation tool' | translate"
         container="body"
         icon="file-text"
-      ></fa-icon>
-    </button>
-    
-    <!-- Annotation edit mode button - only visible when in annotation mode -->
-    <button
-      *ngIf="annotationsActive"
-      (click)="toggleAnnotationEditMode.emit()"
-      astrobinEventPreventDefault
-      class="annotation-edit-mode-button btn btn-link"
-      [class.active-edit]="!annotationsReadOnly"
-      [class.text-light]="annotationsReadOnly"
-    >
-      <fa-icon
-        [ngbTooltip]="annotationsReadOnly ? ('Enable editing' | translate) : ('Disable editing' | translate)"
-        container="body"
-        icon="pencil-alt"
       ></fa-icon>
     </button>
 
@@ -202,7 +185,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
     public readonly deviceService: DeviceService,
   ) {
     this.isTouchOnly = this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC();
-    
+
     // Initialize tooltip texts for i18n extraction
     this.showMoonScaleTooltip = this.translateService.instant("Show Moon scale (M)");
     this.hideMoonScaleTooltip = this.translateService.instant("Hide Moon scale (M)");
@@ -211,7 +194,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.image || changes.revisionLabel) {
       this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-      
+
       // Reset moon overlay active state when image changes
       if (changes.image && changes.image.previousValue !== changes.image.currentValue) {
         this.moonOverlayActive = false;

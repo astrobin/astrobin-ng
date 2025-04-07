@@ -484,7 +484,7 @@
   <astrobin-measuring-tool
     *ngIf="isMeasuringMode && (isStaticImageLoaded || (!isMeasuringMode && !isAnnotationMode && ready))"
     [active]="isMeasuringMode"
-    [imageElement]="staticImageEl"
+    [imageElement]="staticImageEl?.nativeElement"
     [advancedSolutionMatrix]="advancedSolutionMatrix"
     [windowWidth]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
     [windowHeight]="isBrowser ? windowRef.nativeWindow.innerHeight : 0"
@@ -503,7 +503,7 @@
     *ngIf="isAnnotationMode && isStaticImageLoaded"
     [active]="isAnnotationMode"
     [readOnly]="annotationReadOnlyMode"
-    [imageElement]="staticImageEl"
+    [imageElement]="staticImageEl?.nativeElement"
     [windowWidth]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
     [windowHeight]="isBrowser ? windowRef.nativeWindow.innerHeight : 0"
     [setMouseOverUIElement]="setMouseOverUIElement.bind(this)"

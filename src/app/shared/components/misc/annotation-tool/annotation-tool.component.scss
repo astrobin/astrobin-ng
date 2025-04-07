@@ -63,6 +63,16 @@
 
   &.pointer-events-all {
     pointer-events: all; /* Only capture pointer events when active */
+
+    /* When in read-only mode, still allow clicks to pass through to the image */
+    &.read-only-mode {
+      pointer-events: none;
+
+      /* But keep the toolbar clickable if it's visible */
+      .fixed-top-toolbar {
+        pointer-events: all;
+      }
+    }
   }
 
   /* Toolbar should only be visible in edit mode */
@@ -227,6 +237,11 @@
     pointer-events: none;
     transition: opacity 0.1s ease;
   }
+
+  /* In read-only mode, don't capture pointer events so clicks pass through to the image */
+  .read-only-mode & {
+    pointer-events: none;
+  }
 }
 
 .annotation-layer {
@@ -236,6 +251,11 @@
   width: 100%;
   height: 100%;
   z-index: 1002;
+
+  /* In read-only mode, don't capture pointer events */
+  .read-only-mode & {
+    pointer-events: none;
+  }
 }
 
 .annotation {
@@ -473,6 +493,11 @@
   height: 100%;
   z-index: 1001;
   cursor: crosshair;
+
+  /* In read-only mode, don't capture pointer events */
+  .read-only-mode & {
+    pointer-events: none;
+  }
 }
 
 .drawing-preview {
@@ -503,6 +528,11 @@
   cursor: inherit;
   background-color: transparent;
   touch-action: none; /* Disable browser handling of all touch gestures */
+
+  /* In read-only mode, don't capture pointer events */
+  .read-only-mode & {
+    pointer-events: none;
+  }
 }
 
 /* Custom help offcanvas width */

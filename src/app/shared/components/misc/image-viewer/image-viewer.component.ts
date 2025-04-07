@@ -191,6 +191,7 @@ export class ImageViewerComponent
   protected currentUserIsImageOwner: boolean = false;
   protected imageElementForAnnotation: HTMLElement = null;
   protected isMouseOverUIElement: boolean = false;
+  protected hasSavedAnnotations: boolean = false; // Flag for saved annotations
   private _preloadMoonImageAttemptCount = 0; // Track number of preload attempts
   private _preloadedMoonImage: HTMLImageElement = null; // Store the preloaded image element
   private _moonStartDragPosition = { x: 0, y: 0 };
@@ -244,6 +245,11 @@ export class ImageViewerComponent
   get isStandalone() {
     return this.standalone;
   }
+  
+  @HostBinding("class.has-saved-annotations")
+  get hostHasSavedAnnotations() {
+    return this.hasSavedAnnotations;
+  }
 
   ngOnInit(): void {
     this._initImageAlias();
@@ -260,7 +266,24 @@ export class ImageViewerComponent
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       this.viewingFullscreenImage = false;
-      this.changeDetectorRef.markForCheck();
+      
+      // Get the latest image data from the store
+      this.store$.pipe(
+        select(selectImage, this.image.pk),
+        filter(image => !!image),
+        take(1)
+      ).subscribe((updatedImage: ImageInterface) => {
+        // Update the local image reference with the latest from the store
+        this.image = { ...updatedImage };
+        
+        // Refresh the revision with the latest data
+        this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+        
+        // Check for saved annotations again as they may have been updated in fullscreen
+        this._checkForSavedAnnotations();
+        
+        this.changeDetectorRef.markForCheck();
+      });
     });
   }
 
@@ -561,6 +584,9 @@ export class ImageViewerComponent
     
     // Check if we should auto-enter annotation mode
     this._checkAndShowAnnotations();
+    
+    // Check if the image has saved annotations
+    this._checkForSavedAnnotations();
 
     // Proactively preload the moon image if this is a plate-solved image
     if (this.revision?.solution?.pixscale) {
@@ -757,6 +783,14 @@ export class ImageViewerComponent
     this._setSolutionMouseHoverImage();
     this._setShowPlateSolvingBanner();
     this._updateNorthArrowRotation();
+    
+    // Check if the new revision has saved annotations
+    this._checkForSavedAnnotations();
+    
+    // Reset annotation mode when switching revisions to avoid showing wrong annotations
+    if (this.isAnnotationMode) {
+      this.onExitAnnotationMode();
+    }
 
     // Preload moon image for the new revision if it has a solution
     if (this.revision?.solution?.pixscale) {
@@ -939,10 +973,21 @@ export class ImageViewerComponent
         // Pass the loaded matrix to the fullscreen component to avoid race conditions
         const solutionMatrixToPass = this.loadingAdvancedSolutionMatrix ? null : this.advancedSolutionMatrix;
 
+        // Check if the annotation button was clicked
+        let enableAnnotations = false;
+        if (event instanceof MouseEvent) {
+          const target = event.target as HTMLElement;
+          const annotationButton = target.closest('.annotation-mode-button');
+          if (annotationButton) {
+            enableAnnotations = true;
+          }
+        }
+
         this.store$.dispatch(new ShowFullscreenImage({
           imageId: this.image.pk,
           event,
-          externalSolutionMatrix: solutionMatrixToPass
+          externalSolutionMatrix: solutionMatrixToPass,
+          enableAnnotations // Add this flag to the payload
         }));
         this.viewingFullscreenImage = true;
 
@@ -953,6 +998,7 @@ export class ImageViewerComponent
         this.toggleFullscreen.emit(true);
 
         if (this.isBrowser) {
+          // Add fullscreen to the URL
           const location_ = this.windowRefService.nativeWindow.location;
           this.windowRefService.pushState(
             {
@@ -973,6 +1019,9 @@ export class ImageViewerComponent
     this.store$.dispatch(new HideFullscreenImage());
     this.viewingFullscreenImage = false;
     this.toggleFullscreen.emit(false);
+
+    // Check for saved annotations again as they may have been updated in fullscreen
+    this._checkForSavedAnnotations();
 
     if (this.isBrowser) {
       const location_ = this.windowRefService.nativeWindow.location;
@@ -1710,7 +1759,7 @@ export class ImageViewerComponent
   }
 
   /**
-   * Handle N keypress to toggle annotation mode
+   * Handle N keypress or button click for annotations
    */
   @HostListener("window:keyup.n", ["$event"])
   toggleAnnotationMode(event: KeyboardEvent | MouseEvent): void {
@@ -1734,24 +1783,30 @@ export class ImageViewerComponent
       return;
     }
 
-    // Check if there are annotations in the URL or on the image
-    const hasAnnotationsInUrl = this.isBrowser && new URL(this.windowRefService.nativeWindow.location.href).searchParams.has('annotations');
-    const hasAnnotationsOnImage = this.revision && !!this.revision.annotations;
-    
-    // If we're enabling annotation mode, check if we should disable mouse-hover
+    if (event) {
+      event.preventDefault();
+      if (event instanceof MouseEvent) {
+        event.stopPropagation();
+      }
+    }
+
+    // For button click (MouseEvent), we use our enterFullscreen logic which handles enabling annotations
+    if (event instanceof MouseEvent) {
+      this.enterFullscreen(event);
+      return;
+    }
+
+    // For keyboard press (N key), toggle view mode only (always read-only)
+    // Store the previous state to restore later
     if (!this.isAnnotationMode) {
-      // Store the previous state to restore later
       this._previousMouseHoverState = {
         forceViewMouseHover: this.forceViewMouseHover,
         forceViewAnnotationsMouseHover: this.forceViewAnnotationsMouseHover
       };
       
-      // If the image has annotations loaded from URL or set on the image
-      if (hasAnnotationsInUrl || hasAnnotationsOnImage) {
-        // Disable mouse hover while in annotation mode
-        this.forceViewMouseHover = false;
-        this.forceViewAnnotationsMouseHover = false;
-      }
+      // Disable mouse hover while in annotation mode
+      this.forceViewMouseHover = false;
+      this.forceViewAnnotationsMouseHover = false;
     } else {
       // Restore previous mouse-hover state when exiting annotation mode
       if (this._previousMouseHoverState) {
@@ -1760,8 +1815,9 @@ export class ImageViewerComponent
       }
     }
     
-    // Toggle annotation mode
+    // Toggle annotation mode (always read-only)
     this.isAnnotationMode = !this.isAnnotationMode;
+    this.annotationReadOnlyMode = true; // Always read-only in regular view
     
     // Force change detection
     this.changeDetectorRef.markForCheck();
@@ -1784,6 +1840,9 @@ export class ImageViewerComponent
       this.forceViewAnnotationsMouseHover = this._previousMouseHoverState.forceViewAnnotationsMouseHover;
       this._previousMouseHoverState = null;
     }
+    
+    // Check for saved annotations again to properly update the state
+    this._checkForSavedAnnotations();
     
     // Force change detection to update the DOM
     this.changeDetectorRef.markForCheck();
@@ -1879,6 +1938,9 @@ export class ImageViewerComponent
     }
 
     this._updateNorthArrowRotation();
+    
+    // Check for saved annotations after initializing the revision
+    this._checkForSavedAnnotations();
   }
 
   private _updateNorthArrowRotation(): void {
@@ -1921,6 +1983,9 @@ export class ImageViewerComponent
       const hasAnnotationsInRevision = this.revision && !!this.revision.annotations && 
         this.revision.annotations.trim() !== '' && this.revision.annotations !== '[]';
       
+      // Check if the image has saved annotations
+      this._checkForSavedAnnotations();
+      
       if (hasAnnotationsInUrl || hasAnnotationsInRevision) {
         console.log("Automatically enabling annotation mode - annotations found in", 
           hasAnnotationsInUrl ? "URL" : "revision");
@@ -1945,6 +2010,41 @@ export class ImageViewerComponent
         });
       }
     });
+  }
+  
+  /**
+   * Check if the image has saved annotations and add appropriate classes
+   */
+  private _checkForSavedAnnotations(): void {
+    if (!this.revision) {
+      this.hasSavedAnnotations = false;
+      return;
+    }
+    
+    try {
+      // Check if there are annotations in the revision
+      // Consider that a JSON array (even empty) is a saved state
+      if (this.revision.annotations && this.revision.annotations.trim() !== '') {
+        // Parse the annotations to check if it's a valid array
+        const annotations = JSON.parse(this.revision.annotations);
+        // Consider any array (even empty) as a saved state
+        this.hasSavedAnnotations = Array.isArray(annotations);
+      } else {
+        this.hasSavedAnnotations = false;
+      }
+      
+      // Add a class to the image-area when there are saved annotations
+      if (this.imageArea?.nativeElement) {
+        if (this.hasSavedAnnotations) {
+          this.renderer.addClass(this.imageArea.nativeElement, 'has-saved-annotations');
+        } else {
+          this.renderer.removeClass(this.imageArea.nativeElement, 'has-saved-annotations');
+        }
+      }
+    } catch (error) {
+      console.warn('Error checking for saved annotations:', error);
+      this.hasSavedAnnotations = false;
+    }
   }
 
   private _updateSupportsFullscreen(): void {

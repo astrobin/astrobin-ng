@@ -291,6 +291,27 @@ $largeViewPortBreakpoint: 2561px;
       background: black; // Real black as opposed to var(--black), for maximum contrast.
       transition: height 0.3s ease;
 
+      // Annotation tool - similar to mouse-hover behavior
+      .measure-annotation-overlay {
+        opacity: 0; // Hidden by default
+        transition: opacity 0.3s ease;
+      }
+
+      // Show on hover - similar to mouse-hover pattern
+      &:hover .measure-annotation-overlay {
+        opacity: 1; // Show on hover
+      }
+
+      // Always show when force-view-annotations-mousehover class is active
+      &.force-view-annotations-mousehover .measure-annotation-overlay {
+        opacity: 1; // Always visible when forced
+      }
+
+      // Always show when we're in annotation mode (direct interaction)
+      &.annotation-mode .measure-annotation-overlay {
+        opacity: 1 !important; // Always visible when in annotation mode
+      }
+
       @media (max-width: $lg-max) {
         width: 50%;
       }

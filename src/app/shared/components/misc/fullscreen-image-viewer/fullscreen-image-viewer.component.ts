@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadSolutionMatrix } from "@app/store/actions/solution.actions";
 import { selectIsSolutionMatrixLoading, selectSolutionMatrix } from "@app/store/selectors/app/solution.selectors";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
@@ -25,7 +25,7 @@ import { DeviceService } from "@core/services/device.service";
 import { CookieService } from "ngx-cookie";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { FINAL_REVISION_LABEL, FullSizeLimitationDisplayOptions, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, FullSizeLimitationDisplayOptions, ImageInterface, ImageRevisionInterface, ORIGINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { TitleService } from "@core/services/title/title.service";
@@ -493,6 +493,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         if (params.annotations) {
           // Directly activate annotation mode - no need to wait for image zoom
           this.isAnnotationMode = true;
+          // Enable editing - annotations are always editable in fullscreen
+          this.annotationReadOnlyMode = false;
           // Detected annotations in URL, activated annotation tool
         }
 
@@ -610,6 +612,24 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         if (!this._eagerLoadingSubscription && !this.hdThumbnail && !this.realThumbnail) {
           this._initThumbnailSubscriptions();
         }
+
+        // Check if we should enable annotation mode from SHOW_FULLSCREEN_IMAGE action
+        this.actions$.pipe(
+          ofType(AppActionTypes.SHOW_FULLSCREEN_IMAGE),
+          filter((action: any) => action.payload && action.payload.imageId === this.id),
+          take(1)
+        ).subscribe((action: any) => {
+          if (action.payload.enableAnnotations) {
+            // Enable annotation mode after a short delay to ensure component is fully initialized
+            this.utilsService.delay(300).subscribe(() => {
+              // Enable annotation mode without relying on URL parameters
+              this.isAnnotationMode = true;
+              // Enable editing - annotations are always editable in fullscreen
+              this.annotationReadOnlyMode = false;
+              this.changeDetectorRef.markForCheck();
+            });
+          }
+        });
 
         this.changeDetectorRef.markForCheck();
       });
@@ -764,8 +784,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // If in annotation mode, exit annotation mode instead of closing fullscreen
     if (this.isAnnotationMode) {
-      this.isAnnotationMode = false;
-      this.changeDetectorRef.markForCheck();
+      // Call the onExitAnnotationMode method to ensure proper cleanup and reload
+      this.onExitAnnotationMode();
       return;
     }
 
@@ -784,6 +804,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     this.popNotificationsService.clear();
 
+    // If annotations were saved in this session, reload the image data before hiding
     this.store$.dispatch(new HideFullscreenImage());
   }
 
@@ -930,23 +951,49 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   onExitAnnotationMode(): void {
     // Set annotation mode to false
     this.isAnnotationMode = false;
-    
+
     // Reset to read-only mode for next time
     this.annotationReadOnlyMode = true;
 
-    // Force change detection to update the DOM
-    this.changeDetectorRef.markForCheck();
-  }
-  
-  /**
-   * Toggle annotation edit mode between read-only and editable
-   */
-  toggleAnnotationEditMode(): void {
-    if (!this.isAnnotationMode) {
-      return;
+    // Reload image data to ensure we have the latest annotations
+    if (this.revision?.pk) {
+      // Get the latest image data from store (if any annotations were saved)
+      this.store$.pipe(
+        select(selectImage, this.id),
+        filter(image => !!image),
+        take(1)
+      ).subscribe(image => {
+        // Update our local reference with fresh data from the store
+        if (image) {
+          // Find the correct revision from the updated image
+          // Start with the original image (which is the "revision 0")
+          let updatedRevision: ImageInterface | ImageRevisionInterface = null;
+          
+          if (this.revisionLabel === ORIGINAL_REVISION_LABEL) {
+            // If we're looking for the original revision, use the image itself
+            updatedRevision = image;
+          } else if (this.revisionLabel === FINAL_REVISION_LABEL) {
+            // If we're looking for the final revision, use the image if it's marked as final
+            if (image.isFinal) {
+              updatedRevision = image;
+            } else {
+              // Otherwise find the revision marked as final
+              updatedRevision = image.revisions.find(rev => rev.isFinal);
+            }
+          } else {
+            // For any other revision label, find it by label
+            updatedRevision = image.revisions.find(rev => rev.label === this.revisionLabel);
+          }
+          
+          if (updatedRevision) {
+            // Update the revision with the latest data
+            this.revision = updatedRevision;
+          }
+        }
+      });
     }
-    
-    this.annotationReadOnlyMode = !this.annotationReadOnlyMode;
+
+    // Force change detection to update the DOM
     this.changeDetectorRef.markForCheck();
   }
 
@@ -974,6 +1021,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Simply toggle annotation mode
     this.isAnnotationMode = !this.isAnnotationMode;
+
+    // Enable editing in fullscreen view - annotations are always editable in fullscreen
+    this.annotationReadOnlyMode = false;
 
     // Force change detection
     this.changeDetectorRef.markForCheck();

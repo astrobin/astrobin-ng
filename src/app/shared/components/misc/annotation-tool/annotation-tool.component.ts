@@ -24,7 +24,10 @@ import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.i
 @Component({
   selector: "astrobin-annotation-tool",
   templateUrl: "./annotation-tool.component.html",
-  styleUrls: ["./annotation-tool.component.scss"]
+  styleUrls: ["./annotation-tool.component.scss"],
+  host: {
+    '[class.has-saved-annotations]': 'hasSavedAnnotations'
+  }
 })
 export class AnnotationToolComponent extends BaseComponentDirective implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   // Make environment available to template
@@ -53,6 +56,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   saveSuccess: boolean = false;
   // Active annotation being created/edited
   activeAnnotation: Annotation | null = null;
+  // Flag indicating if the image has saved annotations
+  hasSavedAnnotations: boolean = false;
   // Mode tracking
   isDrawing: boolean = false;
   isAddingNote: boolean = false;
@@ -138,41 +143,59 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     private translateService: TranslateService,
     private windowRefService: WindowRefService,
     private imageApiService: ImageApiService,
+    private elementRef: ElementRef,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  // Cached image element for performance
-  private _cachedImageElement: HTMLElement | null = null;
-
-  /**
-   * Get the cached image element for efficient DOM access
-   */
-  get cachedImageElement(): HTMLElement | null {
-    return this._cachedImageElement;
-  }
-
-  /**
-   * Set the cached image element and update related properties
-   */
-  set cachedImageElement(element: HTMLElement | null) {
-    this._cachedImageElement = element;
-  }
+  // We directly use the passed imageElement from the parent component
 
   ngOnChanges(changes: SimpleChanges): void {
     // Emit annotation mode active status whenever it changes
     if (changes.active) {
       this.annotationModeActive.emit(this.active);
-      
+
       // Add or remove a class on the body element to hide UI elements
       if (this.isBrowser && typeof document !== "undefined") {
         if (this.active) {
           document.body.classList.add('annotation-mode-active');
+          
+          // If we're entering annotation mode and we have a revision with annotations, load them
+          if (this.revision && this.revision.annotations && this.revision.annotations.trim() !== '') {
+            this.loadSavedAnnotations();
+          }
         } else {
           document.body.classList.remove('annotation-mode-active');
         }
+      }
+    }
+
+    // If imageElement changed, set up the load listener again
+    if (changes.imageElement && this.imageElement) {
+      this.setupImageLoadListener();
+      // Update the container size with the new image element
+      this.updateAnnotationContainerSize();
+    }
+
+    // Check for saved annotations when revision changes
+    if (changes.revision && this.revision) {
+      // Check if the revision has annotations
+      try {
+        const annotations = this.revision.annotations ? JSON.parse(this.revision.annotations) : [];
+        // Consider that a saved empty array is still a "saved state"
+        // So we only check if it is an Array, not the length
+        this.hasSavedAnnotations = Array.isArray(annotations);
+        
+        // If the revision has annotations and we're in annotation mode, load them
+        if (this.active && this.revision.annotations && this.revision.annotations.trim() !== '') {
+          // Load the annotations from the updated revision
+          this.loadSavedAnnotations();
+        }
+      } catch (error) {
+        console.warn("Error parsing annotations:", error);
+        this.hasSavedAnnotations = false;
       }
     }
   }
@@ -185,16 +208,24 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this.annotations = [];
     this.annotationService.clearAllAnnotations();
 
+    // Subscribe to annotation changes
+    this.annotationService.annotations$.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(annotations => {
+      // Consider any array (even empty) as a saved state
+      this.hasSavedAnnotations = Array.isArray(annotations);
+    });
+
     // Get available colors
     this.colors = this.annotationService.getColors();
-    
+
     // Initialize scroll stream now that isBrowser is set
-    this._windowScroll$ = this.isBrowser ? 
+    this._windowScroll$ = this.isBrowser ?
       fromEvent(window, 'scroll', { passive: true }).pipe(
         takeUntil(this.destroyed$)
-      ) : 
+      ) :
       new Subject<Event>();
-      
+
     // Create a stream for immediate resize start events (no debounce)
     if (this.isBrowser) {
       fromEvent(window, 'resize').pipe(
@@ -205,10 +236,10 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         this.cdRef.markForCheck();
       });
     }
-    
+
     // Emit initial annotation mode active status
     this.annotationModeActive.emit(this.active);
-    
+
     // Initialize body class based on initial active state
     if (this.isBrowser && typeof document !== "undefined" && this.active) {
       document.body.classList.add('annotation-mode-active');
@@ -362,66 +393,46 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   ngAfterViewInit(): void {
     if (this.isBrowser) {
-      // Try to find the image element immediately, but don't force an update yet
-      this.tryFindImageElement();
-      
+      // Setup the image load listener
+      this.setupImageLoadListener();
+
       // Give the image element a moment to be properly rendered before trying to size the container
       this.windowRefService.utilsService.delay(50).subscribe(() => {
         this.updateAnnotationContainerSize();
       });
 
-      // Initialize the cached image element after a short delay to ensure DOM is ready
+      // Initialize after a short delay to ensure DOM is ready
       this.windowRefService.utilsService.delay(200).subscribe(() => {
-        console.log("Trying to find image element...");
-
-        // Try to find the image element again if not found initially
-        if (!this.cachedImageElement) {
-          this.tryFindImageElement();
-        }
         this.updateAnnotationContainerSize();
 
         // Handle URL annotations if present
         if (this.annotations && this.annotations.length > 0 && this.loadingAnnotations) {
-          if (this.cachedImageElement) {
-            // If we have found the image element, hide loading after a short delay
-            this.windowRefService.utilsService.delay(300).subscribe(() => {
-              this.loadingAnnotations = false;
-              this.cdRef.markForCheck();
-            });
-          } else {
-            // Make one more attempt after a short delay
-            this.windowRefService.utilsService.delay(300).subscribe(() => {
-              this.tryFindImageElement();
-              this.updateAnnotationContainerSize();
-
-              // Hide loading anyway after another short delay
-              this.windowRefService.utilsService.delay(200).subscribe(() => {
-                this.loadingAnnotations = false;
-                this.cdRef.markForCheck();
-              });
-            });
-          }
+          // Hide loading after a short delay
+          this.windowRefService.utilsService.delay(300).subscribe(() => {
+            this.loadingAnnotations = false;
+            this.cdRef.markForCheck();
+          });
         }
       });
 
       // Set up a resize observer on the image element to ensure annotations scale correctly
       this.windowRefService.utilsService.delay(500).subscribe(() => {
         // Verify we have a valid DOM Element for the ResizeObserver
-        if (this.cachedImageElement && 
-            this.cachedImageElement.nodeType === Node.ELEMENT_NODE && 
-            typeof this.cachedImageElement.getBoundingClientRect === 'function') {
-          
+        if (this.imageElement &&
+            this.imageElement.nodeType === Node.ELEMENT_NODE &&
+            typeof this.imageElement.getBoundingClientRect === 'function') {
+
           try {
             const resizeObserver = new ResizeObserver(entries => {
               // Update the annotation container size when the image resizes
               this.updateAnnotationContainerSize();
             });
 
-            resizeObserver.observe(this.cachedImageElement);
+            resizeObserver.observe(this.imageElement);
             console.log("ResizeObserver attached to image element");
           } catch (error) {
             console.warn("Failed to set up ResizeObserver:", error);
-            
+
             // Fallback: Use window resize events to update annotations
             if (this.isBrowser && typeof window !== "undefined") {
               console.log("Using window resize fallback instead of ResizeObserver");
@@ -434,15 +445,13 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
       // Subscribe to the debounced window resize stream, using the existing handler
       this._windowResize$.subscribe(event => {
-        // First force a recalculation of the image element
-        this.tryFindImageElement();
         // Then call the existing handler
         this.handleWindowResize(event);
         // Reset the resizing flag after the resize is complete (debounced)
         this._isResizing = false;
         this.cdRef.markForCheck();
       });
-      
+
       this._windowScroll$.subscribe(() => {
         this.updateAnnotationContainerSize();
       });
@@ -451,7 +460,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   // We'll define these in ngOnInit after isBrowser is initialized
   private _windowScroll$: Subject<Event> | any;
-    
+
   // Subscription for image load events
   private _imageLoadSubscription: Subscription = null;
 
@@ -462,10 +471,10 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       this._shapeDragEnd$.complete();
       this._noteDragStart$.complete();
       this._noteDragEnd$.complete();
-      
+
       // All subscriptions using takeUntil(this.destroyed$) will be automatically cleaned up
       // when super.ngOnDestroy() is called, which completes this.destroyed$
-      
+
       // Clean up any other subscriptions
       if (this._imageLoadSubscription) {
         this._imageLoadSubscription.unsubscribe();
@@ -477,7 +486,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       document.removeEventListener("touchmove", this.handleDocumentTouchMove);
       document.removeEventListener("touchend", this.handleDocumentTouchEnd);
       document.removeEventListener("touchcancel", this.handleDocumentTouchEnd);
-      
+
       // Make sure to remove the body class when component is destroyed
       document.body.classList.remove('annotation-mode-active');
     }
@@ -565,9 +574,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       const rect = containerElement.getBoundingClientRect();
       containerWidth = rect.width || 1000;
       containerHeight = rect.height || 1000;
-    } else if (this.cachedImageElement) {
+    } else if (this.imageElement) {
       // Fallback to the image element if container not found
-      const rect = this.cachedImageElement.getBoundingClientRect();
+      const rect = this.imageElement.getBoundingClientRect();
       containerWidth = rect.width || 1000;
       containerHeight = rect.height || 1000;
     }
@@ -618,9 +627,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       const rect = containerElement.getBoundingClientRect();
       containerWidth = rect.width || 1000;
       containerHeight = rect.height || 1000;
-    } else if (this.cachedImageElement) {
+    } else if (this.imageElement) {
       // Fallback to the image element if container not found
-      const rect = this.cachedImageElement.getBoundingClientRect();
+      const rect = this.imageElement.getBoundingClientRect();
       containerWidth = rect.width || 1000;
       containerHeight = rect.height || 1000;
     }
@@ -1061,8 +1070,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         console.warn("Container has zero dimensions, trying to get image bounds...");
         // Fallback to the image element
         this.updateAnnotationContainerSize();
-        if (this.cachedImageElement) {
-          const imageBounds = this.cachedImageElement.getBoundingClientRect();
+        if (this.imageElement) {
+          const imageBounds = this.imageElement.getBoundingClientRect();
           this.containerWidth = imageBounds.width;
           this.containerHeight = imageBounds.height;
           console.log("Using image dimensions instead:", { width: imageBounds.width, height: imageBounds.height });
@@ -1362,7 +1371,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   updateActiveAnnotationPoints(event: MouseEvent): void {
     console.log("updateActiveAnnotationPoints", {
       activeAnnotation: this.activeAnnotation,
-      cachedImageElement: this.cachedImageElement
+      cachedImageElement: this.imageElement
     });
 
     if (!this.activeAnnotation) {
@@ -1379,7 +1388,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     if (!annotationContainer || annotationContainer.getBoundingClientRect().width === 0) {
       console.warn("Annotation container not available, falling back to image element");
 
-      if (!this.cachedImageElement || this.cachedImageElement.getBoundingClientRect().width === 0) {
+      if (!this.imageElement || this.imageElement.getBoundingClientRect().width === 0) {
         console.warn("No usable reference element for annotation positioning");
         return;
       }
@@ -1450,19 +1459,14 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     const deltaX = event.clientX - this.dragStartX!;
     const deltaY = event.clientY - this.dragStartY!;
 
-    // Make sure we're using the actual image element for calculations
-    if (!this.cachedImageElement || this.cachedImageElement.getBoundingClientRect().width === 0) {
-      // Try to find the image element again
-      this.tryFindImageElement();
-
-      if (!this.cachedImageElement || this.cachedImageElement.getBoundingClientRect().width === 0) {
-        console.warn("No suitable image element found for drag calculations");
-        return;
-      }
+    // Make sure we have a valid image element for calculations
+    if (!this.imageElement || this.imageElement.getBoundingClientRect().width === 0) {
+      console.warn("No suitable image element found for drag calculations");
+      return;
     }
 
     // Get the actual displayed image dimensions
-    const imageBounds = this.cachedImageElement.getBoundingClientRect();
+    const imageBounds = this.imageElement.getBoundingClientRect();
     console.log("Image bounds for drag calculation:", imageBounds);
 
     // Convert pixel deltas to percentage of the image dimensions
@@ -1527,19 +1531,14 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     const deltaX = event.clientX - this.dragStartX!;
     const deltaY = event.clientY - this.dragStartY!;
 
-    // Make sure we're using the actual image element for calculations
-    if (!this.cachedImageElement || this.cachedImageElement.getBoundingClientRect().width === 0) {
-      // Try to find the image element again
-      this.tryFindImageElement();
-
-      if (!this.cachedImageElement || this.cachedImageElement.getBoundingClientRect().width === 0) {
-        console.warn("No suitable image element found for note drag calculations");
-        return;
-      }
+    // Make sure we have a valid image element for calculations
+    if (!this.imageElement || this.imageElement.getBoundingClientRect().width === 0) {
+      console.warn("No suitable image element found for note drag calculations");
+      return;
     }
 
     // Get the actual displayed image dimensions
-    const imageBounds = this.cachedImageElement.getBoundingClientRect();
+    const imageBounds = this.imageElement.getBoundingClientRect();
 
     // Convert pixel deltas to percentage of the image dimensions
     const deltaPercentX = (deltaX / imageBounds.width) * 100;
@@ -1550,15 +1549,15 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     if (!annotation || !annotation.note) {
       return;
     }
-    
-    // Calculate the new note position 
+
+    // Calculate the new note position
     const newX = Math.min(100, Math.max(0, annotation.note.position.x + deltaPercentX));
     const newY = Math.min(100, Math.max(0, annotation.note.position.y + deltaPercentY));
-    
+
     // Calculate deltas that keep the note within bounds
     const boundsRespectingDeltaX = newX - annotation.note.position.x;
     const boundsRespectingDeltaY = newY - annotation.note.position.y;
-    
+
     // Use the bounded deltas to move the note
     this.annotationService.moveAnnotationNote(id, boundsRespectingDeltaX, boundsRespectingDeltaY);
 
@@ -1866,20 +1865,19 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     // Log the current annotations for debugging
     console.log("Current annotations:", this.annotations);
 
-    // Check if there are annotations to share
-    if (!this.annotations || this.annotations.length === 0) {
-      console.error("No annotations to share");
-      this.popNotificationsService.error(
-        this.translateService.instant("No annotations to share")
-      );
-      return;
-    }
-
     // Generate the URL parameter from the annotations
     let urlParam;
     try {
-      urlParam = this.annotationService.getUrlParam();
-      console.log("Generated URL param:", urlParam);
+      // Check if there are annotations to share
+      if (!this.annotations || this.annotations.length === 0) {
+        // For empty annotations, create a special empty parameter
+        urlParam = "[]";
+        console.log("Sharing empty annotations state");
+      } else {
+        // Generate parameter from existing annotations
+        urlParam = this.annotationService.getUrlParam();
+        console.log("Generated URL param:", urlParam);
+      }
 
       if (!urlParam) {
         console.error("Failed to generate URL parameter for annotations");
@@ -1960,6 +1958,44 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       return;
     }
 
+    // Check if the image already has saved annotations
+    const alreadyHasAnnotations = this.hasSavedAnnotations;
+    
+    if (alreadyHasAnnotations) {
+      // If the image already has annotations, skip the confirmation and proceed directly
+      this._performSaveAnnotations();
+    } else {
+      // Only show confirmation dialog for first-time annotation saves
+      // Import dynamically to avoid circular dependency
+      import("@shared/components/misc/confirmation-dialog/confirmation-dialog.component").then(module => {
+        const modalRef = this.modalService.open(module.ConfirmationDialogComponent);
+        const componentInstance = modalRef.componentInstance;
+
+        componentInstance.title = this.translateService.instant("Save annotations");
+        componentInstance.message = this.translateService.instant(
+          "Annotations will display on your image on mouse-hover, overriding any other mouse-hover settings. Do you want to proceed?"
+        );
+        componentInstance.showAreYouSure = false;
+        componentInstance.confirmLabel = this.translateService.instant("Yes, save annotations");
+
+        modalRef.result.then(
+          () => {
+            // User confirmed, proceed with saving
+            this._performSaveAnnotations();
+          },
+          () => {
+            // User cancelled, do nothing
+            console.log("Save annotations cancelled");
+          }
+        );
+      });
+    }
+  }
+
+  /**
+   * Private method to actually perform the save after confirmation
+   */
+  private _performSaveAnnotations(): void {
     // Set saving state
     this.savingAnnotations = true;
     this.saveSuccess = false;
@@ -1983,6 +2019,20 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         this.saveSuccess = true;
         this.cdRef.markForCheck();
 
+        // Update the annotations in the store
+        import("@app/store/actions/image.actions").then(actions => {
+          // Check if this is an image revision or an image
+          const isRevision = 'image' in this.revision;
+          const imagePk = isRevision ? (this.revision as ImageRevisionInterface).image : this.revision.pk;
+          const revisionLabel = isRevision ? (this.revision as ImageRevisionInterface).label : null;
+          
+          this.store$.dispatch(new actions.UpdateAnnotations({
+            pk: imagePk,
+            revisionLabel: revisionLabel,
+            annotations: annotationsJson
+          }));
+        });
+
         // Reset success indicator after 1.5 seconds
         this.utilsService.delay(1500).subscribe(() => {
           this.saveSuccess = false;
@@ -2004,179 +2054,62 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   }
 
   /**
-   * Update the annotation container size to match the actual displayed image, accounting for letterboxing
+   * Update the annotation container size to match the actual displayed image
    */
   private updateAnnotationContainerSize(): void {
     // Make sure we have a valid image element
-    if (!this.cachedImageElement) {
-      this.tryFindImageElement();
-      if (!this.cachedImageElement) {
-        console.warn("No image element found to size annotation container");
-        return;
-      }
-    }
-    
-    // Verify the cached element is a valid DOM element with getBoundingClientRect method
-    if (!this.cachedImageElement || 
-        this.cachedImageElement.nodeType !== Node.ELEMENT_NODE || 
-        typeof this.cachedImageElement.getBoundingClientRect !== 'function') {
-      console.warn("Cached image element is not a valid DOM element or doesn't support getBoundingClientRect");
+    if (!this.imageElement) {
+      console.warn("No image element provided to annotation tool");
       return;
     }
 
-    // Get the container element that holds the image - needed to calculate letterboxing
-    const imageContainer = this.cachedImageElement.parentElement;
-    if (!imageContainer) {
-      console.warn("Cannot find image container element");
+    // Verify the element is a valid DOM element with getBoundingClientRect method
+    if (this.imageElement.nodeType !== Node.ELEMENT_NODE ||
+        typeof this.imageElement.getBoundingClientRect !== 'function') {
+      console.warn("Image element is not a valid DOM element or doesn't support getBoundingClientRect");
       return;
     }
 
-    // Verify the container element is a valid DOM element with getBoundingClientRect method
-    if (typeof imageContainer.getBoundingClientRect !== 'function') {
-      console.warn("Image container element doesn't support getBoundingClientRect");
-      return;
-    }
-
-    // Get the bounds of both the container and the image itself
-    const containerBounds = imageContainer.getBoundingClientRect();
-    const imageBounds = this.cachedImageElement.getBoundingClientRect();
+    // Get the bounds of the image itself
+    const imageBounds = this.imageElement.getBoundingClientRect();
 
     // Skip if image element has no dimensions yet
-    if (imageBounds.width === 0 || imageBounds.height === 0 || containerBounds.width === 0 || containerBounds.height === 0) {
-      console.warn("Image or container has zero dimensions, unable to size annotation container");
+    if (imageBounds.width === 0 || imageBounds.height === 0) {
+      console.warn("Image has zero dimensions, unable to size annotation container");
       return;
     }
 
-    // Find the annotation container
-    const annotationContainer = document.querySelector(".annotation-container") as HTMLElement;
+    // Find the annotation container within this component
+    const annotationContainer = this.elementRef.nativeElement.querySelector(".annotation-container") as HTMLElement;
     if (!annotationContainer) {
-      console.warn("Annotation container not found");
+      console.warn("Annotation container not found in this component");
       return;
     }
 
-    // Find the annotation layer
-    const annotationLayer = document.querySelector(".annotation-layer") as HTMLElement;
+    // Find the annotation layer within this component
+    const annotationLayer = this.elementRef.nativeElement.querySelector(".annotation-layer") as HTMLElement;
     if (!annotationLayer) {
-      console.warn("Annotation layer not found");
+      console.warn("Annotation layer not found in this component");
       return;
     }
 
-    // Get the natural dimensions of the image from our inputs, or use the element attributes
-    const naturalWidth = this.naturalWidth || parseInt(this.cachedImageElement.getAttribute('naturalWidth')) || this.revision?.w;
-    const naturalHeight = this.naturalHeight || parseInt(this.cachedImageElement.getAttribute('naturalHeight')) || this.revision?.h;
-
-    // Calculate letterboxing and actual displayed image dimensions
-    const { displayWidth, displayHeight, offsetX, offsetY } = this.calculateLetterboxedDimensions(
-      containerBounds.width, 
-      containerBounds.height,
-      naturalWidth, 
-      naturalHeight, 
-      imageBounds
-    );
-
-    // Since getBoundingClientRect returns positions relative to the viewport,
-    // we can use position:fixed to position our container relative to the viewport
-    const viewportTop = containerBounds.top + offsetY;
-    const viewportLeft = containerBounds.left + offsetX;
-
-    console.log("Updating annotation container to match letterboxed image:", {
-      containerBounds,
-      displayWidth,
-      displayHeight,
-      offsetX,
-      offsetY,
-      viewportTop,
-      viewportLeft
-    });
-
-    // Set container sizing and position to exactly match the displayed portion of the image
+    // Set container sizing and position to exactly match the image element
     // using position:fixed so we're always positioning relative to the viewport
-    // This avoids scroll position calculations and should work with fixed headers
     annotationContainer.style.position = "fixed";
-    annotationContainer.style.width = `${displayWidth}px`;
-    annotationContainer.style.height = `${displayHeight}px`;
-    annotationContainer.style.top = `${viewportTop}px`;
-    annotationContainer.style.left = `${viewportLeft}px`;
+    annotationContainer.style.width = `${imageBounds.width}px`;
+    annotationContainer.style.height = `${imageBounds.height}px`;
+    annotationContainer.style.top = `${imageBounds.top}px`;
+    annotationContainer.style.left = `${imageBounds.left}px`;
 
     // Store these dimensions for percentage calculations
-    this.containerWidth = displayWidth;
-    this.containerHeight = displayHeight;
+    this.containerWidth = imageBounds.width;
+    this.containerHeight = imageBounds.height;
 
     // Position the layer to fill the container
     annotationLayer.style.width = "100%";
     annotationLayer.style.height = "100%";
     annotationLayer.style.top = "0";
     annotationLayer.style.left = "0";
-  }
-
-  /**
-   * Calculate the dimensions and position of the actual displayed image area,
-   * accounting for letterboxing (black bars) added to maintain aspect ratio
-   */
-  private calculateLetterboxedDimensions(
-    containerWidth: number,
-    containerHeight: number,
-    naturalWidth: number,
-    naturalHeight: number,
-    imageBounds: DOMRect
-  ): { displayWidth: number; displayHeight: number; offsetX: number; offsetY: number } {
-    // If we don't have natural dimensions, use the actual image bounds as fallback
-    if (!naturalWidth || !naturalHeight) {
-      return {
-        displayWidth: imageBounds.width,
-        displayHeight: imageBounds.height,
-        offsetX: 0,
-        offsetY: 0
-      };
-    }
-
-    // Calculate natural aspect ratio
-    const naturalAspectRatio = naturalWidth / naturalHeight;
-    const containerAspectRatio = containerWidth / containerHeight;
-
-    let displayWidth: number;
-    let displayHeight: number;
-    let offsetX: number;
-    let offsetY: number;
-
-    // Determine if the image is letterboxed horizontally or vertically
-    if (naturalAspectRatio > containerAspectRatio) {
-      // Image is wider than container (horizontal letterboxing - black bars on top and bottom)
-      displayWidth = containerWidth;
-      displayHeight = containerWidth / naturalAspectRatio;
-      offsetX = 0;
-      offsetY = (containerHeight - displayHeight) / 2;
-    } else {
-      // Image is taller than container (vertical letterboxing - black bars on left and right)
-      displayHeight = containerHeight;
-      displayWidth = containerHeight * naturalAspectRatio;
-      offsetX = (containerWidth - displayWidth) / 2;
-      offsetY = 0;
-    }
-
-    // If the image is smaller than the container in both dimensions (no scaling up),
-    // just center it without stretching
-    if (naturalWidth <= containerWidth && naturalHeight <= containerHeight) {
-      displayWidth = naturalWidth;
-      displayHeight = naturalHeight;
-      offsetX = (containerWidth - displayWidth) / 2;
-      offsetY = (containerHeight - displayHeight) / 2;
-    }
-
-    // Verify against actual image bounds as a sanity check - if there's a big difference,
-    // fallback to the actual bounds
-    const boundsDifference = Math.abs(displayWidth - imageBounds.width) + Math.abs(displayHeight - imageBounds.height);
-    if (boundsDifference > 10) { // Allow a small tolerance for rounding errors
-      console.warn("Calculated letterbox dimensions differ from actual image bounds, using actual bounds as fallback");
-      return {
-        displayWidth: imageBounds.width,
-        displayHeight: imageBounds.height,
-        offsetX: 0,
-        offsetY: 0
-      };
-    }
-
-    return { displayWidth, displayHeight, offsetX, offsetY };
   }
 
   // Prevent default behavior for touch events
@@ -2248,71 +2181,36 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   }
 
   /**
-   * Sets up the cached image element from the directly provided HTMLElement
-   * and sets up load event listener for dynamic image loading
+   * Set up an event listener for image load to update container size when image loads/changes
    */
-  private tryFindImageElement(): void {
-    // Use the directly provided image element
-    if (this.imageElement) {
-      this.cachedImageElement = this.imageElement;
-      
-      // Verify the cached element is a valid DOM element with getBoundingClientRect method
-      if (this.cachedImageElement && 
-          this.cachedImageElement.nodeType === Node.ELEMENT_NODE && 
-          typeof this.cachedImageElement.getBoundingClientRect === 'function') {
-        
-        const rect = this.cachedImageElement.getBoundingClientRect();
-        console.log("Using provided image element with dimensions:",
-          { width: rect.width, height: rect.height });
-        
-        // Extract natural dimensions if available (for better letterboxing calculations)
-        if (this.cachedImageElement instanceof HTMLImageElement) {
-          // If the image is already loaded, get its natural dimensions
-          if (this.cachedImageElement.naturalWidth && !this.naturalWidth) {
-            this.naturalWidth = this.cachedImageElement.naturalWidth;
-            this.naturalHeight = this.cachedImageElement.naturalHeight;
-            console.log("Using natural dimensions from loaded image element:",
-              { width: this.naturalWidth, height: this.naturalHeight });
+  private setupImageLoadListener(): void {
+    // Clear any existing subscription
+    if (this._imageLoadSubscription) {
+      this._imageLoadSubscription.unsubscribe();
+      this._imageLoadSubscription = null;
+    }
+
+    // Use RxJS fromEvent for the image load event if it's an HTMLImageElement
+    if (this.isBrowser &&
+        this.imageElement instanceof HTMLImageElement &&
+        typeof this.imageElement.addEventListener === 'function') {
+
+      this._imageLoadSubscription = fromEvent(this.imageElement, 'load')
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(() => {
+          console.log("Image loaded (RxJS), updating annotation container");
+
+          // Update natural dimensions from the newly loaded image if they aren't provided
+          if (!this.naturalWidth && this.imageElement instanceof HTMLImageElement) {
+            this.naturalWidth = this.imageElement.naturalWidth;
+            this.naturalHeight = this.imageElement.naturalHeight;
           }
-        }
-      } else {
-        console.warn("Provided imageElement is not a valid DOM element or doesn't support getBoundingClientRect");
-      }
-      
-      // Use RxJS fromEvent for the image load event if it's an HTMLImageElement
-      // Create a new stream if we haven't attached the event handler yet
-      if (!this._imageLoadSubscription && this.isBrowser && 
-          this.cachedImageElement instanceof HTMLImageElement &&
-          typeof this.cachedImageElement.addEventListener === 'function') {
-          
-        this._imageLoadSubscription = fromEvent(this.cachedImageElement, 'load')
-          .pipe(takeUntil(this.destroyed$))
-          .subscribe(() => {
-            console.log("Image loaded (RxJS), updating annotation container");
-            
-            // Update natural dimensions from the newly loaded image
-            if (this.cachedImageElement instanceof HTMLImageElement) {
-              this.naturalWidth = this.cachedImageElement.naturalWidth;
-              this.naturalHeight = this.cachedImageElement.naturalHeight;
-            }
-            
-            // Update annotation container size after a short delay to ensure image is rendered
-            this.utilsService.delay(100).subscribe(() => {
-              this.updateAnnotationContainerSize();
-            });
+
+          // Update annotation container size after a short delay to ensure image is rendered
+          this.utilsService.delay(100).subscribe(() => {
+            this.updateAnnotationContainerSize();
           });
-      } else if (this.cachedImageElement instanceof HTMLCanvasElement && 
-                typeof this.cachedImageElement.getBoundingClientRect === 'function') {
-        const canvasRect = this.cachedImageElement.getBoundingClientRect();
-        console.log("Canvas element provided:", {
-          width: this.cachedImageElement.width,
-          height: this.cachedImageElement.height,
-          displayWidth: canvasRect.width,
-          displayHeight: canvasRect.height
         });
-      }
-    } else {
-      console.warn("No image element provided for annotations");
     }
   }
 
@@ -2325,19 +2223,19 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     const originalTop = this.dragStartShapeY;
     const originalRight = originalLeft + this.dragStartShapeWidth;
     const originalBottom = originalTop + this.dragStartShapeHeight;
-    
+
     let newLeft = originalLeft;
     let newTop = originalTop;
     let newRight = originalRight;
     let newBottom = originalBottom;
-    
+
     if (this.dragMode === "whole") {
       // Calculate new position for the entire rectangle
       newLeft = originalLeft + deltaXPercent;
       newTop = originalTop + deltaYPercent;
       newRight = originalRight + deltaXPercent;
       newBottom = originalBottom + deltaYPercent;
-      
+
       // Keep the rectangle within the image bounds
       if (newLeft < 0) {
         // If left edge is outside, adjust both left and right
@@ -2350,7 +2248,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         newRight = 100;
         newLeft = Math.max(0, 100 - (originalRight - originalLeft));
       }
-      
+
       if (newTop < 0) {
         // If top edge is outside, adjust both top and bottom
         const adjustment = -newTop;
@@ -2362,7 +2260,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         newBottom = 100;
         newTop = Math.max(0, 100 - (originalBottom - originalTop));
       }
-      
+
       // Update the rectangle attributes
       this.currentlyDragging.x = newLeft;
       this.currentlyDragging.y = newTop;
@@ -2424,11 +2322,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       let newCx = this.dragStartShapeX + deltaXPercent;
       let newCy = this.dragStartShapeY + deltaYPercent;
       const radius = this.currentlyDragging.r;
-      
+
       // Keep the circle within image bounds, accounting for radius
       newCx = Math.max(radius, Math.min(100 - radius, newCx));
       newCy = Math.max(radius, Math.min(100 - radius, newCy));
-      
+
       // Update circle position
       this.currentlyDragging.cx = newCx;
       this.currentlyDragging.cy = newCy;
@@ -2449,7 +2347,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         cy,                 // Distance to top edge
         100 - cy            // Distance to bottom edge
       );
-      
+
       // Set the radius to the distance, but constrained by both min size and image boundaries
       this.currentlyDragging.r = Math.min(
         maxDistanceToEdge,
@@ -2479,32 +2377,32 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       let newStartY = this.dragStartShapeY + deltaYPercent;
       let newEndX = this.dragStartShapeWidth + deltaXPercent;
       let newEndY = this.dragStartShapeHeight + deltaYPercent;
-      
+
       // Check if any point is outside the image bounds
       if (newStartX < 0 || newStartX > 100 || newEndX < 0 || newEndX > 100 ||
           newStartY < 0 || newStartY > 100 || newEndY < 0 || newEndY > 100) {
-        
+
         // Calculate how much to adjust to keep within bounds
         let adjustX = 0;
         let adjustY = 0;
-        
+
         if (newStartX < 0) adjustX = Math.max(adjustX, -newStartX);
         if (newEndX < 0) adjustX = Math.max(adjustX, -newEndX);
         if (newStartX > 100) adjustX = Math.min(adjustX, 100 - newStartX);
         if (newEndX > 100) adjustX = Math.min(adjustX, 100 - newEndX);
-        
+
         if (newStartY < 0) adjustY = Math.max(adjustY, -newStartY);
         if (newEndY < 0) adjustY = Math.max(adjustY, -newEndY);
         if (newStartY > 100) adjustY = Math.min(adjustY, 100 - newStartY);
         if (newEndY > 100) adjustY = Math.min(adjustY, 100 - newEndY);
-        
+
         // Apply adjustments
         newStartX += adjustX;
         newEndX += adjustX;
         newStartY += adjustY;
         newEndY += adjustY;
       }
-      
+
       // Update arrow points
       this.currentlyDragging.startX = Math.max(0, Math.min(100, newStartX));
       this.currentlyDragging.startY = Math.max(0, Math.min(100, newStartY));
@@ -2645,6 +2543,10 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     // Assume we might be loading annotations - set flag for visual indicator
     this.loadingAnnotations = true;
     console.log("Loading annotations from revision, setting loadingAnnotations=true");
+    
+    // Clear existing annotations before loading new ones
+    this.annotations = [];
+    this.annotationService.clearAllAnnotations();
 
     // Force the loading indicator to be cleared after 3 seconds as a failsafe
     this.utilsService.delay(3000).subscribe(() => {
@@ -2659,7 +2561,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       console.log("Revision annotations content:", this.revision.annotations);
 
       // Load the annotations directly from the revision object
+      // Make sure to check for both string and non-empty content
       if (typeof this.revision.annotations === "string" && this.revision.annotations.trim() !== "") {
+        console.log("Attempting to parse annotations:", this.revision.annotations);
         console.log("Calling annotationService.loadFromJsonString");
         // Use loadFromJsonString since the annotations in the revision are already in JSON format
         this.annotationService.loadFromJsonString(this.revision.annotations);

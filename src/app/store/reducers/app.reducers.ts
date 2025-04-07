@@ -788,6 +788,40 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.UPDATE_ANNOTATIONS: {
+      const imageIndex = state.images.findIndex(image => image.pk === action.payload.pk);
+      if (imageIndex === -1) {
+        return state;
+      }
+
+      const image = { ...state.images[imageIndex] };
+      
+      if (action.payload.revisionLabel) {
+        // Update annotations in a specific revision
+        const revisionIndex = image.revisions.findIndex(revision => revision.label === action.payload.revisionLabel);
+        if (revisionIndex !== -1) {
+          const updatedRevisions = [...image.revisions];
+          updatedRevisions[revisionIndex] = {
+            ...updatedRevisions[revisionIndex],
+            annotations: action.payload.annotations
+          };
+          image.revisions = updatedRevisions;
+        }
+      } else {
+        // Update annotations in the main image
+        image.annotations = action.payload.annotations;
+      }
+
+      return {
+        ...state,
+        images: [
+          ...state.images.slice(0, imageIndex),
+          image,
+          ...state.images.slice(imageIndex + 1)
+        ]
+      };
+    }
+
     default: {
       return state;
     }
