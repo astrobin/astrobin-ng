@@ -2074,12 +2074,16 @@ export class ImageViewerComponent
       
     // Wait for revision to be fully initialized
     this.utilsService.delay(100).subscribe(() => {
-      // Check for annotations in revision or image
-      const hasAnnotationsInRevision = this.revision && !!this.revision.annotations && 
+      // Check for annotations in revision or image (but only use if no URL annotations)
+      // URL annotations should trump saved annotations
+      const hasAnnotationsInRevision = !hasAnnotationsInUrl && 
+        this.revision && !!this.revision.annotations && 
         this.revision.annotations.trim() !== '' && this.revision.annotations !== '[]';
       
-      // Check if the image has saved annotations
-      this._checkForSavedAnnotations();
+      // Only check for saved annotations if there are no URL annotations
+      if (!hasAnnotationsInUrl) {
+        this._checkForSavedAnnotations();
+      }
       
       if (hasAnnotationsInUrl || hasAnnotationsInRevision) {
         console.log("Automatically enabling annotation mode - annotations found in", 

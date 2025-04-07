@@ -264,7 +264,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         this.hasSavedAnnotations = Array.isArray(annotations);
         
         // If the revision has annotations and we're in annotation mode, load them
-        if (this.active && this.revision.annotations && this.revision.annotations.trim() !== '') {
+        // BUT only if there are no URL annotations (URL annotations should trump saved annotations)
+        if (this.active && this.revision.annotations && this.revision.annotations.trim() !== '' && !this.hasUrlAnnotations) {
           // Load the annotations from the updated revision
           this.loadSavedAnnotations();
         }
@@ -2669,6 +2670,12 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
    */
   private loadSavedAnnotations(): void {
     console.log("loadSavedAnnotations called with revision:", this.revision);
+
+    // Check if we have URL annotations - if yes, don't load from saved annotations
+    if (this.hasUrlAnnotations) {
+      console.log("URL annotations detected, not loading saved annotations");
+      return;
+    }
 
     if (!this.revision) {
       console.log("No revision object provided");
