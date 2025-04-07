@@ -1962,9 +1962,12 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       // Update the annotations parameter
       currentUrl.searchParams.set("annotations", urlParam);
 
-      // Create a shareable URL without the fullscreen hash
+      // Create a shareable URL without the fullscreen hash (but keep other parameters)
       const shareableUrl = new URL(currentUrl.toString());
-      shareableUrl.hash = ""; // Remove any hash for sharing
+      // Only remove the fullscreen hash if it exists, leave other hashes intact
+      if (shareableUrl.hash === '#fullscreen') {
+        shareableUrl.hash = "";
+      }
 
       // Update the URL without navigation but keep the current hash for user
       this.windowRefService.replaceState({}, currentUrl.toString());

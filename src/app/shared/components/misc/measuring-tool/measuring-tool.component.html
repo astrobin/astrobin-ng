@@ -993,7 +993,7 @@
           </div>
           <div class="measurement-actions" *ngIf="currentUser$ | async">
             <button class="btn btn-sm btn-outline-light"
-                    (click)="advancedSolutionMatrix ? loadMeasurement(preset) : null"
+                    (click)="loadMeasurementWrapper(preset)"
                     [class.disabled]="!advancedSolutionMatrix || loadingMeasurement"
                     [class.loading]="loadingMeasurement"
                     [style.pointer-events]="'auto'">
