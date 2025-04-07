@@ -317,6 +317,13 @@ $largeViewPortBreakpoint: 2561px;
       &.annotation-mode .measure-annotation-overlay {
         opacity: 1 !important; // Always visible when in annotation mode
       }
+      
+      // Always show when we have URL annotations
+      &.has-url-annotations .measure-annotation-overlay {
+        opacity: 1 !important; // Always visible when we have URL annotations
+        display: block !important;
+        visibility: visible !important;
+      }
 
       @media (max-width: $lg-max) {
         width: 50%;

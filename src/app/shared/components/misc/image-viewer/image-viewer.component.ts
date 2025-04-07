@@ -685,6 +685,21 @@ export class ImageViewerComponent
               // For URL annotations, keep them always visible
               this.forceViewAnnotationsMouseHover = true;
               this.forceViewMouseHover = true;
+              this.hasUrlAnnotations = true; // Ensure this flag is set
+              
+              // Force an immediate change detection to apply styles quickly
+              setTimeout(() => {
+                // Add class directly to host elements
+                if (this.elementRef?.nativeElement) {
+                  this.elementRef.nativeElement.classList.add('has-url-annotations');
+                }
+                
+                if (this.imageArea?.nativeElement) {
+                  this.imageArea.nativeElement.classList.add('has-url-annotations');
+                }
+                
+                this.changeDetectorRef.markForCheck();
+              }, 0);
             } else {
               // For saved annotations, use standard behavior with mouse hover
               this._previousMouseHoverState = {

@@ -86,7 +86,8 @@ export class CastPipe implements PipeTransform {
   templateUrl: "./annotation-tool.component.html",
   styleUrls: ["./annotation-tool.component.scss"],
   host: {
-    '[class.has-saved-annotations]': 'hasSavedAnnotations'
+    '[class.has-saved-annotations]': 'hasSavedAnnotations',
+    '[class.has-url-annotations]': 'hasUrlAnnotations'
   },
   providers: [CastPipe]
 })
@@ -105,6 +106,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   @Input() isImageOwner: boolean = false;
   @Input() revision: ImageInterface | ImageRevisionInterface;
   @Input() isRegularView: boolean = true; // Default to true - we're in regular view, not fullscreen
+  @Input() hasUrlAnnotations: boolean = false; // Flag indicating if annotations were loaded from URL
   @Output() exitAnnotationMode = new EventEmitter<void>();
   @Output() annotationModeActive = new EventEmitter<boolean>(); // Emitted when annotation mode changes
   @Output() requestFullscreenMode = new EventEmitter<void>(); // Emitted when requesting fullscreen from regular viewer
@@ -230,6 +232,19 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
           document.body.classList.remove('annotation-mode-active');
         }
       }
+    }
+    
+    // Handle URL annotations input changes
+    if (changes.hasUrlAnnotations && changes.hasUrlAnnotations.currentValue) {
+      console.log("URL annotations detected in annotation tool component:", this.hasUrlAnnotations);
+      
+      // Force visibility and ensure the component knows we're in URL annotation mode
+      if (this.elementRef && this.elementRef.nativeElement) {
+        this.elementRef.nativeElement.classList.add('has-url-annotations');
+      }
+      
+      // Force a change detection cycle
+      this.cdRef.markForCheck();
     }
 
     // If imageElement changed, set up the load listener again
@@ -1947,13 +1962,17 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       // Update the annotations parameter
       currentUrl.searchParams.set("annotations", urlParam);
 
-      // Update the URL without navigation
+      // Create a shareable URL without the fullscreen hash
+      const shareableUrl = new URL(currentUrl.toString());
+      shareableUrl.hash = ""; // Remove any hash for sharing
+
+      // Update the URL without navigation but keep the current hash for user
       this.windowRefService.replaceState({}, currentUrl.toString());
 
       // Copy the URL to clipboard with a slight delay to ensure URL is updated
       this.windowRefService.utilsService.delay(200).subscribe(() => {
         // Use the WindowRefService's copyToClipboard method which handles fallbacks properly
-        this.windowRefService.copyToClipboard(currentUrl.toString())
+        this.windowRefService.copyToClipboard(shareableUrl.toString())
           .then(success => {
             if (success) {
               this.popNotificationsService.success(
