@@ -23,11 +23,27 @@ export class AnnotationService {
   // Store annotations in a BehaviorSubject for reactive updates
   private _annotations = new BehaviorSubject<Annotation[]>([]);
 
+  // Track annotations that came from the saved revision
+  private _savedAnnotationIds: string[] = [];
+  
+  // Track annotations that came from URL
+  private _urlAnnotationIds: string[] = [];
+
   // Default to white
   private _defaultColorIndex = 0;
 
   // Expose annotations as an Observable
   public readonly annotations$: Observable<Annotation[]> = this._annotations.asObservable();
+  
+  // Expose saved annotation IDs
+  public get savedAnnotationIds(): string[] {
+    return this._savedAnnotationIds;
+  }
+  
+  // Expose URL annotation IDs
+  public get urlAnnotationIds(): string[] {
+    return this._urlAnnotationIds;
+  }
 
   constructor() {}
 
@@ -195,6 +211,8 @@ export class AnnotationService {
    */
   public clearAllAnnotations(): void {
     this._annotations.next([]);
+    this._savedAnnotationIds = [];
+    this._urlAnnotationIds = [];
   }
 
   /**
@@ -360,6 +378,9 @@ export class AnnotationService {
    */
   public loadFromUrlParam(param: string): void {
     try {
+      // When loading from URL, clear saved annotation IDs since these are not from the revision
+      this._savedAnnotationIds = [];
+      
       // Decode Base64
       const jsonData = atob(param);
 
@@ -371,6 +392,10 @@ export class AnnotationService {
 
       // Convert annotations to display format
       const displayReady = annotations.map(annotation => this.convertToDisplayFormat(annotation));
+      
+      // Store the IDs of annotations loaded from URL
+      this._urlAnnotationIds = displayReady.map(annotation => annotation.id);
+      console.log("URL annotation IDs:", this._urlAnnotationIds);
 
       // Set as current annotations
       this._annotations.next(displayReady);
@@ -413,6 +438,10 @@ export class AnnotationService {
         }).filter(ann => ann !== null && ann !== undefined);
 
         console.log("Final displayReady annotations:", displayReady);
+
+        // Store IDs of annotations loaded from JSON (saved annotations)
+        this._savedAnnotationIds = displayReady.map(annotation => annotation.id);
+        console.log("Saved annotation IDs:", this._savedAnnotationIds);
 
         // Set as current annotations
         this._annotations.next(displayReady);

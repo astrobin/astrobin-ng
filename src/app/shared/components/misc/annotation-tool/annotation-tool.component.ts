@@ -1529,6 +1529,44 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     // If percentage distance is less than 1% of the image, consider it too small
     return distance < 1;
   }
+  
+  /**
+   * Check if an annotation is from the saved annotations in the revision
+   * @param id The ID of the annotation to check
+   * @returns true if the annotation is from the saved annotations
+   */
+  isFromSavedAnnotations(id: string): boolean {
+    // If there's no revision or no saved annotations, return false
+    if (!this.revision || !this.revision.annotations || this.revision.annotations.trim() === '') {
+      return false;
+    }
+    
+    try {
+      // Parse the saved annotations and check if the ID exists
+      const savedAnnotations = JSON.parse(this.revision.annotations);
+      if (!Array.isArray(savedAnnotations)) {
+        return false;
+      }
+      
+      // Check if there's an annotation with this ID in the saved annotations,
+      // regardless of whether URL annotations are present
+      return savedAnnotations.some(ann => ann.id === id);
+    } catch (error) {
+      console.warn("Error checking if annotation is from saved annotations:", error);
+      return false;
+    }
+  }
+  
+  /**
+   * Check if an annotation is from URL parameters (but not from saved annotations)
+   * @param id The ID of the annotation to check
+   * @returns true if the annotation is from the URL parameter
+   */
+  isFromUrlOnly(id: string): boolean {
+    // Check if the annotation ID is in the URL annotations
+    return this.annotationService.urlAnnotationIds.includes(id) &&
+           !this.isFromSavedAnnotations(id);
+  }
 
   /**
    * Start dragging a shape
@@ -2737,6 +2775,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     // Clear existing annotations before loading new ones
     this.annotations = [];
     this.annotationService.clearAllAnnotations();
+    
+    // The annotation service will handle tracking savedAnnotationIds
 
     // Force the loading indicator to be cleared after 3 seconds as a failsafe
     this.utilsService.delay(3000).subscribe(() => {
@@ -2755,6 +2795,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       if (typeof this.revision.annotations === "string" && this.revision.annotations.trim() !== "") {
         console.log("Attempting to parse annotations:", this.revision.annotations);
         console.log("Calling annotationService.loadFromJsonString");
+        
+        // The annotation service will track which annotations came from the revision
+        
         // Use loadFromJsonString since the annotations in the revision are already in JSON format
         this.annotationService.loadFromJsonString(this.revision.annotations);
 
@@ -2786,6 +2829,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       this.loadingAnnotations = false;
       this.annotations = [];
       this.annotationService.clearAllAnnotations();
+      // The annotation service will handle tracking savedAnnotationIds
       this.cdRef.markForCheck();
     }
   }

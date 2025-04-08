@@ -183,6 +183,22 @@
            <!-- Title display -->
            <div *ngIf="ann.title" class="annotation-title">
              {{ ann.title }}
+             <!-- Save icon for annotations saved by the photographer -->
+             <fa-icon *ngIf="isFromSavedAnnotations(ann.id)" 
+                     [icon]="['fas', 'save']" 
+                     class="saved-annotation-icon" 
+                     [ngbTooltip]="'This annotation was set by the photographer' | translate"
+                     placement="top"
+                     container="body">
+             </fa-icon>
+             <!-- Share icon for annotations from URL only -->
+             <fa-icon *ngIf="isFromUrlOnly(ann.id)" 
+                     [icon]="['fas', 'share-alt']" 
+                     class="url-annotation-icon" 
+                     [ngbTooltip]="'This annotation was shared as a link' | translate"
+                     placement="top"
+                     container="body">
+             </fa-icon>
            </div>
 
         <!-- Control points (corners) - only in edit mode -->
