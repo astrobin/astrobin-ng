@@ -183,6 +183,12 @@
            <!-- Title display -->
            <div *ngIf="ann.title" class="annotation-title">
              {{ ann.title }}
+             <!-- 
+               ANNOTATION ICONS LOGIC:
+               - Saved annotation icon shows only for annotations that exactly match what was saved in the revision
+               - Shared annotation icon shows only for annotations loaded from URL that aren't from saved annotations
+               - When an annotation is modified, it gets a new ID and no longer matches either condition above
+             -->
              <!-- Save icon for annotations saved by the photographer -->
              <fa-icon *ngIf="isFromSavedAnnotations(ann.id)" 
                      [icon]="['fas', 'save']" 

@@ -205,6 +205,8 @@ export class ImageViewerService extends BaseService {
       if (pushState) {
         let url = UtilsService.removeUrlParam(this.windowRefService.getCurrentUrl().href, "i");
         url = UtilsService.removeUrlParam(url, "r");
+        url = UtilsService.removeUrlParam(url, "annotations");
+        url = UtilsService.removeUrlParam(url, "measurements");
         url = url.split("#")[0];
 
         this.windowRefService.replaceState(

@@ -53,8 +53,17 @@ export class AnnotationService {
    * @returns The created annotation
    */
   public createAnnotation(params: CreateAnnotationParams): Annotation {
+    // Generate a hash-based ID using the annotation's properties
+    const id = this.generateUniqueId({
+      shapeType: params.shapeType,
+      points: params.points || [],
+      color: params.color || this.getDefaultColor(),
+      title: params.title || '',
+      message: params.message || ''
+    });
+    
     const annotation: Annotation = {
-      id: this.generateUniqueId(),
+      id: id,
       shape: {
         type: params.shapeType,
         points: params.points || [],
@@ -91,11 +100,24 @@ export class AnnotationService {
     const index = annotations.findIndex(a => a.id === id);
 
     if (index !== -1) {
-      const annotation = { ...annotations[index] };
+      const oldAnnotation = annotations[index];
+      const annotation = { ...oldAnnotation };
 
       // Update title and message
       annotation.title = title || '';
       annotation.message = message || '';
+      
+      // Generate a new ID based on updated properties
+      annotation.id = this.generateUniqueId({
+        shapeType: annotation.shape.type,
+        points: annotation.shape.points,
+        color: annotation.shape.color,
+        title: annotation.title,
+        message: annotation.message
+      });
+      
+      // Update saved and URL annotations IDs arrays if needed
+      this._updateAnnotationIdInArrays(oldAnnotation.id, annotation.id);
 
       // Update the annotation
       const updatedAnnotations = [...annotations];
@@ -106,6 +128,36 @@ export class AnnotationService {
     } else {
       console.warn('Could not find annotation with ID:', id);
     }
+  }
+  
+  /**
+   * Helper method to handle annotation ID changes
+   * @param oldId The old annotation ID
+   * @param newId The new annotation ID
+   */
+  private _updateAnnotationIdInArrays(oldId: string, newId: string): void {
+    // IMPORTANT: When an annotation is modified, it should no longer be considered
+    // as coming from the saved annotations or from the URL.
+    // We remove it from both tracking arrays instead of updating the ID.
+    
+    // Remove from saved annotations array if it was there
+    const savedIndex = this._savedAnnotationIds.indexOf(oldId);
+    if (savedIndex !== -1) {
+      this._savedAnnotationIds.splice(savedIndex, 1);
+      console.log(`Annotation ${oldId} was removed from saved annotations after modification`);
+    }
+    
+    // Remove from URL annotations array if it was there
+    const urlIndex = this._urlAnnotationIds.indexOf(oldId);
+    if (urlIndex !== -1) {
+      this._urlAnnotationIds.splice(urlIndex, 1);
+      console.log(`Annotation ${oldId} was removed from URL annotations after modification`);
+    }
+    
+    // The new ID is not added to either array, which means:
+    // - It won't show the "saved" icon
+    // - It won't show the "shared" icon
+    // This is the desired behavior for modified annotations
   }
 
   /**
@@ -118,7 +170,8 @@ export class AnnotationService {
     const index = annotations.findIndex(a => a.id === id);
 
     if (index !== -1) {
-      const annotation = { ...annotations[index] };
+      const oldAnnotation = annotations[index];
+      const annotation = { ...oldAnnotation };
       annotation.shape = {
         ...annotation.shape,
         ...(params.type !== undefined ? { type: params.type } : {}),
@@ -126,6 +179,18 @@ export class AnnotationService {
         ...(params.color !== undefined ? { color: params.color } : {}),
         ...(params.lineWidth !== undefined ? { lineWidth: params.lineWidth } : {})
       };
+      
+      // Generate a new ID based on updated properties
+      annotation.id = this.generateUniqueId({
+        shapeType: annotation.shape.type,
+        points: annotation.shape.points,
+        color: annotation.shape.color,
+        title: annotation.title || '',
+        message: annotation.message || ''
+      });
+      
+      // Update saved and URL annotations IDs arrays if needed
+      this._updateAnnotationIdInArrays(oldAnnotation.id, annotation.id);
 
       // Update the annotation
       const updatedAnnotations = [...annotations];
@@ -144,7 +209,8 @@ export class AnnotationService {
     const index = annotations.findIndex(a => a.id === id);
 
     if (index !== -1) {
-      const annotation = { ...annotations[index] };
+      const oldAnnotation = annotations[index];
+      const annotation = { ...oldAnnotation };
       
       // Update title and message if provided
       if (params.title !== undefined) {
@@ -154,6 +220,18 @@ export class AnnotationService {
       if (params.message !== undefined) {
         annotation.message = params.message;
       }
+      
+      // Generate a new ID based on updated properties
+      annotation.id = this.generateUniqueId({
+        shapeType: annotation.shape.type,
+        points: annotation.shape.points,
+        color: annotation.shape.color,
+        title: annotation.title || '',
+        message: annotation.message || ''
+      });
+      
+      // Update saved and URL annotations IDs arrays if needed
+      this._updateAnnotationIdInArrays(oldAnnotation.id, annotation.id);
 
       // Update the annotation
       const updatedAnnotations = [...annotations];
@@ -185,7 +263,12 @@ export class AnnotationService {
     const index = annotations.findIndex(a => a.id === id);
 
     if (index !== -1) {
-      const annotation = { ...annotations[index] };
+      console.log("Moving annotation, current ID:", id);
+      console.log("Current saved annotation IDs:", this._savedAnnotationIds);
+      console.log("Current URL annotation IDs:", this._urlAnnotationIds);
+      
+      const oldAnnotation = annotations[index];
+      const annotation = { ...oldAnnotation };
 
       // Move all shape points
       annotation.shape = {
@@ -195,6 +278,23 @@ export class AnnotationService {
           y: Math.max(0, Math.min(100, point.y + deltaY))
         }))
       };
+      
+      // Generate a new ID based on updated properties
+      annotation.id = this.generateUniqueId({
+        shapeType: annotation.shape.type,
+        points: annotation.shape.points,
+        color: annotation.shape.color,
+        title: annotation.title || '',
+        message: annotation.message || ''
+      });
+      
+      console.log("Generated new ID after move:", annotation.id);
+      
+      // Update saved and URL annotations IDs arrays if needed
+      this._updateAnnotationIdInArrays(oldAnnotation.id, annotation.id);
+      
+      console.log("After update, saved annotation IDs:", this._savedAnnotationIds);
+      console.log("After update, URL annotation IDs:", this._urlAnnotationIds);
 
       // Update the annotation
       const updatedAnnotations = [...annotations];
@@ -378,9 +478,6 @@ export class AnnotationService {
    */
   public loadFromUrlParam(param: string): void {
     try {
-      // When loading from URL, clear saved annotation IDs since these are not from the revision
-      this._savedAnnotationIds = [];
-      
       // Decode Base64
       const jsonData = atob(param);
 
@@ -394,8 +491,11 @@ export class AnnotationService {
       const displayReady = annotations.map(annotation => this.convertToDisplayFormat(annotation));
       
       // Store the IDs of annotations loaded from URL
+      // Important: URL annotations IDs are tracked separately from saved annotation IDs
+      // An annotation can be in both arrays if it was saved and also loaded from URL
       this._urlAnnotationIds = displayReady.map(annotation => annotation.id);
       console.log("URL annotation IDs:", this._urlAnnotationIds);
+      console.log("Saved annotation IDs:", this._savedAnnotationIds);
 
       // Set as current annotations
       this._annotations.next(displayReady);
@@ -576,10 +676,43 @@ export class AnnotationService {
   // We no longer have separate note positions with the simplified model
 
   /**
-   * Generate a unique ID for an annotation
+   * Generate a unique ID for an annotation based on its properties
+   * @param annotation Optional annotation to generate ID from
+   * @returns A unique ID string
    */
-  private generateUniqueId(): string {
-    return 'ann_' + Date.now().toString() + '_' + Math.floor(Math.random() * 10000);
+  private generateUniqueId(properties?: {
+    shapeType?: string;
+    points?: Array<{x: number, y: number}>;
+    color?: string;
+    title?: string;
+    message?: string;
+  }): string {
+    if (!properties) {
+      // If no properties provided, use a timestamp-based ID
+      return 'ann_' + Date.now().toString() + '_' + Math.floor(Math.random() * 10000);
+    }
+    
+    // Create a string representation of the annotation's key properties
+    const shapeType = properties.shapeType || '';
+    const points = properties.points ? JSON.stringify(properties.points) : '';
+    const color = properties.color || '';
+    const title = properties.title || '';
+    const message = properties.message || '';
+    
+    // Combine all properties into a single string
+    const propertyString = `${shapeType}|${points}|${color}|${title}|${message}`;
+    
+    // Create a simple hash of the property string
+    // This implementation uses a basic hash function that produces a 32-bit integer hash
+    let hash = 0;
+    for (let i = 0; i < propertyString.length; i++) {
+      const char = propertyString.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    
+    // Return a string ID with a prefix to make it recognizable
+    return 'ann_' + Math.abs(hash).toString(16);
   }
 
   /**

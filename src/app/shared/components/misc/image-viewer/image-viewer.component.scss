@@ -692,7 +692,7 @@ $largeViewPortBreakpoint: 2561px;
 
       ::ng-deep astrobin-image {
         .astrobin-image {
-          width: 100%;
+          width: auto;
           height: auto;
           max-height: 100%;
           object-fit: contain;

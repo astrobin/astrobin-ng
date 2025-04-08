@@ -87,7 +87,8 @@ export class CastPipe implements PipeTransform {
   styleUrls: ["./annotation-tool.component.scss"],
   host: {
     '[class.has-saved-annotations]': 'hasSavedAnnotations',
-    '[class.has-url-annotations]': 'hasUrlAnnotations'
+    '[class.has-url-annotations]': 'hasUrlAnnotations',
+    '(document:keydown)': 'handleKeyDown($event)'
   },
   providers: [CastPipe]
 })
@@ -1290,6 +1291,37 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     console.log("Drag ended, mode:", this.dragMode);
     console.log("New position/size:", this.currentlyDragging);
 
+    // Get the current annotation from the local array
+    const id = this.currentlyDragging.id;
+    
+    // Commit final state to the annotation service based on shape type
+    if (this.currentlyDragging.type === 'rectangle') {
+      // For rectangle, update with new position and size
+      this.annotationService.updateAnnotationShape(id, {
+        points: [
+          { x: this.currentlyDragging.x, y: this.currentlyDragging.y },
+          { x: this.currentlyDragging.x + this.currentlyDragging.width, 
+            y: this.currentlyDragging.y + this.currentlyDragging.height }
+        ]
+      });
+    } else if (this.currentlyDragging.type === 'circle') {
+      // For circle, update with new center and radius
+      this.annotationService.updateAnnotationShape(id, {
+        points: [
+          { x: this.currentlyDragging.cx, y: this.currentlyDragging.cy },
+          { x: this.currentlyDragging.cx + this.currentlyDragging.r, y: this.currentlyDragging.cy }
+        ]
+      });
+    } else if (this.currentlyDragging.type === 'arrow') {
+      // For arrow, update with new start and end points
+      this.annotationService.updateAnnotationShape(id, {
+        points: [
+          { x: this.currentlyDragging.startX, y: this.currentlyDragging.startY },
+          { x: this.currentlyDragging.endX, y: this.currentlyDragging.endY }
+        ]
+      });
+    }
+
     // Reset dragging state
     this.currentlyDragging = null;
     this.dragMode = "whole";
@@ -1404,6 +1436,38 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     console.log("Touch drag ended, mode:", this.dragMode);
     console.log("New position/size:", this.currentlyDragging);
+
+    // Get the current annotation from the local array
+    const id = this.currentlyDragging.id;
+    
+    // Commit final state to the annotation service based on shape type
+    // (This is the same logic as in endDrag)
+    if (this.currentlyDragging.type === 'rectangle') {
+      // For rectangle, update with new position and size
+      this.annotationService.updateAnnotationShape(id, {
+        points: [
+          { x: this.currentlyDragging.x, y: this.currentlyDragging.y },
+          { x: this.currentlyDragging.x + this.currentlyDragging.width, 
+            y: this.currentlyDragging.y + this.currentlyDragging.height }
+        ]
+      });
+    } else if (this.currentlyDragging.type === 'circle') {
+      // For circle, update with new center and radius
+      this.annotationService.updateAnnotationShape(id, {
+        points: [
+          { x: this.currentlyDragging.cx, y: this.currentlyDragging.cy },
+          { x: this.currentlyDragging.cx + this.currentlyDragging.r, y: this.currentlyDragging.cy }
+        ]
+      });
+    } else if (this.currentlyDragging.type === 'arrow') {
+      // For arrow, update with new start and end points
+      this.annotationService.updateAnnotationShape(id, {
+        points: [
+          { x: this.currentlyDragging.startX, y: this.currentlyDragging.startY },
+          { x: this.currentlyDragging.endX, y: this.currentlyDragging.endY }
+        ]
+      });
+    }
 
     // Reset dragging state
     this._dragInProgress = false;
@@ -1531,26 +1595,30 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   }
   
   /**
-   * Check if an annotation is from the saved annotations in the revision
+   * Check if an annotation matches exactly what's in the saved annotations
    * @param id The ID of the annotation to check
-   * @returns true if the annotation is from the saved annotations
+   * @returns true only if the annotation exists exactly in the revision's saved annotations
    */
   isFromSavedAnnotations(id: string): boolean {
-    // If there's no revision or no saved annotations, return false
+    // If we have no revision or annotations, return false
     if (!this.revision || !this.revision.annotations || this.revision.annotations.trim() === '') {
       return false;
     }
     
     try {
-      // Parse the saved annotations and check if the ID exists
+      // Parse saved annotations from the revision (source of truth)
       const savedAnnotations = JSON.parse(this.revision.annotations);
       if (!Array.isArray(savedAnnotations)) {
         return false;
       }
       
-      // Check if there's an annotation with this ID in the saved annotations,
-      // regardless of whether URL annotations are present
-      return savedAnnotations.some(ann => ann.id === id);
+      // Direct ID comparison with the source of truth (the revision)
+      const result = savedAnnotations.some(savedAnn => savedAnn.id === id);
+      
+      // Additional debug logging
+      console.log(`Checking if annotation ${id} is from saved annotations: ${result}`);
+      
+      return result;
     } catch (error) {
       console.warn("Error checking if annotation is from saved annotations:", error);
       return false;
@@ -1560,12 +1628,21 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   /**
    * Check if an annotation is from URL parameters (but not from saved annotations)
    * @param id The ID of the annotation to check
-   * @returns true if the annotation is from the URL parameter
+   * @returns true if the annotation is from URL parameters and not in saved annotations
    */
   isFromUrlOnly(id: string): boolean {
-    // Check if the annotation ID is in the URL annotations
-    return this.annotationService.urlAnnotationIds.includes(id) &&
-           !this.isFromSavedAnnotations(id);
+    // An annotation is URL-only if:
+    // 1. It's in the URL annotations list (loaded from URL) AND
+    // 2. It doesn't match any saved annotation in the revision
+    const fromUrl = this.annotationService.urlAnnotationIds.includes(id);
+    const fromSaved = this.isFromSavedAnnotations(id);
+    const result = fromUrl && !fromSaved;
+    
+    // Additional debug logging
+    console.log(`Checking if annotation ${id} is from URL only: 
+      fromUrl=${fromUrl}, fromSaved=${fromSaved}, result=${result}`);
+    
+    return result;
   }
 
   /**
@@ -1648,6 +1725,38 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   // Note: handleNoteDragMove and handleNoteDragEnd methods have been removed
   // We no longer need separate note handling with the simplified model
+
+  /**
+   * Handle keyboard events
+   * @param event The keyboard event
+   */
+  handleKeyDown(event: KeyboardEvent): void {
+    // Only process keyboard events when the component is active
+    if (!this.active) {
+      return;
+    }
+
+    // Check for Escape key
+    if (event.key === 'Escape' || event.key === 'Esc') {
+      console.log('Escape key pressed, exiting annotation mode');
+      
+      // If we're drawing, cancel the drawing first
+      if (this.isDrawing) {
+        this.cancelAnnotation();
+      } else {
+        // Otherwise exit annotation mode completely
+        // This will also remove the annotations URL parameter
+        this.exitAnnotationModeHandler();
+        
+        // Also clear annotations to ensure consistent behavior with exit button
+        this.annotationService.clearAllAnnotations();
+      }
+
+      // Prevent default browser behavior
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
 
   /**
    * Exit annotation mode
@@ -1890,53 +1999,23 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     // Safely extract values with proper null handling
     const title = (formData?.title || '').trim();
     const messageText = (formData?.message || '').trim();
+    const color = formData?.color;
 
     console.log("Processing form with separate values:", {
       title: title,
       message: messageText,
-      color: formData.color
+      color: color
     });
 
-    // No need for custom validation as it's handled by formly
+    // Always use the annotation service to update the message
+    // This ensures proper ID regeneration and tracking
+    this.annotationService.updateAnnotationMessage(this.currentAnnotationId, {
+      title: title,
+      message: messageText,
+      ...(color ? { color: color } : {})
+    });
 
-    // Find the annotation in the local array
-    const index = this.annotations.findIndex(ann => ann.id === this.currentAnnotationId);
-
-    if (index !== -1) {
-      const annotation = this.annotations[index];
-
-      console.log("Found annotation to update:", annotation);
-
-      // No need for casting as we're using our own simple annotation interface
-
-      console.log("Updating annotation:", {
-        title: title,
-        message: messageText
-      });
-
-      // Update the annotation properties directly
-      annotation.title = title;
-      annotation.message = messageText;
-
-      // Update the color if changed
-      if (formData.color) {
-        annotation.color = formData.color;
-      }
-
-      console.log("Annotation updated successfully");
-
-      console.log("Updated annotation with title, color, and message:", annotation);
-    } else {
-      // Service method needs an update - for now, let's find the annotation directly
-      const annotation = this.annotations.find(ann => ann.id === this.currentAnnotationId);
-      if (annotation) {
-        annotation.title = title;
-        annotation.message = messageText;
-        if (formData.color) {
-          annotation.color = formData.color;
-        }
-      }
-    }
+    console.log("Annotation message updated via service");
 
     // Reset current ID
     this.currentAnnotationId = null;
@@ -1947,12 +2026,12 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
    * Update the annotation's message text
    */
   updateAnnotationText(id: string, text: string): void {
-    // Find the annotation and update its message directly
-    const annotation = this.annotations.find(ann => ann.id === id);
-    if (annotation) {
-      annotation.message = text;
-      this.cdRef.markForCheck();
-    }
+    // Always use the service to update annotations
+    // This ensures proper ID regeneration and tracking
+    this.annotationService.updateAnnotationMessage(id, {
+      message: text
+    });
+    this.cdRef.markForCheck();
   }
 
   /**
