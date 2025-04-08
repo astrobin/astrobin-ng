@@ -1936,6 +1936,23 @@ export class ImageViewerComponent
     // Check for saved annotations again to properly update the state
     this._checkForSavedAnnotations();
     
+    // Important: Re-initialize annotations if we have saved annotations
+    // This fixes the issue where annotations disappear after exiting fullscreen mode
+    if (this.hasSavedAnnotations) {
+      // Short delay to ensure DOM is updated before re-initializing
+      this.utilsService.delay(100).subscribe(() => {
+        // Re-check and show annotations (if available) on the regular view
+        this._checkAndShowAnnotations();
+        
+        // Force mouse hover annotations to be visible again
+        this.forceViewAnnotationsMouseHover = true;
+        this.forceViewMouseHover = true;
+        
+        // Force change detection
+        this.changeDetectorRef.markForCheck();
+      });
+    }
+    
     // Force change detection to update the DOM
     this.changeDetectorRef.markForCheck();
   }
