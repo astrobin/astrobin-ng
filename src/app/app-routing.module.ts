@@ -72,11 +72,10 @@ const routes: Routes = [
       scrollPositionRestoration: "enabled",
       anchorScrolling: "enabled",
       scrollOffset: [0, 64],
-      preloadingStrategy: CustomPreloadStrategy,
+      preloadingStrategy: CustomPreloadStrategy
     })
   ],
   exports: [RouterModule],
   providers: [CustomPreloadStrategy]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

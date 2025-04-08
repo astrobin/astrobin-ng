@@ -120,7 +120,6 @@ export class ImageViewerService extends BaseService {
         this._previousDescription = this.titleService.getDescription();
         this._previousUrl = this.windowRefService.getCurrentUrl().toString();
 
-
         this.slideshow = createComponent(
           ImageViewerSlideshowComponent, {
             environmentInjector: this.applicationRef.injector
