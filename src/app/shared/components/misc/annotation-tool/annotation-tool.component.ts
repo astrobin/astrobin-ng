@@ -67,30 +67,14 @@ interface Annotation {
   endY?: number;
 }
 
-// We're now using our own simplified Annotation interface instead of extending BaseAnnotation
-
-// Cast pipe to use in template
-@Pipe({
-  name: 'cast',
-  pure: true
-})
-export class CastPipe implements PipeTransform {
-  transform(value: any, type: string): any {
-    // Just return the value - the actual casting is just for TypeScript
-    return value;
-  }
-}
-
 @Component({
   selector: "astrobin-annotation-tool",
   templateUrl: "./annotation-tool.component.html",
   styleUrls: ["./annotation-tool.component.scss"],
   host: {
     '[class.has-saved-annotations]': 'hasSavedAnnotations',
-    '[class.has-url-annotations]': 'hasUrlAnnotations',
-    '(document:keydown)': 'handleKeyDown($event)'
-  },
-  providers: [CastPipe]
+    '[class.has-url-annotations]': 'hasUrlAnnotations'
+  }
 })
 export class AnnotationToolComponent extends BaseComponentDirective implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   // Make environment available to template
@@ -1293,14 +1277,14 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Get the current annotation from the local array
     const id = this.currentlyDragging.id;
-    
+
     // Commit final state to the annotation service based on shape type
     if (this.currentlyDragging.type === 'rectangle') {
       // For rectangle, update with new position and size
       this.annotationService.updateAnnotationShape(id, {
         points: [
           { x: this.currentlyDragging.x, y: this.currentlyDragging.y },
-          { x: this.currentlyDragging.x + this.currentlyDragging.width, 
+          { x: this.currentlyDragging.x + this.currentlyDragging.width,
             y: this.currentlyDragging.y + this.currentlyDragging.height }
         ]
       });
@@ -1439,7 +1423,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Get the current annotation from the local array
     const id = this.currentlyDragging.id;
-    
+
     // Commit final state to the annotation service based on shape type
     // (This is the same logic as in endDrag)
     if (this.currentlyDragging.type === 'rectangle') {
@@ -1447,7 +1431,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       this.annotationService.updateAnnotationShape(id, {
         points: [
           { x: this.currentlyDragging.x, y: this.currentlyDragging.y },
-          { x: this.currentlyDragging.x + this.currentlyDragging.width, 
+          { x: this.currentlyDragging.x + this.currentlyDragging.width,
             y: this.currentlyDragging.y + this.currentlyDragging.height }
         ]
       });
@@ -1593,7 +1577,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     // If percentage distance is less than 1% of the image, consider it too small
     return distance < 1;
   }
-  
+
   /**
    * Check if an annotation matches exactly what's in the saved annotations
    * @param id The ID of the annotation to check
@@ -1604,27 +1588,27 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     if (!this.revision || !this.revision.annotations || this.revision.annotations.trim() === '') {
       return false;
     }
-    
+
     try {
       // Parse saved annotations from the revision (source of truth)
       const savedAnnotations = JSON.parse(this.revision.annotations);
       if (!Array.isArray(savedAnnotations)) {
         return false;
       }
-      
+
       // Direct ID comparison with the source of truth (the revision)
       const result = savedAnnotations.some(savedAnn => savedAnn.id === id);
-      
+
       // Additional debug logging
       console.log(`Checking if annotation ${id} is from saved annotations: ${result}`);
-      
+
       return result;
     } catch (error) {
       console.warn("Error checking if annotation is from saved annotations:", error);
       return false;
     }
   }
-  
+
   /**
    * Check if an annotation is from URL parameters (but not from saved annotations)
    * @param id The ID of the annotation to check
@@ -1637,11 +1621,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     const fromUrl = this.annotationService.urlAnnotationIds.includes(id);
     const fromSaved = this.isFromSavedAnnotations(id);
     const result = fromUrl && !fromSaved;
-    
+
     // Additional debug logging
-    console.log(`Checking if annotation ${id} is from URL only: 
+    console.log(`Checking if annotation ${id} is from URL only:
       fromUrl=${fromUrl}, fromSaved=${fromSaved}, result=${result}`);
-    
+
     return result;
   }
 
@@ -1726,55 +1710,20 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   // Note: handleNoteDragMove and handleNoteDragEnd methods have been removed
   // We no longer need separate note handling with the simplified model
 
-  /**
-   * Handle keyboard events
-   * @param event The keyboard event
-   */
-  handleKeyDown(event: KeyboardEvent): void {
-    // Only process keyboard events when the component is active
-    if (!this.active) {
-      return;
-    }
-
-    // Check for Escape key
-    if (event.key === 'Escape' || event.key === 'Esc') {
-      console.log('Escape key pressed, exiting annotation mode');
-      
-      // If we're drawing, cancel the drawing first
-      if (this.isDrawing) {
-        this.cancelAnnotation();
-      } else {
-        // Otherwise exit annotation mode completely
-        // This will also remove the annotations URL parameter
-        this.exitAnnotationModeHandler();
-        
-        // Also clear annotations to ensure consistent behavior with exit button
-        this.annotationService.clearAllAnnotations();
-      }
-
-      // Prevent default browser behavior
-      event.preventDefault();
-      event.stopPropagation();
-    }
-  }
+  // Remove keyboard event handler - this will be handled by the parent component
 
   /**
    * Exit annotation mode
    */
   exitAnnotationModeHandler(): void {
-    console.log("EXIT ANNOTATION MODE HANDLER CALLED");
-
     // First clean up any active drawing
     this.cancelAnnotation();
 
     // Save a direct reference to native window for manipulating the URL
     if (this.isBrowser) {
       try {
-        // DIRECT APPROACH: Manipulate the URL without Angular's routing
         const location = this.windowRefService.nativeWindow.location;
         const url = new URL(location.href);
-
-        console.log("BEFORE URL CHANGE:", url.toString());
 
         // Remove annotations param
         url.searchParams.delete("annotations");
@@ -1782,45 +1731,19 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         // Apply the change directly to history
         this.windowRefService.nativeWindow.history.replaceState({}, "", url.toString());
 
-        console.log("AFTER URL CHANGE:", this.windowRefService.nativeWindow.location.href);
+        // Remove the body class to show UI elements again
+                document.body.classList.remove('annotation-mode-active');
       } catch (e) {
         console.error("Error manipulating URL:", e);
       }
     }
 
-    // MOST IMPORTANT: Force clear all annotations in the component and service multiple times
-    for (let i = 0; i < 3; i++) {
-      this.annotations = [];
-      this.annotationService.clearAllAnnotations();
-    }
-
-    // Ensure loading flag is disabled
+    this.annotations = [];
+    this.annotationService.clearAllAnnotations();
     this.loadingAnnotations = false;
 
-    console.log("AFTER CLEAR: annotations count =", this.annotations.length);
-
-    // Force immediate change detection to update UI
     this.cdRef.markForCheck();
-    this.cdRef.detectChanges();
 
-    // Use delay to ensure changes are applied
-    this.utilsService.delay(100).subscribe(() => {
-      // Clear annotations
-      this.annotations = [];
-      this.annotationService.clearAllAnnotations();
-      this.loadingAnnotations = false;
-      this.cdRef.markForCheck();
-      this.cdRef.detectChanges();
-
-      // URL check complete
-    });
-
-    // Remove the body class to show UI elements again
-    if (this.isBrowser && typeof document !== "undefined") {
-      document.body.classList.remove('annotation-mode-active');
-    }
-
-    // Then emit events to notify parent component
     this.exitAnnotationMode.emit();
     this.annotationModeActive.emit(false);
   }
@@ -2854,7 +2777,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     // Clear existing annotations before loading new ones
     this.annotations = [];
     this.annotationService.clearAllAnnotations();
-    
+
     // The annotation service will handle tracking savedAnnotationIds
 
     // Force the loading indicator to be cleared after 3 seconds as a failsafe
@@ -2874,9 +2797,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       if (typeof this.revision.annotations === "string" && this.revision.annotations.trim() !== "") {
         console.log("Attempting to parse annotations:", this.revision.annotations);
         console.log("Calling annotationService.loadFromJsonString");
-        
+
         // The annotation service will track which annotations came from the revision
-        
+
         // Use loadFromJsonString since the annotations in the revision are already in JSON format
         this.annotationService.loadFromJsonString(this.revision.annotations);
 

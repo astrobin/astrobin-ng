@@ -339,7 +339,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   get standaloneClass() {
     return this.standalone;
   }
-  
+
   @HostBinding("class.zoom-disabled")
   get zoomDisabledClass() {
     return !this.allowZoom;
@@ -379,7 +379,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected get hasAdvancedSolutionMatrix(): boolean {
     return !!this.advancedSolutionMatrix && !!this.advancedSolutionMatrix.matrixRect;
   }
-  
+
   protected get canZoom(): boolean {
     return this.allowZoom && this.allowReal;
   }
@@ -493,13 +493,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       const currentUrl = new URL(this.windowRef.nativeWindow.location.href);
       const measurementsParam = currentUrl.searchParams.get('measurements');
       const annotationsParam = currentUrl.searchParams.get('annotations');
-      
-      console.log("URL PARAMETERS CHECK:", { 
+
+      console.log("URL PARAMETERS CHECK:", {
         measurementsParam,
         annotationsParam,
         url: currentUrl.toString()
       });
-      
+
       // First, check with the router's query params
       this.activatedRoute.queryParams.pipe(
         take(1)
@@ -647,7 +647,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           if (action.payload.hasOwnProperty('allowZoom')) {
             this.allowZoom = action.payload.allowZoom;
           }
-          
+
           if (action.payload.enableAnnotations) {
             // Enable annotation mode after a short delay to ensure component is fully initialized
             this.utilsService.delay(300).subscribe(() => {
@@ -713,12 +713,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   onImagesLoaded(loaded: boolean) {
     this.ready = loaded;
     this._initImageZoom();
-    
+
     // Check for measurements parameter in URL after images are loaded
     if (this.isBrowser && loaded) {
       const currentUrl = new URL(this.windowRef.nativeWindow.location.href);
       const measurementsParam = currentUrl.searchParams.get('measurements');
-      
+
       if (measurementsParam && !this.isMeasuringMode) {
         console.log("Found measurements parameter after images loaded - Activating measuring tool");
         // Activate measuring mode after a slight delay to ensure all components are ready
@@ -728,7 +728,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         });
       }
     }
-    
+
     this.changeDetectorRef.markForCheck();
   }
 
@@ -743,11 +743,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Static image loaded successfully
     this.isStaticImageLoaded = true;
-    
+
     // Check for measurements parameter in URL after static image is loaded
     const currentUrl = new URL(this.windowRef.nativeWindow.location.href);
     const measurementsParam = currentUrl.searchParams.get('measurements');
-    
+
     if (measurementsParam && !this.isMeasuringMode) {
       console.log("Found measurements parameter after static image loaded - Activating measuring tool");
       // Activate measuring mode after a slight delay to ensure all components are ready
@@ -806,44 +806,39 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
-  @HostListener("window:keyup.escape", ["$event"])
-  hide(event: Event): void {
+  @HostListener("document:keyup.escape", ["$event"])
+  hide(event: KeyboardEvent): void {
     if (!this.isBrowser) {
       return;
     }
 
+    // Always prevent default to avoid browser's ESC behavior
+    event.preventDefault();
 
-    // If there are open modals, let the modal handle the escape key. Do this before stopping propagation, otherwise
-    // the modal will close and this will always be false.
+    // Step 1: First check if we are in annotation mode
+    if (this.isAnnotationMode) {
+      // Exit annotation mode first
+      this.onExitAnnotationMode();
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    // Priority 2: Exit measuring mode if it's active
+    if (this.isMeasuringMode) {
+      this.toggleMeasuringMode(null);
+      return;
+    }
+
+    // Priority 3: Handle open modals
     if (this.modalService.hasOpenModals()) {
       this.modalService.dismissAll();
       return;
     }
 
-    // Always prevent default and stop propagation to avoid browser's ESC behavior
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-
-    // Close the kebab menu if it's open
+    // Priority 4: Close the kebab menu if it's open
     if (this.showKebabMenu) {
       this.showKebabMenu = false;
       this.changeDetectorRef.markForCheck();
-      return;
-    }
-
-    // If in measuring mode, exit measuring mode instead of closing fullscreen
-    if (this.isMeasuringMode) {
-      // Use toggleMeasuringMode to fully exit the measuring mode
-      this.toggleMeasuringMode(event as MouseEvent);
-      return;
-    }
-
-    // If in annotation mode, exit annotation mode instead of closing fullscreen
-    if (this.isAnnotationMode) {
-      // Call the onExitAnnotationMode method to ensure proper cleanup and reload
-      this.onExitAnnotationMode();
       return;
     }
 
@@ -871,7 +866,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         if (currentUrl.searchParams.has('measurements')) {
           console.log("Removing measurements parameter from URL when exiting fullscreen");
           currentUrl.searchParams.delete('measurements');
-          
+
           // Update the URL without navigation
           this.windowRef.replaceState({}, currentUrl.toString());
         }
@@ -1046,7 +1041,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           // Find the correct revision from the updated image
           // Start with the original image (which is the "revision 0")
           let updatedRevision: ImageInterface | ImageRevisionInterface = null;
-          
+
           if (this.revisionLabel === ORIGINAL_REVISION_LABEL) {
             // If we're looking for the original revision, use the image itself
             updatedRevision = image;
@@ -1062,7 +1057,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             // For any other revision label, find it by label
             updatedRevision = image.revisions.find(rev => rev.label === this.revisionLabel);
           }
-          
+
           if (updatedRevision) {
             // Update the revision with the latest data
             this.revision = updatedRevision;
@@ -1071,7 +1066,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       });
     }
 
-    // Force change detection to update the DOM
     this.changeDetectorRef.markForCheck();
   }
 
@@ -1177,14 +1171,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       event.stopPropagation();
       return;
     }
-    
+
     // If zoom is disabled by image owner, prevent zooming
     if (!this.allowZoom) {
       event.preventDefault();
       event.stopPropagation();
       return;
     }
-    
+
     // If the event has ctrlKey, it's a pinch gesture in Firefox or zoom in other browsers
     // Always prevent browser zoom
     if (event.ctrlKey) {
@@ -1510,7 +1504,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Reset mouse position tracking
       this.mouseX = null;
       this.mouseY = null;
-      
+
       // Clean up URL parameters when exiting measuring mode
       if (this.isBrowser) {
         try {
@@ -1522,7 +1516,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           if (currentUrl.searchParams.has('measurements')) {
             console.log("Removing measurements parameter from URL when exiting measuring mode");
             currentUrl.searchParams.delete('measurements');
-            
+
             // Update the URL without navigation
             this.windowRef.replaceState({}, currentUrl.toString());
           }
