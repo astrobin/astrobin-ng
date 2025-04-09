@@ -1,9 +1,10 @@
 @import "../../../../../styles/breakpoints";
+@import "../../../../../styles/mixins";
 
 :host {
   display: flex;
   align-items: center;
-  gap: .5rem;
+  @include flex-gap(row, .5rem);
   min-height: calc(2rem + 2px);
 
   @media (max-width: $sm-max) {

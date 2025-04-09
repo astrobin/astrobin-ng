@@ -1,11 +1,12 @@
 @import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
 
 .retailers,
 .marketplace-listings {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  @include flex-gap(row, 1rem);
   margin-bottom: .5rem;
 
   @media (max-width: $sm-max) {
@@ -16,7 +17,7 @@
   .list {
     display: flex;
     align-items: center;
-    gap: .5rem;
+    @include flex-gap(row, .5rem);
     flex-wrap: wrap;
 
     .link {

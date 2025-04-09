@@ -206,7 +206,7 @@ $darkest-background-texture: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAA
     border-bottom: 0;
     color: var(--lighterGrey);
     padding: .5rem 1rem;
-    gap: .5rem;
+    @include flex-gap(row, .5rem);
 
     .nav-link {
       border-radius: .75rem;
@@ -236,5 +236,54 @@ $darkest-background-texture: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAA
     margin-top: -2rem;
     margin-left: -2rem;
     margin-right: -2rem;
+  }
+}
+
+@mixin flex-gap($direction, $gap, $cross-gap: null, $important: false) {
+  $is-2d: $cross-gap != null;
+  $main-gap: $gap;
+  $cross-gap: if($is-2d, $cross-gap, $gap);
+  $i: if($important, '!important', null);
+
+  // Native support
+  gap: if($is-2d, #{$cross-gap} #{$main-gap}, $gap) #{$i};
+
+  // Fallback for Safari <= 13
+  @supports not (inset: 0) {
+    @if $direction == row or $direction == row-reverse {
+      // Default: nowrap
+      > * {
+        margin-right: $main-gap #{$i};
+
+        &:last-child {
+          margin-right: 0 #{$i};
+        }
+      }
+
+      // If explicitly .flex-wrap, add vertical spacing
+      &.flex-wrap {
+        > * {
+          margin-bottom: $cross-gap #{$i};
+        }
+      }
+    }
+
+    @else if $direction == column or $direction == column-reverse {
+      // Default: nowrap
+      > * {
+        margin-bottom: $main-gap #{$i};
+
+        &:last-child {
+          margin-bottom: 0 #{$i};
+        }
+      }
+
+      // If explicitly .flex-wrap, add cross-axis spacing
+      &.flex-wrap {
+        > * {
+          margin-right: $cross-gap #{$i};
+        }
+      }
+    }
   }
 }

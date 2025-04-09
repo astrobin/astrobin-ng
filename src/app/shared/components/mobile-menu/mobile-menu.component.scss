@@ -16,12 +16,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  @include flex-gap(row, 1rem);
 
   .main-area {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    @include flex-gap(row, 1rem);
     overflow: hidden;
 
     .ng-fa-icon[data-toggle="offcanvas"] {
@@ -41,7 +41,7 @@
   .icon-area {
     display: flex;
     align-items: center;
-    gap: .25rem;
+    @include flex-gap(row, .25rem);
 
     .ng-fa-icon {
       cursor: pointer;

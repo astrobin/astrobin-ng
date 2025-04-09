@@ -78,7 +78,7 @@
   }
 
   .counters {
-    gap: .25rem;
+    @include flex-gap(row, .25rem);
 
     .counter {
       color: var(--lighterGrey);
@@ -110,7 +110,7 @@
     font-size: .7rem;
 
     .counters {
-      gap: .1rem;
+      @include flex-gap(row, .1rem);
     }
   }
 
@@ -118,7 +118,7 @@
     font-size: .6rem;
 
     .counters {
-      gap: .05rem;
+      @include flex-gap(row, .05rem);
     }
   }
 
@@ -126,7 +126,7 @@
     font-size: .5rem;
 
     .counters {
-      gap: 0;
+      @include flex-gap(row, 0);
     }
   }
 }

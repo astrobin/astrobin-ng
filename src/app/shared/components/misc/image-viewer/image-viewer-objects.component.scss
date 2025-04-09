@@ -1,4 +1,5 @@
 @import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
 
 :host {
   .metadata-item.objects-in-field {
@@ -11,8 +12,7 @@
 
     .metadata-label {
       display: flex;
-      flex-wrap: wrap;
-      gap: .375rem;
+      @include flex-gap(row, .375rem);
 
       .value {
         color: var(--lightestGrey);
@@ -40,8 +40,7 @@
 
   ul {
     display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
+    @include flex-gap(row, .5rem);
     padding: 0;
     margin: 0;
     list-style: none;

@@ -2,7 +2,7 @@
   <div
     [class.has-auto-complete-items]="hasAutoCompleteGroups()"
     [class.show-auto-complete-items]="showAutoCompleteGroups"
-    class="search-bar-input-container form-control"
+    class="search-bar-input-container form-control flex-wrap"
   >
     <div
       *ngIf="loadingAutoCompleteItems"
@@ -106,7 +106,7 @@
   >
     <div
       *ngFor="let group of autoCompleteGroups|keys"
-      class="search-bar-autocomplete-group"
+      class="search-bar-autocomplete-group flex-wrap"
     >
       <h4 class="search-bar-autocomplete-title">
         {{ searchFilterService.humanizeSearchAutoCompleteType(group.key) }}
@@ -439,7 +439,7 @@
   </a>
 </div>
 
-<div class="filters">
+<div class="filters flex-wrap">
   <p
     *ngIf="!model.text?.value && filterComponentRefs?.length === 0"
     class="no-filters"

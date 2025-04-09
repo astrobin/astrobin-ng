@@ -401,14 +401,14 @@
   <ng-container *ngIf="image?.descriptionBbcode || image.description">
     <div class="metadata-header">{{ "Description" | translate }}</div>
 
-    <div *ngIf="translatedDescription" class="metadata-section">
+    <div *ngIf="translatedDescription" class="metadata-section flex-wrap">
       <div class="metadata-item description translated-content">
         <small class="text-muted fst-italic d-block mb-2">{{ "Translated" | translate }}</small>
         <div [innerHTML]="translatedDescription"></div>
       </div>
     </div>
 
-    <div *ngIf="!translatedDescription && image?.descriptionBbcode" class="metadata-section">
+    <div *ngIf="!translatedDescription && image?.descriptionBbcode" class="metadata-section flex-wrap">
       <div *ngIf="(image.descriptionBbcode | BBCodeToHtml) | async as html; else descriptionLoading"
         (click)="onDescriptionClicked($event)"
         [innerHTML]="html | highlight: searchModel?.text?.value"

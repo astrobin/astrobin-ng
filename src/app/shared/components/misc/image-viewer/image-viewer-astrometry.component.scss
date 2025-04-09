@@ -1,4 +1,5 @@
 @import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
 
 :host {
   > .metadata-section {
@@ -53,7 +54,7 @@
 
   .degree-choices > .btn {
     display: flex;
-    gap: .15rem;
+    @include flex-gap(row, .15rem);
     justify-content: center;
     cursor: url("/assets/images/search-white.png") 16 16, pointer;
 

@@ -260,7 +260,7 @@
   .offcanvas-body {
     display: flex;
     flex-direction: column;
-    gap: .5rem;
+    @include flex-gap(column, .5rem);
 
     .related-item-wrapper {
       .equipment-pill {

@@ -26,7 +26,7 @@
 .badges {
   display: flex;
   justify-content: flex-start;
-  gap: .25rem;
+  @include flex-gap(row, .25rem);
   position: absolute;
   top: .375rem;
   left: .375rem;

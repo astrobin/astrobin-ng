@@ -1,8 +1,10 @@
+@import "../../../../styles/mixins";
+
 .nested-comment {
   padding: .75rem;
   border-bottom: 1px dashed var(--grey);
   display: flex;
-  gap: 1rem;
+  @include flex-gap(row, 1rem);
 
   &.created {
     animation: bounce .8s ease-out;
@@ -50,6 +52,8 @@
 
   .text {
     color: var(--lightestGrey);
+    word-break: break-word;
+
     ::ng-deep {
       img {
         max-width: 100%;

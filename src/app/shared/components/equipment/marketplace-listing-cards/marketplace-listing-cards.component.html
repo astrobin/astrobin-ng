@@ -1,7 +1,7 @@
 <ng-container *ngIf="listings === null" [ngTemplateOutlet]="loadingTemplate"></ng-container>
 <ng-container *ngIf="listings !== null">
   <ng-container *ngIf="listings.length > 0; else noListingsTemplate">
-    <div class="listings">
+    <div class="listings flex-wrap">
       <ng-container *ngFor="let listing of listings">
         <a
           [routerLink]="['/equipment/marketplace/listing', listing.hash, listing.slug]"
