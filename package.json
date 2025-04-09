@@ -7,6 +7,8 @@
   "scripts": {
     "ng": ".node_modules/.bin/ng",
     "lint": "npx eslint \"src/**/*.ts\"",
+    "lint:changed": "git diff --name-only origin/master...HEAD | grep -E '\\.(ts|html)$' | xargs eslint",
+    "format:changed": "git diff --name-only origin/master...HEAD | grep -E '\\.(ts|html|scss|css)$' | xargs prettier --write",
     "start": "ng serve --host 0.0.0.0 --port 4400 --configuration=development",
     "start:prod": "ng serve --host 0.0.0.0 --port 4400 --configuration=local-production",
     "start:cypress": "ng serve --host 0.0.0.0 --port 4400 --configuration=cypress",
@@ -27,7 +29,16 @@
     "serve:ssr": "node dist/frontend/server/main.js",
     "build:ssr:dev": "ng build --configuration=development && ng run frontend:server:development",
     "build:ssr:prod": "replace-in-file __BUILD_VERSION__ ${CODEBUILD_RESOLVED_SOURCE_VERSION} ${CODEBUILD_SRC_DIR}/src/environments/environment.prod.ts,${CODEBUILD_SRC_DIR}/src/index*.html && ng build --aot --configuration=production && ng run frontend:server:production",
-    "prerender": "ng run frontend:prerender"
+    "prerender": "ng run frontend:prerender",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{ts,html}": [
+      "eslint --fix"
+    ],
+    "*.{ts,html,scss,css,json,md}": [
+      "prettier --write"
+    ]
   },
   "private": true,
   "dependencies": {
@@ -140,9 +151,11 @@
     "eslint-plugin-prefer-arrow": "latest",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "latest",
+    "husky": "^8.0.0",
     "jest": "29.7.0",
     "jest-preset-angular": "14.4.2",
     "js-beautify": "1.15.4",
+    "lint-staged": "15.5.0",
     "ng-mocks": "14.13.4",
     "nodemon": "2.0.22",
     "npm-run-all2": "5.0.2",
