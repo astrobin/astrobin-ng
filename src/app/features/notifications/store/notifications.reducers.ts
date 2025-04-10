@@ -1,8 +1,7 @@
-import type { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
-import type { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
-import type { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
-import type { All } from "@features/notifications/store/notifications.actions";
-import { NotificationsActionTypes } from "@features/notifications/store/notifications.actions";
+import { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
+import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
+import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import { All, NotificationsActionTypes } from "@features/notifications/store/notifications.actions";
 
 export interface NotificationsState {
   types: NotificationTypeInterface[] | null;

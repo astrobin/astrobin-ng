@@ -1,9 +1,8 @@
-import type { OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { Store } from "@ngrx/store";
+import { OnInit, Component, Input } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

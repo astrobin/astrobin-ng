@@ -1,16 +1,17 @@
-import type { OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { CountryService } from "@core/services/country.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { OnInit, Component, Input } from "@angular/core";
+import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { CountryService } from "@core/services/country.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

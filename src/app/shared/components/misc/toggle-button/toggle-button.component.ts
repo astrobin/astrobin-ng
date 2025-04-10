@@ -1,9 +1,7 @@
-import type { OnInit } from "@angular/core";
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { ThemeService } from "@core/services/theme.service";
-import { Theme } from "@core/services/theme.service";
-import type { Store } from "@ngrx/store";
+import { OnInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { ThemeService, Theme } from "@core/services/theme.service";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

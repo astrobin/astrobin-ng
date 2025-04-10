@@ -1,13 +1,12 @@
-import type { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import type { AuthService } from "@core/services/auth.service";
-import type { HttpRetryService } from "@core/services/http-retry.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { AuthService } from "@core/services/auth.service";
+import { HttpRetryService } from "@core/services/http-retry.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
-import { throwError } from "rxjs";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, throwError } from "rxjs";
 import { catchError, retry } from "rxjs/operators";
 
 export class ServerErrorsInterceptor implements HttpInterceptor {

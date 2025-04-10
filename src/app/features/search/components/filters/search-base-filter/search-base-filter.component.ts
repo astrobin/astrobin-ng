@@ -1,22 +1,21 @@
-import type { OnInit } from "@angular/core";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { OnInit, Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import type { MainState } from "@app/store/state";
-import type {
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
+import {
   SearchFilterCategory,
   SearchFilterComponentInterface
 } from "@core/interfaces/search-filter-component.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { SearchFilterEditorModalComponent } from "@features/search/components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import type { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import type { SearchFilterService } from "@features/search/services/search-filter.service";
-import type { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { isObservable } from "rxjs";
 import { takeUntil } from "rxjs/operators";

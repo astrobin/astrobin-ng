@@ -1,4 +1,4 @@
-import type { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 
 export interface TopPickNominationArchiveInterface {
   id: number;

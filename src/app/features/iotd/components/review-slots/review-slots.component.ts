@@ -1,20 +1,18 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { ActivatedRoute } from "@angular/router";
+import { OnInit, Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { selectIotdMaxReviewsPerDay } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { MainState } from "@app/store/state";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import {
   BasePromotionSlotsComponent,
   SlotType
 } from "@features/iotd/components/base-promotion-slots/base-promotion-slots.component";
-import type { VoteInterface } from "@features/iotd/services/iotd-api.service";
+import { VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { selectReviews } from "@features/iotd/store/iotd.selectors";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store, select } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-review-slots",

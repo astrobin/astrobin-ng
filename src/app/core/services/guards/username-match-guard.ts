@@ -1,12 +1,11 @@
 import { Injectable } from "@angular/core";
-import type { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { RouterService } from "@core/services/router.service";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { RouterService } from "@core/services/router.service";
 import { selectAuth, selectCurrentUser } from "@features/account/store/auth.selectors";
-import type { Actions } from "@ngrx/effects";
-import { select } from "@ngrx/store";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
+import { Actions } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 import { filter, map, switchMap, take } from "rxjs/operators";
 
 @Injectable({

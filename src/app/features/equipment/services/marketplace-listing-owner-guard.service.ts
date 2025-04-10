@@ -1,20 +1,18 @@
-import type { Location } from "@angular/common";
+import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
-import type { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import type { All } from "@app/store/actions/app.actions";
-import type { MainState } from "@app/store/state";
-import type { AuthService } from "@core/services/auth.service";
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { All } from "@app/store/actions/app.actions";
+import { MainState } from "@app/store/state";
+import { AuthService } from "@core/services/auth.service";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentActionTypes, LoadMarketplaceListing } from "@features/equipment/store/equipment.actions";
 import { selectMarketplaceListingByHash } from "@features/equipment/store/equipment.selectors";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { Observer } from "rxjs";
-import { combineLatest, Observable } from "rxjs";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observer, combineLatest, Observable } from "rxjs";
 import { filter, map } from "rxjs/operators";
 
 @Injectable({

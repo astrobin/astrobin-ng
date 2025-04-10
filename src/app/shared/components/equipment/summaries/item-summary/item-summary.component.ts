@@ -1,31 +1,34 @@
-import type { ChangeDetectorRef, OnChanges, SimpleChanges, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { AuthService } from "@core/services/auth.service";
-import type { DeviceService } from "@core/services/device.service";
-import { EquipmentItemDisplayProperty } from "@core/services/equipment-item.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { AuthService } from "@core/services/auth.service";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentItemDisplayProperty, EquipmentItemService } from "@core/services/equipment-item.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { distinctUntilKeyChangedOrNull, UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
-import { AccessoryDisplayProperty } from "@features/equipment/services/accessory.service";
-import type { AccessoryService } from "@features/equipment/services/accessory.service";
-import { CameraDisplayProperty } from "@features/equipment/services/camera.service";
-import type { CameraService } from "@features/equipment/services/camera.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { FilterDisplayProperty } from "@features/equipment/services/filter.service";
-import type { FilterService } from "@features/equipment/services/filter.service";
-import { MountDisplayProperty } from "@features/equipment/services/mount.service";
-import type { MountService } from "@features/equipment/services/mount.service";
-import { SensorDisplayProperty } from "@features/equipment/services/sensor.service";
-import type { SensorService } from "@features/equipment/services/sensor.service";
-import { TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
-import type { TelescopeService } from "@features/equipment/services/telescope.service";
+import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
+import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
+import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
+import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
+import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import {
   GetMostOftenUsedWith,
   LoadBrand,
@@ -37,30 +40,26 @@ import {
   selectEquipmentItem,
   selectMostOftenUsedWithForItem
 } from "@features/equipment/store/equipment.selectors";
-import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
-import { CameraType, instanceOfCamera } from "@features/equipment/types/camera.interface";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { CameraType, instanceOfCamera, CameraInterface } from "@features/equipment/types/camera.interface";
 import {
   EquipmentItemReviewerDecision,
   EquipmentItemType
 } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { FilterInterface } from "@features/equipment/types/filter.interface";
-import type { MountInterface } from "@features/equipment/types/mount.interface";
-import { instanceOfSensor } from "@features/equipment/types/sensor.interface";
-import type { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { TelescopeType } from "@features/equipment/types/telescope.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import type { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { instanceOfSensor, SensorInterface } from "@features/equipment/types/sensor.interface";
+import { TelescopeType, TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
 import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import { of } from "rxjs";
-import type { Observable } from "rxjs";
+import { of, Observable } from "rxjs";
 import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
 
 interface EquipmentItemProperty {

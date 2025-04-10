@@ -1,14 +1,14 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { ForumPostSearchInterface } from "@core/interfaces/forum-post-search.interface";
+import { MainState } from "@app/store/state";
+import { ForumPostSearchInterface } from "@core/interfaces/forum-post-search.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { LoadingService } from "@core/services/loading.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

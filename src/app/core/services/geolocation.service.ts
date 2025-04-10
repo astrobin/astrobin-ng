@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import type { LoadingService } from "@core/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 
 @Injectable({
   providedIn: "root"

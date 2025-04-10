@@ -1,14 +1,13 @@
-import type { OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
+import { OnInit, Component, Input } from "@angular/core";
+import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
-import type { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
-import type { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
-import type { Store } from "@ngrx/store";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
+import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
+import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { take } from "rxjs/operators";
 

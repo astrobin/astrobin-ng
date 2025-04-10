@@ -1,15 +1,22 @@
-import type { ChangeDetectorRef, OnChanges, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Input, ViewChild } from "@angular/core";
-import type { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-acquisition.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { TranslateService } from "@ngx-translate/core";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild
+} from "@angular/core";
+import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-acquisition.interface";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-image-viewer-acquisition-csv-export",

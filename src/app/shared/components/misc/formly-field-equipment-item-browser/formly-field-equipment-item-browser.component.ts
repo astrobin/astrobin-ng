@@ -1,21 +1,22 @@
-import type { ChangeDetectorRef, OnInit } from "@angular/core";
-import { Component, EventEmitter, Output } from "@angular/core";
-import type { MainState } from "@app/store/state";
+import { ChangeDetectorRef, OnInit, Component, EventEmitter, Output } from "@angular/core";
+import { MainState } from "@app/store/state";
 import { UtilsService } from "@core/services/utils/utils.service";
 import {
   EquipmentActionTypes,
   FindRecentlyUsedEquipmentItems,
-  ItemBrowserAdd
+  ItemBrowserAdd,
+  FindRecentlyUsedEquipmentItemsSuccess
 } from "@features/equipment/store/equipment.actions";
-import type { FindRecentlyUsedEquipmentItemsSuccess } from "@features/equipment/store/equipment.actions";
-import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
+import {
+  EquipmentItemType,
+  EquipmentItemUsageType,
+  EquipmentItemBaseInterface
+} from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
 import { filter, map, take } from "rxjs/operators";
 

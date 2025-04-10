@@ -1,22 +1,23 @@
 import { Component } from "@angular/core";
-import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import type { MainState } from "@app/store/state";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { LoadEquipmentItemSuccess } from "@features/equipment/store/equipment.actions";
-import { EquipmentActionTypes, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import {
+  LoadEquipmentItemSuccess,
+  EquipmentActionTypes,
+  LoadEquipmentItem
+} from "@features/equipment/store/equipment.actions";
+import { EquipmentItemUsageType, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import type { MatchType } from "@features/search/enums/match-type.enum";
-import type { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import type { SearchFilterService } from "@features/search/services/search-filter.service";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { MatchType } from "@features/search/enums/match-type.enum";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { forkJoin, Observable } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 

@@ -1,4 +1,4 @@
-import type { Routes } from "@angular/router";
+import { Routes } from "@angular/router";
 import { ImageResolver } from "@core/resolvers/image.resolver";
 import { AuthGuardService } from "@core/services/guards/auth-guard.service";
 import { ImageOwnerGuardService } from "@core/services/guards/image-owner-guard.service";

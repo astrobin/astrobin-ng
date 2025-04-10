@@ -1,19 +1,28 @@
-import type { AfterViewInit, ElementRef, OnInit, TemplateRef } from "@angular/core";
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  ElementRef,
+  OnInit,
+  TemplateRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import type { MainState } from "@app/store/state";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { CountryService } from "@core/services/country.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UserService } from "@core/services/user.service";
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { CountryService } from "@core/services/country.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UserService } from "@core/services/user.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import {
@@ -24,13 +33,13 @@ import {
 import {
   MarketplaceListingExpiration,
   MarketplaceListingShippingMethod,
-  MarketplaceListingType
+  MarketplaceListingType,
+  MarketplaceListingInterface
 } from "@features/equipment/types/marketplace-listing.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";

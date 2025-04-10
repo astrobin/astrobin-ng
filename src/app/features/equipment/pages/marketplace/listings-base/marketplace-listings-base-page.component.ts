@@ -1,42 +1,47 @@
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import type { AfterViewInit, ChangeDetectorRef, OnInit } from "@angular/core";
-import { Component, ElementRef, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  OnInit,
+  Component,
+  ElementRef,
+  Inject,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { CountryService } from "@core/services/country.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { LocalStorageService } from "@core/services/localstorage.service";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { CountryService } from "@core/services/country.service";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { LoadingService } from "@core/services/loading.service";
+import { LocalStorageService } from "@core/services/localstorage.service";
 import { RouterService } from "@core/services/router.service";
-import type { TitleService } from "@core/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type {
+import { WindowRefService } from "@core/services/window-ref.service";
+import {
   MarketplaceFilterModel,
-  MarketplaceRefreshOptions
+  MarketplaceRefreshOptions,
+  marketplaceFilterModelKeys
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import { marketplaceFilterModelKeys } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import {
   ClearMarketplaceListings,
   EquipmentActionTypes,
   LoadMarketplaceListings
 } from "@features/equipment/store/equipment.actions";
 import { selectMarketplace, selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { NgbModal, NgbModalRef, NgbOffcanvas, NgbPaginationConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { concatLatestFrom, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { NgbModal, NgbModalRef, NgbOffcanvas, NgbPaginationConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, concatLatestFrom, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
-import type { Observable } from "rxjs";
-import { fromEvent } from "rxjs";
+import { Observable, fromEvent } from "rxjs";
 import { debounceTime, filter, map, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 
 @Component({

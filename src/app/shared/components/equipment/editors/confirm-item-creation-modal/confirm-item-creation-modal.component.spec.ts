@@ -1,5 +1,4 @@
-import type { ComponentFixture } from "@angular/core/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { initialMainState } from "@app/store/state";
 import { EquipmentModule } from "@features/equipment/equipment.module";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";

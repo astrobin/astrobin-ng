@@ -1,8 +1,6 @@
-import type { OnDestroy } from "@angular/core";
-import { Injectable } from "@angular/core";
-import type { LoadingServiceInterface } from "@core/services/loading.service-interface";
-import type { Observable } from "rxjs";
-import { ReplaySubject } from "rxjs";
+import { OnDestroy, Injectable } from "@angular/core";
+import { LoadingServiceInterface } from "@core/services/loading.service-interface";
+import { Observable, ReplaySubject } from "rxjs";
 import { debounceTime, takeUntil } from "rxjs/operators";
 
 @Injectable({

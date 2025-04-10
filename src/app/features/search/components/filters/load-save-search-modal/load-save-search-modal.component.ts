@@ -1,20 +1,17 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
-import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { SavedSearchApiService } from "@core/services/api/classic/saved-search/saved-search-api.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { SavedSearchInterface } from "@features/search/interfaces/saved-search.interface";
-import type { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { OnInit, Component } from "@angular/core";
+import { AbstractControl, ValidationErrors, ValidatorFn, FormGroup } from "@angular/forms";
+import { MainState } from "@app/store/state";
+import { SavedSearchApiService } from "@core/services/api/classic/saved-search/saved-search-api.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { SavedSearchInterface } from "@features/search/interfaces/saved-search.interface";
+import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { of } from "rxjs";
-import type { Observable } from "rxjs";
+import { of, Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-load-save-search-modal",

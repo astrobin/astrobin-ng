@@ -1,14 +1,13 @@
-import type { OnInit } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { OnInit, ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
 import { selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { concatLatestFrom } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Component({

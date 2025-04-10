@@ -1,13 +1,12 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { GroupInterface } from "@core/interfaces/group.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { LoadingService } from "@core/services/loading.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { Observable } from "rxjs";
-import { EMPTY } from "rxjs";
+import { Observable, EMPTY } from "rxjs";
 import { expand, reduce } from "rxjs/operators";
 
 export interface GetGroupsParamsInterface {

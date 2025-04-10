@@ -1,4 +1,4 @@
-import type { EventEmitter } from "@angular/core";
+import { EventEmitter } from "@angular/core";
 
 export enum SearchFilterCategory {
   GENERAL,

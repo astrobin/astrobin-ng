@@ -1,14 +1,12 @@
-import type { CdkDragDrop, CdkDragEnter, CdkDragMove } from "@angular/cdk/drag-drop";
-import { moveItemInArray } from "@angular/cdk/drag-drop";
-import type { ChangeDetectorRef, ElementRef, OnInit } from "@angular/core";
-import { Component, ViewChild } from "@angular/core";
-import type { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { CdkDragDrop, CdkDragEnter, CdkDragMove, moveItemInArray } from "@angular/cdk/drag-drop";
+import { ChangeDetectorRef, ElementRef, OnInit, Component, ViewChild } from "@angular/core";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { FieldType } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-formly-field-file",

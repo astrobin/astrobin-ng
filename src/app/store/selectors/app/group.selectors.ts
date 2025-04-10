@@ -1,7 +1,7 @@
-import type { AppState } from "@app/store/reducers/app.reducers";
+import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
-import type { GroupInterface } from "@core/interfaces/group.interface";
-import type { GetGroupsParamsInterface } from "@core/services/api/classic/groups/group-api.service";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { GetGroupsParamsInterface } from "@core/services/api/classic/groups/group-api.service";
 import { createSelector } from "@ngrx/store";
 
 export const selectGroups = createSelector(

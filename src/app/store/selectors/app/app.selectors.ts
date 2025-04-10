@@ -1,6 +1,6 @@
-import type { AppState } from "@app/store/reducers/app.reducers";
-import type { MainState } from "@app/store/state";
-import type { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import { AppState } from "@app/store/reducers/app.reducers";
+import { MainState } from "@app/store/state";
+import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
 import { createSelector } from "@ngrx/store";
 
 export const selectApp = (state: MainState): AppState => state.app;

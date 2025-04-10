@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
-import type { Store } from "@ngrx/store";
+import { MainState } from "@app/store/state";
+import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

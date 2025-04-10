@@ -1,9 +1,8 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
+import { OnInit, Component } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 
 @Component({
   selector: "astrobin-image-test-page",

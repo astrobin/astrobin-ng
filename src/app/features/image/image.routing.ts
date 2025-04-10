@@ -1,4 +1,4 @@
-import type { Routes } from "@angular/router";
+import { Routes } from "@angular/router";
 import { CurrentUsersLocationsResolver } from "@core/resolvers/current-users-locations.resolver";
 import { ImageUserCollectionsResolver } from "@core/resolvers/image-user-collections-resolver.service";
 import { ImageUserGroupsResolver } from "@core/resolvers/image-user-groups.resolver";

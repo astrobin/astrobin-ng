@@ -1,4 +1,4 @@
-import type { AppState } from "@app/store/reducers/app.reducers";
+import { AppState } from "@app/store/reducers/app.reducers";
 import { SubscriptionName } from "@core/types/subscription-name.type";
 import { BackendConfigGenerator } from "@shared/generators/backend-config.generator";
 import { SubscriptionGenerator } from "@shared/generators/subscription.generator";

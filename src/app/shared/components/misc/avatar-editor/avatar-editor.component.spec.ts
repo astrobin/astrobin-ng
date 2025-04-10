@@ -1,8 +1,7 @@
 import { ChangeDetectorRef } from "@angular/core";
-import type { ComponentFixture } from "@angular/core/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { NgbActiveOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { UserGenerator } from "@shared/generators/user.generator";
 

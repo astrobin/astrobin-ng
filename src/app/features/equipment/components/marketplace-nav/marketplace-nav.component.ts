@@ -1,12 +1,11 @@
-import type { Location } from "@angular/common";
-import type { OnInit } from "@angular/core";
-import { Component, Inject, PLATFORM_ID } from "@angular/core";
-import type { IsActiveMatchOptions, Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { RouterService } from "@core/services/router.service";
-import type { Store } from "@ngrx/store";
+import { Location } from "@angular/common";
+import { OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { IsActiveMatchOptions, Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { RouterService } from "@core/services/router.service";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 export enum MarketplaceNavPage {

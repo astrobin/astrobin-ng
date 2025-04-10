@@ -1,25 +1,26 @@
-import type { CurrencyPipe } from "@angular/common";
-import type { OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
+import { CurrencyPipe } from "@angular/common";
+import { OnInit, Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import { MarketplaceShippingCostType } from "@features/equipment/types/marketplace-line-item.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { WindowRefService } from "@core/services/window-ref.service";
+import {
+  MarketplaceLineItemInterface,
+  MarketplaceShippingCostType
+} from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
-import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { take, takeUntil } from "rxjs/operators";
 

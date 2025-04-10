@@ -1,18 +1,16 @@
 import { Injectable } from "@angular/core";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import { LoadingService } from "@core/services/loading.service";
+import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { ColorOrMono } from "@features/equipment/types/sensor.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
-import { combineLatest, of } from "rxjs";
+import { SensorInterface, ColorOrMono } from "@features/equipment/types/sensor.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, combineLatest, of } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 
 export enum SensorDisplayProperty {

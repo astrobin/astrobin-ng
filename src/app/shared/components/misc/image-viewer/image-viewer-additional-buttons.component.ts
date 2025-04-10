@@ -1,5 +1,8 @@
-import type { ChangeDetectorRef, OnChanges, SimpleChanges, TemplateRef } from "@angular/core";
 import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
@@ -9,14 +12,14 @@ import {
   PLATFORM_ID,
   ViewChild
 } from "@angular/core";
-import type { SafeHtml } from "@angular/platform-browser";
+import { SafeHtml } from "@angular/platform-browser";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { TranslateService } from "@ngx-translate/core";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-image-viewer-additional-buttons",

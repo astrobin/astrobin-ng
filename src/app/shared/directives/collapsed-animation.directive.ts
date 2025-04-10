@@ -1,7 +1,17 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, ChangeDetectorRef, ElementRef, OnChanges, OnDestroy, Renderer2 } from "@angular/core";
-import { Directive, Inject, Input, PLATFORM_ID } from "@angular/core";
-import type { UtilsService } from "@core/services/utils/utils.service";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  ElementRef,
+  OnChanges,
+  OnDestroy,
+  Renderer2,
+  Directive,
+  Inject,
+  Input,
+  PLATFORM_ID
+} from "@angular/core";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 const ANIMATION_DURATION = 150;
 

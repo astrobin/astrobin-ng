@@ -1,12 +1,12 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { FrontpageSection } from "@core/interfaces/user-profile.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { LoadingService } from "@core/services/loading.service";
-import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
-import type { Observable } from "rxjs";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

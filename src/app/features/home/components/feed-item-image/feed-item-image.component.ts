@@ -1,19 +1,27 @@
-import type { ChangeDetectorRef, ElementRef, OnChanges, ViewContainerRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import type { SafeHtml } from "@angular/platform-browser";
+import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnChanges,
+  ViewContainerRef,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
+import { SafeHtml } from "@angular/platform-browser";
 import { LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import type { MainState } from "@app/store/state";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { ContentTranslateService } from "@core/services/content-translate.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
-import { FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { ContentTranslateService } from "@core/services/content-translate.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store, select } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";

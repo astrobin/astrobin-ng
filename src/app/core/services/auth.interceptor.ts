@@ -1,17 +1,22 @@
-import type { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { HttpErrorResponse, HttpHeaders } from "@angular/common/http";
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+  HttpErrorResponse,
+  HttpHeaders
+} from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { MainState } from "@app/store/state";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { environment } from "@env/environment";
 import { Logout } from "@features/account/store/auth.actions";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
-import { throwError } from "rxjs";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
-import type { AuthService } from "./auth.service";
+import { AuthService } from "./auth.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

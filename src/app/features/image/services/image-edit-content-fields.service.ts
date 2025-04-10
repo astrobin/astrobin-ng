@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CreateLocationAddTag } from "@app/store/actions/location.actions";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import {
   AcquisitionType,
   DataSource,
@@ -8,19 +8,18 @@ import {
   SolarSystemSubjectType,
   SubjectType
 } from "@core/interfaces/image.interface";
-import type { ImageService } from "@core/services/image/image.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { CreateLocationModalComponent } from "@features/image/components/create-location-modal/create-location-modal.component";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
-import type { ImageEditService } from "@features/image/services/image-edit.service";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable, Subscription } from "rxjs";
-import { of } from "rxjs";
+import { ImageEditService } from "@features/image/services/image-edit.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, Subscription, of } from "rxjs";
 import { take } from "rxjs/operators";
 
 @Injectable({

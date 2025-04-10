@@ -2,8 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { MountGenerator } from "@features/equipment/generators/mount.generator";
-import type { MountDisplayProperty } from "@features/equipment/services/mount.service";
-import { MountService } from "@features/equipment/services/mount.service";
+import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
 

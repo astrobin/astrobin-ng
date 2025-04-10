@@ -1,18 +1,19 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
+import { OnInit, Component } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UpdateMarketplaceListingSuccess } from "@features/equipment/store/equipment.actions";
-import { EquipmentActionTypes, UpdateMarketplaceListing } from "@features/equipment/store/equipment.actions";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { LoadingService } from "@core/services/loading.service";
+import { TitleService } from "@core/services/title/title.service";
+import {
+  UpdateMarketplaceListingSuccess,
+  EquipmentActionTypes,
+  UpdateMarketplaceListing
+} from "@features/equipment/store/equipment.actions";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { map, take } from "rxjs/operators";
 

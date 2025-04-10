@@ -1,21 +1,28 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, OnInit } from "@angular/core";
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Output, PLATFORM_ID } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { ActivatedRoute, Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { TitleService } from "@core/services/title/title.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { ImageInterface, ImageRevisionInterface, FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { NotificationContext } from "@features/notifications/interfaces/notification.interface";
-import type { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import { NotificationContext, NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import {
   LoadNotifications,
   MarkAllAsRead,
@@ -23,11 +30,10 @@ import {
   NotificationsActionTypes
 } from "@features/notifications/store/notifications.actions";
 import { selectNotifications } from "@features/notifications/store/notifications.selectors";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { debounceTime, distinctUntilChanged, map, take, takeUntil } from "rxjs/operators";
 

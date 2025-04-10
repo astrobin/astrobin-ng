@@ -1,6 +1,10 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, ChangeDetectorRef, ElementRef, OnDestroy, Renderer2 } from "@angular/core";
 import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  ElementRef,
+  OnDestroy,
+  Renderer2,
   ChangeDetectionStrategy,
   Component,
   ContentChild,
@@ -10,8 +14,8 @@ import {
   TemplateRef,
   ViewChild
 } from "@angular/core";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { auditTime, Subject } from "rxjs";
 import { distinctUntilChanged, takeUntil } from "rxjs/operators";
 

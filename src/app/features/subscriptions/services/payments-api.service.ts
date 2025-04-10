@@ -1,13 +1,13 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
-import type { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
-import type { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { PaymentsApiCheckoutSessionInterface } from "@features/subscriptions/interfaces/payments-api-checkout-session.interface";
-import type { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
-import type { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
-import type { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
-import type { Observable } from "rxjs";
+import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { PaymentsApiCheckoutSessionInterface } from "@features/subscriptions/interfaces/payments-api-checkout-session.interface";
+import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
+import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
+import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

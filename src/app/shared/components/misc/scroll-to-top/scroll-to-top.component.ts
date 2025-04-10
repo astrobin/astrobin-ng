@@ -1,13 +1,22 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Store } from "@ngrx/store";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID
+} from "@angular/core";
+import { MainState } from "@app/store/state";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Subscription } from "rxjs";
-import { auditTime, fromEvent } from "rxjs";
+import { Subscription, auditTime, fromEvent } from "rxjs";
 
 @Component({
   selector: "astrobin-scroll-to-top",

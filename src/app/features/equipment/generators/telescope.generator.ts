@@ -1,7 +1,6 @@
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import { TelescopeType } from "@features/equipment/types/telescope.interface";
+import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 
 export class TelescopeGenerator {
   static telescope(source: Partial<TelescopeInterface> = {}): TelescopeInterface {

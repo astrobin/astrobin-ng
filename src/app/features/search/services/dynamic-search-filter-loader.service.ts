@@ -1,6 +1,5 @@
-import type { Type, ViewContainerRef } from "@angular/core";
-import { Injectable } from "@angular/core";
-import type { SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
+import { Type, ViewContainerRef, Injectable } from "@angular/core";
+import { SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
 
 @Injectable({
   providedIn: "root"

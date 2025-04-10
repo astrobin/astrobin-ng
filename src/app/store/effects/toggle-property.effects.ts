@@ -1,13 +1,10 @@
 import { Injectable } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import type {
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
+import {
   CreateToggleProperty,
   DeleteToggleProperty,
   LoadToggleProperties,
-  LoadToggleProperty
-} from "@app/store/actions/toggle-property.actions";
-import {
+  LoadToggleProperty,
   CreateTogglePropertyFailure,
   CreateTogglePropertySuccess,
   DeleteTogglePropertyFailure,
@@ -17,15 +14,13 @@ import {
   LoadTogglePropertyFailure,
   LoadTogglePropertySuccess
 } from "@app/store/actions/toggle-property.actions";
-import type { MainState } from "@app/store/state";
-import type { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
-import type { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { of } from "rxjs";
+import { MainState } from "@app/store/state";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { LoadingService } from "@core/services/loading.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observable, of } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
 
 @Injectable()

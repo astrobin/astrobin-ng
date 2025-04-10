@@ -1,6 +1,6 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 export interface WikipediaPageImageInterface {
   source: string;

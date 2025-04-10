@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
-import type { UploadDataServiceInterface } from "@core/services/upload-metadata/upload-data.service-interface";
+import { UploadDataServiceInterface } from "@core/services/upload-metadata/upload-data.service-interface";
 import { environment } from "@env/environment";
-import type { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 import { Constants } from "@shared/constants";
-import type { Observable } from "rxjs";
-import { BehaviorSubject, Subject } from "rxjs";
+import { Observable, BehaviorSubject, Subject } from "rxjs";
 
 export interface UploadMetadataInterface {
   [key: string]: any;

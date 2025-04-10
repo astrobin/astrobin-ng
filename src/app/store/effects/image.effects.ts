@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { UndeleteImage } from "@app/store/actions/image.actions";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import {
+  UndeleteImage,
   AcceptCollaboratorRequestFailure,
   AcceptCollaboratorRequestSuccess,
   DeleteImageFailure,
@@ -38,16 +37,14 @@ import {
   UnpublishImageSuccess
 } from "@app/store/actions/image.actions";
 import { loadResourceEffect } from "@app/store/effects/load-resource.effect";
-import type { MainState } from "@app/store/state";
-import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
-import { EMPTY, of } from "rxjs";
+import { MainState } from "@app/store/state";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, EMPTY, of } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
 
 @Injectable()

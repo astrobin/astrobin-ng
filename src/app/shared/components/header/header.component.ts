@@ -1,34 +1,40 @@
-import type { ChangeDetectorRef, ElementRef, OnInit, QueryList, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, ViewChild, ViewChildren } from "@angular/core";
-import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import type { Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { JsonApiService } from "@core/services/api/classic/json/json-api.service";
-import type { AuthService } from "@core/services/auth.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { SearchService } from "@core/services/search.service";
-import type { ThemeService } from "@core/services/theme.service";
-import { Theme } from "@core/services/theme.service";
-import type { UserService } from "@core/services/user.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnInit,
+  QueryList,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild,
+  ViewChildren
+} from "@angular/core";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { Router, NavigationEnd } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { AuthService } from "@core/services/auth.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { LoadingService } from "@core/services/loading.service";
+import { SearchService } from "@core/services/search.service";
+import { ThemeService, Theme } from "@core/services/theme.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { Logout } from "@features/account/store/auth.actions";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { selectUnreadNotificationsCount } from "@features/notifications/store/notifications.selectors";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import type { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { AvailableLanguageInterface } from "@shared/constants";
-import { Constants } from "@shared/constants";
-import type { CookieService } from "ngx-cookie";
-import type { Observable } from "rxjs";
+import { AvailableLanguageInterface, Constants } from "@shared/constants";
+import { CookieService } from "ngx-cookie";
+import { Observable } from "rxjs";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 
 @Component({

@@ -1,10 +1,8 @@
 import { isPlatformServer } from "@angular/common";
-import type { PipeTransform, Renderer2 } from "@angular/core";
-import { Pipe, SecurityContext, Inject, PLATFORM_ID } from "@angular/core";
-import type { DomSanitizer } from "@angular/platform-browser";
-import type { BBCodeService } from "@core/services/bbcode.service";
-import type { Observable } from "rxjs";
-import { from, of } from "rxjs";
+import { PipeTransform, Renderer2, Pipe, SecurityContext, Inject, PLATFORM_ID } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import { BBCodeService } from "@core/services/bbcode.service";
+import { Observable, from, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 @Pipe({

@@ -1,7 +1,7 @@
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 
-import type { UserProfileInterface } from "../../interfaces/user-profile.interface";
-import type { SubscriptionName } from "../../types/subscription-name.type";
+import { UserProfileInterface } from "../../interfaces/user-profile.interface";
+import { SubscriptionName } from "../../types/subscription-name.type";
 
 export interface UserSubscriptionServiceInterface {
   // Return true if the user has _any_ of the subscriptions in `subscriptionNames`.

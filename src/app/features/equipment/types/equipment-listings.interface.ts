@@ -1,8 +1,8 @@
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
-import type { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { StockStatus } from "@features/equipment/types/stock-status.type";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { StockStatus } from "@features/equipment/types/stock-status.type";
 
 export enum EquipmentItemListingType {
   SELLS = "SELLS",

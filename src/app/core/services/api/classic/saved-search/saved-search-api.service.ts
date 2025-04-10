@@ -1,9 +1,9 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { SavedSearchInterface } from "@features/search/interfaces/saved-search.interface";
-import type { Observable } from "rxjs";
+import { LoadingService } from "@core/services/loading.service";
+import { SavedSearchInterface } from "@features/search/interfaces/saved-search.interface";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

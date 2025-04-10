@@ -1,11 +1,9 @@
-import type { TemplateRef } from "@angular/core";
-import { Injectable } from "@angular/core";
-import type { SafeHtml } from "@angular/platform-browser";
+import { TemplateRef, Injectable } from "@angular/core";
+import { SafeHtml } from "@angular/platform-browser";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { Observable } from "rxjs";
-import { Subject } from "rxjs";
+import { LoadingService } from "@core/services/loading.service";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { Observable, Subject } from "rxjs";
 
 export enum FormlyFieldMessageLevel {
   INFO = "INFO",

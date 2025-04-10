@@ -1,11 +1,8 @@
 import { Injectable } from "@angular/core";
-import type {
-  WikipediaApiService,
-  WikipediaPageSummaryInterface
-} from "@core/services/api/wikipedia/wikipedia-api.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
+import { WikipediaApiService, WikipediaPageSummaryInterface } from "@core/services/api/wikipedia/wikipedia-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
 
 export interface ConstellationInterface {
   id: string;

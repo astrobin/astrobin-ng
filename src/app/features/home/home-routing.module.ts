@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
-import type { Routes } from "@angular/router";
-import { RouterModule } from "@angular/router";
+import { Routes, RouterModule } from "@angular/router";
 import { ImageResolver } from "@core/resolvers/image.resolver";
 import { GalleryExperienceGuard } from "@core/services/guards/gallery-experience-guard.service";
 

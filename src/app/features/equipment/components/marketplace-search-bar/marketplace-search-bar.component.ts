@@ -1,9 +1,8 @@
-import type { OnInit } from "@angular/core";
-import { Component, EventEmitter, Output } from "@angular/core";
-import type { ActivatedRoute } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import type { Store } from "@ngrx/store";
+import { OnInit, Component, EventEmitter, Output } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

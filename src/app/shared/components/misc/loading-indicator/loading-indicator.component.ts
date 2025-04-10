@@ -1,8 +1,15 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { OnChanges, SimpleChanges } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { Store } from "@ngrx/store";
+import {
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID
+} from "@angular/core";
+import { MainState } from "@app/store/state";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { BehaviorSubject } from "rxjs";
 import { delay, distinctUntilChanged } from "rxjs/operators";

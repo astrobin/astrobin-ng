@@ -1,4 +1,4 @@
-import type { Routes } from "@angular/router";
+import { Routes } from "@angular/router";
 import { ImageResolver } from "@core/resolvers/image.resolver";
 import { GalleryExperienceGuard } from "@core/services/guards/gallery-experience-guard.service";
 import { UserGalleryPageComponent } from "@features/users/pages/gallery/user-gallery-page.component";

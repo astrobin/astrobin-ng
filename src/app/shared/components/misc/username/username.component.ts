@@ -1,12 +1,11 @@
-import type { OnChanges, OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { UserService } from "@core/services/user.service";
+import { OnChanges, OnInit, Component, Input } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { UserService } from "@core/services/user.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
-import type { Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { filter, switchMap, take, tap } from "rxjs/operators";

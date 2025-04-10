@@ -1,6 +1,5 @@
 import { Directive } from "@angular/core";
-import type { ControlValueAccessor } from "@angular/forms";
-import { NG_VALUE_ACCESSOR } from "@angular/forms";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
 @Directive({
   // eslint-disable-next-line

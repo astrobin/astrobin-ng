@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
-import type { RouterStateSnapshot } from "@angular/router";
+import { RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { StateGenerator } from "@app/store/generators/state.generator";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { UltimateSubscriptionGuardService } from "@core/services/guards/ultimate-subscription-guard.service";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";

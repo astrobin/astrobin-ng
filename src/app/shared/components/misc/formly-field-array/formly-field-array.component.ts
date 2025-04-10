@@ -1,8 +1,7 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { Component } from "@angular/core";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import { FieldArrayType } from "@ngx-formly/core";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { FormlyFieldConfig, FieldArrayType } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-formly-field-array",

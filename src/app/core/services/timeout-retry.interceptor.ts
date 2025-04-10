@@ -1,14 +1,12 @@
 import { isPlatformServer } from "@angular/common";
-import type { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { HttpErrorResponse } from "@angular/common/http";
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse } from "@angular/common/http";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
-import { throwError, timer } from "rxjs";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, throwError, timer } from "rxjs";
 import { catchError, finalize, mergeMap, timeout } from "rxjs/operators";
 
-import type { HttpRetryService } from "./http-retry.service";
+import { HttpRetryService } from "./http-retry.service";
 
 @Injectable()
 export class TimeoutRetryInterceptor implements HttpInterceptor {

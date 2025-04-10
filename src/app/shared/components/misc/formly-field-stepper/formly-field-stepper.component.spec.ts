@@ -1,10 +1,8 @@
-import type { ComponentFixture } from "@angular/core/testing";
-import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { NgWizardStep, StepChangedArgs } from "@kronscht/ng-wizard";
-import { STEP_STATE } from "@kronscht/ng-wizard";
+import { NgWizardStep, StepChangedArgs, STEP_STATE } from "@kronscht/ng-wizard";
 import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
 

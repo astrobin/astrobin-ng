@@ -1,6 +1,6 @@
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import type { Observable } from "rxjs";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { Observable } from "rxjs";
 
 export enum EditProposalReviewStatus {
   APPROVED = "APPROVED",

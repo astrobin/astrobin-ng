@@ -1,38 +1,45 @@
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import type { ChangeDetectorRef, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChanges } from "@angular/core";
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Output, PLATFORM_ID } from "@angular/core";
-import type { Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
+import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID
+} from "@angular/core";
+import { Router, NavigationEnd } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadCollections } from "@app/store/actions/collection.actions";
-import type { FindImagesSuccess } from "@app/store/actions/image.actions";
-import { FindImages } from "@app/store/actions/image.actions";
+import { FindImagesSuccess, FindImages } from "@app/store/actions/image.actions";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { FindImagesOptionsInterface } from "@core/services/api/classic/images/image/image-api.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { ImageInterface, FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { FindImagesOptionsInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
-import type { Subscription } from "rxjs";
-import { finalize, fromEvent, merge, throttleTime } from "rxjs";
+import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
+import { Subscription, finalize, fromEvent, merge, throttleTime } from "rxjs";
 import { debounceTime, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({

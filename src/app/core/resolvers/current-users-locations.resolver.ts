@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
-import type { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { LocationInterface } from "@core/interfaces/location.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UsersLocationsApiService } from "@core/services/api/classic/users/users-locations-api.service";
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { LocationInterface } from "@core/interfaces/location.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UsersLocationsApiService } from "@core/services/api/classic/users/users-locations-api.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 import { filter, first, map, switchMap } from "rxjs/operators";
 
 @Injectable({

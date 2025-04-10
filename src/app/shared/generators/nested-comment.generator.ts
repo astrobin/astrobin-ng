@@ -1,4 +1,4 @@
-import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
 
 export class NestedCommentGenerator {
   static nestedComment(source: Partial<NestedCommentInterface> = {}): NestedCommentInterface {

@@ -1,7 +1,6 @@
-import type { LocationStrategy } from "@angular/common";
-import { isPlatformBrowser } from "@angular/common";
+import { LocationStrategy, isPlatformBrowser } from "@angular/common";
 import { Inject, PLATFORM_ID } from "@angular/core";
-import type { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy } from "@angular/router";
+import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy } from "@angular/router";
 
 interface RouteReuseConfig {
   onlyReuseOnBackNavigation?: boolean;

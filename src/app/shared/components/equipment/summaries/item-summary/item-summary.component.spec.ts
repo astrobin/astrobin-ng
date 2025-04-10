@@ -1,6 +1,5 @@
 import { SimpleChange } from "@angular/core";
-import type { ComponentFixture } from "@angular/core/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
 import { EquipmentModule } from "@features/equipment/equipment.module";

@@ -1,17 +1,15 @@
-import type { OnInit } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { OnInit, ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { UserService } from "@core/services/user.service";
+import { MainState } from "@app/store/state";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { UserService } from "@core/services/user.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { AuthActionTypes, UpdateUserProfile } from "@features/account/store/auth.actions";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { filter, take } from "rxjs/operators";
 

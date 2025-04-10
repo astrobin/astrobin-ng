@@ -1,5 +1,4 @@
-import type { ComponentFixture } from "@angular/core/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";

@@ -1,8 +1,6 @@
 import { isPlatformServer } from "@angular/common";
-import type { OnDestroy } from "@angular/core";
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import type { Subscription } from "rxjs";
-import { fromEvent, merge } from "rxjs";
+import { OnDestroy, Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Subscription, fromEvent, merge } from "rxjs";
 import { throttleTime } from "rxjs/operators";
 
 @Injectable({ providedIn: "root" })

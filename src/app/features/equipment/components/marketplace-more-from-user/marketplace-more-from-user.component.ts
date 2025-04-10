@@ -1,13 +1,12 @@
-import type { OnChanges } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { LoadingService } from "@core/services/loading.service";
+import { OnChanges, Component, Input } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
 import { selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { Store } from "@ngrx/store";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 

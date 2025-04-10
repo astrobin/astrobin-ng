@@ -1,10 +1,9 @@
 import { isPlatformBrowser } from "@angular/common";
 import { Injectable, PLATFORM_ID, Inject } from "@angular/core";
-import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import type { JsonApiService } from "@core/services/api/classic/json/json-api.service";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
-import { from, of } from "rxjs";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, from, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 export interface ContentTranslationPreference {

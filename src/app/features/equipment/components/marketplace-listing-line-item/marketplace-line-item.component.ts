@@ -1,25 +1,26 @@
-import type { OnChanges, SimpleChanges } from "@angular/core";
-import { Component, ElementRef, Input, ViewChild } from "@angular/core";
-import type { SafeUrl } from "@angular/platform-browser";
-import type { MainState } from "@app/store/state";
+import { OnChanges, SimpleChanges, Component, ElementRef, Input, ViewChild } from "@angular/core";
+import { SafeUrl } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
-import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
-import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { filter, take, withLatestFrom } from "rxjs/operators";
 

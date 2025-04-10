@@ -1,5 +1,4 @@
-import type { ComponentRef, Type, ViewContainerRef } from "@angular/core";
-import { Injectable } from "@angular/core";
+import { ComponentRef, Type, ViewContainerRef, Injectable } from "@angular/core";
 import { Month } from "@core/enums/month.enum";
 import { BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
 import {
@@ -10,38 +9,36 @@ import {
   SolarSystemSubjectType,
   SubjectType
 } from "@core/interfaces/image.interface";
-import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import type { SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
+import {
+  SearchFilterCategory,
+  SearchFilterComponentInterface
+} from "@core/interfaces/search-filter-component.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
 import { BaseService } from "@core/services/base.service";
-import type { CountryService } from "@core/services/country.service";
-import type { DateService } from "@core/services/date.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { CountryService } from "@core/services/country.service";
+import { DateService } from "@core/services/date.service";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
 import { COMMON_OBJECTS } from "@core/services/solution/solution.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { CameraService } from "@features/equipment/services/camera.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import type { FilterService } from "@features/equipment/services/filter.service";
-import type { SensorService } from "@features/equipment/services/sensor.service";
-import type { TelescopeService } from "@features/equipment/services/telescope.service";
-import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { CameraType } from "@features/equipment/types/camera.interface";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import { CameraService } from "@features/equipment/services/camera.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { FilterService } from "@features/equipment/services/filter.service";
+import { SensorService } from "@features/equipment/services/sensor.service";
+import { TelescopeService } from "@features/equipment/services/telescope.service";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { CameraType, CameraInterface } from "@features/equipment/types/camera.interface";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { FilterType } from "@features/equipment/types/filter.interface";
-import type { FilterInterface } from "@features/equipment/types/filter.interface";
-import type { MountInterface } from "@features/equipment/types/mount.interface";
-import { ColorOrMono } from "@features/equipment/types/sensor.interface";
-import type { SensorInterface } from "@features/equipment/types/sensor.interface";
-import type { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { TelescopeType } from "@features/equipment/types/telescope.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import type { ConstellationsService } from "@features/explore/services/constellations.service";
+import { FilterType, FilterInterface } from "@features/equipment/types/filter.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TelescopeType, TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { ConstellationsService } from "@features/explore/services/constellations.service";
 import { SearchAccessoryFilterComponent } from "@features/search/components/filters/search-accessory-filter/search-accessory-filter.component";
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
 import { SearchAcquisitionTypeFilterComponent } from "@features/search/components/filters/search-acquisition-type-filter/search-acquisition-type-filter.component";
@@ -75,14 +72,14 @@ import { SearchUsersFilterComponent } from "@features/search/components/filters/
 import { SearchVideoFilterComponent } from "@features/search/components/filters/search-video-filter/search-video-filter.component";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import type { SearchAutoCompleteItem } from "@features/search/interfaces/search-auto-complete-item.interface";
-import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import type { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
-import type { SearchFilterService } from "@features/search/services/search-filter.service";
-import type { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { TranslateService } from "@ngx-translate/core";
-import type { CookieService } from "ngx-cookie";
+import { SearchAutoCompleteItem } from "@features/search/interfaces/search-auto-complete-item.interface";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateService } from "@ngx-translate/core";
+import { CookieService } from "ngx-cookie";
 import { forkJoin, Observable, of, Subject } from "rxjs";
 import { map, tap } from "rxjs/operators";
 

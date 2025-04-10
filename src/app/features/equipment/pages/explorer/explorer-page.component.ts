@@ -1,21 +1,19 @@
-import type { Location } from "@angular/common";
-import type { AfterViewInit, ChangeDetectorRef, OnInit } from "@angular/core";
-import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
+import { Location } from "@angular/common";
+import { AfterViewInit, ChangeDetectorRef, OnInit, Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { TitleService } from "@core/services/title/title.service";
+import { MainState } from "@app/store/state";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
-import type { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
-import type {
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
+import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
+import {
   ExplorerFilterInterface,
   ExplorerFiltersComponent
 } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
@@ -23,21 +21,18 @@ import {
   EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE,
   ExplorerBaseComponent
 } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import type { CompareService } from "@features/equipment/services/compare.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
+import { CompareService } from "@features/equipment/services/compare.service";
+import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import { CameraType } from "@features/equipment/types/camera.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
-import type { CookieService } from "ngx-cookie";
+import { CookieService } from "ngx-cookie";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({

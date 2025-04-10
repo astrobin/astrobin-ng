@@ -1,8 +1,8 @@
-import type { FormControl, ValidationErrors } from "@angular/forms";
-import type { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { FormControl, ValidationErrors } from "@angular/forms";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
 import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";

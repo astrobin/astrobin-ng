@@ -1,4 +1,4 @@
-import type { SubscriptionInterface } from "@core/interfaces/subscription.interface";
+import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
 import { AuthGroupGenerator } from "@shared/generators/auth-group.generator";
 
 export class SubscriptionGenerator {

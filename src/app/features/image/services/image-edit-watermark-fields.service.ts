@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
-import type { LoadingService } from "@core/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
-import type { ImageEditService } from "@features/image/services/image-edit.service";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Subscription } from "rxjs";
+import { ImageEditService } from "@features/image/services/image-edit.service";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { Subscription } from "rxjs";
 
 @Injectable({
   providedIn: null

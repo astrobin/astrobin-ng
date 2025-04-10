@@ -1,15 +1,12 @@
 import { Injectable } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
 import { selectTelescope } from "@app/store/selectors/app/telescope.selectors";
-import type { MainState } from "@app/store/state";
-import type { TelescopeApiService } from "@core/services/api/classic/gear/telescope/telescope-api.service";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { EMPTY, of } from "rxjs";
+import { MainState } from "@app/store/state";
+import { TelescopeApiService } from "@core/services/api/classic/gear/telescope/telescope-api.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observable, EMPTY, of } from "rxjs";
 import { catchError, map, mergeMap, switchMap, take } from "rxjs/operators";
 
 @Injectable()

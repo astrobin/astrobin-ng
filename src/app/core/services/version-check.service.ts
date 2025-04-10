@@ -1,9 +1,9 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
-import type { SwUpdate, VersionEvent } from "@angular/service-worker";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Subscription } from "rxjs";
+import { SwUpdate, VersionEvent } from "@angular/service-worker";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
+import { Subscription } from "rxjs";
 
 @Injectable({
   providedIn: "root"

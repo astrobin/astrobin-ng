@@ -1,10 +1,8 @@
-import type { OnChanges } from "@angular/core";
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
-import { FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
-import type { Store } from "@ngrx/store";
+import { OnChanges, ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

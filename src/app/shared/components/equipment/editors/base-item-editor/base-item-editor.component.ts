@@ -1,18 +1,24 @@
-import type { AfterViewInit, ChangeDetectorRef, OnInit, TemplateRef } from "@angular/core";
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import type { AbstractControl, FormControl } from "@angular/forms";
-import { FormGroup } from "@angular/forms";
-import type { DomSanitizer } from "@angular/platform-browser";
-import type { MainState } from "@app/store/state";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import { EquipmentItemDisplayProperty } from "@core/services/equipment-item.service";
-import type { FormlyFieldService } from "@core/services/formly-field.service";
-import { FormlyFieldMessageLevel } from "@core/services/formly-field.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  OnInit,
+  TemplateRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
+import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
+import { DomSanitizer } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService, EquipmentItemDisplayProperty } from "@core/services/equipment-item.service";
+import { FormlyFieldService, FormlyFieldMessageLevel } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import {
   CreateBrand,
   EquipmentActionTypes,
@@ -20,27 +26,22 @@ import {
   FindSimilarInBrand,
   GetOthersInBrand,
   LoadBrand,
-  LoadEquipmentItem
-} from "@features/equipment/store/equipment.actions";
-import type {
+  LoadEquipmentItem,
   CreateBrandSuccess,
   FindAllBrandsSuccess,
   FindSimilarInBrandSuccess,
   GetOthersInBrandSuccess
 } from "@features/equipment/store/equipment.actions";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
-import { CameraType } from "@features/equipment/types/camera.interface";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { CameraType, CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentItemType, EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { EMPTY, Observable, of } from "rxjs";

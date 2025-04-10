@@ -1,4 +1,4 @@
-import type { Routes } from "@angular/router";
+import { Routes } from "@angular/router";
 import { AuthGuardService } from "@core/services/guards/auth-guard.service";
 import { SubscriptionsBuyPageComponent } from "@features/subscriptions/pages/buy/subscriptions-buy-page.component";
 import { SubscriptionsCancelledPageComponent } from "@features/subscriptions/pages/cancelled-page/subscriptions-cancelled-page.component";

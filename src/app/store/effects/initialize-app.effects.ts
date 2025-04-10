@@ -1,17 +1,14 @@
 import { Injectable } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { setTimeagoIntl } from "@app/translate-loader";
-import type { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import type { JsonApiService } from "@core/services/api/classic/json/json-api.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { TranslateService } from "@ngx-translate/core";
-import type { TimeagoIntl } from "ngx-timeago";
-import type { Observable } from "rxjs";
-import { forkJoin, of } from "rxjs";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { createEffect, ofType, Actions } from "@ngrx/effects";
+import { TranslateService } from "@ngx-translate/core";
+import { TimeagoIntl } from "ngx-timeago";
+import { Observable, forkJoin, of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 
 @Injectable()

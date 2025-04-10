@@ -1,24 +1,23 @@
-import type { OnInit } from "@angular/core";
-import { Component, EventEmitter, HostBinding, Input, Output, QueryList, ViewChildren } from "@angular/core";
-import type { ActivatedRoute } from "@angular/router";
+import { OnInit, Component, EventEmitter, HostBinding, Input, Output, QueryList, ViewChildren } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { LoadNestedComments } from "@app/store/actions/nested-comments.actions";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { IotdInterface, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
-import type { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { IotdInterface, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
+import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { ImageComponent } from "@shared/components/misc/image/image.component";
+import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 
 interface Slot {

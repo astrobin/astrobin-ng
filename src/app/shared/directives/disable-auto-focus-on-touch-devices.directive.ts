@@ -1,7 +1,6 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, ElementRef } from "@angular/core";
-import { Directive, Inject, PLATFORM_ID } from "@angular/core";
-import type { DeviceService } from "@core/services/device.service";
+import { AfterViewInit, ElementRef, Directive, Inject, PLATFORM_ID } from "@angular/core";
+import { DeviceService } from "@core/services/device.service";
 
 @Directive({
   selector: "[disableAutoFocusOnTouchDevices]"

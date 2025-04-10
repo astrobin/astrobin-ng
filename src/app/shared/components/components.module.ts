@@ -6,8 +6,8 @@ import { HammerModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { NgWizardModule } from "@kronscht/ng-wizard";
-import type { NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import {
+  NgbModalConfig,
   NgbAccordionModule,
   NgbCarouselModule,
   NgbCollapseModule,

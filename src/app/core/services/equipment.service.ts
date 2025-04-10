@@ -1,23 +1,24 @@
 import { Injectable } from "@angular/core";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { DeleteEquipmentPreset, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
-import type { DeleteEquipmentPresetSuccess } from "@features/equipment/store/equipment.actions";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import {
+  DeleteEquipmentPreset,
+  EquipmentActionTypes,
+  DeleteEquipmentPresetSuccess
+} from "@features/equipment/store/equipment.actions";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import type { FilterInterface } from "@features/equipment/types/filter.interface";
-import type { MountInterface } from "@features/equipment/types/mount.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import { TelescopeType } from "@features/equipment/types/telescope.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { Observable } from "rxjs";
 import { filter, map, take } from "rxjs/operators";

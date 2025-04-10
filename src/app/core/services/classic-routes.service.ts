@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import type { GroupInterface } from "@core/interfaces/group.interface";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseService } from "@core/services/base.service";
 import { environment } from "@env/environment";
 

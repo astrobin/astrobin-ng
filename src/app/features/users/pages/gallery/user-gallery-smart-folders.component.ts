@@ -1,12 +1,19 @@
-import type { ChangeDetectorRef, OnInit } from "@angular/core";
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
-import type { ActivatedRoute } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import {
+  ChangeDetectorRef,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { takeUntil } from "rxjs/operators";

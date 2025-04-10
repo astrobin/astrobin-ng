@@ -1,9 +1,7 @@
-import type { ComponentFixture } from "@angular/core/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { NgbModalRef, NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { provideMockStore } from "@ngrx/store/testing";
 import { TranslateService } from "@ngx-translate/core";
 import { MockBuilder } from "ng-mocks";

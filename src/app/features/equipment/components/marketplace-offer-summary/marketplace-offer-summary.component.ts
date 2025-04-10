@@ -1,13 +1,12 @@
-import type { OnChanges, SimpleChanges } from "@angular/core";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UserService } from "@core/services/user.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
+import { OnChanges, SimpleChanges, Component, EventEmitter, Input, Output } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { MarketplaceAcceptRejectRetractOfferModalComponent } from "@features/equipment/components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component";
@@ -16,9 +15,7 @@ import {
   AcceptMarketplaceOffer,
   CreateMarketplacePrivateConversation,
   EquipmentActionTypes,
-  RejectMarketplaceOffer
-} from "@features/equipment/store/equipment.actions";
-import type {
+  RejectMarketplaceOffer,
   AcceptMarketplaceOfferFailure,
   AcceptMarketplaceOfferSuccess,
   CreateMarketplacePrivateConversationSuccess,
@@ -29,21 +26,19 @@ import {
   selectMarketplaceListing,
   selectMarketplacePrivateConversations
 } from "@features/equipment/store/equipment.selectors";
-import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { MarketplaceMasterOfferInterface } from "@features/equipment/types/marketplace-master-offer.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceMasterOfferInterface } from "@features/equipment/types/marketplace-master-offer.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
-import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import type { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import { select } from "@ngrx/store";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import type { Subscription } from "rxjs";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { Subscription } from "rxjs";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 
 interface OfferGroup {

@@ -1,9 +1,8 @@
-import type { ElementRef, Renderer2 } from "@angular/core";
-import { Injectable } from "@angular/core";
+import { ElementRef, Renderer2, Injectable } from "@angular/core";
 
-import type { DeviceService } from "./device.service";
-import type { PopNotificationsService } from "./pop-notifications.service";
-import type { UtilsService } from "./utils/utils.service";
+import { DeviceService } from "./device.service";
+import { PopNotificationsService } from "./pop-notifications.service";
+import { UtilsService } from "./utils/utils.service";
 
 @Injectable({
   providedIn: "root"

@@ -1,9 +1,9 @@
 /* eslint-disable max-classes-per-file */
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
 
 export class LoadNestedComments implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_NESTED_COMMENTS;

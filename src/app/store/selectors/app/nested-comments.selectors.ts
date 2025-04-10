@@ -1,7 +1,7 @@
-import type { AppState } from "@app/store/reducers/app.reducers";
+import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
 import { createSelector } from "@ngrx/store";
 
 export const selectNestedComments = createSelector(

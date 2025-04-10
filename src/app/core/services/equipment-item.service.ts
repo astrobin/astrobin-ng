@@ -1,36 +1,41 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { ImageSearchApiService } from "@core/services/api/classic/images/image/image-search-api.service";
+import { MainState } from "@app/store/state";
+import { ImageSearchApiService } from "@core/services/api/classic/images/image/image-search-api.service";
 import { BaseService } from "@core/services/base.service";
-import type { BBCodeService } from "@core/services/bbcode.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { SearchService } from "@core/services/search.service";
+import { BBCodeService } from "@core/services/bbcode.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { SearchService } from "@core/services/search.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { environment } from "@env/environment";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import type { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { getEquipmentItemType, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
-import type { EditProposalChange, EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import { EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import {
+  EditProposalChange,
+  EditProposalInterface,
+  EditProposalReviewStatus
+} from "@features/equipment/types/edit-proposal.interface";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemType,
+  EquipmentItemUsageType
+} from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import {
   MarketplaceListingCondition,
   MarketplaceShippingCostType
 } from "@features/equipment/types/marketplace-line-item.interface";
 import { MarketplaceListingShippingMethod } from "@features/equipment/types/marketplace-listing.interface";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
-import { of, from } from "rxjs";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, of, from } from "rxjs";
 import { filter, map, switchMap, take } from "rxjs/operators";
 
 export enum EquipmentItemDisplayProperty {

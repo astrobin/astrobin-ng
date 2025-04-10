@@ -1,13 +1,10 @@
 /* eslint-disable max-classes-per-file */
 
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
-import type { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
-import type {
-  NotificationContext,
-  NotificationInterface
-} from "@features/notifications/interfaces/notification.interface";
-import type { Action } from "@ngrx/store";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
+import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
+import { NotificationContext, NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import { Action } from "@ngrx/store";
 
 export enum NotificationsActionTypes {
   LOAD_TYPES = "[Notifications] Load types",

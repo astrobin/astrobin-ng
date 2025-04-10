@@ -1,18 +1,16 @@
-import type { Location } from "@angular/common";
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { AuthService } from "@core/services/auth.service";
+import { Location } from "@angular/common";
+import { OnInit, Component } from "@angular/core";
+import { Router, NavigationEnd } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { AuthService } from "@core/services/auth.service";
 import { InitializeAuth } from "@features/account/store/auth.actions";
-import type { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
-import type { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
+import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
+import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import { GetAvailableSubscriptions } from "@features/subscriptions/store/subscriptions.actions";
 import { selectAvailableSubscriptions } from "@features/subscriptions/store/subscriptions.selectors";
-import type { Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-subscriptions-router-page",

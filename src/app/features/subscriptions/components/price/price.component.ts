@@ -1,10 +1,10 @@
 import { Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
+import { MainState } from "@app/store/state";
+import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 

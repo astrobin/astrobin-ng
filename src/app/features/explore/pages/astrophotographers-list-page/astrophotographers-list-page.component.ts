@@ -1,25 +1,31 @@
 import { isPlatformBrowser } from "@angular/common";
-import { ChangeDetectionStrategy, Component, HostListener, Inject, PLATFORM_ID } from "@angular/core";
-import type { ChangeDetectorRef, OnInit } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  Inject,
+  PLATFORM_ID,
+  ChangeDetectorRef,
+  OnInit
+} from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { UserSearchInterface } from "@core/interfaces/user-search.interface";
-import type { UserSearchApiService } from "@core/services/api/classic/users/user-search-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { LoadingService } from "@core/services/loading.service";
+import { MainState } from "@app/store/state";
+import { UserSearchInterface } from "@core/interfaces/user-search.interface";
+import { UserSearchApiService } from "@core/services/api/classic/users/user-search-api.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { RouterService } from "@core/services/router.service";
-import type { SearchService } from "@core/services/search.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UserService } from "@core/services/user.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
+import { SearchService } from "@core/services/search.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { SearchType } from "@features/search/interfaces/search-model.interface";
-import type { IconProp } from "@fortawesome/fontawesome-svg-core";
-import type { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";

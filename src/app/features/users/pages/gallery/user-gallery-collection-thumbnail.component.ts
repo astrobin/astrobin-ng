@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { ImageService } from "@core/services/image/image.service";
-import type { Store } from "@ngrx/store";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ImageService } from "@core/services/image/image.service";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

@@ -1,18 +1,26 @@
-import type { ChangeDetectorRef, OnChanges, OnInit, SimpleChanges, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Input, ViewChild } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { selectCollections, selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
-import type { MainState } from "@app/store/state";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
+import { MainState } from "@app/store/state";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { DeviceService } from "@core/services/device.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { filter, map, takeUntil } from "rxjs/operators";
 
 @Component({

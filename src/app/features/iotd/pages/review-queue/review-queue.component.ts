@@ -1,17 +1,25 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, ChangeDetectorRef, OnInit, QueryList } from "@angular/core";
-import { Component, Inject, PLATFORM_ID, ViewChildren } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  OnInit,
+  QueryList,
+  Component,
+  Inject,
+  PLATFORM_ID,
+  ViewChildren
+} from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { MainState } from "@app/store/state";
+import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
 import { ReviewEntryComponent } from "@features/iotd/components/review-entry/review-entry.component";
-import type { ReviewerSeenImage, VoteInterface } from "@features/iotd/services/iotd-api.service";
+import { ReviewerSeenImage, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import {
   ClearReviewQueue,
   LoadDismissedImages,
@@ -21,13 +29,12 @@ import {
   MarkReviewerSeenImage
 } from "@features/iotd/store/iotd.actions";
 import { selectReviewerSeenImages, selectReviewQueue, selectReviews } from "@features/iotd/store/iotd.selectors";
-import type { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { CookieService } from "ngx-cookie";
-import type { Observable } from "rxjs";
-import { fromEvent, throttleTime } from "rxjs";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { CookieService } from "ngx-cookie";
+import { Observable, fromEvent, throttleTime } from "rxjs";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({

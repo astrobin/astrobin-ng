@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import type { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { EquipmentService } from "@core/services/equipment.service";
 import { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
 import { TranslateService } from "@ngx-translate/core";

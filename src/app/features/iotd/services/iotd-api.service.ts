@@ -1,18 +1,18 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { LoadingService } from "@core/services/loading.service";
-import type { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
-import type { IotdStatsInterface } from "@features/iotd/types/iotd-stats.interface";
-import type { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
-import type { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
-import type { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
-import type { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
-import type { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
-import type { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
-import type { Observable } from "rxjs";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
+import { IotdStatsInterface } from "@features/iotd/types/iotd-stats.interface";
+import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
+import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 export interface SubmissionInterface {

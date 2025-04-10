@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Inject, Output, PLATFORM_ID } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import type { Store } from "@ngrx/store";
+import { MainState } from "@app/store/state";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

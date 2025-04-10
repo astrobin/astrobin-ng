@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingDialogComponent } from "@shared/components/misc/loading-dialog/loading-dialog.component";
 
 @Injectable({

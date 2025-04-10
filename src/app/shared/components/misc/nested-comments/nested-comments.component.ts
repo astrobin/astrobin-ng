@@ -1,28 +1,37 @@
-import type { ChangeDetectorRef, OnChanges, OnInit } from "@angular/core";
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
-import type { LoadNestedCommentsSuccess } from "@app/store/actions/nested-comments.actions";
-import { CreateNestedComment, LoadNestedComments } from "@app/store/actions/nested-comments.actions";
+import {
+  LoadNestedCommentsSuccess,
+  CreateNestedComment,
+  LoadNestedComments
+} from "@app/store/actions/nested-comments.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { LoadingService } from "@core/services/loading.service";
-import type { RouterService } from "@core/services/router.service";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { RouterService } from "@core/services/router.service";
 import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 
 export enum NestedCommentsAutoStartTopLevelStrategy {

@@ -1,24 +1,21 @@
-import type { ChangeDetectorRef, OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { DomSanitizer } from "@angular/platform-browser";
-import type { MainState } from "@app/store/state";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { FormlyFieldService } from "@core/services/formly-field.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import type { SensorService } from "@features/equipment/services/sensor.service";
-import { SensorDisplayProperty } from "@features/equipment/services/sensor.service";
+import { ChangeDetectorRef, OnInit, Component } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { FormlyFieldService } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { SensorService, SensorDisplayProperty } from "@features/equipment/services/sensor.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { ColorOrMono } from "@features/equipment/types/sensor.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { SensorInterface, ColorOrMono } from "@features/equipment/types/sensor.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode

@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type {
+import { UserInterface } from "@core/interfaces/user.interface";
+import {
   MarketplaceFilterModel,
   MarketplaceRefreshOptions
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 @Component({
   selector: "astrobin-marketplace-sold-listings-page",

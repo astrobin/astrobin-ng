@@ -1,6 +1,10 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, ElementRef, OnDestroy, OnInit, Renderer2 } from "@angular/core";
 import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  Renderer2,
   Component,
   EventEmitter,
   HostBinding,
@@ -11,27 +15,22 @@ import {
   PLATFORM_ID,
   ViewChild
 } from "@angular/core";
-import type { Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type {
-  ImageViewerNavigationContext,
-  ImageViewerNavigationContextItem
-} from "@core/services/image-viewer.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { SwipeDownService } from "@core/services/swipe-down.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import { NgbCarousel } from "@ng-bootstrap/ng-bootstrap";
-import type { NgbSlideEvent } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@core/services/image-viewer.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { SwipeDownService } from "@core/services/swipe-down.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbCarousel, NgbSlideEvent } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageViewerSlideshowContextComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow-context.component";

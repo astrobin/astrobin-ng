@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 
 export class CreateToggleProperty implements PayloadActionInterface {
   readonly type = AppActionTypes.CREATE_TOGGLE_PROPERTY;

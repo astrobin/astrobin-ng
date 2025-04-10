@@ -1,7 +1,6 @@
-import type { OnChanges } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import type { ImageSearchInterface } from "@core/interfaces/image-search.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
+import { OnChanges, ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

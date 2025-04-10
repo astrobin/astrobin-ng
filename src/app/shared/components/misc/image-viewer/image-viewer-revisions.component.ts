@@ -1,15 +1,18 @@
-import type { OnChanges, SimpleChanges } from "@angular/core";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { OnChanges, SimpleChanges, Component, EventEmitter, Input, Output } from "@angular/core";
 import { DeleteImageRevision, DeleteOriginalImage, MarkImageAsFinal } from "@app/store/actions/image.actions";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { FINAL_REVISION_LABEL, ORIGINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import type { ImageService } from "@core/services/image/image.service";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
+import {
+  ImageInterface,
+  ImageRevisionInterface,
+  FINAL_REVISION_LABEL,
+  ORIGINAL_REVISION_LABEL
+} from "@core/interfaces/image.interface";
+import { ImageService } from "@core/services/image/image.service";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 

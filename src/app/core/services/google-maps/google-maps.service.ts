@@ -1,9 +1,9 @@
 import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { google } from "@google/maps";
+import { LoadingService } from "@core/services/loading.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { google } from "@google/maps";
 
 // @ts-ignore
 type maps = google.maps;

@@ -1,15 +1,14 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
+import { OnInit, Component } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
-import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { CookieService } from "ngx-cookie";
-import type { Observable } from "rxjs";
+import { CookieService } from "ngx-cookie";
+import { Observable } from "rxjs";
 import { filter, map, takeUntil } from "rxjs/operators";
 
 export enum ConfirmDismissResult {

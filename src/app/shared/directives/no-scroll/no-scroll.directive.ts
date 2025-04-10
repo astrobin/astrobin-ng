@@ -1,5 +1,4 @@
-import type { ElementRef } from "@angular/core";
-import { Directive, HostListener } from "@angular/core";
+import { ElementRef, Directive, HostListener } from "@angular/core";
 
 @Directive({
   selector: "[astrobinNoScroll]"

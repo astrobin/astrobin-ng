@@ -1,17 +1,16 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { ActivatedRoute } from "@angular/router";
+import { OnInit, Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUserByUsername } from "@features/account/store/auth.selectors";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import type { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { filter, take, tap } from "rxjs/operators";
 

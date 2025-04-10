@@ -1,6 +1,6 @@
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
 
 export interface MarketplaceMasterOfferInterface {
   id?: number;

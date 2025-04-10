@@ -1,9 +1,9 @@
 /* eslint-disable max-classes-per-file */
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { SolutionInterface } from "@core/interfaces/solution.interface";
-import type { Action } from "@ngrx/store";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { SolutionInterface } from "@core/interfaces/solution.interface";
+import { Action } from "@ngrx/store";
 
 export class LoadSolution implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_SOLUTION;

@@ -1,5 +1,5 @@
 import { AppStateGenerator } from "@app/store/generators/app-state.generator";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { AuthStateGenerator } from "@features/account/generators/auth-state.generator";
 import { EquipmentStateGenerator } from "@features/equipment/generators/equipment-state.generator";
 import { NotificationStateGenerator } from "@features/notifications/generators/notification-state.generator";

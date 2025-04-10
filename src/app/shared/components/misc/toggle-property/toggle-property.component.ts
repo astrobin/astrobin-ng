@@ -1,37 +1,44 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChanges } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID
+} from "@angular/core";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type {
+import {
   CreateTogglePropertySuccess,
   LoadTogglePropertiesFailure,
   LoadTogglePropertiesSuccess,
-  LoadTogglePropertyFailure
-} from "@app/store/actions/toggle-property.actions";
-import {
+  LoadTogglePropertyFailure,
   CreateToggleProperty,
   DeleteToggleProperty,
   LoadToggleProperty,
   LoadTogglePropertySuccess
 } from "@app/store/actions/toggle-property.actions";
-import type { MainState } from "@app/store/state";
-import type { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { RouterService } from "@core/services/router.service";
-import type { TogglePropertyBatchService } from "@core/services/toggle-property-batch.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { ViewportInitService } from "@core/services/viewport-initialization.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { IconProp } from "@fortawesome/fontawesome-svg-core";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { DeviceService } from "@core/services/device.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { RouterService } from "@core/services/router.service";
+import { TogglePropertyBatchService } from "@core/services/toggle-property-batch.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { ViewportInitService } from "@core/services/viewport-initialization.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Subscription } from "rxjs";
-import { Observable } from "rxjs";
+import { Subscription, Observable } from "rxjs";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 
 @Component({

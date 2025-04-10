@@ -1,27 +1,28 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { OnInit } from "@angular/core";
-import { Component, EventEmitter, Inject, Output, PLATFORM_ID } from "@angular/core";
+import { OnInit, Component, EventEmitter, Inject, Output, PLATFORM_ID } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { ActivatedRoute, Params, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import type { GeolocationService } from "@core/services/geolocation.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { GeolocationService } from "@core/services/geolocation.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
 import { take } from "rxjs/operators";

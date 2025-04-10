@@ -1,26 +1,31 @@
-import type { Location } from "@angular/common";
-import { isPlatformBrowser } from "@angular/common";
-import { Component, HostListener, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
-import type { AfterViewInit, ChangeDetectorRef, OnDestroy, OnInit } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
+import { Location, isPlatformBrowser } from "@angular/common";
+import {
+  Component,
+  HostListener,
+  Inject,
+  PLATFORM_ID,
+  ViewChild,
+  AfterViewInit,
+  ChangeDetectorRef,
+  OnDestroy,
+  OnInit
+} from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
 import { SearchService } from "@core/services/search.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import { SearchType } from "@features/search/interfaces/search-model.interface";
-import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { SearchType, SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
-import type { CookieService } from "ngx-cookie";
+import { CookieService } from "ngx-cookie";
 import { merge } from "rxjs";
 import { filter, map, startWith, takeUntil } from "rxjs/operators";
 

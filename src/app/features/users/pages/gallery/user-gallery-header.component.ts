@@ -1,28 +1,39 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, ChangeDetectorRef, OnChanges, OnInit, SimpleChanges, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID, ViewChild } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import type { MainState } from "@app/store/state";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { UserProfileInterface, UserProfileStatsInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type {
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { UserProfileInterface, UserProfileStatsInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import {
   CommonApiService,
   FollowersInterface,
   FollowingInterface,
   MutualFollowersInterface
 } from "@core/services/api/classic/common/common-api.service";
-import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { SearchService } from "@core/services/search.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/account/store/auth.actions";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store, select } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxjs/operators";

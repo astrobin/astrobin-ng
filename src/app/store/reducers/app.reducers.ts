@@ -1,21 +1,19 @@
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
-import type { CameraInterface } from "@core/interfaces/camera.interface";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { GroupInterface } from "@core/interfaces/group.interface";
-import type { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import { FINAL_REVISION_LABEL, ORIGINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
-import type { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
-import type { SolutionInterface } from "@core/interfaces/solution.interface";
-import type { SubscriptionInterface } from "@core/interfaces/subscription.interface";
-import type { TelescopeInterface } from "@core/interfaces/telescope.interface";
-import type { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
+import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import { CameraInterface } from "@core/interfaces/camera.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
+import { ImageInterface, FINAL_REVISION_LABEL, ORIGINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
+import { SolutionInterface } from "@core/interfaces/solution.interface";
+import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
+import { TelescopeInterface } from "@core/interfaces/telescope.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
+import { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
 
 export interface AppState {
   // Weather the app has been initialized.

@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Output } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { LoadingService } from "@core/services/loading.service";
+import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
 import { selectStaffMemberSettings } from "@features/iotd/store/iotd.selectors";
 import { QueueSortOrder } from "@features/iotd/types/staff-member-settings.interface";
-import type { Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Component({

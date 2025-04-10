@@ -1,11 +1,10 @@
-import type { OnDestroy, TemplateRef } from "@angular/core";
-import { Injectable } from "@angular/core";
-import type { MainState } from "@app/store/state";
+import { OnDestroy, TemplateRef, Injectable } from "@angular/core";
+import { MainState } from "@app/store/state";
 import { BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
-import type { SubjectType } from "@core/interfaces/image.interface";
+import { SubjectType } from "@core/interfaces/image.interface";
 import { SeeingScale, TransparencyScale } from "@core/interfaces/solar-system-acquisition.interface";
-import type { ImageService } from "@core/services/image/image.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
 import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
 import { selectEquipmentItems } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
@@ -13,12 +12,12 @@ import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from "@features/
 import { AdditionalSolarSystemAcquisitionPropertiesModalComponent } from "@features/image/components/additional-solar-system-acquisition-properties-modal/additional-solar-system-acquisition-properties-modal.component";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
-import type { ImageEditService } from "@features/image/services/image-edit.service";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Subscription } from "rxjs";
+import { ImageEditService } from "@features/image/services/image-edit.service";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { Subscription } from "rxjs";
 import { map, takeUntil } from "rxjs/operators";
 
 @Injectable({

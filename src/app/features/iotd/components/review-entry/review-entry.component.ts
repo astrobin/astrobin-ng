@@ -1,23 +1,21 @@
-import type { ElementRef } from "@angular/core";
-import { Component, Inject, PLATFORM_ID } from "@angular/core";
+import { ElementRef, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { selectBackendConfig, selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { MainState } from "@app/store/state";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteVote, PostVote } from "@features/iotd/store/iotd.actions";
 import { selectReviewForImage, selectReviewQueueEntry, selectReviews } from "@features/iotd/store/iotd.selectors";
-import type { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { CookieService } from "ngx-cookie";
-import type { Observable } from "rxjs";
-import { of } from "rxjs";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { CookieService } from "ngx-cookie";
+import { Observable, of } from "rxjs";
 import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
 
 @Component({

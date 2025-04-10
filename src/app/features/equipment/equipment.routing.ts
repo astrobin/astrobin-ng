@@ -1,4 +1,4 @@
-import type { Routes } from "@angular/router";
+import { Routes } from "@angular/router";
 import { AuthGuardService } from "@core/services/guards/auth-guard.service";
 import { GroupGuardService } from "@core/services/guards/group-guard.service";
 import { UsernameMatchGuard } from "@core/services/guards/username-match-guard";

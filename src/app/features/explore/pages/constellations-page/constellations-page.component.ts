@@ -1,16 +1,15 @@
-import type { ViewportScroller } from "@angular/common";
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { Router } from "@angular/router";
+import { ViewportScroller } from "@angular/common";
+import { OnInit, Component } from "@angular/core";
+import { Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { LoadingService } from "@core/services/loading.service";
-import type { SearchService } from "@core/services/search.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { ConstellationInterface, ConstellationsService } from "@features/explore/services/constellations.service";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
+import { SearchService } from "@core/services/search.service";
+import { TitleService } from "@core/services/title/title.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ConstellationInterface, ConstellationsService } from "@features/explore/services/constellations.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { startWith, takeUntil } from "rxjs/operators";
 

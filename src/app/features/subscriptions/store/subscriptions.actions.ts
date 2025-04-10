@@ -1,11 +1,11 @@
 /* eslint-disable max-classes-per-file */
 
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
-import type { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
-import type { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
-import type { Action } from "@ngrx/store";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
+import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
+import { Action } from "@ngrx/store";
 
 export enum SubscriptionsActionTypes {
   GET_AVAILABLE_SUBSCRIPTIONS = "[Subscriptions] Get available subscriptions",

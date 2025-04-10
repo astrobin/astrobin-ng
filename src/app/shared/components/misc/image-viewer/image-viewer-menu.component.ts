@@ -1,43 +1,56 @@
-import type { ChangeDetectorRef, OnChanges, OnInit, SimpleChanges, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Input, ViewChild } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type {
+import {
   DeleteImageFailure,
   DeleteImageSuccess,
   SubmitImageForIotdTpConsiderationSuccess,
-  UnpublishImageSuccess
+  UnpublishImageSuccess,
+  DeleteImage,
+  SubmitImageForIotdTpConsideration,
+  UnpublishImage
 } from "@app/store/actions/image.actions";
-import { DeleteImage, SubmitImageForIotdTpConsideration, UnpublishImage } from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { DownloadLimitationOptions, ORIGINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { ModalService } from "@core/services/modal.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import {
+  ImageInterface,
+  ImageRevisionInterface,
+  DownloadLimitationOptions,
+  ORIGINAL_REVISION_LABEL
+} from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
+import { ModalService } from "@core/services/modal.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
 import { environment } from "@env/environment";
-import type { NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import type { ActiveToast } from "ngx-toastr";
-import type { Subscription } from "rxjs";
+import { ActiveToast } from "ngx-toastr";
+import { Subscription } from "rxjs";
 import { filter, take, takeUntil } from "rxjs/operators";
 
 @Component({

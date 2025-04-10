@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 
 export class LoadContentType implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_CONTENT_TYPE;

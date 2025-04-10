@@ -1,12 +1,11 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { ActivatedRoute } from "@angular/router";
+import { OnInit, Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
-import type { TitleService } from "@core/services/title/title.service";
-import type { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { TitleService } from "@core/services/title/title.service";
+import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 declare const gtag: any;

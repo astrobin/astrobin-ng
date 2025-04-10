@@ -1,4 +1,4 @@
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 
 export interface LocationInterface {
   id: number;

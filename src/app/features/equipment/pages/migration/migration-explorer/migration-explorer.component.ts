@@ -1,18 +1,17 @@
-import type { ChangeDetectorRef, OnInit } from "@angular/core";
-import { Component, Inject, PLATFORM_ID } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
+import { ChangeDetectorRef, OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { DeviceService } from "@core/services/device.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { MainState } from "@app/store/state";
+import { DeviceService } from "@core/services/device.service";
+import { TitleService } from "@core/services/title/title.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { CookieService } from "ngx-cookie";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-migration-explorer",

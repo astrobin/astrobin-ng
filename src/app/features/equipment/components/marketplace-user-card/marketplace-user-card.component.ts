@@ -1,16 +1,15 @@
-import type { OnChanges } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { CountryService } from "@core/services/country.service";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { OnChanges, Component, Input } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { CountryService } from "@core/services/country.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 
 @Component({

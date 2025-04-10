@@ -1,19 +1,18 @@
 import { Injectable } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { SubscriptionInterface } from "@core/interfaces/subscription.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
+import { MainState } from "@app/store/state";
+import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { UserSubscriptionServiceInterface } from "@core/services/user-subscription/user-subscription.service-interface";
+import { LoadingService } from "@core/services/loading.service";
+import { UserSubscriptionServiceInterface } from "@core/services/user-subscription/user-subscription.service-interface";
 import { SubscriptionName } from "@core/types/subscription-name.type";
 import { selectAuth, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import type { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import { combineLatest, forkJoin, zip } from "rxjs";
-import type { Observable } from "rxjs";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { combineLatest, forkJoin, zip, Observable } from "rxjs";
 import { map, switchMap, take } from "rxjs/operators";
 
 @Injectable({

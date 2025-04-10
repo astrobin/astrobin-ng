@@ -1,46 +1,46 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, OnInit, QueryList } from "@angular/core";
-import { Component, ElementRef, EventEmitter, Inject, Input, Output, PLATFORM_ID, ViewChildren } from "@angular/core";
+import {
+  AfterViewInit,
+  OnInit,
+  QueryList,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  ViewChildren
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import { EquipmentItemDisplayProperty } from "@core/services/equipment-item.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { MainState } from "@app/store/state";
+import { EquipmentItemDisplayProperty, EquipmentItemService } from "@core/services/equipment-item.service";
+import { LoadingService } from "@core/services/loading.service";
 import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
-import type { ExplorerFilterType } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
-import type { AccessoryService } from "@features/equipment/services/accessory.service";
-import { AccessoryDisplayProperty } from "@features/equipment/services/accessory.service";
-import { CameraDisplayProperty } from "@features/equipment/services/camera.service";
-import type { CameraService } from "@features/equipment/services/camera.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { FilterDisplayProperty } from "@features/equipment/services/filter.service";
-import type { FilterService } from "@features/equipment/services/filter.service";
-import { MountDisplayProperty } from "@features/equipment/services/mount.service";
-import type { MountService } from "@features/equipment/services/mount.service";
-import { SensorDisplayProperty } from "@features/equipment/services/sensor.service";
-import type { SensorService } from "@features/equipment/services/sensor.service";
-import { TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
-import type { TelescopeService } from "@features/equipment/services/telescope.service";
-import { EquipmentActionTypes, LoadSensor } from "@features/equipment/store/equipment.actions";
-import type { LoadSensorSuccess } from "@features/equipment/store/equipment.actions";
+import { ExplorerFilterType } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
+import { AccessoryService, AccessoryDisplayProperty } from "@features/equipment/services/accessory.service";
+import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
+import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
+import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
+import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
+import { EquipmentActionTypes, LoadSensor, LoadSensorSuccess } from "@features/equipment/store/equipment.actions";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { AccessoryType } from "@features/equipment/types/accessory.interface";
-import { CameraType } from "@features/equipment/types/camera.interface";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import { CameraType, CameraInterface } from "@features/equipment/types/camera.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { FilterType } from "@features/equipment/types/filter.interface";
 import { MountType } from "@features/equipment/types/mount.interface";
-import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { TelescopeType } from "@features/equipment/types/telescope.interface";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { fromEvent } from "rxjs";
-import type { Observable } from "rxjs";
+import { fromEvent, Observable } from "rxjs";
 import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({

@@ -1,10 +1,17 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, OnChanges } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
-import type { MainState } from "@app/store/state";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID
+} from "@angular/core";
+import { MainState } from "@app/store/state";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { Store } from "@ngrx/store";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

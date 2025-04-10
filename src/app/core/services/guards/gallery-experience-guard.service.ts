@@ -1,18 +1,15 @@
 import { DOCUMENT, isPlatformBrowser } from "@angular/common";
-import type { Renderer2, RendererFactory2 } from "@angular/core";
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import type { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { AuthService } from "@core/services/auth.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
+import { Renderer2, RendererFactory2, Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { AuthService } from "@core/services/auth.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { environment } from "@env/environment";
 import { AuthActionTypes } from "@features/account/store/auth.actions";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { of } from "rxjs";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observable, of } from "rxjs";
 import { catchError, filter, map, switchMap, take, timeout } from "rxjs/operators";
 
 @Injectable({

@@ -1,14 +1,13 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
+import { OnInit, Component } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
+import { TitleService } from "@core/services/title/title.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { map, take } from "rxjs/operators";
 
 @Component({

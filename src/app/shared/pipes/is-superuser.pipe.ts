@@ -1,6 +1,5 @@
-import type { PipeTransform } from "@angular/core";
-import { Pipe } from "@angular/core";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { PipeTransform, Pipe } from "@angular/core";
+import { UserInterface } from "@core/interfaces/user.interface";
 
 @Pipe({
   name: "isSuperUser"

@@ -1,5 +1,5 @@
-import type { ImageInterface } from "@core/interfaces/image.interface";
 import {
+  ImageInterface,
   AcquisitionType,
   DataSource,
   LicenseOptions,

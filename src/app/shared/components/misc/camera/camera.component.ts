@@ -1,13 +1,12 @@
-import type { AfterViewInit, OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
+import { AfterViewInit, OnInit, Component, Input } from "@angular/core";
 import { LoadCamera } from "@app/store/actions/camera.actions";
-import type { MainState } from "@app/store/state";
-import type { CameraInterface } from "@core/interfaces/camera.interface";
-import type { GearService } from "@core/services/gear/gear.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { Store } from "@ngrx/store";
+import { MainState } from "@app/store/state";
+import { CameraInterface } from "@core/interfaces/camera.interface";
+import { GearService } from "@core/services/gear/gear.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-camera",

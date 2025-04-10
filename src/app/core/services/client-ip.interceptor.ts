@@ -1,8 +1,8 @@
-import type { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
-import type { TransferState } from "@angular/platform-browser";
+import { TransferState } from "@angular/platform-browser";
 import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 declare let global: any;
 

@@ -1,17 +1,16 @@
-import type { Location } from "@angular/common";
+import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
-import type { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { selectAuth, selectCurrentUser } from "@features/account/store/auth.selectors";
-import type { Store } from "@ngrx/store";
-import type { Observer } from "rxjs";
-import { Observable } from "rxjs";
+import { Store } from "@ngrx/store";
+import { Observer, Observable } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 
-import type { AuthService } from "../auth.service";
+import { AuthService } from "../auth.service";
 
 @Injectable({
   providedIn: "root"

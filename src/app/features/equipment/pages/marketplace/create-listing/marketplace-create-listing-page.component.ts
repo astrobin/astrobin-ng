@@ -1,27 +1,28 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { Router } from "@angular/router";
+import { OnInit, Component } from "@angular/core";
+import { Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { RouterService } from "@core/services/router.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { MARKETPLACE_SALE_TYPE } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
-import type { MarketplaceListingFormInitialCountInterface } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
-import { CreateMarketplaceListing, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
-import type {
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { RouterService } from "@core/services/router.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import {
+  MARKETPLACE_SALE_TYPE,
+  MarketplaceListingFormInitialCountInterface
+} from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
+import {
+  CreateMarketplaceListing,
+  EquipmentActionTypes,
   CreateMarketplaceListingFailure,
   CreateMarketplaceListingSuccess
 } from "@features/equipment/store/equipment.actions";
 import { MarketplaceShippingCostType } from "@features/equipment/types/marketplace-line-item.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { take, tap } from "rxjs/operators";
 

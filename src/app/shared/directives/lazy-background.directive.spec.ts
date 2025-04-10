@@ -1,7 +1,5 @@
-import type { DebugElement } from "@angular/core";
-import { Component } from "@angular/core";
-import type { ComponentFixture } from "@angular/core/testing";
-import { TestBed } from "@angular/core/testing";
+import { DebugElement, Component } from "@angular/core";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
 import { LazyBackgroundDirective } from "./lazy-background.directive";

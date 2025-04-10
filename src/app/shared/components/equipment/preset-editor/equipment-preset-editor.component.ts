@@ -1,24 +1,22 @@
-import type { OnInit } from "@angular/core";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { OnInit, Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UpdateEquipmentPresetSuccess } from "@features/equipment/store/equipment.actions";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import {
+  UpdateEquipmentPresetSuccess,
   CreateEquipmentPreset,
   CreateEquipmentPresetSuccess,
   EquipmentActionTypes,
   UpdateEquipmentPreset
 } from "@features/equipment/store/equipment.actions";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { filter, take } from "rxjs/operators";
 

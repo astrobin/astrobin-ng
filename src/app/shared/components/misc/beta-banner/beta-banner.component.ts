@@ -1,9 +1,9 @@
 import { isPlatformServer } from "@angular/common";
 import { Component, HostBinding, Inject, PLATFORM_ID } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { StateGenerator } from "@app/store/generators/state.generator";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { UsernameComponent } from "@shared/components/misc/username/username.component";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";

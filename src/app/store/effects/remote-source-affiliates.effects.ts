@@ -1,19 +1,15 @@
 import { Injectable } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import {
   LoadRemoteSourceAffiliatesFailure,
   LoadRemoteSourceAffiliatesSuccess
 } from "@app/store/actions/remote-source-affiliates.actions";
 import { selectRemoteSourceAffiliates } from "@app/store/selectors/app/remote-source-affiliates.selectors";
-import type { MainState } from "@app/store/state";
-import type { RemoteSourceAffiliateApiService } from "@core/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { of } from "rxjs";
+import { MainState } from "@app/store/state";
+import { RemoteSourceAffiliateApiService } from "@core/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
+import { Observable, of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 
 @Injectable()

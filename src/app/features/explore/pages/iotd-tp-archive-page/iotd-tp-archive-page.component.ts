@@ -1,37 +1,43 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, ComponentRef, ElementRef, OnInit } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
+import {
+  ChangeDetectorRef,
+  ComponentRef,
+  ElementRef,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import { DataSource, FINAL_REVISION_LABEL, SubjectType } from "@core/interfaces/image.interface";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerNavigationContext, ImageViewerService } from "@core/services/image-viewer.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { MainState } from "@app/store/state";
+import { ImageInterface, DataSource, FINAL_REVISION_LABEL, SubjectType } from "@core/interfaces/image.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerNavigationContext, ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
 import { RouterService } from "@core/services/router.service";
-import type { SearchService } from "@core/services/search.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { SearchService } from "@core/services/search.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { environment } from "@env/environment";
-import type { IotdApiService } from "@features/iotd/services/iotd-api.service";
-import type { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
-import type { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
-import type { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
+import { IotdApiService } from "@features/iotd/services/iotd-api.service";
+import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
+import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
+import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
 import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import type { SearchFilterService } from "@features/search/services/search-filter.service";
-import type { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
-import type { Subscription } from "rxjs";
-import { auditTime, fromEvent, Observable } from "rxjs";
+import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
+import { Subscription, auditTime, fromEvent, Observable } from "rxjs";
 import { filter, take, takeUntil } from "rxjs/operators";
 
 enum ArchiveType {

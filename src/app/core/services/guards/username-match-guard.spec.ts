@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import type { ActivatedRouteSnapshot, UrlTree } from "@angular/router";
-import { convertToParamMap, Router } from "@angular/router";
+import { ActivatedRouteSnapshot, UrlTree, convertToParamMap, Router } from "@angular/router";
 import { AppModule } from "@app/app.module"; // Update with actual path
 import { RouterService } from "@core/services/router.service"; // Update with actual path
 import { Store } from "@ngrx/store";

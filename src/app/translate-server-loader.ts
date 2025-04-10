@@ -1,4 +1,4 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { normalizeToSupportedLanguage } from "@app/translate-loader";
 import { TranslatePoHttpLoader } from "@tobyodonnell-aiau/ngx-translate-po-http-loader";
 import * as fs from "fs";

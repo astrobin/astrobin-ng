@@ -1,34 +1,34 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, OnInit } from "@angular/core";
-import { Component, HostListener, Inject, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, OnInit, Component, HostListener, Inject, PLATFORM_ID } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { SaveImageRevisionSuccess } from "@app/store/actions/image.actions";
-import { SaveImageRevision } from "@app/store/actions/image.actions";
-import type { MainState } from "@app/store/state";
+import { SaveImageRevisionSuccess, SaveImageRevision } from "@app/store/actions/image.actions";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ImageInterface, ImageRevisionInterface, MouseHoverImageOptions } from "@core/interfaces/image.interface";
-import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
+import {
+  ImageInterface,
+  ImageRevisionInterface,
+  MouseHoverImageOptions,
+  FINAL_REVISION_LABEL
+} from "@core/interfaces/image.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
-import { of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { filter, take } from "rxjs/operators";
 
 @Component({

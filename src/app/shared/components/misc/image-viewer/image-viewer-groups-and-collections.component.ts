@@ -1,22 +1,29 @@
-import type { ChangeDetectorRef, OnChanges, SimpleChanges, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Input, ViewChild } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild
+} from "@angular/core";
 import { LoadCollections } from "@app/store/actions/collection.actions";
 import { LoadGroups } from "@app/store/actions/group.actions";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
 import { selectGroupsByParams } from "@app/store/selectors/app/group.selectors";
-import type { MainState } from "@app/store/state";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { GroupInterface } from "@core/interfaces/group.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { UserService } from "@core/services/user.service";
+import { MainState } from "@app/store/state";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { UserService } from "@core/services/user.service";
 import { LoadUser, LoadUserProfile } from "@features/account/store/auth.actions";
 import { selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { select } from "@ngrx/store";
-import type { Store } from "@ngrx/store";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { select, Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { filter, take, takeUntil } from "rxjs/operators";
 

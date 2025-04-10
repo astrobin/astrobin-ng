@@ -1,16 +1,16 @@
 import { Component } from "@angular/core";
-import type { DomSanitizer } from "@angular/platform-browser";
-import type { MainState } from "@app/store/state";
+import { DomSanitizer } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SearchBaseEquipmentFilterComponent } from "@features/search/components/filters/search-base-equipment-filter/search-base-equipment-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import type { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-search-software-filter.search-filter-component",

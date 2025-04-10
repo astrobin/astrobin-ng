@@ -1,20 +1,19 @@
-import type { ChangeDetectorRef, OnChanges, SimpleChanges } from "@angular/core";
-import { ChangeDetectionStrategy, Component } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { CameraInterface as LegacyCameraInterface } from "@core/interfaces/camera.interface";
-import type { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
-import type { CollapseSyncService } from "@core/services/collapse-sync.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { SearchService } from "@core/services/search.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { ChangeDetectorRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, Component } from "@angular/core";
+import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { CameraInterface as LegacyCameraInterface } from "@core/interfaces/camera.interface";
+import { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { ImageViewerBaseEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-base-equipment.component";
-import type { CookieService } from "ngx-cookie";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-image-viewer-guiding-equipment",

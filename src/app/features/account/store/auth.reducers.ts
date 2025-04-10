@@ -1,11 +1,11 @@
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { AuthActionTypes } from "@features/account/store/auth.actions";
 import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
-import type { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 
 export interface AuthState {
   initialized: boolean;

@@ -1,4 +1,4 @@
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 
 export class BrandGenerator {
   static brand(): BrandInterface {

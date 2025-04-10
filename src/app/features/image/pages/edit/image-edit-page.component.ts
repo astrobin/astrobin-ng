@@ -1,30 +1,38 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, OnDestroy, OnInit, TemplateRef } from "@angular/core";
-import { Component, HostListener, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
+import {
+  AfterViewInit,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  Component,
+  HostListener,
+  Inject,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { SaveImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
-import type { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-acquisition.interface";
-import type { RemoteSourceAffiliateApiService } from "@core/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UserService } from "@core/services/user.service";
+import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
+import { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-acquisition.interface";
+import { RemoteSourceAffiliateApiService } from "@core/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserService } from "@core/services/user.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
-import type { LoadEquipmentItemFailure } from "@features/equipment/store/equipment.actions";
 import {
+  LoadEquipmentItemFailure,
   EquipmentActionTypes,
   FindEquipmentPresets,
   ItemBrowserSet,
@@ -33,9 +41,9 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { selectEquipmentItem, selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import type { FilterInterface } from "@features/equipment/types/filter.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features/image/components/copy-acquisition-sessions-from-another-image-modal/copy-acquisition-sessions-from-another-image-modal.component";
 import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
 import {
@@ -43,26 +51,24 @@ import {
   OverrideAcquisitionFormModalComponent
 } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
-import type { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
-import type { ImageEditBasicFieldsService } from "@features/image/services/image-edit-basic-fields.service";
-import type { ImageEditContentFieldsService } from "@features/image/services/image-edit-content-fields.service";
-import type { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
-import type { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
-import type { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
-import type { ImageEditWatermarkFieldsService } from "@features/image/services/image-edit-watermark-fields.service";
-import type { ImageEditModelInterface, ImageEditService } from "@features/image/services/image-edit.service";
+import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
+import { ImageEditBasicFieldsService } from "@features/image/services/image-edit-basic-fields.service";
+import { ImageEditContentFieldsService } from "@features/image/services/image-edit-content-fields.service";
+import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
+import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
+import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
+import { ImageEditWatermarkFieldsService } from "@features/image/services/image-edit-watermark-fields.service";
+import { ImageEditModelInterface, ImageEditService } from "@features/image/services/image-edit.service";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
-import type { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { Constants } from "@shared/constants";
-import type { CookieService } from "ngx-cookie";
-import type { Observable } from "rxjs";
-import { forkJoin, of, switchMap } from "rxjs";
+import { CookieService } from "ngx-cookie";
+import { Observable, forkJoin, of, switchMap } from "rxjs";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 
 @Component({

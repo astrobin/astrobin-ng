@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
 
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type {
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import {
   DismissedImage,
   HiddenImage,
   IotdInterface,
@@ -11,11 +11,11 @@ import type {
   SubmitterSeenImage,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
-import type { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
-import type { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
-import type { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
-import type { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
-import type { Action } from "@ngrx/store";
+import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { Action } from "@ngrx/store";
 
 export enum IotdActionTypes {
   // Generic

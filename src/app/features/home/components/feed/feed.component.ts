@@ -1,38 +1,45 @@
 import { isPlatformBrowser } from "@angular/common";
-import { ChangeDetectionStrategy, Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
-import type { ChangeDetectorRef, ComponentRef, ElementRef, OnDestroy, OnInit, Renderer2 } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  PLATFORM_ID,
+  ViewChild,
+  ChangeDetectorRef,
+  ComponentRef,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  Renderer2
+} from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import { FrontpageSection } from "@core/interfaces/user-profile.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type {
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { FINAL_REVISION_LABEL, ImageInterface } from "@core/interfaces/image.interface";
+import { FrontpageSection, UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import {
   ImageViewerNavigationContext,
   ImageViewerNavigationContextItem,
   ImageViewerService
 } from "@core/services/image-viewer.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { UpdateUserProfile } from "@features/account/store/auth.actions";
-import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
-import type { FeedApiService } from "@features/home/services/feed-api.service";
-import type { FeedService } from "@features/home/services/feed.service";
-import { select } from "@ngrx/store";
-import type { Store } from "@ngrx/store";
+import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import { FeedApiService } from "@features/home/services/feed-api.service";
+import { FeedService } from "@features/home/services/feed.service";
+import { select, Store } from "@ngrx/store";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
-import { auditTime, finalize, fromEvent, Observable } from "rxjs";
-import type { Subscription } from "rxjs";
+import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
+import { auditTime, finalize, fromEvent, Observable, Subscription } from "rxjs";
 import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 enum FeedTab {

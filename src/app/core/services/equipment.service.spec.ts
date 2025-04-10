@@ -1,9 +1,8 @@
 import { TestBed } from "@angular/core/testing";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import type { FilterInterface } from "@features/equipment/types/filter.interface";
-import type { MountInterface } from "@features/equipment/types/mount.interface";
-import { TelescopeType } from "@features/equipment/types/telescope.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { TelescopeType, TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";

@@ -1,40 +1,40 @@
-import type { ChangeDetectorRef, OnInit } from "@angular/core";
-import { Component, Inject, PLATFORM_ID } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { DeviceService } from "@core/services/device.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { ChangeDetectorRef, OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import {
   EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE,
   ExplorerBaseComponent
 } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
-import type { GetAllBrandsSuccess, GetAllInBrandSuccess } from "@features/equipment/store/equipment.actions";
-import { EquipmentActionTypes, GetAllBrands, GetAllInBrand } from "@features/equipment/store/equipment.actions";
+import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
+import {
+  GetAllBrandsSuccess,
+  GetAllInBrandSuccess,
+  EquipmentActionTypes,
+  GetAllBrands,
+  GetAllInBrand
+} from "@features/equipment/store/equipment.actions";
 import {
   arrayUniqueEquipmentItems,
   selectBrand,
   selectBrands,
   selectEquipmentItems
 } from "@features/equipment/store/equipment.selectors";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import type { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
-import type { CookieService } from "ngx-cookie";
+import { CookieService } from "ngx-cookie";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 
 @Component({

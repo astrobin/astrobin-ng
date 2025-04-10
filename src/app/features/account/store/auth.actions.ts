@@ -1,16 +1,16 @@
 /* eslint-disable max-classes-per-file */
 
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type {
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import {
   InitializeAuthSuccessInterface,
   LoginFailureInterface,
   LoginPayloadInterface,
   LoginSuccessInterface
 } from "@features/account/store/auth.actions.interfaces";
-import type { Action } from "@ngrx/store";
+import { Action } from "@ngrx/store";
 
 export enum AuthActionTypes {
   INITIALIZE = "[Auth] Initialize",

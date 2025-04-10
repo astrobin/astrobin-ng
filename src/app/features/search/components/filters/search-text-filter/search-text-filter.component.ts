@@ -1,15 +1,15 @@
 import { Component } from "@angular/core";
-import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import type { MainState } from "@app/store/state";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import type { SearchService } from "@core/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import type { SearchFilterService } from "@features/search/services/search-filter.service";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { CookieService } from "ngx-cookie";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-search-text-filter.search-filter-component",

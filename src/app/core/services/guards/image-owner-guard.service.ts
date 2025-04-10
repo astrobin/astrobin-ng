@@ -1,24 +1,20 @@
-import type { Location } from "@angular/common";
+import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
-import type { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { LoadImageFailure } from "@app/store/actions/image.actions";
-import { LoadImage } from "@app/store/actions/image.actions";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
+import { LoadImageFailure, LoadImage } from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import type { MainState } from "@app/store/state";
-import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { MainState } from "@app/store/state";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import { combineLatest, Observable } from "rxjs";
-import type { Observer } from "rxjs";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { combineLatest, Observable, Observer } from "rxjs";
 import { filter, map } from "rxjs/operators";
 
-import type { AuthService } from "../auth.service";
+import { AuthService } from "../auth.service";
 
 @Injectable({
   providedIn: "root"

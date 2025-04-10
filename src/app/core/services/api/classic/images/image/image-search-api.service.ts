@@ -1,16 +1,16 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { ImageSearchInterface } from "@core/interfaces/image-search.interface";
+import { MainState } from "@app/store/state";
+import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
-import type { LoadingService } from "@core/services/loading.service";
+import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

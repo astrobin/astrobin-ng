@@ -1,14 +1,12 @@
-import type { OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
+import { OnInit, Component, Input } from "@angular/core";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import type { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
+import { MainState } from "@app/store/state";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
+import { Store, select } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 
 @Component({

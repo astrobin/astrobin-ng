@@ -1,20 +1,18 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { ActivatedRoute } from "@angular/router";
+import { OnInit, Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { selectIotdMaxFutureIotds } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { MainState } from "@app/store/state";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import {
   BasePromotionSlotsComponent,
   SlotType
 } from "@features/iotd/components/base-promotion-slots/base-promotion-slots.component";
-import type { IotdInterface } from "@features/iotd/services/iotd-api.service";
+import { IotdInterface } from "@features/iotd/services/iotd-api.service";
 import { selectFutureIotds } from "@features/iotd/store/iotd.selectors";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store, select } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-future-iotd-slots",

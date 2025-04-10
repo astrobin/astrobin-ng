@@ -1,13 +1,12 @@
 import { NO_ERRORS_SCHEMA, PLATFORM_ID } from "@angular/core";
-import { TestBed } from "@angular/core/testing";
-import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed, ComponentFixture } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import type { UserSearchInterface } from "@core/interfaces/user-search.interface";
+import { UserSearchInterface } from "@core/interfaces/user-search.interface";
 import { UserSearchApiService } from "@core/services/api/classic/users/user-search-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@core/services/loading.service";
 import { SearchService } from "@core/services/search.service";
 import { TitleService } from "@core/services/title/title.service";

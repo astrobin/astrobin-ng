@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
-import type { SolutionInterface } from "@core/interfaces/solution.interface";
-import { SolutionStatus } from "@core/interfaces/solution.interface";
+import { SolutionInterface, SolutionStatus } from "@core/interfaces/solution.interface";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 
 export const COMMON_OBJECTS = [
   "47 Tuc Cluster",

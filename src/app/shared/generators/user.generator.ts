@@ -1,4 +1,4 @@
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { AstroBinGroupGenerator } from "@shared/generators/astrobin-group.generator";
 import { AuthGroupGenerator } from "@shared/generators/auth-group.generator";
 

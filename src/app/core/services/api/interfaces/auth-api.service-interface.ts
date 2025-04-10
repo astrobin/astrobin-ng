@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 @Injectable()
 export abstract class AuthApiService {

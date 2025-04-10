@@ -1,13 +1,12 @@
-import type { OnChanges, OnInit, SimpleChanges } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { CategoryInterface } from "@core/interfaces/forums/category.interface";
-import type { ForumInterface } from "@core/interfaces/forums/forum.interface";
-import type { TopicInterface } from "@core/interfaces/forums/topic.interface";
-import type { ForumApiService } from "@core/services/api/forum/forum-api.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { OnChanges, OnInit, SimpleChanges, Component, Input } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { CategoryInterface } from "@core/interfaces/forums/category.interface";
+import { ForumInterface } from "@core/interfaces/forums/forum.interface";
+import { TopicInterface } from "@core/interfaces/forums/topic.interface";
+import { ForumApiService } from "@core/services/api/forum/forum-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { map, switchMap, tap } from "rxjs/operators";
 

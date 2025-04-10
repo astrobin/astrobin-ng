@@ -1,11 +1,11 @@
 import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { CookieConsentEnum } from "@core/types/cookie-consent.enum";
+import { CookieConsentEnum } from "@core/types/cookie-consent.enum";
 import { Constants } from "@shared/constants";
-import type { CookieService } from "ngx-cookie";
+import { CookieService } from "ngx-cookie";
 
 @Injectable({
   providedIn: "root"

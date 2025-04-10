@@ -1,17 +1,24 @@
-import type { ChangeDetectorRef, ElementRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { ForumPostSearchInterface } from "@core/interfaces/forum-post-search.interface";
-import type { ForumPostSearchApiService } from "@core/services/api/forum/forum-post-search-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import {
+  ChangeDetectorRef,
+  ElementRef,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID
+} from "@angular/core";
+import { MainState } from "@app/store/state";
+import { ForumPostSearchInterface } from "@core/interfaces/forum-post-search.interface";
+import { ForumPostSearchApiService } from "@core/services/api/forum/forum-post-search-api.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-forum-post-search",

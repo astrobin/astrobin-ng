@@ -10,9 +10,7 @@ import {
   PLATFORM_ID,
   ViewChild,
   ViewChildren,
-  ViewContainerRef
-} from "@angular/core";
-import type {
+  ViewContainerRef,
   AfterViewInit,
   ComponentRef,
   OnChanges,
@@ -24,35 +22,33 @@ import type {
   Type
 } from "@angular/core";
 import { FormGroup, NgModel } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
-import type { DeviceService } from "@core/services/device.service";
+import { MainState } from "@app/store/state";
+import { SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
+import { DeviceService } from "@core/services/device.service";
 import { SearchService } from "@core/services/search.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
 import { LoadSaveSearchModalComponent } from "@features/search/components/filters/load-save-search-modal/load-save-search-modal.component";
-import type { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchFilterSelectionModalComponent } from "@features/search/components/filters/search-filter-selection-modal/search-filter-selection-modal.component";
 import { SearchTextFilterComponent } from "@features/search/components/filters/search-text-filter/search-text-filter.component";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import type { SearchAutoCompleteItem } from "@features/search/interfaces/search-auto-complete-item.interface";
-import { SearchType } from "@features/search/interfaces/search-model.interface";
-import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import type { SearchFilterService } from "@features/search/services/search-filter.service";
-import type { IconProp } from "@fortawesome/fontawesome-svg-core";
-import type { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { SearchAutoCompleteItem } from "@features/search/interfaces/search-auto-complete-item.interface";
+import { SearchType, SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import type { CookieService } from "ngx-cookie";
-import { forkJoin, from, of, Subject } from "rxjs";
-import type { Observable } from "rxjs";
+import { CookieService } from "ngx-cookie";
+import { forkJoin, from, of, Subject, Observable } from "rxjs";
 import { concatMap, debounceTime, filter, map, takeUntil, tap } from "rxjs/operators";
 
 type SearchAutoCompleteGroups = {

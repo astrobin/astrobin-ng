@@ -1,9 +1,9 @@
-import type { DatePipe } from "@angular/common";
+import { DatePipe } from "@angular/common";
 import { Injectable } from "@angular/core";
 import { Month } from "@core/enums/month.enum";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { TranslateService } from "@ngx-translate/core";
+import { LoadingService } from "@core/services/loading.service";
+import { TranslateService } from "@ngx-translate/core";
 import * as Sentry from "@sentry/browser";
 
 @Injectable({

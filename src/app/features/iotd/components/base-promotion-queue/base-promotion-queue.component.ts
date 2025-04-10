@@ -1,16 +1,15 @@
-import type { ElementRef, OnInit, QueryList } from "@angular/core";
-import { Component, Input, ViewChildren } from "@angular/core";
-import type { ActivatedRoute, Params, Router } from "@angular/router";
+import { ElementRef, OnInit, QueryList, Component, Input, ViewChildren } from "@angular/core";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type {
+import { WindowRefService } from "@core/services/window-ref.service";
+import {
   HiddenImage,
   IotdInterface,
   SubmissionInterface,
@@ -18,14 +17,14 @@ import type {
 } from "@features/iotd/services/iotd-api.service";
 import { LoadHiddenImages } from "@features/iotd/store/iotd.actions";
 import { selectHiddenImages } from "@features/iotd/store/iotd.selectors";
-import type { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
-import type { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { CookieService } from "ngx-cookie";
-import type { Observable } from "rxjs";
+import { CookieService } from "ngx-cookie";
+import { Observable } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 
 const FILL_SLOT_REMINDER_COOKIE = "astrobin-iotd-fill-slot-reminder";

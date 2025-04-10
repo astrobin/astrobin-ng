@@ -13,25 +13,26 @@ import { TelescopeEffects } from "@app/store/effects/telescope.effects";
 import { ThumbnailEffects } from "@app/store/effects/thumbnail.effects";
 import { TogglePropertyEffects } from "@app/store/effects/toggle-property.effects";
 import { AuthEffects } from "@features/account/store/auth.effects";
-import type { AuthState } from "@features/account/store/auth.reducers";
-import { authReducer, initialAuthState } from "@features/account/store/auth.reducers";
+import { AuthState, authReducer, initialAuthState } from "@features/account/store/auth.reducers";
 import { EquipmentEffects } from "@features/equipment/store/equipment.effects";
-import type { EquipmentState } from "@features/equipment/store/equipment.reducer";
-import { equipmentReducer, initialEquipmentState } from "@features/equipment/store/equipment.reducer";
+import { EquipmentState, equipmentReducer, initialEquipmentState } from "@features/equipment/store/equipment.reducer";
 import { NotificationsEffects } from "@features/notifications/store/notifications.effects";
-import { initialNotificationsState, notificationsReducer } from "@features/notifications/store/notifications.reducers";
-import type { NotificationsState } from "@features/notifications/store/notifications.reducers";
+import {
+  initialNotificationsState,
+  notificationsReducer,
+  NotificationsState
+} from "@features/notifications/store/notifications.reducers";
 import { SearchEffects } from "@features/search/state/search.effects";
-import type { SearchState } from "@features/search/state/state.reducer";
-import { initialSearchState, searchReducer } from "@features/search/state/state.reducer";
+import { SearchState, initialSearchState, searchReducer } from "@features/search/state/state.reducer";
 import { SubscriptionsEffects } from "@features/subscriptions/store/subscriptions.effects";
-import type { SubscriptionsState } from "@features/subscriptions/store/subscriptions.reducers";
-import { initialSubscriptionsState, subscriptionsReducer } from "@features/subscriptions/store/subscriptions.reducers";
-import type { Action, ActionReducer, ActionReducerMap, MetaReducer } from "@ngrx/store";
-import { createAction, props } from "@ngrx/store";
+import {
+  SubscriptionsState,
+  initialSubscriptionsState,
+  subscriptionsReducer
+} from "@features/subscriptions/store/subscriptions.reducers";
+import { Action, ActionReducer, ActionReducerMap, MetaReducer, createAction, props } from "@ngrx/store";
 
-import { appReducer, initialAppState } from "./reducers/app.reducers";
-import type { AppState } from "./reducers/app.reducers";
+import { appReducer, initialAppState, AppState } from "./reducers/app.reducers";
 
 export interface MainState {
   app: AppState;

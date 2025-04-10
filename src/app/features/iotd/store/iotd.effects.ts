@@ -1,19 +1,19 @@
 import { Injectable } from "@angular/core";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { IotdApiService } from "@features/iotd/services/iotd-api.service";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { IotdApiService } from "@features/iotd/services/iotd-api.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { of } from "rxjs";
 import { catchError, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
 
-import type { IotdActions, MarkReviewerSeenImage } from "./iotd.actions";
 import {
+  IotdActions,
+  MarkReviewerSeenImage,
   DeleteIotdFailure,
   DeleteIotdSuccess,
   DeleteSubmissionFailure,

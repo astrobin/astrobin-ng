@@ -1,10 +1,8 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ElementRef, OnDestroy } from "@angular/core";
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { ElementRef, OnDestroy, Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Subscription } from "rxjs";
-import { fromEvent, Subject } from "rxjs";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Subscription, fromEvent, Subject } from "rxjs";
 import { auditTime, takeUntil } from "rxjs/operators";
 
 interface RegisteredComponent {

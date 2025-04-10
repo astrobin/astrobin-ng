@@ -1,8 +1,7 @@
-import type { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
+import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
-import { SubscriptionsActionTypes } from "@features/subscriptions/store/subscriptions.actions";
-import type { All } from "@features/subscriptions/store/subscriptions.actions";
+import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
+import { SubscriptionsActionTypes, All } from "@features/subscriptions/store/subscriptions.actions";
 import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
 
 export interface SubscriptionsState {

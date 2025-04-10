@@ -1,7 +1,6 @@
 import { ChangeDetectorRef } from "@angular/core";
-import type { ComponentFixture } from "@angular/core/testing";
-import { TestBed } from "@angular/core/testing";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { UserService } from "@core/services/user.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";

@@ -1,22 +1,21 @@
-import type { OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
+import { OnInit, Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { FindAllEquipmentItemsSuccess } from "@features/equipment/store/equipment.actions";
-import { EquipmentActionTypes, FindSimilarInBrand } from "@features/equipment/store/equipment.actions";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import { CameraType } from "@features/equipment/types/camera.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import {
+  FindAllEquipmentItemsSuccess,
+  EquipmentActionTypes,
+  FindSimilarInBrand
+} from "@features/equipment/store/equipment.actions";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 export enum ConfirmItemCreationResult {

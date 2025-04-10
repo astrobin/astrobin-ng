@@ -1,9 +1,9 @@
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 
 export enum MarketplaceListingCondition {
   UNOPENED = "UNOPENED",

@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
-import type { AccessoryInterface as LegacyAccessoryInterface } from "@core/interfaces/accessory.interface";
-import type { CameraInterface as LegacyCameraInterface } from "@core/interfaces/camera.interface";
-import type { FilterInterface as LegacyFilterInterface } from "@core/interfaces/filter.interface";
-import type { MountInterface as LegacyMountInterface } from "@core/interfaces/mount.interface";
-import type { SoftwareInterface as LegacySoftwareInterface } from "@core/interfaces/software.interface";
-import type { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { AccessoryInterface as LegacyAccessoryInterface } from "@core/interfaces/accessory.interface";
+import { CameraInterface as LegacyCameraInterface } from "@core/interfaces/camera.interface";
+import { FilterInterface as LegacyFilterInterface } from "@core/interfaces/filter.interface";
+import { MountInterface as LegacyMountInterface } from "@core/interfaces/mount.interface";
+import { SoftwareInterface as LegacySoftwareInterface } from "@core/interfaces/software.interface";
+import { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 export type LegacyEquipmentItem =
   | LegacyTelescopeInterface

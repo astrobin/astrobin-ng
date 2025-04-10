@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type {
+import {
   AddImageToCollection,
   CreateCollection,
   DeleteCollection,
@@ -8,9 +8,7 @@ import type {
   LoadCollections,
   RemoveImageFromCollection,
   SetCollectionCoverImage,
-  UpdateCollection
-} from "@app/store/actions/collection.actions";
-import {
+  UpdateCollection,
   AddImageToCollectionFailure,
   AddImageToCollectionSuccess,
   CreateCollectionFailure,
@@ -28,12 +26,11 @@ import {
   UpdateCollectionFailure,
   UpdateCollectionSuccess
 } from "@app/store/actions/collection.actions";
-import type { CollectionApiService } from "@core/services/api/classic/collections/collection-api.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { TranslateService } from "@ngx-translate/core";
+import { CollectionApiService } from "@core/services/api/classic/collections/collection-api.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { createEffect, ofType, Actions } from "@ngrx/effects";
+import { TranslateService } from "@ngx-translate/core";
 import { of } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
 

@@ -1,18 +1,16 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, OnDestroy } from "@angular/core";
-import { Component, Inject, PLATFORM_ID } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { ChangeDetectorRef, OnDestroy, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
 import { selectImageEditorState } from "@features/image/store/image.selectors";
-import type { Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
-import type { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
-import type { Subscription } from "rxjs";
-import { fromEvent } from "rxjs";
+import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
+import { Subscription, fromEvent } from "rxjs";
 import { debounceTime, filter, map, take, tap } from "rxjs/operators";
 
 @Component({

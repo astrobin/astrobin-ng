@@ -1,16 +1,12 @@
 import { Injectable } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { LoadContentTypeById } from "@app/store/actions/content-type.actions";
-import { LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
+import { LoadContentTypeById, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import type { MainState } from "@app/store/state";
-import type { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { EMPTY, of } from "rxjs";
+import { MainState } from "@app/store/state";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observable, EMPTY, of } from "rxjs";
 import { catchError, map, mergeMap, take } from "rxjs/operators";
 
 @Injectable()

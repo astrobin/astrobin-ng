@@ -1,4 +1,4 @@
-import type { SolutionInterface } from "@core/interfaces/solution.interface";
+import { SolutionInterface } from "@core/interfaces/solution.interface";
 
 export interface PlateSolvingSettingsInterface {
   id: number;

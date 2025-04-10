@@ -1,14 +1,13 @@
-import type { HttpClient } from "@angular/common/http";
-import { Component } from "@angular/core";
-import type { OnInit } from "@angular/core";
-import type { ActivatedRoute } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { HttpClient } from "@angular/common/http";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { environment } from "@env/environment";
 import { RejectReviewGearRenamingProposalsModalComponent } from "@features/equipment/components/reject-review-gear-renaming-proposals-modal/reject-review-gear-renaming-proposals-modal.component";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { take } from "rxjs/operators";
 

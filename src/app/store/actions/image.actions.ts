@@ -1,17 +1,17 @@
 /* eslint-disable max-classes-per-file */
 
-import type { HttpErrorResponse } from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type {
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import {
   FindImagesOptionsInterface,
   FindImagesResponseInterface
 } from "@core/services/api/classic/images/image/image-api.service";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { ImageEditModelInterface } from "@features/image/services/image-edit.service";
-import type { Action } from "@ngrx/store";
+import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
+import { Action } from "@ngrx/store";
 
 export interface LoadImageOptionsInterface {
   skipThumbnails: boolean;

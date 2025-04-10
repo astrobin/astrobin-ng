@@ -1,11 +1,10 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { OnInit, Component } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { AdditionalAcquisitionPropertiesBase } from "@features/image/components/additional-acquisition-properties-base/additional-acquisition-properties-base";
-import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-additional-solar-system-acquisition-properties-modal",

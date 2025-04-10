@@ -1,22 +1,22 @@
 import { Injectable } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { MainState } from "@app/store/state";
 import {
+  ImageInterface,
+  ImageRevisionInterface,
   DownloadLimitationOptions,
   FullSizeLimitationDisplayOptions,
   LicenseOptions,
   MouseHoverImageOptions
 } from "@core/interfaces/image.interface";
-import type { ImageService } from "@core/services/image/image.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
-import type { ImageEditService } from "@features/image/services/image-edit.service";
-import { KeyValueTagsValidator } from "@features/image/services/image-edit.service";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { ImageEditService, KeyValueTagsValidator } from "@features/image/services/image-edit.service";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
   providedIn: null

@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
-import type { ImageEditService } from "@features/image/services/image-edit.service";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { ImageEditService } from "@features/image/services/image-edit.service";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { EMPTY } from "rxjs";
 import { catchError, map, retry } from "rxjs/operators";
 

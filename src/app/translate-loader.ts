@@ -1,9 +1,9 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
 import { Constants } from "@shared/constants";
 import { TranslatePoHttpLoader } from "@tobyodonnell-aiau/ngx-translate-po-http-loader";
-import type { TimeagoIntl } from "ngx-timeago";
+import { TimeagoIntl } from "ngx-timeago";
 import { strings as timeagoAf } from "ngx-timeago/language-strings/af";
 import { strings as timeagoAr } from "ngx-timeago/language-strings/ar";
 import { strings as timeagoAz } from "ngx-timeago/language-strings/az";
@@ -59,7 +59,7 @@ import { strings as timeagoUz } from "ngx-timeago/language-strings/uz";
 import { strings as timeagoVi } from "ngx-timeago/language-strings/vi";
 import { strings as timeagoZhCn } from "ngx-timeago/language-strings/zh-CN";
 import { strings as timeagoZhTw } from "ngx-timeago/language-strings/zh-TW";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 export function normalizeToSupportedLanguage(lang: string): string {

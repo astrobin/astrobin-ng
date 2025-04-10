@@ -1,24 +1,25 @@
-import type { OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
+import { OnInit, Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { selectUser } from "@features/account/store/auth.selectors";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { AssignEditProposal, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
-import type { AssignEditProposalSuccess } from "@features/equipment/store/equipment.actions";
-import type { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import {
+  AssignEditProposal,
+  EquipmentActionTypes,
+  AssignEditProposalSuccess
+} from "@features/equipment/store/equipment.actions";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { UsernameService } from "@shared/components/misc/username/username.service";
+import { UsernameService } from "@shared/components/misc/username/username.service";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 
 @Component({

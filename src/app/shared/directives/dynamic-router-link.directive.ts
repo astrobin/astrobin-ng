@@ -1,6 +1,5 @@
-import type { AfterViewInit, ElementRef } from "@angular/core";
-import { Directive } from "@angular/core";
-import type { Router } from "@angular/router";
+import { AfterViewInit, ElementRef, Directive } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Directive({
   selector: "[dynamicRouterLink]"

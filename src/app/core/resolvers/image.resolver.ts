@@ -1,14 +1,12 @@
 import { Location } from "@angular/common";
 import { inject } from "@angular/core";
-import type { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot } from "@angular/router";
-import { Router } from "@angular/router";
+import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot, Router } from "@angular/router";
 import { SetImage } from "@app/store/actions/image.actions";
-import type { MainState } from "@app/store/state";
-import type { ImageInterface } from "@core/interfaces/image.interface";
+import { MainState } from "@app/store/state";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { EMPTY, of } from "rxjs";
+import { Observable, EMPTY, of } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 
 export const ImageResolver: ResolveFn<ImageInterface | null> = (

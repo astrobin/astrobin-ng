@@ -1,12 +1,12 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { CategoryInterface } from "@core/interfaces/forums/category.interface";
-import type { ForumInterface } from "@core/interfaces/forums/forum.interface";
-import type { TopicInterface } from "@core/interfaces/forums/topic.interface";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { LoadingService } from "@core/services/loading.service";
+import { CategoryInterface } from "@core/interfaces/forums/category.interface";
+import { ForumInterface } from "@core/interfaces/forums/forum.interface";
+import { TopicInterface } from "@core/interfaces/forums/topic.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 import { BaseClassicApiService } from "../classic/base-classic-api.service";
 

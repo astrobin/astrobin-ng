@@ -1,19 +1,19 @@
 import { Injectable } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { GroupInterface } from "@core/interfaces/group.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseService } from "@core/services/base.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { UserServiceInterface } from "@core/services/user.service-interface";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UserServiceInterface } from "@core/services/user.service-interface";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { selectUser } from "@features/account/store/auth.selectors";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

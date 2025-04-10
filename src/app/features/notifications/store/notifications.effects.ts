@@ -1,13 +1,11 @@
 import { Injectable } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { LoadingService } from "@core/services/loading.service";
-import type { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
-import type {
+import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
+import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
+import {
   LoadNotifications,
   MarkAsRead,
-  SetNotificationSetting
-} from "@features/notifications/store/notifications.actions";
-import {
+  SetNotificationSetting,
   GetUnreadCountFailure,
   GetUnreadCountSuccess,
   LoadNotificationSettingsSuccess,
@@ -25,11 +23,9 @@ import {
   selectNotificationSettings,
   selectNotificationTypes
 } from "@features/notifications/store/notifications.selectors";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { EMPTY, of } from "rxjs";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observable, EMPTY, of } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
 
 @Injectable()

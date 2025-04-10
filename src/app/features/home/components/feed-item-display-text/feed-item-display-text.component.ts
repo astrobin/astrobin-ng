@@ -1,9 +1,7 @@
-import type { OnChanges } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
-import { FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
-import type { TranslateService } from "@ngx-translate/core";
+import { OnChanges, ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-feed-item-display-text",

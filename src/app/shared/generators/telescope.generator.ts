@@ -1,4 +1,4 @@
-import type { TelescopeInterface } from "@core/interfaces/telescope.interface";
+import { TelescopeInterface } from "@core/interfaces/telescope.interface";
 
 export class TelescopeGenerator {
   static telescope(): TelescopeInterface {

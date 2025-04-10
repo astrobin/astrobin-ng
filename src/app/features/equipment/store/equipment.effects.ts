@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import type { MainState } from "@app/store/state";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { All } from "@app/store/actions/app.actions";
+import { MainState } from "@app/store/state";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import {
   AcceptMarketplaceOfferFailure,
   AcceptMarketplaceOfferSuccess,
@@ -88,9 +88,7 @@ import {
   UpdateMarketplaceOfferFailure,
   UpdateMarketplaceOfferSuccess,
   UpdateMarketplacePrivateConversationFailure,
-  UpdateMarketplacePrivateConversationSuccess
-} from "@features/equipment/store/equipment.actions";
-import type {
+  UpdateMarketplacePrivateConversationSuccess,
   AcceptMarketplaceOffer,
   ApproveEquipmentItem,
   ApproveEquipmentItemEditProposal,
@@ -157,20 +155,17 @@ import {
   selectEquipmentItem,
   selectMarketplaceListing
 } from "@features/equipment/store/equipment.selectors";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { SelectorWithProps } from "@ngrx/store/src/models";
-import type { TranslateService } from "@ngx-translate/core";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { EquipmentItemType, EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { concatLatestFrom, createEffect, ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { SelectorWithProps } from "@ngrx/store/src/models";
+import { TranslateService } from "@ngx-translate/core";
 import { LocalDatePipe } from "@shared/pipes/local-date.pipe";
-import { concat, finalize, forkJoin, last, of } from "rxjs";
-import type { Observable } from "rxjs";
+import { concat, finalize, forkJoin, last, of, Observable } from "rxjs";
 import { catchError, filter, map, mergeMap, switchMap, tap } from "rxjs/operators";
 
 function getFromStoreOrApiByIdAndType<T>(

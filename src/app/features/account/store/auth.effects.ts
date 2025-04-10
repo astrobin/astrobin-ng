@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
+import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
 import { setTimeagoIntl } from "@app/translate-loader";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
 import { AuthService } from "@core/services/auth.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type {
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import {
   ChangeUserProfileGalleryHeaderImage,
   DeleteAvatar,
   LoadUser,
@@ -18,9 +18,7 @@ import type {
   RemoveShadowBanUserProfile,
   ShadowBanUserProfile,
   UpdateUserProfile,
-  UploadAvatar
-} from "@features/account/store/auth.actions";
-import {
+  UploadAvatar,
   AuthActionTypes,
   ChangeUserProfileGalleryHeaderImageFailure,
   ChangeUserProfileGalleryHeaderImageSuccess,
@@ -42,15 +40,14 @@ import {
   UploadAvatarFailure,
   UploadAvatarSuccess
 } from "@features/account/store/auth.actions";
-import type { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
+import { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
 import { selectUser, selectUserByUsername, selectUserProfile } from "@features/account/store/auth.selectors";
-import type { Actions } from "@ngrx/effects";
-import { act, createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { Actions, act, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { Constants } from "@shared/constants";
-import type { CookieService } from "ngx-cookie";
-import type { TimeagoIntl } from "ngx-timeago";
+import { CookieService } from "ngx-cookie";
+import { TimeagoIntl } from "ngx-timeago";
 import { EMPTY, Observable, of } from "rxjs";
 import { catchError, concatMap, map, mergeMap, switchMap, tap } from "rxjs/operators";
 

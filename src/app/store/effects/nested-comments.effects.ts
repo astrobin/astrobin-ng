@@ -1,9 +1,8 @@
 import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { UpdateNestedComment } from "@app/store/actions/nested-comments.actions";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import {
+  UpdateNestedComment,
   ApproveNestedCommentFailure,
   ApproveNestedCommentSuccess,
   CreateNestedCommentFailure,
@@ -17,19 +16,17 @@ import {
   UpdateNestedCommentSuccess
 } from "@app/store/actions/nested-comments.actions";
 import { selectNestedCommentById } from "@app/store/selectors/app/nested-comments.selectors";
-import type { MainState } from "@app/store/state";
-import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
-import type { NestedCommentsApiService } from "@core/services/api/classic/nested-comments/nested-comments-api.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { MainState } from "@app/store/state";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { NestedCommentsApiService } from "@core/services/api/classic/nested-comments/nested-comments-api.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
-import { fromEvent, of } from "rxjs";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, fromEvent, of } from "rxjs";
 import { catchError, debounceTime, filter, first, map, mapTo, mergeMap, take, tap } from "rxjs/operators";
 
 @Injectable()

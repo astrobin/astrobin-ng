@@ -1,6 +1,6 @@
-import type { AppState } from "@app/store/reducers/app.reducers";
+import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
-import type { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
 import { createSelector } from "@ngrx/store";
 
 export const selectThumbnails = createSelector(

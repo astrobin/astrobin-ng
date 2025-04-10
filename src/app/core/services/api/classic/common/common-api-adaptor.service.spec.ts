@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 import { MockBuilder } from "ng-mocks";
 
-import type {
+import {
   BackendGroupInterface,
   BackendPermissionInterface,
-  BackendUserInterface
+  BackendUserInterface,
+  CommonApiAdaptorService
 } from "./common-api-adaptor.service";
-import { CommonApiAdaptorService } from "./common-api-adaptor.service";
 
 describe("CommonApiAdaptorService", () => {
   let service: CommonApiAdaptorService;

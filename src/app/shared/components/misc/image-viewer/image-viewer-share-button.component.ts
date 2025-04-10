@@ -1,23 +1,31 @@
 import { DatePipe } from "@angular/common";
-import type { ChangeDetectorRef, OnChanges, OnDestroy, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Input, ViewChild } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnDestroy,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { EquipmentService } from "@core/services/equipment.service";
-import type { ImageInfoService } from "@core/services/image/image-info.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UserService } from "@core/services/user.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentService } from "@core/services/equipment.service";
+import { ImageInfoService } from "@core/services/image/image-info.service";
+import { ImageService } from "@core/services/image/image.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";

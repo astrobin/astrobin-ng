@@ -1,12 +1,18 @@
-import type { AfterViewInit, ElementRef, OnChanges, OnDestroy, SimpleChanges } from "@angular/core";
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import type {
-  ImageViewerNavigationContext,
-  ImageViewerNavigationContextItem
-} from "@core/services/image-viewer.service";
+import {
+  AfterViewInit,
+  ElementRef,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
+import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@core/services/image-viewer.service";
 import { fadeInOut } from "@shared/animations";
-import type { Subscription } from "rxjs";
-import { fromEvent, throttleTime } from "rxjs";
+import { Subscription, fromEvent, throttleTime } from "rxjs";
 
 @Component({
   selector: "astrobin-image-viewer-slideshow-context",

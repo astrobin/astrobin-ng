@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { ServerModule } from "@angular/platform-server";
 import { CLIENT_IP } from "@app/client-ip.injector";
 import { translateServerLoaderFactory } from "@app/translate-server-loader";
-import type { StoreTransferService } from "@core/services/store-transfer.service";
+import { StoreTransferService } from "@core/services/store-transfer.service";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { CookieBackendModule } from "ngx-cookie-backend";
 

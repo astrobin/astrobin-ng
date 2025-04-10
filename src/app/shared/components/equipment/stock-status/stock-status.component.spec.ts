@@ -1,8 +1,7 @@
-import type { ComponentFixture } from "@angular/core/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
-import type { EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
+import { EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { StockStatus } from "@features/equipment/types/stock-status.type";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";

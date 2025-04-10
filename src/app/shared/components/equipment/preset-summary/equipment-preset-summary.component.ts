@@ -1,22 +1,21 @@
-import type { OnChanges, SimpleChanges } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
+import { OnChanges, SimpleChanges, Component, Input } from "@angular/core";
+import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import type { FilterInterface } from "@features/equipment/types/filter.interface";
-import type { MountInterface } from "@features/equipment/types/mount.interface";
-import type { SoftwareInterface } from "@features/equipment/types/software.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 
 interface EquipmentTypeConfig {
   property: keyof EquipmentPresetInterface;

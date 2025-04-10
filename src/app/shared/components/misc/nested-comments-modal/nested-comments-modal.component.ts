@@ -1,16 +1,16 @@
 import { Component, Input, ViewChild } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import type {
+import {
   NestedCommentsAutoStartTopLevelStrategy,
-  NestedCommentsTopLevelFormPlacement
+  NestedCommentsTopLevelFormPlacement,
+  NestedCommentsComponent
 } from "@shared/components/misc/nested-comments/nested-comments.component";
-import { NestedCommentsComponent } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { firstValueFrom } from "rxjs";
 
 @Component({

@@ -1,28 +1,24 @@
-import type { AfterViewInit, ChangeDetectorRef, OnInit } from "@angular/core";
-import { ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
+import { AfterViewInit, ChangeDetectorRef, OnInit, ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { FindCollectionsSuccess } from "@app/store/actions/collection.actions";
-import { FindCollections } from "@app/store/actions/collection.actions";
-import type { MainState } from "@app/store/state";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { DefaultGallerySortingOption } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { FindCollectionsSuccess, FindCollections } from "@app/store/actions/collection.actions";
+import { MainState } from "@app/store/state";
+import { UserProfileInterface, DefaultGallerySortingOption } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import {
   selectCurrentUser,
   selectCurrentUserProfile,
   selectUser,
   selectUserProfile
 } from "@features/account/store/auth.selectors";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { filter, map, take, takeUntil } from "rxjs/operators";

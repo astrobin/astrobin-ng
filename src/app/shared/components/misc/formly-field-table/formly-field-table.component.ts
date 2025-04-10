@@ -1,14 +1,11 @@
-import type { ChangeDetectorRef, OnDestroy, OnInit, TemplateRef } from "@angular/core";
-import { Component, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, OnDestroy, OnInit, TemplateRef, Component, ViewChild } from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import { FieldArrayType } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyFieldConfig, FieldArrayType } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import type { TableColumn } from "@swimlane/ngx-datatable";
-import { ColumnMode } from "@swimlane/ngx-datatable";
-import type { Subscription } from "rxjs";
+import { TableColumn, ColumnMode } from "@swimlane/ngx-datatable";
+import { Subscription } from "rxjs";
 import { startWith } from "rxjs/operators";
 
 @Component({

@@ -1,31 +1,34 @@
 import { isPlatformBrowser } from "@angular/common";
-import type {
+import {
   AfterViewInit,
   ChangeDetectorRef,
   ElementRef,
   OnChanges,
   OnInit,
   Renderer2,
-  TemplateRef
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID,
+  ViewChild
 } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID, ViewChild } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { selectCollections } from "@app/store/selectors/app/collection.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { DefaultGallerySortingOption } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { FindImagesOptionsInterface } from "@core/services/api/classic/images/image/image-api.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { UserProfileInterface, DefaultGallerySortingOption } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { FindImagesOptionsInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { DeviceService } from "@core/services/device.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { UpdateUserProfile } from "@features/account/store/auth.actions";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { auditTime, fromEvent, Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, filter, map, startWith, take, takeUntil } from "rxjs/operators";

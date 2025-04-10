@@ -1,6 +1,5 @@
-import type { ApplicationRef, TransferState } from "@angular/core";
-import { Injectable, makeStateKey } from "@angular/core";
-import type { Store } from "@ngrx/store";
+import { ApplicationRef, TransferState, Injectable, makeStateKey } from "@angular/core";
+import { Store } from "@ngrx/store";
 import { filter, take } from "rxjs/operators";
 
 export const NGRX_STATE_KEY = makeStateKey<any>("NGRX_STATE");

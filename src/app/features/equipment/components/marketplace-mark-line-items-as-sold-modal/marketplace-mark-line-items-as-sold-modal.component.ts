@@ -1,21 +1,22 @@
-import type { OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
+import { OnInit, Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { MarkMarketplaceLineItemAsSoldSuccess } from "@features/equipment/store/equipment.actions";
-import { EquipmentActionTypes, MarkMarketplaceLineItemAsSold } from "@features/equipment/store/equipment.actions";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import {
+  MarkMarketplaceLineItemAsSoldSuccess,
+  EquipmentActionTypes,
+  MarkMarketplaceLineItemAsSold
+} from "@features/equipment/store/equipment.actions";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
-import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import type { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { forkJoin } from "rxjs";

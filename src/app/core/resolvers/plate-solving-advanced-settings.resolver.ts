@@ -1,16 +1,14 @@
 import { Location } from "@angular/common";
 import { inject } from "@angular/core";
-import type { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot } from "@angular/router";
-import { Router } from "@angular/router";
+import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot, Router } from "@angular/router";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import type { PlateSolvingAdvancedSettingsInterface } from "@core/interfaces/plate-solving-advanced-settings.interface";
+import { PlateSolvingAdvancedSettingsInterface } from "@core/interfaces/plate-solving-advanced-settings.interface";
 import { PlateSolvingSettingsApiService } from "@core/services/api/classic/platesolving/settings/plate-solving-settings-api.service";
 import { ImageService } from "@core/services/image/image.service";
 import { select, Store } from "@ngrx/store";
-import { EMPTY } from "rxjs";
-import type { Observable } from "rxjs";
+import { EMPTY, Observable } from "rxjs";
 import { catchError, filter, map, switchMap, take } from "rxjs/operators";
 
 export const PlateSolvingAdvancedSettingsResolver: ResolveFn<PlateSolvingAdvancedSettingsInterface | null> = (

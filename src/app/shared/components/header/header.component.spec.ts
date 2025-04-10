@@ -1,9 +1,8 @@
-import type { ComponentFixture } from "@angular/core/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { StateGenerator } from "@app/store/generators/state.generator";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
 import { EMPTY, of } from "rxjs";

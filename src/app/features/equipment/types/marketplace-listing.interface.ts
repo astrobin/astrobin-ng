@@ -1,6 +1,6 @@
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
-import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 
 export enum MarketplaceListingType {
   FOR_SALE = "FOR_SALE",

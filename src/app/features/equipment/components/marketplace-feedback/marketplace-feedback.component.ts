@@ -1,23 +1,23 @@
-import type { OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import type { ActivatedRoute } from "@angular/router";
+import { OnInit, Component, Input } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import type { MainState } from "@app/store/state";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { MarketplaceFeedbackModalComponent } from "@features/equipment/components/marketplace-feedback-modal/marketplace-feedback-modal.component";
 import { LoadMarketplaceListing } from "@features/equipment/store/equipment.actions";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
-import { MarketplaceFeedbackTargetType } from "@features/equipment/types/marketplace-feedback.interface";
-import type { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
+import {
+  MarketplaceFeedbackTargetType,
+  MarketplaceFeedbackInterface
+} from "@features/equipment/types/marketplace-feedback.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";

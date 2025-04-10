@@ -1,20 +1,30 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { OnChanges, OnInit, SimpleChanges, TemplateRef } from "@angular/core";
-import { Component, EventEmitter, HostListener, Inject, Input, Output, PLATFORM_ID, ViewChild } from "@angular/core";
+import {
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
+  Component,
+  EventEmitter,
+  HostListener,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { MainState } from "@app/store/state";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type {
+import { WindowRefService } from "@core/services/window-ref.service";
+import {
   EquipmentItemCreationSuccessPayloadInterface,
   FindAllEquipmentItemsSuccess,
   FindRecentlyUsedEquipmentItemsSuccess,
-  ItemBrowserSet
-} from "@features/equipment/store/equipment.actions";
-import {
+  ItemBrowserSet,
   CreateAccessory,
   CreateCamera,
   CreateFilter,
@@ -31,31 +41,29 @@ import {
   LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import type {
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import {
   EquipmentItemBaseInterface,
-  EquipmentItemUsageType
+  EquipmentItemUsageType,
+  EquipmentItemType
 } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { FilterInterface } from "@features/equipment/types/filter.interface";
-import type { MountInterface } from "@features/equipment/types/mount.interface";
-import type { SensorInterface } from "@features/equipment/types/sensor.interface";
-import type { SoftwareInterface } from "@features/equipment/types/software.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Action, Store } from "@ngrx/store";
-import type { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Action, Store } from "@ngrx/store";
+import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
-import type { Subscription } from "rxjs";
-import { forkJoin, Observable, of } from "rxjs";
+import { Subscription, forkJoin, Observable, of } from "rxjs";
 import { filter, first, map, switchMap, take, takeUntil } from "rxjs/operators";
 
 type Type = EquipmentItem["id"];

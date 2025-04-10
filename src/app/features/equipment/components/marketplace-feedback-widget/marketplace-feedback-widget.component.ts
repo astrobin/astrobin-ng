@@ -1,20 +1,19 @@
-import type { AfterViewInit, OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import type { ActivatedRoute } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { AfterViewInit, OnInit, Component, Input } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { MarketplaceFeedbackModalComponent } from "@features/equipment/components/marketplace-feedback-modal/marketplace-feedback-modal.component";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 import { MarketplaceFeedbackTargetType } from "@features/equipment/types/marketplace-feedback.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { map, take, takeUntil } from "rxjs/operators";
 
 @Component({

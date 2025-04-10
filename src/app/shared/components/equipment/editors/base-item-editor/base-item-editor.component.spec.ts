@@ -1,10 +1,9 @@
-import type { ComponentFixture } from "@angular/core/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";

@@ -1,4 +1,4 @@
-import type { Routes } from "@angular/router";
+import { Routes } from "@angular/router";
 import { AuthGuardService } from "@core/services/guards/auth-guard.service";
 import { LoggedInPageComponent } from "@features/account/pages/logged-in-page/logged-in-page.component";
 import { LoggingInPageComponent } from "@features/account/pages/logging-in-page/logging-in-page.component";

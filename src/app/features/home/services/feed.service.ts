@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
-import type { TranslateService } from "@ngx-translate/core";
+import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
   providedIn: "root"

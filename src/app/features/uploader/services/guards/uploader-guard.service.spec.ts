@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import type { RouterStateSnapshot } from "@angular/router";
+import { RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { PremiumSubscriptionGuardService } from "@core/services/guards/premium-subscription-guard.service";
 import { UltimateSubscriptionGuardService } from "@core/services/guards/ultimate-subscription-guard.service";

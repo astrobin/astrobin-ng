@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import type { SoftwareInterface } from "@features/equipment/types/software.interface";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
 
 export enum SoftwareDisplayProperty {
   BRAND = "BRAND"

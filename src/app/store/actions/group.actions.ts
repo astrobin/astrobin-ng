@@ -1,7 +1,7 @@
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { GroupInterface } from "@core/interfaces/group.interface";
-import type { GetGroupsParamsInterface } from "@core/services/api/classic/groups/group-api.service";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { GetGroupsParamsInterface } from "@core/services/api/classic/groups/group-api.service";
 
 export class LoadGroups implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_GROUPS;

@@ -1,18 +1,17 @@
 import { Injectable } from "@angular/core";
-import type { SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
+import { SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
 import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateService } from "@ngx-translate/core";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import { forkJoin } from "rxjs";
-import type { Observable } from "rxjs";
+import { forkJoin, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Injectable({

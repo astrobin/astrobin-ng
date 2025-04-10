@@ -1,35 +1,42 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, OnInit, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID, ViewChild } from "@angular/core";
-import type { Router } from "@angular/router";
+import {
+  ChangeDetectorRef,
+  OnInit,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
+import { Router } from "@angular/router";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import type { MainState } from "@app/store/state";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type {
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import {
   ImageApiService,
   UsersWhoLikeOrBookmarkInterface
 } from "@core/services/api/classic/images/image/image-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { CollapseSyncService } from "@core/services/collapse-sync.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { SearchService } from "@core/services/search.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
+import { SearchService } from "@core/services/search.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store, select } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import type { CookieService } from "ngx-cookie";
-import type { Observable } from "rxjs";
-import { finalize, fromEvent, Subject, throttleTime } from "rxjs";
+import { CookieService } from "ngx-cookie";
+import { Observable, finalize, fromEvent, Subject, throttleTime } from "rxjs";
 import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({

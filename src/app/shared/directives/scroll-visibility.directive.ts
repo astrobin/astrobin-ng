@@ -1,11 +1,18 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ElementRef, OnDestroy, OnInit } from "@angular/core";
-import { Directive, EventEmitter, Inject, Input, Output, PLATFORM_ID } from "@angular/core";
-import type { ViewportCheckOptions } from "@core/services/utils/utils.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Subscription } from "rxjs";
-import { fromEvent, merge, Subject } from "rxjs";
+import {
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  Directive,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID
+} from "@angular/core";
+import { ViewportCheckOptions, UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Subscription, fromEvent, merge, Subject } from "rxjs";
 import { auditTime, takeUntil } from "rxjs/operators";
 
 @Directive({

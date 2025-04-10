@@ -1,26 +1,22 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, OnInit } from "@angular/core";
-import { Component, Inject, PLATFORM_ID } from "@angular/core";
-import type { DomSanitizer } from "@angular/platform-browser";
-import type { MainState } from "@app/store/state";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { FormlyFieldMessage, FormlyFieldService } from "@core/services/formly-field.service";
-import { FormlyFieldMessageLevel } from "@core/services/formly-field.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { FilterDisplayProperty } from "@features/equipment/services/filter.service";
-import type { FilterService } from "@features/equipment/services/filter.service";
+import { ChangeDetectorRef, OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { FormlyFieldMessage, FormlyFieldService, FormlyFieldMessageLevel } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { FilterSize, FilterType } from "@features/equipment/types/filter.interface";
-import type { FilterInterface } from "@features/equipment/types/filter.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { FilterSize, FilterType, FilterInterface } from "@features/equipment/types/filter.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode

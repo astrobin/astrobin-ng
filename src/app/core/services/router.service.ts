@@ -1,9 +1,9 @@
-import type { Location } from "@angular/common";
+import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
-import type { ActivatedRoute, Router, UrlTree } from "@angular/router";
+import { ActivatedRoute, Router, UrlTree } from "@angular/router";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { LoadingService } from "@core/services/loading.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Injectable({ providedIn: "root" })
 export class RouterService extends BaseService {

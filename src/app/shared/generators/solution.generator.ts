@@ -1,5 +1,4 @@
-import type { SolutionInterface } from "@core/interfaces/solution.interface";
-import { SolutionStatus } from "@core/interfaces/solution.interface";
+import { SolutionInterface, SolutionStatus } from "@core/interfaces/solution.interface";
 
 export class SolutionGenerator {
   static solution(source: Partial<SolutionInterface> = {}): SolutionInterface {

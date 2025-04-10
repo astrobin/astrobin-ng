@@ -1,16 +1,16 @@
 import { Component } from "@angular/core";
-import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import type { MainState } from "@app/store/state";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import type { CameraService } from "@features/equipment/services/camera.service";
+import { CameraService } from "@features/equipment/services/camera.service";
 import { CameraType } from "@features/equipment/types/camera.interface";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import type { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-search-camera-types-filter.search-filter-component",

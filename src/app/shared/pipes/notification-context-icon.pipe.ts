@@ -1,8 +1,6 @@
-import type { PipeTransform } from "@angular/core";
-import { Pipe } from "@angular/core";
-import type { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
-import { NotificationContext } from "@features/notifications/interfaces/notification.interface";
-import type { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { PipeTransform, Pipe } from "@angular/core";
+import { NotificationInterface, NotificationContext } from "@features/notifications/interfaces/notification.interface";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 @Pipe({
   name: "notificationContextIcon",

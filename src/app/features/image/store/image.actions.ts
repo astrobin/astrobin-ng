@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 
 export enum ImageActionTypes {
   SET_CROPPER_SHOWN = "[Image] Set cropper shown"

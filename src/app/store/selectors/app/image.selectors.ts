@@ -1,6 +1,6 @@
-import type { AppState } from "@app/store/reducers/app.reducers";
+import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
-import type { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { createSelector } from "@ngrx/store";
 

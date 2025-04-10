@@ -1,24 +1,23 @@
-import type { OnChanges, OnInit, SimpleChanges, TemplateRef } from "@angular/core";
-import { Component, Input, ViewChild } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { AuthService } from "@core/services/auth.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { OnChanges, OnInit, SimpleChanges, TemplateRef, Component, Input, ViewChild } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { AuthService } from "@core/services/auth.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type {
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import {
   EquipmentBrandListingInterface,
   EquipmentItemListingInterface,
-  EquipmentListingsInterface
+  EquipmentListingsInterface,
+  EquipmentItemListingType
 } from "@features/equipment/types/equipment-listings.interface";
-import { EquipmentItemListingType } from "@features/equipment/types/equipment-listings.interface";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { RemoveAdsDialogComponent } from "@shared/components/misc/remove-ads-dialog/remove-ads-dialog.component";

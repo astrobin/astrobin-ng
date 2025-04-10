@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { environment } from "@env/environment";
-import type { Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

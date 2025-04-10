@@ -1,14 +1,15 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, OnInit } from "@angular/core";
-import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
+import { AfterViewInit, OnInit, Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
+import { MainState } from "@app/store/state";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import type { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
-import { NotificationMedium } from "@features/notifications/interfaces/notification-setting.interface";
-import type { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
+import {
+  NotificationSettingInterface,
+  NotificationMedium
+} from "@features/notifications/interfaces/notification-setting.interface";
+import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
 import {
   LoadNotificationSettings,
   LoadNotificationTypes,
@@ -18,12 +19,12 @@ import {
   selectNotificationSettings,
   selectNotificationTypes
 } from "@features/notifications/store/notifications.selectors";
-import type { NgbAccordion } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbAccordion } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { filter, map, switchMap, tap } from "rxjs/operators";
 
 enum NotificationCategory {

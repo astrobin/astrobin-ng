@@ -1,9 +1,9 @@
-import type { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { environment } from "@env/environment";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class DebugCountryInterceptor implements HttpInterceptor {

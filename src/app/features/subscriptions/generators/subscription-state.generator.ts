@@ -1,5 +1,5 @@
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { SubscriptionsState } from "@features/subscriptions/store/subscriptions.reducers";
+import { SubscriptionsState } from "@features/subscriptions/store/subscriptions.reducers";
 import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
 
 export class SubscriptionsStateGenerator {

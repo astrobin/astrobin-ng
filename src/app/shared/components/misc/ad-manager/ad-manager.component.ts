@@ -1,6 +1,10 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, ElementRef, OnChanges, SimpleChanges, TemplateRef } from "@angular/core";
 import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
@@ -10,10 +14,10 @@ import {
   PLATFORM_ID,
   ViewChild
 } from "@angular/core";
-import type { AdManagerService } from "@core/services/ad-manager.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { AdManagerService } from "@core/services/ad-manager.service";
+import { DeviceService } from "@core/services/device.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { fadeInOut } from "@shared/animations";
 
 @Component({

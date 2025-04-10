@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { MainState } from "@app/store/state";
+import { NgbModalOptions, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 

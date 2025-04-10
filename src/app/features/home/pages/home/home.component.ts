@@ -1,17 +1,15 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, OnInit } from "@angular/core";
-import { Component, Inject, PLATFORM_ID } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
+import { AfterViewInit, OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { TitleService } from "@core/services/title/title.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { filter, pairwise, takeUntil } from "rxjs/operators";
 

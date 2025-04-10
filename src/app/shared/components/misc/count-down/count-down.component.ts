@@ -1,8 +1,7 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { OnInit } from "@angular/core";
-import { Component, Inject, Input, PLATFORM_ID } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { Store } from "@ngrx/store";
+import { OnInit, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { interval } from "rxjs";
 import { takeUntil } from "rxjs/operators";

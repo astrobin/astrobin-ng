@@ -1,5 +1,4 @@
-import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
-import { FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
+import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
 
 export class FeedItemGenerator {
   static imageItem(): FeedItemInterface {

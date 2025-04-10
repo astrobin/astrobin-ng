@@ -1,13 +1,12 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, ChangeDetectorRef, OnInit } from "@angular/core";
-import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
-import type { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { google } from "@google/maps";
+import { AfterViewInit, ChangeDetectorRef, OnInit, Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
+import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { google } from "@google/maps";
 import { FieldType } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 import { Observable, Subject } from "rxjs";
 import { debounceTime, take } from "rxjs/operators";
 

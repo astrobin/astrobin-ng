@@ -1,9 +1,9 @@
 /* eslint-disable max-classes-per-file */
 
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { ImageInterface } from "@core/interfaces/image.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 
 export enum UserActionTypes {

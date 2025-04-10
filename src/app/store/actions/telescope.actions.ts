@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { TelescopeInterface } from "@core/interfaces/telescope.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { TelescopeInterface } from "@core/interfaces/telescope.interface";
 
 export class LoadTelescope implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_TELESCOPE;

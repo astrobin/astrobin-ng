@@ -1,14 +1,13 @@
 import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import type { ModuleWithProviders } from "@angular/core";
-import { Injectable, NgModule } from "@angular/core";
+import { ModuleWithProviders, Injectable, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HammerGestureConfig, HammerModule } from "@angular/platform-browser";
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { CustomMissingTranslationHandler } from "@app/missing-translation-handler";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { InitializeApp } from "@app/store/actions/initialize-app.actions";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { LanguageLoader } from "@app/translate-loader";
 import { CustomTranslateParser } from "@app/translate-parser";
 import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
@@ -25,9 +24,8 @@ import {
   NgbProgressbarModule
 } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { FormlySelectModule } from "@ngx-formly/core/select";

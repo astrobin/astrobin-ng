@@ -1,7 +1,6 @@
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { ColorOrMono } from "@features/equipment/types/sensor.interface";
+import { SensorInterface, ColorOrMono } from "@features/equipment/types/sensor.interface";
 
 export class SensorGenerator {
   static sensor(source: Partial<SensorInterface> = {}): SensorInterface {

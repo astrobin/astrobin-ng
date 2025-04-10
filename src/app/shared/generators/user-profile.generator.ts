@@ -1,6 +1,9 @@
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { FrontpageSection, DefaultGallerySortingOption } from "@core/interfaces/user-profile.interface";
+import {
+  UserProfileInterface,
+  FrontpageSection,
+  DefaultGallerySortingOption
+} from "@core/interfaces/user-profile.interface";
 
 export class UserProfileGenerator {
   static userProfile(): UserProfileInterface {

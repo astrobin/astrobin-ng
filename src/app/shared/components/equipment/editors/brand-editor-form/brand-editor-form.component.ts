@@ -1,17 +1,14 @@
-import type { AfterViewInit, OnInit, TemplateRef } from "@angular/core";
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import type { FormControl } from "@angular/forms";
-import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { FormlyFieldService } from "@core/services/formly-field.service";
-import { FormlyFieldMessageLevel } from "@core/services/formly-field.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { AfterViewInit, OnInit, TemplateRef, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { MainState } from "@app/store/state";
+import { FormlyFieldService, FormlyFieldMessageLevel } from "@core/services/formly-field.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { of } from "rxjs";
 import {

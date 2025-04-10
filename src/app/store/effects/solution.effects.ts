@@ -1,15 +1,12 @@
 import { Injectable } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadSolutionFailure, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { selectSolution } from "@app/store/selectors/app/solution.selectors";
-import type { MainState } from "@app/store/state";
-import type { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { EMPTY, of } from "rxjs";
+import { MainState } from "@app/store/state";
+import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observable, EMPTY, of } from "rxjs";
 import { catchError, map, mergeMap, take } from "rxjs/operators";
 
 @Injectable()

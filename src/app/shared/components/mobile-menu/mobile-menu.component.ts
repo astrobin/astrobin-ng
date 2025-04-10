@@ -1,9 +1,8 @@
-import type { OnInit, TemplateRef } from "@angular/core";
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
-import type { Store } from "@ngrx/store";
+import { OnInit, TemplateRef, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { take } from "rxjs/operators";
 

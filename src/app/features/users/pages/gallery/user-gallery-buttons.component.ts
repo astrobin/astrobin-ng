@@ -1,6 +1,9 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { OnChanges, OnInit, SimpleChanges, TemplateRef } from "@angular/core";
 import {
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
@@ -10,18 +13,18 @@ import {
   PLATFORM_ID,
   ViewChild
 } from "@angular/core";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { DeviceService } from "@core/services/device.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { CookieService } from "ngx-cookie";
+import { CookieService } from "ngx-cookie";
 import { takeUntil } from "rxjs/operators";
 
 @Component({

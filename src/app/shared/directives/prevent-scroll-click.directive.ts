@@ -1,5 +1,4 @@
-import type { ElementRef, OnDestroy } from "@angular/core";
-import { Directive, EventEmitter, Output } from "@angular/core";
+import { ElementRef, OnDestroy, Directive, EventEmitter, Output } from "@angular/core";
 
 @Directive({
   selector: "[astrobinPreventScrollClick]"

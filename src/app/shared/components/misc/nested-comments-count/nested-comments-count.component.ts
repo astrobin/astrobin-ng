@@ -1,11 +1,10 @@
-import type { ChangeDetectorRef, OnChanges } from "@angular/core";
-import { ChangeDetectionStrategy, Component, HostBinding, Input } from "@angular/core";
+import { ChangeDetectorRef, OnChanges, ChangeDetectionStrategy, Component, HostBinding, Input } from "@angular/core";
 import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
-import type { MainState } from "@app/store/state";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { Store } from "@ngrx/store";
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { filter, map, takeUntil, tap } from "rxjs/operators";
 
 @Component({

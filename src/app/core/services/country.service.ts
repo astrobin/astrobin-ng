@@ -1,8 +1,7 @@
-import type { HttpClient } from "@angular/common/http";
-import { HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import * as countries from "i18n-iso-countries";
 import arabic from "i18n-iso-countries/langs/ar.json";
 import german from "i18n-iso-countries/langs/de.json";
@@ -22,8 +21,7 @@ import albanian from "i18n-iso-countries/langs/sq.json";
 import turkish from "i18n-iso-countries/langs/tr.json";
 import ukrainian from "i18n-iso-countries/langs/uk.json";
 import chinese from "i18n-iso-countries/langs/zh.json";
-import type { Observable } from "rxjs";
-import { of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 
 countries.registerLocale(english);

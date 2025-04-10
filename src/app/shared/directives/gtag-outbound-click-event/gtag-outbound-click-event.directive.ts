@@ -1,6 +1,6 @@
 import { Directive, HostListener, Input } from "@angular/core";
-import type { LoadingService } from "@core/services/loading.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { LoadingService } from "@core/services/loading.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 declare const gtag: any;
 

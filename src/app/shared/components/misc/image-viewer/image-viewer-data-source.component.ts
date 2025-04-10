@@ -1,24 +1,29 @@
-import type { ChangeDetectorRef, OnChanges, SimpleChanges, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
-import type { Router } from "@angular/router";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild
+} from "@angular/core";
+import { Router } from "@angular/router";
 import { LoadRemoteSourceAffiliates } from "@app/store/actions/remote-source-affiliates.actions";
 import { selectRemoteSourceAffiliates } from "@app/store/selectors/app/remote-source-affiliates.selectors";
-import type { MainState } from "@app/store/state";
-import { DataSource, RemoteSource } from "@core/interfaces/image.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
-import type { CollapseSyncService } from "@core/services/collapse-sync.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { SearchService } from "@core/services/search.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { MainState } from "@app/store/state";
+import { DataSource, RemoteSource, ImageInterface } from "@core/interfaces/image.interface";
+import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { select } from "@ngrx/store";
-import type { Store } from "@ngrx/store";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { select, Store } from "@ngrx/store";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import type { CookieService } from "ngx-cookie";
+import { CookieService } from "ngx-cookie";
 import { filter, takeUntil } from "rxjs/operators";
 
 @Component({

@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import type { RouterStateSnapshot } from "@angular/router";
-import { ActivatedRouteSnapshot } from "@angular/router";
+import { RouterStateSnapshot, ActivatedRouteSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
 import { AstroBinGroupGuardService } from "@core/services/guards/astrobin-group-guard.service";

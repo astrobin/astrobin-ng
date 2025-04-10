@@ -1,24 +1,31 @@
-import type { ChangeDetectorRef, NgZone, OnDestroy, OnInit } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, PLATFORM_ID, Renderer2 } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  PLATFORM_ID,
+  Renderer2
+} from "@angular/core";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
-import type { AuthService } from "@core/services/auth.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { MainState } from "@app/store/state";
+import { AuthService } from "@core/services/auth.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Store } from "@ngrx/store";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
 import { FileUpload } from "@shared/components/misc/formly-field-chunked-file/file-upload";
 import { Constants } from "@shared/constants";
-import type { UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
-import { Tus } from "ngx-uploadx";
-import type { Subscription } from "rxjs";
-import { forkJoin, Observable, of, switchMap } from "rxjs";
+import { UploadState, UploadxOptions, UploadxService, Tus } from "ngx-uploadx";
+import { Subscription, forkJoin, Observable, of, switchMap } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 
 // PLEASE NOTE: due to the usage of the UploadDataService, there can be only one chunked file upload field on a page

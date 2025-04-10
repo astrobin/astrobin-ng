@@ -1,24 +1,31 @@
-import type { AfterViewInit, ChangeDetectorRef, OnInit, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  OnInit,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { SubscriptionName } from "@core/types/subscription-name.type";
 import { environment } from "@env/environment";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
-import type { UploadState, UploadxService } from "ngx-uploadx";
+import { UploadState, UploadxService } from "ngx-uploadx";
 import { takeUntil } from "rxjs/operators";
 
 @Component({

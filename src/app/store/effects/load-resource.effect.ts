@@ -1,11 +1,8 @@
-import type { MainState } from "@app/store/state";
-import type { LoadingService } from "@core/services/loading.service";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { finalize, of, timer } from "rxjs";
+import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
+import { Observable, finalize, of, timer } from "rxjs";
 import { catchError, filter, map, mergeMap, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 export function loadResourceEffect<T, K>(

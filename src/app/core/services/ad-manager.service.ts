@@ -1,14 +1,14 @@
 import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { BaseService } from "@core/services/base.service";
-import type { CookieConsentService } from "@core/services/cookie-consent/cookie-consent.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { CookieConsentService } from "@core/services/cookie-consent/cookie-consent.service";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { CookieConsentEnum } from "@core/types/cookie-consent.enum";
-import type { Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { filter, map, take } from "rxjs/operators";
 
 @Injectable({

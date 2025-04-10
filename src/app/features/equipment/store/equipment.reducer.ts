@@ -1,18 +1,17 @@
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { arrayUniqueEquipmentItems, getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import type { ContributorInterface } from "@features/equipment/types/contributor.interface";
-import type { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
-import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import type { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { ContributorInterface } from "@features/equipment/types/contributor.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 
 import { EquipmentActionTypes } from "./equipment.actions";
 

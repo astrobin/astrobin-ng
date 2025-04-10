@@ -1,17 +1,16 @@
 import { Injectable } from "@angular/core";
-import type { FormControl } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { FormControl } from "@angular/forms";
+import { MainState } from "@app/store/state";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { LoadingService } from "@core/services/loading.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
-import type { ImageEditService } from "@features/image/services/image-edit.service";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
-import { forkJoin, of } from "rxjs";
+import { ImageEditService } from "@features/image/services/image-edit.service";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, forkJoin, of } from "rxjs";
 import { filter, map, take, tap } from "rxjs/operators";
 
 @Injectable({

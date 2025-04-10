@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
 
 export class LoadThumbnail implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_THUMBNAIL;

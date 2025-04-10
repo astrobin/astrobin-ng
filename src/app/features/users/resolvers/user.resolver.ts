@@ -1,16 +1,19 @@
 import { Location } from "@angular/common";
 import { inject } from "@angular/core";
-import type { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot } from "@angular/router";
-import { Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { LoadUserProfileSuccess, LoadUserSuccess } from "@features/account/store/auth.actions";
-import { AuthActionTypes, LoadUser, LoadUserProfile } from "@features/account/store/auth.actions";
+import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot, Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import {
+  LoadUserProfileSuccess,
+  LoadUserSuccess,
+  AuthActionTypes,
+  LoadUser,
+  LoadUserProfile
+} from "@features/account/store/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import type { Subscriber } from "rxjs";
-import { Observable } from "rxjs";
+import { Subscriber, Observable } from "rxjs";
 import { map, take } from "rxjs/operators";
 
 export const UserResolver: ResolveFn<{ user: UserInterface; userProfile: UserProfileInterface } | null> = (

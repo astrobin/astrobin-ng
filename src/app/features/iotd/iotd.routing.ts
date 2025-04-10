@@ -1,4 +1,4 @@
-import type { Routes } from "@angular/router";
+import { Routes } from "@angular/router";
 import { AuthGuardService } from "@core/services/guards/auth-guard.service";
 import { GroupGuardService } from "@core/services/guards/group-guard.service";
 import { JudgementQueueComponent } from "@features/iotd/pages/judgement-queue/judgement-queue.component";

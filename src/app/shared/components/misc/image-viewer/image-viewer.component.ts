@@ -1,6 +1,5 @@
-import type { Location } from "@angular/common";
-import { isPlatformBrowser } from "@angular/common";
-import type { HttpClient } from "@angular/common/http";
+import { Location, isPlatformBrowser } from "@angular/common";
+import { HttpClient } from "@angular/common/http";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,9 +12,7 @@ import {
   Output,
   PLATFORM_ID,
   RendererStyleFlags2,
-  ViewChild
-} from "@angular/core";
-import type {
+  ViewChild,
   AfterViewChecked,
   AfterViewInit,
   ChangeDetectorRef,
@@ -26,53 +23,61 @@ import type {
   SimpleChanges,
   TemplateRef
 } from "@angular/core";
-import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import type { ActivatedRoute } from "@angular/router";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { ActivatedRoute } from "@angular/router";
 import { Throttle } from "@app/decorators";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import {
   FINAL_REVISION_LABEL,
   FullSizeLimitationDisplayOptions,
   MouseHoverImageOptions,
-  ORIGINAL_REVISION_LABEL
+  ORIGINAL_REVISION_LABEL,
+  ImageInterface,
+  ImageRevisionInterface
 } from "@core/interfaces/image.interface";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type { SolutionInterface } from "@core/interfaces/solution.interface";
-import { SolutionStatus } from "@core/interfaces/solution.interface";
-import type { JsonApiService } from "@core/services/api/classic/json/json-api.service";
-import type { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
-import type { ContentTranslateService } from "@core/services/content-translate.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { SearchService } from "@core/services/search.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { SolutionInterface, SolutionStatus } from "@core/interfaces/solution.interface";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
+import { ContentTranslateService } from "@core/services/content-translate.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { SearchService } from "@core/services/search.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { environment } from "@env/environment";
-import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import type { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
-import { select } from "@ngrx/store";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
+import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import type { CookieService } from "ngx-cookie";
-import { LIGHTBOX_EVENT } from "ngx-lightbox";
-import type { Lightbox, LightboxEvent } from "ngx-lightbox";
-import { animationFrameScheduler, auditTime, combineLatest, fromEvent, merge, of, Subject, throttleTime } from "rxjs";
-import type { Observable, Subscription } from "rxjs";
+import { CookieService } from "ngx-cookie";
+import { LIGHTBOX_EVENT, Lightbox, LightboxEvent } from "ngx-lightbox";
+import {
+  animationFrameScheduler,
+  auditTime,
+  combineLatest,
+  fromEvent,
+  merge,
+  of,
+  Subject,
+  throttleTime,
+  Observable,
+  Subscription
+} from "rxjs";
 import { delay, filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({

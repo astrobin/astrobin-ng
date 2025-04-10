@@ -1,5 +1,4 @@
-import type { PipeTransform } from "@angular/core";
-import { Pipe } from "@angular/core";
+import { PipeTransform, Pipe } from "@angular/core";
 
 @Pipe({ name: "keys" })
 export class KeysPipe implements PipeTransform {

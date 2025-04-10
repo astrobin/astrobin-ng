@@ -1,5 +1,5 @@
-import type { CategoryInterface } from "@core/interfaces/forums/category.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { CategoryInterface } from "@core/interfaces/forums/category.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 
 export interface ForumInterface {
   id: number;

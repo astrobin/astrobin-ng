@@ -1,10 +1,9 @@
 import { TestBed } from "@angular/core/testing";
-import type { RouterStateSnapshot } from "@angular/router";
-import { ActivatedRouteSnapshot } from "@angular/router";
+import { RouterStateSnapshot, ActivatedRouteSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { StateGenerator } from "@app/store/generators/state.generator";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { ImageGenerator } from "@shared/generators/image.generator";

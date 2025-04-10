@@ -1,4 +1,4 @@
-import type { IotdInterface } from "@features/iotd/services/iotd-api.service";
+import { IotdInterface } from "@features/iotd/services/iotd-api.service";
 
 export class IotdGenerator {
   static iotd(): IotdInterface {

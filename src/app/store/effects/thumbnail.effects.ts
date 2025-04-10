@@ -1,19 +1,15 @@
 import { Injectable } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadImage } from "@app/store/actions/image.actions";
-import type { LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
-import { LoadThumbnail, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
+import { LoadThumbnailCancel, LoadThumbnail, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
-import type { MainState } from "@app/store/state";
-import type { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
-import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { EMPTY, of, Subject } from "rxjs";
+import { MainState } from "@app/store/state";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observable, EMPTY, of, Subject } from "rxjs";
 import { catchError, delay, filter, map, mergeMap, take, takeUntil, tap } from "rxjs/operators";
 
 @Injectable()

@@ -1,11 +1,10 @@
 import { Injectable } from "@angular/core";
-import type { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseService } from "@core/services/base.service";
-import type { PremiumSubscriptionGuardService } from "@core/services/guards/premium-subscription-guard.service";
-import type { UltimateSubscriptionGuardService } from "@core/services/guards/ultimate-subscription-guard.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { Observable } from "rxjs";
-import { concat } from "rxjs";
+import { PremiumSubscriptionGuardService } from "@core/services/guards/premium-subscription-guard.service";
+import { UltimateSubscriptionGuardService } from "@core/services/guards/ultimate-subscription-guard.service";
+import { LoadingService } from "@core/services/loading.service";
+import { Observable, concat } from "rxjs";
 import { reduce, tap } from "rxjs/operators";
 
 @Injectable()

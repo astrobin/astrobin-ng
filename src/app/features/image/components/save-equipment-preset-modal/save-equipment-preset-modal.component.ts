@@ -1,26 +1,22 @@
-import type { OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
+import { OnInit, Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type {
-  CreateEquipmentPresetSuccess,
-  UpdateEquipmentPresetSuccess
-} from "@features/equipment/store/equipment.actions";
+import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import {
+  CreateEquipmentPresetSuccess,
+  UpdateEquipmentPresetSuccess,
   CreateEquipmentPreset,
   EquipmentActionTypes,
   UpdateEquipmentPreset
 } from "@features/equipment/store/equipment.actions";
 import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
-import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import type { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { filter, take } from "rxjs/operators";

@@ -1,8 +1,8 @@
 import { Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import type { Store } from "@ngrx/store";
+import { MainState } from "@app/store/state";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

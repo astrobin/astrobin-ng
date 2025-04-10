@@ -1,17 +1,14 @@
-import type { ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges } from "@angular/core";
-import { Component, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges, Component, ViewChild } from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
-import type { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import type { NgSelectComponent } from "@ng-select/ng-select";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
+import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgSelectComponent } from "@ng-select/ng-select";
+import { Actions, ofType } from "@ngrx/effects";
 import { FieldType } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import type { Subscription } from "rxjs";
-import { isObservable, Subject } from "rxjs";
+import { Subscription, isObservable, Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, map, take, tap } from "rxjs/operators";
 
 @Component({

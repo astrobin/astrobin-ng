@@ -1,9 +1,8 @@
-import type { PipeTransform } from "@angular/core";
-import { Pipe } from "@angular/core";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import type { SubscriptionName } from "@core/types/subscription-name.type";
-import type { Observable } from "rxjs";
+import { PipeTransform, Pipe } from "@angular/core";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { SubscriptionName } from "@core/types/subscription-name.type";
+import { Observable } from "rxjs";
 
 @Pipe({
   name: "hasValidUserSubscription"

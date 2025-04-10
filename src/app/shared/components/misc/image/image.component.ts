@@ -1,14 +1,12 @@
 import { isPlatformBrowser } from "@angular/common";
-import type {
+import {
   ChangeDetectorRef,
   ElementRef,
   OnChanges,
   OnDestroy,
   OnInit,
   Renderer2,
-  SimpleChanges
-} from "@angular/core";
-import {
+  SimpleChanges,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
@@ -19,30 +17,25 @@ import {
   PLATFORM_ID,
   ViewChild
 } from "@angular/core";
-import type { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { ForceCheckImageAutoLoad } from "@app/store/actions/image.actions";
-import { LoadImage, LoadImages } from "@app/store/actions/image.actions";
+import { ForceCheckImageAutoLoad, LoadImage, LoadImages } from "@app/store/actions/image.actions";
 import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
-import type { MainState } from "@app/store/state";
-import type { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { ImageInterface, ImageRevisionInterface, FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { ImageService } from "@core/services/image/image.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Subscription } from "rxjs";
-import { fromEvent, interval, merge, Observable, of, Subject, throttleTime } from "rxjs";
+import { Subscription, fromEvent, interval, merge, Observable, of, Subject, throttleTime } from "rxjs";
 import { delay, filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 declare const videojs: any;

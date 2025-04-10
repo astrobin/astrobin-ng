@@ -1,38 +1,35 @@
-import type { AfterViewInit, ChangeDetectorRef, OnInit } from "@angular/core";
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, OnInit, ChangeDetectionStrategy, Component } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type {
+import {
   DeleteImageUncompressedSourceFileFailure,
-  DeleteImageUncompressedSourceFileSuccess
+  DeleteImageUncompressedSourceFileSuccess,
+  DeleteImageUncompressedSourceFile
 } from "@app/store/actions/image.actions";
-import { DeleteImageUncompressedSourceFile } from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { ThumbnailGroupApiService } from "@core/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ModalService } from "@core/services/modal.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ModalService } from "@core/services/modal.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { environment } from "@env/environment";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { Constants } from "@shared/constants";
-import type { UploadState, UploadxService } from "ngx-uploadx";
+import { UploadState, UploadxService } from "ngx-uploadx";
 import { Observable } from "rxjs";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 

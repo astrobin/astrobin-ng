@@ -1,8 +1,7 @@
-import type { Location } from "@angular/common";
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { Store } from "@ngrx/store";
+import { Location } from "@angular/common";
+import { OnInit, Component } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
 

@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import type { GearUserInfoInterface } from "@core/interfaces/gear-user-info.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { GearUserInfoApiService } from "@core/services/api/classic/astrobin/gear-user-info/gear-user-info-api.service";
+import { GearUserInfoInterface } from "@core/interfaces/gear-user-info.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { GearUserInfoApiService } from "@core/services/api/classic/astrobin/gear-user-info/gear-user-info-api.service";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
+import { LoadingService } from "@core/services/loading.service";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Injectable({

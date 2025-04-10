@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
 
-import type { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
-import type {
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
+import {
   AddImageToCollection,
   AddImageToCollectionFailure,
   AddImageToCollectionSuccess,
@@ -28,10 +28,10 @@ import type {
   UpdateCollectionFailure,
   UpdateCollectionSuccess
 } from "@app/store/actions/collection.actions";
-import type { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
-import type { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import type { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
-import type {
+import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
+import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
+import {
   AcceptCollaboratorRequest,
   AcceptCollaboratorRequestFailure,
   AcceptCollaboratorRequestSuccess,
@@ -86,9 +86,9 @@ import type {
   UnpublishImageFailure,
   UnpublishImageSuccess
 } from "@app/store/actions/image.actions";
-import type { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
-import type { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
-import type {
+import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
+import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
+import {
   ApproveNestedComment,
   ApproveNestedCommentFailure,
   ApproveNestedCommentSuccess,
@@ -107,21 +107,21 @@ import type {
   UpdateNestedCommentFailure,
   UpdateNestedCommentSuccess
 } from "@app/store/actions/nested-comments.actions";
-import type {
+import {
   LoadRemoteSourceAffiliates,
   LoadRemoteSourceAffiliatesFailure,
   LoadRemoteSourceAffiliatesSuccess
 } from "@app/store/actions/remote-source-affiliates.actions";
-import type {
+import {
   LoadSolution,
   LoadSolutionFailure,
   LoadSolutions,
   LoadSolutionsSuccess,
   LoadSolutionSuccess
 } from "@app/store/actions/solution.actions";
-import type { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
-import type { LoadThumbnail, LoadThumbnailCancel, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
-import type {
+import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
+import { LoadThumbnail, LoadThumbnailCancel, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
+import {
   CreateToggleProperty,
   CreateTogglePropertyFailure,
   CreateTogglePropertySuccess,

@@ -1,25 +1,37 @@
-import type { ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
-import type { DeviceService } from "@core/services/device.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
+import { MainState } from "@app/store/state";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { DeviceService } from "@core/services/device.service";
 import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
-import type {
+import {
   FindEquipmentPresetsFailure,
-  FindEquipmentPresetsSuccess
+  FindEquipmentPresetsSuccess,
+  EquipmentActionTypes,
+  FindEquipmentPresets
 } from "@features/equipment/store/equipment.actions";
-import { EquipmentActionTypes, FindEquipmentPresets } from "@features/equipment/store/equipment.actions";
 import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
-import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 
 @Component({

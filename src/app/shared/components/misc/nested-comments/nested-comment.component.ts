@@ -1,6 +1,12 @@
 import { isPlatformBrowser } from "@angular/common";
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Output, PLATFORM_ID } from "@angular/core";
-import type {
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
   AfterViewInit,
   ChangeDetectorRef,
   ElementRef,
@@ -10,43 +16,37 @@ import type {
   SimpleChanges
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { SafeHtml } from "@angular/platform-browser";
+import { SafeHtml } from "@angular/platform-browser";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import {
   ApproveNestedComment,
   CreateNestedComment,
   DeleteNestedComment,
-  UpdateNestedComment
-} from "@app/store/actions/nested-comments.actions";
-import type {
+  UpdateNestedComment,
   ApproveNestedCommentFailure,
   ApproveNestedCommentSuccess,
   UpdateNestedCommentSuccess
 } from "@app/store/actions/nested-comments.actions";
-import type {
-  CreateTogglePropertySuccess,
-  DeleteTogglePropertySuccess
-} from "@app/store/actions/toggle-property.actions";
-import type { MainState } from "@app/store/state";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
-import type { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { ContentTranslateService } from "@core/services/content-translate.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { HighlightService } from "@core/services/highlight.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { RouterService } from "@core/services/router.service";
-import type { UserService } from "@core/services/user.service";
+import { CreateTogglePropertySuccess, DeleteTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ContentTranslateService } from "@core/services/content-translate.service";
+import { DeviceService } from "@core/services/device.service";
+import { HighlightService } from "@core/services/highlight.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { RouterService } from "@core/services/router.service";
+import { UserService } from "@core/services/user.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 

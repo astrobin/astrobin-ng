@@ -1,29 +1,35 @@
-import type { ChangeDetectorRef, OnChanges, OnInit, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnInit,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { FindImagesSuccess } from "@app/store/actions/image.actions";
-import { FindImages } from "@app/store/actions/image.actions";
-import type { MainState } from "@app/store/state";
+import { FindImagesSuccess, FindImages } from "@app/store/actions/image.actions";
+import { MainState } from "@app/store/state";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { DeviceService } from "@core/services/device.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import { select } from "@ngrx/store";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
+import { ofType, Actions } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 

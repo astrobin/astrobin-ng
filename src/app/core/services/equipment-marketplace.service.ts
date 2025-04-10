@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
-import type { Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import type { MainState } from "@app/store/state";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectCurrentUser, selectUser } from "@features/account/store/auth.selectors";
@@ -19,9 +19,7 @@ import {
   LoadEquipmentItem,
   RejectMarketplaceOffer,
   RetractMarketplaceOffer,
-  UpdateMarketplaceOffer
-} from "@features/equipment/store/equipment.actions";
-import type {
+  UpdateMarketplaceOffer,
   CreateMarketplaceOfferFailure,
   CreateMarketplaceOfferSuccess,
   RejectMarketplaceOfferFailure,
@@ -33,22 +31,22 @@ import type {
 } from "@features/equipment/store/equipment.actions";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { MarketplaceFeedbackValue } from "@features/equipment/types/marketplace-feedback.interface";
-import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
-import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import type { IconProp } from "@fortawesome/fontawesome-svg-core";
-import type { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import { merge, switchMap } from "rxjs";
-import type { Observable } from "rxjs";
+import { merge, switchMap, Observable } from "rxjs";
 import { filter, take } from "rxjs/operators";
 
 @Injectable({

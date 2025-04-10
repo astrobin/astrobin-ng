@@ -1,14 +1,23 @@
 import { isPlatformBrowser } from "@angular/common";
-import { Component, Inject, Input, PLATFORM_ID } from "@angular/core";
-import type { ChangeDetectorRef, ElementRef, OnChanges, OnInit, SimpleChanges } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
+import {
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID,
+  ChangeDetectorRef,
+  ElementRef,
+  OnChanges,
+  OnInit,
+  SimpleChanges
+} from "@angular/core";
+import { MainState } from "@app/store/state";
+import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
 import { SearchService } from "@core/services/search.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { auditTime, fromEvent, Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";

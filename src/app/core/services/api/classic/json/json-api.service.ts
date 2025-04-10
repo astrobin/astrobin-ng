@@ -1,12 +1,12 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { JsonApiServiceInterface } from "@core/services/api/classic/json/json-api.service-interface";
-import type { LoadingService } from "@core/services/loading.service";
+import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { JsonApiServiceInterface } from "@core/services/api/classic/json/json-api.service-interface";
+import { LoadingService } from "@core/services/loading.service";
 import { environment } from "@env/environment";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { BaseClassicApiService } from "../base-classic-api.service";

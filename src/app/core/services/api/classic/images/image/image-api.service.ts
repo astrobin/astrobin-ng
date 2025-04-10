@@ -1,21 +1,21 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { LoadImageOptionsInterface } from "@app/store/actions/image.actions";
-import type { MainState } from "@app/store/state";
-import type { ImageAlias } from "@core/enums/image-alias.enum";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { LoadImageOptionsInterface } from "@app/store/actions/image.actions";
+import { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { LoadingService } from "@core/services/loading.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { environment } from "@env/environment";
-import type { ImageEditModelInterface } from "@features/image/services/image-edit.service";
-import type { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
+import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
+import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 export type FindImagesResponseInterface = PaginatedApiResultInterface<ImageInterface> & {

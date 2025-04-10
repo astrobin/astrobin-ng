@@ -1,5 +1,5 @@
-import type { MainState } from "@app/store/state";
-import type { NotificationsState } from "@features/notifications/store/notifications.reducers";
+import { MainState } from "@app/store/state";
+import { NotificationsState } from "@features/notifications/store/notifications.reducers";
 import { createSelector } from "@ngrx/store";
 
 export const selectNotifications = (state: MainState): NotificationsState => state.notifications;

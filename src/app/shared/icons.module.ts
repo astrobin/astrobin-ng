@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
-import type { FaIconLibrary } from "@fortawesome/angular-fontawesome";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { FaIconLibrary, FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   faCreativeCommons,
   faCreativeCommonsBy,

@@ -2,9 +2,9 @@ import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import type { LocationInterface } from "@core/interfaces/location.interface";
+import { LocationInterface } from "@core/interfaces/location.interface";
 import { UsersLocationsApiService } from "@core/services/api/classic/users/users-locations-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { LocationGenerator } from "@shared/generators/location.generator";
 import { MockBuilder } from "ng-mocks";
 

@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

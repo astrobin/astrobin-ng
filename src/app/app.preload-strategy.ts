@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
-import type { PreloadingStrategy, Route } from "@angular/router";
-import type { Observable } from "rxjs";
-import { of } from "rxjs";
+import { PreloadingStrategy, Route } from "@angular/router";
+import { Observable, of } from "rxjs";
 
 @Injectable({
   providedIn: "root"

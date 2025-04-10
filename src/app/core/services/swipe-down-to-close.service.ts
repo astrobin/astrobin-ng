@@ -1,8 +1,7 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { Renderer2, RendererFactory2 } from "@angular/core";
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import type { SwipeDownService } from "@core/services/swipe-down.service";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Renderer2, RendererFactory2, Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { SwipeDownService } from "@core/services/swipe-down.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 @Injectable({
   providedIn: "root"

@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { LoadingService } from "@core/services/loading.service";
-import type { Store } from "@ngrx/store";
+import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

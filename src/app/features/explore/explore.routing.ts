@@ -1,4 +1,4 @@
-import type { Routes } from "@angular/router";
+import { Routes } from "@angular/router";
 import { GalleryExperienceGuard } from "@core/services/guards/gallery-experience-guard.service";
 import { AstrophotographersListPageComponent } from "@features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component";
 import { ConstellationsPageComponent } from "@features/explore/pages/constellations-page/constellations-page.component";

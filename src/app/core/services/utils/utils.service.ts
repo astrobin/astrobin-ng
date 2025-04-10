@@ -1,17 +1,16 @@
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import type { ElementRef, Renderer2 } from "@angular/core";
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Store } from "@ngrx/store";
-import type { SelectorWithProps } from "@ngrx/store/src/models";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { ElementRef, Renderer2, Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
+import { SelectorWithProps } from "@ngrx/store/src/models";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { Constants } from "@shared/constants";
 import { Buffer } from "buffer";
 import msgpack from "msgpack-lite";
-import type { CookieService } from "ngx-cookie";
+import { CookieService } from "ngx-cookie";
 import pako from "pako";
 import { interval, Observable, of } from "rxjs";
 import { distinctUntilChanged, switchMap, take } from "rxjs/operators";
@@ -324,11 +323,11 @@ export class UtilsService {
   }
 
   static isObject(obj): boolean {
-    return obj !== null && obj.constructor.name === "Object";
+    return obj !== undefined && obj !== null && obj.constructor.name === "Object";
   }
 
   static isArray(obj): boolean {
-    return obj !== null && obj.constructor.name === "Array";
+    return obj !== undefined && obj !== null && obj.constructor.name === "Array";
   }
 
   static isNotEmptyDictionary<T>(variable: T | null | undefined): boolean {

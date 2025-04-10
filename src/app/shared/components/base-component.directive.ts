@@ -1,16 +1,14 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { OnDestroy, OnInit } from "@angular/core";
-import { Directive } from "@angular/core";
+import { OnDestroy, OnInit, Directive } from "@angular/core";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { DeviceService } from "@core/services/device.service";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { DeviceService } from "@core/services/device.service";
 import { distinctUntilKeyChangedOrNull } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { fromEvent, ReplaySubject, Subject } from "rxjs";
+import { Store } from "@ngrx/store";
+import { Observable, fromEvent, ReplaySubject, Subject } from "rxjs";
 import { debounceTime, map, switchMap, takeUntil } from "rxjs/operators";
 
 @Directive()

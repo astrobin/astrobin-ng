@@ -1,8 +1,7 @@
 import { ChangeDetectorRef } from "@angular/core";
-import { fakeAsync, TestBed, tick } from "@angular/core/testing";
-import type { ComponentFixture } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick, ComponentFixture } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { Store } from "@ngrx/store";

@@ -1,17 +1,17 @@
 import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { AuthServiceInterface } from "@core/services/auth.service-interface";
+import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { AuthServiceInterface } from "@core/services/auth.service-interface";
 import { BaseService } from "@core/services/base.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Store } from "@ngrx/store";
-import type { CookieService } from "ngx-cookie";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
+import { CookieService } from "ngx-cookie";
 import { Observable, of } from "rxjs";
 
-import type { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
+import { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
 
 @Injectable({
   providedIn: "root"

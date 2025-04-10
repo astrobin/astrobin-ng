@@ -1,10 +1,7 @@
 import { isPlatformServer } from "@angular/common";
-import type { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { HttpResponse } from "@angular/common/http";
-import type { StateKey, TransferState } from "@angular/core";
-import { Inject, Injectable, PLATFORM_ID, makeStateKey } from "@angular/core";
-import type { Observable } from "rxjs";
-import { of } from "rxjs";
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
+import { StateKey, TransferState, Inject, Injectable, PLATFORM_ID, makeStateKey } from "@angular/core";
+import { Observable, of } from "rxjs";
 import { tap } from "rxjs/operators";
 
 @Injectable()

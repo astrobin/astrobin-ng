@@ -1,5 +1,5 @@
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 export enum MarketplaceFeedbackValue {
   NEGATIVE = "NEGATIVE",

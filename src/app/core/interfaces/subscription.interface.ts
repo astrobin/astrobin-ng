@@ -1,4 +1,4 @@
-import type { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
+import { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
 
 export interface SubscriptionInterface {
   id: number;

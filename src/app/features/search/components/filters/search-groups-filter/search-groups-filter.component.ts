@@ -1,16 +1,15 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import type { MainState } from "@app/store/state";
-import type { GroupInterface } from "@core/interfaces/group.interface";
+import { OnInit, Component } from "@angular/core";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
+import { GroupInterface } from "@core/interfaces/group.interface";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import type { GroupApiService } from "@core/services/api/classic/groups/group-api.service";
+import { GroupApiService } from "@core/services/api/classic/groups/group-api.service";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import type { SearchFilterService } from "@features/search/services/search-filter.service";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { takeUntil, tap } from "rxjs/operators";
 
 @Component({

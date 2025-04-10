@@ -1,23 +1,30 @@
-import type { ChangeDetectorRef, OnChanges, SimpleChanges, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type { AstroUtilsService } from "@core/services/astro-utils/astro-utils.service";
-import type { CollapseSyncService } from "@core/services/collapse-sync.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { SearchService } from "@core/services/search.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { ConstellationsService } from "@features/explore/services/constellations.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { AstroUtilsService } from "@core/services/astro-utils/astro-utils.service";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ConstellationsService } from "@features/explore/services/constellations.service";
 import { SearchCoordsFilterComponent } from "@features/search/components/filters/search-coords-filter/search-coords-filter.component";
-import type { SearchFilterService } from "@features/search/services/search-filter.service";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import type { CookieService } from "ngx-cookie";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-image-viewer-astrometry",

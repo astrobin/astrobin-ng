@@ -3,8 +3,7 @@ import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 import { skip } from "rxjs/operators";
 
-import type { UploadMetadataEventInterface, UploadMetadataInterface } from "./upload-data.service";
-import { UploadDataService } from "./upload-data.service";
+import { UploadMetadataEventInterface, UploadMetadataInterface, UploadDataService } from "./upload-data.service";
 
 describe("UploadMetadataService", () => {
   let service: UploadDataService;

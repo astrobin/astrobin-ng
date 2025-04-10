@@ -1,32 +1,36 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, ElementRef, OnInit } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID
+} from "@angular/core";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type {
+import {
   AddImageToCollectionFailure,
   AddImageToCollectionSuccess,
   RemoveImageFromCollectionFailure,
-  RemoveImageFromCollectionSuccess
-} from "@app/store/actions/collection.actions";
-import {
+  RemoveImageFromCollectionSuccess,
   AddImageToCollection,
   LoadCollections,
   RemoveImageFromCollection
 } from "@app/store/actions/collection.actions";
-import type { FindImagesSuccess } from "@app/store/actions/image.actions";
-import { FindImages } from "@app/store/actions/image.actions";
-import type { MainState } from "@app/store/state";
+import { FindImagesSuccess, FindImages } from "@app/store/actions/image.actions";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { ImageService } from "@core/services/image/image.service";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ImageService } from "@core/services/image/image.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { fromEvent, Subject, throttleTime } from "rxjs";

@@ -1,7 +1,7 @@
-import type { AppState } from "@app/store/reducers/app.reducers";
+import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { GetCollectionsParamsInterface } from "@core/services/api/classic/collections/collection-api.service";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { GetCollectionsParamsInterface } from "@core/services/api/classic/collections/collection-api.service";
 import { createSelector } from "@ngrx/store";
 
 export const selectCollections = createSelector(

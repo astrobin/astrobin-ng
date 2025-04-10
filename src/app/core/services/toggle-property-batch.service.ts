@@ -1,10 +1,9 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { OnDestroy } from "@angular/core";
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { OnDestroy, Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { LoadToggleProperties } from "@app/store/actions/toggle-property.actions";
-import type { MainState } from "@app/store/state";
-import type { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
-import type { Store } from "@ngrx/store";
+import { MainState } from "@app/store/state";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { Store } from "@ngrx/store";
 import { Observable, Subject } from "rxjs";
 import { debounceTime, takeUntil } from "rxjs/operators";
 

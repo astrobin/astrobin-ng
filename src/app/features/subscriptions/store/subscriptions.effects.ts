@@ -1,19 +1,17 @@
 import { Injectable } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
-import type { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
-import type { GetPricing } from "@features/subscriptions/store/subscriptions.actions";
+import { MainState } from "@app/store/state";
+import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
+import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import {
+  GetPricing,
   GetAvailableSubscriptionsSuccess,
   GetPricingSuccess,
   SubscriptionsActionTypes
 } from "@features/subscriptions/store/subscriptions.actions";
 import { selectAvailableSubscriptions } from "@features/subscriptions/store/subscriptions.selectors";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { EMPTY, of } from "rxjs";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observable, EMPTY, of } from "rxjs";
 import { catchError, map, mergeMap } from "rxjs/operators";
 
 @Injectable()

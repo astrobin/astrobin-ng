@@ -1,13 +1,12 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { OnChanges } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
+import { OnChanges, ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
-import type { ImageSearchInterface } from "@core/interfaces/image-search.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { ImageService } from "@core/services/image/image.service";
-import type { SearchService } from "@core/services/search.service";
+import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageService } from "@core/services/image/image.service";
+import { SearchService } from "@core/services/search.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
   selector: "astrobin-image-hover",

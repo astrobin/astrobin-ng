@@ -1,5 +1,15 @@
-import type { ElementRef, NgZone, OnInit, Renderer2 } from "@angular/core";
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import {
+  ElementRef,
+  NgZone,
+  OnInit,
+  Renderer2,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
 
 @Component({
   selector: "astrobin-drag-drop-area",

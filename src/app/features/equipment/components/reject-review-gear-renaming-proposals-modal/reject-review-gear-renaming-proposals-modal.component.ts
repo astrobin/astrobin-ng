@@ -1,16 +1,15 @@
-import type { HttpClient } from "@angular/common/http";
-import type { OnInit } from "@angular/core";
-import { Component, Input } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { OnInit, Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { LoadingService } from "@core/services/loading.service";
-import type { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

@@ -1,8 +1,7 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { Renderer2 } from "@angular/core";
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import type { CKEditorService } from "@core/services/ckeditor.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { Renderer2, Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { CKEditorService } from "@core/services/ckeditor.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Injectable({ providedIn: "root" })
 export class BBCodeService {

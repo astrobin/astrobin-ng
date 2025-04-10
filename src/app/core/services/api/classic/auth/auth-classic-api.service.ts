@@ -1,10 +1,10 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { LoadingService } from "@core/services/loading.service";
-import type { Observable } from "rxjs";
+import { LoadingService } from "@core/services/loading.service";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
-import type { AuthApiService } from "../../interfaces/auth-api.service-interface";
+import { AuthApiService } from "../../interfaces/auth-api.service-interface";
 import { BaseClassicApiService } from "../base-classic-api.service";
 
 @Injectable({

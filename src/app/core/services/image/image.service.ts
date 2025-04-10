@@ -1,20 +1,18 @@
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import type { HttpClient } from "@angular/common/http";
-import type { NgZone } from "@angular/core";
-import { Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
-import type { Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { NgZone, Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { LoadImageFailure } from "@app/store/actions/image.actions";
-import { LoadImage } from "@app/store/actions/image.actions";
+import { LoadImageFailure, LoadImage } from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
-import { BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
-import type { ImageSearchInterface } from "@core/interfaces/image-search.interface";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { DeepSkyAcquisitionInterface, BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
+import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
 import {
+  ImageInterface,
+  ImageRevisionInterface,
   AcquisitionType,
   CelestialHemisphere,
   DataSource,
@@ -25,23 +23,20 @@ import {
   SubjectType
 } from "@core/interfaces/image.interface";
 import { BaseService } from "@core/services/base.service";
-import type { BBCodeService } from "@core/services/bbcode.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { TitleService } from "@core/services/title/title.service";
+import { BBCodeService } from "@core/services/bbcode.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
-import type { IotdInterface } from "@features/iotd/services/iotd-api.service";
-import type { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import { select } from "@ngrx/store";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
-import type { ActiveToast } from "ngx-toastr";
-import { Observable, of } from "rxjs";
-import type { Observer } from "rxjs";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import { IotdInterface } from "@features/iotd/services/iotd-api.service";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { ofType, Actions } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { ActiveToast } from "ngx-toastr";
+import { Observable, of, Observer } from "rxjs";
 import { filter, map, take, tap } from "rxjs/operators";
 
 @Injectable({

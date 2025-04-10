@@ -1,4 +1,4 @@
-import type { UploadState } from "ngx-uploadx";
+import { UploadState } from "ngx-uploadx";
 
 export class FileUpload {
   name: string;

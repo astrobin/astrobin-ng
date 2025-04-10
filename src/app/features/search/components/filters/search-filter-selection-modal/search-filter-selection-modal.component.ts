@@ -1,20 +1,17 @@
-import type { OnInit } from "@angular/core";
-import { Component, ViewChild, ViewContainerRef } from "@angular/core";
-import type { MainState } from "@app/store/state";
+import { OnInit, Component, ViewChild, ViewContainerRef } from "@angular/core";
+import { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { SearchService } from "@core/services/search.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { DeviceService } from "@core/services/device.service";
+import { SearchService } from "@core/services/search.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { SearchFilterService } from "@features/search/services/search-filter.service";
-import type { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbActiveModal, NgbModal, NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
-import { merge, of, Subject } from "rxjs";
+import { Observable, merge, of, Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, map } from "rxjs/operators";
 
 interface FilterType {

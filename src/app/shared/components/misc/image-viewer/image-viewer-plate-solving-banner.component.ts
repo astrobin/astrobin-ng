@@ -1,6 +1,10 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, OnChanges, OnInit, SimpleChanges, TemplateRef } from "@angular/core";
 import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
@@ -10,34 +14,30 @@ import {
   PLATFORM_ID,
   ViewChild
 } from "@angular/core";
-import type { Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { LoadSolutionSuccess } from "@app/store/actions/solution.actions";
-import { LoadSolution } from "@app/store/actions/solution.actions";
-import type { MainState } from "@app/store/state";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type { SolutionInterface } from "@core/interfaces/solution.interface";
-import { SolutionStatus } from "@core/interfaces/solution.interface";
-import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import type { CollapseSyncService } from "@core/services/collapse-sync.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { SearchService } from "@core/services/search.service";
-import type { SolutionService } from "@core/services/solution/solution.service";
-import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { LoadSolutionSuccess, LoadSolution } from "@app/store/actions/solution.actions";
+import { MainState } from "@app/store/state";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { SolutionInterface, SolutionStatus } from "@core/interfaces/solution.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { SearchService } from "@core/services/search.service";
+import { SolutionService } from "@core/services/solution/solution.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import type { CookieService } from "ngx-cookie";
-import type { Subscription } from "rxjs";
-import { forkJoin } from "rxjs";
+import { CookieService } from "ngx-cookie";
+import { Subscription, forkJoin } from "rxjs";
 import { filter, map, takeUntil } from "rxjs/operators";
 
 @Component({

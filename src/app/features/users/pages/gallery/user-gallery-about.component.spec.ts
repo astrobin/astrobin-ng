@@ -1,10 +1,9 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
-import type { ComponentFixture } from "@angular/core/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { UserService } from "@core/services/user.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { AuthActionTypes, UpdateUserProfile } from "@features/account/store/auth.actions";

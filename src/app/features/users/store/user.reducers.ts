@@ -1,4 +1,4 @@
-import type { UserActions } from "@features/users/store/user.actions";
+import { UserActions } from "@features/users/store/user.actions";
 
 export const userFeatureKey = "user";
 

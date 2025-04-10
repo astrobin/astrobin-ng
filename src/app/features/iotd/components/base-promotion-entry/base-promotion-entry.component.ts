@@ -1,34 +1,38 @@
-import type { ElementRef, OnInit } from "@angular/core";
-import { Component, HostBinding, Input, ViewChild } from "@angular/core";
+import { ElementRef, OnInit, Component, HostBinding, Input, ViewChild } from "@angular/core";
 import { ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { ForceCheckImageAutoLoad } from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import {
   ConfirmDismissModalComponent,
   DISMISSAL_NOTICE_COOKIE
 } from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
-import type { DismissImageSuccess, HideImageSuccess } from "@features/iotd/store/iotd.actions";
-import { DismissImage, HideImage, IotdActionTypes, ShowImage } from "@features/iotd/store/iotd.actions";
+import {
+  DismissImageSuccess,
+  HideImageSuccess,
+  DismissImage,
+  HideImage,
+  IotdActionTypes,
+  ShowImage
+} from "@features/iotd/store/iotd.actions";
 import { selectDismissedImageByImageId, selectHiddenImageByImageId } from "@features/iotd/store/iotd.selectors";
-import type { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
-import type { IconProp } from "@fortawesome/fontawesome-svg-core";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
-import type { CookieService } from "ngx-cookie";
-import type { Observable, Subscription } from "rxjs";
+import { CookieService } from "ngx-cookie";
+import { Observable, Subscription } from "rxjs";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 
 @Component({

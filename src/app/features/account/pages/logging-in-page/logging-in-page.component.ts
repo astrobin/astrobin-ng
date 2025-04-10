@@ -1,12 +1,11 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { ActivatedRoute } from "@angular/router";
+import { OnInit, Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { AuthService } from "@core/services/auth.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { AuthService } from "@core/services/auth.service";
+import { TitleService } from "@core/services/title/title.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

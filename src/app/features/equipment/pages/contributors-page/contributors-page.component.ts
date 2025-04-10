@@ -1,10 +1,9 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
+import { OnInit, Component } from "@angular/core";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { GetContributors } from "@features/equipment/store/equipment.actions";
 import { selectEquipmentContributors } from "@features/equipment/store/equipment.selectors";
-import type { ContributorInterface } from "@features/equipment/types/contributor.interface";
-import type { Observable } from "rxjs";
+import { ContributorInterface } from "@features/equipment/types/contributor.interface";
+import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
 @Component({

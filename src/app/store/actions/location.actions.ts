@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { LocationInterface } from "@core/interfaces/location.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { LocationInterface } from "@core/interfaces/location.interface";
 
 export class CreateLocationAddTag implements PayloadActionInterface {
   readonly type = AppActionTypes.CREATE_LOCATION_ADD_TAG;

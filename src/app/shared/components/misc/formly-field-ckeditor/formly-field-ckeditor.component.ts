@@ -1,11 +1,10 @@
 import { isPlatformServer } from "@angular/common";
-import type { AfterViewInit, ChangeDetectorRef, OnDestroy } from "@angular/core";
-import { Component, Inject, PLATFORM_ID } from "@angular/core";
-import type { CKEditorService } from "@core/services/ckeditor.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { AfterViewInit, ChangeDetectorRef, OnDestroy, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { CKEditorService } from "@core/services/ckeditor.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { FieldType } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-formly-field-ckeditor",

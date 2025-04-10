@@ -1,6 +1,5 @@
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export enum ColorOrMono {
   C = "C",

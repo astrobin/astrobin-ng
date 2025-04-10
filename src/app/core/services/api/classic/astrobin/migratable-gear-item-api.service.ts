@@ -1,18 +1,14 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type {
+import {
   MigratableGearItemApiServiceInterface,
   MigrationFlag
 } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import type { LoadingService } from "@core/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/types/equipment-item-base.interface";
-import { EMPTY } from "rxjs";
-import type { Observable } from "rxjs";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EMPTY, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 @Injectable({

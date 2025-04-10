@@ -1,20 +1,19 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
+import { OnInit, Component } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { TitleService } from "@core/services/title/title.service";
+import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import type { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
-import type { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
+import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
+import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import { GetAvailableSubscriptions, GetPricing } from "@features/subscriptions/store/subscriptions.actions";
 import { selectAvailableSubscriptions, selectPricing } from "@features/subscriptions/store/subscriptions.selectors";
 import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { map, takeUntil } from "rxjs/operators";
 
 @Component({

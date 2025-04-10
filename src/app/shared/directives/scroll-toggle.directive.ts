@@ -1,16 +1,18 @@
-import type {
+import {
   AfterViewChecked,
   AfterViewInit,
   ElementRef,
   OnChanges,
   OnDestroy,
   Renderer2,
-  SimpleChanges
+  SimpleChanges,
+  Directive,
+  EventEmitter,
+  Input,
+  Output
 } from "@angular/core";
-import { Directive, EventEmitter, Input, Output } from "@angular/core";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Subscription } from "rxjs";
-import { fromEvent } from "rxjs";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Subscription, fromEvent } from "rxjs";
 import { throttleTime } from "rxjs/operators";
 
 @Directive({

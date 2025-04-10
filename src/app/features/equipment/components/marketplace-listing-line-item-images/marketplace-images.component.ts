@@ -1,12 +1,11 @@
-import type { OnChanges } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
+import { OnChanges, Component, Input } from "@angular/core";
+import { MainState } from "@app/store/state";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { IAlbum, Lightbox } from "ngx-lightbox";
+import { IAlbum, Lightbox } from "ngx-lightbox";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-images",

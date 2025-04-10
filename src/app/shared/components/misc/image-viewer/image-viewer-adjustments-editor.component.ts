@@ -1,6 +1,8 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { OnDestroy, OnInit, TemplateRef } from "@angular/core";
 import {
+  OnDestroy,
+  OnInit,
+  TemplateRef,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
@@ -11,17 +13,17 @@ import {
   ViewChild
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { ActivatedRoute } from "@angular/router";
-import type { Options } from "@angular-slider/ngx-slider";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { ActivatedRoute } from "@angular/router";
+import { Options } from "@angular-slider/ngx-slider";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { TranslateService } from "@ngx-translate/core";
-import type { ImageComponent } from "@shared/components/misc/image/image.component";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateService } from "@ngx-translate/core";
+import { ImageComponent } from "@shared/components/misc/image/image.component";
 
 const DEFAULT_BRIGHTNESS = 100;
 const DEFAULT_CONTRAST = 100;

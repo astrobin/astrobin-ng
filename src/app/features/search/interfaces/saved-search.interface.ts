@@ -1,4 +1,4 @@
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 
 export interface SavedSearchInterface {
   id: number;

@@ -1,5 +1,4 @@
-import type { GroupInterface } from "@core/interfaces/group.interface";
-import { GroupCategory } from "@core/interfaces/group.interface";
+import { GroupInterface, GroupCategory } from "@core/interfaces/group.interface";
 
 export class AstroBinGroupGenerator {
   static group(): GroupInterface {

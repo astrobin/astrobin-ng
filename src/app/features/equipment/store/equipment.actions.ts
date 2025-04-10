@@ -1,38 +1,38 @@
 /* eslint-disable max-classes-per-file */
 
-import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type {
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import {
   AllEquipmentItemsOptionsInterface,
   EquipmentItemsSortOrder
 } from "@features/equipment/services/equipment-api.service";
-import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import type { ContributorInterface } from "@features/equipment/types/contributor.interface";
-import type { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import type {
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { ContributorInterface } from "@features/equipment/types/contributor.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerRejectionReason,
   EquipmentItemType,
   EquipmentItemUsageType
 } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import type { FilterInterface } from "@features/equipment/types/filter.interface";
-import type { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
-import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import type { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import type { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
-import type { MountInterface } from "@features/equipment/types/mount.interface";
-import type { SensorInterface } from "@features/equipment/types/sensor.interface";
-import type { SoftwareInterface } from "@features/equipment/types/software.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import type { Action } from "@ngrx/store";
+import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { Action } from "@ngrx/store";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;

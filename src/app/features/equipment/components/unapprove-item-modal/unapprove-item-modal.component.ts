@@ -1,15 +1,14 @@
 import { Component, Input } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { MainState } from "@app/store/state";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { LoadingService } from "@core/services/loading.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentActionTypes, UnapproveEquipmentItem } from "@features/equipment/store/equipment.actions";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { map, switchMap, take } from "rxjs/operators";
 

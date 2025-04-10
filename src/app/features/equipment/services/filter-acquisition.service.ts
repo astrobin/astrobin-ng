@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import type { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
+import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { FilterType, FilterTypePriority, LegacyFilterType } from "@features/equipment/types/filter.interface";
-import type { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 
-import type { FilterService } from "./filter.service";
+import { FilterService } from "./filter.service";
 
 // This includes total per filter type
 export interface FilterSummary {

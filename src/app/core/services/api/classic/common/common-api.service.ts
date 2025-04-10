@@ -1,26 +1,24 @@
-import type { HttpClient } from "@angular/common/http";
-import { HttpHeaders, HttpRequest, HttpEvent, HttpResponse } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpRequest, HttpEvent, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { PaymentInterface } from "@core/interfaces/payment.interface";
-import type { SubscriptionInterface } from "@core/interfaces/subscription.interface";
-import type { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
-import type { UserProfileInterface, UserProfileStatsInterface } from "@core/interfaces/user-profile.interface";
-import type { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type {
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { PaymentInterface } from "@core/interfaces/payment.interface";
+import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { UserProfileInterface, UserProfileStatsInterface } from "@core/interfaces/user-profile.interface";
+import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import {
   BackendTogglePropertyInterface,
   BackendUserInterface,
   BackendUserProfileInterface,
   CommonApiAdaptorService
 } from "@core/services/api/classic/common/common-api-adaptor.service";
-import type { CommonApiServiceInterface } from "@core/services/api/classic/common/common-api.service-interface";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { LoadingService } from "@core/services/loading.service";
+import { CommonApiServiceInterface } from "@core/services/api/classic/common/common-api.service-interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { environment } from "@env/environment";
-import type { Observable } from "rxjs";
-import { of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { catchError, map, filter } from "rxjs/operators";
 
 import { BaseClassicApiService } from "../base-classic-api.service";

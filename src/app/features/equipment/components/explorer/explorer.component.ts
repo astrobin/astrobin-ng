@@ -1,5 +1,4 @@
-import type { Location } from "@angular/common";
-import { isPlatformBrowser } from "@angular/common";
+import { Location, isPlatformBrowser } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,32 +7,37 @@ import {
   Input,
   Output,
   PLATFORM_ID,
-  ViewChild
+  ViewChild,
+  ChangeDetectorRef,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewContainerRef
 } from "@angular/core";
-import type { ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import type { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { RouterService } from "@core/services/router.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UserService } from "@core/services/user.service";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { RouterService } from "@core/services/router.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserService } from "@core/services/user.service";
 import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
 import { MergeIntoModalComponent } from "@features/equipment/components/migration/merge-into-modal/merge-into-modal.component";
 import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
 import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
-import type { CompareService } from "@features/equipment/services/compare.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { CompareService } from "@features/equipment/services/compare.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import {
   CreateAccessoryEditProposal,
   CreateCameraEditProposal,
@@ -47,9 +51,7 @@ import {
   FreezeEquipmentItemAsAmbiguous,
   LoadEquipmentItem,
   LoadMarketplaceListings,
-  UnfreezeEquipmentItemAsAmbiguous
-} from "@features/equipment/store/equipment.actions";
-import type {
+  UnfreezeEquipmentItemAsAmbiguous,
   ApproveEquipmentItemEditProposalSuccess,
   ApproveEquipmentItemSuccess,
   AssignItemSuccess,
@@ -62,36 +64,35 @@ import {
   selectEquipmentItem,
   selectMarketplaceListings
 } from "@features/equipment/store/equipment.selectors";
-import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { CameraType } from "@features/equipment/types/camera.interface";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import { EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
-import type { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { CameraType, CameraInterface } from "@features/equipment/types/camera.interface";
+import { EditProposalReviewStatus, EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import {
   EquipmentItemReviewerDecision,
-  EquipmentItemType
+  EquipmentItemType,
+  EquipmentItemBaseInterface
 } from "@features/equipment/types/equipment-item-base.interface";
-import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import type { FilterInterface } from "@features/equipment/types/filter.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { MountInterface } from "@features/equipment/types/mount.interface";
-import type { SensorInterface } from "@features/equipment/types/sensor.interface";
-import type { SoftwareInterface } from "@features/equipment/types/software.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Action, Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { Action, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { EquipmentItemEditorMode } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import type { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import type { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
+import {
+  EquipmentItemEditorMode,
+  BaseItemEditorComponent
+} from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import type { ActiveToast } from "ngx-toastr";
-import type { Observable, Subscription } from "rxjs";
+import { ActiveToast } from "ngx-toastr";
+import { Observable, Subscription } from "rxjs";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({

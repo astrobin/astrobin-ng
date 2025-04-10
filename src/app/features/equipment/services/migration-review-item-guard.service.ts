@@ -1,16 +1,15 @@
-import type { Location } from "@angular/common";
+import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
-import type { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
-import type { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
+import { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import type { Store } from "@ngrx/store";
-import type { Observer } from "rxjs";
-import { combineLatest, EMPTY, Observable } from "rxjs";
+import { Store } from "@ngrx/store";
+import { Observer, combineLatest, EMPTY, Observable } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 
 @Injectable({

@@ -1,15 +1,14 @@
-import type { HttpClient } from "@angular/common/http";
-import { HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { PlateSolvingAdvancedSettingsInterface } from "@core/interfaces/plate-solving-advanced-settings.interface";
-import type { PlateSolvingSettingsInterface } from "@core/interfaces/plate-solving-settings.interface";
-import type { SolutionInterface } from "@core/interfaces/solution.interface";
+import { PlateSolvingAdvancedSettingsInterface } from "@core/interfaces/plate-solving-advanced-settings.interface";
+import { PlateSolvingSettingsInterface } from "@core/interfaces/plate-solving-settings.interface";
+import { SolutionInterface } from "@core/interfaces/solution.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { LoadingService } from "@core/services/loading.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Injectable({

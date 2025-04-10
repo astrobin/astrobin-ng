@@ -1,9 +1,9 @@
 import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import type { Meta, MetaDefinition, Title } from "@angular/platform-browser";
+import { Meta, MetaDefinition, Title } from "@angular/platform-browser";
 import { BaseService } from "@core/services/base.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { TitleServiceInterface } from "@core/services/title/title.service-interface";
+import { LoadingService } from "@core/services/loading.service";
+import { TitleServiceInterface } from "@core/services/title/title.service-interface";
 
 @Injectable({
   providedIn: "root"

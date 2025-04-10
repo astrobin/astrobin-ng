@@ -1,8 +1,7 @@
 import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { TimeagoDefaultClock } from "ngx-timeago";
-import type { Observable } from "rxjs";
-import { EMPTY } from "rxjs";
+import { Observable, EMPTY } from "rxjs";
 
 @Injectable({
   providedIn: "root"

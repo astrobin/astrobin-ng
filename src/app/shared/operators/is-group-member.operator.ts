@@ -1,6 +1,6 @@
-import type { GroupInterface } from "@core/interfaces/group.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { Observable } from "rxjs";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 export function isGroupMember(

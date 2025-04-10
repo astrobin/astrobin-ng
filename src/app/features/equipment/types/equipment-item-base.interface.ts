@@ -1,8 +1,8 @@
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { ForumInterface } from "@core/interfaces/forums/forum.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
-import type { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { ForumInterface } from "@core/interfaces/forums/forum.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 
 export enum EquipmentItemType {
   SENSOR = "SENSOR",

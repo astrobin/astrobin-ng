@@ -1,24 +1,35 @@
-import type { ChangeDetectorRef, OnChanges, OnInit, SimpleChanges, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, Input, ViewChild } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { DeleteCollection, UpdateCollection } from "@app/store/actions/collection.actions";
-import type { DeleteCollectionFailure, UpdateCollectionFailure } from "@app/store/actions/collection.actions";
+import {
+  DeleteCollection,
+  UpdateCollection,
+  DeleteCollectionFailure,
+  UpdateCollectionFailure
+} from "@app/store/actions/collection.actions";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
-import type { MainState } from "@app/store/state";
-import type { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { DeviceService } from "@core/services/device.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import { select } from "@ngrx/store";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { DeviceService } from "@core/services/device.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { map, take, takeUntil } from "rxjs/operators";
 

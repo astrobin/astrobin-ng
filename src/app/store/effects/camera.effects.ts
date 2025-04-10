@@ -1,15 +1,12 @@
 import { Injectable } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadCameraSuccess } from "@app/store/actions/camera.actions";
 import { selectCamera } from "@app/store/selectors/app/camera.selectors";
-import type { MainState } from "@app/store/state";
-import type { CameraApiService } from "@core/services/api/classic/gear/camera/camera-api.service";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
-import { EMPTY, of } from "rxjs";
+import { MainState } from "@app/store/state";
+import { CameraApiService } from "@core/services/api/classic/gear/camera/camera-api.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observable, EMPTY, of } from "rxjs";
 import { catchError, map, mergeMap, switchMap, take } from "rxjs/operators";
 
 @Injectable()

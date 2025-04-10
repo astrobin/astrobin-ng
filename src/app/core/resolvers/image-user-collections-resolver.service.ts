@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core";
-import type { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { CollectionInterface } from "@core/interfaces/collection.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { CollectionApiService } from "@core/services/api/classic/collections/collection-api.service";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { CollectionApiService } from "@core/services/api/classic/collections/collection-api.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 import { catchError, filter, first, map, switchMap, take, tap } from "rxjs/operators";
 
 @Injectable({

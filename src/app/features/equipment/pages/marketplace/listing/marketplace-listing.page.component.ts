@@ -1,30 +1,30 @@
-import type { Location } from "@angular/common";
-import { isPlatformBrowser } from "@angular/common";
-import type { AfterViewInit, OnInit } from "@angular/core";
-import { Component, Inject, PLATFORM_ID } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
-import { NavigationEnd } from "@angular/router";
+import { Location, isPlatformBrowser } from "@angular/common";
+import { AfterViewInit, OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
-import { LoadNestedComment, LoadNestedComments } from "@app/store/actions/nested-comments.actions";
-import type { LoadNestedCommentsSuccess } from "@app/store/actions/nested-comments.actions";
+import {
+  LoadNestedComment,
+  LoadNestedComments,
+  LoadNestedCommentsSuccess
+} from "@app/store/actions/nested-comments.actions";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { selectNestedCommentById } from "@app/store/selectors/app/nested-comments.selectors";
-import type { MainState } from "@app/store/state";
-import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { JsonApiService } from "@core/services/api/classic/json/json-api.service";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { RouterService } from "@core/services/router.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { RouterService } from "@core/services/router.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
 import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
 import {
@@ -35,9 +35,7 @@ import {
   EquipmentActionTypes,
   LoadMarketplacePrivateConversations,
   RenewMarketplaceListing,
-  UpdateMarketplacePrivateConversation
-} from "@features/equipment/store/equipment.actions";
-import type {
+  UpdateMarketplacePrivateConversation,
   ApproveMarketplaceListingSuccess,
   CreateMarketplacePrivateConversationSuccess,
   DeleteMarketplaceListingSuccess,
@@ -49,20 +47,20 @@ import {
   selectMarketplacePrivateConversation,
   selectMarketplacePrivateConversations
 } from "@features/equipment/store/equipment.selectors";
-import { MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
-import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import {
+  MarketplaceListingType,
+  MarketplaceListingInterface
+} from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
-import { merge, of } from "rxjs";
-import type { Observable, Subscription } from "rxjs";
+import { merge, of, Observable, Subscription } from "rxjs";
 import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 
 @Component({

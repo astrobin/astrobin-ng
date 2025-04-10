@@ -1,10 +1,10 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { SoftwareInterface } from "@core/interfaces/software.interface";
+import { SoftwareInterface } from "@core/interfaces/software.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import type { SoftwareApiServiceInterface } from "@core/services/api/classic/gear/software/software-api.service-interface";
-import type { LoadingService } from "@core/services/loading.service";
-import type { Observable } from "rxjs";
+import { SoftwareApiServiceInterface } from "@core/services/api/classic/gear/software/software-api.service-interface";
+import { LoadingService } from "@core/services/loading.service";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

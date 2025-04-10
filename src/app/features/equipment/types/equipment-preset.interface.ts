@@ -1,10 +1,10 @@
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import type { FilterInterface } from "@features/equipment/types/filter.interface";
-import type { MountInterface } from "@features/equipment/types/mount.interface";
-import type { SoftwareInterface } from "@features/equipment/types/software.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 
 export interface EquipmentPresetInterface {
   id?: number;

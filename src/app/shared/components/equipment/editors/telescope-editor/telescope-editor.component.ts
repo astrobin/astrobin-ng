@@ -1,25 +1,21 @@
-import type { ChangeDetectorRef, OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { DomSanitizer } from "@angular/platform-browser";
-import type { MainState } from "@app/store/state";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { EquipmentItemService } from "@core/services/equipment-item.service";
-import type { FormlyFieldService } from "@core/services/formly-field.service";
-import { FormlyFieldMessageLevel } from "@core/services/formly-field.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import type { TelescopeService } from "@features/equipment/services/telescope.service";
-import { TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
+import { ChangeDetectorRef, OnInit, Component } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { FormlyFieldService, FormlyFieldMessageLevel } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { TelescopeService, TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { TelescopeType } from "@features/equipment/types/telescope.interface";
-import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { FormlyFieldConfig } from "@ngx-formly/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { TelescopeType, TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode

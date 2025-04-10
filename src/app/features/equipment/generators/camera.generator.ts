@@ -1,8 +1,7 @@
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
 import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
-import type { CameraInterface } from "@features/equipment/types/camera.interface";
-import { CameraType } from "@features/equipment/types/camera.interface";
-import type { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export class CameraGenerator {

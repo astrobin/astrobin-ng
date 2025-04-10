@@ -1,11 +1,11 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import type { GearUserInfoInterface } from "@core/interfaces/gear-user-info.interface";
-import type { UserInterface } from "@core/interfaces/user.interface";
+import { GearUserInfoInterface } from "@core/interfaces/gear-user-info.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { MigratableGearItemApiService } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service";
-import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import type { LoadingService } from "@core/services/loading.service";
-import type { Observable } from "rxjs";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

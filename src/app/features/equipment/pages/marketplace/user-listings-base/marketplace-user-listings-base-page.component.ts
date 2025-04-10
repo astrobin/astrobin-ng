@@ -1,32 +1,29 @@
-import type { Location } from "@angular/common";
-import type { ChangeDetectorRef, OnInit } from "@angular/core";
-import { Component, Inject, PLATFORM_ID } from "@angular/core";
-import type { ActivatedRoute, Router } from "@angular/router";
+import { Location } from "@angular/common";
+import { ChangeDetectorRef, OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import type { MainState } from "@app/store/state";
-import type { UserInterface } from "@core/interfaces/user.interface";
-import type { CountryService } from "@core/services/country.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { LocalStorageService } from "@core/services/localstorage.service";
-import type { RouterService } from "@core/services/router.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import { AuthActionTypes, LoadUser } from "@features/account/store/auth.actions";
-import type { LoadUserFailure, LoadUserSuccess } from "@features/account/store/auth.actions";
-import type {
+import { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { CountryService } from "@core/services/country.service";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { LoadingService } from "@core/services/loading.service";
+import { LocalStorageService } from "@core/services/localstorage.service";
+import { RouterService } from "@core/services/router.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { AuthActionTypes, LoadUser, LoadUserFailure, LoadUserSuccess } from "@features/account/store/auth.actions";
+import {
   MarketplaceFilterModel,
   MarketplaceRefreshOptions
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
-import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import type { NgbModal, NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { ofType } from "@ngrx/effects";
-import type { Actions } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { NgbModal, NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { filter, map, take } from "rxjs/operators";
 
 @Component({

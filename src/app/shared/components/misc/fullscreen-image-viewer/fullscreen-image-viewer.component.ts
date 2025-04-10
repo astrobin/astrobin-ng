@@ -1,6 +1,11 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges } from "@angular/core";
 import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  SimpleChanges,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -13,7 +18,7 @@ import {
   PLATFORM_ID,
   ViewChild
 } from "@angular/core";
-import type { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
@@ -23,29 +28,30 @@ import {
 } from "@app/store/selectors/app/app.selectors";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
-import type { MainState } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import type { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
-import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { FINAL_REVISION_LABEL, FullSizeLimitationDisplayOptions } from "@core/interfaces/image.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { PopNotificationsService } from "@core/services/pop-notifications.service";
-import type { SwipeDownService } from "@core/services/swipe-down.service";
-import type { TitleService } from "@core/services/title/title.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { Actions } from "@ngrx/effects";
-import { ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import { select } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
+import {
+  ImageInterface,
+  ImageRevisionInterface,
+  FINAL_REVISION_LABEL,
+  FullSizeLimitationDisplayOptions
+} from "@core/interfaces/image.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { SwipeDownService } from "@core/services/swipe-down.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import type { CookieService } from "ngx-cookie";
-import type { Coord } from "ngx-image-zoom";
-import { NgxImageZoomComponent } from "ngx-image-zoom";
+import { CookieService } from "ngx-cookie";
+import { Coord, NgxImageZoomComponent } from "ngx-image-zoom";
 import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
 import { distinctUntilChanged, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
 

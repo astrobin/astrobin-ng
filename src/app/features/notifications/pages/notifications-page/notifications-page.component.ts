@@ -1,9 +1,8 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type { MainState } from "@app/store/state";
-import type { TitleService } from "@core/services/title/title.service";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { OnInit, Component } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { TitleService } from "@core/services/title/title.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

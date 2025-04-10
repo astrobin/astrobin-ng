@@ -1,6 +1,9 @@
 import { isPlatformBrowser } from "@angular/common";
-import type { ChangeDetectorRef, ElementRef, OnInit, PipeTransform } from "@angular/core";
 import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnInit,
+  PipeTransform,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
@@ -10,38 +13,37 @@ import {
   Pipe,
   PLATFORM_ID
 } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
+import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
-import type { ImageSearchInterface } from "@core/interfaces/image-search.interface";
+import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
 import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import type { ImageSearchApiService } from "@core/services/api/classic/images/image/image-search-api.service";
-import type { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
-import type { ClassicRoutesService } from "@core/services/classic-routes.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { LoadingService } from "@core/services/loading.service";
-import type { SearchService } from "@core/services/search.service";
-import type { UserService } from "@core/services/user.service";
-import type { UtilsService } from "@core/services/utils/utils.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { BrandInterface } from "@features/equipment/types/brand.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { ImageSearchApiService } from "@core/services/api/classic/images/image/image-search-api.service";
+import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
+import { SearchService } from "@core/services/search.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import type {
+import {
   EquipmentBrandListingInterface,
-  EquipmentItemListingInterface
+  EquipmentItemListingInterface,
+  EquipmentItemListingType
 } from "@features/equipment/types/equipment-listings.interface";
-import { EquipmentItemListingType } from "@features/equipment/types/equipment-listings.interface";
-import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
-import type { Observable, Subscription } from "rxjs";
-import { auditTime, finalize, fromEvent } from "rxjs";
+import { Observable, Subscription, auditTime, finalize, fromEvent } from "rxjs";
 import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 @Pipe({

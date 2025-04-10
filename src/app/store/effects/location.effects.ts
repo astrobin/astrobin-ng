@@ -1,15 +1,13 @@
 import { Injectable } from "@angular/core";
-import type { All } from "@app/store/actions/app.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { CreateLocationSuccess } from "@app/store/actions/location.actions";
-import type { MainState } from "@app/store/state";
-import type { LocationApiService } from "@core/services/api/classic/astrobin/location/location-api.service";
+import { MainState } from "@app/store/state";
+import { LocationApiService } from "@core/services/api/classic/astrobin/location/location-api.service";
 import { LoadUserProfile, UpdateUserProfile } from "@features/account/store/auth.actions";
 import { selectUserProfile } from "@features/account/store/auth.selectors";
-import type { Actions } from "@ngrx/effects";
-import { createEffect, ofType } from "@ngrx/effects";
-import type { Store } from "@ngrx/store";
-import type { Observable } from "rxjs";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 
 @Injectable()

@@ -1,5 +1,4 @@
-import type { ElementRef, OnChanges, OnInit, Renderer2, SimpleChanges } from "@angular/core";
-import { Directive, Input } from "@angular/core";
+import { ElementRef, OnChanges, OnInit, Renderer2, SimpleChanges, Directive, Input } from "@angular/core";
 
 @Directive({
   selector: "[astrobinLazyBackground]"

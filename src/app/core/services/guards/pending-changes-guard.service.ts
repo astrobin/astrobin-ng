@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import type { TranslateService } from "@ngx-translate/core";
-import type { Observable } from "rxjs";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
 
 export interface ComponentCanDeactivate {
   canDeactivate: () => boolean | Observable<boolean>;

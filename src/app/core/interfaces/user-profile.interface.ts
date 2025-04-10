@@ -1,5 +1,5 @@
-import type { ImageMaxZoom, WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
-import type { LocationInterface } from "@core/interfaces/location.interface";
+import { ImageMaxZoom, WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
+import { LocationInterface } from "@core/interfaces/location.interface";
 
 export enum FrontpageSection {
   GLOBAL = "global",

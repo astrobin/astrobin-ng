@@ -1,24 +1,31 @@
-import type { ChangeDetectorRef, OnChanges, SimpleChanges, TemplateRef } from "@angular/core";
-import { ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MainState } from "@app/store/state";
-import type { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
-import type { ImageInterface } from "@core/interfaces/image.interface";
-import type { CollapseSyncService } from "@core/services/collapse-sync.service";
-import type { DeviceService } from "@core/services/device.service";
-import type { ImageInfoService } from "@core/services/image/image-info.service";
-import type { ImageService } from "@core/services/image/image.service";
-import type { ImageViewerService } from "@core/services/image-viewer.service";
-import type { SearchService } from "@core/services/search.service";
-import type { WindowRefService } from "@core/services/window-ref.service";
-import type { FilterAcquisitionService, FilterSummary } from "@features/equipment/services/filter-acquisition.service";
-import type { FilterService } from "@features/equipment/services/filter.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageInfoService } from "@core/services/image/image-info.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { FilterAcquisitionService, FilterSummary } from "@features/equipment/services/filter-acquisition.service";
+import { FilterService } from "@features/equipment/services/filter.service";
 import { FilterTypePriority } from "@features/equipment/types/filter.interface";
-import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import type { Store } from "@ngrx/store";
-import type { TranslateService } from "@ngx-translate/core";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import type { CookieService } from "ngx-cookie";
+import { CookieService } from "ngx-cookie";
 
 // This includes each session.
 interface DetailedFilterSummary {
