@@ -1,16 +1,24 @@
+import { isPlatformBrowser } from "@angular/common";
 import {
   AfterViewInit,
   ChangeDetectorRef,
+  OnInit,
+  QueryList,
   Component,
   Inject,
-  OnInit,
   PLATFORM_ID,
-  QueryList,
   ViewChildren
 } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MainState } from "@app/store/state";
+import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
+import { ReviewEntryComponent } from "@features/iotd/components/review-entry/review-entry.component";
 import { ReviewerSeenImage, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import {
   ClearReviewQueue,
@@ -21,21 +29,13 @@ import {
   MarkReviewerSeenImage
 } from "@features/iotd/store/iotd.actions";
 import { selectReviewerSeenImages, selectReviewQueue, selectReviews } from "@features/iotd/store/iotd.selectors";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TitleService } from "@core/services/title/title.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { fromEvent, Observable, throttleTime } from "rxjs";
-import { ActivatedRoute, Router } from "@angular/router";
-import { CookieService } from "ngx-cookie";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { CookieService } from "ngx-cookie";
+import { Observable, fromEvent, throttleTime } from "rxjs";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
-import { isPlatformBrowser } from "@angular/common";
-import { ReviewEntryComponent } from "@features/iotd/components/review-entry/review-entry.component";
 
 @Component({
   selector: "astrobin-review-queue",
@@ -43,9 +43,11 @@ import { ReviewEntryComponent } from "@features/iotd/components/review-entry/rev
   styleUrls: ["./review-queue.component.scss"]
 })
 export class ReviewQueueComponent extends BasePromotionQueueComponent implements OnInit, AfterViewInit {
-  queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$
-    .select(selectReviewQueue)
-    .pipe(filter(queue => !!queue), tap(() => this.loadingQueue = false), takeUntil(this.destroyed$));
+  queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$.select(selectReviewQueue).pipe(
+    filter(queue => !!queue),
+    tap(() => (this.loadingQueue = false)),
+    takeUntil(this.destroyed$)
+  );
 
   promotions$: Observable<VoteInterface[]> = this.store$.select(selectReviews).pipe(takeUntil(this.destroyed$));
 
@@ -108,7 +110,7 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
 
     this.reviewEntryComponents.forEach((component, index) => {
       const rect = component.elementRef.nativeElement.getBoundingClientRect();
-      if (rect.top < (viewportHeight + scrollPosition) && rect.bottom > scrollPosition) {
+      if (rect.top < viewportHeight + scrollPosition && rect.bottom > scrollPosition) {
         this.reviewerSeenImages$.pipe(take(1)).subscribe(seenImages => {
           if (seenImages.map(seen => seen.image).includes(component.entry.pk)) {
             this.markingAsSeen = this.markingAsSeen.filter(pk => pk !== component.entry.pk);

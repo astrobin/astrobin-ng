@@ -4,7 +4,7 @@
     <span
       [innerHTML]="
         'Please migrate <strong>your equipment items</strong> to AstroBin\'s new database, in order to remove ' +
-        'duplication and fragmentation.' | translate
+          'duplication and fragmentation.' | translate
       "
     ></span>
 
@@ -71,30 +71,30 @@
         <div class="card-body">
           <table class="table table-striped">
             <tbody>
-            <tr>
-              <th scope="col">{{ "Item class" | translate }}</th>
-              <td>{{ legacyGearService.humanizeType(activeType) }}</td>
-            </tr>
-            <tr>
-              <th scope="col">{{ "Brand/Make" | translate }}</th>
-              <td>{{ randomNonMigrated.item.make || "n/a" | translate }}</td>
-            </tr>
-            <tr>
-              <th scope="col">{{ "Name/Model" | translate }}</th>
-              <td>{{ randomNonMigrated.item.name || "n/a" | translate }}</td>
-            </tr>
-            <tr *ngIf="randomNonMigrated.userInfo?.alias">
-              <th scope="col">{{ "Alias" | translate }}</th>
-              <td>{{ randomNonMigrated.userInfo.alias || "n/a" | translate }}</td>
-            </tr>
-            <tr *ngIf="randomNonMigrated.userInfo?.comment">
-              <th scope="col">{{ "Comment" | translate }}</th>
-              <td>{{ randomNonMigrated.userInfo.comment || "n/a" | translate }}</td>
-            </tr>
-            <tr *ngIf="randomNonMigrated.userInfo?.modded">
-              <th scope="col">{{ "Modified" | translate }}</th>
-              <td>{{ "Yes" | translate }}</td>
-            </tr>
+              <tr>
+                <th scope="col">{{ "Item class" | translate }}</th>
+                <td>{{ legacyGearService.humanizeType(activeType) }}</td>
+              </tr>
+              <tr>
+                <th scope="col">{{ "Brand/Make" | translate }}</th>
+                <td>{{ randomNonMigrated.item.make || "n/a" | translate }}</td>
+              </tr>
+              <tr>
+                <th scope="col">{{ "Name/Model" | translate }}</th>
+                <td>{{ randomNonMigrated.item.name || "n/a" | translate }}</td>
+              </tr>
+              <tr *ngIf="randomNonMigrated.userInfo?.alias">
+                <th scope="col">{{ "Alias" | translate }}</th>
+                <td>{{ randomNonMigrated.userInfo.alias || "n/a" | translate }}</td>
+              </tr>
+              <tr *ngIf="randomNonMigrated.userInfo?.comment">
+                <th scope="col">{{ "Comment" | translate }}</th>
+                <td>{{ randomNonMigrated.userInfo.comment || "n/a" | translate }}</td>
+              </tr>
+              <tr *ngIf="randomNonMigrated.userInfo?.modded">
+                <th scope="col">{{ "Modified" | translate }}</th>
+                <td>{{ "Yes" | translate }}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -155,7 +155,10 @@
 
       <div [hidden]="migrationMode || migrationConfirmation.inProgress" class="mt-2 alert alert-info">
         <fa-icon icon="info-circle"></fa-icon>
-        {{ "If you're not sure how to use this page, feel free to contact AstroBin or just skip it and let AstroBin moderators deal with your equipment later." | translate }}
+        {{
+          "If you're not sure how to use this page, feel free to contact AstroBin or just skip it and let AstroBin moderators deal with your equipment later."
+            | translate
+        }}
       </div>
 
       <ng-container *ngIf="migrationMode">
@@ -177,8 +180,10 @@
           <div class="card-body">
             <astrobin-equipment-item-browser
               #equipmentItemBrowser
-              [label]='"Please find a corresponding equipment item in the NEW database" | translate'
-              [description]='"Remember: you want to match items from the old database products in the new database." | translate'
+              [label]="'Please find a corresponding equipment item in the NEW database' | translate"
+              [description]="
+                'Remember: you want to match items from the old database products in the new database.' | translate
+              "
               [type]="getActiveType()"
               [enableFullscreen]="true"
               [showItemTypeSelector]="true"
@@ -228,11 +233,11 @@
                 class="alert alert-info"
                 [innerHTML]="
                   'We found more items in the legacy database that are similar to the one you are migrating. ' +
-                  'Please check the ones that you want to migrate along! <strong>Please be careful!</strong> Not ' +
-                  'all items that AstroBin thinks are similar, are necessarily the same product. Only check the ' +
-                  'ones that you are sure of.' | translate"
-              >
-              </div>
+                    'Please check the ones that you want to migrate along! <strong>Please be careful!</strong> Not ' +
+                    'all items that AstroBin thinks are similar, are necessarily the same product. Only check the ' +
+                    'ones that you are sure of.' | translate
+                "
+              ></div>
 
               <h5 class="mt-5 mb-4">{{ "Legacy item being migrated" | translate }}</h5>
 
@@ -292,36 +297,38 @@
       <div class="card-body">
         <table class="table table-striped applied-migrations">
           <thead>
-          <tr>
-            <td>ID</td>
-            <td>{{ "Legacy item" | translate }}</td>
-            <td>{{ "Strategy" | translate }}</td>
-            <td>{{ "New item" | translate }}</td>
-            <td></td>
-          </tr>
+            <tr>
+              <td>ID</td>
+              <td>{{ "Legacy item" | translate }}</td>
+              <td>{{ "Strategy" | translate }}</td>
+              <td>{{ "New item" | translate }}</td>
+              <td></td>
+            </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let strategy of allStrategies.results">
-            <td>{{ strategy.pk }}</td>
-            <td><strong>{{ strategy.gear.make }}</strong> {{ strategy.gear.name }}</td>
-            <td>{{ strategy.migrationFlag }}</td>
-            <td>
-              <ng-container *ngIf="!!strategy.migrationContentObjectBrand; else notAvailable">
-                <astrobin-equipment-item-display-name
-                  [item]="strategy.migrationContentObject"
-                ></astrobin-equipment-item-display-name>
-              </ng-container>
-            </td>
-            <td>
-              <button
-                [class.loading]="loadingService.loading$ | async"
-                (click)="undoMigration(strategy)"
-                class="btn btn-sm btn-outline-secondary"
-              >
-                {{ "Undo" | translate }}
-              </button>
-            </td>
-          </tr>
+            <tr *ngFor="let strategy of allStrategies.results">
+              <td>{{ strategy.pk }}</td>
+              <td>
+                <strong>{{ strategy.gear.make }}</strong> {{ strategy.gear.name }}
+              </td>
+              <td>{{ strategy.migrationFlag }}</td>
+              <td>
+                <ng-container *ngIf="!!strategy.migrationContentObjectBrand; else notAvailable">
+                  <astrobin-equipment-item-display-name
+                    [item]="strategy.migrationContentObject"
+                  ></astrobin-equipment-item-display-name>
+                </ng-container>
+              </td>
+              <td>
+                <button
+                  [class.loading]="loadingService.loading$ | async"
+                  (click)="undoMigration(strategy)"
+                  class="btn btn-sm btn-outline-secondary"
+                >
+                  {{ "Undo" | translate }}
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

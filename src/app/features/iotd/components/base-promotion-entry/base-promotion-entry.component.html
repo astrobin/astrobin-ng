@@ -18,7 +18,6 @@
 
 <div [hidden]="hidden" class="card-body">
   <div [class.promoted]="isPromoted" class="promotion-queue-entry">
-
     <div class="col-image">
       <astrobin-image
         #image
@@ -48,9 +47,7 @@
         [respectFullSizeDisplayLimitation]="false"
       ></astrobin-fullscreen-image-viewer>
 
-      <div class="promotion-image-hover-label">
-        100%
-      </div>
+      <div class="promotion-image-hover-label">100%</div>
     </div>
 
     <div *ngIf="showMetadata" class="col-metadata">
@@ -81,7 +78,7 @@
       <p>
         <strong>{{ "Published" | translate }}:</strong>&nbsp;
         <abbr [title]="entry.published | localDate">
-          {{ entry.published | localDate | timeago: true }}
+          {{ entry.published | localDate | timeago }}
         </abbr>
       </p>
     </div>
@@ -134,8 +131,11 @@
   </button>
 
   <ng-template #retract>
-    <button (click)="retractPromotion(entry.pk)" [class.loading]="loadingService.loading$ | async"
-            class="btn btn-danger">
+    <button
+      (click)="retractPromotion(entry.pk)"
+      [class.loading]="loadingService.loading$ | async"
+      class="btn btn-danger"
+    >
       <fa-icon icon="undo"></fa-icon>
       {{ retractPromotionButtonLabel }}
     </button>

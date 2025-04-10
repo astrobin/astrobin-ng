@@ -37,9 +37,7 @@
                     <td>{{ migrationStrategy.migrationFlag }}</td>
                   </tr>
                   <tr>
-                    <th scope="col">
-                      Global or Personal
-                    </th>
+                    <th scope="col">Global or Personal</th>
                     <td>
                       <ng-container *ngIf="!migrationStrategy.user">
                         Global
@@ -74,7 +72,7 @@
                   </tr>
                   <tr>
                     <th scope="col">{{ "When" | translate }}</th>
-                    <td>{{ migrationStrategy.migrationFlagTimestamp | timeago: true }}</td>
+                    <td>{{ migrationStrategy.migrationFlagTimestamp | timeago }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -91,9 +89,7 @@
             </div>
 
             <div class="card box-shadow">
-              <div class="card-header">
-                The legacy object will be migrated to the following equipment item
-              </div>
+              <div class="card-header">The legacy object will be migrated to the following equipment item</div>
 
               <div class="card-body">
                 <ng-container *ngIf="equipmentItem; else loading">

@@ -2,8 +2,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { TelescopeGenerator } from "@shared/generators/telescope.generator";
 import { TelescopeApiService } from "@core/services/api/classic/gear/telescope/telescope-api.service";
+import { TelescopeGenerator } from "@shared/generators/telescope.generator";
 import { MockBuilder } from "ng-mocks";
 
 describe("TelescopeApiService", () => {

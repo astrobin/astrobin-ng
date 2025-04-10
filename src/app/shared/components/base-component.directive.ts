@@ -1,15 +1,15 @@
-import { Directive, OnDestroy, OnInit } from "@angular/core";
-import { fromEvent, Observable, ReplaySubject, Subject } from "rxjs";
-import { Store } from "@ngrx/store";
-import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { debounceTime, map, switchMap, takeUntil } from "rxjs/operators";
-import { distinctUntilKeyChangedOrNull } from "@core/services/utils/utils.service";
-import { selectApp } from "@app/store/selectors/app/app.selectors";
-import { DeviceService } from "@core/services/device.service";
 import { isPlatformBrowser } from "@angular/common";
+import { OnDestroy, OnInit, Directive } from "@angular/core";
+import { selectApp } from "@app/store/selectors/app/app.selectors";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { DeviceService } from "@core/services/device.service";
+import { distinctUntilKeyChangedOrNull } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { Store } from "@ngrx/store";
+import { Observable, fromEvent, ReplaySubject, Subject } from "rxjs";
+import { debounceTime, map, switchMap, takeUntil } from "rxjs/operators";
 
 @Directive()
 export class BaseComponentDirective implements OnInit, OnDestroy {
@@ -71,9 +71,7 @@ export class BaseComponentDirective implements OnInit, OnDestroy {
     );
   }
 
-  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnDestroy(): void {
     this.destroyedSubject.next();
@@ -104,12 +102,11 @@ export class BaseComponentDirective implements OnInit, OnDestroy {
     };
 
     if (isPlatformBrowser(platformId)) {
-      fromEvent(windowRefService.nativeWindow, "resize").pipe(
-        debounceTime(300),
-        takeUntil(this.destroyed$)
-      ).subscribe(() => {
-        update();
-      });
+      fromEvent(windowRefService.nativeWindow, "resize")
+        .pipe(debounceTime(300), takeUntil(this.destroyed$))
+        .subscribe(() => {
+          update();
+        });
 
       update();
     }

@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { ActivatedRoute } from "@angular/router";
 import { initialMainState } from "@app/store/state";
 import { IotdModule } from "@features/iotd/iotd.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
-import { SubmissionSlotsComponent } from "./submission-slots.component";
-import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
+
+import { SubmissionSlotsComponent } from "./submission-slots.component";
 
 describe("SubmissionSlotsComponent", () => {
   let component: SubmissionSlotsComponent;

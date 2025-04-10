@@ -1,8 +1,5 @@
 <div class="page has-infinite-scroll">
-  <astrobin-search-bar
-    (modelChanged)="updateModel($event)"
-    [model]="model"
-  ></astrobin-search-bar>
+  <astrobin-search-bar (modelChanged)="updateModel($event)" [model]="model"></astrobin-search-bar>
 
   <astrobin-ad-manager
     #ad

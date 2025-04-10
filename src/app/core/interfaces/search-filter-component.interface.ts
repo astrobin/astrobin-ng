@@ -7,7 +7,7 @@ export enum SearchFilterCategory {
   EQUIPMENT,
   EQUIPMENT_ATTRIBUTES,
   ACQUISITION_ATTRIBUTES,
-  FILE_ATTRIBUTES,
+  FILE_ATTRIBUTES
 }
 
 export interface SearchFilterComponentInterface {

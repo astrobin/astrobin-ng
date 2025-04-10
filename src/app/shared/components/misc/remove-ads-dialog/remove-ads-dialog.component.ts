@@ -1,10 +1,10 @@
 import { Component } from "@angular/core";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoadingService } from "@core/services/loading.service";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-remove-ads-dialog",

@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title" id="information-dialog-modal">
-    <fa-icon icon="info-circle"></fa-icon>
-    {{"Please note" | translate }}
+    <fa-icon [icon]="icon" class="me-2"></fa-icon>
+    {{ title | translate }}
   </h4>
   <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
     <span aria-hidden="true">&times;</span>
@@ -9,11 +9,26 @@
 </div>
 
 <div class="modal-body">
-  <p [innerHTML]="message"></p>
+  <p [innerHTML]="message | translate : messageClass" [ngClass]="messageClass" style="white-space: pre-line"></p>
 </div>
 
 <div class="modal-footer">
+  <!-- Custom buttons if provided -->
+  <ng-container *ngIf="buttons && buttons.length > 0">
+    <button
+      *ngFor="let button of buttons"
+      (click)="executeButtonAction(button)"
+      [class]="'btn ' + button.class"
+      [class.loading]="loadingService.loading$ | async"
+      type="button"
+    >
+      {{ button.label | translate }}
+    </button>
+  </ng-container>
+
+  <!-- Default close button if no custom buttons -->
   <button
+    *ngIf="!buttons || buttons.length === 0"
     (click)="modal.close()"
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-secondary"

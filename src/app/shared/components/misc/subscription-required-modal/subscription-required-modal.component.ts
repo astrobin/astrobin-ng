@@ -1,9 +1,9 @@
 import { Component, Input } from "@angular/core";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-subscription-required-modal",

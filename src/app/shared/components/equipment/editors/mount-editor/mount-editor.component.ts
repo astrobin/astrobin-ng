@@ -1,27 +1,27 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, OnInit, Component } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { FormlyFieldService } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { MountService, MountDisplayProperty } from "@features/equipment/services/mount.service";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { MountType, MountInterface } from "@features/equipment/types/mount.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { TranslateService } from "@ngx-translate/core";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { MainState } from "@app/store/state";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { FormlyFieldService } from "@core/services/formly-field.service";
-import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
-import { MountInterface, MountType } from "@features/equipment/types/mount.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { switchMap, take, takeUntil } from "rxjs/operators";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { Constants } from "@shared/constants";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-mount-editor",

@@ -1,10 +1,10 @@
-import { AuthActionTypes } from "@features/account/store/auth.actions";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { AuthActionTypes } from "@features/account/store/auth.actions";
 import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
-import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 
 export interface AuthState {
@@ -60,9 +60,7 @@ export function authReducer(state = initialAuthState, action: PayloadActionInter
         };
 
         // Update the user in the users array
-        const updatedUsers = state.users.map(user =>
-          user.id === updatedUser.id ? updatedUser : user
-        );
+        const updatedUsers = state.users.map(user => (user.id === updatedUser.id ? updatedUser : user));
 
         return {
           ...state,
@@ -82,9 +80,7 @@ export function authReducer(state = initialAuthState, action: PayloadActionInter
         };
 
         // Update the user in the users array
-        const updatedUsers = state.users.map(user =>
-          user.id === updatedUser.id ? updatedUser : user
-        );
+        const updatedUsers = state.users.map(user => (user.id === updatedUser.id ? updatedUser : user));
 
         return {
           ...state,
@@ -138,10 +134,7 @@ export function authReducer(state = initialAuthState, action: PayloadActionInter
         ...state,
         userProfile: {
           ...state.userProfile,
-          shadowBans: [
-            ...state.userProfile.shadowBans,
-            action.payload.id
-          ]
+          shadowBans: [...state.userProfile.shadowBans, action.payload.id]
         }
       };
     case AuthActionTypes.REMOVE_SHADOW_BAN_USER_PROFILE_SUCCESS:
@@ -170,11 +163,7 @@ export function authReducer(state = initialAuthState, action: PayloadActionInter
 
       return {
         ...state,
-        users: [
-          ...state.users.slice(0, userIndex),
-          updatedUser,
-          ...state.users.slice(userIndex + 1)
-        ]
+        users: [...state.users.slice(0, userIndex), updatedUser, ...state.users.slice(userIndex + 1)]
       };
     case EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS:
     case EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS:

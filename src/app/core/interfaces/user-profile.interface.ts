@@ -99,5 +99,5 @@ export interface UserProfileInterface {
 }
 
 export interface UserProfileStatsInterface {
-  stats: { 0: string, 1: string, 2?: string }[];
+  stats: { 0: string; 1: string; 2?: string }[];
 }

@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnChanges, OnInit, Renderer2, SimpleChanges } from "@angular/core";
+import { ElementRef, OnChanges, OnInit, Renderer2, SimpleChanges, Directive, Input } from "@angular/core";
 
 @Directive({
   selector: "[astrobinLazyBackground]"
@@ -10,17 +10,14 @@ export class LazyBackgroundDirective implements OnInit, OnChanges {
   private _observer: IntersectionObserver;
   private _hasLoaded = false;
 
-  constructor(
-    public readonly el: ElementRef,
-    public readonly renderer: Renderer2
-  ) {
+  constructor(public readonly el: ElementRef, public readonly renderer: Renderer2) {
     this.renderer.setStyle(this.el.nativeElement, "position", "relative");
   }
 
   ngOnInit() {
     const options = { rootMargin: "50px" };
 
-    this._observer = new IntersectionObserver((entries) => {
+    this._observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           this._loadBackground();

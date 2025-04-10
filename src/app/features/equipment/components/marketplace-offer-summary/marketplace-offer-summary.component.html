@@ -47,14 +47,18 @@
 
               <h5>
                 <a
-                  (click)="userService.openGallery(
-                    group.value[0].userObj.username,
-                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-                  )"
-                  [href]="userService.getGalleryUrl(
-                    group.value[0].userObj.username,
-                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-                  )"
+                  (click)="
+                    userService.openGallery(
+                      group.value[0].userObj.username,
+                      !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                    )
+                  "
+                  [href]="
+                    userService.getGalleryUrl(
+                      group.value[0].userObj.username,
+                      !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                    )
+                  "
                   astrobinEventPreventDefault
                 >
                   {{ group.value[0].userDisplayName }}
@@ -74,9 +78,7 @@
             </ng-container>
 
             <div class="offer-info">
-              <p>
-                {{ "Created" | translate }}: {{ group.value[0].created | localDate | timeago: true }}
-              </p>
+              <p>{{ "Created" | translate }}: {{ group.value[0].created | localDate | timeago }}</p>
 
               <p>
                 {{ "Status" | translate }}: {{ equipmentMarketplaceService.humanizeOfferStatus(group.value[0].status) }}
@@ -134,12 +136,15 @@
                 class="btn btn-secondary d-block w-100 m-0"
               >
                 <fa-icon icon="envelope"></fa-icon>
-                <ng-container *ngIf="
-                  group.value[0].status === MarketplaceOfferStatus.ACCEPTED &&
-                  group.value[0].lineItemObj.reserved &&
-                  group.value[0].lineItemObj.reservedTo === group.value[0].user &&
-                  !group.value[0].lineItemObj.sold; else normalMessageLabel
-                ">
+                <ng-container
+                  *ngIf="
+                    group.value[0].status === MarketplaceOfferStatus.ACCEPTED &&
+                      group.value[0].lineItemObj.reserved &&
+                      group.value[0].lineItemObj.reservedTo === group.value[0].user &&
+                      !group.value[0].lineItemObj.sold;
+                    else normalMessageLabel
+                  "
+                >
                   {{ "Exchange payment/delivery info" | translate }}
                 </ng-container>
                 <ng-template #normalMessageLabel>
@@ -179,7 +184,7 @@
                 class="btn btn-link link-danger"
               >
                 <fa-icon icon="times"></fa-icon>
-                {{ "Retract" | translate}}
+                {{ "Retract" | translate }}
               </button>
             </div>
             <!-- card-footer -->

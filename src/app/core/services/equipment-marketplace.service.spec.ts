@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { MockBuilder } from "ng-mocks";
 
 describe("EquipmentMarketplaceService", () => {
   let service: EquipmentMarketplaceService;

@@ -2,8 +2,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { FilterGenerator } from "@shared/generators/filter.generator";
 import { FilterApiService } from "@core/services/api/classic/gear/filter/filter-api.service";
+import { FilterGenerator } from "@shared/generators/filter.generator";
 import { MockBuilder } from "ng-mocks";
 
 describe("filterApiService", () => {

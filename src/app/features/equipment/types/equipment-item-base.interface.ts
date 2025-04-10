@@ -1,8 +1,8 @@
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { ForumInterface } from "@core/interfaces/forums/forum.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { ForumInterface } from "@core/interfaces/forums/forum.interface";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 
 export enum EquipmentItemType {
   SENSOR = "SENSOR",
@@ -55,7 +55,7 @@ export interface EquipmentItemBaseInterface {
   variantOf: number | null;
   variants: EquipmentItemBaseInterface[];
   website: string;
-  image?: string | { file: File, url: string  }[];
+  image?: string | { file: File; url: string }[];
   thumbnail?: string;
   communityNotes: string | null;
   frozenAsAmbiguous: boolean | null;

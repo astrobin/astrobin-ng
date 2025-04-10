@@ -1,25 +1,25 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { LoadImageOptionsInterface } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
-import { environment } from "@env/environment";
-import { Store } from "@ngrx/store";
 import { ImageAlias } from "@core/enums/image-alias.enum";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
 import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { environment } from "@env/environment";
+import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
+import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
+import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { LoadImageOptionsInterface } from "@app/store/actions/image.actions";
-import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
 
 export type FindImagesResponseInterface = PaginatedApiResultInterface<ImageInterface> & {
-  menu: Array<[string, string]> | null;
+  menu: [string, string][] | null;
   active: string | null;
 };
 
@@ -55,12 +55,12 @@ export class ImageApiService extends BaseClassicApiService {
 
   private readonly PROPERTY_CONFIGS = {
     like: {
-      urlPath: 'users-who-like',
-      queryParam: 'users-who-like-q'
+      urlPath: "users-who-like",
+      queryParam: "users-who-like-q"
     },
     bookmark: {
-      urlPath: 'users-who-bookmarked',
-      queryParam: 'users-who-bookmarked-q'
+      urlPath: "users-who-bookmarked",
+      queryParam: "users-who-bookmarked-q"
     }
   } as const;
 
@@ -152,7 +152,10 @@ export class ImageApiService extends BaseClassicApiService {
   }
 
   updateImageRevision(imageRevision: Partial<ImageRevisionInterface>): Observable<ImageRevisionInterface> {
-    return this.http.patch<ImageRevisionInterface>(`${this.configUrl}/image-revision/${imageRevision.pk}/`, imageRevision);
+    return this.http.patch<ImageRevisionInterface>(
+      `${this.configUrl}/image-revision/${imageRevision.pk}/`,
+      imageRevision
+    );
   }
 
   publishImage(
@@ -191,10 +194,11 @@ export class ImageApiService extends BaseClassicApiService {
   }
 
   download(
-    pk: ImageInterface["pk"],
-    revisionLabel: ImageRevisionInterface["label"],
-    version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations"
+    _pk: ImageInterface["pk"],
+    _revisionLabel: ImageRevisionInterface["label"],
+    _version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations"
   ): void {
+    // Method is a stub, params are unused intentionally
   }
 
   deleteUncompressedSourceFile(pk: ImageInterface["pk"]): Observable<ImageInterface> {
@@ -202,17 +206,15 @@ export class ImageApiService extends BaseClassicApiService {
   }
 
   maySubmitForIotdTpConsideration(pk: ImageInterface["pk"]): Observable<{
-    may: boolean,
-    reason: string,
-    humanizedReason: string
+    may: boolean;
+    reason: string;
+    humanizedReason: string;
   }> {
     return this.http.get<{
-      may: boolean,
-      reason: string,
-      humanizedReason: string
-    }>(
-      `${this.configUrl}/image/${pk}/may-submit-for-iotd-tp-consideration/`
-    );
+      may: boolean;
+      reason: string;
+      humanizedReason: string;
+    }>(`${this.configUrl}/image/${pk}/may-submit-for-iotd-tp-consideration/`);
   }
 
   submitForIotdTpConsideration(pk: ImageInterface["pk"]): Observable<ImageInterface> {
@@ -221,7 +223,7 @@ export class ImageApiService extends BaseClassicApiService {
     });
   }
 
-  getImageStats(imageId: (ImageInterface["hash"] | ImageInterface["pk"])): Observable<ImageIotdTpStatsInterface> {
+  getImageStats(imageId: ImageInterface["hash"] | ImageInterface["pk"]): Observable<ImageIotdTpStatsInterface> {
     return this.http.get<ImageIotdTpStatsInterface>(`${this.baseUrl}/iotd/image-stats/${imageId}/`);
   }
 
@@ -243,6 +245,16 @@ export class ImageApiService extends BaseClassicApiService {
 
   removeCollaborator(pk: ImageInterface["pk"], userId: UserInterface["id"]): Observable<ImageInterface> {
     return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/remove-collaborator/`, { userId });
+  }
+
+  setAnnotations(pk: ImageInterface["pk"], annotations: string): Observable<ImageInterface> {
+    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/set-annotations/`, { annotations });
+  }
+
+  setRevisionAnnotations(pk: ImageRevisionInterface["pk"], annotations: string): Observable<ImageRevisionInterface> {
+    return this.http.patch<ImageRevisionInterface>(`${this.configUrl}/image-revision/${pk}/set-annotations/`, {
+      annotations
+    });
   }
 
   getUsersWhoLikeImage(

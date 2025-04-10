@@ -1,26 +1,41 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID
+} from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
-import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { NotificationContext, NotificationInterface } from "@features/notifications/interfaces/notification.interface";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ImageInterface, ImageRevisionInterface, FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TitleService } from "@core/services/title/title.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { debounceTime, distinctUntilChanged, map, take, takeUntil } from "rxjs/operators";
-import { ActivatedRoute, Router } from "@angular/router";
-import { LoadNotifications, MarkAllAsRead, MarkAsRead, NotificationsActionTypes } from "@features/notifications/store/notifications.actions";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { NotificationContext, NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import {
+  LoadNotifications,
+  MarkAllAsRead,
+  MarkAsRead,
+  NotificationsActionTypes
+} from "@features/notifications/store/notifications.actions";
 import { selectNotifications } from "@features/notifications/store/notifications.selectors";
-import { LoadingService } from "@core/services/loading.service";
 import { Actions, ofType } from "@ngrx/effects";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { isPlatformBrowser } from "@angular/common";
-import { FormGroup } from "@angular/forms";
+import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { debounceTime, distinctUntilChanged, map, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-notifications-list",
@@ -31,17 +46,20 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 export class NotificationsListComponent extends BaseComponentDirective implements OnInit {
   // If false, the component is part of the notifications page.
   @Input() standalone = false;
-  
+
   // Event emitted when all notifications are marked as read
   @Output() allNotificationsMarkedAsRead = new EventEmitter<void>();
 
-
-  protected page: number = 1;
+  protected page = 1;
   protected onlyUnread = true;
   protected read = false;
   protected refreshing = true;
-  protected unreadCount$ = this.store$.select(state => state.notifications.unreadCount).pipe(takeUntil(this.destroyed$));
-  protected totalNotifications$ = this.store$.select(state => state.notifications.totalNotifications).pipe(takeUntil(this.destroyed$));
+  protected unreadCount$ = this.store$
+    .select(state => state.notifications.unreadCount)
+    .pipe(takeUntil(this.destroyed$));
+  protected totalNotifications$ = this.store$
+    .select(state => state.notifications.totalNotifications)
+    .pipe(takeUntil(this.destroyed$));
   protected notifications: NotificationInterface[] = null;
 
   protected contextForm = new FormGroup({});
@@ -56,18 +74,16 @@ export class NotificationsListComponent extends BaseComponentDirective implement
           className: "flex-grow-1 mb-0",
           wrappers: ["default-wrapper"],
           props: {
-            placeholder: this.translate.instant("Search"),
+            placeholder: this.translate.instant("Search")
           },
           hooks: {
-            onInit: (field) => {
-              field.formControl.valueChanges.pipe(
-                debounceTime(300),
-                distinctUntilChanged(),
-                takeUntil(this.destroyed$)
-              ).subscribe(() => {
-                this.contextModel.message = field.formControl.value;
-                this.refreshNotifications();
-              });
+            onInit: field => {
+              field.formControl.valueChanges
+                .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$))
+                .subscribe(() => {
+                  this.contextModel.message = field.formControl.value;
+                  this.refreshNotifications();
+                });
             }
           }
         },
@@ -90,13 +106,11 @@ export class NotificationsListComponent extends BaseComponentDirective implement
               { value: NotificationContext.SUBSCRIPTIONS, label: this.translate.instant("Subscriptions") },
               { value: NotificationContext.AUTHENTICATION, label: this.translate.instant("Authentication") },
               { value: NotificationContext.API, label: "API" }
-            ],
+            ]
           },
           hooks: {
-            onInit: (field) => {
-              field.formControl.valueChanges.pipe(
-                takeUntil(this.destroyed$)
-              ).subscribe(() => {
+            onInit: field => {
+              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
                 this.contextModel.context = field.formControl.value;
                 this.refreshNotifications();
               });
@@ -109,7 +123,7 @@ export class NotificationsListComponent extends BaseComponentDirective implement
   protected contextModel = {
     message: null,
     context: null
-  }
+  };
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -133,14 +147,17 @@ export class NotificationsListComponent extends BaseComponentDirective implement
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.store$.select(selectNotifications).pipe(
-      takeUntil(this.destroyed$),
-      map(state => state.notifications)
-    ).subscribe(notifications => {
-      this.notifications = notifications;
-      console.log(this.notifications);
-      this.changeDetectorRef.markForCheck();
-    })
+    this.store$
+      .select(selectNotifications)
+      .pipe(
+        takeUntil(this.destroyed$),
+        map(state => state.notifications)
+      )
+      .subscribe(notifications => {
+        this.notifications = notifications;
+        console.log(this.notifications);
+        this.changeDetectorRef.markForCheck();
+      });
 
     try {
       this.page = +this.activatedRoute.snapshot?.queryParamMap.get("page") || 1;
@@ -148,13 +165,12 @@ export class NotificationsListComponent extends BaseComponentDirective implement
       this.page = 1;
     }
 
-    this.actions$.pipe(
-      ofType(NotificationsActionTypes.LOAD_NOTIFICATIONS_SUCCESS),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this.refreshing = false;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.actions$
+      .pipe(ofType(NotificationsActionTypes.LOAD_NOTIFICATIONS_SUCCESS), takeUntil(this.destroyed$))
+      .subscribe(() => {
+        this.refreshing = false;
+        this.changeDetectorRef.markForCheck();
+      });
 
     this.loadNotifications();
   }
@@ -166,12 +182,14 @@ export class NotificationsListComponent extends BaseComponentDirective implement
   }
 
   loadNotifications(): void {
-    this.store$.dispatch(new LoadNotifications({
-      page: this.page,
-      read: this.read,
-      context: this.contextModel.context,
-      message: this.contextModel.message
-    }));
+    this.store$.dispatch(
+      new LoadNotifications({
+        page: this.page,
+        read: this.read,
+        context: this.contextModel.context,
+        message: this.contextModel.message
+      })
+    );
   }
 
   toggleRead(notification: NotificationInterface): void {
@@ -179,10 +197,7 @@ export class NotificationsListComponent extends BaseComponentDirective implement
   }
 
   markAllAsRead(): void {
-    this.actions$.pipe(
-      ofType(NotificationsActionTypes.MARK_ALL_AS_READ_SUCCESS),
-      take(1)
-    ).subscribe(() => {
+    this.actions$.pipe(ofType(NotificationsActionTypes.MARK_ALL_AS_READ_SUCCESS), take(1)).subscribe(() => {
       this.loadNotifications();
       this.allNotificationsMarkedAsRead.emit();
       this.changeDetectorRef.markForCheck();
@@ -259,21 +274,23 @@ export class NotificationsListComponent extends BaseComponentDirective implement
   ) {
     if (!openInNewTab && newGalleryExperience && notification.extraTags) {
       const extraTags: {
-        context?: NotificationContext,
-        image_id?: ImageInterface["hash"] | ImageInterface["pk"],
-        revision_label?: ImageRevisionInterface["label"]
+        context?: NotificationContext;
+        image_id?: ImageInterface["hash"] | ImageInterface["pk"];
+        revision_label?: ImageRevisionInterface["label"];
       } = JSON.parse(notification.extraTags);
 
       if (extraTags.context === NotificationContext.IMAGE && !!extraTags.image_id) {
-        this.imageViewerService.openSlideshow(
-          this.componentId,
-          extraTags.image_id,
-          extraTags.revision_label ?? FINAL_REVISION_LABEL,
-          [],
-          true
-        ).subscribe(() =>{
-          this.changeDetectorRef.markForCheck();
-        });
+        this.imageViewerService
+          .openSlideshow(
+            this.componentId,
+            extraTags.image_id,
+            extraTags.revision_label ?? FINAL_REVISION_LABEL,
+            [],
+            true
+          )
+          .subscribe(() => {
+            this.changeDetectorRef.markForCheck();
+          });
         return;
       }
     }

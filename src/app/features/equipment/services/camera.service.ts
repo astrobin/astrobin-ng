@@ -1,18 +1,18 @@
 import { Injectable } from "@angular/core";
+import { MainState } from "@app/store/state";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
-import { SensorInterface } from "@features/equipment/types/sensor.interface";
 
 export enum CameraDisplayProperty {
   NAME = "NAME",
@@ -170,8 +170,8 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
         return shortForm
           ? this.translateService.instant("Max. cooling")
           : `${this.translateService.instant("Max. cooling")} (${this.translateService.instant(
-            "Celsius degrees below ambient"
-          )})`;
+              "Celsius degrees below ambient"
+            )})`;
       case CameraDisplayProperty.BACK_FOCUS:
         return shortForm
           ? this.translateService.instant("Back focus")

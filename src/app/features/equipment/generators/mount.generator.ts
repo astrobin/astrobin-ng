@@ -1,6 +1,6 @@
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
-import { MountInterface, MountType } from "@features/equipment/types/mount.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { MountInterface, MountType } from "@features/equipment/types/mount.interface";
 
 export class MountGenerator {
   static mount(source: Partial<MountInterface> = {}): MountInterface {

@@ -5,5 +5,4 @@ import { FormlyFieldRadio } from "@ngx-formly/bootstrap/radio";
   selector: "astrobin-formly-field-custom-radio",
   templateUrl: "./formly-field-custom-radio.component.html"
 })
-export class FormlyFieldCustomRadioComponent extends FormlyFieldRadio {
-}
+export class FormlyFieldCustomRadioComponent extends FormlyFieldRadio {}

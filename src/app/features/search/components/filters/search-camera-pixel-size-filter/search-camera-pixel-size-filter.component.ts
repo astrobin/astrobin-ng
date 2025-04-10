@@ -1,14 +1,14 @@
 import { Component } from "@angular/core";
-import { SearchBaseSliderFilterComponent } from "@features/search/components/filters/search-base-slider-filter/search-base-slider-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchBaseSliderFilterComponent } from "@features/search/components/filters/search-base-slider-filter/search-base-slider-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-search-camera-pixel-size-filter.search-filter-component",
@@ -34,6 +34,6 @@ export class SearchCameraPixelSizeFilterComponent extends SearchBaseSliderFilter
   ) {
     super(store$, translateService, domSanitizer, modalService, searchFilterService);
 
-    this.initFields(SearchCameraPixelSizeFilterComponent.key, { floor: 0, ceil: 20, step: .1 });
+    this.initFields(SearchCameraPixelSizeFilterComponent.key, { floor: 0, ceil: 20, step: 0.1 });
   }
 }

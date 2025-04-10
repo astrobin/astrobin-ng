@@ -1,45 +1,90 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { FINAL_REVISION_LABEL, FullSizeLimitationDisplayOptions, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { select, Store } from "@ngrx/store";
-import { ImageAlias } from "@core/enums/image-alias.enum";
-import { DeviceService } from "@core/services/device.service";
-import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { delay, filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
-import { ImageService } from "@core/services/image/image.service";
-import { ActivatedRoute } from "@angular/router";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { animationFrameScheduler, auditTime, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { isPlatformBrowser, Location } from "@angular/common";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { UtilsService } from "@core/services/utils/utils.service";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "@env/environment";
-import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
-import { ContentTranslateService } from "@core/services/content-translate.service";
-import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Inject,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  PLATFORM_ID,
+  Renderer2,
+  RendererStyleFlags2,
+  SimpleChanges,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { ActivatedRoute } from "@angular/router";
 import { Throttle } from "@app/decorators";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { LoadSolutionMatrix } from "@app/store/actions/solution.actions";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { selectIsSolutionMatrixLoading, selectSolutionMatrix } from "@app/store/selectors/app/solution.selectors";
+import { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import {
+  FINAL_REVISION_LABEL,
+  FullSizeLimitationDisplayOptions,
+  ImageInterface,
+  ImageRevisionInterface,
+  MouseHoverImageOptions,
+  ORIGINAL_REVISION_LABEL
+} from "@core/interfaces/image.interface";
 import { SolutionInterface, SolutionStatus } from "@core/interfaces/solution.interface";
-import { fadeInOut } from "@shared/animations";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
+import { ContentTranslateService } from "@core/services/content-translate.service";
+import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
-import { CookieService } from "ngx-cookie";
-import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { SearchService } from "@core/services/search.service";
-
+import { TitleService } from "@core/services/title/title.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { environment } from "@env/environment";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
+import { Actions, ofType } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { fadeInOut } from "@shared/animations";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { CookieService } from "ngx-cookie";
+import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
+import {
+  animationFrameScheduler,
+  auditTime,
+  combineLatest,
+  fromEvent,
+  merge,
+  Observable,
+  observeOn,
+  of,
+  Subject,
+  Subscription,
+  throttleTime
+} from "rxjs";
+import { delay, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-viewer",
@@ -50,7 +95,8 @@ import { SearchService } from "@core/services/search.service";
 })
 export class ImageViewerComponent
   extends BaseComponentDirective
-  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy, OnChanges {
+  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy, OnChanges
+{
   @Input()
   image: ImageInterface;
 
@@ -58,7 +104,7 @@ export class ImageViewerComponent
   revisionLabel = FINAL_REVISION_LABEL;
 
   showNorthArrow = false;
-  northArrowRotation: number = 0;
+  northArrowRotation = 0;
 
   @Input()
   showCloseButton = false;
@@ -117,6 +163,9 @@ export class ImageViewerComponent
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
 
+  @ViewChild("fullscreenViewer", { static: false })
+  fullscreenViewer: any;
+
   protected readonly ImageAlias = ImageAlias;
   protected readonly isPlatformBrowser = isPlatformBrowser;
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
@@ -139,7 +188,7 @@ export class ImageViewerComponent
   protected moonScaleDiameter: number = null;
   protected moonPosition = { x: 50, y: 50 }; // As percentage of container
   protected isDraggingMoon = false;
-  protected moonImageSrc: string = "/assets/images/moon-250.png?v=1"; // Default, will be updated
+  protected moonImageSrc = "/assets/images/moon-250.png?v=1"; // Default, will be updated
   protected isMoonImageLoaded = false; // Track if the actual moon image has loaded
   protected advancedSolutionMatrix: {
     matrixRect: string;
@@ -178,15 +227,25 @@ export class ImageViewerComponent
   protected translatedDescription: SafeHtml;
   protected readonly isBrowser: boolean;
   protected readonly MouseHoverImageOptions = MouseHoverImageOptions;
+  protected isAnnotationMode: boolean = false;
+  protected annotationReadOnlyMode: boolean = true; // Default to read-only mode
+  protected currentUserIsImageOwner: boolean = false;
+  protected imageElementForAnnotation: HTMLElement = null;
+  protected isMouseOverUIElement: boolean = false;
+  protected hasSavedAnnotations: boolean = false; // Flag for saved annotations
+  protected hasUrlAnnotations: boolean = false; // Flag for annotations loaded from URL
   private _preloadMoonImageAttemptCount = 0; // Track number of preload attempts
   private _preloadedMoonImage: HTMLImageElement = null; // Store the preloaded image element
   private _moonStartDragPosition = { x: 0, y: 0 };
   private _dataAreaScrollEventSubscription: Subscription;
+  private _hideFullscreenImageSubscription: Subscription;
+  private _previousMouseHoverState: { forceViewMouseHover: boolean; forceViewAnnotationsMouseHover: boolean } = null;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
   private _activeOffcanvas: NgbOffcanvasRef;
 
   constructor(
     public readonly store$: Store<MainState>,
+    private readonly actions$: Actions,
     public readonly deviceService: DeviceService,
     public readonly imageService: ImageService,
     public readonly jsonApiService: JsonApiService,
@@ -212,7 +271,8 @@ export class ImageViewerComponent
     public readonly cookieService: CookieService,
     public readonly searchService: SearchService,
     public readonly contentTranslateService: ContentTranslateService,
-    public readonly elementRef: ElementRef
+    public readonly elementRef: ElementRef,
+    public readonly coordinatesFormatterService: CoordinatesFormatterService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -228,13 +288,67 @@ export class ImageViewerComponent
     return this.standalone;
   }
 
+  @HostBinding("class.has-saved-annotations")
+  get hostHasSavedAnnotations() {
+    return this.hasSavedAnnotations;
+  }
+
+  @HostBinding("class.has-url-annotations")
+  get hostHasUrlAnnotations() {
+    return this.hasUrlAnnotations;
+  }
+
   ngOnInit(): void {
     this._initImageAlias();
     this._initContentTypes();
+    this._initCurrentUserIsImageOwner();
+
+    // Check if URL has annotations parameter
+    if (this.isBrowser) {
+      const urlParams = new URL(this.windowRefService.nativeWindow.location.href).searchParams;
+      if (urlParams.has("annotations")) {
+        // Set URL annotations flag
+        this.hasUrlAnnotations = true;
+
+        // Auto-enable annotation mode when URL has annotations
+        this.isAnnotationMode = true;
+        this.forceViewAnnotationsMouseHover = true;
+        this.forceViewMouseHover = true;
+
+        console.log("URL has annotations, enabling annotations with hasUrlAnnotations =", this.hasUrlAnnotations);
+      }
+    }
 
     this.offcanvasService.activeInstance.pipe(takeUntil(this.destroyed$)).subscribe(activeOffcanvas => {
       this._activeOffcanvas = activeOffcanvas;
     });
+
+    // Subscribe to the HIDE_FULLSCREEN_IMAGE action to update our local state
+    this._hideFullscreenImageSubscription = this.actions$
+      .pipe(ofType(AppActionTypes.HIDE_FULLSCREEN_IMAGE), takeUntil(this.destroyed$))
+      .subscribe(() => {
+        this.viewingFullscreenImage = false;
+
+        // Get the latest image data from the store
+        this.store$
+          .pipe(
+            select(selectImage, this.image.pk),
+            filter(image => !!image),
+            take(1)
+          )
+          .subscribe((updatedImage: ImageInterface) => {
+            // Update the local image reference with the latest from the store
+            this.image = { ...updatedImage };
+
+            // Refresh the revision with the latest data
+            this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+
+            // Check for saved annotations again as they may have been updated in fullscreen
+            this._checkForSavedAnnotations();
+
+            this.changeDetectorRef.markForCheck();
+          });
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -262,14 +376,8 @@ export class ImageViewerComponent
   ngAfterViewInit() {
     if (this.isBrowser) {
       merge(
-        this._retryAdjustSvgOverlay.pipe(
-          delay(100),
-          takeUntil(this.destroyed$)
-        ),
-        fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
-          auditTime(300),
-          takeUntil(this.destroyed$)
-        )
+        this._retryAdjustSvgOverlay.pipe(delay(100), takeUntil(this.destroyed$)),
+        fromEvent(this.windowRefService.nativeWindow, "resize").pipe(auditTime(300), takeUntil(this.destroyed$))
       ).subscribe(() => {
         this._initImageAlias();
         this._adjustSvgOverlay();
@@ -290,6 +398,15 @@ export class ImageViewerComponent
 
         this.changeDetectorRef.markForCheck();
       });
+
+      // Check for the fullscreen viewer and subscribe to its events
+      this.utilsService.delay(100).subscribe(() => {
+        if (this.fullscreenViewer) {
+          this.fullscreenViewer.exitFullscreen.subscribe(() => {
+            this.exitFullscreen();
+          });
+        }
+      });
     }
 
     this.changeDetectorRef.detectChanges();
@@ -304,6 +421,10 @@ export class ImageViewerComponent
   ngOnDestroy() {
     if (this._dataAreaScrollEventSubscription) {
       this._dataAreaScrollEventSubscription.unsubscribe();
+    }
+
+    if (this._hideFullscreenImageSubscription) {
+      this._hideFullscreenImageSubscription.unsubscribe();
     }
 
     if (this.adManagerComponent) {
@@ -333,12 +454,19 @@ export class ImageViewerComponent
     }
 
     if (this.viewingFullscreenImage) {
-      this.exitFullscreen();
+      // We don't need to do anything here - the FullscreenImageViewerComponent
+      // will handle ESC key and emit exitFullscreen event back to us
       return;
     }
 
     if (this.adjustmentEditorVisible) {
       this.adjustmentEditorVisible = false;
+      return;
+    }
+
+    if (this.isAnnotationMode && !this.annotationReadOnlyMode) {
+      // Only exit annotation mode when not in read-only mode
+      this.onExitAnnotationMode();
       return;
     }
 
@@ -368,7 +496,9 @@ export class ImageViewerComponent
     ) {
       const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
       const instance: ConfirmationDialogComponent = modal.componentInstance;
-      instance.message = this.translateService.instant("It looks like you are editing text. Are you sure you want to close this window?");
+      instance.message = this.translateService.instant(
+        "It looks like you are editing text. Are you sure you want to close this window?"
+      );
       instance.confirmLabel = this.translateService.instant("Yes, close");
       instance.showAreYouSure = false;
 
@@ -431,6 +561,11 @@ export class ImageViewerComponent
       event.stopPropagation();
     }
 
+    // Don't do anything if annotation mode is active
+    if (this.isAnnotationMode) {
+      return;
+    }
+
     this.onToggleAnnotationsOnMouseHoverEnter();
     this._onMouseHoverSvgLoad();
   }
@@ -450,6 +585,11 @@ export class ImageViewerComponent
       event.stopPropagation();
     }
 
+    // Don't do anything if annotation mode is active
+    if (this.isAnnotationMode) {
+      return;
+    }
+
     this.onToggleAnnotationsOnMouseHoverLeave();
   }
 
@@ -465,6 +605,10 @@ export class ImageViewerComponent
       return;
     }
 
+    if (this.viewingFullscreenImage) {
+      return;
+    }
+
     if (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -476,10 +620,7 @@ export class ImageViewerComponent
     }
   }
 
-  setImage(
-    image: ImageInterface,
-    revisionLabel: ImageRevisionInterface["label"]
-  ): void {
+  setImage(image: ImageInterface, revisionLabel: ImageRevisionInterface["label"]): void {
     this._scrollToTop();
 
     this.imageService.removeInvalidImageNotification();
@@ -490,7 +631,6 @@ export class ImageViewerComponent
     // Reset moon overlay state when loading a new image
     this.resetMoonOverlay();
     this.revisionLabel = this.imageService.validateRevisionLabel(this.image, revisionLabel);
-
 
     this._initSearchModel();
     this._initAdjustmentEditor();
@@ -503,36 +643,203 @@ export class ImageViewerComponent
     this._replaceIdWithHash();
     this._checkForCachedTranslation();
 
+    // Check if we should auto-enter annotation mode
+    this._checkAndShowAnnotations();
+
+    // Check if the image has saved annotations
+    this._checkForSavedAnnotations();
+
     // Proactively preload the moon image if this is a plate-solved image
     if (this.revision?.solution?.pixscale) {
       this._preloadMoonImage();
     }
 
     // Updates to the current image.
-    this.store$.pipe(
-      select(selectImage, image.pk),
-      filter(image => !!image),
-      takeUntil(this.destroyed$)
-    ).subscribe((image: ImageInterface) => {
-      this.image = { ...image };
-      this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-      this._setNonSolutionMouseHoverImage();
-      this._setSolutionMouseHoverImage();
-      this.changeDetectorRef.markForCheck();
-    });
+    this.store$
+      .pipe(
+        select(selectImage, image.pk),
+        filter(image => !!image),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe((image: ImageInterface) => {
+        this.image = { ...image };
+        this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+        this._setNonSolutionMouseHoverImage();
+        this._setSolutionMouseHoverImage();
+        this.changeDetectorRef.markForCheck();
+      });
 
     this.changeDetectorRef.detectChanges();
   }
 
   onToggleAnnotationsOnMouseHoverEnter(): void {
+    // Always enable forced view for URL annotations
     this.forceViewAnnotationsMouseHover = true;
     this.forceViewMouseHover = true;
     this._onMouseHoverSvgLoad();
   }
 
   onToggleAnnotationsOnMouseHoverLeave(): void {
-    this.forceViewAnnotationsMouseHover = false;
-    this.forceViewMouseHover = false;
+    // If we have URL annotations, don't disable the forced view on mouse leave
+    if (!this.hasUrlAnnotations) {
+      this.forceViewAnnotationsMouseHover = false;
+      this.forceViewMouseHover = false;
+    }
+  }
+
+  public exitFullscreen(): void {
+    this.store$.dispatch(new HideFullscreenImage());
+    this.viewingFullscreenImage = false;
+    this.toggleFullscreen.emit(false);
+
+    // Check for saved annotations again as they may have been updated in fullscreen
+    this._checkForSavedAnnotations();
+
+    if (this.isBrowser) {
+      const location_ = this.windowRefService.nativeWindow.location;
+      this.windowRefService.replaceState({}, `${location_.pathname}${location_.search}`);
+    }
+  }
+
+  /**
+   * Handle N keypress or button click for annotations
+   */
+  @HostListener("window:keyup.n", ["$event"])
+  enterFullscreenWithMeasurementTool(event: MouseEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Prevent default behavior
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Enter fullscreen with measurement tool activated
+    this.enterFullscreen(event, { activateMeasurementTool: true });
+  }
+
+  toggleAnnotationMode(event: KeyboardEvent | MouseEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Don't interfere with input fields if this is a keyboard event
+    if (event instanceof KeyboardEvent) {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+      ) {
+        return;
+      }
+    }
+
+    // Do nothing if the component is not active or if the revision is a video file
+    if (!this.active || (this.revision && this.revision.videoFile)) {
+      return;
+    }
+
+    if (event) {
+      event.preventDefault();
+      if (event instanceof MouseEvent) {
+        event.stopPropagation();
+      }
+    }
+
+    // For button click (MouseEvent), we use our enterFullscreen logic which handles enabling annotations
+    if (event instanceof MouseEvent) {
+      this.enterFullscreen(event);
+      return;
+    }
+
+    // For keyboard press (N key), toggle view mode only (always read-only)
+    // Store the previous state to restore later
+    if (!this.isAnnotationMode) {
+      this._previousMouseHoverState = {
+        forceViewMouseHover: this.forceViewMouseHover,
+        forceViewAnnotationsMouseHover: this.forceViewAnnotationsMouseHover
+      };
+
+      // Disable mouse hover while in annotation mode
+      this.forceViewMouseHover = false;
+      this.forceViewAnnotationsMouseHover = false;
+    } else {
+      // Restore previous mouse-hover state when exiting annotation mode
+      if (this._previousMouseHoverState) {
+        this.forceViewMouseHover = this._previousMouseHoverState.forceViewMouseHover;
+        this.forceViewAnnotationsMouseHover = this._previousMouseHoverState.forceViewAnnotationsMouseHover;
+      }
+    }
+
+    // Toggle annotation mode (always read-only)
+    this.isAnnotationMode = !this.isAnnotationMode;
+    this.annotationReadOnlyMode = true; // Always read-only in regular view
+
+    // Force change detection
+    this.changeDetectorRef.markForCheck();
+  }
+
+  /**
+   * Handle exiting annotation mode - when exiting, the annotations are cleared
+   * from the URL, and the tool emits this event to indicate it's done
+   */
+  onExitAnnotationMode(): void {
+    // Set annotation mode to false
+    this.isAnnotationMode = false;
+
+    // Reset to read-only mode for next time
+    this.annotationReadOnlyMode = true;
+
+    // Restore previous mouse-hover state when exiting annotation mode
+    if (this._previousMouseHoverState) {
+      this.forceViewMouseHover = this._previousMouseHoverState.forceViewMouseHover;
+      this.forceViewAnnotationsMouseHover = this._previousMouseHoverState.forceViewAnnotationsMouseHover;
+      this._previousMouseHoverState = null;
+    }
+
+    // Check if the URL still has annotations
+    if (this.isBrowser) {
+      const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
+      if (!currentUrl.searchParams.has("annotations")) {
+        // URL no longer has annotations, so clear the flag
+        this.hasUrlAnnotations = false;
+      }
+    }
+
+    // Check for saved annotations again to properly update the state
+    this._checkForSavedAnnotations();
+
+    // Important: Re-initialize annotations if we have saved annotations
+    // This fixes the issue where annotations disappear after exiting fullscreen mode
+    if (this.hasSavedAnnotations) {
+      // Short delay to ensure DOM is updated before re-initializing
+      this.utilsService.delay(100).subscribe(() => {
+        // Re-check and show annotations (if available) on the regular view
+        this._checkAndShowAnnotations();
+
+        // Force mouse hover annotations to be visible again
+        this.forceViewAnnotationsMouseHover = true;
+        this.forceViewMouseHover = true;
+
+        // Force change detection
+        this.changeDetectorRef.markForCheck();
+      });
+    }
+
+    // Force change detection to update the DOM
+    this.changeDetectorRef.markForCheck();
+  }
+
+  /**
+   * Toggle annotation edit mode between read-only and editable
+   */
+  toggleAnnotationEditMode(): void {
+    if (!this.isAnnotationMode) {
+      return;
+    }
+
+    this.annotationReadOnlyMode = !this.annotationReadOnlyMode;
+    this.changeDetectorRef.markForCheck();
   }
 
   // Mobile menu event handlers
@@ -546,24 +853,89 @@ export class ImageViewerComponent
 
   protected onImageLoaded(): void {
     this.imageFileLoaded = true;
+
+    // Get image element for annotation tool when the image is loaded
+    if (this.isBrowser && this.imageArea) {
+      const imgElement = this.imageArea.nativeElement.querySelector(".image-area astrobin-image img");
+      if (imgElement) {
+        this.imageElementForAnnotation = imgElement;
+
+        // Check if we should activate annotation mode now that the image is loaded
+        if (!this.isAnnotationMode) {
+          // Check for annotations in URL
+          const hasAnnotationsInUrl = new URL(this.windowRefService.nativeWindow.location.href).searchParams.has(
+            "annotations"
+          );
+
+          // Update the URL annotations flag
+          this.hasUrlAnnotations = hasAnnotationsInUrl;
+
+          // Check for annotations in revision
+          const hasAnnotationsInRevision =
+            this.revision &&
+            !!this.revision.annotations &&
+            this.revision.annotations.trim() !== "" &&
+            this.revision.annotations !== "[]";
+
+          if (hasAnnotationsInUrl || hasAnnotationsInRevision) {
+            console.log(
+              "Enabling annotation mode on image load - found annotations in",
+              hasAnnotationsInUrl ? "URL" : "revision"
+            );
+
+            if (hasAnnotationsInUrl) {
+              // For URL annotations, keep them always visible
+              this.forceViewAnnotationsMouseHover = true;
+              this.forceViewMouseHover = true;
+              this.hasUrlAnnotations = true; // Ensure this flag is set
+
+              // Force an immediate change detection to apply styles quickly
+              setTimeout(() => {
+                // Add class directly to host elements
+                if (this.elementRef?.nativeElement) {
+                  this.elementRef.nativeElement.classList.add("has-url-annotations");
+                }
+
+                if (this.imageArea?.nativeElement) {
+                  this.imageArea.nativeElement.classList.add("has-url-annotations");
+                }
+
+                this.changeDetectorRef.markForCheck();
+              }, 0);
+            } else {
+              // For saved annotations, use standard behavior with mouse hover
+              this._previousMouseHoverState = {
+                forceViewMouseHover: this.forceViewMouseHover,
+                forceViewAnnotationsMouseHover: this.forceViewAnnotationsMouseHover
+              };
+
+              // Disable mouse hover features
+              this.forceViewMouseHover = false;
+              this.forceViewAnnotationsMouseHover = false;
+            }
+
+            // Enter annotation mode
+            this.isAnnotationMode = true;
+            this.changeDetectorRef.markForCheck();
+          }
+        }
+      }
+    }
   }
 
   protected onImageMouseEnter(event: MouseEvent): void {
     event.preventDefault();
 
-    if (this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC()) {
+    // Skip mouse hover effects in touch mode or if annotation mode is active
+    if ((this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC()) || this.isAnnotationMode) {
       return;
     }
 
     if (
       this.revision.mouseHoverImage !== MouseHoverImageOptions.NOTHING &&
-      (
-        this.revision.mouseHoverImage !== MouseHoverImageOptions.SOLUTION ||
-        (
-          this.revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION &&
-          this.imageViewerService.showAnnotationsOnMouseHover
-        )
-      )
+      (this.revision.mouseHoverImage !== MouseHoverImageOptions.SOLUTION ||
+        (this.revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION &&
+          this.imageViewerService.showAnnotationsOnMouseHover))
     ) {
       this.imageArea.nativeElement.classList.add("hover");
     }
@@ -589,6 +961,12 @@ export class ImageViewerComponent
   @Throttle(20)
   protected onSvgMouseMove(event: MouseEvent): void {
     if (!this.advancedSolutionMatrix || !this.advancedSolutionMatrix.raMatrix) {
+      // Matrix not loaded yet, can't calculate coordinates
+      return;
+    }
+
+    if (this.loadingAdvancedSolutionMatrix || this.isAnnotationMode) {
+      // Skip if still loading or if annotation mode is active
       return;
     }
 
@@ -598,70 +976,24 @@ export class ImageViewerComponent
       return;
     }
 
-    const imageRenderedWidth = imageElement.clientWidth;
-    const imageNaturalWidth = imageElement.naturalWidth;
-    const hdWidth = Math.min(imageNaturalWidth, 1824);
-    const scale = imageRenderedWidth / hdWidth;
-    const raMatrix = this.advancedSolutionMatrix.raMatrix.split(",").map(Number);
-    const decMatrix = this.advancedSolutionMatrix.decMatrix.split(",").map(Number);
-    const rect = this.advancedSolutionMatrix.matrixRect.split(",").map(Number);
-    const delta = this.advancedSolutionMatrix.matrixDelta;
-
-    const interpolation = new CoordinateInterpolation(
-      raMatrix,
-      decMatrix,
-      rect[0],
-      rect[1],
-      rect[2],
-      rect[3],
-      delta,
-      undefined,
-      scale
+    // Use the shared service to calculate and format the coordinates
+    const result = this.coordinatesFormatterService.calculateMouseCoordinates(
+      event,
+      imageElement,
+      this.advancedSolutionMatrix
     );
 
-    const interpolationText = interpolation.interpolateAsText(
-      event.offsetX / scale,
-      event.offsetY / scale,
-      false,
-      true,
-      true
-    );
+    if (!result) {
+      return;
+    }
 
-    const ra = interpolationText.alpha.trim().split(" ").map(x => x.padStart(2, "0"));
-    const dec = interpolationText.delta.trim().split(" ").map(x => x.padStart(2, "0"));
-
-    this.mouseHoverRa = `
-      <span class="symbol">α</span>:
-      <span class="value">${ra[0]}</span><span class="unit">h</span>
-      <span class="value">${ra[1]}</span><span class="unit">m</span>
-      <span class="value">${ra[2]}</span><span class="unit">s</span>
-    `;
-    this.mouseHoverDec = `
-      <span class="symbol">δ</span>:
-      <span class="value">${dec[0]}</span><span class="unit">°</span>
-      <span class="value">${dec[1]}</span><span class="unit">'</span>
-      <span class="value">${dec[2]}</span><span class="unit">"</span>
-    `;
-
-    const galacticRa = interpolationText.l.trim().split(" ").map(x => x.padStart(2, "0"));
-    const galacticDec = interpolationText.b.trim().split(" ").map(x => x.padStart(2, "0"));
-
-    this.mouseHoverGalacticRa = `
-      <span class="symbol">l</span>:
-      <span class="value">${galacticRa[0]}</span><span class="unit">°</span>
-      <span class="value">${galacticRa[1]}</span><span class="unit">'</span>
-      <span class="value">${galacticRa[2]}</span><span class="unit>"</span>
-    `;
-
-    this.mouseHoverGalacticDec = `
-      <span class="symbol">b</span>:
-      <span class="value">${galacticDec[0]}</span><span class="unit">°</span>
-      <span class="value">${galacticDec[1]}</span><span class="unit">'</span>
-      <span class="value">${galacticDec[2]}</span><span class="unit"></span>
-    `;
-
-    this.mouseHoverX = event.offsetX;
-    this.mouseHoverY = event.offsetY;
+    // Set the formatted coordinates and positions
+    this.mouseHoverRa = result.coordinates.raHtml;
+    this.mouseHoverDec = result.coordinates.decHtml;
+    this.mouseHoverGalacticRa = result.coordinates.galacticRaHtml;
+    this.mouseHoverGalacticDec = result.coordinates.galacticDecHtml;
+    this.mouseHoverX = result.x;
+    this.mouseHoverY = result.y;
   }
 
   protected onRevisionSelected(revisionLabel: ImageRevisionInterface["label"], pushState: boolean): void {
@@ -691,11 +1023,23 @@ export class ImageViewerComponent
     // Clear any preloaded moon image
     this._preloadedMoonImage = null;
 
+    // Clear the current solution matrix to force a reload for the new revision
+    this.advancedSolutionMatrix = null;
+    this.loadingAdvancedSolutionMatrix = false;
+
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     this._setNonSolutionMouseHoverImage();
     this._setSolutionMouseHoverImage();
     this._setShowPlateSolvingBanner();
     this._updateNorthArrowRotation();
+
+    // Check if the new revision has saved annotations
+    this._checkForSavedAnnotations();
+
+    // Reset annotation mode when switching revisions to avoid showing wrong annotations
+    if (this.isAnnotationMode) {
+      this.onExitAnnotationMode();
+    }
 
     // Preload moon image for the new revision if it has a solution
     if (this.revision?.solution?.pixscale) {
@@ -720,8 +1064,10 @@ export class ImageViewerComponent
 
   protected onMoonDragStart(event: PointerEvent): void {
     // First, make sure this is actually our drag event and not a click on a button
-    if (event.target instanceof HTMLButtonElement ||
-      (event.target instanceof HTMLElement && event.target.closest("button"))) {
+    if (
+      event.target instanceof HTMLButtonElement ||
+      (event.target instanceof HTMLElement && event.target.closest("button"))
+    ) {
       return;
     }
 
@@ -770,6 +1116,8 @@ export class ImageViewerComponent
 
     this.changeDetectorRef.markForCheck();
   }
+
+  // Removed unnecessary wrapper method
 
   protected onMoonDrag(event: PointerEvent): void {
     if (!this.isDraggingMoon) {
@@ -823,9 +1171,12 @@ export class ImageViewerComponent
       this._updateMoonScale();
 
       // Check if we have a preloaded image that matches our source
-      if (this._preloadedMoonImage && this._preloadedMoonImage.src === this.moonImageSrc && this._preloadedMoonImage.complete) {
+      if (
+        this._preloadedMoonImage &&
+        this._preloadedMoonImage.src === this.moonImageSrc &&
+        this._preloadedMoonImage.complete
+      ) {
         // Use the preloaded image - immediately mark as loaded
-        console.log("Using preloaded moon image");
         this.isMoonImageLoaded = true;
       } else {
         // Reset loading state when showing - the image will trigger onload when it's ready
@@ -845,7 +1196,10 @@ export class ImageViewerComponent
     this.changeDetectorRef.markForCheck();
   }
 
-  protected enterFullscreen(event: MouseEvent | TouchEvent | null): void {
+  protected enterFullscreen(
+    event: MouseEvent | TouchEvent | null,
+    options: { activateMeasurementTool?: boolean } = {}
+  ): void {
     if (event) {
       event.preventDefault();
     }
@@ -862,21 +1216,39 @@ export class ImageViewerComponent
         }
 
         const limit = this.image.fullSizeDisplayLimitation;
-        const allowReal = (
+        const allowReal =
           limit === FullSizeLimitationDisplayOptions.EVERYBODY ||
           (limit === FullSizeLimitationDisplayOptions.MEMBERS && !!user) ||
           (limit === FullSizeLimitationDisplayOptions.PAYING && !!user && !!user.validSubscription) ||
-          (limit === FullSizeLimitationDisplayOptions.ME && !!user && user.id === this.image.user)
-        );
+          (limit === FullSizeLimitationDisplayOptions.ME && !!user && user.id === this.image.user);
 
-        if (!allowReal) {
-          this.popNotificationsService.info(
-            this.translateService.instant("Zoom disabled by the image owner.")
-          );
-          return;
+        // Pass the loaded matrix to the fullscreen component to avoid race conditions
+        const solutionMatrixToPass = this.loadingAdvancedSolutionMatrix ? null : this.advancedSolutionMatrix;
+
+        // Check if the annotation button was clicked
+        let enableAnnotations = false;
+        if (event instanceof MouseEvent) {
+          const target = event.target as HTMLElement;
+          const annotationButton = target.closest(".annotation-mode-button");
+          if (annotationButton) {
+            enableAnnotations = true;
+          }
         }
 
-        this.store$.dispatch(new ShowFullscreenImage({ imageId: this.image.pk, event }));
+        // Show a notification if zoom is disabled
+        if (!allowReal) {
+          this.popNotificationsService.info(this.translateService.instant("Zoom disabled by the image owner."));
+        }
+
+        this.store$.dispatch(
+          new ShowFullscreenImage({
+            imageId: this.image.pk,
+            event,
+            externalSolutionMatrix: solutionMatrixToPass,
+            enableAnnotations, // Add this flag to the payload
+            allowZoom: allowReal // Pass zoom permission flag
+          })
+        );
         this.viewingFullscreenImage = true;
 
         // Reset moon overlay state when entering fullscreen
@@ -886,32 +1258,34 @@ export class ImageViewerComponent
         this.toggleFullscreen.emit(true);
 
         if (this.isBrowser) {
+          // Add fullscreen to the URL
           const location_ = this.windowRefService.nativeWindow.location;
+
+          // Create URL for fullscreen, optionally adding the measurements parameter
+          let fullscreenUrl = `${location_.pathname}${location_.search}`;
+
+          // If we should activate the measurement tool, add 'measurements=1' to URL
+          if (options.activateMeasurementTool) {
+            const urlObj = new URL(location_.href);
+            urlObj.searchParams.set("measurements", "1");
+            fullscreenUrl = `${urlObj.pathname}${urlObj.search}`;
+          }
+
+          // Add the fullscreen hash
+          fullscreenUrl += "#fullscreen";
+
           this.windowRefService.pushState(
             {
               imageId: this.image.hash || this.image.pk,
               revisionLabel: this.revisionLabel,
-              fullscreen: true
+              fullscreen: true,
+              measurementTool: options.activateMeasurementTool || false
             },
-            `${location_.pathname}${location_.search}#fullscreen`
+            fullscreenUrl
           );
         }
       }
     });
-  }
-
-  protected exitFullscreen(): void {
-    this.store$.dispatch(new HideFullscreenImage());
-    this.viewingFullscreenImage = false;
-    this.toggleFullscreen.emit(false);
-
-    if (this.isBrowser) {
-      const location_ = this.windowRefService.nativeWindow.location;
-      this.windowRefService.replaceState(
-        {},
-        `${location_.pathname}${location_.search}`
-      );
-    }
   }
 
   protected onDescriptionClicked(event: MouseEvent) {
@@ -1005,6 +1379,15 @@ export class ImageViewerComponent
     this.contentTranslateService.clearTranslation("image-description", imageId);
   }
 
+  /**
+   * Utility method to set UI element hover state
+   * Used by child components to indicate when mouse is over UI elements
+   */
+  protected setMouseOverUIElement(value: boolean): void {
+    this.isMouseOverUIElement = value;
+    this.changeDetectorRef.markForCheck();
+  }
+
   // Preload moon image in memory
   private _preloadMoonImage(): void {
     // Limit the number of retry attempts to avoid infinite recursion
@@ -1024,9 +1407,12 @@ export class ImageViewerComponent
     // If imageArea is not available yet, wait for AfterViewInit
     if (!this.imageArea) {
       // Schedule preloading after view initialization
-      this.utilsService.delay(300).pipe(take(1)).subscribe(() => {
-        this._preloadMoonImage();
-      });
+      this.utilsService
+        .delay(300)
+        .pipe(take(1))
+        .subscribe(() => {
+          this._preloadMoonImage();
+        });
       return;
     }
 
@@ -1034,9 +1420,12 @@ export class ImageViewerComponent
     const imageElement = this.imageArea.nativeElement.querySelector("astrobin-image img");
     if (!imageElement || !imageElement.complete) {
       // If image isn't fully loaded yet, wait a bit longer
-      this.utilsService.delay(500).pipe(take(1)).subscribe(() => {
-        this._preloadMoonImage();
-      });
+      this.utilsService
+        .delay(500)
+        .pipe(take(1))
+        .subscribe(() => {
+          this._preloadMoonImage();
+        });
       return;
     }
 
@@ -1044,9 +1433,12 @@ export class ImageViewerComponent
     const moonDiameter = this._calculateMoonScaleDiameter();
     if (moonDiameter <= 0) {
       // If calculation fails, try again after a delay
-      this.utilsService.delay(500).pipe(take(1)).subscribe(() => {
-        this._preloadMoonImage();
-      });
+      this.utilsService
+        .delay(500)
+        .pipe(take(1))
+        .subscribe(() => {
+          this._preloadMoonImage();
+        });
       return;
     }
 
@@ -1055,12 +1447,6 @@ export class ImageViewerComponent
 
     // Create and load the image in the background
     this._preloadedMoonImage = new Image();
-
-    // Set up onload handler to mark as successfully loaded
-    this._preloadedMoonImage.onload = () => {
-      // Once loaded, signal that we have a preloaded image ready
-      console.log("Moon image preloaded successfully:", imageSrc);
-    };
 
     // Set up error handler
     this._preloadedMoonImage.onerror = () => {
@@ -1158,7 +1544,7 @@ export class ImageViewerComponent
     }
 
     // Moon's angular diameter is 0.52 degrees.
-    const MOON_DIAMETER_ARCSEC = .52 * 3600;
+    const MOON_DIAMETER_ARCSEC = 0.52 * 3600;
 
     try {
       // Get the image element
@@ -1277,6 +1663,8 @@ export class ImageViewerComponent
     }
   }
 
+  // Removed _loadAdvancedSolutionMatrix$ in favor of _ensureSolutionMatrixLoaded
+
   private _setNonSolutionMouseHoverImage() {
     if (!this.revision) {
       return;
@@ -1289,31 +1677,30 @@ export class ImageViewerComponent
         this.nonSolutionMouseHoverImage = null;
         this.inlineSvg = null;
         break;
-      case MouseHoverImageOptions.INVERTED: {
-        const thumbnail = this.revision.thumbnails?.find(thumbnail =>
-          thumbnail.alias === this.alias + "_inverted"
-        );
-        this.nonSolutionMouseHoverImage = thumbnail?.url ?? null;
-        this.inlineSvg = null;
-      }
+      case MouseHoverImageOptions.INVERTED:
+        {
+          const thumbnail = this.revision.thumbnails?.find(thumbnail => thumbnail.alias === this.alias + "_inverted");
+          this.nonSolutionMouseHoverImage = thumbnail?.url ?? null;
+          this.inlineSvg = null;
+        }
         break;
-      case "ORIGINAL": {
-        const thumbnail = this.image.thumbnails?.find(thumbnail =>
-          thumbnail.alias === this.alias &&
-          thumbnail.revision === (this.image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL)
-        );
-        this.nonSolutionMouseHoverImage = thumbnail?.url ?? null;
-        this.inlineSvg = null;
-      }
+      case "ORIGINAL":
+        {
+          const thumbnail = this.image.thumbnails?.find(
+            thumbnail =>
+              thumbnail.alias === this.alias &&
+              thumbnail.revision === (this.image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL)
+          );
+          this.nonSolutionMouseHoverImage = thumbnail?.url ?? null;
+          this.inlineSvg = null;
+        }
         break;
       default: {
         const matchingRevision = this.image.revisions?.find(
           revision => revision.label === this.revision.mouseHoverImage.replace("REVISION__", "")
         );
         if (matchingRevision) {
-          const thumbnail = matchingRevision.thumbnails?.find(
-            thumbnail => thumbnail.alias === this.alias
-          );
+          const thumbnail = matchingRevision.thumbnails?.find(thumbnail => thumbnail.alias === this.alias);
           this.nonSolutionMouseHoverImage = thumbnail?.url ?? null;
           this.inlineSvg = null;
         } else {
@@ -1329,7 +1716,14 @@ export class ImageViewerComponent
       return;
     }
 
+    // Reset appropriate properties first
+    this.mouseHoverRa = null;
+    this.mouseHoverDec = null;
+    this.mouseHoverGalacticRa = null;
+    this.mouseHoverGalacticDec = null;
+
     if (this.revision?.solution?.pixinsightSvgAnnotationRegular) {
+      // Load the SVG first
       this._loadInlineSvg$(
         environment.classicBaseUrl + `/platesolving/solution/${this.revision.solution.id}/svg/regular/`
       ).subscribe(inlineSvg => {
@@ -1337,18 +1731,84 @@ export class ImageViewerComponent
         this.inlineSvg = inlineSvg;
         this.changeDetectorRef.markForCheck();
       });
-      this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
+
+      // Then ensure we have the solution matrix - we need coordinated loading with a clear state
+      this._ensureSolutionMatrixLoaded(this.revision.solution.id);
+    } else if (this.revision?.solution?.imageFile) {
+      this.solutionMouseHoverImage = this.revision.solution.imageFile;
+      this.inlineSvg = null;
+
+      // Even with image file, we need the matrix for coordinates
+      if (this.revision.solution.id) {
+        this._ensureSolutionMatrixLoaded(this.revision.solution.id);
+      }
+    } else {
+      this.solutionMouseHoverImage = null;
+      this.inlineSvg = null;
+      this.advancedSolutionMatrix = null;
+      this.loadingAdvancedSolutionMatrix = false;
+    }
+  }
+
+  /**
+   * Ensures that a solution matrix is loaded, with proper state tracking
+   * This prevents race conditions between multiple components trying to load the same matrix
+   */
+  private _ensureSolutionMatrixLoaded(solutionId: number): void {
+    // If matrix is already loaded in component, we're done
+    if (this.advancedSolutionMatrix) {
+      return;
+    }
+
+    // Mark as loading to prevent duplicate requests
+    this.loadingAdvancedSolutionMatrix = true;
+
+    // First check if matrix is in the store
+    this.store$
+      .pipe(
+        select(selectSolutionMatrix, solutionId),
+        take(1),
+        switchMap(matrixFromStore => {
+          if (matrixFromStore) {
+            // If matrix is already in store, use it
+            this.advancedSolutionMatrix = matrixFromStore;
+            this.loadingAdvancedSolutionMatrix = false;
+            return of(matrixFromStore);
+          } else {
+            // Otherwise, check if it's currently being loaded by another component
+            return this.store$.pipe(
+              select(selectIsSolutionMatrixLoading, solutionId),
+              take(1),
+              switchMap(isLoading => {
+                if (isLoading) {
+                  // If already loading, wait for it to complete
+                  return this.store$.pipe(
+                    select(selectSolutionMatrix, solutionId),
+                    filter(matrix => !!matrix), // Wait until matrix is available
+                    take(1)
+                  );
+                } else {
+                  // If not loading, dispatch action to load it
+                  this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
+
+                  // Then wait for it to complete
+                  return this.store$.pipe(
+                    select(selectSolutionMatrix, solutionId),
+                    filter(matrix => !!matrix), // Wait until matrix is available
+                    take(1)
+                  );
+                }
+              })
+            );
+          }
+        })
+      )
+      .subscribe(matrix => {
+        // Update component state with the matrix
         this.advancedSolutionMatrix = matrix;
         this.loadingAdvancedSolutionMatrix = false;
         this.changeDetectorRef.markForCheck();
       });
-    } else if (this.revision?.solution?.imageFile) {
-      this.solutionMouseHoverImage = this.revision.solution.imageFile;
-      this.inlineSvg = null;
-    } else {
-      this.solutionMouseHoverImage = null;
-      this.inlineSvg = null;
-    }
   }
 
   private _setShowPlateSolvingBanner() {
@@ -1368,12 +1828,11 @@ export class ImageViewerComponent
     }
 
     if (
-      !!this.revision.solution && (
-        this.revision.solution.status === SolutionStatus.SUCCESS ||
+      !!this.revision.solution &&
+      (this.revision.solution.status === SolutionStatus.SUCCESS ||
         this.revision.solution.status === SolutionStatus.ADVANCED_SUCCESS ||
         this.revision.solution.status === SolutionStatus.FAILED ||
-        this.revision.solution.status === SolutionStatus.ADVANCED_FAILED
-      )
+        this.revision.solution.status === SolutionStatus.ADVANCED_FAILED)
     ) {
       this.showPlateSolvingBanner = false;
       return;
@@ -1396,26 +1855,13 @@ export class ImageViewerComponent
     );
   }
 
-  private _loadAdvancedSolutionMatrix$(solutionId: number): Observable<{
-    matrixRect: string;
-    matrixDelta: number;
-    raMatrix: string;
-    decMatrix: string;
-  }> {
-    if (this.loadingAdvancedSolutionMatrix || this.advancedSolutionMatrix) {
-      return of(this.advancedSolutionMatrix);
-    }
-
-    this.loadingAdvancedSolutionMatrix = true;
-
-    return this.solutionApiService.getAdvancedMatrix(solutionId);
-  }
-
   private _onMouseHoverSvgLoad(): void {
     if (this.isBrowser) {
       this.utilsService.delay(100).subscribe(() => {
         const _doc = this.windowRefService.nativeWindow.document;
-        const svgObject = _doc.getElementById(`mouse-hover-svg-${this.image.pk}-${this.revision.pk}`) as HTMLObjectElement;
+        const svgObject = _doc.getElementById(
+          `mouse-hover-svg-${this.image.pk}-${this.revision.pk}`
+        ) as HTMLObjectElement;
 
         if (svgObject) {
           const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -1432,10 +1878,7 @@ export class ImageViewerComponent
           }
 
           // Fix font path
-          svgObject.innerHTML = svgObject.innerHTML.replace(
-            "/media/static/astrobin/fonts/",
-            "/assets/fonts/"
-          );
+          svgObject.innerHTML = svgObject.innerHTML.replace("/media/static/astrobin/fonts/", "/assets/fonts/");
         }
 
         this._adjustSvgOverlay();
@@ -1515,10 +1958,7 @@ export class ImageViewerComponent
       return;
     }
 
-    const {
-      scrollArea,
-      sideToSideLayout
-    } = this.imageViewerService.getScrollArea(this.image.hash || this.image.pk);
+    const { scrollArea, sideToSideLayout } = this.imageViewerService.getScrollArea(this.image.hash || this.image.pk);
     const hasMobileMenu = this.deviceService.mdMax();
 
     if (!scrollArea) {
@@ -1567,6 +2007,20 @@ export class ImageViewerComponent
     }
   }
 
+  private _initCurrentUserIsImageOwner() {
+    this.currentUser$
+      .pipe(
+        filter(user => !!user),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(user => {
+        if (this.image && user) {
+          this.currentUserIsImageOwner = user.id === this.image.user;
+          this.changeDetectorRef.markForCheck();
+        }
+      });
+  }
+
   private _initAutoOpenFullscreen() {
     if (this.isBrowser) {
       const hash = this.windowRefService.nativeWindow.location.hash;
@@ -1577,47 +2031,59 @@ export class ImageViewerComponent
   }
 
   private _initContentTypes() {
-    this.store$.pipe(
-      select(selectContentType, { appLabel: "astrobin", model: "image" }),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      this.imageContentType = contentType;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.store$
+      .pipe(
+        select(selectContentType, { appLabel: "astrobin", model: "image" }),
+        filter(contentType => !!contentType),
+        take(1)
+      )
+      .subscribe(contentType => {
+        this.imageContentType = contentType;
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.store$.pipe(
-      select(selectContentType, { appLabel: "astrobin", model: "imagerevision" }),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      this.revisionContentType = contentType;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.store$
+      .pipe(
+        select(selectContentType, { appLabel: "astrobin", model: "imagerevision" }),
+        filter(contentType => !!contentType),
+        take(1)
+      )
+      .subscribe(contentType => {
+        this.revisionContentType = contentType;
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.store$.pipe(
-      select(selectContentType, { appLabel: "auth", model: "user" }),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      this.userContentType = contentType;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.store$
+      .pipe(
+        select(selectContentType, { appLabel: "auth", model: "user" }),
+        filter(contentType => !!contentType),
+        take(1)
+      )
+      .subscribe(contentType => {
+        this.userContentType = contentType;
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.store$.dispatch(new LoadContentType({
-      appLabel: "astrobin",
-      model: "image"
-    }));
+    this.store$.dispatch(
+      new LoadContentType({
+        appLabel: "astrobin",
+        model: "image"
+      })
+    );
 
-    this.store$.dispatch(new LoadContentType({
-      appLabel: "astrobin",
-      model: "imagerevision"
-    }));
+    this.store$.dispatch(
+      new LoadContentType({
+        appLabel: "astrobin",
+        model: "imagerevision"
+      })
+    );
 
-    this.store$.dispatch(new LoadContentType({
-      appLabel: "auth",
-      model: "user"
-    }));
+    this.store$.dispatch(
+      new LoadContentType({
+        appLabel: "auth",
+        model: "user"
+      })
+    );
   }
 
   private _initSearchModel() {
@@ -1636,7 +2102,11 @@ export class ImageViewerComponent
     if (this.revisionLabel === ORIGINAL_REVISION_LABEL) {
       this.revision = this.image;
       this.onRevisionSelected(ORIGINAL_REVISION_LABEL, false);
-    } else if (this.revisionLabel === FINAL_REVISION_LABEL || this.revisionLabel === null || this.revisionLabel === undefined) {
+    } else if (
+      this.revisionLabel === FINAL_REVISION_LABEL ||
+      this.revisionLabel === null ||
+      this.revisionLabel === undefined
+    ) {
       this.revision = this.imageService.getFinalRevision(this.image);
       this.onRevisionSelected(FINAL_REVISION_LABEL, false);
     } else {
@@ -1645,6 +2115,9 @@ export class ImageViewerComponent
     }
 
     this._updateNorthArrowRotation();
+
+    // Check for saved annotations after initializing the revision
+    this._checkForSavedAnnotations();
   }
 
   private _updateNorthArrowRotation(): void {
@@ -1663,17 +2136,112 @@ export class ImageViewerComponent
     const imageId = this.image.hash || this.image.pk.toString();
     const hasTranslation = this.contentTranslateService.hasTranslation("image-description", imageId);
 
-    if (hasTranslation && this.image.detectedLanguage && this.image.detectedLanguage !== this.translateService.currentLang) {
+    if (
+      hasTranslation &&
+      this.image.detectedLanguage &&
+      this.image.detectedLanguage !== this.translateService.currentLang
+    ) {
       // Load the cached translation
       this._loadTranslatedDescription();
     }
   }
 
+  /**
+   * Check if the image or revision has annotations and show them
+   */
+  private _checkAndShowAnnotations(): void {
+    if (!this.isBrowser || !this.image) {
+      return;
+    }
+
+    // Check for annotations in URL
+    const hasAnnotationsInUrl =
+      this.isBrowser && new URL(this.windowRefService.nativeWindow.location.href).searchParams.has("annotations");
+
+    // Set the flag for URL annotations
+    this.hasUrlAnnotations = hasAnnotationsInUrl;
+
+    // Wait for revision to be fully initialized
+    this.utilsService.delay(100).subscribe(() => {
+      // Check for annotations in revision or image (but only use if no URL annotations)
+      // URL annotations should trump saved annotations
+      const hasAnnotationsInRevision =
+        !hasAnnotationsInUrl &&
+        this.revision &&
+        !!this.revision.annotations &&
+        this.revision.annotations.trim() !== "" &&
+        this.revision.annotations !== "[]";
+
+      // Only check for saved annotations if there are no URL annotations
+      if (!hasAnnotationsInUrl) {
+        this._checkForSavedAnnotations();
+      }
+
+      if (hasAnnotationsInUrl || hasAnnotationsInRevision) {
+        console.log(
+          "Automatically enabling annotation mode - annotations found in",
+          hasAnnotationsInUrl ? "URL" : "revision"
+        );
+
+        // Wait for the image to load since we need the image element
+        this.utilsService.delay(500).subscribe(() => {
+          if (this.imageFileLoaded && this.imageElementForAnnotation) {
+            // Activate annotation mode
+            this._previousMouseHoverState = {
+              forceViewMouseHover: this.forceViewMouseHover,
+              forceViewAnnotationsMouseHover: this.forceViewAnnotationsMouseHover
+            };
+
+            // Disable mouse hover features
+            this.forceViewMouseHover = false;
+            this.forceViewAnnotationsMouseHover = false;
+
+            // Enter annotation mode
+            this.isAnnotationMode = true;
+            this.changeDetectorRef.markForCheck();
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * Check if the image has saved annotations and add appropriate classes
+   */
+  private _checkForSavedAnnotations(): void {
+    if (!this.revision) {
+      this.hasSavedAnnotations = false;
+      return;
+    }
+
+    try {
+      // Check if there are annotations in the revision
+      // Consider that a JSON array (even empty) is a saved state
+      if (this.revision.annotations && this.revision.annotations.trim() !== "") {
+        // Parse the annotations to check if it's a valid array
+        const annotations = JSON.parse(this.revision.annotations);
+        // Consider any array (even empty) as a saved state
+        this.hasSavedAnnotations = Array.isArray(annotations);
+      } else {
+        this.hasSavedAnnotations = false;
+      }
+
+      // Add a class to the image-area when there are saved annotations
+      if (this.imageArea?.nativeElement) {
+        if (this.hasSavedAnnotations) {
+          this.renderer.addClass(this.imageArea.nativeElement, "has-saved-annotations");
+        } else {
+          this.renderer.removeClass(this.imageArea.nativeElement, "has-saved-annotations");
+        }
+      }
+    } catch (error) {
+      console.warn("Error checking for saved annotations:", error);
+      this.hasSavedAnnotations = false;
+    }
+  }
+
   private _updateSupportsFullscreen(): void {
-    this.supportsFullscreen = (
-      this.revision &&
-      !this.revision.videoFile
-    );
+    this.supportsFullscreen = this.revision && !this.revision.videoFile;
   }
 
   private _handleFloatingTitleOnScroll(
@@ -1769,27 +2337,30 @@ export class ImageViewerComponent
 
     this.adConfig = undefined;
 
-    this.userSubscriptionService.displayAds$().pipe(
-      filter(showAds => showAds !== undefined),
-      take(1)
-    ).subscribe(showAds => {
-      const dataAreaWidth = this.windowRefService.nativeWindow.document.querySelector(
-        `#image-viewer-${this.image.hash || this.image.pk} .data-area-container`
-      ).clientWidth;
-      const windowHeight = this.windowRefService.nativeWindow.innerHeight;
+    this.userSubscriptionService
+      .displayAds$()
+      .pipe(
+        filter(showAds => showAds !== undefined),
+        take(1)
+      )
+      .subscribe(showAds => {
+        const dataAreaWidth = this.windowRefService.nativeWindow.document.querySelector(
+          `#image-viewer-${this.image.hash || this.image.pk} .data-area-container`
+        ).clientWidth;
+        const windowHeight = this.windowRefService.nativeWindow.innerHeight;
 
-      this.showAd = this.image && this.image.allowAds && showAds;
+        this.showAd = this.image && this.image.allowAds && showAds;
 
-      if (this.deviceService.mdMax()) {
-        this.adConfig = "wide";
-      } else if (windowHeight > dataAreaWidth * 2) {
-        this.adConfig = "rectangular";
-      } else {
-        this.adConfig = "wide";
-      }
+        if (this.deviceService.mdMax()) {
+          this.adConfig = "wide";
+        } else if (windowHeight > dataAreaWidth * 2) {
+          this.adConfig = "rectangular";
+        } else {
+          this.adConfig = "wide";
+        }
 
-      this.changeDetectorRef.markForCheck();
-    });
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   private _replaceIdWithHash() {
@@ -1803,15 +2374,12 @@ export class ImageViewerComponent
 
     const currentUrl = this.windowRefService.nativeWindow.location.href;
     const urlObj = new URL(currentUrl);
-    const queryString = urlObj.search;  // Includes the '?'
-    const fragment = urlObj.hash;       // Includes the '#'
+    const queryString = urlObj.search; // Includes the '?'
+    const fragment = urlObj.hash; // Includes the '#'
 
     // If the URL contains the image id, replace it while keeping query and fragment
     if (this.activatedRoute.snapshot.params["imageId"] === this.image.pk.toString()) {
-      this.windowRefService.replaceState(
-        {},
-        `/i/${this.image.hash}${queryString}${fragment}`
-      );
+      this.windowRefService.replaceState({}, `/i/${this.image.hash}${queryString}${fragment}`);
     }
   }
 
@@ -1865,7 +2433,8 @@ export class ImageViewerComponent
       contentTypeId = this.imageContentType.id;
     }
 
-    this.solutionApiService.startBasicSolver(contentTypeId, this.revision.pk.toString())
+    this.solutionApiService
+      .startBasicSolver(contentTypeId, this.revision.pk.toString())
       .pipe(take(1))
       .subscribe(() => {
         // Solution won't be immediately available

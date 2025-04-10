@@ -1,3 +1,4 @@
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import {
   DismissedImage,
   HiddenImage,
@@ -7,12 +8,12 @@ import {
   SubmitterSeenImage,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { IotdActions, IotdActionTypes } from "./iotd.actions";
-import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
-import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+
+import { IotdActions, IotdActionTypes } from "./iotd.actions";
 
 export const iotdFeatureKey = "iotd";
 

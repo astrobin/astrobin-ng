@@ -1,5 +1,5 @@
-import { AfterViewInit, Directive, ElementRef, Inject, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
+import { AfterViewInit, ElementRef, Directive, Inject, PLATFORM_ID } from "@angular/core";
 import { DeviceService } from "@core/services/device.service";
 
 @Directive({
@@ -10,8 +10,7 @@ export class DisableAutoFocusOnTouchDevicesDirective implements AfterViewInit {
     public readonly elementRef: ElementRef,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly deviceService: DeviceService
-  ) {
-  }
+  ) {}
 
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId) && this.deviceService.isTouchEnabled()) {

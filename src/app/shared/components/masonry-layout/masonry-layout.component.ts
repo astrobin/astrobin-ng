@@ -1,8 +1,22 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, Inject, Input, OnDestroy, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
-import { auditTime, Subject } from "rxjs";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  ElementRef,
+  OnDestroy,
+  Renderer2,
+  ChangeDetectionStrategy,
+  Component,
+  ContentChild,
+  Inject,
+  Input,
+  PLATFORM_ID,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { auditTime, Subject } from "rxjs";
 import { distinctUntilChanged, takeUntil } from "rxjs/operators";
 
 @Component({
@@ -27,16 +41,24 @@ import { distinctUntilChanged, takeUntil } from "rxjs/operators";
         [class.medium]="layout === 'medium'"
         [class.large]="layout === 'large'"
         [class.xl]="layout === 'xl'"
-        [class.aspect-narrow]="item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] < 0.8"
-        [class.aspect-square]="item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] >= 0.8 && item[widthProperty] / item[heightProperty] <= 1.2"
-        [class.aspect-wide]="item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] > 1.2"
-        [class.aspect-panoramic]="item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] > 2"
+        [class.aspect-narrow]="
+          item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] < 0.8
+        "
+        [class.aspect-square]="
+          item[widthProperty] &&
+          item[heightProperty] &&
+          item[widthProperty] / item[heightProperty] >= 0.8 &&
+          item[widthProperty] / item[heightProperty] <= 1.2
+        "
+        [class.aspect-wide]="
+          item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] > 1.2
+        "
+        [class.aspect-panoramic]="
+          item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] > 2
+        "
       >
         <div class="masonry-content">
-          <ng-container
-            [ngTemplateOutlet]="itemTemplate"
-            [ngTemplateOutletContext]="getTemplateContext(item)"
-          >
+          <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="getTemplateContext(item)">
           </ng-container>
         </div>
       </div>
@@ -77,16 +99,10 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnDestroy {
   ) {
     this._isBrowser = isPlatformBrowser(platformId);
 
-    this._resize$
-      .pipe(
-        auditTime(16),
-        distinctUntilChanged(),
-        takeUntil(this._destroyed$)
-      )
-      .subscribe(width => {
-        this.containerWidth = width;
-        this.changeDetectorRef.markForCheck();
-      });
+    this._resize$.pipe(auditTime(16), distinctUntilChanged(), takeUntil(this._destroyed$)).subscribe(width => {
+      this.containerWidth = width;
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   async ngAfterViewInit() {

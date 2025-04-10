@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@core/services/loading.service";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { OnInit, Component } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { MainState } from "@app/store/state";
 import { CountryService } from "@core/services/country.service";
+import { LoadingService } from "@core/services/loading.service";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-country-selection-modal",
@@ -40,10 +40,13 @@ export class CountrySelectionModalComponent extends BaseComponentDirective imple
           required: true,
           label: this.translateService.instant("Country"),
           placeholder: this.translateService.instant("Select a country"),
-          options: this.countryService.getCountries(this.translateService.currentLang).map(country => ({
-            value: country.code,
-            label: country.name
-          })).sort((a, b) => a.label.localeCompare(b.label))
+          options: this.countryService
+            .getCountries(this.translateService.currentLang)
+            .map(country => ({
+              value: country.code,
+              label: country.name
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label))
         }
       }
     ];

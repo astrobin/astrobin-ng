@@ -1,33 +1,47 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  ElementRef,
+  OnChanges,
+  OnInit,
+  Renderer2,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
+import { selectCollections } from "@app/store/selectors/app/collection.selectors";
 import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { DefaultGallerySortingOption, UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { auditTime, fromEvent, Subject } from "rxjs";
-import { isPlatformBrowser } from "@angular/common";
-import { debounceTime, distinctUntilChanged, filter, map, startWith, take, takeUntil } from "rxjs/operators";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { selectCollections } from "@app/store/selectors/app/collection.selectors";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
-import { FindImagesOptionsInterface } from "@core/services/api/classic/images/image/image-api.service";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
-import { UpdateUserProfile } from "@features/account/store/auth.actions";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { ImageInterface } from "@core/interfaces/image.interface";
+import { UserProfileInterface, DefaultGallerySortingOption } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { FindImagesOptionsInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { DeviceService } from "@core/services/device.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { UpdateUserProfile } from "@features/account/store/auth.actions";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { auditTime, fromEvent, Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged, filter, map, startWith, take, takeUntil } from "rxjs/operators";
 
 type GalleryNavigationComponent =
-  "gallery" |
-  "staging" |
-  "collections" |
-  "smart-folders" |
-  "equipment" |
-  "marketplace" |
-  "about" |
-  "trash";
+  | "gallery"
+  | "staging"
+  | "collections"
+  | "smart-folders"
+  | "equipment"
+  | "marketplace"
+  | "about"
+  | "trash";
 
 @Component({
   selector: "astrobin-user-gallery-navigation",
@@ -35,13 +49,7 @@ type GalleryNavigationComponent =
     <ng-container *ngIf="isBrowser; else loadingTemplate">
       <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
         <div class="nav-tabs-fade"></div>
-        <ul
-          ngbNav
-          #nav="ngbNav"
-          (click)="onTabClick(activeTab)"
-          [(activeId)]="activeTab"
-          class="nav-tabs"
-        >
+        <ul ngbNav #nav="ngbNav" (click)="onTabClick(activeTab)" [(activeId)]="activeTab" class="nav-tabs">
           <li ngbNavItem="gallery">
             <a ngbNavLink>
               <fa-icon icon="images" class="me-2"></fa-icon>
@@ -54,10 +62,7 @@ type GalleryNavigationComponent =
                 class="d-inline-block ms-3"
                 container="body"
               >
-                <a
-                  class="btn btn-sm btn-link no-toggle text-secondary"
-                  ngbDropdownToggle
-                >
+                <a class="btn btn-sm btn-link no-toggle text-secondary" ngbDropdownToggle>
                   <fa-icon icon="cog"></fa-icon>
                 </a>
                 <div ngbDropdownMenu>
@@ -207,9 +212,7 @@ type GalleryNavigationComponent =
               <span translate="Marketplace"></span>
             </a>
             <ng-template ngbNavContent>
-              <astrobin-user-gallery-marketplace
-                [user]="user"
-              ></astrobin-user-gallery-marketplace>
+              <astrobin-user-gallery-marketplace [user]="user"></astrobin-user-gallery-marketplace>
             </ng-template>
           </li>
 
@@ -219,10 +222,7 @@ type GalleryNavigationComponent =
               <span translate="About"></span>
             </a>
             <ng-template ngbNavContent>
-              <astrobin-user-gallery-about
-                [user]="user"
-                [userProfile]="userProfile"
-              ></astrobin-user-gallery-about>
+              <astrobin-user-gallery-about [user]="user" [userProfile]="userProfile"></astrobin-user-gallery-about>
             </ng-template>
           </li>
 
@@ -236,10 +236,7 @@ type GalleryNavigationComponent =
                 <span translate="Trash"></span>
               </a>
               <ng-template ngbNavContent>
-                <astrobin-user-gallery-trash
-                  [user]="user"
-                  [userProfile]="userProfile"
-                ></astrobin-user-gallery-trash>
+                <astrobin-user-gallery-trash [user]="user" [userProfile]="userProfile"></astrobin-user-gallery-trash>
               </ng-template>
             </li>
           </ng-container>
@@ -323,34 +320,34 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       this.changeDetectorRef.markForCheck();
     });
 
-    this._searchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroyed$)
-    ).subscribe(searchTerm => {
-      this.publicGalleryOptions = {
-        ...this.publicGalleryOptions,
-        q: searchTerm,
-        page: 1
-      };
+    this._searchSubject
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$))
+      .subscribe(searchTerm => {
+        this.publicGalleryOptions = {
+          ...this.publicGalleryOptions,
+          q: searchTerm,
+          page: 1
+        };
 
-      this.stagingAreaOptions = {
-        ...this.stagingAreaOptions,
-        q: searchTerm,
-        page: 1
-      };
+        this.stagingAreaOptions = {
+          ...this.stagingAreaOptions,
+          q: searchTerm,
+          page: 1
+        };
 
-      this.changeDetectorRef.markForCheck();
-    });
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this._setCollectionFromRoute();
-      this._setFindImageOptions();
-      this.changeDetectorRef.markForCheck();
-    });
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        this._setCollectionFromRoute();
+        this._setFindImageOptions();
+        this.changeDetectorRef.markForCheck();
+      });
 
     this._setActiveTabFromRoute();
     this._setCollectionFromRoute();
@@ -375,21 +372,14 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       };
 
       fromEvent(this.windowRefService.nativeWindow, "resize")
-        .pipe(
-          startWith(null),
-          auditTime(300),
-          takeUntil(this.destroyed$)
-        )
+        .pipe(startWith(null), auditTime(300), takeUntil(this.destroyed$))
         .subscribe(() => {
           updateFadeVisibility();
           this.changeDetectorRef.markForCheck();
         });
 
       fromEvent(navTabsElement, "scroll")
-        .pipe(
-          auditTime(100),
-          takeUntil(this.destroyed$)
-        )
+        .pipe(auditTime(100), takeUntil(this.destroyed$))
         .subscribe(() => {
           updateFadeVisibility();
           this.changeDetectorRef.markForCheck();
@@ -447,17 +437,21 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   }
 
   protected onDisplayCollectionsOnSeparateTabToggle(value: boolean) {
-    this.store$.dispatch(new UpdateUserProfile({
-      id: this.userProfile.id,
-      displayCollectionsOnPublicGallery: !value
-    }));
+    this.store$.dispatch(
+      new UpdateUserProfile({
+        id: this.userProfile.id,
+        displayCollectionsOnPublicGallery: !value
+      })
+    );
   }
 
   protected onDisplayWipImagesOnSeparateTabToggle(value: boolean) {
-    this.store$.dispatch(new UpdateUserProfile({
-      id: this.userProfile.id,
-      displayWipImagesOnPublicGallery: !value
-    }));
+    this.store$.dispatch(
+      new UpdateUserProfile({
+        id: this.userProfile.id,
+        displayWipImagesOnPublicGallery: !value
+      })
+    );
   }
 
   protected onImagesLoaded(images: any[]) {
@@ -486,10 +480,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       this.publicGalleryOptions = {
         includeStagingArea:
           currentUserWrapper.user?.id === this.user.id &&
-          (
-            currentUserWrapper.userProfile?.displayWipImagesOnPublicGallery ||
-            !!this.collectionId
-          ),
+          (currentUserWrapper.userProfile?.displayWipImagesOnPublicGallery || !!this.collectionId),
         collection: this.collectionId,
         q: this.searchModel,
         subsection: this.userProfile?.defaultGallerySorting === DefaultGallerySortingOption.TITLE ? "title" : null
@@ -517,15 +508,18 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       : null;
 
     if (this.collectionId) {
-      this.store$.select(selectCollections).pipe(
-        filter(collections => collections?.length > 0),
-        map(collections => collections.find(collection => collection.id === this.collectionId)),
-        filter(collection => !!collection),
-        take(1)
-      ).subscribe(collection => {
-        this.activeCollection = collection;
-        this.changeDetectorRef.markForCheck();
-      });
+      this.store$
+        .select(selectCollections)
+        .pipe(
+          filter(collections => collections?.length > 0),
+          map(collections => collections.find(collection => collection.id === this.collectionId)),
+          filter(collection => !!collection),
+          take(1)
+        )
+        .subscribe(collection => {
+          this.activeCollection = collection;
+          this.changeDetectorRef.markForCheck();
+        });
     } else {
       this.activeCollection = null;
     }

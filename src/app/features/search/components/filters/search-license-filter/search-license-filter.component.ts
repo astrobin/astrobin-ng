@@ -1,16 +1,16 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { MainState } from "@app/store/state";
 import { LicenseOptions } from "@core/interfaces/image.interface";
-import { ImageService } from "@core/services/image/image.service";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { ImageService } from "@core/services/image/image.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-license-data-filter.search-filter-component",
@@ -22,7 +22,9 @@ export class SearchLicenseFilterComponent extends SearchBaseFilterComponent {
   static minimumSubscription = PayableProductInterface.LITE;
 
   readonly category = SearchFilterCategory.GENERAL;
-  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchLicenseFilterComponent.key as SearchAutoCompleteType);
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
+    SearchLicenseFilterComponent.key as SearchAutoCompleteType
+  );
   readonly editFields = [
     {
       key: SearchLicenseFilterComponent.key,

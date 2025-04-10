@@ -1,22 +1,30 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageService } from "@core/services/image/image.service";
-import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@core/services/search.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
 import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { AstroUtilsService } from "@core/services/astro-utils/astro-utils.service";
-import { SearchCoordsFilterComponent } from "@features/search/components/filters/search-coords-filter/search-coords-filter.component";
-import { TranslateService } from "@ngx-translate/core";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
-import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { ConstellationsService } from "@features/explore/services/constellations.service";
+import { SearchCoordsFilterComponent } from "@features/search/components/filters/search-coords-filter/search-coords-filter.component";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-image-viewer-astrometry",
@@ -93,8 +101,7 @@ import { ConstellationsService } from "@features/explore/services/constellations
           triggers="hover click"
           container="body"
           class="metadata-label"
-        >
-        </div>
+        ></div>
       </div>
 
       <div *ngIf="pixelScale" class="metadata-item">
@@ -106,8 +113,7 @@ import { ConstellationsService } from "@features/explore/services/constellations
             icon="square"
           ></fa-icon>
         </div>
-        <div [innerHTML]="pixelScale" class="metadata-label">
-        </div>
+        <div [innerHTML]="pixelScale" class="metadata-label"></div>
       </div>
 
       <div *ngIf="orientation" class="metadata-item">
@@ -117,7 +123,7 @@ import { ConstellationsService } from "@features/explore/services/constellations
             triggers="hover click"
             container="body"
             icon="location-arrow"
-            [ngStyle]="{ 'transform': 'rotate(calc(' + (orientationCalculated * -1) + 'deg - 45deg))' }"
+            [ngStyle]="{ transform: 'rotate(calc(' + orientationCalculated * -1 + 'deg - 45deg))' }"
           ></fa-icon>
         </div>
         <div
@@ -125,8 +131,8 @@ import { ConstellationsService } from "@features/explore/services/constellations
           [ngbTooltip]="orientationTooltip"
           triggers="hover click"
           container="body"
-          class="metadata-label">
-        </div>
+          class="metadata-label"
+        ></div>
       </div>
     </div>
 
@@ -138,52 +144,50 @@ import { ConstellationsService } from "@features/explore/services/constellations
       <div class="offcanvas-body">
         <table class="table table-striped">
           <tbody>
-          <tr *ngIf="celestialHemisphere">
-            <th>{{ "Celestial hemisphere" | translate }}</th>
-            <td>{{ celestialHemisphere }}</td>
-          </tr>
-          <tr *ngIf="constellation">
-            <th>{{ "Constellation" | translate }}</th>
-            <td>{{ constellationFull }} ({{ constellation }})</td>
-          </tr>
-          <tr *ngIf="coordinates">
-            <th>{{ "Coordinates" | translate }}</th>
-            <td [innerHTML]="coordinates"></td>
-          </tr>
-          <tr *ngIf="fieldSize">
-            <th>{{ "Field size" | translate }}</th>
-            <td [innerHTML]="fieldSize"></td>
-          </tr>
-          <tr *ngIf="fieldRadius">
-            <th>{{ "Field radius" | translate }}</th>
-            <td [innerHTML]="fieldRadius"></td>
-          </tr>
-          <tr *ngIf="pixelScale">
-            <th>{{ "Pixel scale" | translate }}</th>
-            <td [innerHTML]="pixelScale"></td>
-          </tr>
-          <tr *ngIf="orientation">
-            <th>{{ "Orientation" | translate }}</th>
-            <td>
-              <span [innerHTML]="orientation"></span>
-              <span *ngIf="orientationCalculated !== undefined" class="ms-2 text-muted">
-                ({{ "Up is {{ 0 }}° East of North, or {{ 1 }}° West of North" | translate: {
-                   '0': orientationCalculated.toFixed(2),
-                   '1': (360 - orientationCalculated).toFixed(2)
-                 } }})
-              </span>
-            </td>
-          </tr>
-          <tr *ngIf="astrometryNetJobId">
-            <th>Astrometry.net ID</th>
-            <td>
-              <a
-                [href]="'https://nova.astrometry.net/status/' + astrometryNetJobId"
-                [innerHTML]="astrometryNetJobId"
-                target="_blank"
-              ></a>
-            </td>
-          </tr>
+            <tr *ngIf="celestialHemisphere">
+              <th>{{ "Celestial hemisphere" | translate }}</th>
+              <td>{{ celestialHemisphere }}</td>
+            </tr>
+            <tr *ngIf="constellation">
+              <th>{{ "Constellation" | translate }}</th>
+              <td>{{ constellationFull }} ({{ constellation }})</td>
+            </tr>
+            <tr *ngIf="coordinates">
+              <th>{{ "Coordinates" | translate }}</th>
+              <td [innerHTML]="coordinates"></td>
+            </tr>
+            <tr *ngIf="fieldSize">
+              <th>{{ "Field size" | translate }}</th>
+              <td [innerHTML]="fieldSize"></td>
+            </tr>
+            <tr *ngIf="fieldRadius">
+              <th>{{ "Field radius" | translate }}</th>
+              <td [innerHTML]="fieldRadius"></td>
+            </tr>
+            <tr *ngIf="pixelScale">
+              <th>{{ "Pixel scale" | translate }}</th>
+              <td [innerHTML]="pixelScale"></td>
+            </tr>
+            <tr *ngIf="orientation">
+              <th>{{ "Orientation" | translate }}</th>
+              <td>
+                <span [innerHTML]="orientation"></span>
+                <span *ngIf="orientationCalculated !== undefined" class="ms-2 text-muted">
+                  ({{ "Up is {{ 0 }}° East of North, or {{ 1 }}° West of North" | translate: { '0':
+                  orientationCalculated.toFixed(2), '1': (360 - orientationCalculated).toFixed(2) } }})
+                </span>
+              </td>
+            </tr>
+            <tr *ngIf="astrometryNetJobId">
+              <th>Astrometry.net ID</th>
+              <td>
+                <a
+                  [href]="'https://nova.astrometry.net/status/' + astrometryNetJobId"
+                  [innerHTML]="astrometryNetJobId"
+                  target="_blank"
+                ></a>
+              </td>
+            </tr>
           </tbody>
         </table>
 
@@ -195,11 +199,7 @@ import { ConstellationsService } from "@features/explore/services/constellations
           {{ "Copy the coordinates in decimal or sexagesimal format to your clipboard." | translate }}
         </p>
 
-        <textarea
-          class="form-control mt-1"
-          rows="6"
-          readonly
-        >{{ coordinatesTextArea }}</textarea>
+        <textarea class="form-control mt-1" rows="6" readonly>{{ coordinatesTextArea }}</textarea>
 
         <hr class="my-4" />
 
@@ -208,7 +208,7 @@ import { ConstellationsService } from "@features/explore/services/constellations
         <p class="mt-2">
           {{
             "Select how many degrees around the center coordinates you'd like to search for astro images, " +
-            "ranging from 1 to 5 degrees." | translate
+              "ranging from 1 to 5 degrees." | translate
           }}
         </p>
         <div class="degree-choices d-flex flex-nowrap gap-3 mt-4">
@@ -218,7 +218,8 @@ import { ConstellationsService } from "@features/explore/services/constellations
             astrobinEventPreventDefault
             class="btn btn-outline-secondary m-0 p-2"
           >
-            <span class="symbol">±</span><span class="value">{{ degree }}</span><span class="symbol">°</span>
+            <span class="symbol">±</span><span class="value">{{ degree }}</span
+            ><span class="symbol">°</span>
           </button>
         </div>
       </div>
@@ -229,10 +230,8 @@ import { ConstellationsService } from "@features/explore/services/constellations
     </ng-template>
 
     <ng-template #orientationTooltip>
-      {{ "Up is {{ 0 }}° East of North, or {{ 1 }}° West of North" | translate: {
-         '0': orientationCalculated.toFixed(2),
-         '1': (360 - orientationCalculated).toFixed(2)
-       } }}
+      {{ "Up is {{ 0 }}° East of North, or {{ 1 }}° West of North" | translate: { '0': orientationCalculated.toFixed(2),
+      '1': (360 - orientationCalculated).toFixed(2) } }}
     </ng-template>
   `,
   styleUrls: ["./image-viewer-astrometry.component.scss"],
@@ -298,18 +297,27 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
+    if (
+      (changes.image && changes.image.currentValue) ||
+      (changes.revisionLabel && changes.revisionLabel.currentValue)
+    ) {
       const image = this.image;
       this.revision = this.imageService.getRevision(image, this.revisionLabel);
       this.celestialHemisphere = this.imageService.getCelestialHemisphere(image, this.revisionLabel);
       this.constellation = this.imageService.getConstellation(image, this.revisionLabel);
-      this.constellationFull = this.constellationsService.getConstellationFullName(this.constellation, this.translateService.currentLang);
+      this.constellationFull = this.constellationsService.getConstellationFullName(
+        this.constellation,
+        this.translateService.currentLang
+      );
       this.constellationIsSearchTerm = this.searchModel?.constellation === this.constellation;
       this.coordinates = this.imageService.getCoordinates(image, this.revisionLabel);
       this.coordinatesTextArea =
-        this.translateService.instant("Decimal") + ": \n" +
-        this.imageService.getCoordinatesInDecimalFormat(image, this.revisionLabel) + "\n\n" +
-        this.translateService.instant("Sexagesimal") + ": \n" +
+        this.translateService.instant("Decimal") +
+        ": \n" +
+        this.imageService.getCoordinatesInDecimalFormat(image, this.revisionLabel) +
+        "\n\n" +
+        this.translateService.instant("Sexagesimal") +
+        ": \n" +
         this.imageService.getCoordinates(image, this.revisionLabel, false, false, true, 2);
       this.fieldSize = this.imageService.getFieldSize(image, this.revisionLabel);
       this.fieldRadius = this.imageService.getFieldRadius(image, this.revisionLabel);
@@ -350,7 +358,6 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
       position: this.deviceService.offcanvasPosition()
     });
   }
-
 
   findImagesInTheSameArea(degree: number): void {
     this.offcanvasService.dismiss();

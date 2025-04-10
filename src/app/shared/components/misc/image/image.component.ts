@@ -1,25 +1,42 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  HostBinding,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 import { ForceCheckImageAutoLoad, LoadImage, LoadImages } from "@app/store/actions/image.actions";
 import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { MainState } from "@app/store/state";
-import { select, Store } from "@ngrx/store";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { ImageInterface, ImageRevisionInterface, FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { ImageService } from "@core/services/image/image.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { delay, filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { fromEvent, interval, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
-import { isPlatformBrowser } from "@angular/common";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { Store, select } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Subscription, fromEvent, interval, merge, Observable, of, Subject, throttleTime } from "rxjs";
+import { delay, filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 declare const videojs: any;
 
@@ -67,9 +84,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   @HostBinding("class.loading")
   loading = false;
 
-  @HostBinding('style.--height')
+  @HostBinding("style.--height")
   get videoHeight(): string {
-    return this.revision?.videoFile && this.height ? `${this.height}px` : 'auto';
+    return this.revision?.videoFile && this.height ? `${this.height}px` : "auto";
   }
 
   @ViewChild("videoPlayerElement", { static: false })
@@ -120,10 +137,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
     this._isBrowser = isPlatformBrowser(this.platformId);
 
-    this._retrySetWidthAndHeight.pipe(
-      delay(this.RETRY_DELAY),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
+    this._retrySetWidthAndHeight.pipe(delay(this.RETRY_DELAY), takeUntil(this.destroyed$)).subscribe(() => {
       if (this.revision) {
         this._setWidthAndHeight(this.revision.w, this.revision.h);
         this.changeDetectorRef.markForCheck();
@@ -195,7 +209,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     this._previousVideoFile = newVideoFile;
   }
 
-
   ngOnDestroy(): void {
     if (this._loadImageFileSubscription) {
       this._loadImageFileSubscription.unsubscribe();
@@ -233,9 +246,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   load() {
     const noNeedToLoad = () =>
-      !this.utilsService.isNearOrInViewport(this.elementRef.nativeElement) ||
-      this.loading ||
-      !this._isBrowser;
+      !this.utilsService.isNearOrInViewport(this.elementRef.nativeElement) || this.loading || !this._isBrowser;
 
     if (!this.forceLoad && noNeedToLoad()) {
       return;
@@ -275,7 +286,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     this.store$.dispatch(new LoadImage({ imageId: this.id }));
   }
 
-  onLoad(event) {
+  onLoad(_event) {
     if (this._autoLoadSubscription) {
       this._autoLoadSubscription.unsubscribe();
       this._autoLoadSubscription = null;
@@ -554,7 +565,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
               filter(image => !!image),
               take(1)
             )
-            .subscribe(image => {
+            .subscribe(_image => {
               this.load();
               this.changeDetectorRef.markForCheck();
             });

@@ -1,0 +1,75 @@
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.format-selector {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .btn-group {
+    width: 100%;
+
+    .btn {
+      flex: 1;
+    }
+  }
+}
+
+.coordinate-group {
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+  }
+
+  .input-group {
+    input {
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.rectangle-corners {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+
+  h5 {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+}
+
+.info-text {
+  margin-top: 1rem;
+
+  small {
+    display: block;
+    line-height: 1.5;
+  }
+}
+
+// Animation for the copy feedback
+.input-group {
+  .btn-outline-primary {
+    transition: background-color 0.2s ease;
+
+    &:has(.fa-check) {
+      background-color: #28a745 !important;
+      border-color: #28a745 !important;
+      color: white !important;
+    }
+  }
+}

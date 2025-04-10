@@ -1,20 +1,24 @@
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
+import {
+  LoadSolutionMatrixFailure,
+  LoadSolutionMatrixStart,
+  LoadSolutionMatrixSuccess
+} from "@app/store/actions/solution.actions";
 import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
 import { CameraInterface } from "@core/interfaces/camera.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
 import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
 import { FINAL_REVISION_LABEL, ImageInterface, ORIGINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
 import { SolutionInterface } from "@core/interfaces/solution.interface";
 import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
 import { TelescopeInterface } from "@core/interfaces/telescope.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
 import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
-import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
-import { GroupInterface } from "@core/interfaces/group.interface";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
-
+import { UtilsService } from "@core/services/utils/utils.service";
+import { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
 
 export interface AppState {
   // Weather the app has been initialized.
@@ -48,6 +52,12 @@ export interface AppState {
 
   // All seen solutions.
   solutions: SolutionInterface[];
+
+  // Map of solution matrices by solution ID.
+  solutionMatrices: { [solutionId: number]: any };
+
+  // Set of solution IDs for which matrix loading is in progress
+  solutionMatricesLoading: Set<number>;
 
   // All seen telescopes.
   telescopes: TelescopeInterface[];
@@ -87,6 +97,8 @@ export const initialAppState: AppState = {
   images: [],
   thumbnails: [],
   solutions: [],
+  solutionMatrices: {},
+  solutionMatricesLoading: new Set<number>(),
   telescopes: [],
   cameras: [],
   createLocationAddTag: null,
@@ -97,10 +109,7 @@ export const initialAppState: AppState = {
   collections: null
 };
 
-function handleCreateTogglePropertySuccess(
-  state: AppState,
-  action: any
-): AppState {
+function handleCreateTogglePropertySuccess(state: AppState, action: any): AppState {
   let image: ImageInterface = null;
 
   const imageContentType = findImageContentType(state);
@@ -115,18 +124,12 @@ function handleCreateTogglePropertySuccess(
 
   return {
     ...state,
-    toggleProperties: UtilsService.arrayUniqueObjects(
-      [...state.toggleProperties, action.payload.toggleProperty],
-      "id"
-    ),
+    toggleProperties: UtilsService.arrayUniqueObjects([...state.toggleProperties, action.payload.toggleProperty], "id"),
     images: image ? updateImages(state.images, image) : state.images
   };
 }
 
-function handleDeleteTogglePropertySuccess(
-  state: AppState,
-  action: any
-): AppState {
+function handleDeleteTogglePropertySuccess(state: AppState, action: any): AppState {
   let image: ImageInterface = null;
 
   const imageContentType = findImageContentType(state);
@@ -141,18 +144,14 @@ function handleDeleteTogglePropertySuccess(
 
   return {
     ...state,
-    toggleProperties: state.toggleProperties.filter(
-      property => property.id !== action.payload.toggleProperty.id
-    ),
+    toggleProperties: state.toggleProperties.filter(property => property.id !== action.payload.toggleProperty.id),
     images: image ? updateImages(state.images, image) : state.images
   };
 }
 
 // Helper functions
 function findImageContentType(state: AppState): ContentTypeInterface | undefined {
-  return state.contentTypes.find(
-    contentType => contentType.appLabel === "astrobin" && contentType.model === "image"
-  );
+  return state.contentTypes.find(contentType => contentType.appLabel === "astrobin" && contentType.model === "image");
 }
 
 function findImage(state: AppState, objectId: number): ImageInterface | undefined {
@@ -182,11 +181,7 @@ function updateImages(images: ImageInterface[], updatedImage: ImageInterface): I
     return images;
   }
 
-  return [
-    ...images.slice(0, imageIndex),
-    updatedImage,
-    ...images.slice(imageIndex + 1)
-  ];
+  return [...images.slice(0, imageIndex), updatedImage, ...images.slice(imageIndex + 1)];
 }
 
 export function appReducer(state = initialAppState, action: All): AppState {
@@ -319,19 +314,14 @@ export function appReducer(state = initialAppState, action: All): AppState {
         revisions: [
           ...state.images[imageIndex].revisions.filter(revision => revision.pk !== action.payload.revision.pk),
           action.payload.revision
-        ].sort((a, b) => a.uploaded > b.uploaded ? -1 : 1)
+        ].sort((a, b) => (a.uploaded > b.uploaded ? -1 : 1))
       };
 
       return {
         ...state,
-        images: [
-          ...state.images.slice(0, imageIndex),
-          updatedImage,
-          ...state.images.slice(imageIndex + 1)
-        ]
+        images: [...state.images.slice(0, imageIndex), updatedImage, ...state.images.slice(imageIndex + 1)]
       };
     }
-
 
     case AppActionTypes.PUBLISH_IMAGE_SUCCESS: {
       const imageIndex = state.images.findIndex(image => image.pk === action.payload.pk);
@@ -346,14 +336,9 @@ export function appReducer(state = initialAppState, action: All): AppState {
 
       return {
         ...state,
-        images: [
-          ...state.images.slice(0, imageIndex),
-          updatedImage,
-          ...state.images.slice(imageIndex + 1)
-        ]
+        images: [...state.images.slice(0, imageIndex), updatedImage, ...state.images.slice(imageIndex + 1)]
       };
     }
-
 
     case AppActionTypes.UNPUBLISH_IMAGE_SUCCESS: {
       const imageIndex = state.images.findIndex(image => image.pk === action.payload.pk);
@@ -368,14 +353,9 @@ export function appReducer(state = initialAppState, action: All): AppState {
 
       return {
         ...state,
-        images: [
-          ...state.images.slice(0, imageIndex),
-          updatedImage,
-          ...state.images.slice(imageIndex + 1)
-        ]
+        images: [...state.images.slice(0, imageIndex), updatedImage, ...state.images.slice(imageIndex + 1)]
       };
     }
-
 
     case AppActionTypes.MARK_IMAGE_AS_FINAL_SUCCESS: {
       const imagePk = action.payload.pk;
@@ -413,11 +393,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
       // Return new state with the updated image
       return {
         ...state,
-        images: [
-          ...state.images.slice(0, imageIndex),
-          image,
-          ...state.images.slice(imageIndex + 1)
-        ]
+        images: [...state.images.slice(0, imageIndex), image, ...state.images.slice(imageIndex + 1)]
       };
     }
 
@@ -431,16 +407,14 @@ export function appReducer(state = initialAppState, action: All): AppState {
 
       return {
         ...state,
-        images: [
-          ...state.images.slice(0, imageIndex),
-          action.payload.image,
-          ...state.images.slice(imageIndex + 1)
-        ]
+        images: [...state.images.slice(0, imageIndex), action.payload.image, ...state.images.slice(imageIndex + 1)]
       };
     }
 
     case AppActionTypes.DELETE_IMAGE_REVISION_SUCCESS: {
-      const imageIndex = state.images.findIndex(image => image.revisions.some(revision => revision.pk === action.payload.pk));
+      const imageIndex = state.images.findIndex(image =>
+        image.revisions.some(revision => revision.pk === action.payload.pk)
+      );
       if (imageIndex === -1) {
         return state;
       } // If the image is not found, return the original state
@@ -453,21 +427,17 @@ export function appReducer(state = initialAppState, action: All): AppState {
       if (revision.isFinal) {
         image.isFinal = true;
         image.thumbnails = image.thumbnails.filter(thumbnail => thumbnail.revision !== FINAL_REVISION_LABEL);
-        image.thumbnails = image.thumbnails.filter(thumbnail => thumbnail.revision === ORIGINAL_REVISION_LABEL).map(
-          thumbnail => ({
+        image.thumbnails = image.thumbnails
+          .filter(thumbnail => thumbnail.revision === ORIGINAL_REVISION_LABEL)
+          .map(thumbnail => ({
             ...thumbnail,
             revision: FINAL_REVISION_LABEL
-          })
-        )
+          }));
       }
 
       return {
         ...state,
-        images: [
-          ...state.images.slice(0, imageIndex),
-          image,
-          ...state.images.slice(imageIndex + 1)
-        ]
+        images: [...state.images.slice(0, imageIndex), image, ...state.images.slice(imageIndex + 1)]
       };
     }
 
@@ -490,11 +460,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
 
       return {
         ...state,
-        images: [
-          ...state.images.slice(0, imageIndex),
-          image,
-          ...state.images.slice(imageIndex + 1)
-        ]
+        images: [...state.images.slice(0, imageIndex), image, ...state.images.slice(imageIndex + 1)]
       };
     }
 
@@ -523,10 +489,13 @@ export function appReducer(state = initialAppState, action: All): AppState {
         ...state,
         images: image
           ? [
-            ...state.images.slice(0, state.images.findIndex(i => i.pk === image.pk)),
-            image,
-            ...state.images.slice(state.images.findIndex(i => i.pk === image.pk) + 1)
-          ]
+              ...state.images.slice(
+                0,
+                state.images.findIndex(i => i.pk === image.pk)
+              ),
+              image,
+              ...state.images.slice(state.images.findIndex(i => i.pk === image.pk) + 1)
+            ]
           : state.images,
         solutions: UtilsService.arrayUniqueObjects([...state.solutions, action.payload], "id")
       };
@@ -536,6 +505,48 @@ export function appReducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         solutions: UtilsService.arrayUniqueObjects([...state.solutions, ...action.payload], "id")
+      };
+    }
+
+    case AppActionTypes.LOAD_SOLUTION_MATRIX_START: {
+      const matrixAction = action as unknown as LoadSolutionMatrixStart;
+
+      // Create new Set to avoid mutation
+      const newSet = new Set(state.solutionMatricesLoading);
+      newSet.add(matrixAction.payload.solutionId);
+
+      return {
+        ...state,
+        solutionMatricesLoading: newSet
+      };
+    }
+
+    case AppActionTypes.LOAD_SOLUTION_MATRIX_SUCCESS: {
+      const matrixAction = action as unknown as LoadSolutionMatrixSuccess;
+
+      // Remove from loading set
+      const newSet = new Set(state.solutionMatricesLoading);
+      newSet.delete(matrixAction.payload.solutionId);
+      return {
+        ...state,
+        solutionMatrices: {
+          ...state.solutionMatrices,
+          [matrixAction.payload.solutionId]: matrixAction.payload.matrix
+        },
+        solutionMatricesLoading: newSet
+      };
+    }
+
+    case AppActionTypes.LOAD_SOLUTION_MATRIX_FAILURE: {
+      const matrixAction = action as unknown as LoadSolutionMatrixFailure;
+
+      // Remove from loading set
+      const newSet = new Set(state.solutionMatricesLoading);
+      newSet.delete(matrixAction.payload.solutionId);
+
+      return {
+        ...state,
+        solutionMatricesLoading: newSet
       };
     }
 
@@ -564,7 +575,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         nestedComments: UtilsService.sortObjectsByProperty(
-          UtilsService.arrayUniqueObjects([...state.nestedComments || [], ...action.payload.nestedComments], "id"),
+          UtilsService.arrayUniqueObjects([...(state.nestedComments || []), ...action.payload.nestedComments], "id"),
           "created"
         )
       };
@@ -576,7 +587,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         nestedComments: UtilsService.sortObjectsByProperty(
-          UtilsService.arrayUniqueObjects([...state.nestedComments || [], ...[action.payload.nestedComment]], "id"),
+          UtilsService.arrayUniqueObjects([...(state.nestedComments || []), ...[action.payload.nestedComment]], "id"),
           "created"
         )
       };
@@ -588,9 +599,9 @@ export function appReducer(state = initialAppState, action: All): AppState {
         nestedComments: state.nestedComments.map(comment =>
           comment.id === action.payload.nestedComment.id
             ? {
-              ...comment,
-              pendingModeration: false
-            }
+                ...comment,
+                pendingModeration: false
+              }
             : comment
         )
       };
@@ -643,7 +654,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         collections: UtilsService.arrayUniqueObjects(
-          [...state.collections || [], ...action.payload.collections],
+          [...(state.collections || []), ...action.payload.collections],
           "id"
         ).sort((a, b) => a.name.localeCompare(b.name))
       };
@@ -653,7 +664,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         collections: UtilsService.arrayUniqueObjects(
-          [...state.collections || [], ...action.payload.response.results],
+          [...(state.collections || []), ...action.payload.response.results],
           "id"
         ).sort((a, b) => a.name.localeCompare(b.name))
       };
@@ -663,7 +674,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         collections: UtilsService.arrayUniqueObjects(
-          [...state.collections || [], action.payload.collection],
+          [...(state.collections || []), action.payload.collection],
           "id"
         ).sort((a, b) => a.name.localeCompare(b.name))
       };
@@ -673,10 +684,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         collections: UtilsService.arrayUniqueObjects(
-          [
-            ...state.collections.filter(i => i.id !== action.payload.collection.id),
-            action.payload.collection
-          ],
+          [...state.collections.filter(i => i.id !== action.payload.collection.id), action.payload.collection],
           "id"
         ).sort((a, b) => a.name.localeCompare(b.name))
       };
@@ -688,10 +696,10 @@ export function appReducer(state = initialAppState, action: All): AppState {
         collections: state.collections.map(collection =>
           collection.id === action.payload.collectionId
             ? {
-              ...collection,
-              images: [...(collection.images || []), action.payload.imageId],
-              imageCountIncludingWip: collection.imageCountIncludingWip + 1
-            }
+                ...collection,
+                images: [...(collection.images || []), action.payload.imageId],
+                imageCountIncludingWip: collection.imageCountIncludingWip + 1
+              }
             : collection
         )
       };
@@ -703,10 +711,10 @@ export function appReducer(state = initialAppState, action: All): AppState {
         collections: state.collections.map(collection =>
           collection.id === action.payload.collectionId
             ? {
-              ...collection,
-              images: (collection.images || []).filter(i => i !== action.payload.imageId),
-              imageCountIncludingWip: collection.imageCountIncludingWip - 1
-            }
+                ...collection,
+                images: (collection.images || []).filter(i => i !== action.payload.imageId),
+                imageCountIncludingWip: collection.imageCountIncludingWip - 1
+              }
             : collection
         )
       };
@@ -718,13 +726,13 @@ export function appReducer(state = initialAppState, action: All): AppState {
         collections: state.collections.map(collection =>
           collection.id === action.payload.collectionId
             ? {
-              ...collection,
-              coverThumbnail: action.payload.coverThumbnail,
-              coverThumbnailHd: action.payload.coverThumbnailHd,
-              squareCropping: action.payload.squareCropping,
-              w: action.payload.w,
-              h: action.payload.h
-            }
+                ...collection,
+                coverThumbnail: action.payload.coverThumbnail,
+                coverThumbnailHd: action.payload.coverThumbnailHd,
+                squareCropping: action.payload.squareCropping,
+                w: action.payload.w,
+                h: action.payload.h
+              }
             : collection
         )
       };
@@ -734,6 +742,36 @@ export function appReducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         collections: state.collections.filter(collection => collection.id !== action.payload.collectionId)
+      };
+    }
+
+    case AppActionTypes.UPDATE_ANNOTATIONS: {
+      const imageIndex = state.images.findIndex(image => image.pk === action.payload.pk);
+      if (imageIndex === -1) {
+        return state;
+      }
+
+      const image = { ...state.images[imageIndex] };
+
+      if (action.payload.revisionLabel) {
+        // Update annotations in a specific revision
+        const revisionIndex = image.revisions.findIndex(revision => revision.label === action.payload.revisionLabel);
+        if (revisionIndex !== -1) {
+          const updatedRevisions = [...image.revisions];
+          updatedRevisions[revisionIndex] = {
+            ...updatedRevisions[revisionIndex],
+            annotations: action.payload.annotations
+          };
+          image.revisions = updatedRevisions;
+        }
+      } else {
+        // Update annotations in the main image
+        image.annotations = action.payload.annotations;
+      }
+
+      return {
+        ...state,
+        images: [...state.images.slice(0, imageIndex), image, ...state.images.slice(imageIndex + 1)]
       };
     }
 

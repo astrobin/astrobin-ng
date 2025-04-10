@@ -6,8 +6,7 @@
 >
   <span *ngIf="lineItem.sold" class="badge rounded-pill bg-danger border border-light sold-badge">
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <ng-container *ngIf="lineItem.soldTo === null; else soldToSomeone" [ngTemplateOutlet]="sold">
-      </ng-container>
+      <ng-container *ngIf="lineItem.soldTo === null; else soldToSomeone" [ngTemplateOutlet]="sold"> </ng-container>
 
       <ng-template #soldToSomeone>
         <ng-container *ngIf="currentUserWrapper.user; else sold">

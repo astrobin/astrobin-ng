@@ -1,5 +1,5 @@
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { LoadingService } from "@core/services/loading.service";
 
 @Injectable({
@@ -9,15 +9,14 @@ export class GeolocationService {
   constructor(
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly loadingService: LoadingService
-  ) {
-  }
+  ) {}
 
   getCurrentPosition(): Promise<GeolocationPosition> {
     this.loadingService.setLoading(true);
 
     return new Promise((resolve, reject) => {
       if (!isPlatformBrowser(this.platformId)) {
-        reject('Geolocation is not available in server-side rendering.');
+        reject("Geolocation is not available in server-side rendering.");
         this.loadingService.setLoading(false);
         return;
       }

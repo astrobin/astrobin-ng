@@ -49,20 +49,20 @@ $header-height: 63px;
   justify-content: center;
   align-items: center;
   opacity: 0;
-  transition: opacity .2s ease;
+  transition: opacity 0.2s ease;
   pointer-events: none;
 
   // For swipe-down gesture - improves performance with composite layers
   will-change: transform, opacity;
   transform: translateY(0) scale(1);
-  
+
   // Add animation classes for swipe gestures
   &.swipe-to-close-animating {
     pointer-events: none;
     // Force GPU acceleration for smoother animations
     will-change: transform, opacity;
   }
-  
+
   &.swipe-to-close-return-to-normal {
     animation: return-to-normal 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
     pointer-events: none; /* Disable interaction during animation */
@@ -71,7 +71,7 @@ $header-height: 63px;
     // Remove all transitions to prevent conflicts with the animation
     transition: none !important;
   }
-  
+
   &.swipe-to-close-animate {
     animation: swipe-to-close 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
     pointer-events: none; /* Disable interaction during animation */
@@ -84,6 +84,21 @@ $header-height: 63px;
   &.show {
     opacity: 1;
     pointer-events: all;
+  }
+
+  &.zoom-disabled {
+    .touch-real-container {
+      pointer-events: none !important;
+    }
+
+    .image-zoom {
+      pointer-events: none !important;
+    }
+
+    // Show the static image instead
+    .static-image-container {
+      pointer-events: all;
+    }
   }
 
   @supports (height: 100dvh) {
@@ -100,6 +115,7 @@ $header-height: 63px;
     ::ng-deep {
       .ngxImageZoomContainer {
         text-align: center;
+        max-height: 100%;
 
         .ngxImageZoomThumbnail {
           max-width: 100vw;
@@ -189,58 +205,58 @@ $header-height: 63px;
     position: absolute;
     top: 1.1rem;
     left: 3.5rem;
-    box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
-    background: rgba(0, 0, 0, .5);
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5);
     border-radius: 1rem;
-    padding: .25rem .5rem;
-    font-size: .9rem;
-    transition: background .2s ease-in-out;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+    transition: background 0.2s ease-in-out;
 
     a {
       color: var(--white);
     }
 
     &.beyond-one {
-      background: rgba(255, 0, 0, .5);
+      background: rgba(255, 0, 0, 0.5);
     }
 
     &.frozen {
-      background: rgba(0, 100, 200, .7);
+      background: rgba(0, 100, 200, 0.7);
     }
   }
 
   .instruction-container {
     position: absolute;
-    bottom: .5rem;
+    bottom: 0.5rem;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;
 
     .instructions {
-      background: rgba(0, 0, 0, .5);
-      padding: .5rem 1rem;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 0.5rem 1rem;
       border-radius: 1rem;
-      border: 1px solid rgba(255, 255, 255, .05);
-      box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
-      font-size: .9rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
+      font-size: 0.9rem;
       cursor: default;
       animation: tinyBounce 1s 3;
 
       .ng-fa-icon {
-        margin-right: .5rem;
+        margin-right: 0.5rem;
       }
     }
   }
 
   .loading-indicator-container {
     position: absolute;
-    bottom: .5rem;
+    bottom: 0.5rem;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
 
     &.has-message {
-      background-color: rgba(0, 0, 0, .5);
+      background-color: rgba(0, 0, 0, 0.5);
       padding: 1rem;
       border-radius: 1rem;
     }
@@ -300,7 +316,7 @@ $header-height: 63px;
       z-index: 1000;
 
       &.beyond-one {
-        background: rgba(255, 0, 0, .5);
+        background: rgba(255, 0, 0, 0.5);
       }
     }
 
@@ -325,20 +341,66 @@ $header-height: 63px;
     }
   }
 
-  .zoom-modes,
+  // Static image container for annotation/measuring modes
+  .static-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10; // Higher z-index to overlay on top of canvas
+    background-color: black; // Black background to fully hide the canvas
+
+    /* When measuring mode is active, allow clicks to pass through to the measuring tool */
+    :host(.measuring-mode) & {
+      pointer-events: none; /* Make clicks pass through when in measuring mode */
+    }
+
+    /* Same for annotation mode */
+    :host(.annotation-mode) & {
+      pointer-events: none; /* Make clicks pass through when in annotation mode */
+    }
+
+    .static-image {
+      max-height: 100vh;
+      max-width: 100vw;
+      width: auto;
+      display: block;
+      user-select: none;
+      object-fit: contain;
+
+      /* When in measuring or annotation mode, keep pointer events on the image */
+      :host(.measuring-mode) &,
+      :host(.annotation-mode) & {
+        pointer-events: auto; /* But keep pointer events on the actual image */
+      }
+
+      @supports (max-height: 100dvh) {
+        max-height: 100dvh;
+      }
+    }
+  }
+
+  .fullscreen-view-menu,
   .close {
     cursor: pointer;
     position: absolute;
-    top: 1rem;
+    top: 0.5rem;
     border-radius: 1rem;
-    padding: .25rem .5rem;
+    padding: 0.25rem 0.5rem;
     color: var(--white);
-    background: rgba(0, 0, 0, .5);
-    box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
-    opacity: .8;
+    z-index: 5;
   }
 
   .close {
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
+
     @media (hover: hover) and (pointer: fine) {
       &:hover {
         opacity: 1;
@@ -346,21 +408,163 @@ $header-height: 63px;
     }
   }
 
-  .zoom-modes {
-    right: .75rem;
-    transform: scale(.9);
-    display: flex;
-    @include flex-gap(row, .5rem);
+  .close {
+    top: 1rem;
+  }
 
-    > div {
-      &:first-child:not(:last-child) {
-        border-right: 1px solid rgba(255, 255, 255, .25);
-        padding-right: .5rem;
+  .fullscreen-view-menu {
+    right: 0.75rem;
+    transform: scale(0.9);
+
+    /* Make zoom controls visible on mobile devices */
+    @media (max-width: $sm-max) {
+      transform: scale(1);
+      right: 0.5rem;
+      top: 0.75rem;
+      display: flex !important;
+    }
+
+    .measuring-controls-right {
+      display: flex;
+      pointer-events: all;
+      z-index: 10; /* Higher z-index to ensure buttons are clickable */
+
+      .btn-outline-light {
+        background-color: rgba(0, 0, 0, 0.4);
+        border-color: rgba(255, 255, 255, 0.6);
+        font-weight: 500;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.7);
+          border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        &:focus,
+        &:active {
+          box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+        }
+      }
+    }
+
+    .kebab-menu-container {
+      position: relative;
+
+      .kebab-button {
+        background-color: var(--black);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--brightWhite);
+        font-size: 1rem;
+        cursor: pointer;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+
+        &:hover {
+          background-color: var(--accentColorHover, var(--accentColor));
+          box-shadow: 0 3px 8px rgba(0, 0, 0, 0.7);
+        }
+
+        @media (max-width: $sm-max) {
+          width: 2rem;
+          height: 2rem;
+        }
+
+        /* Active state for better touch feedback */
+        &:active {
+          transform: scale(0.95);
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+        }
       }
 
-      @media (hover: hover) and (pointer: fine) {
-        &:hover {
+      .kebab-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        min-width: 200px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        padding: 0.5rem 0;
+        z-index: 1050;
+        opacity: 0;
+        visibility: hidden;
+        margin-top: 0.5rem;
+        transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+        transform: translateY(-10px);
+        pointer-events: none;
+
+        /* Adjust dropdown position on mobile */
+        @media (max-width: 767px) {
+          right: 0;
+          top: calc(100% + 5px);
+          border-radius: 8px;
+          min-width: 230px; /* Slightly wider on mobile for better tapping */
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
+        }
+
+        &.show {
           opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+          pointer-events: auto;
+        }
+
+        .kebab-menu-item {
+          padding: 0.5rem 1rem;
+          cursor: pointer;
+          white-space: nowrap;
+          display: flex;
+          align-items: center;
+
+          /* Make menu items larger on mobile for easier tapping */
+          @media (max-width: 767px) {
+            padding: 0.75rem 1rem;
+            font-size: 1.05rem;
+          }
+
+          .ng-fa-icon {
+            width: 20px;
+            display: flex;
+            justify-content: center;
+            margin-right: 0.75rem;
+
+            /* Larger icons on mobile */
+            @media (max-width: 767px) {
+              width: 24px;
+              font-size: 1.1rem;
+            }
+          }
+
+          span {
+            flex: 1;
+          }
+
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+          }
+
+          &.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            text-decoration: line-through;
+          }
+
+          &.active {
+            background: rgba(0, 150, 0, 0.5);
+          }
+        }
+
+        .dropdown-divider {
+          height: 0;
+          margin: 0.5rem 0;
+          overflow: hidden;
+          border-top: 1px solid rgba(255, 255, 255, 0.15);
         }
       }
     }
@@ -371,10 +575,402 @@ $header-height: 63px;
     top: 1rem;
     left: 50%;
     transform: translateX(-50%);
-    opacity: .5;
+    opacity: 0.5;
 
     img {
       height: 2rem;
+    }
+  }
+
+  .coordinates-wrapper {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 1rem;
+    z-index: 5;
+    pointer-events: none;
+
+    .rotation-badge {
+      position: absolute;
+      top: -2rem;
+      right: 0;
+      background-color: rgba(255, 165, 0, 0.7);
+      color: white;
+      border-radius: 4px;
+      padding: 0.15rem 0.5rem;
+      font-size: 0.7rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.25rem;
+      pointer-events: auto;
+
+      fa-icon {
+        margin-right: 0.2rem;
+        font-size: 0.6rem;
+        transform: scale(0.8);
+      }
+    }
+  }
+
+  .keyboard-shortcuts-overlay {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    padding: 0.5rem;
+    z-index: 1050;
+    pointer-events: all;
+    min-width: 240px;
+    max-width: 400px;
+
+    .shortcuts-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+
+      .btn-close-shortcuts {
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.8rem;
+        padding: 0;
+        cursor: pointer;
+
+        &:hover {
+          color: white;
+        }
+      }
+    }
+
+    .shortcuts-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      font-size: 0.85rem;
+      white-space: nowrap;
+
+      li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.25rem;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        kbd {
+          background-color: rgba(255, 255, 255, 0.15);
+          border-radius: 3px;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+          color: white;
+          display: inline-block;
+          font-family: monospace;
+          font-size: 0.75rem;
+          font-weight: bold;
+          line-height: 1;
+          padding: 3px 5px;
+          margin-right: 8px;
+          min-width: 24px;
+          text-align: center;
+        }
+
+        span {
+          color: rgba(255, 255, 255, 0.9);
+        }
+      }
+    }
+  }
+
+  .measuring-tool-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+
+    .measure-click-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1; /* Lowest z-index to allow buttons to be clicked */
+      pointer-events: all;
+      cursor: crosshair;
+    }
+
+    .measure-marker {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      cursor: grab;
+      pointer-events: all; /* Ensure it captures mouse events */
+      transition: transform 0.1s ease;
+
+      &:hover .marker-dot {
+        background-color: #ffcc00;
+        border: 1px solid #333;
+        transform: translate(-50%, -50%) scale(1.2);
+        box-shadow: 0 0 8px rgba(255, 204, 0, 0.7);
+      }
+
+      &:active {
+        cursor: grabbing;
+
+        .marker-dot {
+          background-color: #ff9900;
+          transform: translate(-50%, -50%) scale(1.3);
+          box-shadow: 0 0 12px rgba(255, 153, 0, 0.8);
+        }
+      }
+
+      &.dragging {
+        cursor: grabbing;
+        z-index: 10; /* Ensure dragged point stays on top */
+
+        .marker-dot {
+          background-color: #ff9900;
+          transform: translate(-50%, -50%) scale(1.3);
+          box-shadow: 0 0 12px rgba(255, 153, 0, 0.8);
+        }
+      }
+
+      .marker-dot {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #fff;
+        border: 1px solid #000;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+      }
+
+      .marker-coordinates {
+        position: absolute;
+        // No longer using transform-based centering since we're positioning based on angle
+        white-space: nowrap;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 3px 6px; // Slightly larger padding for better readability
+        border-radius: 3px;
+        font-size: 0.7rem;
+        font-family: "Consolas", "Monaco", "Courier New", monospace; // Fixed-width font
+        pointer-events: none;
+        max-width: 170px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        z-index: 9999;
+        opacity: 0; // Hide by default
+        margin: -30px; // Add margin to increase distance from the marker point
+        transition: opacity 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2); // Subtle border for better visibility
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); // Add shadow for better separation from background
+
+        // Top position - for start point
+        &.top-position {
+          top: -24px; // Place above the marker
+          left: 10px;
+        }
+
+        // Bottom position - for end point
+        &.bottom-position {
+          top: 15px; // Place below the marker
+          left: 10px;
+        }
+
+        &.visible {
+          opacity: 1; // Show when has coordinates
+        }
+
+        &.marker-debug {
+          background-color: rgba(255, 0, 0, 0.7);
+        }
+      }
+
+      &.start-marker .marker-dot {
+        background-color: #4a90e2; // Blue for start point
+
+        &::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          top: 0;
+          left: 0;
+          animation: pulse 2s infinite;
+        }
+      }
+
+      &.end-marker .marker-dot {
+        background-color: #e24a4a; // Red for end point
+
+        &::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          top: 0;
+          left: 0;
+          animation: pulse 2s infinite;
+          animation-delay: 1s;
+        }
+      }
+
+      &.previous-start-marker {
+        z-index: 3; // Higher z-index than SVG lines
+
+        .marker-dot {
+          background-color: #4a90e2; // Blue for start point
+          width: 8px;
+          height: 8px;
+          opacity: 0.8;
+
+          &::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            top: 0;
+            left: 0;
+            animation: pulse 2s infinite;
+            animation-delay: 0.5s;
+          }
+        }
+
+        &:hover .marker-dot {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        /* Marker label removed */
+      }
+
+      &.previous-end-marker {
+        z-index: 3; // Higher z-index than SVG lines
+
+        .marker-dot {
+          background-color: #e24a4a; // Red for end point
+          width: 8px;
+          height: 8px;
+          opacity: 0.8;
+
+          &::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            top: 0;
+            left: 0;
+            animation: pulse 2s infinite;
+            animation-delay: 1.5s;
+          }
+        }
+
+        &:hover .marker-dot {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        /* Marker label removed */
+      }
+
+      &.dragging {
+        z-index: 10 !important;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 0.7;
+        }
+        70% {
+          transform: scale(2);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(2.5);
+          opacity: 0;
+        }
+      }
+    }
+
+    // Measuring instructions now use the common instructions style in .instruction-container
+    // which is at the bottom of the screen like other instruction types
+
+    .measuring-controls {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      z-index: 10; /* Higher z-index to ensure buttons are clickable */
+      pointer-events: all;
+      display: flex;
+    }
+  }
+
+  .crosshair-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 4;
+    overflow: visible;
+
+    @supports (width: 100dvw) {
+      width: 100dvw;
+      height: 100dvh;
+    }
+
+    .crosshair-h,
+    .crosshair-v {
+      position: fixed;
+      background-color: transparent;
+    }
+
+    .crosshair-h {
+      height: 0;
+      width: 100%;
+      left: 0;
+      right: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      transform: translateY(-50%);
+    }
+
+    .crosshair-v {
+      width: 0;
+      height: 100%;
+      top: 0;
+      bottom: 0;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+      border-right: 1px solid rgba(0, 0, 0, 0.2);
+      transform: translateX(-50%);
     }
   }
 
@@ -384,6 +980,67 @@ $header-height: 63px;
 
   &.disable-zoom {
     touch-action: none;
+  }
+
+  &.measuring-mode {
+    cursor: crosshair !important;
+  }
+
+  /* Add styling for measuring mode */
+  ::ng-deep img.measuring-mode {
+    cursor: crosshair !important;
+  }
+
+  /* Higher z-index for measuring and annotation tools to overlay above static image */
+  .measure-annotation-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 15; /* Higher than static image container (10) */
+    pointer-events: all !important; /* Ensure tools receive all pointer events */
+  }
+
+  /* Helper class to ensure pointer events are captured */
+  .pointer-events-all {
+    pointer-events: all !important;
+  }
+
+  /* Ensure pointer events work correctly in measuring and annotation modes */
+  &.measuring-mode,
+  &.annotation-mode {
+    ::ng-deep astrobin-measuring-tool,
+    ::ng-deep astrobin-annotation-tool {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
+      pointer-events: all;
+    }
+
+    /* Make sure the static image allows clicks to pass through to the tools */
+    .static-image-container {
+      pointer-events: none !important;
+
+      .static-image {
+        pointer-events: none !important;
+      }
+    }
+  }
+
+  .static-template-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 4;
+    pointer-events: none;
   }
 
   &.standalone {
@@ -448,4 +1105,23 @@ $header-height: 63px;
       display: none;
     }
   }
+}
+
+/* Coordinate labels for measurements */
+.measure-coord-label {
+  position: absolute;
+  white-space: nowrap;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-family: "Consolas", "Monaco", "Courier New", monospace; /* Fixed-width font */
+  pointer-events: none;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 9;
+
+  /* Position is managed by our label positioning functions in the component */
 }

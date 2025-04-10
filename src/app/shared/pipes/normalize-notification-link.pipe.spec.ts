@@ -1,8 +1,8 @@
 import { NormalizeNotificationLinkPipe } from "./normalize-notification-link.pipe";
 
-jest.mock('@env/environment.prod', () => ({
+jest.mock("@env/environment.prod", () => ({
   environment: {
-    classicBaseUrl: 'https://www.astrobin.com'
+    classicBaseUrl: "https://www.astrobin.com"
   }
 }));
 

@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { LocationInterface } from "@core/interfaces/location.interface";
+import { LocationApiServiceInterface } from "@core/services/api/classic/astrobin/location/location-api.service-interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
 import { LoadingService } from "@core/services/loading.service";
 import { Observable } from "rxjs";
-import { LocationInterface } from "@core/interfaces/location.interface";
-import { LocationApiServiceInterface } from "@core/services/api/classic/astrobin/location/location-api.service-interface";
 
 @Injectable({
   providedIn: "root"

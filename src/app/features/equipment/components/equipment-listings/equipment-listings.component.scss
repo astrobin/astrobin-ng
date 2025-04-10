@@ -21,7 +21,7 @@
   @media screen and (max-width: $md-max) {
     margin-right: 1px;
     margin-bottom: 1px;
-    max-width: calc(33.334% - 1px)
+    max-width: calc(33.334% - 1px);
   }
 
   > a {
@@ -37,7 +37,7 @@
 
       > img {
         width: 100%;
-        transition: all .1s ease-in-out;
+        transition: all 0.1s ease-in-out;
         pointer-events: none;
 
         &:hover {
@@ -49,9 +49,9 @@
 
   .stock-status {
     background-color: var(--black);
-    padding: .25rem .5rem .5rem;
+    padding: 0.25rem 0.5rem 0.5rem;
     text-align: center;
-    font-size: .85rem;
+    font-size: 0.85rem;
   }
 }
 
@@ -61,7 +61,7 @@
     color: var(--lightGrey);
 
     &:not(:last-child) {
-      margin-right: .5rem;
+      margin-right: 0.5rem;
     }
 
     &:hover {

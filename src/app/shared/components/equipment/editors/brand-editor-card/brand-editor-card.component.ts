@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
 import { FormGroup } from "@angular/forms";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { MainState } from "@app/store/state";
 import { LoadingService } from "@core/services/loading.service";
-import { CreateBrand, CreateBrandSuccess, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import { CreateBrandSuccess, CreateBrand, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { map, take } from "rxjs/operators";
 
 @Component({

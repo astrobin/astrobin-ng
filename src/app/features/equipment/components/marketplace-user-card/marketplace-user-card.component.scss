@@ -10,7 +10,7 @@ astrobin-username {
   display: block;
   text-align: center;
   font-size: 1.25rem;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 }
 
 .feedback {
@@ -20,13 +20,13 @@ astrobin-username {
 }
 
 .card-footer {
-  font-size: .85rem;
+  font-size: 0.85rem;
   color: var(--lightGrey);
   padding: 1rem;
 
   > div > span {
     @media (min-width: $md-min) {
-      margin-left: .25rem;
+      margin-left: 0.25rem;
     }
   }
 }

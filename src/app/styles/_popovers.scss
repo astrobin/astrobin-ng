@@ -1,7 +1,7 @@
 @import "mixins";
 
 .popover {
-  box-shadow: 0 0 2rem rgba(0, 0, 0, .9);
+  box-shadow: 0 0 2rem rgba(0, 0, 0, 0.9);
 
   .popover-header {
     @include darkest-background-texture;
@@ -13,14 +13,14 @@
   .popover-body {
     background: var(--bs-popover-bg);
     padding: 1.5rem 1rem;
-    font-size: .85rem;
+    font-size: 0.85rem;
     line-height: 1.15rem;
     color: var(--lighterGrey);
 
     h4 {
       font-size: 1rem;
       font-weight: bold;
-      margin-bottom: .75rem;
+      margin-bottom: 0.75rem;
       color: var(--white);
     }
 
@@ -30,10 +30,12 @@
   }
 }
 
-.bs-popover-top > .arrow::after, .bs-popover-auto[x-placement^=top] > .arrow::after {
+.bs-popover-top > .arrow::after,
+.bs-popover-auto[x-placement^="top"] > .arrow::after {
   border-top-color: var(--black);
 }
 
-.bs-popover-bottom > .arrow::after, .bs-popover-auto[x-placement^=bottom] > .arrow::after {
+.bs-popover-bottom > .arrow::after,
+.bs-popover-auto[x-placement^="bottom"] > .arrow::after {
   border-bottom-color: var(--black);
 }

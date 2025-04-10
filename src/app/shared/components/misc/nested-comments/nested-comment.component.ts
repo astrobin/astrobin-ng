@@ -1,31 +1,54 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { filter, map, take, takeUntil, tap } from "rxjs/operators";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  AfterViewInit,
+  ChangeDetectorRef,
+  ElementRef,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { SafeHtml } from "@angular/platform-browser";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import {
+  ApproveNestedComment,
+  CreateNestedComment,
+  DeleteNestedComment,
+  UpdateNestedComment,
+  ApproveNestedCommentFailure,
+  ApproveNestedCommentSuccess,
+  UpdateNestedCommentSuccess
+} from "@app/store/actions/nested-comments.actions";
+import { CreateTogglePropertySuccess, DeleteTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ContentTranslateService } from "@core/services/content-translate.service";
+import { DeviceService } from "@core/services/device.service";
+import { HighlightService } from "@core/services/highlight.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { RouterService } from "@core/services/router.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@core/services/loading.service";
-import { ApproveNestedComment, ApproveNestedCommentFailure, ApproveNestedCommentSuccess, CreateNestedComment, DeleteNestedComment, UpdateNestedComment, UpdateNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { RouterService } from "@core/services/router.service";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { CreateTogglePropertySuccess, DeleteTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
-import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { isPlatformBrowser } from "@angular/common";
-import { UserService } from "@core/services/user.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { DeviceService } from "@core/services/device.service";
-import { SafeHtml } from "@angular/platform-browser";
-import { ContentTranslateService } from "@core/services/content-translate.service";
-import { HighlightService } from "@core/services/highlight.service";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -33,7 +56,10 @@ import { HighlightService } from "@core/services/highlight.service";
   styleUrls: ["./nested-comment.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NestedCommentComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnChanges, OnDestroy {
+export class NestedCommentComponent
+  extends BaseComponentDirective
+  implements OnInit, AfterViewInit, OnChanges, OnDestroy
+{
   @Input()
   comment: NestedCommentInterface;
 
@@ -59,7 +85,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   // of an object to reply to a comment.
   @Input()
   restrictReplyToUserId: UserInterface["id"];
-  
+
   @Output()
   formDirtyChange = new EventEmitter<boolean>();
 
@@ -79,7 +105,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   protected approving = false;
   protected deleting = false;
   protected link: string;
-  protected margin: string = `0px`;
+  protected margin = `0px`;
   protected userGalleryUrl: string;
   protected avatarUrl: string;
   protected html: SafeHtml;
@@ -119,17 +145,25 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     this._listenToLikes();
     this._setupFormListeners();
   }
-  
+
   isDirty(): boolean {
-    const replyValue = this.replyForm.get('commentReply')?.value;
-    const editValue = this.editForm.get('comment')?.value;
-    
-    const hasReplyContent = this.showReplyForm && this.replyForm.dirty && 
-      !!replyValue && typeof replyValue === 'string' && !!(replyValue as string).trim();
-      
-    const hasEditContent = this.showEditForm && this.editForm.dirty && 
-      !!editValue && typeof editValue === 'string' && !!(editValue as string).trim();
-    
+    const replyValue = this.replyForm.get("commentReply")?.value;
+    const editValue = this.editForm.get("comment")?.value;
+
+    const hasReplyContent =
+      this.showReplyForm &&
+      this.replyForm.dirty &&
+      !!replyValue &&
+      typeof replyValue === "string" &&
+      !!(replyValue as string).trim();
+
+    const hasEditContent =
+      this.showEditForm &&
+      this.editForm.dirty &&
+      !!editValue &&
+      typeof editValue === "string" &&
+      !!(editValue as string).trim();
+
     return hasReplyContent || hasEditContent;
   }
 
@@ -229,25 +263,29 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
 
     this.approving = true;
 
-    this.actions$.pipe(
-      ofType(AppActionTypes.APPROVE_NESTED_COMMENT_SUCCESS),
-      map((action: ApproveNestedCommentSuccess) => action.payload),
-      filter(payload => payload.nestedComment.id === this.comment.id),
-      take(1)
-    ).subscribe(() => {
-      this.approving = false;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.APPROVE_NESTED_COMMENT_SUCCESS),
+        map((action: ApproveNestedCommentSuccess) => action.payload),
+        filter(payload => payload.nestedComment.id === this.comment.id),
+        take(1)
+      )
+      .subscribe(() => {
+        this.approving = false;
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.actions$.pipe(
-      ofType(AppActionTypes.APPROVE_NESTED_COMMENT_FAILURE),
-      map((action: ApproveNestedCommentFailure) => action.payload),
-      filter(payload => payload.id === this.comment.id),
-      take(1)
-    ).subscribe(() => {
-      this.approving = false;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.APPROVE_NESTED_COMMENT_FAILURE),
+        map((action: ApproveNestedCommentFailure) => action.payload),
+        filter(payload => payload.id === this.comment.id),
+        take(1)
+      )
+      .subscribe(() => {
+        this.approving = false;
+        this.changeDetectorRef.markForCheck();
+      });
 
     this.store$.dispatch(new ApproveNestedComment({ id: this.comment.id }));
     this.changeDetectorRef.markForCheck();
@@ -262,15 +300,17 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
 
     this.deleting = true;
 
-    this.actions$.pipe(
-      ofType(AppActionTypes.DELETE_NESTED_COMMENT_SUCCESS, AppActionTypes.DELETE_NESTED_COMMENT_FAILURE),
-      map(() => this.comment.id),
-      filter(id => id === this.comment.id),
-      take(1)
-    ).subscribe(() => {
-      this.deleting = false;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.DELETE_NESTED_COMMENT_SUCCESS, AppActionTypes.DELETE_NESTED_COMMENT_FAILURE),
+        map(() => this.comment.id),
+        filter(id => id === this.comment.id),
+        take(1)
+      )
+      .subscribe(() => {
+        this.deleting = false;
+        this.changeDetectorRef.markForCheck();
+      });
 
     this.store$.dispatch(new DeleteNestedComment({ id: this.comment.id }));
     this.changeDetectorRef.markForCheck();
@@ -311,20 +351,22 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   async onShareClicked(event: Event) {
     event.preventDefault();
 
-    const isNativeShareSupported = typeof navigator !== 'undefined' && !!navigator.share;
+    const isNativeShareSupported = typeof navigator !== "undefined" && !!navigator.share;
     const isMobile = this.deviceService.isMobile();
 
     if (isNativeShareSupported && isMobile) {
       try {
-        navigator.share({
-          title: this.link,
-          url: this.link,
-        }).catch(error => {
-          console.error('Sharing failed:', error);
-        })
+        navigator
+          .share({
+            title: this.link,
+            url: this.link
+          })
+          .catch(error => {
+            console.error("Sharing failed:", error);
+          });
       } catch (error) {
-        if (error.name !== 'AbortError') {
-          console.error('Sharing failed:', error);
+        if (error.name !== "AbortError") {
+          console.error("Sharing failed:", error);
         }
       }
     } else {
@@ -335,7 +377,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
         return;
       }
 
-      this.popNotificationsService.info(this.translateService.instant("Link copied to clipboard."))
+      this.popNotificationsService.info(this.translateService.instant("Link copied to clipboard."));
     }
   }
 
@@ -433,7 +475,8 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     }
 
     // Load highlight.js dynamically
-    this.highlightService.loadHighlightJs()
+    this.highlightService
+      .loadHighlightJs()
       .then(() => {
         // After successful loading, apply highlighting to code blocks
         const element = this.elementRef.nativeElement;
@@ -446,34 +489,35 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   }
 
   private _listenToLikes() {
-    this.actions$.pipe(
-      ofType(AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS),
-      map((action: CreateTogglePropertySuccess) => action.payload.toggleProperty),
-      filter((toggleProperty: TogglePropertyInterface) =>
-        toggleProperty.contentType === this.commentContentType.id &&
-        toggleProperty.objectId === this.comment.id
-      ),
-      takeUntil(this.destroyed$)
-    ).subscribe(toggleProperty => {
-      this.comment.likes = [
-        ...this.comment.likes,
-        toggleProperty.user
-      ];
-      this.changeDetectorRef.markForCheck();
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS),
+        map((action: CreateTogglePropertySuccess) => action.payload.toggleProperty),
+        filter(
+          (toggleProperty: TogglePropertyInterface) =>
+            toggleProperty.contentType === this.commentContentType.id && toggleProperty.objectId === this.comment.id
+        ),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(toggleProperty => {
+        this.comment.likes = [...this.comment.likes, toggleProperty.user];
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.actions$.pipe(
-      ofType(AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS),
-      map((action: DeleteTogglePropertySuccess) => action.payload.toggleProperty),
-      filter((toggleProperty: TogglePropertyInterface) =>
-        toggleProperty.contentType === this.commentContentType.id &&
-        toggleProperty.objectId === this.comment.id
-      ),
-      takeUntil(this.destroyed$)
-    ).subscribe(toggleProperty => {
-      this.comment.likes = this.comment.likes.filter(user => user !== toggleProperty.user);
-      this.changeDetectorRef.markForCheck();
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS),
+        map((action: DeleteTogglePropertySuccess) => action.payload.toggleProperty),
+        filter(
+          (toggleProperty: TogglePropertyInterface) =>
+            toggleProperty.contentType === this.commentContentType.id && toggleProperty.objectId === this.comment.id
+        ),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(toggleProperty => {
+        this.comment.likes = this.comment.likes.filter(user => user !== toggleProperty.user);
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   private _initEditFields() {
@@ -539,9 +583,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   }
 
   private _initUserGalleryUrl(): void {
-    this.currentUserWrapper$.pipe(
-      take(1)
-    ).subscribe(currentUserWrapper => {
+    this.currentUserWrapper$.pipe(take(1)).subscribe(currentUserWrapper => {
       this.userGalleryUrl = this.userService.getGalleryUrl(
         this.comment.authorUsername,
         !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
@@ -565,19 +607,15 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       this.utilsService.delay(0).subscribe(() => this._initHighlightJs());
     }
   }
-  
+
   private _setupFormListeners(): void {
     // Monitor reply form
-    this.replyForm.valueChanges.pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
+    this.replyForm.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
       this.formDirtyChange.emit(this.isDirty());
     });
-    
+
     // Monitor edit form
-    this.editForm.valueChanges.pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
+    this.editForm.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
       this.formDirtyChange.emit(this.isDirty());
     });
   }

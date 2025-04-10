@@ -3,13 +3,13 @@
 
   .page-item {
     .page-link {
-      background-color: rgba(0, 0, 0, .1);
+      background-color: rgba(0, 0, 0, 0.1);
       color: var(--accentColor);
       border-color: var(--grey);
     }
 
     &.disabled {
-      opacity: .5;
+      opacity: 0.5;
       cursor: not-allowed;
     }
 

@@ -1,12 +1,13 @@
+import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
+import { StateGenerator } from "@app/store/generators/state.generator";
 import { MainState } from "@app/store/state";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
+
 import { ImageService } from "./image.service";
-import { StateGenerator } from "@app/store/generators/state.generator";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { HttpClientModule } from "@angular/common/http";
 
 describe("ImageService", () => {
   let service: ImageService;
@@ -35,8 +36,12 @@ describe("ImageService", () => {
       });
 
       it("should format minutes and seconds", () => {
-        expect(service.formatIntegration(90)).toBe(`1<span class='symbol'>&prime;</span> 30<span class='symbol'>&Prime;</span>`);
-        expect(service.formatIntegration(65)).toBe(`1<span class='symbol'>&prime;</span> 5<span class='symbol'>&Prime;</span>`);
+        expect(service.formatIntegration(90)).toBe(
+          `1<span class='symbol'>&prime;</span> 30<span class='symbol'>&Prime;</span>`
+        );
+        expect(service.formatIntegration(65)).toBe(
+          `1<span class='symbol'>&prime;</span> 5<span class='symbol'>&Prime;</span>`
+        );
         expect(service.formatIntegration(120)).toBe(`2<span class='symbol'>&prime;</span>`);
       });
 
@@ -49,11 +54,15 @@ describe("ImageService", () => {
       });
 
       it("should format hours and seconds (no minutes)", () => {
-        expect(service.formatIntegration(3630)).toBe(`1<span class='symbol'>h</span> 30<span class='symbol'>&Prime;</span>`);
+        expect(service.formatIntegration(3630)).toBe(
+          `1<span class='symbol'>h</span> 30<span class='symbol'>&Prime;</span>`
+        );
       });
 
       it("should format hours and minutes (no seconds)", () => {
-        expect(service.formatIntegration(3720)).toBe(`1<span class='symbol'>h</span> 2<span class='symbol'>&prime;</span>`);
+        expect(service.formatIntegration(3720)).toBe(
+          `1<span class='symbol'>h</span> 2<span class='symbol'>&prime;</span>`
+        );
       });
 
       it("should handle zero integration time", () => {
@@ -61,7 +70,7 @@ describe("ImageService", () => {
       });
 
       it("should remove trailing zeros in seconds", () => {
-        expect(service.formatIntegration(3661.00)).toBe(
+        expect(service.formatIntegration(3661.0)).toBe(
           `1<span class='symbol'>h</span> 1<span class='symbol'>&prime;</span> 1<span class='symbol'>&Prime;</span>`
         );
       });
@@ -105,7 +114,7 @@ describe("ImageService", () => {
       });
 
       it("should remove trailing zeros in seconds", () => {
-        expect(service.formatIntegration(3661.00, false)).toBe("1h 1m 1s");
+        expect(service.formatIntegration(3661.0, false)).toBe("1h 1m 1s");
       });
 
       it("should keep decimal points in seconds when needed", () => {
@@ -150,7 +159,9 @@ describe("ImageService", () => {
 
       it("should handle exactly 59 minutes and 59 seconds", () => {
         expect(service.formatIntegration(3599, false)).toBe("59m 59s");
-        expect(service.formatIntegration(3599)).toBe(`59<span class='symbol'>&prime;</span> 59<span class='symbol'>&Prime;</span>`);
+        expect(service.formatIntegration(3599)).toBe(
+          `59<span class='symbol'>&prime;</span> 59<span class='symbol'>&Prime;</span>`
+        );
       });
     });
   });

@@ -1,16 +1,18 @@
 import { TestBed } from "@angular/core/testing";
-
-import { ImageEditSettingsFieldsService } from "./image-edit-settings-fields.service";
-import { MockBuilder } from "ng-mocks";
+import { initialMainState } from "@app/store/state";
 import { ImageModule } from "@features/image/image.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
+import { MockBuilder } from "ng-mocks";
+
+import { ImageEditSettingsFieldsService } from "./image-edit-settings-fields.service";
 
 describe("ImageEditSettingsFieldsService", () => {
   let service: ImageEditSettingsFieldsService;
 
   beforeEach(async () => {
-    await MockBuilder(ImageEditSettingsFieldsService, ImageModule).provide([provideMockStore({ initialState: initialMainState })]);
+    await MockBuilder(ImageEditSettingsFieldsService, ImageModule).provide([
+      provideMockStore({ initialState: initialMainState })
+    ]);
     service = TestBed.inject(ImageEditSettingsFieldsService);
   });
 

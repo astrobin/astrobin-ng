@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 
 import { MarketplaceOfferSummaryComponent } from "./marketplace-offer-summary.component";
-import { MockBuilder } from "ng-mocks";
-import { initialMainState } from "@app/store/state";
-import { provideMockStore } from "@ngrx/store/testing";
-import { AppModule } from "@app/app.module";
-import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 
 describe("MarketplaceOfferSummaryComponent", () => {
   let component: MarketplaceOfferSummaryComponent;

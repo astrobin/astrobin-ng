@@ -1,16 +1,13 @@
+import { Location, DOCUMENT, isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Router } from "@angular/router";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { DOCUMENT, isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { Router } from "@angular/router";
 import { BehaviorSubject, fromEvent } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface CustomWindowInterface extends Window {
-}
+export interface CustomWindowInterface extends Window {}
 
 @Injectable({
   providedIn: "root"
@@ -30,9 +27,7 @@ export class WindowRefService extends BaseService {
 
     if (isPlatformBrowser(this.platformId)) {
       fromEvent(this.nativeWindow, "resize")
-        .pipe(
-          debounceTime(300)
-        )
+        .pipe(debounceTime(300))
         .subscribe(() => {
           this.checkDevice(window.innerWidth);
         });
@@ -54,7 +49,7 @@ export class WindowRefService extends BaseService {
   }
 
   scroll(options: any) {
-    if (!isPlatformBrowser(this.platformId) || typeof (this.nativeWindow?.scroll) === "undefined") {
+    if (!isPlatformBrowser(this.platformId) || typeof this.nativeWindow?.scroll === "undefined") {
       return;
     }
 
@@ -191,10 +186,37 @@ export class WindowRefService extends BaseService {
     }
 
     try {
-      await navigator.clipboard.writeText(text);
-      return true;
+      // Make sure we're using the window's navigator object
+      if (this.nativeWindow && this.nativeWindow.navigator && this.nativeWindow.navigator.clipboard) {
+        await this.nativeWindow.navigator.clipboard.writeText(text);
+        return true;
+      } else {
+        // Fallback for browsers without clipboard API
+        const textArea = this.nativeWindow.document.createElement("textarea");
+        textArea.value = text;
+
+        // Avoid scrolling to bottom
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+
+        this.nativeWindow.document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+          const successful = this.nativeWindow.document.execCommand("copy");
+          this.nativeWindow.document.body.removeChild(textArea);
+          return successful;
+        } catch (err) {
+          this.nativeWindow.document.body.removeChild(textArea);
+          console.warn("Fallback copy failed:", err);
+          return false;
+        }
+      }
     } catch (err) {
-      console.warn('Copy failed:', err);
+      console.warn("Copy failed:", err);
       return false;
     }
   }
@@ -207,11 +229,7 @@ export class WindowRefService extends BaseService {
     const _history = this.nativeWindow.history;
     const currentState = JSON.parse(JSON.stringify(_history.state));
 
-    if (
-      currentState &&
-      currentState.url === url &&
-      JSON.stringify(currentState.data) === JSON.stringify(data)
-    ) {
+    if (currentState && currentState.url === url && JSON.stringify(currentState.data) === JSON.stringify(data)) {
       return;
     }
 

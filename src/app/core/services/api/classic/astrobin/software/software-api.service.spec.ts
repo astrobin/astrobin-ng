@@ -1,9 +1,10 @@
-import { TestBed } from "@angular/core/testing";
-import { SoftwareApiService } from "./software-api.service";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
+
+import { SoftwareApiService } from "./software-api.service";
 
 describe("SoftwareApiService", () => {
   let service: SoftwareApiService;

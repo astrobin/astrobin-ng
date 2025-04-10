@@ -4,5 +4,4 @@ import { Component } from "@angular/core";
   selector: "astrobin-read-only-mode",
   templateUrl: "./read-only-mode.component.html"
 })
-export class ReadOnlyModeComponent {
-}
+export class ReadOnlyModeComponent {}

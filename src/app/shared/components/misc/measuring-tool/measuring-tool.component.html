@@ -1,0 +1,1324 @@
+<!-- Loading indicator for URL measurements - placed as a sibling to ensure maximum visibility -->
+<div *ngIf="loadingUrlMeasurements" class="url-measurements-loading-indicator">
+  <div class="spinner-border text-light" role="status">
+    <span class="visually-hidden">{{ "Loading measurements..." | translate }}</span>
+  </div>
+  <div class="loading-text mt-2">{{ "Loading measurements..." | translate }}</div>
+</div>
+
+<!-- Help content template -->
+<ng-template #helpContent let-offcanvasRef>
+  <div class="offcanvas-header">
+    <h3 class="mb-0">{{ "Measuring tool help" | translate }}</h3>
+    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvasRef.dismiss()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="measuring-help" style="font-size: 0.9rem">
+      <h5>{{ "Getting started" | translate }}</h5>
+      <p>{{ "The measuring tool allows you to measure distances and sizes of objects in the image." | translate }}</p>
+
+      <h5>{{ "Creating measurements" | translate }}</h5>
+      <ul>
+        <li>{{ "Click once to set your starting point" | translate }}</li>
+        <li>{{ "Click a second time to set the end point and complete the measurement" | translate }}</li>
+        <li>{{ "Alternatively, click and drag to create a measurement in one motion" | translate }}</li>
+        <li>
+          {{
+            "For images with plate-solving data, the tool will show distance in astronomical units (arcseconds, arcminutes, or degrees)"
+              | translate
+          }}
+        </li>
+        <li>{{ "For images without plate-solving data, distances will be shown in pixels" | translate }}</li>
+      </ul>
+
+      <h5>{{ "Adjusting measurements" | translate }}</h5>
+      <ul>
+        <li>{{ "Click and drag any point to reposition it" | translate }}</li>
+        <li>{{ "Click and drag the middle of a measurement to move the entire line" | translate }}</li>
+        <li>{{ "Use the circle or rectangle buttons to change how a measurement is visualized" | translate }}</li>
+      </ul>
+
+      <h5>{{ "Saving and sharing" | translate }}</h5>
+      <ul>
+        <li>{{ "Click the share button to generate a URL that includes your measurements" | translate }}</li>
+        <li>{{ "Click the bookmark button to view saved measurements (requires login)" | translate }}</li>
+        <li>{{ "Saved measurements can be loaded on any image with plate-solving data" | translate }}</li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
+
+<div class="measuring-tool-container pointer-events-all" *ngIf="active" data-ignore-swipe-down="true">
+  <!-- Overlay for capturing clicks/touches and drags during measuring mode -->
+  <!-- Put this first so other elements can be on top of it -->
+  <div
+    class="measure-click-overlay"
+    (click)="handleMeasurementClick($event)"
+    (mousedown)="handleMeasurementMouseDown($event)"
+    (touchstart)="handleMeasurementTouchStart($event)"
+    (touchend)="handleMeasurementTouchEnd($event)"
+    (touchmove)="handleMeasurementTouchMove($event)"
+  ></div>
+
+  <!-- Start and end markers -->
+  <div
+    *ngIf="measureStartPoint"
+    class="measure-marker start-marker"
+    [class.dragging]="isDraggingPoint === 'start'"
+    [style.left.px]="measureStartPoint.x"
+    [style.top.px]="measureStartPoint.y"
+    (mousedown)="handlePointDragStart($event, 'start')"
+    (touchstart)="handlePointTouchStart($event, 'start')"
+  >
+    <div class="marker-dot"></div>
+    <!-- Start point coordinates with extended directional positioning -->
+    <div
+      *ngIf="!measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null"
+      class="marker-coordinates initial-position visible"
+      style="position: absolute; top: -24px; left: -24px; transform: translateX(-50%)"
+      [class.outside-boundaries]="_checkPointOutsideBoundaries(measureStartPoint.x, measureStartPoint.y)"
+    >
+      <small>{{
+        _checkPointOutsideBoundaries(measureStartPoint.x, measureStartPoint.y)
+          ? "n/a"
+          : (measureStartPoint.ra | formatCoordinatesCompact : measureStartPoint.dec)
+      }}</small>
+    </div>
+
+    <!-- Once both points are selected, calculate perpendicular position for labels -->
+    <div
+      *ngIf="measureEndPoint && measureStartPoint.ra !== null && measureStartPoint.dec !== null"
+      class="marker-coordinates visible draggable-label"
+      [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').x"
+      [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'start').y"
+      [class.outside-boundaries]="_checkPointOutsideBoundaries(measureStartPoint.x, measureStartPoint.y)"
+      (mousedown)="handlePointDragStart($event, 'start')"
+      (touchstart)="handlePointTouchStart($event, 'start')"
+    >
+      <small>{{
+        _checkPointOutsideBoundaries(measureStartPoint.x, measureStartPoint.y)
+          ? "n/a"
+          : (measureStartPoint.ra | formatCoordinatesCompact : measureStartPoint.dec)
+      }}</small>
+    </div>
+  </div>
+
+  <div
+    *ngIf="measureEndPoint"
+    class="measure-marker end-marker"
+    [class.dragging]="isDraggingPoint === 'end'"
+    [style.left.px]="measureEndPoint.x"
+    [style.top.px]="measureEndPoint.y"
+    (mousedown)="handlePointDragStart($event, 'end')"
+    (touchstart)="handlePointTouchStart($event, 'end')"
+  >
+    <div class="marker-dot"></div>
+    <!-- End point coordinates perpendicular to line -->
+    <div
+      *ngIf="measureEndPoint.ra !== null && measureEndPoint.dec !== null"
+      class="marker-coordinates visible draggable-label"
+      [style.left.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').x"
+      [style.top.px]="(measureStartPoint | calculateLabelPosition : measureEndPoint : 'end').y"
+      [class.outside-boundaries]="_checkPointOutsideBoundaries(measureEndPoint.x, measureEndPoint.y)"
+      (mousedown)="handlePointDragStart($event, 'end')"
+      (touchstart)="handlePointTouchStart($event, 'end')"
+    >
+      <small>{{
+        _checkPointOutsideBoundaries(measureEndPoint.x, measureEndPoint.y)
+          ? "n/a"
+          : (measureEndPoint.ra | formatCoordinatesCompact : measureEndPoint.dec)
+      }}</small>
+    </div>
+  </div>
+
+  <!-- Previous lines -->
+  <svg class="measure-line-container" [attr.width]="windowWidth" [attr.height]="windowHeight">
+    <!-- Previous measurements -->
+    <g *ngFor="let measurement of previousMeasurements; let i = index">
+      <line
+        [attr.x1]="measurement.startX"
+        [attr.y1]="measurement.startY"
+        [attr.x2]="measurement.endX"
+        [attr.y2]="measurement.endY"
+        class="measure-line previous-line"
+        [class.affected-by-resize]="measurementsAffectedByResize"
+      ></line>
+    </g>
+
+    <!-- Current measurement line -->
+    <line
+      *ngIf="!measureEndPoint && measureStartPoint && mouseX !== null && mouseY !== null"
+      [attr.x1]="measureStartPoint.x"
+      [attr.y1]="measureStartPoint.y"
+      [attr.x2]="mouseX"
+      [attr.y2]="mouseY"
+      class="measure-line measuring"
+    ></line>
+    <line
+      *ngIf="measureEndPoint"
+      [attr.x1]="measureStartPoint.x"
+      [attr.y1]="measureStartPoint.y"
+      [attr.x2]="measureEndPoint.x"
+      [attr.y2]="measureEndPoint.y"
+      class="measure-line current-line"
+    ></line>
+
+    <!-- Visual indicator for original position when dragging current measurement points -->
+    <g *ngIf="isDraggingPoint === 'start' && measureStartPoint">
+      <circle
+        [attr.cx]="dragStartX || measureStartPoint.x"
+        [attr.cy]="dragStartY || measureStartPoint.y"
+        r="5"
+        class="measure-point original-position"
+      ></circle>
+      <line
+        [attr.x1]="dragStartX || measureStartPoint.x"
+        [attr.y1]="dragStartY || measureStartPoint.y"
+        [attr.x2]="measureStartPoint.x"
+        [attr.y2]="measureStartPoint.y"
+        class="measure-line drag-indicator"
+      ></line>
+    </g>
+
+    <g *ngIf="isDraggingPoint === 'end' && measureEndPoint">
+      <circle
+        [attr.cx]="dragStartX || measureEndPoint.x"
+        [attr.cy]="dragStartY || measureEndPoint.y"
+        r="5"
+        class="measure-point original-position"
+      ></circle>
+      <line
+        [attr.x1]="dragStartX || measureEndPoint.x"
+        [attr.y1]="dragStartY || measureEndPoint.y"
+        [attr.x2]="measureEndPoint.x"
+        [attr.y2]="measureEndPoint.y"
+        class="measure-line drag-indicator"
+      ></line>
+    </g>
+
+    <!-- Visual indicators for dragging previous measurement points -->
+    <g *ngFor="let measurement of previousMeasurements; let i = index">
+      <!-- Start point drag indicator -->
+      <g *ngIf="isDraggingPoint === 'prevStart-' + i">
+        <circle
+          [attr.cx]="dragStartX || measurement.startX"
+          [attr.cy]="dragStartY || measurement.startY"
+          r="5"
+          class="measure-point original-position"
+        ></circle>
+        <line
+          [attr.x1]="dragStartX || measurement.startX"
+          [attr.y1]="dragStartY || measurement.startY"
+          [attr.x2]="measurement.startX"
+          [attr.y2]="measurement.startY"
+          class="measure-line drag-indicator"
+        ></line>
+      </g>
+
+      <!-- End point drag indicator -->
+      <g *ngIf="isDraggingPoint === 'prevEnd-' + i">
+        <circle
+          [attr.cx]="dragStartX || measurement.endX"
+          [attr.cy]="dragStartY || measurement.endY"
+          r="5"
+          class="measure-point original-position"
+        ></circle>
+        <line
+          [attr.x1]="dragStartX || measurement.endX"
+          [attr.y1]="dragStartY || measurement.endY"
+          [attr.x2]="measurement.endX"
+          [attr.y2]="measurement.endY"
+          class="measure-line drag-indicator"
+        ></line>
+      </g>
+    </g>
+  </svg>
+
+  <!-- Previous measurement points - DIV-based draggable markers -->
+  <div *ngFor="let measurement of previousMeasurements; let i = index">
+    <!-- Start point marker -->
+    <div
+      class="measure-marker previous-start-marker"
+      [class.dragging]="isDraggingPoint === 'prevStart-' + i"
+      [style.left.px]="measurement.startX"
+      [style.top.px]="measurement.startY"
+      (mousedown)="handlePreviousMeasurementDrag($event, i, 'start')"
+      (touchstart)="handlePreviousMeasurementTouchDrag($event, i, 'start')"
+    >
+      <div class="marker-dot"></div>
+    </div>
+
+    <!-- End point marker -->
+    <div
+      class="measure-marker previous-end-marker"
+      [class.dragging]="isDraggingPoint === 'prevEnd-' + i"
+      [style.left.px]="measurement.endX"
+      [style.top.px]="measurement.endY"
+      (mousedown)="handlePreviousMeasurementDrag($event, i, 'end')"
+      (touchstart)="handlePreviousMeasurementTouchDrag($event, i, 'end')"
+    >
+      <div class="marker-dot"></div>
+    </div>
+
+    <!-- Circle drawing for previous measurement, if available -->
+    <svg
+      *ngIf="measurement.showCircle"
+      class="measure-shape-container"
+      [class.isDragging]="isDraggingPoint === 'prevShape-' + i"
+      [attr.width]="windowWidth"
+      [attr.height]="windowHeight"
+    >
+      <!-- Semi-transparent overlay for the area outside the circle -->
+      <defs>
+        <mask id="circle-mask-{{ i }}">
+          <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
+          <circle
+            [attr.cx]="measurement.startX | getMidpoint : measurement.endX"
+            [attr.cy]="measurement.startY | getMidpoint : measurement.endY"
+            [attr.r]="
+              (measurement.startX | calculateDistance : measurement.startY : measurement.endX : measurement.endY) / 2
+            "
+            fill="black"
+          ></circle>
+        </mask>
+      </defs>
+
+      <!-- This rect will darken everything except the masked circle area -->
+      <rect
+        x="0"
+        y="0"
+        width="100%"
+        height="100%"
+        class="shape-overlay"
+        [attr.mask]="'url(#circle-mask-' + i + ')'"
+      ></rect>
+
+      <!-- The circle outline -->
+      <circle
+        [attr.cx]="measurement.startX | getMidpoint : measurement.endX"
+        [attr.cy]="measurement.startY | getMidpoint : measurement.endY"
+        [attr.r]="
+          (measurement.startX | calculateDistance : measurement.startY : measurement.endX : measurement.endY) / 2
+        "
+        class="measure-shape circle"
+        [class.affected-by-resize]="measurementsAffectedByResize"
+        [class.outside-boundaries]="measurement.outOfBounds"
+      ></circle>
+    </svg>
+
+    <!-- Rectangle drawing for previous measurement, if available -->
+    <svg
+      *ngIf="measurement.showRectangle"
+      class="measure-shape-container"
+      [class.isDragging]="isDraggingPoint === 'prevShape-' + i"
+      [attr.width]="windowWidth"
+      [attr.height]="windowHeight"
+    >
+      <!-- Semi-transparent overlay for the area outside the rectangle -->
+      <defs>
+        <mask id="rectangle-mask-{{ i }}">
+          <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
+          <g>
+            <rect
+              [attr.x]="measurement.startX | mathMin : measurement.endX"
+              [attr.y]="measurement.startY | mathMin : measurement.endY"
+              [attr.width]="measurement.endX - measurement.startX | mathAbs"
+              [attr.height]="measurement.endY - measurement.startY | mathAbs"
+              fill="black"
+            ></rect>
+          </g>
+        </mask>
+      </defs>
+
+      <!-- This rect will darken everything except the masked rectangle area -->
+      <rect
+        x="0"
+        y="0"
+        width="100%"
+        height="100%"
+        class="shape-overlay"
+        [attr.mask]="'url(#rectangle-mask-' + i + ')'"
+      ></rect>
+
+      <g>
+        <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
+        <rect
+          [attr.x]="measurement.startX | mathMin : measurement.endX"
+          [attr.y]="measurement.startY | mathMin : measurement.endY"
+          [attr.width]="measurement.endX - measurement.startX | mathAbs"
+          [attr.height]="measurement.endY - measurement.startY | mathAbs"
+          class="measure-shape rectangle"
+          [class.affected-by-resize]="measurementsAffectedByResize"
+          [class.outside-boundaries]="measurement.outOfBounds"
+        ></rect>
+
+        <!-- Width dimension label (inside rotated group) -->
+        <g class="dimension-label width-label">
+          <!-- Width line -->
+          <line
+            [attr.x1]="measurement.startX | mathMin : measurement.endX"
+            [attr.y1]="(measurement.startY | mathMax : measurement.endY) + 15"
+            [attr.x2]="measurement.startX | mathMax : measurement.endX"
+            [attr.y2]="(measurement.startY | mathMax : measurement.endY) + 15"
+            class="dimension-line"
+          ></line>
+
+          <!-- Dimension arrows -->
+          <line
+            [attr.x1]="measurement.startX | mathMin : measurement.endX"
+            [attr.y1]="(measurement.startY | mathMax : measurement.endY) + 15"
+            [attr.x2]="(measurement.startX | mathMin : measurement.endX) + 5"
+            [attr.y2]="(measurement.startY | mathMax : measurement.endY) + 10"
+            class="dimension-arrow"
+          ></line>
+          <line
+            [attr.x1]="measurement.startX | mathMin : measurement.endX"
+            [attr.y1]="(measurement.startY | mathMax : measurement.endY) + 15"
+            [attr.x2]="(measurement.startX | mathMin : measurement.endX) + 5"
+            [attr.y2]="(measurement.startY | mathMax : measurement.endY) + 20"
+            class="dimension-arrow"
+          ></line>
+
+          <line
+            [attr.x1]="measurement.startX | mathMax : measurement.endX"
+            [attr.y1]="(measurement.startY | mathMax : measurement.endY) + 15"
+            [attr.x2]="(measurement.startX | mathMax : measurement.endX) - 5"
+            [attr.y2]="(measurement.startY | mathMax : measurement.endY) + 10"
+            class="dimension-arrow"
+          ></line>
+          <line
+            [attr.x1]="measurement.startX | mathMax : measurement.endX"
+            [attr.y1]="(measurement.startY | mathMax : measurement.endY) + 15"
+            [attr.x2]="(measurement.startX | mathMax : measurement.endX) - 5"
+            [attr.y2]="(measurement.startY | mathMax : measurement.endY) + 20"
+            class="dimension-arrow"
+          ></line>
+
+          <!-- Width text -->
+          <text
+            [attr.x]="
+              measurement.startX
+                | mathMin : measurement.endX
+                | getMidpoint : (measurement.startX | mathMax : measurement.endX)
+            "
+            [attr.y]="checkHorizontalLabelPosition((measurement.startY | mathMax : measurement.endY) + 30, measurement)"
+            text-anchor="middle"
+            class="dimension-text"
+            [attr.dominant-baseline]="'central'"
+          >
+            {{
+              measurement
+                | getCelestialDistance
+                  : "horizontal"
+                  : advancedSolutionMatrix
+                  : boundCalculateCoordinatesAtPoint
+                  : boundCalculateAngularDistance
+                  : boundFormatAstronomicalAngle || (measurement.endX - measurement.startX | mathAbs) + " px"
+            }}
+          </text>
+        </g>
+
+        <!-- Height dimension label (inside rotated group) -->
+        <g class="dimension-label height-label">
+          <!-- Height line -->
+          <line
+            [attr.x1]="(measurement.startX | mathMax : measurement.endX) + 20"
+            [attr.y1]="measurement.startY | mathMin : measurement.endY"
+            [attr.x2]="(measurement.startX | mathMax : measurement.endX) + 20"
+            [attr.y2]="measurement.startY | mathMax : measurement.endY"
+            class="dimension-line"
+          ></line>
+
+          <!-- Dimension arrows -->
+          <line
+            [attr.x1]="(measurement.startX | mathMax : measurement.endX) + 20"
+            [attr.y1]="measurement.startY | mathMin : measurement.endY"
+            [attr.x2]="(measurement.startX | mathMax : measurement.endX) + 15"
+            [attr.y2]="(measurement.startY | mathMin : measurement.endY) + 5"
+            class="dimension-arrow"
+          ></line>
+          <line
+            [attr.x1]="(measurement.startX | mathMax : measurement.endX) + 20"
+            [attr.y1]="measurement.startY | mathMin : measurement.endY"
+            [attr.x2]="(measurement.startX | mathMax : measurement.endX) + 25"
+            [attr.y2]="(measurement.startY | mathMin : measurement.endY) + 5"
+            class="dimension-arrow"
+          ></line>
+
+          <line
+            [attr.x1]="(measurement.startX | mathMax : measurement.endX) + 20"
+            [attr.y1]="measurement.startY | mathMax : measurement.endY"
+            [attr.x2]="(measurement.startX | mathMax : measurement.endX) + 15"
+            [attr.y2]="(measurement.startY | mathMax : measurement.endY) - 5"
+            class="dimension-arrow"
+          ></line>
+          <line
+            [attr.x1]="(measurement.startX | mathMax : measurement.endX) + 20"
+            [attr.y1]="measurement.startY | mathMax : measurement.endY"
+            [attr.x2]="(measurement.startX | mathMax : measurement.endX) + 25"
+            [attr.y2]="(measurement.startY | mathMax : measurement.endY) - 5"
+            class="dimension-arrow"
+          ></line>
+
+          <!-- Height text - adjust position to avoid overlap with measurement box -->
+          <text
+            [attr.x]="(measurement.startX | mathMax : measurement.endX) + 35"
+            [attr.y]="
+              checkVerticalLabelPosition(
+                measurement.startY
+                  | mathMin : measurement.endY
+                  | getMidpoint : (measurement.startY | mathMax : measurement.endY),
+                measurement
+              )
+            "
+            text-anchor="start"
+            class="dimension-text"
+            [attr.dominant-baseline]="'central'"
+          >
+            {{
+              measurement
+                | getCelestialDistance
+                  : "vertical"
+                  : advancedSolutionMatrix
+                  : boundCalculateCoordinatesAtPoint
+                  : boundCalculateAngularDistance
+                  : boundFormatAstronomicalAngle || (measurement.endY - measurement.startY | mathAbs) + " px"
+            }}
+          </text>
+        </g>
+
+        <!-- Removing SVG rotation handle (using DOM-based version instead) -->
+        <g class="rotate-handle rotation-master-handle-placeholder"></g>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Distance labels - show previous measurements -->
+  <div
+    *ngFor="let measurement of previousMeasurements; let i = index"
+    class="measure-distance previous-measurement"
+    [class.affected-by-resize]="measurementsAffectedByResize"
+    [class.outside-boundaries]="measurement.outOfBounds"
+    [style.left.px]="measurement.midX"
+    [style.top.px]="measurement.midY"
+    (mouseenter)="setMouseOverUIElement(true)"
+    (mouseleave)="setMouseOverUIElement(false)"
+    (mousedown)="handleShapeDragStart($event, i, measurement.showCircle ? 'circle' : 'rectangle')"
+    (touchstart)="handleShapeTouchStart($event, i, measurement.showCircle ? 'circle' : 'rectangle')"
+  >
+    <div class="measurement-content">
+      <!-- Display name if it exists -->
+      <div *ngIf="measurement.name" class="measurement-name">
+        {{ measurement.name }}
+      </div>
+
+      <!-- Display the distance measurement -->
+      <span class="measurement-text">
+        {{ measurement.distance }}
+        <fa-icon
+          *ngIf="measurement.distance.endsWith('px')"
+          icon="info-circle"
+          class="info-icon ms-1"
+          [ngbTooltip]="
+            'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.'
+              | translate
+          "
+          container="body"
+          placement="top"
+        >
+        </fa-icon>
+      </span>
+
+      <!-- Display notes if they exist -->
+      <div *ngIf="measurement.notes" class="measurement-notes">
+        <span class="notes-content">{{ measurement.notes }}</span>
+        <a
+          *ngIf="measurement.notes"
+          href="#"
+          class="see-more-link"
+          (click)="openFullNotesModal($event, measurement.notes)"
+          (mousedown)="$event.stopPropagation()"
+          (pointerdown)="$event.stopPropagation()"
+        >
+          {{ "See more" | translate }}
+        </a>
+      </div>
+    </div>
+
+    <div class="measurement-actions">
+      <button
+        type="button"
+        class="btn-shape-action circle-button"
+        [class.active]="measurement.showCircle"
+        (click)="toggleCircle($event, i)"
+        (mousedown)="$event.stopPropagation()"
+        (pointerdown)="$event.stopPropagation()"
+        (touchend)="toggleCircle($event, i)"
+        (touchstart)="$event.stopPropagation()"
+      >
+        <fa-icon icon="circle" [ngbTooltip]="'Draw circle' | translate" container="body"></fa-icon>
+      </button>
+
+      <button
+        type="button"
+        class="btn-shape-action rectangle-button"
+        [class.active]="measurement.showRectangle"
+        (click)="toggleRectangle($event, i)"
+        (mousedown)="$event.stopPropagation()"
+        (pointerdown)="$event.stopPropagation()"
+        (touchend)="toggleRectangle($event, i)"
+        (touchstart)="$event.stopPropagation()"
+      >
+        <fa-icon icon="square" [ngbTooltip]="'Draw rectangle' | translate" container="body"></fa-icon>
+      </button>
+
+      <button
+        *ngIf="currentUser$ | async"
+        type="button"
+        class="btn-shape-action save-button"
+        (click)="
+          advancedSolutionMatrix && advancedSolutionMatrix.raMatrix
+            ? savePreviousMeasurement($event, i)
+            : $event.stopPropagation()
+        "
+        (mousedown)="$event.stopPropagation()"
+        (pointerdown)="$event.stopPropagation()"
+        (touchend)="
+          advancedSolutionMatrix && advancedSolutionMatrix.raMatrix
+            ? savePreviousMeasurement($event, i)
+            : $event.stopPropagation()
+        "
+        (touchstart)="$event.stopPropagation()"
+        [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
+        [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
+        [style.pointer-events]="'auto'"
+      >
+        <fa-icon
+          icon="save"
+          [ngbTooltip]="
+            !(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)
+              ? ('Saving measurements requires valid advanced plate-solving data' | translate)
+              : ('Save measurement' | translate)
+          "
+          container="body"
+        ></fa-icon>
+      </button>
+
+      <button
+        type="button"
+        class="btn-shape-action export-button"
+        (click)="
+          advancedSolutionMatrix && advancedSolutionMatrix.raMatrix
+            ? openExportMeasurementModal($event, measurement)
+            : $event.stopPropagation()
+        "
+        (mousedown)="$event.stopPropagation()"
+        (pointerdown)="$event.stopPropagation()"
+        (touchend)="
+          advancedSolutionMatrix && advancedSolutionMatrix.raMatrix
+            ? openExportMeasurementModal($event, measurement)
+            : $event.stopPropagation()
+        "
+        (touchstart)="$event.stopPropagation()"
+        [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
+        [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
+        [style.pointer-events]="'auto'"
+      >
+        <fa-icon
+          icon="file-export"
+          [ngbTooltip]="
+            !(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)
+              ? ('Exporting coordinates requires valid advanced plate-solving data' | translate)
+              : ('Export coordinates' | translate)
+          "
+          container="body"
+        ></fa-icon>
+      </button>
+
+      <button
+        type="button"
+        class="btn-delete-measurement delete-button"
+        (click)="deleteMeasurement($event, i)"
+        (mousedown)="$event.stopPropagation()"
+        (pointerdown)="$event.stopPropagation()"
+        (touchend)="deleteMeasurement($event, i)"
+        (touchstart)="$event.stopPropagation()"
+      >
+        <fa-icon icon="times" [ngbTooltip]="'Delete measurement' | translate" container="body"></fa-icon>
+      </button>
+    </div>
+
+    <!-- Include boundary warning template -->
+    <ng-container *ngTemplateOutlet="boundaryWarningTpl; context: { $implicit: measurement }"></ng-container>
+  </div>
+
+  <!-- Current measurement circle -->
+  <svg
+    *ngIf="showCurrentCircle && measureStartPoint && measureEndPoint"
+    class="measure-shape-container"
+    [class.isDragging]="isDraggingPoint === 'currentShape'"
+    [attr.width]="windowWidth"
+    [attr.height]="windowHeight"
+  >
+    <!-- Semi-transparent overlay for the area outside the circle -->
+    <defs>
+      <mask id="current-circle-mask">
+        <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
+        <circle
+          [attr.cx]="measureStartPoint.x | getMidpoint : measureEndPoint.x"
+          [attr.cy]="measureStartPoint.y | getMidpoint : measureEndPoint.y"
+          [attr.r]="
+            (measureStartPoint.x | calculateDistance : measureStartPoint.y : measureEndPoint.x : measureEndPoint.y) / 2
+          "
+          fill="black"
+        ></circle>
+      </mask>
+    </defs>
+
+    <!-- This rect will darken everything except the masked circle area -->
+    <rect x="0" y="0" width="100%" height="100%" class="shape-overlay" mask="url(#current-circle-mask)"></rect>
+
+    <!-- The circle outline -->
+    <circle
+      [attr.cx]="measureStartPoint.x | getMidpoint : measureEndPoint.x"
+      [attr.cy]="measureStartPoint.y | getMidpoint : measureEndPoint.y"
+      [attr.r]="
+        (measureStartPoint.x | calculateDistance : measureStartPoint.y : measureEndPoint.x : measureEndPoint.y) / 2
+      "
+      class="measure-shape circle current"
+      [class.outside-boundaries]="isCurrentMeasurementOutsideBoundaries"
+    ></circle>
+  </svg>
+
+  <!-- Current measurement rectangle -->
+  <svg
+    *ngIf="showCurrentRectangle && measureStartPoint && measureEndPoint"
+    class="measure-shape-container"
+    [class.isDragging]="isDraggingPoint === 'currentShape'"
+    [attr.width]="windowWidth"
+    [attr.height]="windowHeight"
+  >
+    <!-- Semi-transparent overlay for the area outside the rectangle -->
+    <defs>
+      <mask id="current-rectangle-mask">
+        <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
+        <g>
+          <rect
+            [attr.x]="measureStartPoint.x | mathMin : measureEndPoint.x"
+            [attr.y]="measureStartPoint.y | mathMin : measureEndPoint.y"
+            [attr.width]="measureEndPoint.x - measureStartPoint.x | mathAbs"
+            [attr.height]="measureEndPoint.y - measureStartPoint.y | mathAbs"
+            fill="black"
+          ></rect>
+        </g>
+      </mask>
+    </defs>
+
+    <!-- This rect will darken everything except the masked rectangle area -->
+    <rect x="0" y="0" width="100%" height="100%" class="shape-overlay" mask="url(#current-rectangle-mask)"></rect>
+
+    <!-- Rectangle group without rotation transform - image rotates instead -->
+    <g>
+      <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
+      <rect
+        [attr.x]="measureStartPoint.x | mathMin : measureEndPoint.x"
+        [attr.y]="measureStartPoint.y | mathMin : measureEndPoint.y"
+        [attr.width]="measureEndPoint.x - measureStartPoint.x | mathAbs"
+        [attr.height]="measureEndPoint.y - measureStartPoint.y | mathAbs"
+        class="measure-shape rectangle current"
+        [class.outside-boundaries]="isCurrentMeasurementOutsideBoundaries"
+      ></rect>
+
+      <!-- Width dimension label -->
+      <g class="dimension-label width-label">
+        <!-- Width line -->
+        <line
+          [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          class="dimension-line current"
+        ></line>
+
+        <!-- Dimension arrows -->
+        <line
+          [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.min(measureStartPoint.x, measureEndPoint.x) + 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 10"
+          class="dimension-arrow current"
+        ></line>
+        <line
+          [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.min(measureStartPoint.x, measureEndPoint.x) + 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 20"
+          class="dimension-arrow current"
+        ></line>
+
+        <line
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) - 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 10"
+          class="dimension-arrow current"
+        ></line>
+        <line
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) - 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 20"
+          class="dimension-arrow current"
+        ></line>
+
+        <!-- Width text -->
+        <text
+          [attr.x]="
+            (Math.min(measureStartPoint.x, measureEndPoint.x) + Math.max(measureStartPoint.x, measureEndPoint.x)) / 2
+          "
+          [attr.y]="checkHorizontalLabelPosition(Math.max(measureStartPoint.y, measureEndPoint.y) + 30)"
+          text-anchor="middle"
+          class="dimension-text current"
+          [attr.dominant-baseline]="'central'"
+        >
+          {{
+            getHorizontalCelestialDistance(
+              Math.min(measureStartPoint.x, measureEndPoint.x),
+              Math.max(measureStartPoint.y, measureEndPoint.y),
+              Math.max(measureStartPoint.x, measureEndPoint.x)
+            ) || Math.round(Math.abs(measureEndPoint.x - measureStartPoint.x)) + " px"
+          }}
+        </text>
+      </g>
+
+      <!-- Height dimension label -->
+      <g class="dimension-label height-label">
+        <!-- Height line -->
+        <line
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y)"
+          class="dimension-line current"
+        ></line>
+
+        <!-- Dimension arrows -->
+        <line
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 15"
+          [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
+          class="dimension-arrow current"
+        ></line>
+        <line
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
+          [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
+          class="dimension-arrow current"
+        ></line>
+
+        <line
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 15"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
+          class="dimension-arrow current"
+        ></line>
+        <line
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
+          class="dimension-arrow current"
+        ></line>
+
+        <!-- Height text - adjust position to avoid overlap with measurement box -->
+        <text
+          [attr.x]="Math.max(measureStartPoint.x, measureEndPoint.x) + 35"
+          [attr.y]="
+            checkVerticalLabelPosition(
+              (Math.min(measureStartPoint.y, measureEndPoint.y) + Math.max(measureStartPoint.y, measureEndPoint.y)) / 2
+            )
+          "
+          text-anchor="start"
+          class="dimension-text current"
+          [attr.dominant-baseline]="'central'"
+        >
+          {{
+            getVerticalCelestialDistance(
+              Math.max(measureStartPoint.x, measureEndPoint.x),
+              Math.min(measureStartPoint.y, measureEndPoint.y),
+              Math.max(measureStartPoint.y, measureEndPoint.y)
+            ) || Math.round(Math.abs(measureEndPoint.y - measureStartPoint.y)) + " px"
+          }}
+        </text>
+      </g>
+
+      <!-- Removing SVG rotation handle (using DOM-based version instead) -->
+      <g class="rotate-handle rotation-master-handle-placeholder"></g>
+    </g>
+  </svg>
+
+  <!-- Current measurement display -->
+  <div
+    *ngIf="measureDistance"
+    class="measure-distance current-measurement"
+    [class.outside-boundaries]="isCurrentMeasurementOutsideBoundaries"
+    [style.left.px]="(measureStartPoint.x + measureEndPoint.x) / 2"
+    [style.top.px]="(measureStartPoint.y + measureEndPoint.y) / 2"
+    (mouseenter)="setMouseOverUIElement(true)"
+    (mouseleave)="setMouseOverUIElement(false)"
+    (mousedown)="handleCurrentShapeDragStart($event, showCurrentCircle ? 'circle' : 'rectangle')"
+    (touchstart)="handleCurrentShapeTouchStart($event, showCurrentCircle ? 'circle' : 'rectangle')"
+  >
+    <div class="measurement-content">
+      <!-- Display name if it exists -->
+      <div *ngIf="newMeasurementName" class="measurement-name">
+        {{ newMeasurementName }}
+      </div>
+
+      <!-- Display the distance measurement -->
+      <span class="measurement-text">
+        {{ measureDistance }}
+        <fa-icon
+          *ngIf="measureDistance && measureDistance.endsWith('px')"
+          icon="info-circle"
+          class="info-icon ms-1"
+          [ngbTooltip]="
+            'Celestial coordinates are not available. This measurement is shown in pixels because this image lacks advanced plate-solving data.'
+              | translate
+          "
+          container="body"
+          placement="top"
+        >
+        </fa-icon>
+      </span>
+
+      <!-- Display notes if they exist -->
+      <div *ngIf="saveMeasurementNotes" class="measurement-notes">
+        <span class="notes-content">{{ saveMeasurementNotes }}</span>
+        <a
+          *ngIf="saveMeasurementNotes"
+          href="#"
+          class="see-more-link"
+          (click)="openFullNotesModal($event, saveMeasurementNotes)"
+          (mousedown)="$event.stopPropagation()"
+          (pointerdown)="$event.stopPropagation()"
+        >
+          {{ "See more" | translate }}
+        </a>
+      </div>
+    </div>
+
+    <div class="measurement-actions">
+      <button
+        type="button"
+        class="btn-shape-action circle-button"
+        [class.active]="showCurrentCircle"
+        (click)="toggleCurrentCircle($event)"
+        (mousedown)="$event.stopPropagation()"
+        (pointerdown)="$event.stopPropagation()"
+        (touchend)="toggleCurrentCircle($event)"
+        (touchstart)="$event.stopPropagation()"
+      >
+        <fa-icon icon="circle" [ngbTooltip]="'Draw circle' | translate" container="body"></fa-icon>
+      </button>
+
+      <button
+        type="button"
+        class="btn-shape-action rectangle-button"
+        [class.active]="showCurrentRectangle"
+        (click)="toggleCurrentRectangle($event)"
+        (mousedown)="$event.stopPropagation()"
+        (pointerdown)="$event.stopPropagation()"
+        (touchend)="toggleCurrentRectangle($event)"
+        (touchstart)="$event.stopPropagation()"
+      >
+        <fa-icon icon="square" [ngbTooltip]="'Draw rectangle' | translate" container="body"></fa-icon>
+      </button>
+
+      <button
+        *ngIf="currentUser$ | async"
+        type="button"
+        class="btn-shape-action save-button"
+        (click)="
+          advancedSolutionMatrix && advancedSolutionMatrix.raMatrix
+            ? openSaveCurrentMeasurement($event)
+            : $event.stopPropagation()
+        "
+        (mousedown)="$event.stopPropagation()"
+        (pointerdown)="$event.stopPropagation()"
+        (touchend)="
+          advancedSolutionMatrix && advancedSolutionMatrix.raMatrix
+            ? openSaveCurrentMeasurement($event)
+            : $event.stopPropagation()
+        "
+        (touchstart)="$event.stopPropagation()"
+        [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
+        [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
+        [style.pointer-events]="'auto'"
+      >
+        <fa-icon
+          icon="save"
+          [ngbTooltip]="
+            !(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)
+              ? ('Saving measurements requires valid advanced plate-solving data' | translate)
+              : ('Save measurement' | translate)
+          "
+          container="body"
+        ></fa-icon>
+      </button>
+
+      <button
+        type="button"
+        class="btn-shape-action export-button"
+        (click)="
+          advancedSolutionMatrix && advancedSolutionMatrix.raMatrix
+            ? openExportMeasurementModal($event, {
+                startX: measureStartPoint.x,
+                startY: measureStartPoint.y,
+                endX: measureEndPoint.x,
+                endY: measureEndPoint.y,
+                midX: 0,
+                midY: 0,
+                distance: measureDistance,
+                timestamp: Date.now(),
+                startRa: measureStartPoint.ra,
+                startDec: measureStartPoint.dec,
+                endRa: measureEndPoint.ra,
+                endDec: measureEndPoint.dec,
+                startLabelX: 0,
+                startLabelY: 0,
+                endLabelX: 0,
+                endLabelY: 0,
+                showCircle: showCurrentCircle,
+                showRectangle: showCurrentRectangle
+              })
+            : $event.stopPropagation()
+        "
+        (mousedown)="$event.stopPropagation()"
+        (pointerdown)="$event.stopPropagation()"
+        (touchend)="
+          advancedSolutionMatrix && advancedSolutionMatrix.raMatrix
+            ? openExportMeasurementModal($event, {
+                startX: measureStartPoint.x,
+                startY: measureStartPoint.y,
+                endX: measureEndPoint.x,
+                endY: measureEndPoint.y,
+                midX: 0,
+                midY: 0,
+                distance: measureDistance,
+                timestamp: Date.now(),
+                startRa: measureStartPoint.ra,
+                startDec: measureStartPoint.dec,
+                endRa: measureEndPoint.ra,
+                endDec: measureEndPoint.dec,
+                startLabelX: 0,
+                startLabelY: 0,
+                endLabelX: 0,
+                endLabelY: 0,
+                showCircle: showCurrentCircle,
+                showRectangle: showCurrentRectangle
+              })
+            : $event.stopPropagation()
+        "
+        (touchstart)="$event.stopPropagation()"
+        [class.disabled]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)"
+        [style.opacity]="!(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix) ? '0.5' : '1'"
+        [style.pointer-events]="'auto'"
+      >
+        <fa-icon
+          icon="file-export"
+          [ngbTooltip]="
+            !(advancedSolutionMatrix && advancedSolutionMatrix.raMatrix)
+              ? ('Exporting coordinates requires valid advanced plate-solving data' | translate)
+              : ('Export coordinates' | translate)
+          "
+          container="body"
+        ></fa-icon>
+      </button>
+    </div>
+
+    <!-- Include boundary warning template for current measurement -->
+    <ng-container
+      *ngTemplateOutlet="boundaryWarningTpl; context: { $implicit: { isCurrentMeasurement: true } }"
+    ></ng-container>
+  </div>
+
+  <!-- Coordinate labels for previous measurements -->
+  <div *ngFor="let measurement of previousMeasurements; let i = index">
+    <!-- Start point coordinates with perpendicular positioning -->
+    <div
+      *ngIf="measurement.startRa !== null && measurement.startDec !== null"
+      class="measure-coord-label visible draggable-label"
+      [style.left.px]="measurement.startLabelX"
+      [style.top.px]="measurement.startLabelY"
+      [class.outside-boundaries]="_checkPointOutsideBoundaries(measurement.startX, measurement.startY)"
+      (mousedown)="handlePreviousMeasurementDrag($event, i, 'start')"
+      (touchstart)="handlePreviousMeasurementTouchDrag($event, i, 'start')"
+    >
+      <small>{{
+        _checkPointOutsideBoundaries(measurement.startX, measurement.startY)
+          ? "n/a"
+          : (measurement.startRa | formatCoordinatesCompact : measurement.startDec)
+      }}</small>
+    </div>
+
+    <!-- End point coordinates with perpendicular positioning -->
+    <div
+      *ngIf="measurement.endRa !== null && measurement.endDec !== null"
+      class="measure-coord-label visible draggable-label"
+      [style.left.px]="measurement.endLabelX"
+      [style.top.px]="measurement.endLabelY"
+      [class.outside-boundaries]="_checkPointOutsideBoundaries(measurement.endX, measurement.endY)"
+      (mousedown)="handlePreviousMeasurementDrag($event, i, 'end')"
+      (touchstart)="handlePreviousMeasurementTouchDrag($event, i, 'end')"
+    >
+      <small>{{
+        _checkPointOutsideBoundaries(measurement.endX, measurement.endY)
+          ? "n/a"
+          : (measurement.endRa | formatCoordinatesCompact : measurement.endDec)
+      }}</small>
+    </div>
+  </div>
+
+  <!-- Fixed toolbar at top center - matching annotation toolbar style -->
+  <div class="fixed-top-toolbar">
+    <div class="toolbar-buttons">
+      <!-- Help button -->
+      <button
+        type="button"
+        class="icon-button help-button"
+        [ngbTooltip]="'Help' | translate"
+        placement="bottom"
+        container="body"
+        (click)="showHelp()"
+        (touchstart)="$event.stopPropagation()"
+        (touchend)="showHelp()"
+      >
+        <fa-icon [icon]="['fas', 'question']"></fa-icon>
+      </button>
+
+      <!-- Separator after help button -->
+      <div class="toolbar-separator"></div>
+
+      <!-- Saved measurements button -->
+      <button
+        *ngIf="currentUser$ | async"
+        type="button"
+        class="icon-button"
+        [ngbTooltip]="
+          advancedSolutionMatrix
+            ? ('Saved measurements' | translate)
+            : ('Saved measurements require advanced plate-solving data' | translate)
+        "
+        placement="bottom"
+        container="body"
+        [disabled]="!advancedSolutionMatrix"
+        (click)="advancedSolutionMatrix ? toggleSavedMeasurements($event) : null"
+        (touchstart)="$event.stopPropagation()"
+        (touchend)="advancedSolutionMatrix ? toggleSavedMeasurements($event) : null"
+      >
+        <fa-icon [icon]="['fas', 'bookmark']"></fa-icon>
+      </button>
+
+      <!-- Share measurements button -->
+      <button
+        type="button"
+        class="icon-button"
+        [ngbTooltip]="'Share measurements' | translate"
+        placement="bottom"
+        container="body"
+        [disabled]="previousMeasurements.length === 0"
+        (click)="previousMeasurements.length > 0 ? shareMeasurements() : null"
+        (touchstart)="$event.stopPropagation()"
+        (touchend)="previousMeasurements.length > 0 ? shareMeasurements() : null"
+      >
+        <fa-icon [icon]="['fas', 'share-alt']"></fa-icon>
+      </button>
+
+      <!-- Exit/Clear section with a visual separator -->
+      <div class="toolbar-separator"></div>
+
+      <!-- Clear all measurements button -->
+      <button
+        type="button"
+        class="icon-button"
+        [ngbTooltip]="'Clear all measurements' | translate"
+        placement="bottom"
+        container="body"
+        [disabled]="previousMeasurements.length === 0"
+        (click)="clearAllMeasurements()"
+        (touchstart)="$event.stopPropagation()"
+        (touchend)="previousMeasurements.length > 0 ? clearAllMeasurements() : null"
+      >
+        <fa-icon [icon]="['fas', 'eraser']"></fa-icon>
+      </button>
+
+      <!-- Exit button -->
+      <button
+        type="button"
+        class="icon-button exit-button"
+        [ngbTooltip]="'Exit measuring tool' | translate"
+        placement="bottom"
+        container="body"
+        (click)="exitMeasuring()"
+        (touchstart)="$event.stopPropagation()"
+        (touchend)="exitMeasuring()"
+      >
+        <fa-icon [icon]="['fas', 'times']"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Saved Measurements Panel -->
+  <div class="saved-measurements-panel" *ngIf="showSavedMeasurements">
+    <div class="panel-header">
+      <h5>{{ "Saved measurements" | translate }}</h5>
+      <button class="btn btn-sm btn-link text-muted" (click)="toggleSavedMeasurements($event)">
+        <fa-icon icon="times"></fa-icon>
+      </button>
+    </div>
+
+    <div class="panel-body">
+      <!-- Current measurement - save option -->
+      <div class="current-measurement-save" *ngIf="measureDistance">
+        <div class="mb-2">
+          <h6>{{ "Current Measurement" | translate }}</h6>
+          <p>{{ measureDistance }}</p>
+        </div>
+        <div *ngIf="currentUser$ | async">
+          <!-- Name input -->
+          <div class="input-group input-group-sm mb-2">
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="newMeasurementName"
+              placeholder="{{ 'Measurement name' | translate }}"
+            />
+          </div>
+
+          <!-- Notes input -->
+          <div class="input-group input-group-sm mb-2">
+            <textarea
+              class="form-control"
+              [(ngModel)]="saveMeasurementNotes"
+              rows="2"
+              placeholder="{{ 'Measurement notes (optional)' | translate }}"
+            ></textarea>
+          </div>
+
+          <!-- Save button -->
+          <div class="input-group input-group-sm mb-2">
+            <button
+              class="btn btn-primary"
+              (click)="advancedSolutionMatrix ? saveMeasurement() : null"
+              [class.disabled]="!advancedSolutionMatrix"
+              [style.pointer-events]="'auto'"
+              [ngbTooltip]="
+                !advancedSolutionMatrix
+                  ? ('Saving measurements requires advanced plate-solving data' | translate)
+                  : ('Save measurement' | translate)
+              "
+              container="body"
+            >
+              <fa-icon icon="save" class="me-1"></fa-icon>
+              {{ "Save" | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Saved measurements list -->
+      <div class="saved-measurements-list">
+        <p *ngIf="savedMeasurements.length === 0" class="text-muted">
+          {{ "No saved measurements yet." | translate }}
+        </p>
+
+        <div class="alert alert-warning mb-2" *ngIf="!advancedSolutionMatrix && savedMeasurements.length > 0">
+          <small>{{
+            "This image lacks advanced plate-solving data required to use saved measurements. You cannot load measurements on this image."
+              | translate
+          }}</small>
+        </div>
+
+        <div class="measurement-item" *ngFor="let preset of savedMeasurements; let i = index">
+          <div class="measurement-details">
+            <div class="measurement-name">{{ preset.name }}</div>
+            <div class="measurement-notes" *ngIf="preset.notes && preset.notes.trim()">{{ preset.notes }}</div>
+            <div class="measurement-date" *ngIf="preset.created">{{ preset.created | date : "short" }}</div>
+          </div>
+          <div class="measurement-actions" *ngIf="currentUser$ | async">
+            <button
+              class="btn btn-sm btn-outline-light"
+              (click)="loadMeasurementWrapper(preset)"
+              [class.disabled]="!advancedSolutionMatrix || loadingMeasurementId === preset.id"
+              [class.loading]="loadingMeasurementId === preset.id"
+              [style.pointer-events]="'auto'"
+            >
+              <fa-icon
+                *ngIf="loadingMeasurementId !== preset.id"
+                icon="arrow-right"
+                [ngbTooltip]="
+                  !advancedSolutionMatrix
+                    ? ('Loading measurements requires advanced plate-solving data' | translate)
+                    : ('Load measurement' | translate)
+                "
+                container="body"
+              ></fa-icon>
+              <fa-icon *ngIf="loadingMeasurementId === preset.id" icon="spinner" [spin]="true"></fa-icon>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" (click)="deleteSavedMeasurement(i)">
+              <fa-icon
+                icon="trash-alt"
+                [ngbTooltip]="'Delete saved measurement' | translate"
+                container="body"
+              ></fa-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Note about measurements -->
+      <div class="precision-note">
+        <small>{{
+          "Measurements have sub-pixel precision and field distortion limitations. Loaded measurements are placed in center and represent distances only."
+            | translate
+        }}</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom resize warning modal -->
+  <div *ngIf="showResizeWarningModal" class="resize-warning-modal">
+    <div class="resize-warning-content">
+      <div class="warning-header">
+        <h5>{{ "Window resized" | translate }}</h5>
+      </div>
+      <div class="warning-body">
+        <p>
+          {{
+            "The window size has changed. Measurements may no longer be accurate as they don't adjust to window resizing. Please clear all measurements and create new ones with the current window size."
+              | translate
+          }}
+        </p>
+      </div>
+      <div class="warning-footer">
+        <button class="btn btn-danger" (click)="clearAllAndCloseWarning()">
+          {{ "Clear all measurements" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Boundary warning template -->
+  <ng-template #boundaryWarningTpl let-data>
+    <div
+      class="boundary-warning"
+      *ngIf="data.isCurrentMeasurement ? isCurrentMeasurementOutsideBoundaries : data.outOfBounds"
+    >
+      {{ "Coordinates will not work outside the image's boundaries" | translate }}
+    </div>
+  </ng-template>
+</div>

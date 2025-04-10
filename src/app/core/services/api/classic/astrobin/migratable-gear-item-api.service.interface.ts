@@ -1,5 +1,5 @@
-import { Observable } from "rxjs";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { Observable } from "rxjs";
 
 export enum MigrationFlag {
   WRONG_TYPE = "WRONG_TYPE",

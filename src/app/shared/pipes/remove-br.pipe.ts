@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { PipeTransform, Pipe } from "@angular/core";
 
 @Pipe({
   name: "removeBr"

@@ -6,6 +6,7 @@ import { BaseClassicApiService } from "@core/services/api/classic/base-classic-a
 import { LoadingService } from "@core/services/loading.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+
 import { ThumbnailGroupApiServiceInterface } from "./thumbnail-group-api.service-interface";
 
 @Injectable({

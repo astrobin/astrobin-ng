@@ -24,12 +24,7 @@
         </span>
       </button>
 
-      <button
-        *ngIf="mayAdd"
-        (click)="add(rowIndex + 1, model[rowIndex])"
-        class="btn btn-link p-2"
-        type="button"
-      >
+      <button *ngIf="mayAdd" (click)="add(rowIndex + 1, model[rowIndex])" class="btn btn-link p-2" type="button">
         <fa-icon [ngbTooltip]="'Copy' | translate" icon="copy"></fa-icon>
         <span class="sr-only">{{ "Copy" | translate }}</span>
       </button>

@@ -12,10 +12,10 @@
   z-index: 1031;
   transform: translateY(-1000px); // Far enough so that the toggle properties don't autoload.
   transition: transform 0.3s ease-in-out;
-  box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .5);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
 
   @media (max-width: $lg-max) {
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
   }
 
   @media (max-width: $md-max) and (max-aspect-ratio: 1/1) {
@@ -43,6 +43,6 @@
   }
 
   astrobin-image-viewer-social-buttons ::ng-deep .buttons {
-    @include flex-gap(row, .75rem, true);
+    @include flex-gap(row, 0.75rem, true);
   }
 }

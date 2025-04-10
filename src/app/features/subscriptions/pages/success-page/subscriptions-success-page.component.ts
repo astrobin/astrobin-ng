@@ -1,11 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { OnInit, Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { MainState } from "@app/store/state";
+import { TitleService } from "@core/services/title/title.service";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 declare const gtag: any;

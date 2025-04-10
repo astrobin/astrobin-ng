@@ -1,13 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { NotificationListResponseInterface } from "@features/notifications/interfaces/notification-list-response.interface";
-import { NotificationContext, NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
 import { LoadingService } from "@core/services/loading.service";
-import { Observable } from "rxjs";
-import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
-import { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { NotificationListResponseInterface } from "@features/notifications/interfaces/notification-list-response.interface";
+import { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
+import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
+import { NotificationContext, NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

@@ -1,32 +1,32 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges } from "@angular/core";
-import { SearchService } from "@core/services/search.service";
+import { ChangeDetectorRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, Component } from "@angular/core";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
+import { AccessoryInterface as LegacyAccessoryInterface } from "@core/interfaces/accessory.interface";
 import { CameraInterface as LegacyCameraInterface } from "@core/interfaces/camera.interface";
-import { MountInterface as LegacyMountInterface } from "@core/interfaces/mount.interface";
 import { FilterInterface as LegacyFilterInterface } from "@core/interfaces/filter.interface";
 import { FocalReducerInterface as LegacyFocalReducerInterface } from "@core/interfaces/focal-reducer.interface";
-import { AccessoryInterface as LegacyAccessoryInterface } from "@core/interfaces/accessory.interface";
+import { MountInterface as LegacyMountInterface } from "@core/interfaces/mount.interface";
 import { SoftwareInterface as LegacySoftwareInterface } from "@core/interfaces/software.interface";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { MountInterface } from "@features/equipment/types/mount.interface";
-import { FilterInterface } from "@features/equipment/types/filter.interface";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { ImageService } from "@core/services/image/image.service";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentService } from "@core/services/equipment.service";
-import { CookieService } from "ngx-cookie";
+import { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
-import { ImageViewerBaseEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-base-equipment.component";
-import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentService } from "@core/services/equipment.service";
 import { ImageInfoService } from "@core/services/image/image-info.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { ImageViewerBaseEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-base-equipment.component";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-image-viewer-equipment",
@@ -50,40 +50,36 @@ import { ImageInfoService } from "@core/services/image/image-info.service";
         {{ "Equipment" | translate }}
       </div>
 
-      <div
-        [collapsed]="collapsed"
-        collapseAnimation
-        class="metadata-section w-100"
-      >
+      <div [collapsed]="collapsed" collapseAnimation class="metadata-section w-100">
         <div class="equipment-section flex-wrap">
           <table class="table table-sm table-mobile-support mb-0">
             <tbody>
-            <ng-container *ngFor="let attr of imagingAttributes">
-              <tr *ngIf="this[attr]?.length">
-                <th>
-                  <div class="equipment-label">
-                    {{ attrToLabel[attr] }}
-                  </div>
-                </th>
-                <td>
-                  <div class="equipment-container flex-wrap">
-                    <astrobin-image-viewer-equipment-items
-                      [attr]="attr"
-                      [attrToIcon]="attrToIcon"
-                      [enableKlassIcon]="false"
-                      [highlightTerms]="highlightTerms"
-                      [highlightedItems]="highlightedItems[attr]"
-                      [items]="this[attr]"
-                      [legacyEquipmentUrl]="legacyEquipmentUrl.bind(this)"
-                      (equipmentItemClicked)="equipmentItemClicked($event.event, $event.item)"
-                      (legacyEquipmentItemClicked)="legacyEquipmentItemClicked($event.event, $event.item)"
-                      class="flex-wrap"
-                    >
-                    </astrobin-image-viewer-equipment-items>
-                  </div>
-                </td>
-              </tr>
-            </ng-container>
+              <ng-container *ngFor="let attr of imagingAttributes">
+                <tr *ngIf="this[attr]?.length">
+                  <th>
+                    <div class="equipment-label">
+                      {{ attrToLabel[attr] }}
+                    </div>
+                  </th>
+                  <td>
+                    <div class="equipment-container flex-wrap">
+                      <astrobin-image-viewer-equipment-items
+                        [attr]="attr"
+                        [attrToIcon]="attrToIcon"
+                        [enableKlassIcon]="false"
+                        [highlightTerms]="highlightTerms"
+                        [highlightedItems]="highlightedItems[attr]"
+                        [items]="this[attr]"
+                        [legacyEquipmentUrl]="legacyEquipmentUrl.bind(this)"
+                        (equipmentItemClicked)="equipmentItemClicked($event.event, $event.item)"
+                        (legacyEquipmentItemClicked)="legacyEquipmentItemClicked($event.event, $event.item)"
+                        class="flex-wrap"
+                      >
+                      </astrobin-image-viewer-equipment-items>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
             </tbody>
           </table>
         </div>
@@ -135,19 +131,19 @@ export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentCompo
     [SearchAutoCompleteType.SOFTWARE]: "software"
   };
   protected readonly attrToIcon = {
-    "telescopes": "telescope",
-    "legacyTelescopes": "telescope",
-    "cameras": "camera",
-    "legacyCameras": "camera",
-    "mounts": "mount",
-    "legacyMounts": "mount",
-    "filters": "filter",
-    "legacyFilters": "filter",
-    "accessories": "accessory",
-    "legacyAccessories": "accessory",
-    "legacyFocalReducers": "accessory",
-    "software": "software",
-    "legacySoftware": "software"
+    telescopes: "telescope",
+    legacyTelescopes: "telescope",
+    cameras: "camera",
+    legacyCameras: "camera",
+    mounts: "mount",
+    legacyMounts: "mount",
+    filters: "filter",
+    legacyFilters: "filter",
+    accessories: "accessory",
+    legacyAccessories: "accessory",
+    legacyFocalReducers: "accessory",
+    software: "software",
+    legacySoftware: "software"
   };
   protected highlightedItems: { [key: string]: EquipmentItem["id"][] } = {};
   protected attrToLabel: { [key: string]: string };
@@ -211,7 +207,10 @@ export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentCompo
       }
     }
 
-    if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
+    if (
+      (changes.image && changes.image.currentValue) ||
+      (changes.revisionLabel && changes.revisionLabel.currentValue)
+    ) {
       const image = this.image;
       this.hasEquipment = this.imageService.hasEquipment(image);
       this.hasImagingEquipment = this.imageService.hasImagingEquipment(image);
@@ -235,19 +234,34 @@ export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentCompo
     const labels = this.imageInfoService.getEquipmentLabels(this.image);
 
     this.attrToLabel = {
-      "telescopes": labels.telescopes,
-      "legacyTelescopes": this.translateService.instant("Optics"),
-      "cameras": labels.cameras,
-      "legacyCameras": this.legacyCameras?.length > 1 ? this.translateService.instant("Cameras") : this.translateService.instant("Camera"),
-      "mounts": labels.mounts,
-      "legacyMounts": this.legacyMounts?.length > 1 ? this.translateService.instant("Mounts") : this.translateService.instant("Mount"),
-      "filters": labels.filters,
-      "legacyFilters": this.legacyFilters?.length > 1 ? this.translateService.instant("Filters") : this.translateService.instant("Filter"),
-      "accessories": labels.accessories,
-      "legacyAccessories": this.legacyAccessories?.length > 1 ? this.translateService.instant("Accessories") : this.translateService.instant("Accessory"),
-      "legacyFocalReducers": this.legacyFocalReducers?.length > 1 ? this.translateService.instant("Focal reducers") : this.translateService.instant("Focus reducer"),
-      "software": labels.software,
-      "legacySoftware": this.translateService.instant("Software")
+      telescopes: labels.telescopes,
+      legacyTelescopes: this.translateService.instant("Optics"),
+      cameras: labels.cameras,
+      legacyCameras:
+        this.legacyCameras?.length > 1
+          ? this.translateService.instant("Cameras")
+          : this.translateService.instant("Camera"),
+      mounts: labels.mounts,
+      legacyMounts:
+        this.legacyMounts?.length > 1
+          ? this.translateService.instant("Mounts")
+          : this.translateService.instant("Mount"),
+      filters: labels.filters,
+      legacyFilters:
+        this.legacyFilters?.length > 1
+          ? this.translateService.instant("Filters")
+          : this.translateService.instant("Filter"),
+      accessories: labels.accessories,
+      legacyAccessories:
+        this.legacyAccessories?.length > 1
+          ? this.translateService.instant("Accessories")
+          : this.translateService.instant("Accessory"),
+      legacyFocalReducers:
+        this.legacyFocalReducers?.length > 1
+          ? this.translateService.instant("Focal reducers")
+          : this.translateService.instant("Focus reducer"),
+      software: labels.software,
+      legacySoftware: this.translateService.instant("Software")
     };
   }
 }

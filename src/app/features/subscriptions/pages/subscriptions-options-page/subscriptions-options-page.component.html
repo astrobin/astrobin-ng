@@ -1,5 +1,4 @@
 <div class="text-center">
-
   <div class="row">
     <div class="col-md-6">
       <div class="card mb-4 box-shadow">
@@ -9,7 +8,7 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price">
-              {{ 0 | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+              {{ 0 | currency : this.subscriptionsService.currency : "symbol" : "1.2-2" : translate.currentLang }}
             </li>
             <li [innerHTML]="subscriptionsService.maxUploadsMessage(10)"></li>
             <li [innerHTML]="subscriptionsService.maxSizeMessage(25)"></li>
@@ -26,9 +25,7 @@
       </div>
     </div>
 
-    <ng-container
-      *ngFor="let subscription of (availableSubscriptions$ | async)?.subscriptions"
-    >
+    <ng-container *ngFor="let subscription of (availableSubscriptions$ | async)?.subscriptions">
       <div *ngIf="subscription.displayName === 'Lite'" class="col-md-6">
         <div class="card mb-4 box-shadow">
           <div class="card-header">
@@ -47,8 +44,11 @@
               <li>&hellip;</li>
             </ul>
 
-            <a [href]="classicRoutesService.PRICING" class="btn btn-lg btn-block btn-outline-secondary me-2"
-               type="button">
+            <a
+              [href]="classicRoutesService.PRICING"
+              class="btn btn-lg btn-block btn-outline-secondary me-2"
+              type="button"
+            >
               {{ "Learn more" | translate }}
             </a>
 
@@ -77,8 +77,11 @@
               <li>&hellip;</li>
             </ul>
 
-            <a [href]="classicRoutesService.PRICING" class="btn btn-lg btn-block btn-outline-secondary me-2"
-               type="button">
+            <a
+              [href]="classicRoutesService.PRICING"
+              class="btn btn-lg btn-block btn-outline-secondary me-2"
+              type="button"
+            >
               {{ "Learn more" | translate }}
             </a>
 
@@ -104,16 +107,24 @@
               <li>{{ "Unlimited revisions" | translate }}</li>
               <li>{{ "Full search" | translate }}</li>
               <li>{{ "Advanced plate-solving" | translate }}</li>
-              <li><em>{{ "And much more!" | translate }}</em></li>
+              <li>
+                <em>{{ "And much more!" | translate }}</em>
+              </li>
             </ul>
 
-            <a [href]="classicRoutesService.PRICING" class="btn btn-lg btn-block btn-outline-secondary me-2"
-               type="button">
+            <a
+              [href]="classicRoutesService.PRICING"
+              class="btn btn-lg btn-block btn-outline-secondary me-2"
+              type="button"
+            >
               {{ "Learn more" | translate }}
             </a>
 
-            <a [routerLink]="['/subscriptions/ultimate']" class="btn btn-lg btn-block btn-outline-primary"
-               type="button">
+            <a
+              [routerLink]="['/subscriptions/ultimate']"
+              class="btn btn-lg btn-block btn-outline-primary"
+              type="button"
+            >
               {{ "Buy" | translate }}
             </a>
           </div>
@@ -121,5 +132,4 @@
       </div>
     </ng-container>
   </div>
-
 </div>

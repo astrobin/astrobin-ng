@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 
 import { UtilsService } from "./utils.service";
-import { AppModule } from "@app/app.module";
 
 describe("UtilsService", () => {
   let service: UtilsService;
@@ -261,7 +261,9 @@ describe("UtilsService", () => {
 
     it("should handle mixed types", () => {
       const params = { name: "John", age: 30, isActive: true, hobbies: ["coding", "music"] };
-      expect(UtilsService.toQueryString(params)).toBe("name=John&age=30&isActive=true&hobbies=%5B%22coding%22%2C%22music%22%5D");
+      expect(UtilsService.toQueryString(params)).toBe(
+        "name=John&age=30&isActive=true&hobbies=%5B%22coding%22%2C%22music%22%5D"
+      );
     });
 
     it("should handle empty string values", () => {
@@ -283,7 +285,9 @@ describe("UtilsService", () => {
 
     it("should handle nested arrays and objects", () => {
       const params = { data: { items: ["item1", "item2"], details: { price: 10, available: true } } };
-      expect(UtilsService.toQueryString(params)).toBe("data=%7B%22items%22%3A%5B%22item1%22%2C%22item2%22%5D%2C%22details%22%3A%7B%22price%22%3A10%2C%22available%22%3Atrue%7D%7D");
+      expect(UtilsService.toQueryString(params)).toBe(
+        "data=%7B%22items%22%3A%5B%22item1%22%2C%22item2%22%5D%2C%22details%22%3A%7B%22price%22%3A10%2C%22available%22%3Atrue%7D%7D"
+      );
     });
   });
 
@@ -534,8 +538,7 @@ describe("UtilsService", () => {
       expect(UtilsService.isObject({})).toBe(true);
       expect(UtilsService.isObject([])).toBe(false);
       expect(UtilsService.isObject("hello")).toBe(false);
-      expect(UtilsService.isObject(() => {
-      })).toBe(false);
+      expect(UtilsService.isObject(() => {})).toBe(false);
       expect(UtilsService.isObject(null)).toBe(false);
       expect(UtilsService.isObject(undefined)).toBe(false);
     });
@@ -732,26 +735,26 @@ describe("UtilsService", () => {
     });
   });
 
-  describe('cloneValue', () => {
-    it('should clone a primitive value', () => {
+  describe("cloneValue", () => {
+    it("should clone a primitive value", () => {
       expect(UtilsService.cloneValue(42)).toBe(42);
-      expect(UtilsService.cloneValue('test')).toBe('test');
+      expect(UtilsService.cloneValue("test")).toBe("test");
       expect(UtilsService.cloneValue(true)).toBe(true);
     });
 
-    it('should clone null and undefined', () => {
+    it("should clone null and undefined", () => {
       expect(UtilsService.cloneValue(null)).toBeNull();
       expect(UtilsService.cloneValue(undefined)).toBeUndefined();
     });
 
-    it('should clone an array of primitives', () => {
-      const array = [1, 'test', true];
+    it("should clone an array of primitives", () => {
+      const array = [1, "test", true];
       const clonedArray = UtilsService.cloneValue(array);
       expect(clonedArray).toEqual(array);
       expect(clonedArray).not.toBe(array);
     });
 
-    it('should clone an array of objects', () => {
+    it("should clone an array of objects", () => {
       const array = [{ a: 1 }, { b: 2 }];
       const clonedArray = UtilsService.cloneValue(array);
       expect(clonedArray).toEqual(array);
@@ -759,14 +762,14 @@ describe("UtilsService", () => {
       expect(clonedArray[0]).not.toBe(array[0]);
     });
 
-    it('should clone a plain object', () => {
-      const obj = { a: 1, b: 'test' };
+    it("should clone a plain object", () => {
+      const obj = { a: 1, b: "test" };
       const clonedObj = UtilsService.cloneValue(obj);
       expect(clonedObj).toEqual(obj);
       expect(clonedObj).not.toBe(obj);
     });
 
-    it('should clone a nested object', () => {
+    it("should clone a nested object", () => {
       const obj = { a: { b: 2 }, c: 3 };
       const clonedObj = UtilsService.cloneValue(obj);
       expect(clonedObj).toEqual(obj);
@@ -774,7 +777,7 @@ describe("UtilsService", () => {
       expect(clonedObj.a).not.toBe(obj.a);
     });
 
-    it('should clone an array with nested objects', () => {
+    it("should clone an array with nested objects", () => {
       const array = [{ a: { b: 2 } }, { c: 3 }];
       const clonedArray = UtilsService.cloneValue(array);
       expect(clonedArray).toEqual(array);

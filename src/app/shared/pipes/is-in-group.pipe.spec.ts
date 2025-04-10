@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { MockBuilder } from "ng-mocks";
 import { IsInGroupPipe } from "@shared/pipes/is-in-group.pipe";
+import { MockBuilder } from "ng-mocks";
 
 describe("IsInGroupPipe", () => {
   let pipe: IsInGroupPipe;

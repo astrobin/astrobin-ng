@@ -1,11 +1,11 @@
 import { Component, ViewChild } from "@angular/core";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { MainState } from "@app/store/state";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { LoadingService } from "@core/services/loading.service";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
+import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-login-modal",

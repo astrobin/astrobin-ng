@@ -1,16 +1,15 @@
 import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
-import { createSelector } from "@ngrx/store";
 import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { createSelector } from "@ngrx/store";
 
 export const selectToggleProperties = createSelector(
   selectApp,
   (state: AppState): TogglePropertyInterface[] => state.toggleProperties
 );
 
-export const selectToggleProperty = (params: Partial<TogglePropertyInterface>) => createSelector(
-  selectToggleProperties,
-  (toggleProperties: TogglePropertyInterface[]): TogglePropertyInterface => {
+export const selectToggleProperty = (params: Partial<TogglePropertyInterface>) =>
+  createSelector(selectToggleProperties, (toggleProperties: TogglePropertyInterface[]): TogglePropertyInterface => {
     const matching = toggleProperties.filter(toggleProperty => {
       let match = true;
 
@@ -28,5 +27,4 @@ export const selectToggleProperty = (params: Partial<TogglePropertyInterface>) =
     }
 
     return null;
-  }
-);
+  });

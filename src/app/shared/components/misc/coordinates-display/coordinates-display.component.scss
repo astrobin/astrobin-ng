@@ -1,0 +1,73 @@
+@import "../../../../styles/breakpoints";
+
+:host {
+  display: block;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-family: monospace;
+  font-size: 0.9rem;
+
+  @media (max-width: $sm-max) {
+    display: none;
+  }
+
+  .coordinates-display {
+    .coordinates-table {
+      border-spacing: 0;
+      border-collapse: separate;
+
+      td {
+        padding: 0;
+        white-space: nowrap;
+
+        &:first-child {
+          padding-right: 0.5rem;
+        }
+      }
+
+      .ra-dec {
+        margin-bottom: 0.25rem;
+      }
+
+      .galactic {
+        opacity: 0.8;
+        font-size: 0.85rem;
+      }
+    }
+
+    .pixinsight-attribution {
+      margin-top: 0.25rem;
+      font-size: 0.65rem;
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.7);
+      opacity: 0.7;
+
+      a {
+        color: var(--accentColor);
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  ::ng-deep {
+    .symbol {
+      color: var(--white);
+      font-weight: bold;
+    }
+
+    .value {
+      color: var(--lightestGrey);
+    }
+
+    .unit {
+      font-size: 0.75rem;
+      color: var(--lighterGrey);
+      vertical-align: super;
+    }
+  }
+}

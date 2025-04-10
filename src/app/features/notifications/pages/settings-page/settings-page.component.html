@@ -1,9 +1,7 @@
 <div class="page has-breadcrumb">
   <h1>{{ pageTitle | translate }}</h1>
 
-  <astrobin-read-only-mode
-    *ngIf="(readOnlyMode$ | async) === true; else formTemplate"
-  ></astrobin-read-only-mode>
+  <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else formTemplate"></astrobin-read-only-mode>
 
   <ng-template #formTemplate>
     <div *ngIf="settingCategories$ | async as categories; else loading" class="notification-settings">
@@ -14,8 +12,10 @@
           </ng-template>
 
           <ng-template ngbPanelContent>
-            <form *ngFor="let item of category.items | keyvalue"
-                  class="notification-form d-flex flex-row align-items-center flex-wrap">
+            <form
+              *ngFor="let item of category.items | keyvalue"
+              class="notification-form d-flex flex-row align-items-center flex-wrap"
+            >
               <div class="form-group">
                 <label>{{ getNotificationTypeById(item.key).display }}</label>
               </div>

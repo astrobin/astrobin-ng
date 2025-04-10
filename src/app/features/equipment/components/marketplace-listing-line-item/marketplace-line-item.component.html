@@ -1,9 +1,5 @@
 <ng-container>
-  <div
-    [class.reserved]="!!lineItem.reserved"
-    [class.sold]="!!lineItem.sold"
-    class="card"
-  >
+  <div [class.reserved]="!!lineItem.reserved" [class.sold]="!!lineItem.sold" class="card">
     <div (click)="collapsed = !collapsed" [class.collapsed-body]="!previewMode && collapsed" class="card-header">
       <div class="align-items-center d-flex flex-column flex-md-row gap-3 text-center text-md-start">
         <div *ngIf="listing.listingType !== MarketplaceListingType.WANTED" class="image">
@@ -51,10 +47,7 @@
           </div>
 
           <div *ngIf="!lineItem.sold" class="offers-count">
-            <span
-              *ngIf="pendingOffers?.length === 1"
-              [translate]="'One offer'"
-            ></span>
+            <span *ngIf="pendingOffers?.length === 1" [translate]="'One offer'"></span>
             <span
               *ngIf="pendingOffers?.length > 1"
               [translateParams]="{
@@ -127,9 +120,7 @@
       <astrobin-image-search-card
         #sellerImageSearch
         *ngIf="
-          !!equipmentItem &&
-          lineItem.sellerImageCount > 0 &&
-          listing.listingType === MarketplaceListingType.FOR_SALE
+          !!equipmentItem && lineItem.sellerImageCount > 0 && listing.listingType === MarketplaceListingType.FOR_SALE
         "
         [header]="'Images by the seller' | translate"
         [loadMoreOnScroll]="false"
@@ -151,9 +142,7 @@
       <astrobin-image-search-card
         #astrobinImageSearch
         *ngIf="
-          !!equipmentItem &&
-          lineItem.totalImageCount > 0 &&
-          listing.listingType === MarketplaceListingType.FOR_SALE
+          !!equipmentItem && lineItem.totalImageCount > 0 && listing.listingType === MarketplaceListingType.FOR_SALE
         "
         [class.mt-5]="!lineItem.sellerImageCount"
         [header]="'Images from the AstroBin community' | translate"

@@ -1,8 +1,6 @@
 <div class="d-block d-md-inline">
   {{ "Condition" | translate }}:
-  <span
-    class="condition {{ lineItem.condition ? (lineItem.condition.toLowerCase() | slugify) : '' }}"
-  >
+  <span class="condition {{ lineItem.condition ? (lineItem.condition.toLowerCase() | slugify) : '' }}">
     {{ equipmentItemService.humanizeCondition(lineItem.condition) }}
   </span>
   &middot;

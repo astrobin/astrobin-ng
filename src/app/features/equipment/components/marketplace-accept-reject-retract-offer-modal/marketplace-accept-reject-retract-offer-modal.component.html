@@ -25,12 +25,7 @@
     {{ "Cancel" | translate }}
   </button>
 
-  <button
-    (click)="close()"
-    [class.loading]="loadingService.loading$ | async"
-    class="btn btn-primary"
-    type="button"
-  >
+  <button (click)="close()" [class.loading]="loadingService.loading$ | async" class="btn btn-primary" type="button">
     {{ "Yes, continue" | translate }}
   </button>
 </div>

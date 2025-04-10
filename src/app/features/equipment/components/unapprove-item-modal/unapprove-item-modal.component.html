@@ -17,12 +17,7 @@
     {{ "Cancel" | translate }}
   </button>
 
-  <button
-    (click)="unapprove()"
-    [class.loading]="loadingService.loading$ | async"
-    class="btn btn-danger"
-    type="button"
-  >
+  <button (click)="unapprove()" [class.loading]="loadingService.loading$ | async" class="btn btn-danger" type="button">
     {{ "Unapprove" | translate }}
   </button>
 </div>

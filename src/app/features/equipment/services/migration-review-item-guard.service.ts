@@ -1,21 +1,21 @@
+import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
+import { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
-import { combineLatest, EMPTY, Observable, Observer } from "rxjs";
-import { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
-import { catchError, map, switchMap } from "rxjs/operators";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
-import { Location } from "@angular/common";
-import { MainState } from "@app/store/state";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import { Observer, combineLatest, EMPTY, Observable } from "rxjs";
+import { catchError, map, switchMap } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
 })
-export class MigrationReviewItemGuardService extends BaseService  {
+export class MigrationReviewItemGuardService extends BaseService {
   constructor(
     public readonly loadingService: LoadingService,
     public readonly store$: Store<MainState>,

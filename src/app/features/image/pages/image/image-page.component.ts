@@ -1,23 +1,23 @@
-import { Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import { OnInit, Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
-import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
-import { filter, switchMap, take, takeUntil } from "rxjs/operators";
-import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { DeleteImageFailure, DeleteImageSuccess } from "@app/store/actions/image.actions";
-import { WindowRefService } from "@core/services/window-ref.service";
+import { MainState } from "@app/store/state";
+import { ImageInterface, ImageRevisionInterface, FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { TranslateService } from "@ngx-translate/core";
-import { UserService } from "@core/services/user.service";
-import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { forkJoin } from "rxjs";
-import { isPlatformBrowser } from "@angular/common";
 import { ImageService } from "@core/services/image/image.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService, distinctUntilChangedObj } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
+import { forkJoin } from "rxjs";
+import { filter, switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-page",
@@ -42,7 +42,7 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
     public readonly userService: UserService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly imageService: ImageService,
-    public readonly utilsService: UtilsService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -51,10 +51,7 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.route.data.pipe(
-      takeUntil(this.destroyed$),
-      distinctUntilChangedObj()
-    ).subscribe(data => {
+    this.route.data.pipe(takeUntil(this.destroyed$), distinctUntilChangedObj()).subscribe(data => {
       this.image = data.image;
       this.revisionLabel = this.route.snapshot.queryParams.r || FINAL_REVISION_LABEL;
       this.imageService.setMetaTags(this.image);
@@ -64,17 +61,20 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
   }
 
   private _setupOnDelete(): void {
-    this.actions$.pipe(
-      ofType(AppActionTypes.DELETE_IMAGE_SUCCESS, AppActionTypes.DELETE_IMAGE_FAILURE), // Listen for both success and failure
-      filter((action: DeleteImageSuccess | DeleteImageFailure) => action.payload.pk === this.image.pk),
-      switchMap(() =>
-        forkJoin([
-          this.store$.select(selectCurrentUser).pipe(take(1)),
-          this.store$.select(selectCurrentUserProfile).pipe(take(1))
-        ])),
-      take(1)
-    ).subscribe(data => {
-      this.userService.openGallery(data[0].username, data[1].enableNewGalleryExperience);
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.DELETE_IMAGE_SUCCESS, AppActionTypes.DELETE_IMAGE_FAILURE), // Listen for both success and failure
+        filter((action: DeleteImageSuccess | DeleteImageFailure) => action.payload.pk === this.image.pk),
+        switchMap(() =>
+          forkJoin([
+            this.store$.select(selectCurrentUser).pipe(take(1)),
+            this.store$.select(selectCurrentUserProfile).pipe(take(1))
+          ])
+        ),
+        take(1)
+      )
+      .subscribe(data => {
+        this.userService.openGallery(data[0].username, data[1].enableNewGalleryExperience);
+      });
   }
 }

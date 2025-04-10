@@ -1,16 +1,16 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { SearchMinimumDataFilterValue } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.value";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
+import { SearchMinimumDataFilterValue } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.value";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-search-minimum-data-filter.search-filter-component",
@@ -22,7 +22,9 @@ export class SearchMinimumDataFilterComponent extends SearchBaseFilterComponent 
   static minimumSubscription = PayableProductInterface.ULTIMATE;
 
   readonly category = SearchFilterCategory.GENERAL;
-  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchMinimumDataFilterComponent.key as SearchAutoCompleteType);
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
+    SearchMinimumDataFilterComponent.key as SearchAutoCompleteType
+  );
   readonly values: { [key: string]: string } = {
     [SearchMinimumDataFilterValue.TELESCOPES]: this.translateService.instant("Imaging telescopes or lenses"),
     [SearchMinimumDataFilterValue.CAMERAS]: this.translateService.instant("Imaging cameras"),

@@ -7,11 +7,11 @@
   width: 100% !important;
 
   > span {
-    background: rgba(0, 0, 0, .5);
+    background: rgba(0, 0, 0, 0.5);
     max-width: 200px;
     top: 0 !important;
     margin-top: 0 !important;
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     font-size: 1rem !important;
   }
 
@@ -35,7 +35,7 @@
   border: 1px solid var(--accentColor) !important;
   box-shadow: none !important;
   margin: 2px !important;
-  padding: .15rem !important;
+  padding: 0.15rem !important;
   border-radius: 50% !important;
   cursor: pointer !important;
   float: left !important;

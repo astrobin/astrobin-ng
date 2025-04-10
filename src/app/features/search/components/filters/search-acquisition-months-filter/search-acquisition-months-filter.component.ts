@@ -1,15 +1,15 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { MainState } from "@app/store/state";
 import { Month } from "@core/enums/month.enum";
-import { DateService } from "@core/services/date.service";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { DateService } from "@core/services/date.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-search-acquisition-months-filter.search-filter-component",
@@ -75,9 +75,7 @@ export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComp
     if (months.length === 1) {
       renderedValue = this.dateService.humanizeMonth(months[0]);
     } else {
-      renderedValue = months
-        .map(month => this.dateService.humanizeMonth(month))
-        .join(", ");
+      renderedValue = months.map(month => this.dateService.humanizeMonth(month)).join(", ");
     }
 
     return this.domSanitizer.bypassSecurityTrustHtml(renderedValue);

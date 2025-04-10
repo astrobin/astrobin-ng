@@ -1,0 +1,182 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ "Export Measurement Coordinates" | translate }}</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+</div>
+<div class="modal-body">
+  <!-- Format selector buttons -->
+  <div class="format-selector mb-3">
+    <div class="form-group">
+      <label>{{ "Coordinate Format" | translate }}</label>
+      <div class="btn-group" role="group">
+        <button
+          type="button"
+          class="btn"
+          [class.btn-primary]="selectedFormat === formats.SEXAGESIMAL"
+          [class.btn-outline-primary]="selectedFormat !== formats.SEXAGESIMAL"
+          (click)="changeFormat(formats.SEXAGESIMAL)"
+          aria-label="Sexagesimal format"
+        >
+          {{ "Sexagesimal" | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [class.btn-primary]="selectedFormat === formats.DECIMAL"
+          [class.btn-outline-primary]="selectedFormat !== formats.DECIMAL"
+          (click)="changeFormat(formats.DECIMAL)"
+          aria-label="Decimal format"
+        >
+          {{ "Decimal" | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [class.btn-primary]="selectedFormat === formats.HMS_DMS"
+          [class.btn-outline-primary]="selectedFormat !== formats.HMS_DMS"
+          (click)="changeFormat(formats.HMS_DMS)"
+          aria-label="HMS/DMS format"
+        >
+          {{ "HMS/DMS" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Center coordinates -->
+  <div class="coordinate-group mb-3" *ngIf="hasContent(formattedData.centerCoordinates)">
+    <label>{{ "Center Coordinates" | translate }}</label>
+    <div class="input-group">
+      <input
+        type="text"
+        class="form-control"
+        [value]="formattedData.centerCoordinates"
+        readonly
+        aria-label="Center coordinates"
+      />
+      <button
+        class="btn btn-outline-primary"
+        type="button"
+        (click)="copyToClipboard(formattedData.centerCoordinates, 'center')"
+        [title]="copiedField === 'center' ? ('Copied!' | translate) : ('Copy to clipboard' | translate)"
+      >
+        <fa-icon [icon]="copiedField === 'center' ? 'check' : 'copy'" class="mr-0"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Rectangle corner coordinates -->
+  <div
+    *ngIf="
+      formattedData.corners &&
+      (hasContent(formattedData.corners.topLeft) ||
+        hasContent(formattedData.corners.topRight) ||
+        hasContent(formattedData.corners.bottomLeft) ||
+        hasContent(formattedData.corners.bottomRight))
+    "
+    class="rectangle-corners"
+  >
+    <h5>{{ "Rectangle Corners" | translate }}</h5>
+
+    <!-- Top Left -->
+    <div class="coordinate-group mb-3" *ngIf="hasContent(formattedData.corners.topLeft)">
+      <label>{{ "Top Left" | translate }}</label>
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          [value]="formattedData.corners.topLeft"
+          readonly
+          aria-label="Top left corner coordinates"
+        />
+        <button
+          class="btn btn-outline-primary"
+          type="button"
+          (click)="copyToClipboard(formattedData.corners.topLeft, 'topLeft')"
+          [title]="copiedField === 'topLeft' ? ('Copied!' | translate) : ('Copy to clipboard' | translate)"
+        >
+          <fa-icon [icon]="copiedField === 'topLeft' ? 'check' : 'copy'" class="mr-0"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Top Right -->
+    <div class="coordinate-group mb-3" *ngIf="hasContent(formattedData.corners.topRight)">
+      <label>{{ "Top Right" | translate }}</label>
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          [value]="formattedData.corners.topRight"
+          readonly
+          aria-label="Top right corner coordinates"
+        />
+        <button
+          class="btn btn-outline-primary"
+          type="button"
+          (click)="copyToClipboard(formattedData.corners.topRight, 'topRight')"
+          [title]="copiedField === 'topRight' ? ('Copied!' | translate) : ('Copy to clipboard' | translate)"
+        >
+          <fa-icon [icon]="copiedField === 'topRight' ? 'check' : 'copy'" class="mr-0"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom Left -->
+    <div class="coordinate-group mb-3" *ngIf="hasContent(formattedData.corners.bottomLeft)">
+      <label>{{ "Bottom Left" | translate }}</label>
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          [value]="formattedData.corners.bottomLeft"
+          readonly
+          aria-label="Bottom left corner coordinates"
+        />
+        <button
+          class="btn btn-outline-primary"
+          type="button"
+          (click)="copyToClipboard(formattedData.corners.bottomLeft, 'bottomLeft')"
+          [title]="copiedField === 'bottomLeft' ? ('Copied!' | translate) : ('Copy to clipboard' | translate)"
+        >
+          <fa-icon [icon]="copiedField === 'bottomLeft' ? 'check' : 'copy'" class="mr-0"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom Right -->
+    <div class="coordinate-group mb-3" *ngIf="hasContent(formattedData.corners.bottomRight)">
+      <label>{{ "Bottom Right" | translate }}</label>
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          [value]="formattedData.corners.bottomRight"
+          readonly
+          aria-label="Bottom right corner coordinates"
+        />
+        <button
+          class="btn btn-outline-primary"
+          type="button"
+          (click)="copyToClipboard(formattedData.corners.bottomRight, 'bottomRight')"
+          [title]="copiedField === 'bottomRight' ? ('Copied!' | translate) : ('Copy to clipboard' | translate)"
+        >
+          <fa-icon [icon]="copiedField === 'bottomRight' ? 'check' : 'copy'" class="mr-0"></fa-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-text">
+    <small>
+      {{
+        "These coordinates represent the celestial coordinates of your measurement. You can copy individual values or change the format using the buttons above."
+          | translate
+      }}
+    </small>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="close()">
+    {{ "Close" | translate }}
+  </button>
+</div>

@@ -14,17 +14,16 @@
           {{ upload.name }} ({{ uploadSize | filesize }})
 
           <ng-container
-            *ngIf="field.props.additionalInfoTemplate && (uploadState.status === 'added' || uploadState.status === 'queue')"
+            *ngIf="
+              field.props.additionalInfoTemplate && (uploadState.status === 'added' || uploadState.status === 'queue')
+            "
           >
             <div class="additional-info">
               <ng-container *ngTemplateOutlet="field.props.additionalInfoTemplate"></ng-container>
             </div>
           </ng-container>
 
-          <span
-            *ngIf="uploadState.status !== 'added' && uploadState.status !== 'queue'"
-            class="status"
-          >
+          <span *ngIf="uploadState.status !== 'added' && uploadState.status !== 'queue'" class="status">
             {{ status$ | async }}
           </span>
         </ng-container>

@@ -1,5 +1,5 @@
 <button
-  [class.loading]="loading !== undefined ? loading : loadingService.loading$ | async"
+  [class.loading]="loading !== undefined ? loading : (loadingService.loading$ | async)"
   class="btn btn-link btn-no-block"
   data-test="refresh"
 >

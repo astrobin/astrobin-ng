@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder, MockProvider } from "ng-mocks";
+import { of } from "rxjs";
 
 import { MarketplaceFilterComponent } from "./marketplace-filter.component";
-import { MockBuilder, MockProvider } from "ng-mocks";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { AppModule } from "@app/app.module";
-import { ActivatedRoute } from "@angular/router";
-import { of } from "rxjs";
 
 describe("MarketplaceFilterComponent", () => {
   let component: MarketplaceFilterComponent;

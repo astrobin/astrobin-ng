@@ -1,21 +1,24 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
+import { OnInit, Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { SearchFilterEditorModalComponent } from "@features/search/components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
-import { SearchFilterCategory, SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
-import { MatchType } from "@features/search/enums/match-type.enum";
-import { takeUntil } from "rxjs/operators";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
+import {
+  SearchFilterCategory,
+  SearchFilterComponentInterface
+} from "@core/interfaces/search-filter-component.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { isObservable } from "rxjs";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchFilterEditorModalComponent } from "@features/search/components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
+import { MatchType } from "@features/search/enums/match-type.enum";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { isObservable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-search-filter-base",
@@ -23,7 +26,8 @@ import { SearchAutoCompleteType } from "@features/search/enums/search-auto-compl
 })
 export abstract class SearchBaseFilterComponent
   extends BaseComponentDirective
-  implements SearchFilterComponentInterface, OnInit {
+  implements SearchFilterComponentInterface, OnInit
+{
   // This is the attribute that ends up in the search query.
   static key: SearchAutoCompleteType;
   static minimumSubscription: PayableProductInterface = null;
@@ -123,7 +127,7 @@ export abstract class SearchBaseFilterComponent
   }
 
   getMatchTypeField(listKey: string, stringSeparator = ",", supportsExactMatch = false): FormlyFieldConfig {
-    let options = [
+    const options = [
       {
         value: MatchType.ALL,
         label: this.searchFilterService.humanizeMatchType(MatchType.ALL),
@@ -140,7 +144,9 @@ export abstract class SearchBaseFilterComponent
       options.push({
         value: MatchType.EXACT,
         label: this.searchFilterService.humanizeMatchType(MatchType.EXACT),
-        description: this.translateService.instant("Find results that match the exact words or items, no more, no less.")
+        description: this.translateService.instant(
+          "Find results that match the exact words or items, no more, no less."
+        )
       });
     }
 
@@ -166,17 +172,20 @@ export abstract class SearchBaseFilterComponent
       hooks: {
         onInit: field => {
           if (this.editForm.get(listKey)) {
-            this.editForm.get(listKey).valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-              if (UtilsService.isString(value)) {
-                value = value.split(stringSeparator);
-              }
+            this.editForm
+              .get(listKey)
+              .valueChanges.pipe(takeUntil(this.destroyed$))
+              .subscribe(value => {
+                if (UtilsService.isString(value)) {
+                  value = value.split(stringSeparator);
+                }
 
-              if (!value || value.length <= 1) {
-                field.formControl.setValue(null);
-              } else if (field.formControl.value === null) {
-                field.formControl.setValue(MatchType.ANY);
-              }
-            });
+                if (!value || value.length <= 1) {
+                  field.formControl.setValue(null);
+                } else if (field.formControl.value === null) {
+                  field.formControl.setValue(MatchType.ANY);
+                }
+              });
           }
         }
       }

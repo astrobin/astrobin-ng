@@ -5,13 +5,13 @@
   .smart-folder {
     background: var(--darkerGrey);
     color: var(--lightestGrey);
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     border-radius: var(--bs-border-radius);
     font-size: 1rem;
     font-weight: normal;
     white-space: normal;
     text-align: left;
-    transition: background .3s, color .3s;
+    transition: background 0.3s, color 0.3s;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
@@ -23,7 +23,7 @@
     &.active {
       background: var(--lightestGrey);
       color: var(--darkestGrey);
-      box-shadow: 0 0 .5rem var(--lightestGrey);
+      box-shadow: 0 0 0.5rem var(--lightestGrey);
     }
   }
 }

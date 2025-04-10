@@ -1,33 +1,50 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, Pipe, PipeTransform, PLATFORM_ID } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
-import { ImageSearchApiService } from "@core/services/api/classic/images/image/image-search-api.service";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { auditTime, finalize, fromEvent, Observable, Subscription } from "rxjs";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { EquipmentBrandListingInterface, EquipmentItemListingInterface, EquipmentItemListingType } from "@features/equipment/types/equipment-listings.interface";
-import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnInit,
+  PipeTransform,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  Pipe,
+  PLATFORM_ID
+} from "@angular/core";
 import { Router } from "@angular/router";
-import { LoadingService } from "@core/services/loading.service";
-import { SearchService } from "@core/services/search.service";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
+import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
 import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { ImageSearchApiService } from "@core/services/api/classic/images/image/image-search-api.service";
+import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { DeviceService } from "@core/services/device.service";
 import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
+import { SearchService } from "@core/services/search.service";
 import { UserService } from "@core/services/user.service";
-import { isPlatformBrowser } from "@angular/common";
-import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import {
+  EquipmentBrandListingInterface,
+  EquipmentItemListingInterface,
+  EquipmentItemListingType
+} from "@features/equipment/types/equipment-listings.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
-import { ImageAlias } from "@core/enums/image-alias.enum";
+import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
+import { Observable, Subscription, auditTime, finalize, fromEvent } from "rxjs";
+import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 @Pipe({
   name: "itemListingMessage",
@@ -35,14 +52,12 @@ import { ImageAlias } from "@core/enums/image-alias.enum";
 })
 export class ImageSearchItemListingMessagePipe implements PipeTransform {
   transform(listing: EquipmentItemListingInterface): string {
-    return this.translateService.instant(
-      "Support AstroBin by shopping for {{0}} at our partners!",
-      { 0: `<strong>${listing.name}</strong>` }
-    );
+    return this.translateService.instant("Support AstroBin by shopping for {{0}} at our partners!", {
+      0: `<strong>${listing.name}</strong>`
+    });
   }
 
-  constructor(private readonly translateService: TranslateService) {
-  }
+  constructor(private readonly translateService: TranslateService) {}
 }
 
 @Pipe({
@@ -51,14 +66,12 @@ export class ImageSearchItemListingMessagePipe implements PipeTransform {
 })
 export class ImageSearchBrandListingMessagePipe implements PipeTransform {
   transform(brand: BrandInterface): string {
-    return this.translateService.instant(
-      "Support AstroBin by shopping for {{0}} products at our partners!",
-      { 0: `<strong>${brand.name}</strong>` }
-    );
+    return this.translateService.instant("Support AstroBin by shopping for {{0}} products at our partners!", {
+      0: `<strong>${brand.name}</strong>`
+    });
   }
 
-  constructor(private readonly translateService: TranslateService) {
-  }
+  constructor(private readonly translateService: TranslateService) {}
 }
 
 @Component({
@@ -131,22 +144,22 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   fetchData(): Observable<SearchPaginatedApiResultInterface<ImageSearchInterface>> {
-    return this.imageSearchApiService
-      .search({ ...this.model, pageSize: this.model.pageSize || this.pageSize })
-      .pipe(
-        tap(result => {
-          this.allowFullRetailerIntegration = result.allowFullRetailerIntegration;
-          this.itemListings = result.equipmentItemListings ?
-            this._removeDuplicateRetailers(result.equipmentItemListings) : [];
-          this.brandListings = result.equipmentBrandListings ?
-            this._removeDuplicateRetailers(result.equipmentBrandListings) : [];
-          this.marketplaceLineItems = result.marketplaceLineItems || [];
+    return this.imageSearchApiService.search({ ...this.model, pageSize: this.model.pageSize || this.pageSize }).pipe(
+      tap(result => {
+        this.allowFullRetailerIntegration = result.allowFullRetailerIntegration;
+        this.itemListings = result.equipmentItemListings
+          ? this._removeDuplicateRetailers(result.equipmentItemListings)
+          : [];
+        this.brandListings = result.equipmentBrandListings
+          ? this._removeDuplicateRetailers(result.equipmentBrandListings)
+          : [];
+        this.marketplaceLineItems = result.marketplaceLineItems || [];
 
-          this.changeDetectorRef.markForCheck();
+        this.changeDetectorRef.markForCheck();
 
-          this.searchService.searchCompleteSubject.next(result);
-        })
-      );
+        this.searchService.searchCompleteSubject.next(result);
+      })
+    );
   }
 
   openImage(event: MouseEvent, image: ImageSearchInterface): void {
@@ -177,7 +190,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
   private _openImageClassicUrl(image: ImageSearchInterface): void {
     this.windowRefService.nativeWindow.open(
-      this.classicRoutesService.IMAGE(image.hash || ("" + image.objectId)),
+      this.classicRoutesService.IMAGE(image.hash || "" + image.objectId),
       "_self"
     );
   }
@@ -194,58 +207,62 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       thumbnailUrl: result.galleryThumbnail
     }));
 
-    this.imageService.loadImage(image.hash || image.objectId).pipe(
-      switchMap(dbImage => {
-        const alias: ImageAlias = this.deviceService.lgMax() ? ImageAlias.HD : ImageAlias.QHD;
-        const thumbnailUrl = this.imageService.getThumbnail(dbImage, alias);
-        return this.imageService.loadImageFile(thumbnailUrl, () => {
-        });
-      }),
-      switchMap(() =>
-        this.imageViewerService.openSlideshow(
-          this.componentId,
-          image.hash || image.objectId,
-          FINAL_REVISION_LABEL,
-          navigationContext,
-          true
-        )
-      ),
-      tap(slideshow => {
-        if (this._nearEndOfContextSubscription) {
-          this._nearEndOfContextSubscription.unsubscribe();
-        }
-
-        this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext.pipe(
-          filter(callerComponentId => callerComponentId === this.componentId),
-          takeUntil(this.destroyed$),
-          switchMap(() =>
-            this.loadMore().pipe(
-              tap(() => {
-                slideshow.instance.setNavigationContext(
-                  this.results.map(result => ({
-                    imageId: result.hash || result.objectId,
-                    thumbnailUrl: result.galleryThumbnail
-                  }))
-                );
-              })
-            )
+    this.imageService
+      .loadImage(image.hash || image.objectId)
+      .pipe(
+        switchMap(dbImage => {
+          const alias: ImageAlias = this.deviceService.lgMax() ? ImageAlias.HD : ImageAlias.QHD;
+          const thumbnailUrl = this.imageService.getThumbnail(dbImage, alias);
+          return this.imageService.loadImageFile(thumbnailUrl, () => {});
+        }),
+        switchMap(() =>
+          this.imageViewerService.openSlideshow(
+            this.componentId,
+            image.hash || image.objectId,
+            FINAL_REVISION_LABEL,
+            navigationContext,
+            true
           )
-        ).subscribe();
-      }),
-      tap(() => {
-        this.loadingImageId = null;
-        this.changeDetectorRef.markForCheck();
-      }),
-      // Wait for the fadeInOut animation.
-      switchMap(() => this.utilsService.delay(250)),
-      finalize(() => {
-        this.imageOpened.emit(image);
-      })
-    ).subscribe({
-      error: (error) => {
-        console.error("Failed to load image:", error);
-      }
-    });
+        ),
+        tap(slideshow => {
+          if (this._nearEndOfContextSubscription) {
+            this._nearEndOfContextSubscription.unsubscribe();
+          }
+
+          this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
+            .pipe(
+              filter(callerComponentId => callerComponentId === this.componentId),
+              takeUntil(this.destroyed$),
+              switchMap(() =>
+                this.loadMore().pipe(
+                  tap(() => {
+                    slideshow.instance.setNavigationContext(
+                      this.results.map(result => ({
+                        imageId: result.hash || result.objectId,
+                        thumbnailUrl: result.galleryThumbnail
+                      }))
+                    );
+                  })
+                )
+              )
+            )
+            .subscribe();
+        }),
+        tap(() => {
+          this.loadingImageId = null;
+          this.changeDetectorRef.markForCheck();
+        }),
+        // Wait for the fadeInOut animation.
+        switchMap(() => this.utilsService.delay(250)),
+        finalize(() => {
+          this.imageOpened.emit(image);
+        })
+      )
+      .subscribe({
+        error: error => {
+          console.error("Failed to load image:", error);
+        }
+      });
   }
 
   private _removeDuplicateRetailers(listings: any[]): any[] {

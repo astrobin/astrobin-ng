@@ -2,11 +2,11 @@
 @import "../../../../styles/mixins";
 
 @mixin textShadow {
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, .25)
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 #user-gallery-dropdown {
-  background: rgba(0, 0, 0, .5);
+  background: rgba(0, 0, 0, 0.5);
   border-radius: 50%;
   width: 2rem;
   height: 2rem;
@@ -46,7 +46,8 @@
     }
 
     /* Add some brighter stars */
-    &::before, &::after {
+    &::before,
+    &::after {
       z-index: 1;
     }
 
@@ -119,7 +120,15 @@
   }
 
   .header-gradient {
-    background: linear-gradient(180deg, transparent 0, rgba(0, 0, 0, .03) 8%, rgba(0, 0, 0, .11) 21%, rgba(0, 0, 0, .61) 78%, rgba(0, 0, 0, .7) 95%, rgba(0, 0, 0, .7));
+    background: linear-gradient(
+      180deg,
+      transparent 0,
+      rgba(0, 0, 0, 0.03) 8%,
+      rgba(0, 0, 0, 0.11) 21%,
+      rgba(0, 0, 0, 0.61) 78%,
+      rgba(0, 0, 0, 0.7) 95%,
+      rgba(0, 0, 0, 0.7)
+    );
     position: absolute;
     left: 0;
     right: 0;
@@ -139,7 +148,7 @@
       display: block;
       width: 5rem;
       height: 5rem;
-      filter: drop-shadow(0 .5rem .5rem rgba(0, 0, 0, 0.5));
+      filter: drop-shadow(0 0.5rem 0.5rem rgba(0, 0, 0, 0.5));
     }
 
     astrobin-username {
@@ -156,19 +165,19 @@
 
     .username {
       color: var(--lightestGrey);
-      font-size: .85rem;
+      font-size: 0.85rem;
       @include textShadow;
     }
 
     .username-and-follows {
-      @include flex-gap(row, 1rem, .25rem);
+      @include flex-gap(row, 1rem, 0.25rem);
     }
 
     .images-and-followers {
-      font-size: .85rem;
+      font-size: 0.85rem;
       color: var(--white);
       @include textShadow;
-      @include flex-gap(row, 1rem, .25rem);
+      @include flex-gap(row, 1rem, 0.25rem);
 
       span {
         white-space: nowrap;
@@ -178,16 +187,16 @@
 
   .my-bookmarks-and-likes {
     .btn:first-child {
-      margin-right: .25rem;
+      margin-right: 0.25rem;
     }
 
     @media (max-width: $xs-max) {
       align-items: flex-start !important;
-      @include flex-gap(column, .25rem);
+      @include flex-gap(column, 0.25rem);
 
       .btn:first-child {
         margin-right: 0;
-        margin-bottom: .25rem;
+        margin-bottom: 0.25rem;
       }
     }
   }
@@ -207,8 +216,8 @@
       font-size: 1rem;
       color: var(--white);
       background: rgba(0, 0, 0, 0.75);
-      box-shadow: 0 .25rem .25rem rgba(0, 0, 0, 0.5);
-      padding: .5rem;
+      box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.5);
+      padding: 0.5rem;
       margin: 0;
       border-radius: 50%;
       display: flex;
@@ -228,9 +237,9 @@
   }
 
   .btn.more {
-    background: rgba(0, 0, 0, .5);
+    background: rgba(0, 0, 0, 0.5);
     color: var(--lighterGrey) !important;
-    padding: .25rem .5rem !important;
+    padding: 0.25rem 0.5rem !important;
   }
 }
 

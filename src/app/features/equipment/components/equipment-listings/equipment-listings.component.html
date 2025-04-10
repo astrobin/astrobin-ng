@@ -126,11 +126,7 @@
   </ng-container>
 
   <ng-template #noLogoTemplate>
-    <a
-      [href]="urlWithTags(listing)"
-      astrobinGtagOutboundClickEvent
-      target="_blank"
-    >
+    <a [href]="urlWithTags(listing)" astrobinGtagOutboundClickEvent target="_blank">
       {{ listing.retailer.name }}
     </a>
   </ng-template>

@@ -1,18 +1,18 @@
 import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { EMPTY, Observable, of } from "rxjs";
-import { catchError, map, mergeMap } from "rxjs/operators";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
+import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import {
-  GetAvailableSubscriptionsSuccess,
   GetPricing,
+  GetAvailableSubscriptionsSuccess,
   GetPricingSuccess,
   SubscriptionsActionTypes
 } from "@features/subscriptions/store/subscriptions.actions";
 import { selectAvailableSubscriptions } from "@features/subscriptions/store/subscriptions.selectors";
-import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observable, EMPTY, of } from "rxjs";
+import { catchError, map, mergeMap } from "rxjs/operators";
 
 @Injectable()
 export class SubscriptionsEffects {
@@ -24,12 +24,12 @@ export class SubscriptionsEffects {
           mergeMap(availableSubscriptions =>
             availableSubscriptions !== null
               ? of(availableSubscriptions).pipe(
-                map(availableSubscriptions => new GetAvailableSubscriptionsSuccess({ availableSubscriptions }))
-              )
+                  map(availableSubscriptions => new GetAvailableSubscriptionsSuccess({ availableSubscriptions }))
+                )
               : this.paymentsApiService.getAvailableSubscriptions().pipe(
-                map(availableSubscriptions => new GetAvailableSubscriptionsSuccess({ availableSubscriptions })),
-                catchError(() => EMPTY)
-              )
+                  map(availableSubscriptions => new GetAvailableSubscriptionsSuccess({ availableSubscriptions })),
+                  catchError(() => EMPTY)
+                )
           )
         )
       )
@@ -60,6 +60,5 @@ export class SubscriptionsEffects {
     public readonly actions$: Actions,
     public readonly paymentsApiService: PaymentsApiService,
     public readonly subscriptionsService: SubscriptionsService
-  ) {
-  }
+  ) {}
 }

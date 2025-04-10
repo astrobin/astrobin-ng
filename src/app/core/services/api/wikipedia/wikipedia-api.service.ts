@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
 export interface WikipediaPageImageInterface {
@@ -31,8 +31,7 @@ export interface WikipediaPageSummaryInterface {
   providedIn: "root"
 })
 export class WikipediaApiService {
-  constructor(public readonly http: HttpClient) {
-  }
+  constructor(public readonly http: HttpClient) {}
 
   getPageSummary(title: string, language: string): Observable<WikipediaPageSummaryInterface> {
     return this.http.get<WikipediaPageSummaryInterface>(

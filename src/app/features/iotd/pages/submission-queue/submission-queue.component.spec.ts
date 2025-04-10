@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
-import { provideMockStore } from "@ngrx/store/testing";
-import { MockBuilder, MockInstance, MockService } from "ng-mocks";
-import { SubmissionQueueComponent } from "./submission-queue.component";
-import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { QueueSortButtonComponent } from "@features/iotd/components/queue-sort-button/queue-sort-button.component";
 import { SubmissionEntryComponent } from "@features/iotd/components/submission-entry/submission-entry.component";
 import { SubmissionSlotsComponent } from "@features/iotd/components/submission-slots/submission-slots.component";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder, MockInstance, MockService } from "ng-mocks";
+
+import { SubmissionQueueComponent } from "./submission-queue.component";
 
 describe("SubmissionQueueComponent", () => {
   let component: SubmissionQueueComponent;

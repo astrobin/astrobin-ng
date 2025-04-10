@@ -2,7 +2,7 @@
 
 :host {
   .iotd-banner {
-    padding: calc(.25rem - 2px) 1rem;
+    padding: calc(0.25rem - 2px) 1rem;
     background: var(--gold);
     background: -webkit-linear-gradient(to bottom, var(--gold), var(--darkGold));
     background: -moz-linear-gradient(to bottom, var(--gold), var(--darkGold));
@@ -17,7 +17,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: .5rem 1rem;
+      padding: 0.5rem 1rem;
       margin: 0 -1rem 0 -1rem;
 
       h3 {
@@ -25,26 +25,26 @@
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         margin: 0;
 
-        [icon='trophy'] {
+        [icon="trophy"] {
           filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.33));
-          margin-right: .75rem;
+          margin-right: 0.75rem;
         }
 
         .iotd-banner-date {
           font-size: 1rem;
-          margin-left: .5rem;
+          margin-left: 0.5rem;
         }
 
         @media (max-width: $md-max) {
           font-size: 1rem;
 
           .iotd-banner-date {
-            font-size: .875rem;
+            font-size: 0.875rem;
           }
         }
       }
 
-      [icon='info-circle'] {
+      [icon="info-circle"] {
         color: var(--white);
         filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.33));
         font-size: 1rem;
@@ -58,7 +58,7 @@
         display: block;
         top: 1rem;
         border: 1em solid var(--darkestGold);
-        border-left-width: .25rem;
+        border-left-width: 0.25rem;
         border-top-width: 1.25rem;
         border-bottom-width: 1.25rem;
         border-right-color: transparent;

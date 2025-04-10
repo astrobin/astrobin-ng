@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
+import { EquipmentModule } from "@features/equipment/equipment.module";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+import { EMPTY, ReplaySubject } from "rxjs";
 
 import { BrandExplorerPageComponent } from "./brand-explorer-page.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
-import { ActivatedRoute, Router } from "@angular/router";
-import { EMPTY, ReplaySubject } from "rxjs";
-import { provideMockActions } from "@ngrx/effects/testing";
-import { EquipmentModule } from "@features/equipment/equipment.module";
-import { WindowRefService } from "@core/services/window-ref.service";
 
 describe("BrandExplorerPageComponent", () => {
   let component: BrandExplorerPageComponent;

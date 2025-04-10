@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
 import { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { ImageMaxZoom, WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
+import { LocationInterface } from "@core/interfaces/location.interface";
 import { PermissionInterface } from "@core/interfaces/permission.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 import { FrontpageSection, UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseService } from "@core/services/base.service";
-import { ImageMaxZoom, WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
-import { LocationInterface } from "@core/interfaces/location.interface";
-import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
-import { GroupInterface } from "@core/interfaces/group.interface";
 
 export interface BackendPermissionInterface {
   id: number;

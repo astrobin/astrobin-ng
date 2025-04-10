@@ -1,6 +1,5 @@
 <div class="page has-breadcrumb">
-  <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else editTemplate">
-  </astrobin-read-only-mode>
+  <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else editTemplate"> </astrobin-read-only-mode>
 </div>
 
 <ng-template #editTemplate>
@@ -21,11 +20,7 @@
             <p class="d-block mb-4">{{ image.title }}</p>
           </div>
 
-          <formly-form
-            [fields]="fields"
-            [form]="form"
-            [model]="model"
-          ></formly-form>
+          <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 
           <div class="form-actions">
             <button

@@ -1,15 +1,15 @@
 import { Component } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
+import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
 import { SearchService } from "@core/services/search.service";
 import { SearchBaseSliderFilterComponent } from "@features/search/components/filters/search-base-slider-filter/search-base-slider-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-telescope-weight-filter.search-filter-component",
@@ -34,6 +34,6 @@ export class SearchTelescopeWeightFilterComponent extends SearchBaseSliderFilter
   ) {
     super(store$, translateService, domSanitizer, modalService, searchFilterService);
 
-    this.initFields(SearchTelescopeWeightFilterComponent.key, { floor: 0, ceil: 200, step: .1 });
+    this.initFields(SearchTelescopeWeightFilterComponent.key, { floor: 0, ceil: 200, step: 0.1 });
   }
 }

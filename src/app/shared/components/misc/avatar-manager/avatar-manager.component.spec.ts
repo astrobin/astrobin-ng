@@ -1,14 +1,15 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { AvatarManagerComponent } from "./avatar-manager.component";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { UserInterface } from "@core/interfaces/user.interface";
 import { ChangeDetectorRef } from "@angular/core";
+import { fakeAsync, TestBed, tick, ComponentFixture } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { By } from "@angular/platform-browser";
 import { Store } from "@ngrx/store";
-import { setupAvatarTestingModule, setupComponentObservables } from "../avatar/avatar-testing.utils";
 import { Constants } from "@shared/constants";
+import { UserGenerator } from "@shared/generators/user.generator";
+
+import { AvatarManagerComponent } from "./avatar-manager.component";
+import { setupAvatarTestingModule, setupComponentObservables } from "../avatar/avatar-testing.utils";
 
 describe("AvatarManagerComponent", () => {
   let component: AvatarManagerComponent;
@@ -110,7 +111,7 @@ describe("AvatarManagerComponent", () => {
       } as unknown as Event;
 
       // Mock FileReader to avoid DOM dependency
-      const readAsDataURLMock = jest.fn().mockImplementation(function() {
+      const readAsDataURLMock = jest.fn().mockImplementation(function () {
         setTimeout(() => {
           this.onload && this.onload();
         }, 0);
@@ -219,9 +220,9 @@ describe("AvatarManagerComponent", () => {
       // Arrange
       const modalRefMock = {
         componentInstance: {
-          title: '',
-          message: '',
-          confirmLabel: ''
+          title: "",
+          message: "",
+          confirmLabel: ""
         },
         result: Promise.resolve(true)
       };
@@ -250,9 +251,9 @@ describe("AvatarManagerComponent", () => {
       // Arrange
       const modalRefMock = {
         componentInstance: {
-          title: '',
-          message: '',
-          confirmLabel: ''
+          title: "",
+          message: "",
+          confirmLabel: ""
         },
         result: Promise.resolve(true) // User confirms the dialog
       };
@@ -271,9 +272,9 @@ describe("AvatarManagerComponent", () => {
       // Arrange
       const modalRefMock = {
         componentInstance: {
-          title: '',
-          message: '',
-          confirmLabel: ''
+          title: "",
+          message: "",
+          confirmLabel: ""
         },
         result: Promise.reject() // User dismisses the dialog
       };
@@ -384,7 +385,7 @@ describe("AvatarManagerComponent", () => {
       } as unknown as HTMLElement;
 
       // Mock calculateCircleDiameter
-      component["calculateCircleDiameter"] = jest.fn().mockImplementation((imageElement) => {
+      component["calculateCircleDiameter"] = jest.fn().mockImplementation(imageElement => {
         component["circleDiameter"] = 300;
         mockChangeDetectorRef.markForCheck();
       });
@@ -453,7 +454,7 @@ describe("AvatarManagerComponent", () => {
       const userWithDefaultAvatar = UserGenerator.user({
         id: 1,
         username: "testuser",
-        largeAvatar: "/assets/images/default-avatar.jpeg?v=2"  // Exactly matches Constants.DEFAULT_AVATAR
+        largeAvatar: "/assets/images/default-avatar.jpeg?v=2" // Exactly matches Constants.DEFAULT_AVATAR
       });
 
       // Set up the component
@@ -482,7 +483,7 @@ describe("AvatarManagerComponent", () => {
       const userWithDefaultAvatar = UserGenerator.user({
         id: 1,
         username: "testuser",
-        largeAvatar: "/assets/images/default-avatar.jpeg?v=2"  // Exactly matches Constants.DEFAULT_AVATAR
+        largeAvatar: "/assets/images/default-avatar.jpeg?v=2" // Exactly matches Constants.DEFAULT_AVATAR
       });
 
       // Set up the component
@@ -494,8 +495,8 @@ describe("AvatarManagerComponent", () => {
       newFixture.detectChanges();
 
       // Check the heading text
-      const heading = newFixture.debugElement.query(By.css('.upload-dropzone h5'));
-      expect(heading.nativeElement.textContent).toContain('Upload avatar');
+      const heading = newFixture.debugElement.query(By.css(".upload-dropzone h5"));
+      expect(heading.nativeElement.textContent).toContain("Upload avatar");
     });
 
     it("should show 'New avatar' text when user has a custom avatar", () => {
@@ -503,8 +504,8 @@ describe("AvatarManagerComponent", () => {
       fixture.detectChanges();
 
       // Check the heading text
-      const heading = fixture.debugElement.query(By.css('.avatar-info .btn-primary'));
-      expect(heading.nativeElement.textContent).toContain('Upload new');
+      const heading = fixture.debugElement.query(By.css(".avatar-info .btn-primary"));
+      expect(heading.nativeElement.textContent).toContain("Upload new");
     });
 
     it("should hide upload panel when deleting avatar", () => {
@@ -513,7 +514,7 @@ describe("AvatarManagerComponent", () => {
       fixture.detectChanges();
 
       // Check that the upload panel is not in the DOM
-      const uploadPanel = fixture.debugElement.query(By.css('.upload-panel'));
+      const uploadPanel = fixture.debugElement.query(By.css(".upload-panel"));
       expect(uploadPanel).toBeFalsy();
     });
   });

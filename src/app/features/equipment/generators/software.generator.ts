@@ -1,6 +1,6 @@
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
 
 export class SoftwareGenerator {
   static software(source: Partial<SoftwareInterface> = {}): SoftwareInterface {

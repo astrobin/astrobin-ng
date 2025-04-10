@@ -8,15 +8,16 @@
       <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>
 
       <ng-container *ngIf="!enableBrandLink || !brandLink">
-        <span [innerHTML]="brandName | highlight: highlightTerms"></span>
+        <span [innerHTML]="brandName | highlight : highlightTerms"></span>
       </ng-container>
     </span>
   </ng-container>
 
   <span *ngIf="!!itemName; else loading" class="name">
     <ng-template #nameTemplate>
-      <ng-container *ngIf="showBrand && !!brandName">&nbsp;</ng-container> <!-- Add space for copy/pasting -->
-      <span [innerHTML]="itemName | highlight: highlightTerms"></span>
+      <ng-container *ngIf="showBrand && !!brandName">&nbsp;</ng-container>
+      <!-- Add space for copy/pasting -->
+      <span [innerHTML]="itemName | highlight : highlightTerms"></span>
       <a
         (click)="openItemUnapprovedInfoModal(item)"
         *ngIf="showItemUnapprovedInfo && item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED"
@@ -54,10 +55,10 @@
 
   <a
     *ngIf="
-    showRetailers &&
-    item.listings.allowFullRetailerIntegration &&
-    (sellsListings.length || pairsWellListings.length || item.listings.brandListings.length)
-  "
+      showRetailers &&
+      item.listings.allowFullRetailerIntegration &&
+      (sellsListings.length || pairsWellListings.length || item.listings.brandListings.length)
+    "
     (click)="openRetailersOffcanvas()"
     astrobinEventPreventDefault
     astrobinEventStopPropagation
@@ -148,7 +149,7 @@
 
 <ng-template #itemSummaryPopoverTemplate let-pop="ngbPopover">
   <div class="popover-header d-flex justify-content-between align-items-center gap-3">
-    <span>{{ (item.brandName || ('DYI' | translate)) + ' ' + item.name }}</span>
+    <span>{{ (item.brandName || ("DYI" | translate)) + " " + item.name }}</span>
     <button type="button" class="btn btn-link link-secondary" (click)="pop.close()">
       <span aria-hidden="true">
         <fa-icon icon="times" class="m-0"></fa-icon>

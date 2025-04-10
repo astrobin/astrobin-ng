@@ -1,11 +1,11 @@
-@import '../../../../styles/breakpoints';
+@import "../../../../styles/breakpoints";
 
 :host {
   display: block;
   position: relative;
   width: 150px;
   height: 150px;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   cursor: pointer;
 
   .preset-overlay {
@@ -16,22 +16,22 @@
     left: 0;
     pointer-events: none;
     background: linear-gradient(
-        180deg,
-        transparent 0,
-        rgba(0, 0, 0, .03) 8%,
-        rgba(0, 0, 0, .11) 21%,
-        rgba(0, 0, 0, .61) 78%,
-        rgba(0, 0, 0, .7) 95%,
-        rgba(0, 0, 0, .7)
+      180deg,
+      transparent 0,
+      rgba(0, 0, 0, 0.03) 8%,
+      rgba(0, 0, 0, 0.11) 21%,
+      rgba(0, 0, 0, 0.61) 78%,
+      rgba(0, 0, 0, 0.7) 95%,
+      rgba(0, 0, 0, 0.7)
     );
-    border-radius: .5rem;
+    border-radius: 0.5rem;
   }
 
   .preset-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: .5rem;
+    border-radius: 0.5rem;
 
     &.default {
       padding: 1rem;
@@ -47,16 +47,16 @@
     text-align: center;
     bottom: 0;
     color: var(--white);
-    text-shadow: 0 0 5px rgba(0, 0, 0, .5);
-    border-bottom-left-radius: .5rem;
-    border-bottom-right-radius: .5rem;
-    font-size: .8rem;
-    padding: .5rem;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    font-size: 0.8rem;
+    padding: 0.5rem;
   }
 
   .button-overlay {
     opacity: 0;
-    padding: .5rem;
+    padding: 0.5rem;
     background: var(--white);
     color: var(--darkerGrey);
     text-shadow: none;
@@ -66,8 +66,8 @@
   .btn-edit-preset {
     position: absolute;
     border: 1px solid var(--darkerGrey);
-    top: .25rem;
-    right: .25rem;
+    top: 0.25rem;
+    right: 0.25rem;
     padding: 1rem;
     line-height: 1rem;
     height: 1rem;
@@ -82,7 +82,7 @@
 
     .ng-fa-icon {
       margin-right: 0;
-      font-size: .8rem;
+      font-size: 0.8rem;
       color: var(--darkerGrey);
       transition: color 0.3s ease;
     }
@@ -98,9 +98,9 @@
     }
 
     @media (max-width: $xs-max) {
-      padding: .75rem;
-      height: .75rem;
-      width: .75rem;
+      padding: 0.75rem;
+      height: 0.75rem;
+      width: 0.75rem;
     }
   }
 
@@ -142,7 +142,7 @@
         }
 
         .button-overlay {
-          opacity: .9;
+          opacity: 0.9;
         }
       }
     }

@@ -1,19 +1,19 @@
-import { ElementRef, Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
-import { distinctUntilChanged, switchMap, take } from "rxjs/operators";
-import { TranslateService } from "@ngx-translate/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { SelectorWithProps } from "@ngrx/store/src/models";
-import { interval, Observable, of } from "rxjs";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { CookieService } from "ngx-cookie";
+import { ElementRef, Renderer2, Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { MainState } from "@app/store/state";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
+import { SelectorWithProps } from "@ngrx/store/src/models";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { Constants } from "@shared/constants";
 import { Buffer } from "buffer";
 import msgpack from "msgpack-lite";
+import { CookieService } from "ngx-cookie";
 import pako from "pako";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { Constants } from "@shared/constants";
+import { interval, Observable, of } from "rxjs";
+import { distinctUntilChanged, switchMap, take } from "rxjs/operators";
 
 interface CachedRect {
   rect: DOMRect;
@@ -39,8 +39,7 @@ export class UtilsService {
     public readonly translateService: TranslateService,
     public readonly cookieService: CookieService,
     @Inject(PLATFORM_ID) public readonly platformId
-  ) {
-  }
+  ) {}
 
   static divmod(a: number, b: number): [number, number] {
     const quotient = Math.floor(a / b);
@@ -48,7 +47,7 @@ export class UtilsService {
     return [quotient, remainder];
   }
 
-  static padNumber(num: number, size: number = 2): string {
+  static padNumber(num: number, size = 2): string {
     let s = num + "";
     while (s.length < size) {
       s = "0" + s;
@@ -57,7 +56,7 @@ export class UtilsService {
   }
 
   static removeQuotes(str: string): string {
-    if (str.length >= 2 && str.startsWith("\"") && str.endsWith("\"")) {
+    if (str.length >= 2 && str.startsWith('"') && str.endsWith('"')) {
       return str.slice(1, -1);
     }
     return str;
@@ -171,7 +170,7 @@ export class UtilsService {
       }
 
       // The result can be accessed through the `m`-variable.
-      m.forEach((match, groupIndex) => {
+      m.forEach(match => {
         if (match.indexOf("href") !== 0) {
           links.push(match);
         }
@@ -222,7 +221,6 @@ export class UtilsService {
     }
   }
 
-
   static removeUrlParam(url: string, parameter: string): string {
     const urlParts = url.split("?");
 
@@ -230,7 +228,7 @@ export class UtilsService {
       const prefix = encodeURIComponent(parameter) + "=";
       const pars = urlParts[1].split(/[&;]/g);
 
-      for (let i = pars.length; i-- > 0;) {
+      for (let i = pars.length; i-- > 0; ) {
         if (pars[i].lastIndexOf(prefix, 0) !== -1) {
           pars.splice(i, 1);
         }
@@ -325,11 +323,11 @@ export class UtilsService {
   }
 
   static isObject(obj): boolean {
-    return obj != null && obj.constructor.name === "Object";
+    return obj !== undefined && obj !== null && obj.constructor.name === "Object";
   }
 
   static isArray(obj): boolean {
-    return obj != null && obj.constructor.name === "Array";
+    return obj !== undefined && obj !== null && obj.constructor.name === "Array";
   }
 
   static isNotEmptyDictionary<T>(variable: T | null | undefined): boolean {
@@ -507,7 +505,7 @@ export class UtilsService {
   }
 
   static fullFieldPath(fieldConfig: FormlyFieldConfig): string[] {
-    let path: string[] = [];
+    const path: string[] = [];
 
     // Start with the current field
     if (fieldConfig.props && fieldConfig.props.label) {
@@ -530,7 +528,8 @@ export class UtilsService {
   static notifyAboutFieldsWithErrors(
     topFields: FormlyFieldConfig[],
     popNotificationsService: PopNotificationsService,
-    translateService: TranslateService) {
+    translateService: TranslateService
+  ) {
     const errorList: string[] = UtilsService.fieldsWithErrors(topFields).map(
       field => `<li><strong>${UtilsService.fullFieldPath(field).join(" / ")}</strong>`
     );
@@ -570,9 +569,9 @@ export class UtilsService {
   }
 
   static countNonNullProperties(obj: any, excludeProps: string[] = []) {
-    let count: number = 0;
+    let count = 0;
 
-    for (let prop in obj) {
+    for (const prop in obj) {
       if (excludeProps.includes(prop)) {
         continue;
       }
@@ -637,7 +636,7 @@ export class UtilsService {
       "TR", // Turkey (partially in Europe)
       "UA", // Ukraine
       "GB", // United Kingdom
-      "VA"  // Vatican City
+      "VA" // Vatican City
     ];
 
     return europeanCountries.includes(countryCode.toUpperCase());
@@ -667,7 +666,7 @@ export class UtilsService {
       "LC", // Saint Lucia
       "VC", // Saint Vincent and the Grenadines
       "TT", // Trinidad and Tobago
-      "US"  // United States
+      "US" // United States
     ];
 
     return northAmericanCountries.includes(countryCode.toUpperCase());
@@ -686,7 +685,7 @@ export class UtilsService {
       "PE", // Peru
       "SR", // Suriname
       "UY", // Uruguay
-      "VE"  // Venezuela
+      "VE" // Venezuela
     ];
 
     return southAmericanCountries.includes(countryCode.toUpperCase());
@@ -742,7 +741,7 @@ export class UtilsService {
       "AE", // United Arab Emirates
       "UZ", // Uzbekistan
       "VN", // Vietnam
-      "YE"  // Yemen
+      "YE" // Yemen
     ];
 
     return asianCountries.includes(countryCode.toUpperCase());
@@ -803,7 +802,7 @@ export class UtilsService {
       "TN", // Tunisia
       "UG", // Uganda
       "ZM", // Zambia
-      "ZW"  // Zimbabwe
+      "ZW" // Zimbabwe
     ];
 
     return africanCountries.includes(countryCode.toUpperCase());
@@ -836,7 +835,7 @@ export class UtilsService {
       "TV", // Tuvalu
       "UM", // United States Minor Outlying Islands
       "VU", // Vanuatu
-      "WF"  // Wallis and Futuna
+      "WF" // Wallis and Futuna
     ];
 
     return oceaniaCountries.includes(countryCode.toUpperCase());
@@ -917,7 +916,7 @@ export class UtilsService {
       if (!line.trim()) {
         continue;
       }
-      
+
       const values = line.split(",");
       if (values.length !== headers.length) {
         continue;
@@ -1068,16 +1067,10 @@ export class UtilsService {
     const childRect = child.getBoundingClientRect();
     const containerRect = container.getBoundingClientRect();
 
-    return (
-      childRect.bottom > containerRect.top &&
-      childRect.top < containerRect.bottom
-    );
+    return childRect.bottom > containerRect.top && childRect.top < containerRect.bottom;
   }
 
-  isNearOrInViewport(
-    element: HTMLElement,
-    options: ViewportCheckOptions = {}
-  ): boolean {
+  isNearOrInViewport(element: HTMLElement, options: ViewportCheckOptions = {}): boolean {
     if (!isPlatformBrowser(this.platformId)) {
       return false;
     }
@@ -1101,14 +1094,12 @@ export class UtilsService {
 
     if (shouldCheckVertical) {
       isWithinVerticalTolerance =
-        rect.top <= (window.innerHeight + verticalTolerance) &&
-        rect.bottom >= -verticalTolerance;
+        rect.top <= window.innerHeight + verticalTolerance && rect.bottom >= -verticalTolerance;
     }
 
     if (shouldCheckHorizontal) {
       isWithinHorizontalTolerance =
-        rect.left <= (window.innerWidth + horizontalTolerance) &&
-        rect.right >= -horizontalTolerance;
+        rect.left <= window.innerWidth + horizontalTolerance && rect.right >= -horizontalTolerance;
     }
 
     return isWithinVerticalTolerance && isWithinHorizontalTolerance;

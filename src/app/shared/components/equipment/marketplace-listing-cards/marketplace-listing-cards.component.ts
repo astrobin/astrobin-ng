@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { OnInit, Component, Input } from "@angular/core";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-marketplace-listing-cards",

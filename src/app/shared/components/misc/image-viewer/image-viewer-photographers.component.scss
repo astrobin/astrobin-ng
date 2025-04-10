@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  @include flex-gap(row, .5rem);
+  @include flex-gap(row, 0.5rem);
   flex-wrap: nowrap;
 
   .metadata-item {
@@ -15,7 +15,7 @@
 
   .avatars {
     display: flex;
-    @include flex-gap(row, .5rem);
+    @include flex-gap(row, 0.5rem);
     flex-direction: row !important;
   }
 
@@ -26,7 +26,7 @@
   }
 
   .view-count {
-    font-size: .85rem;
+    font-size: 0.85rem;
     color: var(--lightGrey);
   }
 
@@ -47,7 +47,7 @@
   astrobin-toggle-property {
     .btn-lg {
       @media (max-width: $sm-max) {
-        padding: .375rem .75rem !important;
+        padding: 0.375rem 0.75rem !important;
       }
     }
   }
@@ -72,7 +72,7 @@
 
     .user {
       display: flex;
-      @include flex-gap(row, .5rem);
+      @include flex-gap(row, 0.5rem);
       justify-content: space-between;
       align-items: center;
 
