@@ -1,5 +1,9 @@
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadSolutionMatrixFailure, LoadSolutionMatrixSuccess } from "@app/store/actions/solution.actions";
+import {
+  LoadSolutionMatrixFailure,
+  LoadSolutionMatrixStart,
+  LoadSolutionMatrixSuccess
+} from "@app/store/actions/solution.actions";
 import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
 import { CameraInterface } from "@core/interfaces/camera.interface";
 import { CollectionInterface } from "@core/interfaces/collection.interface";

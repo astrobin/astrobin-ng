@@ -1,12 +1,7 @@
 import { isPlatformBrowser } from "@angular/common";
 import {
-  ChangeDetectorRef,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Renderer2,
-  SimpleChanges,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -14,14 +9,19 @@ import {
   HostListener,
   Inject,
   Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
   Output,
   PLATFORM_ID,
+  Renderer2,
+  SimpleChanges,
   ViewChild
 } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { ActivatedRoute } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadSolutionMatrix } from "@app/store/actions/solution.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import {
@@ -35,10 +35,10 @@ import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
 import {
-  ImageInterface,
-  ImageRevisionInterface,
   FINAL_REVISION_LABEL,
   FullSizeLimitationDisplayOptions,
+  ImageInterface,
+  ImageRevisionInterface,
   ORIGINAL_REVISION_LABEL
 } from "@core/interfaces/image.interface";
 import { SolutionStatus } from "@core/interfaces/solution.interface";
@@ -53,7 +53,10 @@ import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions, ofType } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { CookieService } from "ngx-cookie";
 import { Coord, NgxImageZoomComponent } from "ngx-image-zoom";
 import { ActiveToast } from "ngx-toastr";
@@ -234,10 +237,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected isMouseOverUIElement: boolean = false;
   protected image: ImageInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
-
+  // Flag to track if static image has loaded
+  protected isStaticImageLoaded = false;
   // Track the "Activate zoom first" notification
   private _zoomActivationNotification: ActiveToast<any> | null = null;
-
   // Track the "Measuring tool only available at default zoom" notification
   private _measureZoomNotification: ActiveToast<any> | null = null;
   private _lastTransform: string = null;
@@ -277,13 +280,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private readonly COORDINATES_ENABLED_COOKIE_NAME = "astrobin-fullscreen-show-coordinates";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
   private readonly FRAME_INTERVAL = 1000 / 120; // 120 FPS
-
   // Store original handlers and position for freezing/unfreezing
   private _originalOnMouseMove: any = null;
   private _originalOnMouseWheel: any = null;
-
-  // Flag to track if static image has loaded
-  protected isStaticImageLoaded = false;
 
   constructor(
     public readonly store$: Store<MainState>,

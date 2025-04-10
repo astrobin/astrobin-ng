@@ -4,10 +4,12 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnChanges,
   OnInit,
   Output,
+  PLATFORM_ID,
   SimpleChanges,
   TemplateRef,
   ViewChild
@@ -221,9 +223,9 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges, OnInit {
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly translateService: TranslateService,
     public readonly deviceService: DeviceService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: object
   ) {
-    this.isBrowser = isPlatformBrowser(platformId);
+    this.isBrowser = isPlatformBrowser(this.platformId);
     this.isTouchOnly = this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC();
 
     // Initialize tooltip texts for i18n extraction

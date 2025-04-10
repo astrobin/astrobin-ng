@@ -4,6 +4,11 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import {
+  FindImagesOptionsInterface,
+  FindImagesResponseInterface
+} from "@core/services/api/classic/images/image/image-api.service";
 import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
 import { Action } from "@ngrx/store";
 
