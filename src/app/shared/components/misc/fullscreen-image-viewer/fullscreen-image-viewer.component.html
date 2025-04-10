@@ -96,9 +96,9 @@
   <ng-container
     [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
-        icon: 'mouse-pointer',
-        message: 'Click or start dragging to begin measurement.' | translate
-      }"
+      icon: 'mouse-pointer',
+      message: 'Click or start dragging to begin measurement.' | translate
+    }"
   ></ng-container>
 </ng-template>
 
@@ -106,9 +106,9 @@
   <ng-container
     [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
-        icon: 'mouse-pointer',
-        message: 'Click or release to complete measurement.' | translate
-      }"
+      icon: 'mouse-pointer',
+      message: 'Click or release to complete measurement.' | translate
+    }"
   ></ng-container>
 </ng-template>
 
@@ -117,7 +117,10 @@
     <ng-container *ngIf="!hd && !real" [ngTemplateOutlet]="hdImageLoadingTemplate"></ng-container>
     <!-- Only show real thumbnail loading indicator if we're not in annotation/measuring mode
          When in these modes, we can use the HD image immediately while real loads in background -->
-    <ng-container *ngIf="hd && !real && allowReal && !isMeasuringMode && !isAnnotationMode" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
+    <ng-container
+      *ngIf="hd && !real && allowReal && !isMeasuringMode && !isAnnotationMode"
+      [ngTemplateOutlet]="realThumbnailLoadingTemplate"
+    ></ng-container>
 
     <!-- Loading indicator while the static image is loading -->
     <div *ngIf="!isStaticImageLoaded" class="loading-indicator-container has-message">
@@ -128,7 +131,7 @@
     <div class="static-image-container" #staticImageContainer>
       <img
         #staticImage
-        [src]="(isVeryLargeImage || !real || !allowReal || (isMeasuringMode || isAnnotationMode)) && hd ? hd : real"
+        [src]="(isVeryLargeImage || !real || !allowReal || isMeasuringMode || isAnnotationMode) && hd ? hd : real"
         class="static-image"
         alt=""
         [style.max-width.px]="maxDisplayWidth"
@@ -149,10 +152,7 @@
       ></ng-container>
     </ng-container>
 
-    <ng-container
-      *ngIf="hd && !allowReal"
-      [ngTemplateOutlet]="fullSizeLimitationTemplate"
-    ></ng-container>
+    <ng-container *ngIf="hd && !allowReal" [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
   </div>
 
   <ng-container [ngTemplateOutlet]="zoomModesTemplate" [ngTemplateOutletContext]="{ real }"></ng-container>
@@ -221,7 +221,9 @@
     <!-- Show appropriate messages based on image type -->
     <ng-container *ngIf="isGif && allowReal && real" [ngTemplateOutlet]="gifNoZoomTemplate"></ng-container>
     <ng-container
-      *ngIf="!isGif && !isVeryLargeImage && allowReal && real && !canvasLoading && !isMeasuringMode && !isAnnotationMode"
+      *ngIf="
+        !isGif && !isVeryLargeImage && allowReal && real && !canvasLoading && !isMeasuringMode && !isAnnotationMode
+      "
       [ngTemplateOutlet]="pinchAndZoomInstructionTemplate"
     ></ng-container>
     <ng-container *ngIf="hd && !allowReal" [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
@@ -236,7 +238,13 @@
     <ng-container *ngIf="hd && !real && allowReal" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
 
     <ng-container *ngIf="!isVeryLargeImage">
-      <img *ngIf="hd && (!real || !allowReal)" [src]="hd" class="hd-image" alt="" [style.max-width.px]="maxDisplayWidth" />
+      <img
+        *ngIf="hd && (!real || !allowReal)"
+        [src]="hd"
+        class="hd-image"
+        alt=""
+        [style.max-width.px]="maxDisplayWidth"
+      />
 
       <!-- For GIFs on non-touch devices, we can use ngx-image-zoom as it works well there -->
       <lib-ngx-image-zoom
@@ -304,10 +312,7 @@
     <ng-container *ngIf="!isVeryLargeImage && real && allowReal">
       <!-- Zoom-related instructions - only show when not in measuring or annotation mode -->
       <ng-container *ngIf="!isMeasuringMode && !isAnnotationMode">
-        <ng-container
-          *ngIf="zoomFrozen"
-          [ngTemplateOutlet]="zoomFrozenInstructionTemplate"
-        ></ng-container>
+        <ng-container *ngIf="zoomFrozen" [ngTemplateOutlet]="zoomFrozenInstructionTemplate"></ng-container>
 
         <ng-container
           *ngIf="!zoomFrozen && !zoomingEnabled && !showZoomIndicator"
@@ -340,14 +345,14 @@
 </ng-template>
 
 <ng-template #zoomModesTemplate let-real="real">
-  <div
-    *ngIf="(!isVeryLargeImage && allowReal && !!real)"
-    class="fullscreen-view-menu"
-  >
+  <div *ngIf="!isVeryLargeImage && allowReal && !!real" class="fullscreen-view-menu">
     <!-- Kebab menu button - hidden during measuring or annotation mode -->
-    <div class="kebab-menu-container" *ngIf="!isMeasuringMode && !isAnnotationMode"
-         (mouseenter)="setMouseOverUIElement(true)"
-         (mouseleave)="setMouseOverUIElement(false)">
+    <div
+      class="kebab-menu-container"
+      *ngIf="!isMeasuringMode && !isAnnotationMode"
+      (mouseenter)="setMouseOverUIElement(true)"
+      (mouseleave)="setMouseOverUIElement(false)"
+    >
       <button class="kebab-button" (click)="toggleKebabMenu($event)" [attr.aria-expanded]="showKebabMenu">
         <fa-icon icon="ellipsis-vertical"></fa-icon>
       </button>
@@ -355,11 +360,7 @@
       <!-- Dropdown menu -->
       <div class="kebab-dropdown" [class.show]="showKebabMenu">
         <!-- Keyboard shortcuts button - hide on touch devices -->
-        <div
-          *ngIf="!isTouchDevice"
-          class="kebab-menu-item"
-          (click)="showShortcutsDialog($event)"
-        >
+        <div *ngIf="!isTouchDevice" class="kebab-menu-item" (click)="showShortcutsDialog($event)">
           <fa-icon icon="keyboard"></fa-icon>
           <span>{{ "Keyboard shortcuts" | translate }}</span>
         </div>
@@ -406,8 +407,8 @@
           [class.disabled]="enableLens && zoomingEnabled"
         >
           <fa-icon icon="crosshairs"></fa-icon>
-          <span *ngIf="showCoordinates">{{ 'Hide coordinates' | translate }}</span>
-          <span *ngIf="!showCoordinates">{{ 'Show coordinates' | translate }}</span>
+          <span *ngIf="showCoordinates">{{ "Hide coordinates" | translate }}</span>
+          <span *ngIf="!showCoordinates">{{ "Show coordinates" | translate }}</span>
         </div>
 
         <!-- Measuring tool toggle - available for all images -->
@@ -418,7 +419,7 @@
           [class.active]="isMeasuringMode"
         >
           <fa-icon icon="ruler"></fa-icon>
-          <span>{{ 'Measure distances' | translate }}</span>
+          <span>{{ "Measure distances" | translate }}</span>
         </div>
 
         <!-- Annotation tool toggle - available for images that are not videos or GIFs -->
@@ -429,7 +430,7 @@
           [class.active]="isAnnotationMode"
         >
           <fa-icon icon="file-text"></fa-icon>
-          <span>{{ 'Annotate image' | translate }}</span>
+          <span>{{ "Annotate image" | translate }}</span>
         </div>
       </div>
     </div>
@@ -487,9 +488,12 @@
   ></astrobin-annotation-tool>
 
   <!-- Coordinate display -->
-  <div class="coordinates-wrapper" *ngIf="showCoordinates && mouseRa && mouseDec && !isGif && hasAdvancedSolutionMatrix"
-       (mouseenter)="setMouseOverUIElement(true)"
-       (mouseleave)="setMouseOverUIElement(false)">
+  <div
+    class="coordinates-wrapper"
+    *ngIf="showCoordinates && mouseRa && mouseDec && !isGif && hasAdvancedSolutionMatrix"
+    (mouseenter)="setMouseOverUIElement(true)"
+    (mouseleave)="setMouseOverUIElement(false)"
+  >
     <astrobin-coordinates-display
       [raHtml]="mouseRa"
       [decHtml]="mouseDec"
@@ -503,13 +507,13 @@
   <!-- Crosshair rulers -->
   <div
     *ngIf="
-    showCoordinates &&
-    mouseX !== null &&
-    mouseY !== null &&
-    !isGif &&
-    !isMouseOverUIElement &&
-    hasAdvancedSolutionMatrix
-  "
+      showCoordinates &&
+      mouseX !== null &&
+      mouseY !== null &&
+      !isGif &&
+      !isMouseOverUIElement &&
+      hasAdvancedSolutionMatrix
+    "
     class="crosshair-container"
   >
     <div class="crosshair-h" [style.top.px]="mouseY"></div>
@@ -548,38 +552,59 @@
     </ng-container>
   </ng-container>
 
-  <div (click)="hide($event)" class="close" *ngIf="!isMeasuringMode && !isAnnotationMode"
-       (mouseenter)="setMouseOverUIElement(true)"
-       (mouseleave)="setMouseOverUIElement(false)">
+  <div
+    (click)="hide($event)"
+    class="close"
+    *ngIf="!isMeasuringMode && !isAnnotationMode"
+    (mouseenter)="setMouseOverUIElement(true)"
+    (mouseleave)="setMouseOverUIElement(false)"
+  >
     <fa-icon icon="down-left-and-up-right-to-center"></fa-icon>
   </div>
 
-  <div class="astrobin-logo"
-       *ngIf="!isMeasuringMode && !isAnnotationMode"
-       (mouseenter)="setMouseOverUIElement(true)"
-       (mouseleave)="setMouseOverUIElement(false)">
+  <div
+    class="astrobin-logo"
+    *ngIf="!isMeasuringMode && !isAnnotationMode"
+    (mouseenter)="setMouseOverUIElement(true)"
+    (mouseleave)="setMouseOverUIElement(false)"
+  >
     <a routerLink="/">
       <img src="/assets/images/nav-logo.png?v=3" alt="AstroBin" />
     </a>
   </div>
 
   <!-- Custom Keyboard Shortcuts Overlay -->
-  <div class="keyboard-shortcuts-overlay" *ngIf="showKeyboardShortcutsOverlay"
-       (mouseenter)="setMouseOverUIElement(true)"
-       (mouseleave)="setMouseOverUIElement(false)">
+  <div
+    class="keyboard-shortcuts-overlay"
+    *ngIf="showKeyboardShortcutsOverlay"
+    (mouseenter)="setMouseOverUIElement(true)"
+    (mouseleave)="setMouseOverUIElement(false)"
+  >
     <div class="shortcuts-header">
-      <strong>{{ 'Keyboard Shortcuts' | translate }}</strong>
+      <strong>{{ "Keyboard Shortcuts" | translate }}</strong>
       <button class="btn-close-shortcuts" (click)="hideShortcutsOverlay()">
         <fa-icon icon="times"></fa-icon>
       </button>
     </div>
     <ul class="shortcuts-list">
-      <li><kbd>Z</kbd> <span>{{ 'Toggle Lens/Zoom mode' | translate }}</span></li>
-      <li *ngIf="hasAdvancedSolution"><kbd>C</kbd> <span>{{ 'Toggle coordinates display' | translate }}</span></li>
-      <li><kbd>D</kbd> <span>{{ 'Toggle distance measuring tool' | translate }}</span></li>
-      <li><kbd>N</kbd> <span>{{ 'Toggle annotation tool' | translate }}</span></li>
-      <li><kbd>F</kbd> <span>{{ 'Freeze/unfreeze zoom position' | translate }}</span></li>
-      <li><kbd>ESC</kbd> <span>{{ 'Exit current mode or close image' | translate }}</span></li>
+      <li>
+        <kbd>Z</kbd> <span>{{ "Toggle Lens/Zoom mode" | translate }}</span>
+      </li>
+      <li *ngIf="hasAdvancedSolution">
+        <kbd>C</kbd> <span>{{ "Toggle coordinates display" | translate }}</span>
+      </li>
+      <li>
+        <kbd>D</kbd> <span>{{ "Toggle distance measuring tool" | translate }}</span>
+      </li>
+      <li>
+        <kbd>N</kbd> <span>{{ "Toggle annotation tool" | translate }}</span>
+      </li>
+      <li>
+        <kbd>F</kbd> <span>{{ "Freeze/unfreeze zoom position" | translate }}</span>
+      </li>
+      <li>
+        <kbd>ESC</kbd> <span>{{ "Exit current mode or close image" | translate }}</span>
+      </li>
     </ul>
   </div>
 </div>

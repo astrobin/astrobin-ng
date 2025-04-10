@@ -375,7 +375,8 @@ $header-height: 63px;
       object-fit: contain;
 
       /* When in measuring or annotation mode, keep pointer events on the image */
-      :host(.measuring-mode) &, :host(.annotation-mode) & {
+      :host(.measuring-mode) &,
+      :host(.annotation-mode) & {
         pointer-events: auto; /* But keep pointer events on the actual image */
       }
 
@@ -385,12 +386,11 @@ $header-height: 63px;
     }
   }
 
-
   .fullscreen-view-menu,
   .close {
     cursor: pointer;
     position: absolute;
-    top: .5rem;
+    top: 0.5rem;
     border-radius: 1rem;
     padding: 0.25rem 0.5rem;
     color: var(--white);
@@ -398,8 +398,8 @@ $header-height: 63px;
   }
 
   .close {
-    background: rgba(0, 0, 0, .5);
-    box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
@@ -413,8 +413,8 @@ $header-height: 63px;
   }
 
   .fullscreen-view-menu {
-    right: .75rem;
-    transform: scale(.9);
+    right: 0.75rem;
+    transform: scale(0.9);
 
     /* Make zoom controls visible on mobile devices */
     @media (max-width: $sm-max) {
@@ -440,7 +440,8 @@ $header-height: 63px;
           border-color: rgba(255, 255, 255, 0.8);
         }
 
-        &:focus, &:active {
+        &:focus,
+        &:active {
           box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
         }
       }
@@ -583,7 +584,7 @@ $header-height: 63px;
 
   .coordinates-wrapper {
     position: absolute;
-    bottom: .5rem;
+    bottom: 0.5rem;
     right: 1rem;
     z-index: 5;
     pointer-events: none;
@@ -770,7 +771,7 @@ $header-height: 63px;
         padding: 3px 6px; // Slightly larger padding for better readability
         border-radius: 3px;
         font-size: 0.7rem;
-        font-family: 'Consolas', 'Monaco', 'Courier New', monospace; // Fixed-width font
+        font-family: "Consolas", "Monaco", "Courier New", monospace; // Fixed-width font
         pointer-events: none;
         max-width: 170px;
         overflow: hidden;
@@ -946,7 +947,8 @@ $header-height: 63px;
       height: 100dvh;
     }
 
-    .crosshair-h, .crosshair-v {
+    .crosshair-h,
+    .crosshair-v {
       position: fixed;
       background-color: transparent;
     }
@@ -1008,8 +1010,10 @@ $header-height: 63px;
   }
 
   /* Ensure pointer events work correctly in measuring and annotation modes */
-  &.measuring-mode, &.annotation-mode {
-    ::ng-deep astrobin-measuring-tool, ::ng-deep astrobin-annotation-tool {
+  &.measuring-mode,
+  &.annotation-mode {
+    ::ng-deep astrobin-measuring-tool,
+    ::ng-deep astrobin-annotation-tool {
       position: absolute;
       top: 0;
       left: 0;
@@ -1112,7 +1116,7 @@ $header-height: 63px;
   padding: 2px 4px;
   border-radius: 3px;
   font-size: 0.7rem;
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace; /* Fixed-width font */
+  font-family: "Consolas", "Monaco", "Courier New", monospace; /* Fixed-width font */
   pointer-events: none;
   max-width: 170px;
   overflow: hidden;

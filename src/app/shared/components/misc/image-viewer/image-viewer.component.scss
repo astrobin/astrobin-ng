@@ -789,8 +789,8 @@ $largeViewPortBreakpoint: 2561px;
 
         .mouse-hover-svg-overlay {
           position: absolute;
-          bottom: .5rem;
-          right: .5rem;
+          bottom: 0.5rem;
+          right: 0.5rem;
           opacity: 0;
           transition: opacity 0.3s;
           z-index: 1;

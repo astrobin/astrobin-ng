@@ -9,27 +9,31 @@
 </div>
 
 <div class="modal-body">
-  <p [innerHTML]="message | translate:messageClass" [ngClass]="messageClass" style="white-space: pre-line;"></p>
+  <p [innerHTML]="message | translate : messageClass" [ngClass]="messageClass" style="white-space: pre-line"></p>
 </div>
 
 <div class="modal-footer">
   <!-- Custom buttons if provided -->
   <ng-container *ngIf="buttons && buttons.length > 0">
-    <button *ngFor="let button of buttons"
+    <button
+      *ngFor="let button of buttons"
       (click)="executeButtonAction(button)"
       [class]="'btn ' + button.class"
       [class.loading]="loadingService.loading$ | async"
-      type="button">
+      type="button"
+    >
       {{ button.label | translate }}
     </button>
   </ng-container>
 
   <!-- Default close button if no custom buttons -->
-  <button *ngIf="!buttons || buttons.length === 0"
+  <button
+    *ngIf="!buttons || buttons.length === 0"
     (click)="modal.close()"
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-secondary"
-    type="button">
+    type="button"
+  >
     {{ "Close" | translate }}
   </button>
 </div>

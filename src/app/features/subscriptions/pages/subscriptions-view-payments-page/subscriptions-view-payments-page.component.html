@@ -14,7 +14,7 @@
   <tbody>
     <ng-container *ngIf="payments.length > 0; else noPayments">
       <tr *ngFor="let payment of payments">
-        <th scope="row">{{ payment.timestamp | localDate | timeago  }}</th>
+        <th scope="row">{{ payment.timestamp | localDate | timeago }}</th>
         <td>{{ payment.subscription_name }}</td>
         <td>{{ payment.amount }}</td>
         <td>"{{ payment.event }}"</td>

@@ -18,7 +18,7 @@
               <small>
                 <span class="username">{{ post.userDisplayName }}</span>
                 &middot;
-                <span class="created">{{ post.created | localDate | timeago  }}</span>
+                <span class="created">{{ post.created | localDate | timeago }}</span>
               </small>
             </div>
             <img *ngIf="post.userAvatar" [src]="post.userAvatar" [alt]="post.userDisplayName" />
