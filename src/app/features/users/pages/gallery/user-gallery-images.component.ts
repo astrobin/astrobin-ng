@@ -190,7 +190,7 @@ import { debounceTime, filter, map, switchMap, take, takeUntil, tap } from "rxjs
                   </td>
                   <td [attr.data-label]="'Published' | translate" class="no-wrap">
                     <abbr [attr.title]="image.published || image.uploaded | localDate">
-                      {{ image.published || image.uploaded | localDate | timeago  }}
+                      {{ image.published || image.uploaded | localDate | timeago }}
                     </abbr>
                   </td>
                   <td [attr.data-label]="'Views' | translate">{{ image.viewCount }}</td>

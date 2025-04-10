@@ -1,22 +1,23 @@
-import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
-import { MeasurementData, MeasuringToolComponent, SolutionMatrix } from "./measuring-tool.component";
-import { CookieService } from "ngx-cookie";
-import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
-import { TranslateService } from "@ngx-translate/core";
 import { ElementRef, PLATFORM_ID } from "@angular/core";
-import { MockBuilder, MockProvider } from "ng-mocks";
-import { SharedModule } from "@shared/shared.module";
+import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { of } from "rxjs";
-import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { TranslateService } from "@ngx-translate/core";
+import { SharedModule } from "@shared/shared.module";
+import { MockBuilder, MockProvider } from "ng-mocks";
+import { CookieService } from "ngx-cookie";
+import { of } from "rxjs";
+
+import { MeasurementData, MeasuringToolComponent, SolutionMatrix } from "./measuring-tool.component";
 
 describe("MeasuringToolComponent", () => {
   let component: MeasuringToolComponent;
   let fixture: ComponentFixture<MeasuringToolComponent>;
-  let cookieService: { get: jest.Mock, put: jest.Mock };
+  let cookieService: { get: jest.Mock; put: jest.Mock };
   let coordFormatterService: any;
   let modalService: any;
   let store: MockStore;
@@ -50,8 +51,8 @@ describe("MeasuringToolComponent", () => {
     modalService = {
       open: jest.fn().mockReturnValue({
         componentInstance: {
-          title: '',
-          message: '',
+          title: "",
+          message: "",
           buttons: []
         },
         result: Promise.resolve(true)
@@ -70,10 +71,12 @@ describe("MeasuringToolComponent", () => {
         provide: NgbModal,
         useValue: modalService
       })
-      .provide(MockProvider(TranslateService, {
-        get: jest.fn().mockReturnValue({ pipe: () => of("") }),
-        instant: jest.fn().mockImplementation(key => key)
-      }))
+      .provide(
+        MockProvider(TranslateService, {
+          get: jest.fn().mockReturnValue({ pipe: () => of("") }),
+          instant: jest.fn().mockImplementation(key => key)
+        })
+      )
       .provide(MockProvider(PLATFORM_ID, "browser"));
 
     fixture = TestBed.createComponent(MeasuringToolComponent);
@@ -96,11 +99,11 @@ describe("MeasuringToolComponent", () => {
     component.imageElement = new ElementRef(mockImageElement);
 
     // Mock the component's methods for calculating coordinates
-    jest.spyOn(component.astroUtilsService, 'calculateCoordinatesAtPoint').mockImplementation(() => {
+    jest.spyOn(component.astroUtilsService, "calculateCoordinatesAtPoint").mockImplementation(() => {
       return { ra: 10, dec: 20 };
     });
 
-    jest.spyOn(component.astroUtilsService, 'calculateAngularDistance').mockImplementation(() => {
+    jest.spyOn(component.astroUtilsService, "calculateAngularDistance").mockImplementation(() => {
       return 1; // 1 degree
     });
 
@@ -137,16 +140,24 @@ describe("MeasuringToolComponent", () => {
     component.measureEndPoint = { x: 200, y: 200, ra: 11, dec: 21 };
 
     // Mock the formatAstronomicalAngle method
-    jest.spyOn(component.astroUtilsService, 'formatAstronomicalAngle').mockImplementation((arcseconds) => {
-      if (arcseconds < 60) return `${arcseconds}″`;
-      if (arcseconds < 3600) return `${Math.floor(arcseconds/60)}′ ${arcseconds%60}″`;
-      return `${Math.floor(arcseconds/3600)}° ${Math.floor((arcseconds%3600)/60)}′ ${arcseconds%60}″`;
+    jest.spyOn(component.astroUtilsService, "formatAstronomicalAngle").mockImplementation(arcseconds => {
+      if (arcseconds < 60) {
+        return `${arcseconds}″`;
+      }
+      if (arcseconds < 3600) {
+        return `${Math.floor(arcseconds / 60)}′ ${arcseconds % 60}″`;
+      }
+      return `${Math.floor(arcseconds / 3600)}° ${Math.floor((arcseconds % 3600) / 60)}′ ${arcseconds % 60}″`;
     });
 
     // Mock formatAngularDistance to return different values based on the input
-    jest.spyOn(component, 'formatAngularDistance').mockImplementation((distance: number) => {
-      if (distance < 100) return "50″";
-      if (distance < 500) return "5′ 0″";
+    jest.spyOn(component, "formatAngularDistance").mockImplementation((distance: number) => {
+      if (distance < 100) {
+        return "50″";
+      }
+      if (distance < 500) {
+        return "5′ 0″";
+      }
       return "1° 0′ 0″";
     });
 
@@ -168,26 +179,28 @@ describe("MeasuringToolComponent", () => {
 
   it("should toggle circle and rectangle visualization", () => {
     // Add a test measurement to the array
-    component.previousMeasurements = [{
-      startX: 100,
-      startY: 100,
-      endX: 200,
-      endY: 200,
-      midX: 150,
-      midY: 150,
-      distance: "100px",
-      timestamp: Date.now(),
-      startRa: null,
-      startDec: null,
-      endRa: null,
-      endDec: null,
-      startLabelX: 0,
-      startLabelY: 0,
-      endLabelX: 0,
-      endLabelY: 0,
-      showCircle: false,
-      showRectangle: false
-    }];
+    component.previousMeasurements = [
+      {
+        startX: 100,
+        startY: 100,
+        endX: 200,
+        endY: 200,
+        midX: 150,
+        midY: 150,
+        distance: "100px",
+        timestamp: Date.now(),
+        startRa: null,
+        startDec: null,
+        endRa: null,
+        endDec: null,
+        startLabelX: 0,
+        startLabelY: 0,
+        endLabelX: 0,
+        endLabelY: 0,
+        showCircle: false,
+        showRectangle: false
+      }
+    ];
 
     // Mock the event with all required methods
     const mockEvent = {
@@ -222,39 +235,41 @@ describe("MeasuringToolComponent", () => {
 
   it("should clear all measurements", () => {
     // Add a test measurement to the array
-    component.previousMeasurements = [{
-      startX: 100,
-      startY: 100,
-      endX: 200,
-      endY: 200,
-      midX: 150,
-      midY: 150,
-      distance: "100px",
-      timestamp: Date.now(),
-      startRa: null,
-      startDec: null,
-      endRa: null,
-      endDec: null,
-      startLabelX: 0,
-      startLabelY: 0,
-      endLabelX: 0,
-      endLabelY: 0
-    }];
+    component.previousMeasurements = [
+      {
+        startX: 100,
+        startY: 100,
+        endX: 200,
+        endY: 200,
+        midX: 150,
+        midY: 150,
+        distance: "100px",
+        timestamp: Date.now(),
+        startRa: null,
+        startDec: null,
+        endRa: null,
+        endDec: null,
+        startLabelX: 0,
+        startLabelY: 0,
+        endLabelX: 0,
+        endLabelY: 0
+      }
+    ];
 
     // Directly mock the dialog behavior
     const modalService = TestBed.inject(NgbModal);
     // Use type assertion to treat the modalService.open as a mock function
     (modalService.open as jest.Mock).mockReturnValue({
       componentInstance: {
-        title: '',
-        message: '',
+        title: "",
+        message: "",
         buttons: []
       },
-      result: Promise.resolve('confirm')
+      result: Promise.resolve("confirm")
     });
 
     // Spy on the array clear method
-    jest.spyOn(component.previousMeasurements, 'splice').mockImplementation(() => {
+    jest.spyOn(component.previousMeasurements, "splice").mockImplementation(() => {
       component.previousMeasurements.length = 0;
       return [];
     });
@@ -314,16 +329,16 @@ describe("MeasuringToolComponent", () => {
     // Use type assertion to treat the modalService.open as a mock function
     (modalService.open as jest.Mock).mockReturnValue({
       componentInstance: {
-        title: '',
-        message: '',
+        title: "",
+        message: "",
         buttons: []
       },
-      result: Promise.resolve('confirm')
+      result: Promise.resolve("confirm")
     });
 
     // Mock the array splice method to simulate deletion
     const originalMeasurements = [...component.previousMeasurements];
-    jest.spyOn(component.previousMeasurements, 'splice').mockImplementation((index, count) => {
+    jest.spyOn(component.previousMeasurements, "splice").mockImplementation((index, count) => {
       const deleted = originalMeasurements.splice(index, count);
       // Replace the array contents with the modified original
       component.previousMeasurements.length = 0;
@@ -426,8 +441,8 @@ describe("MeasuringToolComponent", () => {
     jest.spyOn(component.measurementComplete, "emit");
 
     // Mock the _finalizeMeasurement method to set the measurement properly
-    const originalFinalize = component['_finalizeMeasurement'];
-    component['_finalizeMeasurement'] = jest.fn().mockImplementation(() => {
+    const originalFinalize = component["_finalizeMeasurement"];
+    component["_finalizeMeasurement"] = jest.fn().mockImplementation(() => {
       component.measureDistance = "141 px";
       component.measurementComplete.emit({
         startX: component.measureStartPoint.x,
@@ -483,7 +498,7 @@ describe("MeasuringToolComponent", () => {
     expect(component.measureEndPoint.y).toBe(250);
 
     // Call _finalizeMeasurement manually to simulate second click
-    component['_finalizeMeasurement']();
+    component["_finalizeMeasurement"]();
     expect(component.measureDistance).toBe("141 px");
 
     // Verify the measurement was saved and event emitted
@@ -491,7 +506,7 @@ describe("MeasuringToolComponent", () => {
     expect(component.measurementComplete.emit).toHaveBeenCalled();
 
     // Restore original method
-    component['_finalizeMeasurement'] = originalFinalize;
+    component["_finalizeMeasurement"] = originalFinalize;
   });
 
   it("should not place points when clicking outside the image", () => {
@@ -559,24 +574,26 @@ describe("MeasuringToolComponent", () => {
 
   it("should handle dragging of previous measurement points", fakeAsync(() => {
     // Add a previous measurement
-    component.previousMeasurements = [{
-      startX: 100,
-      startY: 100,
-      endX: 200,
-      endY: 200,
-      midX: 150,
-      midY: 150,
-      distance: "141 px",
-      timestamp: Date.now(),
-      startRa: null,
-      startDec: null,
-      endRa: null,
-      endDec: null,
-      startLabelX: 0,
-      startLabelY: 0,
-      endLabelX: 0,
-      endLabelY: 0
-    }];
+    component.previousMeasurements = [
+      {
+        startX: 100,
+        startY: 100,
+        endX: 200,
+        endY: 200,
+        midX: 150,
+        midY: 150,
+        distance: "141 px",
+        timestamp: Date.now(),
+        startRa: null,
+        startDec: null,
+        endRa: null,
+        endDec: null,
+        startLabelX: 0,
+        startLabelY: 0,
+        endLabelX: 0,
+        endLabelY: 0
+      }
+    ];
 
     // Create mock events
     const mousedownEvent = { clientX: 100, clientY: 100, preventDefault: jest.fn(), stopPropagation: jest.fn() };
@@ -609,25 +626,27 @@ describe("MeasuringToolComponent", () => {
 
   it("should handle dragging of shapes", fakeAsync(() => {
     // Add a previous measurement
-    component.previousMeasurements = [{
-      startX: 100,
-      startY: 100,
-      endX: 200,
-      endY: 200,
-      midX: 150,
-      midY: 150,
-      distance: "141 px",
-      timestamp: Date.now(),
-      startRa: null,
-      startDec: null,
-      endRa: null,
-      endDec: null,
-      startLabelX: 0,
-      startLabelY: 0,
-      endLabelX: 0,
-      endLabelY: 0,
-      showCircle: true
-    }];
+    component.previousMeasurements = [
+      {
+        startX: 100,
+        startY: 100,
+        endX: 200,
+        endY: 200,
+        midX: 150,
+        midY: 150,
+        distance: "141 px",
+        timestamp: Date.now(),
+        startRa: null,
+        startDec: null,
+        endRa: null,
+        endDec: null,
+        startLabelX: 0,
+        startLabelY: 0,
+        endLabelX: 0,
+        endLabelY: 0,
+        showCircle: true
+      }
+    ];
 
     // Create mock events
     const mousedownEvent = { clientX: 150, clientY: 150, preventDefault: jest.fn(), stopPropagation: jest.fn() };
@@ -716,8 +735,8 @@ describe("MeasuringToolComponent", () => {
     };
 
     // Mock the component methods that calculate celestial distances
-    jest.spyOn(component, 'getHorizontalCelestialDistance').mockImplementation(() => "1°");
-    jest.spyOn(component, 'getVerticalCelestialDistance').mockImplementation(() => "1°");
+    jest.spyOn(component, "getHorizontalCelestialDistance").mockImplementation(() => "1°");
+    jest.spyOn(component, "getVerticalCelestialDistance").mockImplementation(() => "1°");
 
     // Test horizontal distance
     const horizontalResult = component.getHorizontalCelestialDistance(100, 150, 300);
@@ -728,12 +747,12 @@ describe("MeasuringToolComponent", () => {
     expect(verticalResult).toBe("1°");
 
     // Reset mocks to verify fallback behavior
-    jest.spyOn(component, 'getHorizontalCelestialDistance').mockRestore();
-    jest.spyOn(component, 'getVerticalCelestialDistance').mockRestore();
+    jest.spyOn(component, "getHorizontalCelestialDistance").mockRestore();
+    jest.spyOn(component, "getVerticalCelestialDistance").mockRestore();
 
     // Create simple mocks for when there's no solution matrix
-    jest.spyOn(component, 'getHorizontalCelestialDistance').mockImplementation(() => "");
-    jest.spyOn(component, 'getVerticalCelestialDistance').mockImplementation(() => "");
+    jest.spyOn(component, "getHorizontalCelestialDistance").mockImplementation(() => "");
+    jest.spyOn(component, "getVerticalCelestialDistance").mockImplementation(() => "");
 
     // Test pixel fallback when no solution matrix
     component.advancedSolutionMatrix = null;
@@ -746,10 +765,10 @@ describe("MeasuringToolComponent", () => {
     component.measureEndPoint = { x: 200, y: 200, ra: null, dec: null };
 
     // Mock the label position calculation methods
-    jest.spyOn(component, 'calculateStartLabelX').mockReturnValue(100 - 21.21);
-    jest.spyOn(component, 'calculateStartLabelY').mockReturnValue(100 + 21.21);
-    jest.spyOn(component, 'calculateEndLabelX').mockReturnValue(200 - 21.21);
-    jest.spyOn(component, 'calculateEndLabelY').mockReturnValue(200 + 21.21);
+    jest.spyOn(component, "calculateStartLabelX").mockReturnValue(100 - 21.21);
+    jest.spyOn(component, "calculateStartLabelY").mockReturnValue(100 + 21.21);
+    jest.spyOn(component, "calculateEndLabelX").mockReturnValue(200 - 21.21);
+    jest.spyOn(component, "calculateEndLabelY").mockReturnValue(200 + 21.21);
 
     // Test start label positions (45 degree line)
     expect(component.calculateStartLabelX()).toBeCloseTo(100 - 21.21, 0);

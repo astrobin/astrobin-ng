@@ -1,25 +1,45 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Pipe, PipeTransform, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { environment } from "@env/environment";
-import { CookieService } from "ngx-cookie";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { debounceTime, filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { fromEvent, merge, Subject, Subscription } from "rxjs";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { isPlatformBrowser } from "@angular/common";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { AnnotationShape } from "./models/annotation.model";
-import { AnnotationService } from "./services/annotation.service";
-import { AnnotationShapeType } from "./models/annotation-shape-type.enum";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  NgZone,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  PLATFORM_ID,
+  Pipe,
+  PipeTransform,
+  SimpleChanges,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { MainState } from "@app/store/state";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { DeviceService } from "@core/services/device.service";
-import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { environment } from "@env/environment";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { CookieService } from "ngx-cookie";
+import { fromEvent, merge, Subject, Subscription } from "rxjs";
+import { debounceTime, filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
+
+import { AnnotationShapeType } from "./models/annotation-shape-type.enum";
+import { AnnotationShape } from "./models/annotation.model";
+import { AnnotationService } from "./services/annotation.service";
 
 // Shape data type used for pending shapes and form data
 interface ShapeData {
@@ -48,7 +68,7 @@ interface Annotation {
   type?: string;
   shape: {
     type: string;
-    points: Array<{x: number, y: number}>;
+    points: Array<{ x: number; y: number }>;
     color: string;
   };
   // Circle properties
@@ -72,11 +92,14 @@ interface Annotation {
   templateUrl: "./annotation-tool.component.html",
   styleUrls: ["./annotation-tool.component.scss"],
   host: {
-    '[class.has-saved-annotations]': 'hasSavedAnnotations',
-    '[class.has-url-annotations]': 'hasUrlAnnotations'
+    "[class.has-saved-annotations]": "hasSavedAnnotations",
+    "[class.has-url-annotations]": "hasUrlAnnotations"
   }
 })
-export class AnnotationToolComponent extends BaseComponentDirective implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+export class AnnotationToolComponent
+  extends BaseComponentDirective
+  implements OnInit, OnDestroy, AfterViewInit, OnChanges
+{
   // Make environment available to template
   environment = environment;
   @Input() active: boolean = false;
@@ -158,22 +181,22 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   private readonly RESIZE_DEBOUNCE_MS = 300; // Debounce time for window resize events
   private _isResizing = false; // Flag to track when window is being resized
   // Subjects for controlling drag operations
-  private _shapeDragStart$ = new Subject<{ event: MouseEvent, id: string }>();
+  private _shapeDragStart$ = new Subject<{ event: MouseEvent; id: string }>();
   private _shapeDragEnd$ = new Subject<MouseEvent>();
   // Note: Removed note drag subjects as they're no longer needed with the simplified model
   // Events streams
-  private _documentMouseMove$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<MouseEvent>(document, "mousemove", { passive: false }).pipe(takeUntil(this.destroyed$)) :
-    new Subject<MouseEvent>();
-  private _documentMouseUp$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<MouseEvent>(document, "mouseup", { passive: false }).pipe(takeUntil(this.destroyed$)) :
-    new Subject<MouseEvent>();
-  private _windowResize$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<UIEvent>(window, "resize", { passive: false }).pipe(
-      debounceTime(this.RESIZE_DEBOUNCE_MS),
-      takeUntil(this.destroyed$)
-    ) :
-    new Subject<UIEvent>();
+  private _documentMouseMove$ = isPlatformBrowser(this.platformId)
+    ? fromEvent<MouseEvent>(document, "mousemove", { passive: false }).pipe(takeUntil(this.destroyed$))
+    : new Subject<MouseEvent>();
+  private _documentMouseUp$ = isPlatformBrowser(this.platformId)
+    ? fromEvent<MouseEvent>(document, "mouseup", { passive: false }).pipe(takeUntil(this.destroyed$))
+    : new Subject<MouseEvent>();
+  private _windowResize$ = isPlatformBrowser(this.platformId)
+    ? fromEvent<UIEvent>(window, "resize", { passive: false }).pipe(
+        debounceTime(this.RESIZE_DEBOUNCE_MS),
+        takeUntil(this.destroyed$)
+      )
+    : new Subject<UIEvent>();
   private _dragInProgress = false;
 
   constructor(
@@ -207,14 +230,14 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       // Add or remove a class on the body element to hide UI elements
       if (this.isBrowser && typeof document !== "undefined") {
         if (this.active) {
-          document.body.classList.add('annotation-mode-active');
+          document.body.classList.add("annotation-mode-active");
 
           // If we're entering annotation mode and we have a revision with annotations, load them
-          if (this.revision && this.revision.annotations && this.revision.annotations.trim() !== '') {
+          if (this.revision && this.revision.annotations && this.revision.annotations.trim() !== "") {
             this.loadSavedAnnotations();
           }
         } else {
-          document.body.classList.remove('annotation-mode-active');
+          document.body.classList.remove("annotation-mode-active");
         }
       }
     }
@@ -225,7 +248,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
       // Force visibility and ensure the component knows we're in URL annotation mode
       if (this.elementRef && this.elementRef.nativeElement) {
-        this.elementRef.nativeElement.classList.add('has-url-annotations');
+        this.elementRef.nativeElement.classList.add("has-url-annotations");
       }
 
       // Force a change detection cycle
@@ -250,7 +273,12 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
         // If the revision has annotations and we're in annotation mode, load them
         // BUT only if there are no URL annotations (URL annotations should trump saved annotations)
-        if (this.active && this.revision.annotations && this.revision.annotations.trim() !== '' && !this.hasUrlAnnotations) {
+        if (
+          this.active &&
+          this.revision.annotations &&
+          this.revision.annotations.trim() !== "" &&
+          !this.hasUrlAnnotations
+        ) {
           // Load the annotations from the updated revision
           this.loadSavedAnnotations();
         }
@@ -270,9 +298,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this.annotationService.clearAllAnnotations();
 
     // Subscribe to annotation changes
-    this.annotationService.annotations$.pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(annotations => {
+    this.annotationService.annotations$.pipe(takeUntil(this.destroyed$)).subscribe(annotations => {
       // Consider any array (even empty) as a saved state
       this.hasSavedAnnotations = Array.isArray(annotations);
 
@@ -289,21 +315,19 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     this.colors = this.annotationService.getColors();
 
     // Initialize scroll stream now that isBrowser is set
-    this._windowScroll$ = this.isBrowser ?
-      fromEvent(window, 'scroll', { passive: true }).pipe(
-        takeUntil(this.destroyed$)
-      ) :
-      new Subject<Event>();
+    this._windowScroll$ = this.isBrowser
+      ? fromEvent(window, "scroll", { passive: true }).pipe(takeUntil(this.destroyed$))
+      : new Subject<Event>();
 
     // Create a stream for immediate resize start events (no debounce)
     if (this.isBrowser) {
-      fromEvent(window, 'resize').pipe(
-        takeUntil(this.destroyed$)
-      ).subscribe(() => {
-        // Set resizing flag as soon as resize starts
-        this._isResizing = true;
-        this.cdRef.markForCheck();
-      });
+      fromEvent(window, "resize")
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(() => {
+          // Set resizing flag as soon as resize starts
+          this._isResizing = true;
+          this.cdRef.markForCheck();
+        });
     }
 
     // Emit initial annotation mode active status
@@ -311,7 +335,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Initialize body class based on initial active state
     if (this.isBrowser && typeof document !== "undefined" && this.active) {
-      document.body.classList.add('annotation-mode-active');
+      document.body.classList.add("annotation-mode-active");
     }
 
     // Add listeners for touch events to improve dragging on mobile devices
@@ -330,12 +354,10 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     }
 
     // Subscribe to the annotations$ observable to keep local array in sync
-    this.annotationService.annotations$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(annotations => {
-        this.annotations = annotations;
-        this.cdRef.markForCheck();
-      });
+    this.annotationService.annotations$.pipe(takeUntil(this.destroyed$)).subscribe(annotations => {
+      this.annotations = annotations;
+      this.cdRef.markForCheck();
+    });
 
     // Check for shared annotations in the URL when component initializes
     if (this.isBrowser) {
@@ -358,7 +380,6 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
           setTimeout(() => {
             this.cdRef.markForCheck();
           }, 100);
-
         } catch (e) {
           // Handle error loading annotations from URL
           this.popNotificationsService.error(
@@ -388,28 +409,26 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     if (this.isBrowser) {
       // Set up document mouse move for annotation mode
       if (this.active) {
-        this._documentMouseMove$
-          .pipe(takeUntil(this.destroyed$))
-          .subscribe(event => this.handleMouseMove(event));
+        this._documentMouseMove$.pipe(takeUntil(this.destroyed$)).subscribe(event => this.handleMouseMove(event));
       }
 
       // Set up window resize handler
-      this._windowResize$
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(event => this.handleWindowResize(event));
+      this._windowResize$.pipe(takeUntil(this.destroyed$)).subscribe(event => this.handleWindowResize(event));
 
       // Set up shape drag handling
       this._shapeDragStart$
         .pipe(
           takeUntil(this.destroyed$),
-          tap(() => this._dragInProgress = true),
-          switchMap(({ event, id }) => this._documentMouseMove$.pipe(
-            takeUntil(merge(this._shapeDragEnd$, this.destroyed$)),
-            tap(moveEvent => {
-              moveEvent.preventDefault();
-              this.handleShapeDragMove(moveEvent, id);
-            })
-          ))
+          tap(() => (this._dragInProgress = true)),
+          switchMap(({ event, id }) =>
+            this._documentMouseMove$.pipe(
+              takeUntil(merge(this._shapeDragEnd$, this.destroyed$)),
+              tap(moveEvent => {
+                moveEvent.preventDefault();
+                this.handleShapeDragMove(moveEvent, id);
+              })
+            )
+          )
         )
         .subscribe();
 
@@ -469,10 +488,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       // Set up a resize observer on the image element to ensure annotations scale correctly
       this.windowRefService.utilsService.delay(500).subscribe(() => {
         // Verify we have a valid DOM Element for the ResizeObserver
-        if (this.imageElement &&
-            this.imageElement.nodeType === Node.ELEMENT_NODE &&
-            typeof this.imageElement.getBoundingClientRect === 'function') {
-
+        if (
+          this.imageElement &&
+          this.imageElement.nodeType === Node.ELEMENT_NODE &&
+          typeof this.imageElement.getBoundingClientRect === "function"
+        ) {
           try {
             const resizeObserver = new ResizeObserver(entries => {
               // Update the annotation container size when the image resizes
@@ -538,7 +558,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       document.removeEventListener("touchcancel", this.handleDocumentTouchEnd);
 
       // Make sure to remove the body class when component is destroyed
-      document.body.classList.remove('annotation-mode-active');
+      document.body.classList.remove("annotation-mode-active");
     }
 
     // Call parent class ngOnDestroy - this will also complete the destroyed$ subject
@@ -562,8 +582,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     if (this.isDrawing && this.activeAnnotation) {
       // Calculate distance moved for better UX
       const distMoved = Math.sqrt(
-        Math.pow(this.mouseX - this.dragStartX, 2) +
-        Math.pow(this.mouseY - this.dragStartY, 2)
+        Math.pow(this.mouseX - this.dragStartX, 2) + Math.pow(this.mouseY - this.dragStartY, 2)
       );
 
       // Only log occasionally to reduce console spam
@@ -640,8 +659,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       type: "rectangle",
       color: this.annotationService.getDefaultColor(),
       // Rectangle coordinates (centered with 100x100px equivalent size)
-      x: 50 - (widthPercent / 2),
-      y: 50 - (heightPercent / 2),
+      x: 50 - widthPercent / 2,
+      y: 50 - heightPercent / 2,
       width: widthPercent,
       height: heightPercent
     };
@@ -770,19 +789,19 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   // Arrow specific helpers
   getArrowStartX(ann: Annotation): number {
-    return (ann.startX - this.getAnnotationLeft(ann)) * 100 / this.getAnnotationWidth(ann);
+    return ((ann.startX - this.getAnnotationLeft(ann)) * 100) / this.getAnnotationWidth(ann);
   }
 
   getArrowStartY(ann: Annotation): number {
-    return (ann.startY - this.getAnnotationTop(ann)) * 100 / this.getAnnotationHeight(ann);
+    return ((ann.startY - this.getAnnotationTop(ann)) * 100) / this.getAnnotationHeight(ann);
   }
 
   getArrowEndX(ann: Annotation): number {
-    return (ann.endX - this.getAnnotationLeft(ann)) * 100 / this.getAnnotationWidth(ann);
+    return ((ann.endX - this.getAnnotationLeft(ann)) * 100) / this.getAnnotationWidth(ann);
   }
 
   getArrowEndY(ann: Annotation): number {
-    return (ann.endY - this.getAnnotationTop(ann)) * 100 / this.getAnnotationHeight(ann);
+    return ((ann.endY - this.getAnnotationTop(ann)) * 100) / this.getAnnotationHeight(ann);
   }
 
   getArrowLength(ann: Annotation): number {
@@ -794,7 +813,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   getArrowTransform(ann: Annotation): string {
     // Calculate angle of the arrow line
-    const angle = Math.atan2(ann.endY - ann.startY, ann.endX - ann.startX) * 180 / Math.PI;
+    const angle = (Math.atan2(ann.endY - ann.startY, ann.endX - ann.startX) * 180) / Math.PI;
     // Position the arrow line at the start point
     const startXPercent = this.getArrowStartX(ann);
     const startYPercent = this.getArrowStartY(ann);
@@ -811,7 +830,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
   getArrowHeadTransform(ann: Annotation): string {
     // Calculate angle of the arrow head
-    const angle = Math.atan2(ann.endY - ann.startY, ann.endX - ann.startX) * 180 / Math.PI;
+    const angle = (Math.atan2(ann.endY - ann.startY, ann.endX - ann.startX) * 180) / Math.PI;
     return `rotate(${angle}deg)`;
   }
 
@@ -993,7 +1012,10 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
       const title = annotation.title || this.translateService.instant("Untitled annotation");
       componentInstance.title = this.translateService.instant("Delete annotation");
-      componentInstance.message = this.translateService.instant("Are you sure you want to delete the annotation \"{{title}}\"?", { title });
+      componentInstance.message = this.translateService.instant(
+        'Are you sure you want to delete the annotation "{{title}}"?',
+        { title }
+      );
       componentInstance.showAreYouSure = false;
       componentInstance.confirmLabel = this.translateService.instant("Yes, delete");
 
@@ -1028,7 +1050,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     // Import dynamically to avoid circular dependency
     import("@shared/components/misc/information-dialog/information-dialog.component").then(module => {
       const modalRef = this.modalService.open(module.InformationDialogComponent, {
-        size: 'sm',
+        size: "sm",
         centered: true
       });
 
@@ -1048,7 +1070,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   /**
    * Start dragging an annotation or control point
    */
-  startDrag(event: MouseEvent, annotation: Annotation, mode: "whole" | "start" | "end" | "center" | "resize" | "tl" | "tr" | "bl" | "br" = "whole"): void {
+  startDrag(
+    event: MouseEvent,
+    annotation: Annotation,
+    mode: "whole" | "start" | "end" | "center" | "resize" | "tl" | "tr" | "bl" | "br" = "whole"
+  ): void {
     console.log("startDrag called", { annotation, mode });
 
     // Prevent default browser behavior
@@ -1119,7 +1145,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   /**
    * Start dragging an annotation or control point using touch
    */
-  startDragTouch(event: TouchEvent, annotation: Annotation, mode: "whole" | "start" | "end" | "center" | "resize" | "tl" | "tr" | "bl" | "br" = "whole"): void {
+  startDragTouch(
+    event: TouchEvent,
+    annotation: Annotation,
+    mode: "whole" | "start" | "end" | "center" | "resize" | "tl" | "tr" | "bl" | "br" = "whole"
+  ): void {
     console.log("startDragTouch called", { annotation, mode });
 
     // Prevent default browser behavior (scrolling, zooming)
@@ -1279,16 +1309,18 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     const id = this.currentlyDragging.id;
 
     // Commit final state to the annotation service based on shape type
-    if (this.currentlyDragging.type === 'rectangle') {
+    if (this.currentlyDragging.type === "rectangle") {
       // For rectangle, update with new position and size
       this.annotationService.updateAnnotationShape(id, {
         points: [
           { x: this.currentlyDragging.x, y: this.currentlyDragging.y },
-          { x: this.currentlyDragging.x + this.currentlyDragging.width,
-            y: this.currentlyDragging.y + this.currentlyDragging.height }
+          {
+            x: this.currentlyDragging.x + this.currentlyDragging.width,
+            y: this.currentlyDragging.y + this.currentlyDragging.height
+          }
         ]
       });
-    } else if (this.currentlyDragging.type === 'circle') {
+    } else if (this.currentlyDragging.type === "circle") {
       // For circle, update with new center and radius
       this.annotationService.updateAnnotationShape(id, {
         points: [
@@ -1296,7 +1328,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
           { x: this.currentlyDragging.cx + this.currentlyDragging.r, y: this.currentlyDragging.cy }
         ]
       });
-    } else if (this.currentlyDragging.type === 'arrow') {
+    } else if (this.currentlyDragging.type === "arrow") {
       // For arrow, update with new start and end points
       this.annotationService.updateAnnotationShape(id, {
         points: [
@@ -1426,16 +1458,18 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Commit final state to the annotation service based on shape type
     // (This is the same logic as in endDrag)
-    if (this.currentlyDragging.type === 'rectangle') {
+    if (this.currentlyDragging.type === "rectangle") {
       // For rectangle, update with new position and size
       this.annotationService.updateAnnotationShape(id, {
         points: [
           { x: this.currentlyDragging.x, y: this.currentlyDragging.y },
-          { x: this.currentlyDragging.x + this.currentlyDragging.width,
-            y: this.currentlyDragging.y + this.currentlyDragging.height }
+          {
+            x: this.currentlyDragging.x + this.currentlyDragging.width,
+            y: this.currentlyDragging.y + this.currentlyDragging.height
+          }
         ]
       });
-    } else if (this.currentlyDragging.type === 'circle') {
+    } else if (this.currentlyDragging.type === "circle") {
       // For circle, update with new center and radius
       this.annotationService.updateAnnotationShape(id, {
         points: [
@@ -1443,7 +1477,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
           { x: this.currentlyDragging.cx + this.currentlyDragging.r, y: this.currentlyDragging.cy }
         ]
       });
-    } else if (this.currentlyDragging.type === 'arrow') {
+    } else if (this.currentlyDragging.type === "arrow") {
       // For arrow, update with new start and end points
       this.annotationService.updateAnnotationShape(id, {
         points: [
@@ -1550,8 +1584,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     console.log("Container bounds for positioning:", containerBounds);
 
     // Calculate relative position within the container (as percentage)
-    const relX = Math.max(0, Math.min(100, (event.clientX - containerBounds.left) / containerBounds.width * 100));
-    const relY = Math.max(0, Math.min(100, (event.clientY - containerBounds.top) / containerBounds.height * 100));
+    const relX = Math.max(0, Math.min(100, ((event.clientX - containerBounds.left) / containerBounds.width) * 100));
+    const relY = Math.max(0, Math.min(100, ((event.clientY - containerBounds.top) / containerBounds.height) * 100));
 
     console.log("Calculated position:", { relX, relY });
 
@@ -1585,7 +1619,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
    */
   isFromSavedAnnotations(id: string): boolean {
     // If we have no revision or annotations, return false
-    if (!this.revision || !this.revision.annotations || this.revision.annotations.trim() === '') {
+    if (!this.revision || !this.revision.annotations || this.revision.annotations.trim() === "") {
       return false;
     }
 
@@ -1732,7 +1766,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         this.windowRefService.nativeWindow.history.replaceState({}, "", url.toString());
 
         // Remove the body class to show UI elements again
-                document.body.classList.remove('annotation-mode-active');
+        document.body.classList.remove("annotation-mode-active");
       } catch (e) {
         console.error("Error manipulating URL:", e);
       }
@@ -1793,11 +1827,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
     // Handle modal close (save)
     modalRef.result.then(
-      (result) => {
+      result => {
         // Modal was closed with save - create the shape and save form data
         this.createAnnotationFromPendingData(result);
       },
-      (reason) => {
+      reason => {
         // Modal was dismissed - clear pending shape
         console.log("Modal dismissed, canceling shape creation");
         this.pendingShapeData = null;
@@ -1846,11 +1880,11 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
       // Handle modal close (save)
       modalRef.result.then(
-        (result) => {
+        result => {
           // Modal was closed with save
           this.submitMessageForm(result);
         },
-        (reason) => {
+        reason => {
           // Modal was dismissed
           console.log("Modal dismissed");
         }
@@ -1873,9 +1907,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     if (form.valid) {
       // Get values safely from the form or model to avoid null errors
       const formResult = {
-        title: (form.get('title')?.value || this.messageModel.title || '').trim(),
-        message: (form.get('message')?.value || this.messageModel.message || '').trim(),
-        color: form.get('color')?.value || this.messageModel.color
+        title: (form.get("title")?.value || this.messageModel.title || "").trim(),
+        message: (form.get("message")?.value || this.messageModel.message || "").trim(),
+        color: form.get("color")?.value || this.messageModel.color
       };
 
       console.log("Closing modal with form data:", formResult);
@@ -1920,8 +1954,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     console.log("submitMessageForm received raw formData:", formData);
 
     // Safely extract values with proper null handling
-    const title = (formData?.title || '').trim();
-    const messageText = (formData?.message || '').trim();
+    const title = (formData?.title || "").trim();
+    const messageText = (formData?.message || "").trim();
     const color = formData?.color;
 
     console.log("Processing form with separate values:", {
@@ -1980,16 +2014,12 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
 
       if (!urlParam) {
         console.error("Failed to generate URL parameter for annotations");
-        this.popNotificationsService.error(
-          this.translateService.instant("Failed to generate shareable URL")
-        );
+        this.popNotificationsService.error(this.translateService.instant("Failed to generate shareable URL"));
         return;
       }
     } catch (error) {
       console.error("Error generating URL parameter:", error);
-      this.popNotificationsService.error(
-        this.translateService.instant("Failed to generate shareable URL")
-      );
+      this.popNotificationsService.error(this.translateService.instant("Failed to generate shareable URL"));
       return;
     }
 
@@ -2004,7 +2034,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       // Create a shareable URL without the fullscreen hash (but keep other parameters)
       const shareableUrl = new URL(currentUrl.toString());
       // Only remove the fullscreen hash if it exists, leave other hashes intact
-      if (shareableUrl.hash === '#fullscreen') {
+      if (shareableUrl.hash === "#fullscreen") {
         shareableUrl.hash = "";
       }
 
@@ -2014,7 +2044,7 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       // Show information dialog with explanation
       import("@shared/components/misc/information-dialog/information-dialog.component").then(module => {
         const modalRef = this.modalService.open(module.InformationDialogComponent, {
-          size: 'md',
+          size: "md",
           centered: true
         });
 
@@ -2030,15 +2060,19 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         );
 
         // Add note about link-based annotations
-        message += "\n\n" + this.translateService.instant(
-          "Heads up: The annotations aren't saved anywhere - only this exact link shows them."
-        );
+        message +=
+          "\n\n" +
+          this.translateService.instant(
+            "Heads up: The annotations aren't saved anywhere - only this exact link shows them."
+          );
 
         // Add extra note for image owners about saving
         if (this.isImageOwner && this.imageId) {
-          message += "\n\n" + this.translateService.instant(
-            "As the image owner, you can use the Save button to permanently add these annotations to the image."
-          );
+          message +=
+            "\n\n" +
+            this.translateService.instant(
+              "As the image owner, you can use the Save button to permanently add these annotations to the image."
+            );
         }
 
         // Set the message
@@ -2050,7 +2084,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
             label: this.translateService.instant("Copy Link"),
             class: "btn-primary",
             callback: () => {
-              this.windowRefService.copyToClipboard(shareableUrl.toString())
+              this.windowRefService
+                .copyToClipboard(shareableUrl.toString())
                 .then(success => {
                   if (success) {
                     this.popNotificationsService.success(
@@ -2171,15 +2206,17 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         // Update the annotations in the store
         import("@app/store/actions/image.actions").then(actions => {
           // Check if this is an image revision or an image
-          const isRevision = 'image' in this.revision;
+          const isRevision = "image" in this.revision;
           const imagePk = isRevision ? (this.revision as ImageRevisionInterface).image : this.revision.pk;
           const revisionLabel = isRevision ? (this.revision as ImageRevisionInterface).label : null;
 
-          this.store$.dispatch(new actions.UpdateAnnotations({
-            pk: imagePk,
-            revisionLabel: revisionLabel,
-            annotations: annotationsJson
-          }));
+          this.store$.dispatch(
+            new actions.UpdateAnnotations({
+              pk: imagePk,
+              revisionLabel: revisionLabel,
+              annotations: annotationsJson
+            })
+          );
         });
 
         // Reset success indicator after 1.5 seconds
@@ -2195,8 +2232,9 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         this.cdRef.markForCheck();
 
         this.popNotificationsService.error(
-          this.translateService.instant("Failed to save annotations: {{error}}",
-            { error: err.message || this.translateService.instant("Unknown error") })
+          this.translateService.instant("Failed to save annotations: {{error}}", {
+            error: err.message || this.translateService.instant("Unknown error")
+          })
         );
       }
     });
@@ -2213,8 +2251,10 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     }
 
     // Verify the element is a valid DOM element with getBoundingClientRect method
-    if (this.imageElement.nodeType !== Node.ELEMENT_NODE ||
-        typeof this.imageElement.getBoundingClientRect !== 'function') {
+    if (
+      this.imageElement.nodeType !== Node.ELEMENT_NODE ||
+      typeof this.imageElement.getBoundingClientRect !== "function"
+    ) {
       console.warn("Image element is not a valid DOM element or doesn't support getBoundingClientRect");
       return;
     }
@@ -2311,17 +2351,20 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     };
 
     // Based on shape type, create appropriate points
-    if (this.pendingShapeData.type === 'circle') {
+    if (this.pendingShapeData.type === "circle") {
       shape.points = [
         { x: this.pendingShapeData.cx, y: this.pendingShapeData.cy }, // center
         { x: this.pendingShapeData.cx + this.pendingShapeData.r, y: this.pendingShapeData.cy } // radius point
       ];
-    } else if (this.pendingShapeData.type === 'rectangle') {
+    } else if (this.pendingShapeData.type === "rectangle") {
       shape.points = [
         { x: this.pendingShapeData.x, y: this.pendingShapeData.y }, // top-left
-        { x: this.pendingShapeData.x + this.pendingShapeData.width, y: this.pendingShapeData.y + this.pendingShapeData.height } // bottom-right
+        {
+          x: this.pendingShapeData.x + this.pendingShapeData.width,
+          y: this.pendingShapeData.y + this.pendingShapeData.height
+        } // bottom-right
       ];
-    } else if (this.pendingShapeData.type === 'arrow') {
+    } else if (this.pendingShapeData.type === "arrow") {
       shape.points = [
         { x: this.pendingShapeData.startX, y: this.pendingShapeData.startY }, // start
         { x: this.pendingShapeData.endX, y: this.pendingShapeData.endY } // end
@@ -2329,8 +2372,8 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     }
 
     // Safely extract values with proper null handling
-    const title = (formData?.title || '').trim();
-    const message = (formData?.message || '').trim();
+    const title = (formData?.title || "").trim();
+    const message = (formData?.message || "").trim();
 
     console.log("Form data received:", {
       title: title,
@@ -2353,16 +2396,16 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     };
 
     // Add additional properties based on shape type
-    if (this.pendingShapeData.type === 'circle') {
+    if (this.pendingShapeData.type === "circle") {
       newAnnotation.cx = this.pendingShapeData.cx;
       newAnnotation.cy = this.pendingShapeData.cy;
       newAnnotation.r = this.pendingShapeData.r;
-    } else if (this.pendingShapeData.type === 'rectangle') {
+    } else if (this.pendingShapeData.type === "rectangle") {
       newAnnotation.x = this.pendingShapeData.x;
       newAnnotation.y = this.pendingShapeData.y;
       newAnnotation.width = this.pendingShapeData.width;
       newAnnotation.height = this.pendingShapeData.height;
-    } else if (this.pendingShapeData.type === 'arrow') {
+    } else if (this.pendingShapeData.type === "arrow") {
       newAnnotation.startX = this.pendingShapeData.startX;
       newAnnotation.startY = this.pendingShapeData.startY;
       newAnnotation.endX = this.pendingShapeData.endX;
@@ -2393,11 +2436,12 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
     }
 
     // Use RxJS fromEvent for the image load event if it's an HTMLImageElement
-    if (this.isBrowser &&
-        this.imageElement instanceof HTMLImageElement &&
-        typeof this.imageElement.addEventListener === 'function') {
-
-      this._imageLoadSubscription = fromEvent(this.imageElement, 'load')
+    if (
+      this.isBrowser &&
+      this.imageElement instanceof HTMLImageElement &&
+      typeof this.imageElement.addEventListener === "function"
+    ) {
+      this._imageLoadSubscription = fromEvent(this.imageElement, "load")
         .pipe(takeUntil(this.destroyed$))
         .subscribe(() => {
           console.log("Image loaded (RxJS), updating annotation container");
@@ -2419,7 +2463,12 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   /**
    * Handle rectangle dragging and resizing
    */
-  private handleRectangleDrag(deltaXPercent: number, deltaYPercent: number, currentXPercent: number, currentYPercent: number): void {
+  private handleRectangleDrag(
+    deltaXPercent: number,
+    deltaYPercent: number,
+    currentXPercent: number,
+    currentYPercent: number
+  ): void {
     // First, get the original rectangle dimensions and position
     const originalLeft = this.dragStartShapeX;
     const originalTop = this.dragStartShapeY;
@@ -2518,7 +2567,12 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   /**
    * Handle circle dragging and resizing
    */
-  private handleCircleDrag(deltaXPercent: number, deltaYPercent: number, currentXPercent: number, currentYPercent: number): void {
+  private handleCircleDrag(
+    deltaXPercent: number,
+    deltaYPercent: number,
+    currentXPercent: number,
+    currentYPercent: number
+  ): void {
     if (this.dragMode === "whole" || this.dragMode === "center") {
       // Calculate new center position
       let newCx = this.dragStartShapeX + deltaXPercent;
@@ -2558,21 +2612,18 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       const radiusDelta = -deltaYPercent; // Negative because moving up increases radius
 
       // Calculate the new radius by adding the delta to the starting radius
-      let newRadius = startRadius + radiusDelta;
+      const newRadius = startRadius + radiusDelta;
 
       // Calculate maximum allowed radius based on distance to image edges
       const maxDistanceToEdge = Math.min(
-        cx,                 // Distance to left edge
-        100 - cx,           // Distance to right edge
-        cy,                 // Distance to top edge
-        100 - cy            // Distance to bottom edge
+        cx, // Distance to left edge
+        100 - cx, // Distance to right edge
+        cy, // Distance to top edge
+        100 - cy // Distance to bottom edge
       );
 
       // Set the radius, but constrained by both min size and image boundaries
-      this.currentlyDragging.r = Math.min(
-        maxDistanceToEdge,
-        Math.max(this.MIN_RADIUS_PERCENT, newRadius)
-      );
+      this.currentlyDragging.r = Math.min(maxDistanceToEdge, Math.max(this.MIN_RADIUS_PERCENT, newRadius));
 
       console.log("Circle resize:", {
         center: { x: cx, y: cy },
@@ -2590,7 +2641,12 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
   /**
    * Handle arrow dragging and control points
    */
-  private handleArrowDrag(deltaXPercent: number, deltaYPercent: number, currentXPercent: number, currentYPercent: number): void {
+  private handleArrowDrag(
+    deltaXPercent: number,
+    deltaYPercent: number,
+    currentXPercent: number,
+    currentYPercent: number
+  ): void {
     if (this.dragMode === "whole") {
       // Calculate new positions
       let newStartX = this.dragStartShapeX + deltaXPercent;
@@ -2599,22 +2655,45 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
       let newEndY = this.dragStartShapeHeight + deltaYPercent;
 
       // Check if any point is outside the image bounds
-      if (newStartX < 0 || newStartX > 100 || newEndX < 0 || newEndX > 100 ||
-          newStartY < 0 || newStartY > 100 || newEndY < 0 || newEndY > 100) {
-
+      if (
+        newStartX < 0 ||
+        newStartX > 100 ||
+        newEndX < 0 ||
+        newEndX > 100 ||
+        newStartY < 0 ||
+        newStartY > 100 ||
+        newEndY < 0 ||
+        newEndY > 100
+      ) {
         // Calculate how much to adjust to keep within bounds
         let adjustX = 0;
         let adjustY = 0;
 
-        if (newStartX < 0) adjustX = Math.max(adjustX, -newStartX);
-        if (newEndX < 0) adjustX = Math.max(adjustX, -newEndX);
-        if (newStartX > 100) adjustX = Math.min(adjustX, 100 - newStartX);
-        if (newEndX > 100) adjustX = Math.min(adjustX, 100 - newEndX);
+        if (newStartX < 0) {
+          adjustX = Math.max(adjustX, -newStartX);
+        }
+        if (newEndX < 0) {
+          adjustX = Math.max(adjustX, -newEndX);
+        }
+        if (newStartX > 100) {
+          adjustX = Math.min(adjustX, 100 - newStartX);
+        }
+        if (newEndX > 100) {
+          adjustX = Math.min(adjustX, 100 - newEndX);
+        }
 
-        if (newStartY < 0) adjustY = Math.max(adjustY, -newStartY);
-        if (newEndY < 0) adjustY = Math.max(adjustY, -newEndY);
-        if (newStartY > 100) adjustY = Math.min(adjustY, 100 - newStartY);
-        if (newEndY > 100) adjustY = Math.min(adjustY, 100 - newEndY);
+        if (newStartY < 0) {
+          adjustY = Math.max(adjustY, -newStartY);
+        }
+        if (newEndY < 0) {
+          adjustY = Math.max(adjustY, -newEndY);
+        }
+        if (newStartY > 100) {
+          adjustY = Math.min(adjustY, 100 - newStartY);
+        }
+        if (newEndY > 100) {
+          adjustY = Math.min(adjustY, 100 - newEndY);
+        }
 
         // Apply adjustments
         newStartX += adjustX;
@@ -2655,15 +2734,15 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         if (this.activeAnnotation.shape.points.length === 0) {
           // If no points, add the start point first
           this.annotationService.updateAnnotationShape(this.activeAnnotation.id, {
-            points: [{ x: relX, y: relY }, { x: relX, y: relY }]
+            points: [
+              { x: relX, y: relY },
+              { x: relX, y: relY }
+            ]
           });
         } else {
           // Otherwise, update the end point
           this.annotationService.updateAnnotationShape(this.activeAnnotation.id, {
-            points: [
-              this.activeAnnotation.shape.points[0],
-              { x: relX, y: relY }
-            ]
+            points: [this.activeAnnotation.shape.points[0], { x: relX, y: relY }]
           });
         }
         break;
@@ -2673,15 +2752,15 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         if (this.activeAnnotation.shape.points.length === 0) {
           // If no points, add both start and end points as the same
           this.annotationService.updateAnnotationShape(this.activeAnnotation.id, {
-            points: [{ x: relX, y: relY }, { x: relX, y: relY }]
+            points: [
+              { x: relX, y: relY },
+              { x: relX, y: relY }
+            ]
           });
         } else {
           // Otherwise, update just the end point
           this.annotationService.updateAnnotationShape(this.activeAnnotation.id, {
-            points: [
-              this.activeAnnotation.shape.points[0],
-              { x: relX, y: relY }
-            ]
+            points: [this.activeAnnotation.shape.points[0], { x: relX, y: relY }]
           });
         }
         break;
@@ -2691,15 +2770,15 @@ export class AnnotationToolComponent extends BaseComponentDirective implements O
         if (this.activeAnnotation.shape.points.length === 0) {
           // If no points, add both center and radius point as the same
           this.annotationService.updateAnnotationShape(this.activeAnnotation.id, {
-            points: [{ x: relX, y: relY }, { x: relX, y: relY }]
+            points: [
+              { x: relX, y: relY },
+              { x: relX, y: relY }
+            ]
           });
         } else {
           // Otherwise, update just the radius point
           this.annotationService.updateAnnotationShape(this.activeAnnotation.id, {
-            points: [
-              this.activeAnnotation.shape.points[0],
-              { x: relX, y: relY }
-            ]
+            points: [this.activeAnnotation.shape.points[0], { x: relX, y: relY }]
           });
         }
         break;

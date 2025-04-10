@@ -56,7 +56,7 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
               const errorType = isTimeoutError ? "Timeout" : "Network error";
               console.log(
                 `${errorType}. Timeout was ${timeoutMs}ms. ` +
-                `Retrying  ${req.url} in ${retryDelay}ms, attempt ${attempt + 1} of ${maxAttempts - 1}`
+                  `Retrying  ${req.url} in ${retryDelay}ms, attempt ${attempt + 1} of ${maxAttempts - 1}`
               );
 
               return timer(retryDelay).pipe(mergeMap(() => attemptRequest(attempt + 1)));

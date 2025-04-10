@@ -1,3 +1,4 @@
+import { isPlatformBrowser } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -19,7 +20,6 @@ import { DeviceService } from "@core/services/device.service";
 import { ImageService } from "@core/services/image/image.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
-import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-image-viewer-additional-buttons",

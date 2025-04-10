@@ -1,5 +1,6 @@
-import { Injectable, Inject, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
+import { Injectable, Inject, PLATFORM_ID } from "@angular/core";
+
 import { CoordinatesFormatterService } from "../coordinates-formatter.service";
 
 export interface SolutionMatrix {
@@ -88,15 +89,10 @@ export class AstroUtilsService {
       });
 
       // Use the shared service to calculate raw coordinates
-      const result = this.coordinatesFormatter.calculateRawCoordinates(
-        syntheticEvent,
-        imageElement,
-        solutionMatrix,
-        {
-          useClientCoords: true,
-          naturalWidth: (imageElement as HTMLImageElement).naturalWidth
-        }
-      );
+      const result = this.coordinatesFormatter.calculateRawCoordinates(syntheticEvent, imageElement, solutionMatrix, {
+        useClientCoords: true,
+        naturalWidth: (imageElement as HTMLImageElement).naturalWidth
+      });
 
       if (!result || !result.coordinates) {
         return null;
@@ -107,10 +103,10 @@ export class AstroUtilsService {
       const decData = result.coordinates.dec;
 
       // Convert HMS to decimal hours
-      const raDecimal = raData.hours + (raData.minutes / 60) + (raData.seconds / 3600);
+      const raDecimal = raData.hours + raData.minutes / 60 + raData.seconds / 3600;
 
       // Convert DMS to decimal degrees
-      const decDecimal = decData.sign * (decData.degrees + (decData.minutes / 60) + (decData.seconds / 3600));
+      const decDecimal = decData.sign * (decData.degrees + decData.minutes / 60 + decData.seconds / 3600);
 
       return {
         ra: raDecimal,
@@ -127,21 +123,21 @@ export class AstroUtilsService {
    */
   calculateAngularDistance(ra1: number, dec1: number, ra2: number, dec2: number): number {
     // Convert to radians
-    const ra1Rad = ra1 * Math.PI / 12; // RA is in hours (0-24), so divide by 12 to get to range 0-2π
-    const dec1Rad = dec1 * Math.PI / 180;
-    const ra2Rad = ra2 * Math.PI / 12;
-    const dec2Rad = dec2 * Math.PI / 180;
+    const ra1Rad = (ra1 * Math.PI) / 12; // RA is in hours (0-24), so divide by 12 to get to range 0-2π
+    const dec1Rad = (dec1 * Math.PI) / 180;
+    const ra2Rad = (ra2 * Math.PI) / 12;
+    const dec2Rad = (dec2 * Math.PI) / 180;
 
     // Use the haversine formula for great circle distance
     const dra = ra2Rad - ra1Rad;
     const ddec = dec2Rad - dec1Rad;
-    const a = Math.sin(ddec / 2) * Math.sin(ddec / 2) +
-      Math.cos(dec1Rad) * Math.cos(dec2Rad) *
-      Math.sin(dra / 2) * Math.sin(dra / 2);
+    const a =
+      Math.sin(ddec / 2) * Math.sin(ddec / 2) +
+      Math.cos(dec1Rad) * Math.cos(dec2Rad) * Math.sin(dra / 2) * Math.sin(dra / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     // Convert to degrees
-    return c * 180 / Math.PI;
+    return (c * 180) / Math.PI;
   }
 
   /**
@@ -260,11 +256,11 @@ export class AstroUtilsService {
     targetDec: number,
     solutionMatrix: SolutionMatrix,
     imageElement: HTMLElement,
-    searchArea: { minX: number, minY: number, maxX: number, maxY: number },
+    searchArea: { minX: number; minY: number; maxX: number; maxY: number },
     maxIterations: number,
     targetPrecision: number,
     currentIteration: number = 0
-  ): { x: number, y: number, iterations: number } | null {
+  ): { x: number; y: number; iterations: number } | null {
     try {
       const imageRect = imageElement.getBoundingClientRect();
 
@@ -293,25 +289,29 @@ export class AstroUtilsService {
 
       // Define the four quadrants
       const quadrants = [
-        { // Top-left
+        {
+          // Top-left
           minX: searchArea.minX,
           minY: searchArea.minY,
           maxX: midX,
           maxY: midY
         },
-        { // Top-right
+        {
+          // Top-right
           minX: midX,
           minY: searchArea.minY,
           maxX: searchArea.maxX,
           maxY: midY
         },
-        { // Bottom-left
+        {
+          // Bottom-left
           minX: searchArea.minX,
           minY: midY,
           maxX: midX,
           maxY: searchArea.maxY
         },
-        { // Bottom-right
+        {
+          // Bottom-right
           minX: midX,
           minY: midY,
           maxX: searchArea.maxX,
@@ -321,8 +321,8 @@ export class AstroUtilsService {
 
       // Calculate celestial coordinates at the center of each quadrant
       const quadrantCoordinates = quadrants.map(quadrant => {
-        const centerX = imageRect.left + ((quadrant.minX + quadrant.maxX) / 2);
-        const centerY = imageRect.top + ((quadrant.minY + quadrant.maxY) / 2);
+        const centerX = imageRect.left + (quadrant.minX + quadrant.maxX) / 2;
+        const centerY = imageRect.top + (quadrant.minY + quadrant.maxY) / 2;
         const coordinates = this.calculateCoordinatesAtPoint(centerX, centerY, solutionMatrix, imageElement);
         return {
           quadrant,

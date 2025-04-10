@@ -1,4 +1,5 @@
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
+import { LoadSolutionMatrixFailure, LoadSolutionMatrixSuccess } from "@app/store/actions/solution.actions";
 import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
 import { CameraInterface } from "@core/interfaces/camera.interface";
 import { CollectionInterface } from "@core/interfaces/collection.interface";
@@ -14,7 +15,6 @@ import { TelescopeInterface } from "@core/interfaces/telescope.interface";
 import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
-import { LoadSolutionMatrixSuccess } from "@app/store/actions/solution.actions";
 
 export interface AppState {
   // Weather the app has been initialized.

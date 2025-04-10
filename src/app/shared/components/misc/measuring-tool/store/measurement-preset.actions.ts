@@ -1,4 +1,5 @@
 import { Action } from "@ngrx/store";
+
 import { MeasurementPresetInterface } from "../measurement-preset.interface";
 
 export enum MeasurementPresetActionTypes {
@@ -6,20 +7,20 @@ export enum MeasurementPresetActionTypes {
   TOGGLE_SAVED_MEASUREMENTS = "[Measurement Tool] Toggle Saved Measurements",
   SHOW_SAVED_MEASUREMENTS = "[Measurement Tool] Show Saved Measurements",
   HIDE_SAVED_MEASUREMENTS = "[Measurement Tool] Hide Saved Measurements",
-  
+
   // Measurement presets
   LOAD_MEASUREMENT_PRESETS = "[Measurement Tool] Load Measurement Presets",
   LOAD_MEASUREMENT_PRESETS_SUCCESS = "[Measurement Tool] Load Measurement Presets Success",
   LOAD_MEASUREMENT_PRESETS_FAILURE = "[Measurement Tool] Load Measurement Presets Failure",
-  
+
   CREATE_MEASUREMENT_PRESET = "[Measurement Tool] Create Measurement Preset",
   CREATE_MEASUREMENT_PRESET_SUCCESS = "[Measurement Tool] Create Measurement Preset Success",
   CREATE_MEASUREMENT_PRESET_FAILURE = "[Measurement Tool] Create Measurement Preset Failure",
-  
+
   DELETE_MEASUREMENT_PRESET = "[Measurement Tool] Delete Measurement Preset",
   DELETE_MEASUREMENT_PRESET_SUCCESS = "[Measurement Tool] Delete Measurement Preset Success",
   DELETE_MEASUREMENT_PRESET_FAILURE = "[Measurement Tool] Delete Measurement Preset Failure",
-  
+
   SELECT_MEASUREMENT_PRESET = "[Measurement Tool] Select Measurement Preset"
 }
 
@@ -87,7 +88,7 @@ export class SelectMeasurementPreset implements Action {
   constructor(public payload: { preset: MeasurementPresetInterface }) {}
 }
 
-export type MeasurementPresetActions = 
+export type MeasurementPresetActions =
   | ToggleSavedMeasurements
   | ShowSavedMeasurements
   | HideSavedMeasurements

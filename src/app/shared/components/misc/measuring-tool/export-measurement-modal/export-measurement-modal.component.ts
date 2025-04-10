@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
 
 export enum CoordinateFormat {
-  SEXAGESIMAL = 'sexagesimal',
-  DECIMAL = 'decimal',
-  HMS_DMS = 'hms_dms'
+  SEXAGESIMAL = "sexagesimal",
+  DECIMAL = "decimal",
+  HMS_DMS = "hms_dms"
 }
 
 /**
@@ -59,18 +59,18 @@ export class ExportMeasurementModalComponent implements OnInit {
   // Export format variables
   formats = CoordinateFormat;
   selectedFormat: CoordinateFormat = CoordinateFormat.SEXAGESIMAL;
-  
+
   // UI state
   copiedField: string = null;
 
   // Formatted coordinate data
   formattedData: FormattedCoordinateData = {
-    centerCoordinates: '',
+    centerCoordinates: "",
     corners: {
-      topLeft: '',
-      topRight: '',
-      bottomLeft: '',
-      bottomRight: ''
+      topLeft: "",
+      topRight: "",
+      bottomLeft: "",
+      bottomRight: ""
     }
   };
 
@@ -101,17 +101,13 @@ export class ExportMeasurementModalComponent implements OnInit {
    */
   private formatSingleCoordinate(point: CoordinatePoint): string {
     if (!point) {
-      return 'N/A';
+      return "N/A";
     }
 
     if (this.hasRawCoordinates(point)) {
-      return this.coordinatesFormatter.formatCoordinatesVerbose(
-        point.ra,
-        point.dec,
-        this.selectedFormat
-      );
+      return this.coordinatesFormatter.formatCoordinatesVerbose(point.ra, point.dec, this.selectedFormat);
     } else {
-      return point.text || 'N/A';
+      return point.text || "N/A";
     }
   }
 
@@ -119,19 +115,19 @@ export class ExportMeasurementModalComponent implements OnInit {
    * Checks if coordinate data has raw RA/Dec values for formatting
    */
   private hasRawCoordinates(data: CoordinatePoint): boolean {
-    return data && typeof data.ra === 'number' && typeof data.dec === 'number';
+    return data && typeof data.ra === "number" && typeof data.dec === "number";
   }
 
   /**
    * Copy coordinate text to clipboard
    */
   async copyToClipboard(text: string, field: string): Promise<void> {
-    if (!text || text === 'N/A') {
+    if (!text || text === "N/A") {
       return;
     }
-    
+
     const result = await this.windowRefService.copyToClipboard(text);
-    
+
     if (result) {
       this.copiedField = field;
       setTimeout(() => {
@@ -159,6 +155,6 @@ export class ExportMeasurementModalComponent implements OnInit {
    * Determines if a field value has content to display
    */
   hasContent(value: string): boolean {
-    return value && value !== 'N/A';
+    return value && value !== "N/A";
   }
 }

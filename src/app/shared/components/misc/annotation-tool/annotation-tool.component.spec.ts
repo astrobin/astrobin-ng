@@ -1,28 +1,29 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { AnnotationToolComponent } from "./annotation-tool.component";
-import { CookieService } from "ngx-cookie";
-import { TranslateService } from "@ngx-translate/core";
 import { PLATFORM_ID } from "@angular/core";
-import { MockBuilder, MockProvider, MockReset } from "ng-mocks";
-import { SharedModule } from "@shared/shared.module";
+import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { BehaviorSubject, of } from "rxjs";
-import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Store } from "@ngrx/store";
-import { AnnotationService } from "./services/annotation.service";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { DeviceService } from "@core/services/device.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { DeviceService } from "@core/services/device.service";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { TranslateService } from "@ngx-translate/core";
+import { SharedModule } from "@shared/shared.module";
+import { MockBuilder, MockProvider, MockReset } from "ng-mocks";
+import { CookieService } from "ngx-cookie";
+import { BehaviorSubject, of } from "rxjs";
+
+import { AnnotationToolComponent } from "./annotation-tool.component";
 import { AnnotationShapeType } from "./models/annotation-shape-type.enum";
+import { AnnotationService } from "./services/annotation.service";
 
 describe("AnnotationToolComponent", () => {
   let component: AnnotationToolComponent;
   let fixture: ComponentFixture<AnnotationToolComponent>;
-  let cookieService: { get: jest.Mock, put: jest.Mock };
+  let cookieService: { get: jest.Mock; put: jest.Mock };
   let annotationService: any;
   let modalService: any;
   let utilsService: any;
@@ -109,7 +110,7 @@ describe("AnnotationToolComponent", () => {
         replaceState: jest.fn()
       },
       URL: URL, // Provide the real URL constructor
-      ResizeObserver: function() {
+      ResizeObserver: function () {
         return {
           observe: jest.fn(),
           unobserve: jest.fn(),
@@ -174,10 +175,12 @@ describe("AnnotationToolComponent", () => {
         provide: NgbModal,
         useValue: modalService
       })
-      .provide(MockProvider(TranslateService, {
-        get: jest.fn().mockReturnValue({ pipe: () => of("") }),
-        instant: jest.fn().mockImplementation(key => key)
-      }))
+      .provide(
+        MockProvider(TranslateService, {
+          get: jest.fn().mockReturnValue({ pipe: () => of("") }),
+          instant: jest.fn().mockImplementation(key => key)
+        })
+      )
       .provide(MockProvider(PLATFORM_ID, "browser"));
 
     fixture = TestBed.createComponent(AnnotationToolComponent);
@@ -203,10 +206,8 @@ describe("AnnotationToolComponent", () => {
     component.imageElement = mockImageElement as HTMLElement;
 
     // Mock key methods to isolate tests
-    jest.spyOn(component, "ngOnInit").mockImplementation(() => {
-    });
-    jest.spyOn(component, "ngAfterViewInit").mockImplementation(() => {
-    });
+    jest.spyOn(component, "ngOnInit").mockImplementation(() => {});
+    jest.spyOn(component, "ngAfterViewInit").mockImplementation(() => {});
 
     // Mock direct methods for action tests
     component.makeCircle = jest.fn().mockImplementation(() => {
@@ -249,7 +250,7 @@ describe("AnnotationToolComponent", () => {
     });
 
     // Stub original method implementations
-    component.confirmDeleteAnnotation = jest.fn().mockImplementation((id) => {
+    component.confirmDeleteAnnotation = jest.fn().mockImplementation(id => {
       // Remove annotation from array
       component.annotations = component.annotations.filter(a => a.id !== id);
       utilsService.setUrlParam("annotations", JSON.stringify(component.annotations));
@@ -429,21 +430,19 @@ describe("AnnotationToolComponent", () => {
     component.saveAnnotations = jest.fn().mockImplementation(() => {
       component.savingAnnotations = true;
 
-      imageApiService.saveAnnotations(
-        component.imageId,
-        component.revision.pk,
-        JSON.stringify(component.annotations)
-      ).subscribe({
-        next: () => {
-          component.savingAnnotations = false;
-          component.saveSuccess = true;
-          popNotificationsService.success("Annotations saved successfully");
-        },
-        error: () => {
-          component.savingAnnotations = false;
-          component.saveSuccess = false;
-        }
-      });
+      imageApiService
+        .saveAnnotations(component.imageId, component.revision.pk, JSON.stringify(component.annotations))
+        .subscribe({
+          next: () => {
+            component.savingAnnotations = false;
+            component.saveSuccess = true;
+            popNotificationsService.success("Annotations saved successfully");
+          },
+          error: () => {
+            component.savingAnnotations = false;
+            component.saveSuccess = false;
+          }
+        });
     });
 
     // Mock successful save

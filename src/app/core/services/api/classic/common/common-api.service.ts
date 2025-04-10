@@ -20,6 +20,7 @@ import { LoadingService } from "@core/services/loading.service";
 import { environment } from "@env/environment";
 import { Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
+
 import { BaseClassicApiService } from "../base-classic-api.service";
 
 export interface FollowersInterface {

@@ -28,19 +28,19 @@ export function measurementPresetReducer(
         ...state,
         showSavedMeasurements: !state.showSavedMeasurements
       };
-      
+
     case MeasurementPresetActionTypes.SHOW_SAVED_MEASUREMENTS:
       return {
         ...state,
         showSavedMeasurements: true
       };
-      
+
     case MeasurementPresetActionTypes.HIDE_SAVED_MEASUREMENTS:
       return {
         ...state,
         showSavedMeasurements: false
       };
-    
+
     // Load measurement presets
     case MeasurementPresetActionTypes.LOAD_MEASUREMENT_PRESETS:
       return {
@@ -48,7 +48,7 @@ export function measurementPresetReducer(
         loading: true,
         error: null
       };
-      
+
     case MeasurementPresetActionTypes.LOAD_MEASUREMENT_PRESETS_SUCCESS:
       return {
         ...state,
@@ -56,14 +56,14 @@ export function measurementPresetReducer(
         loading: false,
         error: null
       };
-      
+
     case MeasurementPresetActionTypes.LOAD_MEASUREMENT_PRESETS_FAILURE:
       return {
         ...state,
         loading: false,
         error: action.payload.error
       };
-    
+
     // Create measurement preset
     case MeasurementPresetActionTypes.CREATE_MEASUREMENT_PRESET:
       return {
@@ -71,18 +71,16 @@ export function measurementPresetReducer(
         loading: true,
         error: null
       };
-      
+
     case MeasurementPresetActionTypes.CREATE_MEASUREMENT_PRESET_SUCCESS:
       // Check if a preset with the same name already exists
-      const existingPresetIndex = state.presets.findIndex(
-        preset => preset.name === action.payload.preset.name
-      );
-      
+      const existingPresetIndex = state.presets.findIndex(preset => preset.name === action.payload.preset.name);
+
       // If preset with same name exists, update it instead of adding a new one
       if (existingPresetIndex !== -1) {
         const updatedPresets = [...state.presets];
         updatedPresets[existingPresetIndex] = action.payload.preset;
-        
+
         return {
           ...state,
           presets: updatedPresets,
@@ -98,14 +96,14 @@ export function measurementPresetReducer(
           error: null
         };
       }
-      
+
     case MeasurementPresetActionTypes.CREATE_MEASUREMENT_PRESET_FAILURE:
       return {
         ...state,
         loading: false,
         error: action.payload.error
       };
-    
+
     // Delete measurement preset
     case MeasurementPresetActionTypes.DELETE_MEASUREMENT_PRESET:
       return {
@@ -113,7 +111,7 @@ export function measurementPresetReducer(
         loading: true,
         error: null
       };
-      
+
     case MeasurementPresetActionTypes.DELETE_MEASUREMENT_PRESET_SUCCESS:
       return {
         ...state,
@@ -121,21 +119,21 @@ export function measurementPresetReducer(
         loading: false,
         error: null
       };
-      
+
     case MeasurementPresetActionTypes.DELETE_MEASUREMENT_PRESET_FAILURE:
       return {
         ...state,
         loading: false,
         error: action.payload.error
       };
-    
+
     // Select measurement preset
     case MeasurementPresetActionTypes.SELECT_MEASUREMENT_PRESET:
       return {
         ...state,
         selectedPreset: action.payload.preset
       };
-      
+
     default:
       return state;
   }

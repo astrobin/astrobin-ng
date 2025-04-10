@@ -48,7 +48,7 @@ import { CookieService } from "ngx-cookie";
                 container="body"
                 class="license-icon"
               ></fa-icon>
-              {{ publicationDate | localDate | timeago  }}
+              {{ publicationDate | localDate | timeago }}
             </span>
 
             <span class="view-count">

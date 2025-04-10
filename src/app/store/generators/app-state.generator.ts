@@ -48,7 +48,7 @@ export class AppStateGenerator {
       groups: [],
       collections: [],
       solutionMatrices: {},
-      solutionMatricesLoading: new Set<number>(),
+      solutionMatricesLoading: new Set<number>()
     };
   }
 }

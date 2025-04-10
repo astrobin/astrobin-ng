@@ -1,23 +1,30 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Annotation, AnnotationPoint, CreateAnnotationParams, UpdateAnnotationShapeParams, UpdateAnnotationMessageParams } from '../models/annotation.model';
-import { AnnotationShapeType } from '../models/annotation-shape-type.enum';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
+
+import { AnnotationShapeType } from "../models/annotation-shape-type.enum";
+import {
+  Annotation,
+  AnnotationPoint,
+  CreateAnnotationParams,
+  UpdateAnnotationShapeParams,
+  UpdateAnnotationMessageParams
+} from "../models/annotation.model";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class AnnotationService {
   // Available colors for annotations
   private readonly ANNOTATION_COLORS = [
-    '#FFFFFF', // White (default)
-    '#000000', // Black
-    '#FF5252', // Red
-    '#448AFF', // Blue
-    '#4CAF50', // Green
-    '#FFC107', // Amber
-    '#9C27B0', // Purple
-    '#00BCD4', // Cyan
-    '#FF9800'  // Orange
+    "#FFFFFF", // White (default)
+    "#000000", // Black
+    "#FF5252", // Red
+    "#448AFF", // Blue
+    "#4CAF50", // Green
+    "#FFC107", // Amber
+    "#9C27B0", // Purple
+    "#00BCD4", // Cyan
+    "#FF9800" // Orange
   ];
 
   // Store annotations in a BehaviorSubject for reactive updates
@@ -25,7 +32,7 @@ export class AnnotationService {
 
   // Track annotations that came from the saved revision
   private _savedAnnotationIds: string[] = [];
-  
+
   // Track annotations that came from URL
   private _urlAnnotationIds: string[] = [];
 
@@ -34,12 +41,12 @@ export class AnnotationService {
 
   // Expose annotations as an Observable
   public readonly annotations$: Observable<Annotation[]> = this._annotations.asObservable();
-  
+
   // Expose saved annotation IDs
   public get savedAnnotationIds(): string[] {
     return this._savedAnnotationIds;
   }
-  
+
   // Expose URL annotation IDs
   public get urlAnnotationIds(): string[] {
     return this._urlAnnotationIds;
@@ -58,10 +65,10 @@ export class AnnotationService {
       shapeType: params.shapeType,
       points: params.points || [],
       color: params.color || this.getDefaultColor(),
-      title: params.title || '',
-      message: params.message || ''
+      title: params.title || "",
+      message: params.message || ""
     });
-    
+
     const annotation: Annotation = {
       id: id,
       shape: {
@@ -77,7 +84,7 @@ export class AnnotationService {
     if (params.title) {
       annotation.title = params.title;
     }
-    
+
     if (params.message) {
       annotation.message = params.message;
     }
@@ -104,9 +111,9 @@ export class AnnotationService {
       const annotation = { ...oldAnnotation };
 
       // Update title and message
-      annotation.title = title || '';
-      annotation.message = message || '';
-      
+      annotation.title = title || "";
+      annotation.message = message || "";
+
       // Generate a new ID based on updated properties
       annotation.id = this.generateUniqueId({
         shapeType: annotation.shape.type,
@@ -115,7 +122,7 @@ export class AnnotationService {
         title: annotation.title,
         message: annotation.message
       });
-      
+
       // Update saved and URL annotations IDs arrays if needed
       this._updateAnnotationIdInArrays(oldAnnotation.id, annotation.id);
 
@@ -124,12 +131,12 @@ export class AnnotationService {
       updatedAnnotations[index] = annotation;
       this._annotations.next(updatedAnnotations);
 
-      console.log('Updated annotation title and message:', annotation);
+      console.log("Updated annotation title and message:", annotation);
     } else {
-      console.warn('Could not find annotation with ID:', id);
+      console.warn("Could not find annotation with ID:", id);
     }
   }
-  
+
   /**
    * Helper method to handle annotation ID changes
    * @param oldId The old annotation ID
@@ -139,21 +146,21 @@ export class AnnotationService {
     // IMPORTANT: When an annotation is modified, it should no longer be considered
     // as coming from the saved annotations or from the URL.
     // We remove it from both tracking arrays instead of updating the ID.
-    
+
     // Remove from saved annotations array if it was there
     const savedIndex = this._savedAnnotationIds.indexOf(oldId);
     if (savedIndex !== -1) {
       this._savedAnnotationIds.splice(savedIndex, 1);
       console.log(`Annotation ${oldId} was removed from saved annotations after modification`);
     }
-    
+
     // Remove from URL annotations array if it was there
     const urlIndex = this._urlAnnotationIds.indexOf(oldId);
     if (urlIndex !== -1) {
       this._urlAnnotationIds.splice(urlIndex, 1);
       console.log(`Annotation ${oldId} was removed from URL annotations after modification`);
     }
-    
+
     // The new ID is not added to either array, which means:
     // - It won't show the "saved" icon
     // - It won't show the "shared" icon
@@ -179,16 +186,16 @@ export class AnnotationService {
         ...(params.color !== undefined ? { color: params.color } : {}),
         ...(params.lineWidth !== undefined ? { lineWidth: params.lineWidth } : {})
       };
-      
+
       // Generate a new ID based on updated properties
       annotation.id = this.generateUniqueId({
         shapeType: annotation.shape.type,
         points: annotation.shape.points,
         color: annotation.shape.color,
-        title: annotation.title || '',
-        message: annotation.message || ''
+        title: annotation.title || "",
+        message: annotation.message || ""
       });
-      
+
       // Update saved and URL annotations IDs arrays if needed
       this._updateAnnotationIdInArrays(oldAnnotation.id, annotation.id);
 
@@ -211,25 +218,25 @@ export class AnnotationService {
     if (index !== -1) {
       const oldAnnotation = annotations[index];
       const annotation = { ...oldAnnotation };
-      
+
       // Update title and message if provided
       if (params.title !== undefined) {
         annotation.title = params.title;
       }
-      
+
       if (params.message !== undefined) {
         annotation.message = params.message;
       }
-      
+
       // Generate a new ID based on updated properties
       annotation.id = this.generateUniqueId({
         shapeType: annotation.shape.type,
         points: annotation.shape.points,
         color: annotation.shape.color,
-        title: annotation.title || '',
-        message: annotation.message || ''
+        title: annotation.title || "",
+        message: annotation.message || ""
       });
-      
+
       // Update saved and URL annotations IDs arrays if needed
       this._updateAnnotationIdInArrays(oldAnnotation.id, annotation.id);
 
@@ -266,7 +273,7 @@ export class AnnotationService {
       console.log("Moving annotation, current ID:", id);
       console.log("Current saved annotation IDs:", this._savedAnnotationIds);
       console.log("Current URL annotation IDs:", this._urlAnnotationIds);
-      
+
       const oldAnnotation = annotations[index];
       const annotation = { ...oldAnnotation };
 
@@ -278,21 +285,21 @@ export class AnnotationService {
           y: Math.max(0, Math.min(100, point.y + deltaY))
         }))
       };
-      
+
       // Generate a new ID based on updated properties
       annotation.id = this.generateUniqueId({
         shapeType: annotation.shape.type,
         points: annotation.shape.points,
         color: annotation.shape.color,
-        title: annotation.title || '',
-        message: annotation.message || ''
+        title: annotation.title || "",
+        message: annotation.message || ""
       });
-      
+
       console.log("Generated new ID after move:", annotation.id);
-      
+
       // Update saved and URL annotations IDs arrays if needed
       this._updateAnnotationIdInArrays(oldAnnotation.id, annotation.id);
-      
+
       console.log("After update, saved annotation IDs:", this._savedAnnotationIds);
       console.log("After update, URL annotation IDs:", this._urlAnnotationIds);
 
@@ -335,11 +342,11 @@ export class AnnotationService {
       }
 
       // Extract title and message from direct properties
-      let title = annotation.title || '';
-      let message = annotation.message || '';
+      const title = annotation.title || "";
+      const message = annotation.message || "";
 
       // Handle circle format
-      if (annotation.type === 'circle') {
+      if (annotation.type === "circle") {
         console.log("Converting circle annotation");
         if (annotation.cx === undefined || annotation.cy === undefined || annotation.r === undefined) {
           console.error("Circle annotation missing required properties:", annotation);
@@ -351,8 +358,8 @@ export class AnnotationService {
           shape: {
             type: AnnotationShapeType.CIRCLE,
             points: [
-              { x: annotation.cx || 50, y: annotation.cy || 50 },  // Center point
-              { x: (annotation.cx || 50) + (annotation.r || 10), y: annotation.cy || 50 }  // Point to determine radius
+              { x: annotation.cx || 50, y: annotation.cy || 50 }, // Center point
+              { x: (annotation.cx || 50) + (annotation.r || 10), y: annotation.cy || 50 } // Point to determine radius
             ],
             color: annotation.color || this.getDefaultColor(),
             lineWidth: 2
@@ -363,10 +370,14 @@ export class AnnotationService {
       }
 
       // Handle rectangle format
-      if (annotation.type === 'rectangle') {
+      if (annotation.type === "rectangle") {
         console.log("Converting rectangle annotation");
-        if (annotation.x === undefined || annotation.y === undefined ||
-            annotation.width === undefined || annotation.height === undefined) {
+        if (
+          annotation.x === undefined ||
+          annotation.y === undefined ||
+          annotation.width === undefined ||
+          annotation.height === undefined
+        ) {
           console.error("Rectangle annotation missing required properties:", annotation);
         }
 
@@ -376,8 +387,11 @@ export class AnnotationService {
           shape: {
             type: AnnotationShapeType.RECTANGLE,
             points: [
-              { x: annotation.x || 10, y: annotation.y || 10 },  // Top-left corner
-              { x: (annotation.x || 10) + (annotation.width || 20), y: (annotation.y || 10) + (annotation.height || 20) }  // Bottom-right corner
+              { x: annotation.x || 10, y: annotation.y || 10 }, // Top-left corner
+              {
+                x: (annotation.x || 10) + (annotation.width || 20),
+                y: (annotation.y || 10) + (annotation.height || 20)
+              } // Bottom-right corner
             ],
             color: annotation.color || this.getDefaultColor(),
             lineWidth: 2
@@ -388,10 +402,14 @@ export class AnnotationService {
       }
 
       // Handle arrow format
-      if (annotation.type === 'arrow') {
+      if (annotation.type === "arrow") {
         console.log("Converting arrow annotation");
-        if (annotation.startX === undefined || annotation.startY === undefined ||
-            annotation.endX === undefined || annotation.endY === undefined) {
+        if (
+          annotation.startX === undefined ||
+          annotation.startY === undefined ||
+          annotation.endX === undefined ||
+          annotation.endY === undefined
+        ) {
           console.error("Arrow annotation missing required properties:", annotation);
         }
 
@@ -401,8 +419,8 @@ export class AnnotationService {
           shape: {
             type: AnnotationShapeType.ARROW,
             points: [
-              { x: annotation.startX || 35, y: annotation.startY || 50 },  // Start point
-              { x: annotation.endX || 65, y: annotation.endY || 50 }  // End point
+              { x: annotation.startX || 35, y: annotation.startY || 50 }, // Start point
+              { x: annotation.endX || 65, y: annotation.endY || 50 } // End point
             ],
             color: annotation.color || this.getDefaultColor(),
             lineWidth: 2
@@ -416,8 +434,11 @@ export class AnnotationService {
       if (annotation.shape && annotation.shape.type && annotation.shape.points) {
         console.log("Annotation already in standard format");
         // Make a copy and ensure the color is set
-        const standardAnnotation = {...annotation};
-        standardAnnotation.shape = {...standardAnnotation.shape, color: standardAnnotation.shape.color || this.getDefaultColor()};
+        const standardAnnotation = { ...annotation };
+        standardAnnotation.shape = {
+          ...standardAnnotation.shape,
+          color: standardAnnotation.shape.color || this.getDefaultColor()
+        };
         return standardAnnotation;
       }
 
@@ -436,7 +457,7 @@ export class AnnotationService {
   public getUrlParam(): string {
     const annotations = this._annotations.getValue();
     if (!annotations || annotations.length === 0) {
-      return '';
+      return "";
     }
 
     console.log("Original annotations:", annotations);
@@ -449,26 +470,24 @@ export class AnnotationService {
     console.log("Standardized annotations:", standardizedAnnotations);
 
     if (standardizedAnnotations.length === 0) {
-      console.error('Failed to convert annotations to standard format');
-      return '';
+      console.error("Failed to convert annotations to standard format");
+      return "";
     }
 
     // Convert to a compact format for URL
-    const compactData = standardizedAnnotations
-      .map(a => this.serializeAnnotation(a))
-      .filter(a => a !== null); // Remove any null serialized annotations
+    const compactData = standardizedAnnotations.map(a => this.serializeAnnotation(a)).filter(a => a !== null); // Remove any null serialized annotations
 
     if (compactData.length === 0) {
-      console.error('Failed to serialize any annotations');
-      return '';
+      console.error("Failed to serialize any annotations");
+      return "";
     }
 
     // Convert to Base64 for URL-safe encoding
     try {
       return btoa(JSON.stringify(compactData));
     } catch (error) {
-      console.error('Error encoding annotations for URL', error);
-      return '';
+      console.error("Error encoding annotations for URL", error);
+      return "";
     }
   }
 
@@ -489,7 +508,7 @@ export class AnnotationService {
 
       // Convert annotations to display format
       const displayReady = annotations.map(annotation => this.convertToDisplayFormat(annotation));
-      
+
       // Store the IDs of annotations loaded from URL
       // Important: URL annotations IDs are tracked separately from saved annotation IDs
       // An annotation can be in both arrays if it was saved and also loaded from URL
@@ -500,8 +519,8 @@ export class AnnotationService {
       // Set as current annotations
       this._annotations.next(displayReady);
     } catch (e) {
-      console.error('Failed to parse annotation URL parameter', e);
-      throw new Error('Invalid annotation data format');
+      console.error("Failed to parse annotation URL parameter", e);
+      throw new Error("Invalid annotation data format");
     }
   }
 
@@ -521,21 +540,23 @@ export class AnnotationService {
         console.log("Data is an array with", annotationsData.length, "items");
 
         // Convert each annotation to display format if needed
-        const displayReady = annotationsData.map(annotation => {
-          // Check if it needs conversion to standard format first
-          console.log("Processing annotation:", annotation);
-          const standardFormat = this.convertToStandardFormat(annotation);
+        const displayReady = annotationsData
+          .map(annotation => {
+            // Check if it needs conversion to standard format first
+            console.log("Processing annotation:", annotation);
+            const standardFormat = this.convertToStandardFormat(annotation);
 
-          if (standardFormat) {
-            console.log("Converted to standard format:", standardFormat);
-            const displayFormat = this.convertToDisplayFormat(standardFormat);
-            console.log("Converted to display format:", displayFormat);
-            return displayFormat;
-          }
-          // If already in display format, use as is
-          console.log("Using original format:", annotation);
-          return annotation;
-        }).filter(ann => ann !== null && ann !== undefined);
+            if (standardFormat) {
+              console.log("Converted to standard format:", standardFormat);
+              const displayFormat = this.convertToDisplayFormat(standardFormat);
+              console.log("Converted to display format:", displayFormat);
+              return displayFormat;
+            }
+            // If already in display format, use as is
+            console.log("Using original format:", annotation);
+            return annotation;
+          })
+          .filter(ann => ann !== null && ann !== undefined);
 
         console.log("Final displayReady annotations:", displayReady);
 
@@ -547,11 +568,11 @@ export class AnnotationService {
         this._annotations.next(displayReady);
       } else {
         console.error("Annotations data is not an array:", annotationsData);
-        throw new Error('Annotations data is not an array');
+        throw new Error("Annotations data is not an array");
       }
     } catch (e) {
-      console.error('Failed to parse annotations JSON string', e);
-      throw new Error('Invalid annotations data format');
+      console.error("Failed to parse annotations JSON string", e);
+      throw new Error("Invalid annotations data format");
     }
   }
 
@@ -565,12 +586,12 @@ export class AnnotationService {
         id: annotation.id,
         timestamp: annotation.timestamp,
         color: annotation.shape.color,
-        title: annotation.title || '',
-        message: annotation.message || ''
+        title: annotation.title || "",
+        message: annotation.message || ""
       };
 
       if (annotation.shape.type === AnnotationShapeType.RECTANGLE) {
-        displayAnnotation.type = 'rectangle';
+        displayAnnotation.type = "rectangle";
 
         // Get the points that define the rectangle
         const p1 = annotation.shape.points[0] || { x: 0, y: 0 };
@@ -587,9 +608,8 @@ export class AnnotationService {
         displayAnnotation.y = top;
         displayAnnotation.width = width;
         displayAnnotation.height = height;
-      }
-      else if (annotation.shape.type === AnnotationShapeType.CIRCLE) {
-        displayAnnotation.type = 'circle';
+      } else if (annotation.shape.type === AnnotationShapeType.CIRCLE) {
+        displayAnnotation.type = "circle";
 
         // Get the points that define the circle
         const center = annotation.shape.points[0] || { x: 50, y: 50 };
@@ -604,9 +624,8 @@ export class AnnotationService {
         displayAnnotation.cx = center.x;
         displayAnnotation.cy = center.y;
         displayAnnotation.r = radius;
-      }
-      else if (annotation.shape.type === AnnotationShapeType.ARROW) {
-        displayAnnotation.type = 'arrow';
+      } else if (annotation.shape.type === AnnotationShapeType.ARROW) {
+        displayAnnotation.type = "arrow";
 
         // Get the points that define the arrow
         const start = annotation.shape.points[0] || { x: 35, y: 50 };
@@ -622,10 +641,10 @@ export class AnnotationService {
       console.log("Converted to display format:", displayAnnotation);
       return displayAnnotation;
     } catch (error) {
-      console.error('Error converting annotation to display format:', error, annotation);
+      console.error("Error converting annotation to display format:", error, annotation);
       return {
         id: annotation.id || this.generateUniqueId(),
-        type: 'rectangle',
+        type: "rectangle",
         x: 10,
         y: 10,
         width: 20,
@@ -682,37 +701,37 @@ export class AnnotationService {
    */
   private generateUniqueId(properties?: {
     shapeType?: string;
-    points?: Array<{x: number, y: number}>;
+    points?: Array<{ x: number; y: number }>;
     color?: string;
     title?: string;
     message?: string;
   }): string {
     if (!properties) {
       // If no properties provided, use a timestamp-based ID
-      return 'ann_' + Date.now().toString() + '_' + Math.floor(Math.random() * 10000);
+      return "ann_" + Date.now().toString() + "_" + Math.floor(Math.random() * 10000);
     }
-    
+
     // Create a string representation of the annotation's key properties
-    const shapeType = properties.shapeType || '';
-    const points = properties.points ? JSON.stringify(properties.points) : '';
-    const color = properties.color || '';
-    const title = properties.title || '';
-    const message = properties.message || '';
-    
+    const shapeType = properties.shapeType || "";
+    const points = properties.points ? JSON.stringify(properties.points) : "";
+    const color = properties.color || "";
+    const title = properties.title || "";
+    const message = properties.message || "";
+
     // Combine all properties into a single string
     const propertyString = `${shapeType}|${points}|${color}|${title}|${message}`;
-    
+
     // Create a simple hash of the property string
     // This implementation uses a basic hash function that produces a 32-bit integer hash
     let hash = 0;
     for (let i = 0; i < propertyString.length; i++) {
       const char = propertyString.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
     }
-    
+
     // Return a string ID with a prefix to make it recognizable
-    return 'ann_' + Math.abs(hash).toString(16);
+    return "ann_" + Math.abs(hash).toString(16);
   }
 
   /**
@@ -720,8 +739,14 @@ export class AnnotationService {
    */
   private serializeAnnotation(annotation: Annotation): any {
     // Validate annotation structure to avoid TypeError
-    if (!annotation || !annotation.shape || !annotation.shape.type || !annotation.shape.points || !Array.isArray(annotation.shape.points)) {
-      console.error('Invalid annotation structure:', annotation);
+    if (
+      !annotation ||
+      !annotation.shape ||
+      !annotation.shape.type ||
+      !annotation.shape.points ||
+      !Array.isArray(annotation.shape.points)
+    ) {
+      console.error("Invalid annotation structure:", annotation);
       return null;
     }
 
@@ -741,14 +766,14 @@ export class AnnotationService {
       if (annotation.title) {
         compact.title = annotation.title;
       }
-      
+
       if (annotation.message) {
         compact.msg = annotation.message;
       }
 
       return compact;
     } catch (error) {
-      console.error('Error serializing annotation:', error, annotation);
+      console.error("Error serializing annotation:", error, annotation);
       return null;
     }
   }
@@ -772,7 +797,7 @@ export class AnnotationService {
     if (data.title) {
       annotation.title = data.title;
     }
-    
+
     if (data.msg) {
       annotation.message = data.msg;
     }
@@ -785,11 +810,16 @@ export class AnnotationService {
    */
   private serializeShapeType(type: AnnotationShapeType): number {
     switch (type) {
-      case AnnotationShapeType.ARROW: return 0;
-      case AnnotationShapeType.RECTANGLE: return 1;
-      case AnnotationShapeType.CIRCLE: return 2;
-      case AnnotationShapeType.CUSTOM_PATH: return 3;
-      default: return 0;
+      case AnnotationShapeType.ARROW:
+        return 0;
+      case AnnotationShapeType.RECTANGLE:
+        return 1;
+      case AnnotationShapeType.CIRCLE:
+        return 2;
+      case AnnotationShapeType.CUSTOM_PATH:
+        return 3;
+      default:
+        return 0;
     }
   }
 
@@ -798,11 +828,16 @@ export class AnnotationService {
    */
   private deserializeShapeType(type: number): AnnotationShapeType {
     switch (type) {
-      case 0: return AnnotationShapeType.ARROW;
-      case 1: return AnnotationShapeType.RECTANGLE;
-      case 2: return AnnotationShapeType.CIRCLE;
-      case 3: return AnnotationShapeType.CUSTOM_PATH;
-      default: return AnnotationShapeType.ARROW;
+      case 0:
+        return AnnotationShapeType.ARROW;
+      case 1:
+        return AnnotationShapeType.RECTANGLE;
+      case 2:
+        return AnnotationShapeType.CIRCLE;
+      case 3:
+        return AnnotationShapeType.CUSTOM_PATH;
+      default:
+        return AnnotationShapeType.ARROW;
     }
   }
 

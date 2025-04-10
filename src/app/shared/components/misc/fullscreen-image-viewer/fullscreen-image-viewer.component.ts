@@ -19,16 +19,17 @@ import {
   ViewChild
 } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { ActivatedRoute } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadSolutionMatrix } from "@app/store/actions/solution.actions";
-import { selectIsSolutionMatrixLoading, selectSolutionMatrix } from "@app/store/selectors/app/solution.selectors";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import {
   selectCurrentFullscreenImage,
   selectCurrentFullscreenImageEvent
 } from "@app/store/selectors/app/app.selectors";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { selectIsSolutionMatrixLoading, selectSolutionMatrix } from "@app/store/selectors/app/solution.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
@@ -37,9 +38,12 @@ import {
   ImageInterface,
   ImageRevisionInterface,
   FINAL_REVISION_LABEL,
-  FullSizeLimitationDisplayOptions
+  FullSizeLimitationDisplayOptions,
+  ORIGINAL_REVISION_LABEL
 } from "@core/interfaces/image.interface";
+import { SolutionStatus } from "@core/interfaces/solution.interface";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
 import { DeviceService } from "@core/services/device.service";
 import { ImageService } from "@core/services/image/image.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
@@ -47,28 +51,14 @@ import { SwipeDownService } from "@core/services/swipe-down.service";
 import { TitleService } from "@core/services/title/title.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { ActivatedRoute } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { fadeInOut } from "@shared/animations";
+import { CookieService } from "ngx-cookie";
 import { Coord, NgxImageZoomComponent } from "ngx-image-zoom";
+import { ActiveToast } from "ngx-toastr";
 import { BehaviorSubject, combineLatest, Observable, of, Subscription } from "rxjs";
 import { distinctUntilChanged, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
-import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { isPlatformBrowser } from "@angular/common";
-import { DeviceService } from "@core/services/device.service";
-import { CookieService } from "ngx-cookie";
-import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { FINAL_REVISION_LABEL, FullSizeLimitationDisplayOptions, ImageInterface, ImageRevisionInterface, ORIGINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import { Actions, ofType } from "@ngrx/effects";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import { TitleService } from "@core/services/title/title.service";
-import { fadeInOut } from "@shared/animations";
-import { SwipeDownService } from "@core/services/swipe-down.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { ActiveToast } from "ngx-toastr";
-import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
-import { SolutionStatus } from "@core/interfaces/solution.interface";
 
 declare type HammerInput = any;
 
@@ -80,7 +70,6 @@ declare type HammerInput = any;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
-
   @Input()
   id: ImageInterface["pk"];
 
@@ -522,8 +511,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (this.isBrowser) {
       // Check URL directly for measurements and annotations parameters
       const currentUrl = new URL(this.windowRef.nativeWindow.location.href);
-      const measurementsParam = currentUrl.searchParams.get('measurements');
-      const annotationsParam = currentUrl.searchParams.get('annotations');
+      const measurementsParam = currentUrl.searchParams.get("measurements");
+      const annotationsParam = currentUrl.searchParams.get("annotations");
 
       console.log("URL PARAMETERS CHECK:", {
         measurementsParam,
@@ -532,9 +521,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       });
 
       // First, check with the router's query params
-      this.activatedRoute.queryParams.pipe(
-        take(1)
-      ).subscribe(params => {
+      this.activatedRoute.queryParams.pipe(take(1)).subscribe(params => {
         // Handle measurements in URL
         if (params.measurements || measurementsParam) {
           console.log("FOUND MEASUREMENTS PARAMETER - Activating measuring mode");
@@ -667,31 +654,33 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             }
 
             // Check if we should enable annotation mode from SHOW_FULLSCREEN_IMAGE action
-        this.actions$.pipe(
-          ofType(AppActionTypes.SHOW_FULLSCREEN_IMAGE),
-          filter((action: any) => action.payload && action.payload.imageId === this.id),
-          take(1)
-        ).subscribe((action: any) => {
-          // Check if zoom is allowed (based on owner's settings)
-          if (action.payload.hasOwnProperty('allowZoom')) {
-            this.allowZoom = action.payload.allowZoom;
-          }
+            this.actions$
+              .pipe(
+                ofType(AppActionTypes.SHOW_FULLSCREEN_IMAGE),
+                filter((action: any) => action.payload && action.payload.imageId === this.id),
+                take(1)
+              )
+              .subscribe((action: any) => {
+                // Check if zoom is allowed (based on owner's settings)
+                if (action.payload.hasOwnProperty("allowZoom")) {
+                  this.allowZoom = action.payload.allowZoom;
+                }
 
-          if (action.payload.enableAnnotations) {
-            // Enable annotation mode after a short delay to ensure component is fully initialized
-            this.utilsService.delay(300).subscribe(() => {
-              // Enable annotation mode without relying on URL parameters
-              this.isAnnotationMode = true;
-              // Enable editing - annotations are always editable in fullscreen
-              this.annotationReadOnlyMode = false;
-              this.changeDetectorRef.markForCheck();
-            });
-          }
-        });
+                if (action.payload.enableAnnotations) {
+                  // Enable annotation mode after a short delay to ensure component is fully initialized
+                  this.utilsService.delay(300).subscribe(() => {
+                    // Enable annotation mode without relying on URL parameters
+                    this.isAnnotationMode = true;
+                    // Enable editing - annotations are always editable in fullscreen
+                    this.annotationReadOnlyMode = false;
+                    this.changeDetectorRef.markForCheck();
+                  });
+                }
+              });
 
-        this.changeDetectorRef.markForCheck();
+            this.changeDetectorRef.markForCheck();
+          });
       });
-    });
   }
 
   ngOnDestroy() {
@@ -746,7 +735,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Check for measurements parameter in URL after images are loaded
     if (this.isBrowser && loaded) {
       const currentUrl = new URL(this.windowRef.nativeWindow.location.href);
-      const measurementsParam = currentUrl.searchParams.get('measurements');
+      const measurementsParam = currentUrl.searchParams.get("measurements");
 
       if (measurementsParam && !this.isMeasuringMode) {
         console.log("Found measurements parameter after images loaded - Activating measuring tool");
@@ -775,7 +764,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Check for measurements parameter in URL after static image is loaded
     const currentUrl = new URL(this.windowRef.nativeWindow.location.href);
-    const measurementsParam = currentUrl.searchParams.get('measurements');
+    const measurementsParam = currentUrl.searchParams.get("measurements");
 
     if (measurementsParam && !this.isMeasuringMode) {
       console.log("Found measurements parameter after static image loaded - Activating measuring tool");
@@ -892,9 +881,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         const currentUrl = new URL(location.href);
 
         // Remove the measurements parameter if it exists
-        if (currentUrl.searchParams.has('measurements')) {
+        if (currentUrl.searchParams.has("measurements")) {
           console.log("Removing measurements parameter from URL when exiting fullscreen");
-          currentUrl.searchParams.delete('measurements');
+          currentUrl.searchParams.delete("measurements");
 
           // Update the URL without navigation
           this.windowRef.replaceState({}, currentUrl.toString());
@@ -951,9 +940,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Do nothing if the component is not being shown, in measuring mode, or if the image doesn't have an advanced solution
     if (!this.show || !this.hasAdvancedSolution || !this.hasAdvancedSolutionMatrix) {
-      this.popNotificationsService.info(
-        this.translateService.instant("Coordinates are not available for this image.")
-      );
+      this.popNotificationsService.info(this.translateService.instant("Coordinates are not available for this image."));
       return;
     }
 
@@ -1060,39 +1047,41 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Reload image data to ensure we have the latest annotations
     if (this.revision?.pk) {
       // Get the latest image data from store (if any annotations were saved)
-      this.store$.pipe(
-        select(selectImage, this.id),
-        filter(image => !!image),
-        take(1)
-      ).subscribe(image => {
-        // Update our local reference with fresh data from the store
-        if (image) {
-          // Find the correct revision from the updated image
-          // Start with the original image (which is the "revision 0")
-          let updatedRevision: ImageInterface | ImageRevisionInterface = null;
+      this.store$
+        .pipe(
+          select(selectImage, this.id),
+          filter(image => !!image),
+          take(1)
+        )
+        .subscribe(image => {
+          // Update our local reference with fresh data from the store
+          if (image) {
+            // Find the correct revision from the updated image
+            // Start with the original image (which is the "revision 0")
+            let updatedRevision: ImageInterface | ImageRevisionInterface = null;
 
-          if (this.revisionLabel === ORIGINAL_REVISION_LABEL) {
-            // If we're looking for the original revision, use the image itself
-            updatedRevision = image;
-          } else if (this.revisionLabel === FINAL_REVISION_LABEL) {
-            // If we're looking for the final revision, use the image if it's marked as final
-            if (image.isFinal) {
+            if (this.revisionLabel === ORIGINAL_REVISION_LABEL) {
+              // If we're looking for the original revision, use the image itself
               updatedRevision = image;
+            } else if (this.revisionLabel === FINAL_REVISION_LABEL) {
+              // If we're looking for the final revision, use the image if it's marked as final
+              if (image.isFinal) {
+                updatedRevision = image;
+              } else {
+                // Otherwise find the revision marked as final
+                updatedRevision = image.revisions.find(rev => rev.isFinal);
+              }
             } else {
-              // Otherwise find the revision marked as final
-              updatedRevision = image.revisions.find(rev => rev.isFinal);
+              // For any other revision label, find it by label
+              updatedRevision = image.revisions.find(rev => rev.label === this.revisionLabel);
             }
-          } else {
-            // For any other revision label, find it by label
-            updatedRevision = image.revisions.find(rev => rev.label === this.revisionLabel);
-          }
 
-          if (updatedRevision) {
-            // Update the revision with the latest data
-            this.revision = updatedRevision;
+            if (updatedRevision) {
+              // Update the revision with the latest data
+              this.revision = updatedRevision;
+            }
           }
-        }
-      });
+        });
     }
 
     this.changeDetectorRef.markForCheck();
@@ -1254,7 +1243,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         const currentMag = this.ngxImageZoom.zoomService.magnification;
         const minRatio = this.ngxImageZoom.zoomService.minZoomRatio || 1;
         const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
-        const stepSize = .05; // Default step size
+        const stepSize = 0.05; // Default step size
 
         // For normal wheel events, use deltaY with opposite sign (up = zoom in, down = zoom out)
         const delta = -event.deltaY / 100; // Normalize regular wheel delta
@@ -1357,7 +1346,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     // Only proxy if we have the zoom component, are in mouse mode, not in measuring mode, and are currently zooming
-    if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage && !this.isMeasuringMode && !this.isAnnotationMode) {
+    if (
+      !this.touchMode &&
+      this.ngxImageZoom &&
+      this.zoomingEnabled &&
+      !this.isVeryLargeImage &&
+      !this.isMeasuringMode &&
+      !this.isAnnotationMode
+    ) {
       // We need to convert global coordinates to coordinates relative to the image
       // Find the image and its position
       const zoomContainer = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomContainer");
@@ -1544,9 +1540,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           const currentUrl = new URL(location.href);
 
           // Remove the measurements parameter if it exists
-          if (currentUrl.searchParams.has('measurements')) {
+          if (currentUrl.searchParams.has("measurements")) {
             console.log("Removing measurements parameter from URL when exiting measuring mode");
-            currentUrl.searchParams.delete('measurements');
+            currentUrl.searchParams.delete("measurements");
 
             // Update the URL without navigation
             this.windowRef.replaceState({}, currentUrl.toString());
@@ -1587,7 +1583,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     const arcminutes = Math.floor((angularDistance - degrees) * 60);
     const arcseconds = Math.round(((angularDistance - degrees) * 60 - arcminutes) * 60);
 
-    return `${degrees.toString().padStart(2, "0")}° ${arcminutes.toString().padStart(2, "0")}′ ${arcseconds.toString().padStart(2, "0")}″`;
+    return `${degrees.toString().padStart(2, "0")}° ${arcminutes.toString().padStart(2, "0")}′ ${arcseconds
+      .toString()
+      .padStart(2, "0")}″`;
   }
 
   protected clearCoordinates(): void {
@@ -1954,7 +1952,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Add animation classes for close animation
       this.renderer.addClass(this.hostElementRef.nativeElement, "swipe-to-close-animating");
       this.renderer.addClass(this.hostElementRef.nativeElement, "swipe-to-close-animate");
-// Keep track of whether we've already handled the animation completion
+      // Keep track of whether we've already handled the animation completion
       let animationHandled = false;
       // Listen for animation end
       const onAnimationEnd = (event: any) => {
@@ -2074,7 +2072,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * Check if the current zoom level is at the default (fit to window) level
    */
   private _isAtDefaultZoom(): boolean {
-    if (!this.ngxImageZoom || !this.ngxImageZoom.zoomService || this.ngxImageZoom.zoomService.minZoomRatio === undefined) {
+    if (
+      !this.ngxImageZoom ||
+      !this.ngxImageZoom.zoomService ||
+      this.ngxImageZoom.zoomService.minZoomRatio === undefined
+    ) {
       // If zoom service is not available or minZoomRatio is not initialized, we can't determine the default zoom
       return false;
     }
@@ -2083,7 +2085,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (this.zoomScroll === undefined || this.zoomScroll === null) {
       // During initialization, assume we're at default zoom if magnification is at or close to minZoomRatio
       if (this.ngxImageZoom.zoomService.magnification !== undefined) {
-        return Math.abs(this.ngxImageZoom.zoomService.magnification - this.ngxImageZoom.zoomService.minZoomRatio) <= 0.01;
+        return (
+          Math.abs(this.ngxImageZoom.zoomService.magnification - this.ngxImageZoom.zoomService.minZoomRatio) <= 0.01
+        );
       }
       // If even magnification is not set, assume we're at default zoom (initial state)
       return true;
@@ -2238,11 +2242,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    */
   private _ensureSolutionMatrixLoaded(solutionId: number): void {
     // Check if matrix is already loaded in component with valid properties
-    if (this.advancedSolutionMatrix &&
+    if (
+      this.advancedSolutionMatrix &&
       this.advancedSolutionMatrix.raMatrix &&
       this.advancedSolutionMatrix.decMatrix &&
       this.advancedSolutionMatrix.matrixRect &&
-      this.advancedSolutionMatrix.matrixDelta !== undefined) {
+      this.advancedSolutionMatrix.matrixDelta !== undefined
+    ) {
       return;
     }
 
@@ -2250,49 +2256,51 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.loadingAdvancedSolutionMatrix = true;
 
     // First check if matrix is in the store
-    this.store$.pipe(
-      select(selectSolutionMatrix, solutionId),
-      take(1),
-      switchMap(matrixFromStore => {
-        if (matrixFromStore) {
-          // If matrix is already in store, use it
-          this.advancedSolutionMatrix = matrixFromStore;
-          this.loadingAdvancedSolutionMatrix = false;
-          return of(matrixFromStore);
-        } else {
-          // Otherwise, check if it's currently being loaded by another component
-          return this.store$.pipe(
-            select(selectIsSolutionMatrixLoading, solutionId),
-            take(1),
-            switchMap(isLoading => {
-              if (isLoading) {
-                // If already loading, wait for it to complete
-                return this.store$.pipe(
-                  select(selectSolutionMatrix, solutionId),
-                  filter(matrix => !!matrix), // Wait until matrix is available
-                  take(1)
-                );
-              } else {
-                // If not loading, dispatch action to load it
-                this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
+    this.store$
+      .pipe(
+        select(selectSolutionMatrix, solutionId),
+        take(1),
+        switchMap(matrixFromStore => {
+          if (matrixFromStore) {
+            // If matrix is already in store, use it
+            this.advancedSolutionMatrix = matrixFromStore;
+            this.loadingAdvancedSolutionMatrix = false;
+            return of(matrixFromStore);
+          } else {
+            // Otherwise, check if it's currently being loaded by another component
+            return this.store$.pipe(
+              select(selectIsSolutionMatrixLoading, solutionId),
+              take(1),
+              switchMap(isLoading => {
+                if (isLoading) {
+                  // If already loading, wait for it to complete
+                  return this.store$.pipe(
+                    select(selectSolutionMatrix, solutionId),
+                    filter(matrix => !!matrix), // Wait until matrix is available
+                    take(1)
+                  );
+                } else {
+                  // If not loading, dispatch action to load it
+                  this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
 
-                // Then wait for it to complete
-                return this.store$.pipe(
-                  select(selectSolutionMatrix, solutionId),
-                  filter(matrix => !!matrix), // Wait until matrix is available
-                  take(1)
-                );
-              }
-            })
-          );
-        }
-      })
-    ).subscribe(matrix => {
-      // Update component state with the matrix
-      this.advancedSolutionMatrix = matrix;
-      this.loadingAdvancedSolutionMatrix = false;
-      this.changeDetectorRef.markForCheck();
-    });
+                  // Then wait for it to complete
+                  return this.store$.pipe(
+                    select(selectSolutionMatrix, solutionId),
+                    filter(matrix => !!matrix), // Wait until matrix is available
+                    take(1)
+                  );
+                }
+              })
+            );
+          }
+        })
+      )
+      .subscribe(matrix => {
+        // Update component state with the matrix
+        this.advancedSolutionMatrix = matrix;
+        this.loadingAdvancedSolutionMatrix = false;
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   private _handleFirefoxPinchZoom(event: WheelEvent, syntheticEvent?: WheelEvent): void {
@@ -2420,7 +2428,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         document.addEventListener(
           "wheel",
           (event: WheelEvent) => {
-            if (event.ctrlKey && !this.touchMode && this.show && !this.isVeryLargeImage && !this.zoomFrozen && !this.isAnnotationMode) {
+            if (
+              event.ctrlKey &&
+              !this.touchMode &&
+              this.show &&
+              !this.isVeryLargeImage &&
+              !this.zoomFrozen &&
+              !this.isAnnotationMode
+            ) {
               // Always prevent browser zoom
               event.preventDefault();
               event.stopPropagation();
@@ -2475,15 +2490,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
           this.ngxImageZoom.zoomService.zoomOn(event);
           // Clear specific "Activate zoom first" notification if it exists
-        if (this._zoomActivationNotification) {
-          // Extract toast ID - ActiveToast has a toastId property of type number
-          if (typeof this._zoomActivationNotification !== "string" && this._zoomActivationNotification.toastId) {
-            this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
+          if (this._zoomActivationNotification) {
+            // Extract toast ID - ActiveToast has a toastId property of type number
+            if (typeof this._zoomActivationNotification !== "string" && this._zoomActivationNotification.toastId) {
+              this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
+            }
+            this._zoomActivationNotification = null;
           }
-          this._zoomActivationNotification = null;
-        }
-        this.changeDetectorRef.markForCheck();
-      }, { once: true });
+          this.changeDetectorRef.markForCheck();
+        },
+        { once: true }
+      );
 
       // Prevents the jarring resetting of the zoom when the mouse wanders off the image.
       (this.ngxImageZoom as any).zoomInstance.onMouseLeave = () => {};
@@ -2718,34 +2735,34 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         tap(image => {
           this.image = image;
 
-        // Check if current user is the image owner
-        this.currentUser$.pipe(take(1)).subscribe(user => {
-          if (user && this.image && user.id === this.image.user) {
-            this.isImageOwner = true;
-            this.changeDetectorRef.markForCheck();
-          }
-        });
+          // Check if current user is the image owner
+          this.currentUser$.pipe(take(1)).subscribe(user => {
+            if (user && this.image && user.id === this.image.user) {
+              this.isImageOwner = true;
+              this.changeDetectorRef.markForCheck();
+            }
+          });
 
-        this.revision = this.imageService.getRevision(image, this.revisionLabel);
+          this.revision = this.imageService.getRevision(image, this.revisionLabel);
           this.naturalWidth = this.revision.w;
           this.naturalHeight = this.revision.h;
           this.maxZoom = image.maxZoom || image.defaultMaxZoom || 8;
 
           // Load solution matrix for coordinate calculation
-        if (this.revision?.solution?.id) {
-          // If matrix was passed from parent component, use it directly
-          if (this.externalSolutionMatrix) {
-            this.advancedSolutionMatrix = this.externalSolutionMatrix;
-            this.loadingAdvancedSolutionMatrix = false;
-            this.changeDetectorRef.markForCheck();
-          } else {
-            // Use same pattern as in ImageViewerComponent
-            this._ensureSolutionMatrixLoaded(this.revision.solution.id);
+          if (this.revision?.solution?.id) {
+            // If matrix was passed from parent component, use it directly
+            if (this.externalSolutionMatrix) {
+              this.advancedSolutionMatrix = this.externalSolutionMatrix;
+              this.loadingAdvancedSolutionMatrix = false;
+              this.changeDetectorRef.markForCheck();
+            } else {
+              // Use same pattern as in ImageViewerComponent
+              this._ensureSolutionMatrixLoaded(this.revision.solution.id);
+            }
           }
-        }
 
-        this.hdThumbnailLoading = true;
-        this._hdLoadingProgressSubject.next(0);
+          this.hdThumbnailLoading = true;
+          this._hdLoadingProgressSubject.next(0);
 
           this.changeDetectorRef.markForCheck();
 

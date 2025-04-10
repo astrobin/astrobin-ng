@@ -1,28 +1,49 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
-import { CookieService } from "ngx-cookie";
-import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
-import { AstroUtilsService } from "@core/services/astro-utils/astro-utils.service";
-import { select, Store } from "@ngrx/store";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+  PLATFORM_ID,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { CreateMeasurementPreset, DeleteMeasurementPreset, LoadMeasurementPresets, ToggleSavedMeasurements } from "./store/measurement-preset.actions";
-import { selectAllMeasurementPresets, selectShowSavedMeasurements } from "./store/measurement-preset.selectors";
-import { MeasurementPresetInterface } from "./measurement-preset.interface";
-import { debounceTime, filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { fromEvent, merge, Subject } from "rxjs";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-measurement-modal.component";
 import { SolutionInterface } from "@core/interfaces/solution.interface";
+import { AstroUtilsService } from "@core/services/astro-utils/astro-utils.service";
+import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
+import { DeviceService } from "@core/services/device.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
-import { isPlatformBrowser } from "@angular/common";
-import { WindowRefService } from "@core/services/window-ref.service";
+import { CookieService } from "ngx-cookie";
+import { fromEvent, merge, Subject } from "rxjs";
+import { debounceTime, filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
+
 import { ExportMeasurementModalComponent } from "./export-measurement-modal/export-measurement-modal.component";
-import { ActivatedRoute, Router } from "@angular/router";
-import { DeviceService } from "@core/services/device.service";
-import { UtilsService } from "@core/services/utils/utils.service";
+import { MeasurementPresetInterface } from "./measurement-preset.interface";
+import { SaveMeasurementModalComponent } from "./save-measurement-modal/save-measurement-modal.component";
+import {
+  CreateMeasurementPreset,
+  DeleteMeasurementPreset,
+  LoadMeasurementPresets,
+  ToggleSavedMeasurements
+} from "./store/measurement-preset.actions";
+import { selectAllMeasurementPresets, selectShowSavedMeasurements } from "./store/measurement-preset.selectors";
 
 // Interface to represent a label's bounding box for collision detection
 interface LabelBoundingBox {
@@ -62,12 +83,12 @@ export interface MeasurementData {
   showRectangle?: boolean;
 
   // For saved measurements
-  widthArcseconds?: number | null;  // Width in arcseconds for rectangular measurements
+  widthArcseconds?: number | null; // Width in arcseconds for rectangular measurements
   heightArcseconds?: number | null; // Height in arcseconds for rectangular measurements
-  length?: number;                  // Length in pixels for recreating the measurement
-  name?: string;                    // Name for the measurement
-  notes?: string;                   // Optional user notes about the measurement
-  outOfBounds?: boolean;            // Flag indicating if any point is outside image boundaries
+  length?: number; // Length in pixels for recreating the measurement
+  name?: string; // Name for the measurement
+  notes?: string; // Optional user notes about the measurement
+  outOfBounds?: boolean; // Flag indicating if any point is outside image boundaries
 }
 
 export interface SolutionMatrix {
@@ -83,7 +104,6 @@ export interface SolutionMatrix {
   styleUrls: ["./measuring-tool.component.scss"]
 })
 export class MeasuringToolComponent extends BaseComponentDirective implements OnInit, OnDestroy, AfterViewInit {
-
   @Input() active: boolean = false;
   @Input() imageElement: HTMLElement | ElementRef<HTMLElement | HTMLImageElement>;
   @Input() advancedSolutionMatrix: SolutionMatrix | null = null;
@@ -144,28 +164,28 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   private readonly RESIZE_DEBOUNCE_MS = 300; // Debounce time for window resize events
   // Bound event handlers
   // Subjects for controlling drag operations
-  private _pointDragStart$ = new Subject<{ event: MouseEvent, point: string }>();
+  private _pointDragStart$ = new Subject<{ event: MouseEvent; point: string }>();
   private _pointDragEnd$ = new Subject<MouseEvent>();
-  private _previousMeasurementDragStart$ = new Subject<{ event: MouseEvent, index: number, point: string }>();
+  private _previousMeasurementDragStart$ = new Subject<{ event: MouseEvent; index: number; point: string }>();
   private _previousMeasurementDragEnd$ = new Subject<MouseEvent>();
-  private _shapeDragStart$ = new Subject<{ event: MouseEvent, index: number }>();
+  private _shapeDragStart$ = new Subject<{ event: MouseEvent; index: number }>();
   private _shapeDragEnd$ = new Subject<MouseEvent>();
   private _currentShapeDragStart$ = new Subject<MouseEvent>();
   private _currentShapeDragEnd$ = new Subject<MouseEvent>();
 
   // Events streams
-  private _documentMouseMove$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<MouseEvent>(document, "mousemove", { passive: false }).pipe(takeUntil(this.destroyed$)) :
-    new Subject<MouseEvent>();
-  private _documentMouseUp$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<MouseEvent>(document, "mouseup", { passive: false }).pipe(takeUntil(this.destroyed$)) :
-    new Subject<MouseEvent>();
-  private _windowResize$ = isPlatformBrowser(this.platformId) ?
-    fromEvent<UIEvent>(window, "resize", { passive: false }).pipe(
-      debounceTime(this.RESIZE_DEBOUNCE_MS),
-      takeUntil(this.destroyed$)
-    ) :
-    new Subject<UIEvent>();
+  private _documentMouseMove$ = isPlatformBrowser(this.platformId)
+    ? fromEvent<MouseEvent>(document, "mousemove", { passive: false }).pipe(takeUntil(this.destroyed$))
+    : new Subject<MouseEvent>();
+  private _documentMouseUp$ = isPlatformBrowser(this.platformId)
+    ? fromEvent<MouseEvent>(document, "mouseup", { passive: false }).pipe(takeUntil(this.destroyed$))
+    : new Subject<MouseEvent>();
+  private _windowResize$ = isPlatformBrowser(this.platformId)
+    ? fromEvent<UIEvent>(window, "resize", { passive: false }).pipe(
+        debounceTime(this.RESIZE_DEBOUNCE_MS),
+        takeUntil(this.destroyed$)
+      )
+    : new Subject<UIEvent>();
 
   private _dragInProgress = false;
   private _preventNextClick = false;
@@ -218,7 +238,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     if (!imageElement || imageElement.getBoundingClientRect().width === 0) {
       // Handle case where imageElement might be an ElementRef or HTMLElement
       if (this.imageElement) {
-        if ('nativeElement' in this.imageElement) {
+        if ("nativeElement" in this.imageElement) {
           // It's an ElementRef
           imageElement = this.imageElement.nativeElement;
         } else {
@@ -305,30 +325,24 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   public boundFormatAstronomicalAngle = (arcseconds: number) =>
     this.astroUtilsService.formatAstronomicalAngle(arcseconds);
 
-
   ngOnInit(): void {
     super.ngOnInit();
 
     // Detect touch device
     if (this.isBrowser) {
-      this._isTouchDevice = 'ontouchstart' in window ||
-                           navigator.maxTouchPoints > 0 ||
-                           (navigator as any).msMaxTouchPoints > 0;
+      this._isTouchDevice =
+        "ontouchstart" in window || navigator.maxTouchPoints > 0 || (navigator as any).msMaxTouchPoints > 0;
     }
 
     // Always handle store subscriptions first as they're SSR-safe
     // Subscribe to state changes
-    this.store$.pipe(
-      select(selectShowSavedMeasurements),
-      takeUntil(this.destroyed$)
-    ).subscribe(showSavedMeasurements => {
-      this.showSavedMeasurements = showSavedMeasurements;
-    });
+    this.store$
+      .pipe(select(selectShowSavedMeasurements), takeUntil(this.destroyed$))
+      .subscribe(showSavedMeasurements => {
+        this.showSavedMeasurements = showSavedMeasurements;
+      });
 
-    this.store$.pipe(
-      select(selectAllMeasurementPresets),
-      takeUntil(this.destroyed$)
-    ).subscribe(presets => {
+    this.store$.pipe(select(selectAllMeasurementPresets), takeUntil(this.destroyed$)).subscribe(presets => {
       this.savedMeasurements = presets;
     });
 
@@ -338,10 +352,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // This is crucial because we need the image element to be ready first
 
     // Load presets when the component initializes
-    this.currentUser$.pipe(
-      take(1),
-      takeUntil(this.destroyed$)
-    ).subscribe(user => {
+    this.currentUser$.pipe(take(1), takeUntil(this.destroyed$)).subscribe(user => {
       if (user && "id" in user) {
         this.store$.dispatch(new LoadMeasurementPresets({ userId: user.id }));
       }
@@ -360,9 +371,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       }
 
       // Set up window resize handler
-      this._windowResize$
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(event => this.handleWindowResize(event));
+      this._windowResize$.pipe(takeUntil(this.destroyed$)).subscribe(event => this.handleWindowResize(event));
 
       // Initialize previous window dimensions
       this._prevWindowWidth = window.innerWidth;
@@ -371,15 +380,17 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this._pointDragStart$
         .pipe(
           takeUntil(this.destroyed$),
-          tap(() => this._dragInProgress = true),
-          switchMap(({ event, point }) => this._documentMouseMove$.pipe(
-            takeUntil(merge(this._pointDragEnd$, this.destroyed$)),
-            // Apply preventDefault directly in the observable chain
-            tap(moveEvent => {
-              moveEvent.preventDefault();
-            }),
-            tap(moveEvent => this.handlePointDragMove(moveEvent))
-          ))
+          tap(() => (this._dragInProgress = true)),
+          switchMap(({ event, point }) =>
+            this._documentMouseMove$.pipe(
+              takeUntil(merge(this._pointDragEnd$, this.destroyed$)),
+              // Apply preventDefault directly in the observable chain
+              tap(moveEvent => {
+                moveEvent.preventDefault();
+              }),
+              tap(moveEvent => this.handlePointDragMove(moveEvent))
+            )
+          )
         )
         .subscribe();
 
@@ -398,15 +409,17 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this._previousMeasurementDragStart$
         .pipe(
           takeUntil(this.destroyed$),
-          tap(() => this._dragInProgress = true),
-          switchMap(({ event, index, point }) => this._documentMouseMove$.pipe(
-            takeUntil(merge(this._previousMeasurementDragEnd$, this.destroyed$)),
-            // Apply preventDefault directly in the observable chain
-            tap(moveEvent => {
-              moveEvent.preventDefault();
-            }),
-            tap(moveEvent => this.handlePreviousMeasurementDragMove(moveEvent))
-          ))
+          tap(() => (this._dragInProgress = true)),
+          switchMap(({ event, index, point }) =>
+            this._documentMouseMove$.pipe(
+              takeUntil(merge(this._previousMeasurementDragEnd$, this.destroyed$)),
+              // Apply preventDefault directly in the observable chain
+              tap(moveEvent => {
+                moveEvent.preventDefault();
+              }),
+              tap(moveEvent => this.handlePreviousMeasurementDragMove(moveEvent))
+            )
+          )
         )
         .subscribe();
 
@@ -425,18 +438,20 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this._shapeDragStart$
         .pipe(
           takeUntil(this.destroyed$),
-          tap(() => this._dragInProgress = true),
-          switchMap(({ event, index }) => this._documentMouseMove$.pipe(
-            takeUntil(merge(this._shapeDragEnd$, this.destroyed$)),
-            // Apply preventDefault directly in the observable chain
-            // BEFORE passing the event to handlers
-            tap(moveEvent => {
-              if (this.isDraggingPoint?.startsWith("prevShape")) {
-                moveEvent.preventDefault();
-              }
-            }),
-            tap(moveEvent => this.handleShapeDragMove(moveEvent))
-          ))
+          tap(() => (this._dragInProgress = true)),
+          switchMap(({ event, index }) =>
+            this._documentMouseMove$.pipe(
+              takeUntil(merge(this._shapeDragEnd$, this.destroyed$)),
+              // Apply preventDefault directly in the observable chain
+              // BEFORE passing the event to handlers
+              tap(moveEvent => {
+                if (this.isDraggingPoint?.startsWith("prevShape")) {
+                  moveEvent.preventDefault();
+                }
+              }),
+              tap(moveEvent => this.handleShapeDragMove(moveEvent))
+            )
+          )
         )
         .subscribe();
 
@@ -455,15 +470,17 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this._currentShapeDragStart$
         .pipe(
           takeUntil(this.destroyed$),
-          tap(() => this._dragInProgress = true),
-          switchMap(event => this._documentMouseMove$.pipe(
-            takeUntil(merge(this._currentShapeDragEnd$, this.destroyed$)),
-            // Apply preventDefault directly in the observable chain
-            tap(moveEvent => {
-              moveEvent.preventDefault();
-            }),
-            tap(moveEvent => this.handleCurrentShapeDragMove(moveEvent))
-          ))
+          tap(() => (this._dragInProgress = true)),
+          switchMap(event =>
+            this._documentMouseMove$.pipe(
+              takeUntil(merge(this._currentShapeDragEnd$, this.destroyed$)),
+              // Apply preventDefault directly in the observable chain
+              tap(moveEvent => {
+                moveEvent.preventDefault();
+              }),
+              tap(moveEvent => this.handleCurrentShapeDragMove(moveEvent))
+            )
+          )
         )
         .subscribe();
 
@@ -507,7 +524,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Setting cached image element - handle both HTMLElement and ElementRef
         if (this.imageElement) {
           // Check if imageElement is already an HTMLElement or is an ElementRef
-          if ('nativeElement' in this.imageElement) {
+          if ("nativeElement" in this.imageElement) {
             // It's an ElementRef
             this.cachedImageElement = this.imageElement.nativeElement;
           } else {
@@ -523,7 +540,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this.windowRefService.utilsService.delay(500).subscribe(() => {
             if (this.imageElement) {
               // Check if imageElement is already an HTMLElement or is an ElementRef
-              if ('nativeElement' in this.imageElement) {
+              if ("nativeElement" in this.imageElement) {
                 // It's an ElementRef
                 this.cachedImageElement = this.imageElement.nativeElement;
               } else {
@@ -587,15 +604,15 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Get the current URL directly
     const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
-    const measurementsParam = currentUrl.searchParams.get('measurements');
+    const measurementsParam = currentUrl.searchParams.get("measurements");
 
     // URL measurements check
     // Checking measurements param present/not present
 
-    if (measurementsParam && measurementsParam.trim() !== '') {
+    if (measurementsParam && measurementsParam.trim() !== "") {
       try {
         // Check if this is just an activation flag (measurements=1) or actual measurement data
-        if (measurementsParam === '1') {
+        if (measurementsParam === "1") {
           // This is just a flag to activate the measuring tool, not actual measurement data
           console.log("Measurements flag found in URL - activating tool without loading data");
           // No need to attempt loading measurements
@@ -740,9 +757,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // If we have coordinates for both points, use them to calculate the actual angular distance
-    if (this.measureStartPoint?.ra !== null && this.measureStartPoint?.dec !== null &&
-      this.measureEndPoint?.ra !== null && this.measureEndPoint?.dec !== null) {
-
+    if (
+      this.measureStartPoint?.ra !== null &&
+      this.measureStartPoint?.dec !== null &&
+      this.measureEndPoint?.ra !== null &&
+      this.measureEndPoint?.dec !== null
+    ) {
       const angularDistance = this.astroUtilsService.calculateAngularDistance(
         this.measureStartPoint.ra,
         this.measureStartPoint.dec,
@@ -834,7 +854,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           this._preventNextClick = true; // Mark as a drag
 
           // Create a simulated mouse event for consistent handling
-          const simulatedEvent = new MouseEvent('touchmove', {
+          const simulatedEvent = new MouseEvent("touchmove", {
             clientX: this.dragStartX, // Use the original start position
             clientY: this.dragStartY,
             bubbles: true,
@@ -876,7 +896,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Create a simulated mouse event for consistent handling
-    const simulatedEvent = new MouseEvent('touchend', {
+    const simulatedEvent = new MouseEvent("touchend", {
       clientX: touch.clientX,
       clientY: touch.clientY,
       bubbles: true,
@@ -990,11 +1010,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     const touchMoveHandler = (moveEvent: TouchEvent) => {
       moveEvent.preventDefault();
 
-      if (moveEvent.touches.length !== 1) return;
+      if (moveEvent.touches.length !== 1) {
+        return;
+      }
       const moveTouch = moveEvent.touches[0];
 
       // Update the point position based on the touch
-      if (point === 'start' && this.measureStartPoint) {
+      if (point === "start" && this.measureStartPoint) {
         this.measureStartPoint.x = moveTouch.clientX + this.dragOffsetX;
         this.measureStartPoint.y = moveTouch.clientY + this.dragOffsetY;
 
@@ -1003,17 +1025,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         if (now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS) {
           this._lastCoordUpdateTime = now;
           if (this.isValidSolutionMatrix()) {
-            const coords = this.boundCalculateCoordinatesAtPoint(
-              this.measureStartPoint.x,
-              this.measureStartPoint.y
-            );
+            const coords = this.boundCalculateCoordinatesAtPoint(this.measureStartPoint.x, this.measureStartPoint.y);
             if (coords) {
               this.measureStartPoint.ra = coords.ra;
               this.measureStartPoint.dec = coords.dec;
             }
           }
         }
-      } else if (point === 'end' && this.measureEndPoint) {
+      } else if (point === "end" && this.measureEndPoint) {
         this.measureEndPoint.x = moveTouch.clientX + this.dragOffsetX;
         this.measureEndPoint.y = moveTouch.clientY + this.dragOffsetY;
 
@@ -1022,10 +1041,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         if (now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS) {
           this._lastCoordUpdateTime = now;
           if (this.isValidSolutionMatrix()) {
-            const coords = this.boundCalculateCoordinatesAtPoint(
-              this.measureEndPoint.x,
-              this.measureEndPoint.y
-            );
+            const coords = this.boundCalculateCoordinatesAtPoint(this.measureEndPoint.x, this.measureEndPoint.y);
             if (coords) {
               this.measureEndPoint.ra = coords.ra;
               this.measureEndPoint.dec = coords.dec;
@@ -1052,16 +1068,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.isDraggingPoint = null;
 
       // Clean up event listeners
-      document.removeEventListener('touchmove', touchMoveHandler);
-      document.removeEventListener('touchend', touchEndHandler);
+      document.removeEventListener("touchmove", touchMoveHandler);
+      document.removeEventListener("touchend", touchEndHandler);
 
       // Force change detection
       this.cdRef.markForCheck();
     };
 
     // Add event listeners for the duration of this drag
-    document.addEventListener('touchmove', touchMoveHandler, { passive: false });
-    document.addEventListener('touchend', touchEndHandler, { passive: false });
+    document.addEventListener("touchmove", touchMoveHandler, { passive: false });
+    document.addEventListener("touchend", touchEndHandler, { passive: false });
 
     // Force change detection
     this.cdRef.markForCheck();
@@ -1187,7 +1203,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     event.preventDefault();
     event.stopPropagation();
 
-    if (event.touches.length !== 1) return;
+    if (event.touches.length !== 1) {
+      return;
+    }
 
     const touch = event.touches[0];
     this.isDraggingPoint = `prev${point.charAt(0).toUpperCase() + point.slice(1)}-${index}`;
@@ -1217,7 +1235,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this._preventNextClick = true;
 
     // Create a simulated mouse event for the drag handler
-    const simulatedEvent = new MouseEvent('touchstart', {
+    const simulatedEvent = new MouseEvent("touchstart", {
       clientX: touch.clientX,
       clientY: touch.clientY,
       bubbles: true,
@@ -1231,12 +1249,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Set up document-level touch handlers for the duration of this drag
     const touchMoveHandler = (moveEvent: TouchEvent) => {
       moveEvent.preventDefault();
-      if (moveEvent.touches.length !== 1) return;
+      if (moveEvent.touches.length !== 1) {
+        return;
+      }
 
       const moveTouch = moveEvent.touches[0];
 
       // Create a simulated mouse event for move
-      const simulatedMoveEvent = new MouseEvent('touchmove', {
+      const simulatedMoveEvent = new MouseEvent("touchmove", {
         clientX: moveTouch.clientX,
         clientY: moveTouch.clientY,
         bubbles: true,
@@ -1250,7 +1270,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     const touchEndHandler = (endEvent: TouchEvent) => {
       // Create a simulated mouse event for end
-      const simulatedEndEvent = new MouseEvent('touchend', {
+      const simulatedEndEvent = new MouseEvent("touchend", {
         clientX: endEvent.changedTouches[0]?.clientX || touch.clientX,
         clientY: endEvent.changedTouches[0]?.clientY || touch.clientY,
         bubbles: true,
@@ -1262,13 +1282,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.handlePreviousMeasurementDragEnd(simulatedEndEvent);
 
       // Clean up event listeners
-      document.removeEventListener('touchmove', touchMoveHandler);
-      document.removeEventListener('touchend', touchEndHandler);
+      document.removeEventListener("touchmove", touchMoveHandler);
+      document.removeEventListener("touchend", touchEndHandler);
     };
 
     // Add event listeners for the duration of this drag
-    document.addEventListener('touchmove', touchMoveHandler, { passive: false });
-    document.addEventListener('touchend', touchEndHandler, { passive: false });
+    document.addEventListener("touchmove", touchMoveHandler, { passive: false });
+    document.addEventListener("touchend", touchEndHandler, { passive: false });
   }
 
   /**
@@ -1315,7 +1335,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     event.preventDefault();
 
     // Extract the index from the drag state string
-    if (this.isDraggingPoint && (this.isDraggingPoint.startsWith("prevStart-") || this.isDraggingPoint.startsWith("prevEnd-"))) {
+    if (
+      this.isDraggingPoint &&
+      (this.isDraggingPoint.startsWith("prevStart-") || this.isDraggingPoint.startsWith("prevEnd-"))
+    ) {
       const parts = this.isDraggingPoint.split("-");
       const index = parseInt(parts[1], 10);
 
@@ -1373,7 +1396,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     event.preventDefault();
     event.stopPropagation();
 
-    if (event.touches.length !== 1) return;
+    if (event.touches.length !== 1) {
+      return;
+    }
 
     const touch = event.touches[0];
     this.isDraggingPoint = `prevShape-${index}`;
@@ -1384,7 +1409,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this._preventNextClick = true;
 
     // Create a simulated mouse event for the drag handler
-    const simulatedEvent = new MouseEvent('touchstart', {
+    const simulatedEvent = new MouseEvent("touchstart", {
       clientX: touch.clientX,
       clientY: touch.clientY,
       bubbles: true,
@@ -1398,12 +1423,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Set up document-level touch handlers for the duration of this drag
     const touchMoveHandler = (moveEvent: TouchEvent) => {
       moveEvent.preventDefault();
-      if (moveEvent.touches.length !== 1) return;
+      if (moveEvent.touches.length !== 1) {
+        return;
+      }
 
       const moveTouch = moveEvent.touches[0];
 
       // Create a simulated mouse event for move
-      const simulatedMoveEvent = new MouseEvent('touchmove', {
+      const simulatedMoveEvent = new MouseEvent("touchmove", {
         clientX: moveTouch.clientX,
         clientY: moveTouch.clientY,
         bubbles: true,
@@ -1417,7 +1444,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     const touchEndHandler = (endEvent: TouchEvent) => {
       // Create a simulated mouse event for end
-      const simulatedEndEvent = new MouseEvent('touchend', {
+      const simulatedEndEvent = new MouseEvent("touchend", {
         clientX: endEvent.changedTouches[0]?.clientX || touch.clientX,
         clientY: endEvent.changedTouches[0]?.clientY || touch.clientY,
         bubbles: true,
@@ -1429,13 +1456,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.handleShapeDragEnd(simulatedEndEvent);
 
       // Clean up event listeners
-      document.removeEventListener('touchmove', touchMoveHandler);
-      document.removeEventListener('touchend', touchEndHandler);
+      document.removeEventListener("touchmove", touchMoveHandler);
+      document.removeEventListener("touchend", touchEndHandler);
     };
 
     // Add event listeners for the duration of this drag
-    document.addEventListener('touchmove', touchMoveHandler, { passive: false });
-    document.addEventListener('touchend', touchEndHandler, { passive: false });
+    document.addEventListener("touchmove", touchMoveHandler, { passive: false });
+    document.addEventListener("touchend", touchEndHandler, { passive: false });
   }
 
   /**
@@ -1486,7 +1513,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Update coordinates in real-time during drag, with debouncing
     // Only update if we have valid solution data and enough time has passed since last update
     const now = Date.now();
-    if (this.isValidSolutionMatrix() && (now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS)) {
+    if (this.isValidSolutionMatrix() && now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS) {
       this._lastCoordUpdateTime = now;
 
       // Run in ngZone to ensure Angular detects the changes
@@ -1637,7 +1664,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     this._preventNextClick = true;
 
     // Create a simulated mouse event for the drag handler
-    const simulatedEvent = new MouseEvent('touchstart', {
+    const simulatedEvent = new MouseEvent("touchstart", {
       clientX: touch.clientX,
       clientY: touch.clientY,
       bubbles: true,
@@ -1651,12 +1678,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Set up document-level touch handlers for the duration of this drag
     const touchMoveHandler = (moveEvent: TouchEvent) => {
       moveEvent.preventDefault();
-      if (moveEvent.touches.length !== 1) return;
+      if (moveEvent.touches.length !== 1) {
+        return;
+      }
 
       const moveTouch = moveEvent.touches[0];
 
       // Create a simulated mouse event for move
-      const simulatedMoveEvent = new MouseEvent('touchmove', {
+      const simulatedMoveEvent = new MouseEvent("touchmove", {
         clientX: moveTouch.clientX,
         clientY: moveTouch.clientY,
         bubbles: true,
@@ -1670,7 +1699,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     const touchEndHandler = (endEvent: TouchEvent) => {
       // Create a simulated mouse event for end
-      const simulatedEndEvent = new MouseEvent('touchend', {
+      const simulatedEndEvent = new MouseEvent("touchend", {
         clientX: endEvent.changedTouches[0]?.clientX || touch.clientX,
         clientY: endEvent.changedTouches[0]?.clientY || touch.clientY,
         bubbles: true,
@@ -1682,13 +1711,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       this.handleCurrentShapeDragEnd(simulatedEndEvent);
 
       // Clean up event listeners
-      document.removeEventListener('touchmove', touchMoveHandler);
-      document.removeEventListener('touchend', touchEndHandler);
+      document.removeEventListener("touchmove", touchMoveHandler);
+      document.removeEventListener("touchend", touchEndHandler);
     };
 
     // Add event listeners for the duration of this drag
-    document.addEventListener('touchmove', touchMoveHandler, { passive: false });
-    document.addEventListener('touchend', touchEndHandler, { passive: false });
+    document.addEventListener("touchmove", touchMoveHandler, { passive: false });
+    document.addEventListener("touchend", touchEndHandler, { passive: false });
   }
 
   /**
@@ -1723,7 +1752,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Update coordinates in real-time during drag, with debouncing
     // Only update if we have solution data and enough time has passed since last update
     const now = Date.now();
-    if (this.advancedSolutionMatrix && (now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS)) {
+    if (this.advancedSolutionMatrix && now - this._lastCoordUpdateTime > this.COORD_UPDATE_DEBOUNCE_MS) {
       this._lastCoordUpdateTime = now;
 
       // Run in ngZone to ensure Angular detects the changes
@@ -2017,9 +2046,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Configure dialog
     modalRef.componentInstance.title = this.translateService.instant("Clear all measurements");
-    modalRef.componentInstance.message = this.translateService.instant(
-      "This action cannot be undone."
-    );
+    modalRef.componentInstance.message = this.translateService.instant("This action cannot be undone.");
     modalRef.componentInstance.confirmLabel = this.translateService.instant("Clear all");
 
     // Subscribe to dialog result
@@ -2043,7 +2070,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             });
 
             // Update the browser URL without navigation
-            window.history.replaceState({}, '', window.location.origin + urlTree.toString() + hash);
+            window.history.replaceState({}, "", window.location.origin + urlTree.toString() + hash);
           } catch (error) {
             console.error("Failed to update URL:", error);
           }
@@ -2074,9 +2101,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Configure dialog
     modalRef.componentInstance.title = this.translateService.instant("Delete measurement");
-    modalRef.componentInstance.message = this.translateService.instant(
-      "This action cannot be undone."
-    );
+    modalRef.componentInstance.message = this.translateService.instant("This action cannot be undone.");
     modalRef.componentInstance.confirmLabel = this.translateService.instant("Delete");
 
     // Subscribe to dialog result
@@ -2113,10 +2138,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Calculate how horizontal the line is
     const absAngle = Math.abs(angle);
-    const horizontalness = Math.min(
-      Math.abs(absAngle),
-      Math.abs(absAngle - Math.PI)
-    );
+    const horizontalness = Math.min(Math.abs(absAngle), Math.abs(absAngle - Math.PI));
 
     // Determine if line is nearly horizontal or vertical
     const isNearlyHorizontal = horizontalness < Math.PI / 8;
@@ -2133,7 +2155,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     let endExtraDistance = 0;
 
     if (isNearlyHorizontal) {
-      const horizontalFactor = 1 - (horizontalness / (Math.PI / 8));
+      const horizontalFactor = 1 - horizontalness / (Math.PI / 8);
       startExtraDistance = startLabelDistance * 3.5 * horizontalFactor + startVerticalBoost;
       endExtraDistance = endLabelDistance * 3.5 * horizontalFactor + endVerticalBoost;
     } else {
@@ -2142,8 +2164,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Calculate initial positions
-    measurement.startLabelX = measurement.startX - (startLabelDistance + pointRadius + startExtraDistance) * Math.cos(angle);
-    measurement.startLabelY = measurement.startY - (startLabelDistance + pointRadius + startExtraDistance) * Math.sin(angle);
+    measurement.startLabelX =
+      measurement.startX - (startLabelDistance + pointRadius + startExtraDistance) * Math.cos(angle);
+    measurement.startLabelY =
+      measurement.startY - (startLabelDistance + pointRadius + startExtraDistance) * Math.sin(angle);
 
     measurement.endLabelX = measurement.endX + (endLabelDistance + pointRadius + endExtraDistance) * Math.cos(angle);
     measurement.endLabelY = measurement.endY + (endLabelDistance + pointRadius + endExtraDistance) * Math.sin(angle);
@@ -2151,10 +2175,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // For vertical lines, add horizontal offset
     if (isNearlyVertical) {
       const horizontalOffset = 15;
-      if (angle > 0) { // Line pointing downward
+      if (angle > 0) {
+        // Line pointing downward
         measurement.startLabelX -= horizontalOffset;
         measurement.endLabelX += horizontalOffset;
-      } else { // Line pointing upward
+      } else {
+        // Line pointing upward
         measurement.startLabelX += horizontalOffset;
         measurement.endLabelX -= horizontalOffset;
       }
@@ -2164,10 +2190,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Approximate where dimension labels will be (we don't have actual references to them here)
 
     // Estimate label dimensions - these are approximate values
-    const coordLabelWidth = 150;  // RA/Dec label width
-    const coordLabelHeight = 20;  // RA/Dec label height
-    const dimLabelWidth = 60;     // Dimension label width
-    const dimLabelHeight = 20;    // Dimension label height
+    const coordLabelWidth = 150; // RA/Dec label width
+    const coordLabelHeight = 20; // RA/Dec label height
+    const dimLabelWidth = 60; // Dimension label width
+    const dimLabelHeight = 20; // Dimension label height
 
     // Create bounding boxes for our labels
     const labels: LabelBoundingBox[] = [
@@ -2177,7 +2203,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         y: measurement.startLabelY - coordLabelHeight / 2,
         width: coordLabelWidth,
         height: coordLabelHeight,
-        priority: 2,  // Medium priority
+        priority: 2, // Medium priority
         type: "point"
       },
       // 2. End point coordinates label
@@ -2186,14 +2212,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         y: measurement.endLabelY - coordLabelHeight / 2,
         width: coordLabelWidth,
         height: coordLabelHeight,
-        priority: 2,  // Medium priority
+        priority: 2, // Medium priority
         type: "point"
       }
     ];
 
     // 3. Add width dimension label (horizontal) - positioned at midpoint of X, below the rectangle
-    const widthLabelX = (Math.min(measurement.startX, measurement.endX) +
-      Math.abs(measurement.endX - measurement.startX) / 2) - dimLabelWidth / 2;
+    const widthLabelX =
+      Math.min(measurement.startX, measurement.endX) +
+      Math.abs(measurement.endX - measurement.startX) / 2 -
+      dimLabelWidth / 2;
     const widthLabelY = Math.max(measurement.startY, measurement.endY) + 20;
 
     labels.push({
@@ -2201,37 +2229,43 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       y: widthLabelY,
       width: dimLabelWidth,
       height: dimLabelHeight,
-      priority: 1,  // Higher priority (less likely to move)
+      priority: 1, // Higher priority (less likely to move)
       type: "dimension"
     });
 
     // 4. Add height dimension label (vertical) - positioned to the right of the rectangle
     const heightLabelX = Math.max(measurement.startX, measurement.endX) + 20;
-    const heightLabelY = (Math.min(measurement.startY, measurement.endY) +
-      Math.abs(measurement.endY - measurement.startY) / 2) - dimLabelHeight / 2;
+    const heightLabelY =
+      Math.min(measurement.startY, measurement.endY) +
+      Math.abs(measurement.endY - measurement.startY) / 2 -
+      dimLabelHeight / 2;
 
     labels.push({
       x: heightLabelX,
       y: heightLabelY,
       width: dimLabelWidth,
       height: dimLabelHeight,
-      priority: 1,  // Higher priority
+      priority: 1, // Higher priority
       type: "dimension"
     });
 
     // Perform collision detection and resolution
     // We only need to check the first two labels (coord labels) against the others
-    for (let i = 0; i < 2; i++) {  // Coordinate labels
-      for (let j = 2; j < labels.length; j++) {  // Dimension labels
+    for (let i = 0; i < 2; i++) {
+      // Coordinate labels
+      for (let j = 2; j < labels.length; j++) {
+        // Dimension labels
         if (this.doLabelsOverlap(labels[i], labels[j])) {
           // If collision detected, move the coordinate label
           const newPos = this.resolveCollision(labels[i], labels[j]);
 
           // Update the label position
-          if (i === 0) {  // Start label
+          if (i === 0) {
+            // Start label
             measurement.startLabelX = newPos.x + coordLabelWidth / 2;
             measurement.startLabelY = newPos.y + coordLabelHeight / 2;
-          } else {  // End label
+          } else {
+            // End label
             measurement.endLabelX = newPos.x + coordLabelWidth / 2;
             measurement.endLabelY = newPos.y + coordLabelHeight / 2;
           }
@@ -2273,7 +2307,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     const sign = dec >= 0 ? "+" : "-";
 
-    return `${raHours.toString().padStart(2, "0")}h ${raMinutes.toString().padStart(2, "0")}m ${raSeconds.toString().padStart(2, "0")}s, ${sign}${decDegrees.toString().padStart(2, "0")}° ${decMinutes.toString().padStart(2, "0")}' ${decSeconds.toString().padStart(2, "0")}"`;
+    return `${raHours.toString().padStart(2, "0")}h ${raMinutes.toString().padStart(2, "0")}m ${raSeconds
+      .toString()
+      .padStart(2, "0")}s, ${sign}${decDegrees.toString().padStart(2, "0")}° ${decMinutes
+      .toString()
+      .padStart(2, "0")}' ${decSeconds.toString().padStart(2, "0")}"`;
   }
 
   /**
@@ -2281,7 +2319,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    *
    * @param measurement Optional measurement data containing additional information
    */
-  getHorizontalCelestialDistance(x1: number, y: number, x2: number, measurement?: MeasurementData | MeasurementPresetInterface): string {
+  getHorizontalCelestialDistance(
+    x1: number,
+    y: number,
+    x2: number,
+    measurement?: MeasurementData | MeasurementPresetInterface
+  ): string {
     // If no valid advanced solution, return empty (template will show px)
     if (!this.isValidSolutionMatrix()) {
       return "";
@@ -2317,7 +2360,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    *
    * @param measurement Optional measurement data containing additional information
    */
-  getVerticalCelestialDistance(x: number, y1: number, y2: number, measurement?: MeasurementData | MeasurementPresetInterface): string {
+  getVerticalCelestialDistance(
+    x: number,
+    y1: number,
+    y2: number,
+    measurement?: MeasurementData | MeasurementPresetInterface
+  ): string {
     // If no valid advanced solution, return empty (template will show px)
     if (!this.isValidSolutionMatrix()) {
       return "";
@@ -2357,8 +2405,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Calculate the angle of the line
-    const angle = Math.atan2(this.measureEndPoint.y - this.measureStartPoint.y,
-      this.measureEndPoint.x - this.measureStartPoint.x);
+    const angle = Math.atan2(
+      this.measureEndPoint.y - this.measureStartPoint.y,
+      this.measureEndPoint.x - this.measureStartPoint.x
+    );
 
     // Set offset parameters
     const pointRadius = 6;
@@ -2388,7 +2438,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     if (isNearlyHorizontal) {
       // For nearly horizontal lines, add extra distance that scales with horizontalness
-      const horizontalFactor = 1 - (horizontalness / (Math.PI / 8)); // 0 to 1 factor, adjusted for wider angle
+      const horizontalFactor = 1 - horizontalness / (Math.PI / 8); // 0 to 1 factor, adjusted for wider angle
       extraDistance = labelDistance * 3.5 * horizontalFactor + verticalBoost; // Scale up with vertical boost
     } else {
       // For non-horizontal lines, still add the vertical boost
@@ -2402,9 +2452,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // For vertical lines, add a horizontal offset for better visibility
     if (isNearlyVertical) {
       const horizontalOffset = 15;
-      if (angle > 0) { // Line pointing downward
+      if (angle > 0) {
+        // Line pointing downward
         startLabelX -= horizontalOffset;
-      } else { // Line pointing upward
+      } else {
+        // Line pointing upward
         startLabelX += horizontalOffset;
       }
     }
@@ -2421,8 +2473,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Calculate the angle of the line
-    const angle = Math.atan2(this.measureEndPoint.y - this.measureStartPoint.y,
-      this.measureEndPoint.x - this.measureStartPoint.x);
+    const angle = Math.atan2(
+      this.measureEndPoint.y - this.measureStartPoint.y,
+      this.measureEndPoint.x - this.measureStartPoint.x
+    );
 
     // Set offset parameters
     const pointRadius = 6;
@@ -2446,9 +2500,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Add some vertical offset based on diagonal factor
     const verticalBoost = labelDistance * 0.8 * diagonalFactor; // 0.8x gives a more noticeable boost
 
-    if (horizontalness < Math.PI / 8) { // Within 22.5 degrees of horizontal
+    if (horizontalness < Math.PI / 8) {
+      // Within 22.5 degrees of horizontal
       // For nearly horizontal lines, add extra distance that scales with horizontalness
-      const horizontalFactor = 1 - (horizontalness / (Math.PI / 8)); // 0 to 1 factor, adjusted for wider angle
+      const horizontalFactor = 1 - horizontalness / (Math.PI / 8); // 0 to 1 factor, adjusted for wider angle
       extraDistance = labelDistance * 3.5 * horizontalFactor + verticalBoost; // Scale up with vertical boost
     } else {
       // For non-horizontal lines, still add the vertical boost
@@ -2468,8 +2523,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Calculate the angle of the line
-    const angle = Math.atan2(this.measureEndPoint.y - this.measureStartPoint.y,
-      this.measureEndPoint.x - this.measureStartPoint.x);
+    const angle = Math.atan2(
+      this.measureEndPoint.y - this.measureStartPoint.y,
+      this.measureEndPoint.x - this.measureStartPoint.x
+    );
 
     // Set offset parameters
     const pointRadius = 6;
@@ -2499,7 +2556,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     if (isNearlyHorizontal) {
       // For nearly horizontal lines, add extra distance that scales with horizontalness
-      const horizontalFactor = 1 - (horizontalness / (Math.PI / 8)); // 0 to 1 factor, adjusted for wider angle
+      const horizontalFactor = 1 - horizontalness / (Math.PI / 8); // 0 to 1 factor, adjusted for wider angle
       extraDistance = labelDistance * 3.5 * horizontalFactor + verticalBoost; // Scale up with vertical boost
     } else {
       // For non-horizontal lines, still add the vertical boost
@@ -2512,9 +2569,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // For vertical lines, add a horizontal offset for better visibility
     if (isNearlyVertical) {
       const horizontalOffset = 15;
-      if (angle > 0) { // Line pointing downward
+      if (angle > 0) {
+        // Line pointing downward
         endLabelX += horizontalOffset;
-      } else { // Line pointing upward
+      } else {
+        // Line pointing upward
         endLabelX -= horizontalOffset;
       }
     }
@@ -2531,8 +2590,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Calculate the angle of the line
-    const angle = Math.atan2(this.measureEndPoint.y - this.measureStartPoint.y,
-      this.measureEndPoint.x - this.measureStartPoint.x);
+    const angle = Math.atan2(
+      this.measureEndPoint.y - this.measureStartPoint.y,
+      this.measureEndPoint.x - this.measureStartPoint.x
+    );
 
     // Set offset parameters
     const pointRadius = 6;
@@ -2556,9 +2617,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Add some vertical offset based on diagonal factor
     const verticalBoost = labelDistance * 0.8 * diagonalFactor; // 0.8x gives a more noticeable boost
 
-    if (horizontalness < Math.PI / 8) { // Within 22.5 degrees of horizontal
+    if (horizontalness < Math.PI / 8) {
+      // Within 22.5 degrees of horizontal
       // For nearly horizontal lines, add extra distance that scales with horizontalness
-      const horizontalFactor = 1 - (horizontalness / (Math.PI / 8)); // 0 to 1 factor, adjusted for wider angle
+      const horizontalFactor = 1 - horizontalness / (Math.PI / 8); // 0 to 1 factor, adjusted for wider angle
       extraDistance = labelDistance * 3.5 * horizontalFactor + verticalBoost; // Scale up with vertical boost
     } else {
       // For non-horizontal lines, still add the vertical boost
@@ -2585,8 +2647,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         console.log("MEASUREMENTS - BEFORE EXIT URL UPDATE:", currentUrl.toString());
 
         // Remove the measurements parameter from the URL
-        if (currentUrl.searchParams.has('measurements')) {
-          currentUrl.searchParams.delete('measurements');
+        if (currentUrl.searchParams.has("measurements")) {
+          currentUrl.searchParams.delete("measurements");
 
           // Update the URL without navigation using WindowRefService
           this.windowRefService.replaceState({}, currentUrl.toString());
@@ -2623,12 +2685,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     const imageRect = this.cachedImageElement.getBoundingClientRect();
-    return (
-      x < imageRect.left ||
-      x > imageRect.right ||
-      y < imageRect.top ||
-      y > imageRect.bottom
-    );
+    return x < imageRect.left || x > imageRect.right || y < imageRect.top || y > imageRect.bottom;
   }
 
   /**
@@ -2656,14 +2713,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Check each previous measurement and update its outOfBounds property
     this.previousMeasurements.forEach(m => {
       m.outOfBounds =
-        this._checkPointOutsideBoundaries(m.startX, m.startY) ||
-        this._checkPointOutsideBoundaries(m.endX, m.endY);
+        this._checkPointOutsideBoundaries(m.startX, m.startY) || this._checkPointOutsideBoundaries(m.endX, m.endY);
     });
 
     // Ensure change detection runs
     this.cdRef.markForCheck();
   }
-
 
   /**
    * Share measurements by encoding them in URL
@@ -2681,14 +2736,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       const currentUrl = this.windowRefService.getCurrentUrl();
 
       // Set the measurements parameter directly
-      currentUrl.searchParams.set('measurements', encodedData);
+      currentUrl.searchParams.set("measurements", encodedData);
 
       // For measurements we MUST keep the #fullscreen hash as measurements only work in fullscreen view
       // Create a shareable URL that retains the fullscreen hash if it exists
       const shareableUrl = new URL(currentUrl.toString());
 
       // If fullscreen hash doesn't exist, add it since measurements only work in fullscreen view
-      if (shareableUrl.hash !== '#fullscreen') {
+      if (shareableUrl.hash !== "#fullscreen") {
         shareableUrl.hash = "#fullscreen";
       }
 
@@ -2698,36 +2753,39 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Show information dialog with explanation
       import("@shared/components/misc/information-dialog/information-dialog.component").then(module => {
         const modalRef = this.modalService.open(module.InformationDialogComponent, {
-          size: 'md',
+          size: "md",
           centered: true
         });
-        
+
         const componentInstance = modalRef.componentInstance;
-        
+
         // Set the title and icon
         componentInstance.title = this.translateService.instant("Share Measurements");
         componentInstance.iconName = "share-alt";
-        
+
         // Set the explanation message
         let message = this.translateService.instant(
           "The link now includes your measurements. Just share it if you want others to see them."
         );
-        
+
         // Add note about link-based measurements
-        message += "\n\n" + this.translateService.instant(
-          "Heads up: The measurements aren't saved anywhere—only this exact link shows them."
-        );
-        
+        message +=
+          "\n\n" +
+          this.translateService.instant(
+            "Heads up: The measurements aren't saved anywhere—only this exact link shows them."
+          );
+
         // Set the message
         componentInstance.message = message;
-        
+
         // Add custom buttons
         componentInstance.buttons = [
           {
             label: this.translateService.instant("Copy Link"),
             class: "btn-primary",
             callback: () => {
-              this.windowRefService.copyToClipboard(shareableUrl.toString())
+              this.windowRefService
+                .copyToClipboard(shareableUrl.toString())
                 .then(success => {
                   if (success) {
                     this.popNotificationsService.success(
@@ -2759,9 +2817,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       });
     } catch (error) {
       console.error("Failed to share measurements:", error);
-      this.popNotificationsService.error(
-        this.translateService.instant("Failed to create share link")
-      );
+      this.popNotificationsService.error(this.translateService.instant("Failed to create share link"));
     }
   }
 
@@ -2775,8 +2831,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     this.offcanvasService.open(this.helpContentRef, {
       position: this.deviceService.offcanvasPosition(),
-      panelClass: 'image-viewer-offcanvas help-offcanvas',
-      backdropClass: 'image-viewer-offcanvas-backdrop'
+      panelClass: "image-viewer-offcanvas help-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop"
     });
   }
 
@@ -2802,9 +2858,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Check if the image has advanced plate-solving data
       if (!(this.advancedSolutionMatrix && this.advancedSolutionMatrix.raMatrix)) {
         this.popNotificationsService.error(
-          this.translateService.instant(
-            "Saved measurements require advanced plate-solving data."
-          )
+          this.translateService.instant("Saved measurements require advanced plate-solving data.")
         );
         return;
       }
@@ -2862,9 +2916,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     let heightArcseconds = null;
 
     // Always calculate width and height regardless of display mode
-    if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null &&
-      this.measureStartPoint.dec !== null && this.measureEndPoint.dec !== null) {
-
+    if (
+      this.measureStartPoint.ra !== null &&
+      this.measureEndPoint.ra !== null &&
+      this.measureStartPoint.dec !== null &&
+      this.measureEndPoint.dec !== null
+    ) {
       // For rectangular measurements, calculate width and height
       if (this.advancedSolutionMatrix) {
         // Calculate width in arcseconds (horizontal component)
@@ -2877,8 +2934,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
         if (leftCoords && rightCoords) {
           const angularWidth = this.astroUtilsService.calculateAngularDistance(
-            leftCoords.ra, leftCoords.dec,
-            rightCoords.ra, rightCoords.dec
+            leftCoords.ra,
+            leftCoords.dec,
+            rightCoords.ra,
+            rightCoords.dec
           );
 
           // Convert to arcseconds
@@ -2895,8 +2954,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
         if (topCoords && bottomCoords) {
           const angularHeight = this.astroUtilsService.calculateAngularDistance(
-            topCoords.ra, topCoords.dec,
-            bottomCoords.ra, bottomCoords.dec
+            topCoords.ra,
+            topCoords.dec,
+            bottomCoords.ra,
+            bottomCoords.dec
           );
 
           // Convert to arcseconds
@@ -3041,9 +3102,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       let heightArcseconds = null;
 
       // Always calculate width and height regardless of display mode
-      if (originalMeasurement.startRa !== null && originalMeasurement.endRa !== null &&
-        originalMeasurement.startDec !== null && originalMeasurement.endDec !== null) {
-
+      if (
+        originalMeasurement.startRa !== null &&
+        originalMeasurement.endRa !== null &&
+        originalMeasurement.startDec !== null &&
+        originalMeasurement.endDec !== null
+      ) {
         // For rectangular measurements, calculate width and height
         if (this.advancedSolutionMatrix) {
           // Calculate width in arcseconds (horizontal component)
@@ -3056,8 +3120,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
           if (leftCoords && rightCoords) {
             const angularWidth = this.astroUtilsService.calculateAngularDistance(
-              leftCoords.ra, leftCoords.dec,
-              rightCoords.ra, rightCoords.dec
+              leftCoords.ra,
+              leftCoords.dec,
+              rightCoords.ra,
+              rightCoords.dec
             );
 
             // Convert to arcseconds
@@ -3074,8 +3140,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
           if (topCoords && bottomCoords) {
             const angularHeight = this.astroUtilsService.calculateAngularDistance(
-              topCoords.ra, topCoords.dec,
-              bottomCoords.ra, bottomCoords.dec
+              topCoords.ra,
+              topCoords.dec,
+              bottomCoords.ra,
+              bottomCoords.dec
             );
 
             // Convert to arcseconds
@@ -3178,7 +3246,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Note: This is used by the saved measurements panel form, not the modal.
    * For the save button on the measurement itself, see openSaveCurrentMeasurement.
    */
-  saveMeasurement(options?: {name?: string, notes?: string, showRectangle?: boolean, showCircle?: boolean}): void {
+  saveMeasurement(options?: { name?: string; notes?: string; showRectangle?: boolean; showCircle?: boolean }): void {
     // Check if we have a valid advanced solution matrix needed for saving
     if (!this.isValidSolutionMatrix()) {
       this.popNotificationsService.error(
@@ -3219,10 +3287,13 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     let widthArcseconds = null;
     let heightArcseconds = null;
 
-    if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null &&
-      this.measureStartPoint.dec !== null && this.measureEndPoint.dec !== null &&
-      (options?.showRectangle || this.showCurrentRectangle)) {
-
+    if (
+      this.measureStartPoint.ra !== null &&
+      this.measureEndPoint.ra !== null &&
+      this.measureStartPoint.dec !== null &&
+      this.measureEndPoint.dec !== null &&
+      (options?.showRectangle || this.showCurrentRectangle)
+    ) {
       // For rectangular measurements, calculate width and height
       if (this.advancedSolutionMatrix) {
         // Calculate width in arcseconds (horizontal component)
@@ -3235,8 +3306,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
         if (leftCoords && rightCoords) {
           const angularWidth = this.astroUtilsService.calculateAngularDistance(
-            leftCoords.ra, leftCoords.dec,
-            rightCoords.ra, rightCoords.dec
+            leftCoords.ra,
+            leftCoords.dec,
+            rightCoords.ra,
+            rightCoords.dec
           );
 
           // Convert to arcseconds
@@ -3253,8 +3326,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
         if (topCoords && bottomCoords) {
           const angularHeight = this.astroUtilsService.calculateAngularDistance(
-            topCoords.ra, topCoords.dec,
-            bottomCoords.ra, bottomCoords.dec
+            topCoords.ra,
+            topCoords.dec,
+            bottomCoords.ra,
+            bottomCoords.dec
           );
 
           // Convert to arcseconds
@@ -3354,16 +3429,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         this.loadingMeasurementId = null;
         // Force change detection
         this.cdRef.detectChanges();
-        this.popNotificationsService.error(
-          this.translateService.instant("Failed to load measurement")
-        );
+        this.popNotificationsService.error(this.translateService.instant("Failed to load measurement"));
       });
     } else {
       // If we don't have a valid solution matrix, show error and reset loading state
       this.popNotificationsService.error(
-        this.translateService.instant(
-          "Cannot load measurement on an image without advanced plate-solving data."
-        )
+        this.translateService.instant("Cannot load measurement on an image without advanced plate-solving data.")
       );
       this.loadingMeasurement = false;
       this.loadingMeasurementId = null;
@@ -3393,9 +3464,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Check if we have a solution matrix, required for loading measurements
     if (!this.advancedSolutionMatrix) {
       this.popNotificationsService.error(
-        this.translateService.instant(
-          "Cannot load measurement on an image without advanced plate-solving data."
-        )
+        this.translateService.instant("Cannot load measurement on an image without advanced plate-solving data.")
       );
       this.loadingMeasurement = false;
       this.loadingMeasurementId = null;
@@ -3405,7 +3474,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     // Use the direct image element reference - no querySelector needed
     let imageElement: HTMLElement | null = null;
     if (this.imageElement) {
-      if ('nativeElement' in this.imageElement) {
+      if ("nativeElement" in this.imageElement) {
         imageElement = this.imageElement.nativeElement;
       } else {
         imageElement = this.imageElement as HTMLElement;
@@ -3413,9 +3482,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     if (!imageElement) {
-      this.popNotificationsService.error(
-        this.translateService.instant("Cannot locate image element")
-      );
+      this.popNotificationsService.error(this.translateService.instant("Cannot locate image element"));
       this.loadingMeasurement = false;
       this.loadingMeasurementId = null;
       return;
@@ -3430,8 +3497,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Get the center of the image for positioning, not the viewport
     const imgRect = imageElement.getBoundingClientRect();
-    const centerX = imgRect.left + (imgRect.width / 2);
-    const centerY = imgRect.top + (imgRect.height / 2);
+    const centerX = imgRect.left + imgRect.width / 2;
+    const centerY = imgRect.top + imgRect.height / 2;
 
     // Check if we have width and height in arcseconds from the preset
     const hasArcsecondDimensions = !!preset.widthArcseconds && !!preset.heightArcseconds;
@@ -3448,8 +3515,8 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
         try {
           // Add a small random offset on retries to avoid edge cases
-          const offsetX = attempts > 1 ? (Math.random() * 10 - 5) : 0;
-          const offsetY = attempts > 1 ? (Math.random() * 10 - 5) : 0;
+          const offsetX = attempts > 1 ? Math.random() * 10 - 5 : 0;
+          const offsetY = attempts > 1 ? Math.random() * 10 - 5 : 0;
 
           centerCoords = this.boundCalculateCoordinatesAtPoint(centerX + offsetX, centerY + offsetY);
 
@@ -3486,9 +3553,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       }
 
       if (!this.solution.advancedPixscale) {
-        this.popNotificationsService.error(
-          this.translateService.instant("Invalid pixel scale in image solution")
-        );
+        this.popNotificationsService.error(this.translateService.instant("Invalid pixel scale in image solution"));
         this.loadingMeasurement = false;
         this.loadingMeasurementId = null;
         // Force change detection
@@ -3502,9 +3567,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // If for some reason the pixscale is unavailable or invalid
       if (isNaN(arcsecPerPixel) || arcsecPerPixel <= 0) {
-        this.popNotificationsService.error(
-          this.translateService.instant("Invalid plate scale in image solution")
-        );
+        this.popNotificationsService.error(this.translateService.instant("Invalid plate scale in image solution"));
         this.loadingMeasurement = false;
         this.loadingMeasurementId = null;
         // Force change detection
@@ -3540,9 +3603,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Validate the measurement is large enough (at least 50 display pixels in either dimension)
       if (pixelWidth < 50 || pixelHeight < 50) {
-        this.popNotificationsService.error(
-          this.translateService.instant("Measurement is too small for this image.")
-        );
+        this.popNotificationsService.error(this.translateService.instant("Measurement is too small for this image."));
         this.loadingMeasurement = false;
         this.loadingMeasurementId = null;
         // Force change detection
@@ -3555,10 +3616,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Check if any point would be outside the image boundaries
       if (
-        startX < imgBounds.left || startX > imgBounds.right ||
-        startY < imgBounds.top || startY > imgBounds.bottom ||
-        endX < imgBounds.left || endX > imgBounds.right ||
-        endY < imgBounds.top || endY > imgBounds.bottom
+        startX < imgBounds.left ||
+        startX > imgBounds.right ||
+        startY < imgBounds.top ||
+        startY > imgBounds.bottom ||
+        endX < imgBounds.left ||
+        endX > imgBounds.right ||
+        endY < imgBounds.top ||
+        endY > imgBounds.bottom
       ) {
         this.popNotificationsService.error(
           this.translateService.instant("Measurement could not be placed within the image boundaries.")
@@ -3620,13 +3685,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         const currentHeightPixels = Math.abs(this.measureEndPoint.y - this.measureStartPoint.y);
 
         // Apply correction by repositioning the end point (keep start fixed)
-        const adjustedEndX = this.measureStartPoint.x +
-          (this.measureEndPoint.x - this.measureStartPoint.x) *
-          (targetWidthPixels / Math.max(0.1, currentWidthPixels));
+        const adjustedEndX =
+          this.measureStartPoint.x +
+          (this.measureEndPoint.x - this.measureStartPoint.x) * (targetWidthPixels / Math.max(0.1, currentWidthPixels));
 
-        const adjustedEndY = this.measureStartPoint.y +
+        const adjustedEndY =
+          this.measureStartPoint.y +
           (this.measureEndPoint.y - this.measureStartPoint.y) *
-          (targetHeightPixels / Math.max(0.1, currentHeightPixels));
+            (targetHeightPixels / Math.max(0.1, currentHeightPixels));
 
         // Update the end point position
         this.measureEndPoint.x = adjustedEndX;
@@ -3645,20 +3711,24 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
         // Use the direct angular distance between start and end points (which may have been adjusted)
         const angularDistance = this.astroUtilsService.calculateAngularDistance(
-          this.measureStartPoint.ra, this.measureStartPoint.dec,
-          this.measureEndPoint.ra, this.measureEndPoint.dec
+          this.measureStartPoint.ra,
+          this.measureStartPoint.dec,
+          this.measureEndPoint.ra,
+          this.measureEndPoint.dec
         );
 
         // Format this distance using our standard formatter
         this.measureDistance = this.astroUtilsService.formatAngularDistance(angularDistance);
       }
-        // This is the fallback if for some reason we couldn't get RA/Dec values
+      // This is the fallback if for some reason we couldn't get RA/Dec values
       // from the measurement points directly
       else if (startCoords && endCoords) {
         // Use the original coordinate calculations from earlier in the function
         const angularDistance = this.astroUtilsService.calculateAngularDistance(
-          startCoords.ra, startCoords.dec,
-          endCoords.ra, endCoords.dec
+          startCoords.ra,
+          startCoords.dec,
+          endCoords.ra,
+          endCoords.dec
         );
         this.measureDistance = this.astroUtilsService.formatAngularDistance(angularDistance);
       }
@@ -3678,7 +3748,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // and reset the current measurement to provide better visual styling
 
       // Prepare a nice label with both dimensions if available
-      let displayDistance = this.measureDistance;
+      const displayDistance = this.measureDistance;
 
       // First create a previous measurement from the loaded data
       const loadedMeasurement: MeasurementData = {
@@ -3767,9 +3837,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Configure dialog
       modalRef.componentInstance.title = this.translateService.instant("Delete measurement");
-      modalRef.componentInstance.message = this.translateService.instant(
-        "This action cannot be undone."
-      );
+      modalRef.componentInstance.message = this.translateService.instant("This action cannot be undone.");
       modalRef.componentInstance.confirmLabel = this.translateService.instant("Delete");
 
       // Subscribe to dialog result
@@ -3824,9 +3892,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     const heightDiff = Math.abs(newHeight - this._prevWindowHeight);
 
     // Only show warning if the size change is significant (more than 50px)
-    if ((widthDiff > 50 || heightDiff > 50) &&
-      (this.previousMeasurements.length > 0 ||
-        (this.measureStartPoint && this.measureEndPoint))) {
+    if (
+      (widthDiff > 50 || heightDiff > 50) &&
+      (this.previousMeasurements.length > 0 || (this.measureStartPoint && this.measureEndPoint))
+    ) {
       // Set flag to mark measurements as potentially incorrect
       this.measurementsAffectedByResize = true;
 
@@ -3920,9 +3989,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     const midY = (startPoint.y + endPoint.y) / 2;
 
     // Find all measure-distance elements
-    const measureDistanceElements = Array.from(
-      document.querySelectorAll(".measure-distance")
-    ) as HTMLElement[];
+    const measureDistanceElements = Array.from(document.querySelectorAll(".measure-distance")) as HTMLElement[];
 
     // Calculate position and dimensions of the horizontal distance label
     const horizontalLabelX = midX; // X position at the middle of width
@@ -3956,10 +4023,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       };
 
       // Check for overlap between the horizontal label and the element
-      if (!(horizontalLabelBox.right < elementBox.left ||
-        horizontalLabelBox.left > elementBox.right ||
-        horizontalLabelBox.bottom < elementBox.top ||
-        horizontalLabelBox.top > elementBox.bottom)) {
+      if (
+        !(
+          horizontalLabelBox.right < elementBox.left ||
+          horizontalLabelBox.left > elementBox.right ||
+          horizontalLabelBox.bottom < elementBox.top ||
+          horizontalLabelBox.top > elementBox.bottom
+        )
+      ) {
         overlaps = true;
         overlappingElement = element;
         break;
@@ -4003,9 +4074,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
     // Find the actual .measure-distance element at the center of the measurement
     // This is the element we need to avoid overlapping with
-    const measureDistanceElements = Array.from(
-      document.querySelectorAll(".measure-distance")
-    ) as HTMLElement[];
+    const measureDistanceElements = Array.from(document.querySelectorAll(".measure-distance")) as HTMLElement[];
 
     // Calculate position and dimensions of the vertical distance label
     const verticalLabelX = rightEdgeX + 35; // X position of vertical label
@@ -4039,10 +4108,14 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       };
 
       // Check for overlap between the vertical label and the element
-      if (!(verticalLabelBox.right < elementBox.left ||
-        verticalLabelBox.left > elementBox.right ||
-        verticalLabelBox.bottom < elementBox.top ||
-        verticalLabelBox.top > elementBox.bottom)) {
+      if (
+        !(
+          verticalLabelBox.right < elementBox.left ||
+          verticalLabelBox.left > elementBox.right ||
+          verticalLabelBox.bottom < elementBox.top ||
+          verticalLabelBox.top > elementBox.bottom
+        )
+      ) {
         overlaps = true;
         overlappingElement = element;
         break;
@@ -4097,7 +4170,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     }
 
     // Get the coordinates for all points of the measurement
-    let exportData = {
+    const exportData = {
       centerCoordinates: {
         text: "N/A",
         ra: null,
@@ -4551,9 +4624,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     );
 
     // Format the distance based on whether we have valid celestial coordinates
-    if (this.isValidSolutionMatrix() &&
-      this.measureStartPoint.ra !== null &&
-      this.measureEndPoint.ra !== null) {
+    if (this.isValidSolutionMatrix() && this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
       this.measureDistance = this.formatAngularDistance(pixelDistance);
     } else {
       this.measureDistance = `${Math.round(pixelDistance)} px`;
@@ -4575,7 +4646,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   /**
    * Extract measurement info from the drag state
    */
-  private _getPreviousMeasurementInfo(): { measurement: MeasurementData, index: number, pointType: string } | null {
+  private _getPreviousMeasurementInfo(): { measurement: MeasurementData; index: number; pointType: string } | null {
     const parts = this.isDraggingPoint.split("-");
     const index = parseInt(parts[1], 10);
 
@@ -4727,7 +4798,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Then parse as JSON
       measurementsData = JSON.parse(decodedString);
-      console.log("PARSED MEASUREMENTS - Type:", Array.isArray(measurementsData) ? 'Array' : typeof measurementsData, "Length:", Array.isArray(measurementsData) ? measurementsData.length : 0);
+      console.log(
+        "PARSED MEASUREMENTS - Type:",
+        Array.isArray(measurementsData) ? "Array" : typeof measurementsData,
+        "Length:",
+        Array.isArray(measurementsData) ? measurementsData.length : 0
+      );
 
       if (!Array.isArray(measurementsData)) {
         throw new Error("Invalid measurements data format");
@@ -4735,8 +4811,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     } catch (e) {
       console.error("Failed to decode measurements:", e);
       this.popNotificationsService.error(
-        this.translateService.instant("Failed to load shared measurements from URL: {{message}}",
-          { message: "Could not decode measurement data. The URL may be incomplete or invalid." })
+        this.translateService.instant("Failed to load shared measurements from URL: {{message}}", {
+          message: "Could not decode measurement data. The URL may be incomplete or invalid."
+        })
       );
       this.loadingUrlMeasurements = false; // CRITICAL: Clear loading flag directly
       this.hideLoadingIndicator();
@@ -4761,8 +4838,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
         // Reconstruct each measurement
         measurementsData.forEach(m => {
           // Validate required fields
-          if (typeof m.sX !== "number" || typeof m.sY !== "number" ||
-            typeof m.eX !== "number" || typeof m.eY !== "number") {
+          if (
+            typeof m.sX !== "number" ||
+            typeof m.sY !== "number" ||
+            typeof m.eX !== "number" ||
+            typeof m.eY !== "number"
+          ) {
             console.warn("Skipping invalid measurement with missing coordinates");
             return;
           }
@@ -4776,7 +4857,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           // Get the image element for reference - use it directly since we changed to static image
           let imageElement: HTMLElement | null = null;
           if (this.imageElement) {
-            if ('nativeElement' in this.imageElement) {
+            if ("nativeElement" in this.imageElement) {
               imageElement = this.imageElement.nativeElement;
             } else {
               imageElement = this.imageElement as HTMLElement;
@@ -4802,30 +4883,34 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
           const centerY = imageElement.getBoundingClientRect().height / 2;
 
           // If we have valid celestial coordinates and a solution matrix, use them to position the measurement
-          if (this.isValidSolutionMatrix() &&
-              m.sRa !== null && m.sDec !== null &&
-              m.eRa !== null && m.eDec !== null) {
+          if (this.isValidSolutionMatrix() && m.sRa !== null && m.sDec !== null && m.eRa !== null && m.eDec !== null) {
             try {
-              console.debug("Using celestial coordinates to position measurement:",
+              console.debug(
+                "Using celestial coordinates to position measurement:",
                 `Start: RA=${m.sRa.toFixed(6)}, Dec=${m.sDec.toFixed(6)}`,
-                `End: RA=${m.eRa.toFixed(6)}, Dec=${m.eDec.toFixed(6)}`);
+                `End: RA=${m.eRa.toFixed(6)}, Dec=${m.eDec.toFixed(6)}`
+              );
 
               // Calculate pixel positions for start and end points using recursive search with the solution
               const startPoint = this.astroUtilsService.calculatePixelPositionFromCoordinates(
-                m.sRa, m.sDec,
+                m.sRa,
+                m.sDec,
                 this.advancedSolutionMatrix,
                 imageElement
               );
 
               const endPoint = this.astroUtilsService.calculatePixelPositionFromCoordinates(
-                m.eRa, m.eDec,
+                m.eRa,
+                m.eDec,
                 this.advancedSolutionMatrix,
                 imageElement
               );
 
-              console.debug("Calculated positions:",
+              console.debug(
+                "Calculated positions:",
                 startPoint ? `Start(${startPoint.x.toFixed(1)}, ${startPoint.y.toFixed(1)})` : "Start(null)",
-                endPoint ? `End(${endPoint.x.toFixed(1)}, ${endPoint.y.toFixed(1)})` : "End(null)");
+                endPoint ? `End(${endPoint.x.toFixed(1)}, ${endPoint.y.toFixed(1)})` : "End(null)"
+              );
 
               // If we successfully calculated both positions, use them
               if (startPoint && endPoint) {
@@ -4833,17 +4918,17 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
                 startY = startPoint.y;
                 endX = endPoint.x;
                 endY = endPoint.y;
-                console.debug("Positioned measurement using celestial coordinates at:",
+                console.debug(
+                  "Positioned measurement using celestial coordinates at:",
                   `Start: (${startX.toFixed(1)}, ${startY.toFixed(1)})`,
-                  `End: (${endX.toFixed(1)}, ${endY.toFixed(1)})`);
+                  `End: (${endX.toFixed(1)}, ${endY.toFixed(1)})`
+                );
               } else {
                 // Fall back to using the angular distance to create a properly sized measurement
                 console.debug("Could not calculate pixel positions directly, using angular distance instead");
 
                 // Get the angular distance between the points
-                const angularDistance = this.astroUtilsService.calculateAngularDistance(
-                  m.sRa, m.sDec, m.eRa, m.eDec
-                );
+                const angularDistance = this.astroUtilsService.calculateAngularDistance(m.sRa, m.sDec, m.eRa, m.eDec);
 
                 // Convert to arcseconds
                 const arcseconds = angularDistance * 3600;
@@ -4857,7 +4942,11 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
                   const pixscale = this.astroUtilsService.getPixelScale(this.solution);
                   if (pixscale > 0) {
                     scale = arcseconds / pixscale;
-                    console.debug(`Using pixel scale: ${pixscale.toFixed(2)} arcsec/pixel, resulting length: ${scale.toFixed(1)} pixels`);
+                    console.debug(
+                      `Using pixel scale: ${pixscale.toFixed(2)} arcsec/pixel, resulting length: ${scale.toFixed(
+                        1
+                      )} pixels`
+                    );
                   }
                 }
 
@@ -4866,8 +4955,10 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
                 startY = centerY;
                 endX = centerX + scale / 2;
                 endY = centerY;
-                console.debug("Positioned measurement at center with correct angular size:",
-                  `Center at (${centerX.toFixed(1)}, ${centerY.toFixed(1)}), length: ${scale.toFixed(1)} pixels`);
+                console.debug(
+                  "Positioned measurement at center with correct angular size:",
+                  `Center at (${centerX.toFixed(1)}, ${centerY.toFixed(1)}), length: ${scale.toFixed(1)} pixels`
+                );
               }
 
               console.log("Created measurement with proper angular size at center of image");
@@ -4926,7 +5017,12 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
             endX: measurement.endX,
             endY: measurement.endY,
             distance: measurement.distance,
-            hasCelestialCoords: !!(measurement.startRa && measurement.startDec && measurement.endRa && measurement.endDec)
+            hasCelestialCoords: !!(
+              measurement.startRa &&
+              measurement.startDec &&
+              measurement.endRa &&
+              measurement.endDec
+            )
           });
         });
 
@@ -4944,7 +5040,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
             // Show success notification
             this.popNotificationsService.success(
-              this.translateService.instant("Loaded {{count}} shared measurements.", { count: this.previousMeasurements.length })
+              this.translateService.instant("Loaded {{count}} shared measurements.", {
+                count: this.previousMeasurements.length
+              })
             );
           });
         }
@@ -4958,7 +5056,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       } catch (error) {
         console.error("Failed to process measurements:", error);
         this.popNotificationsService.error(
-          this.translateService.instant("Failed to load shared measurements from URL: {{message}}", { message: error.message })
+          this.translateService.instant("Failed to load shared measurements from URL: {{message}}", {
+            message: error.message
+          })
         );
         // Clear loading indicator on error
         this.loadingUrlMeasurements = false; // CRITICAL: Clear loading flag directly
@@ -4973,7 +5073,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
       // Check if the image element is available first
       if (!this.cachedImageElement) {
         console.warn("LOAD MEASUREMENTS - Image element not available yet, trying to find it");
-        if ('nativeElement' in this.imageElement) {
+        if ("nativeElement" in this.imageElement) {
           this.cachedImageElement = this.imageElement.nativeElement;
         } else {
           this.cachedImageElement = this.imageElement as HTMLElement;
@@ -5003,7 +5103,9 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // If we've exceeded max retries, try to process anyway
       if (retryCount >= maxRetries) {
-        console.warn(`LOAD MEASUREMENTS - Solution matrix not ready after ${maxRetries} attempts. Trying to load measurements anyway.`);
+        console.warn(
+          `LOAD MEASUREMENTS - Solution matrix not ready after ${maxRetries} attempts. Trying to load measurements anyway.`
+        );
         processAndLoadMeasurements();
         return;
       }
@@ -5024,22 +5126,21 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
    * Helper method to calculate the displayed distance text
    */
   private calculateDistanceText(
-    startX: number, startY: number, endX: number, endY: number,
-    startRa: number | null, startDec: number | null,
-    endRa: number | null, endDec: number | null
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+    startRa: number | null,
+    startDec: number | null,
+    endRa: number | null,
+    endDec: number | null
   ): string {
     // Calculate pixel distance
-    const pixelDistance = Math.round(
-      Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2))
-    );
+    const pixelDistance = Math.round(Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2)));
 
     // If we have valid coordinates and solution matrix, calculate angular distance
-    if (this.isValidSolutionMatrix() &&
-      startRa !== null && startDec !== null &&
-      endRa !== null && endDec !== null) {
-      const angularDistance = this.astroUtilsService.calculateAngularDistance(
-        startRa, startDec, endRa, endDec
-      );
+    if (this.isValidSolutionMatrix() && startRa !== null && startDec !== null && endRa !== null && endDec !== null) {
+      const angularDistance = this.astroUtilsService.calculateAngularDistance(startRa, startDec, endRa, endDec);
 
       // Convert to arcseconds and format
       const arcseconds = angularDistance * 3600;
@@ -5061,7 +5162,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
   }
 
   // Helper method to resolve collisions by moving labels
-  private resolveCollision(label1: LabelBoundingBox, label2: LabelBoundingBox): { x: number, y: number } {
+  private resolveCollision(label1: LabelBoundingBox, label2: LabelBoundingBox): { x: number; y: number } {
     // Determine which label to move (higher priority number gets moved)
     const labelToMove = label1.priority > label2.priority ? label1 : label2;
     const fixedLabel = label1.priority > label2.priority ? label2 : label1;
@@ -5089,21 +5190,16 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
 
       // Move horizontally for wider collisions, vertically for taller ones
       if (overlapX < overlapY) {
-        newX = isRightOfFixed ?
-          fixedLabel.x + fixedLabel.width + 5 :
-          fixedLabel.x - labelToMove.width - 5;
+        newX = isRightOfFixed ? fixedLabel.x + fixedLabel.width + 5 : fixedLabel.x - labelToMove.width - 5;
       } else {
-        newY = isBelowFixed ?
-          fixedLabel.y + fixedLabel.height + 5 :
-          fixedLabel.y - labelToMove.height - 5;
+        newY = isBelowFixed ? fixedLabel.y + fixedLabel.height + 5 : fixedLabel.y - labelToMove.height - 5;
       }
     }
     // For dimension labels, we have specific positioning needs
     else if (labelToMove.type === "dimension") {
       // Dimension labels should mostly move vertically
-      newY = labelToMove.y > fixedLabel.y ?
-        fixedLabel.y + fixedLabel.height + 5 :
-        fixedLabel.y - labelToMove.height - 5;
+      newY =
+        labelToMove.y > fixedLabel.y ? fixedLabel.y + fixedLabel.height + 5 : fixedLabel.y - labelToMove.height - 5;
     }
 
     return { x: newX, y: newY };
@@ -5281,11 +5377,7 @@ export class MeasuringToolComponent extends BaseComponentDirective implements On
     const expirationDate = new Date();
     expirationDate.setFullYear(expirationDate.getFullYear() + 1);
 
-    this.cookieService.put(
-      this.MEASUREMENT_SHAPE_COOKIE_NAME,
-      preference,
-      { expires: expirationDate }
-    );
+    this.cookieService.put(this.MEASUREMENT_SHAPE_COOKIE_NAME, preference, { expires: expirationDate });
   }
 
   /**

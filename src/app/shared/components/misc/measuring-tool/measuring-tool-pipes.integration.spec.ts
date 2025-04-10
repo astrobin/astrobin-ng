@@ -1,30 +1,41 @@
 import { Component } from "@angular/core";
 import { ComponentFixture } from "@angular/core/testing";
 import { MockBuilder, MockRender, ngMocks } from "ng-mocks";
-import { MeasuringToolModule } from "./measuring-tool.module";
+
+import {
+  CalculateDistancePipe,
+  CalculateLabelPositionPipe,
+  FormatCoordinatesCompactPipe,
+  GetMidpointPipe,
+  MathAbsPipe,
+  MathMaxPipe,
+  MathMinPipe
+} from "./measuring-tool-pipes";
 import { MeasurementPoint } from "./measuring-tool.component";
-import { CalculateDistancePipe, CalculateLabelPositionPipe, FormatCoordinatesCompactPipe, GetMidpointPipe, MathAbsPipe, MathMaxPipe, MathMinPipe } from "./measuring-tool-pipes";
+import { MeasuringToolModule } from "./measuring-tool.module";
 
 // Create a simple test component that uses the pipes
 @Component({
   template: `
     <div>
       <!-- Test CalculateDistance pipe -->
-      <div id="distance">{{ 10 | calculateDistance:10:13:14 }}</div>
+      <div id="distance">{{ 10 | calculateDistance : 10 : 13 : 14 }}</div>
 
       <!-- Test FormatCoordinatesCompact pipe -->
-      <div id="coordinates">{{ 10.5 | formatCoordinatesCompact:20.25 }}</div>
+      <div id="coordinates">{{ 10.5 | formatCoordinatesCompact : 20.25 }}</div>
 
       <!-- Test Math pipes -->
-      <div id="mathMin">{{ 10 | mathMin:5 }}</div>
-      <div id="mathMax">{{ 10 | mathMax:5 }}</div>
+      <div id="mathMin">{{ 10 | mathMin : 5 }}</div>
+      <div id="mathMax">{{ 10 | mathMax : 5 }}</div>
       <div id="mathAbs">{{ -10 | mathAbs }}</div>
-      <div id="midpoint">{{ 10 | getMidpoint:20 }}</div>
+      <div id="midpoint">{{ 10 | getMidpoint : 20 }}</div>
 
       <!-- Test CalculateLabelPosition pipe -->
-      <div id="labelPosition">{{
-          (startPoint | calculateLabelPosition:endPoint:'start').x + ',' +
-          (startPoint | calculateLabelPosition:endPoint:'start').y
+      <div id="labelPosition">
+        {{
+          (startPoint | calculateLabelPosition : endPoint : "start").x +
+            "," +
+            (startPoint | calculateLabelPosition : endPoint : "start").y
         }}
       </div>
     </div>

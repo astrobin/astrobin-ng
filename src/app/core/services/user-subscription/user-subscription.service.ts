@@ -107,7 +107,10 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
       );
   }
 
-  hasValidSubscription$(_userProfile: UserProfileInterface, subscriptionNames: SubscriptionName[]): Observable<boolean> {
+  hasValidSubscription$(
+    _userProfile: UserProfileInterface,
+    subscriptionNames: SubscriptionName[]
+  ): Observable<boolean> {
     return this.store$.pipe(
       take(1),
       map(state => {

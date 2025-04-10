@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { CommonModule } from "@angular/common";
+import { HttpClientModule } from "@angular/common/http";
+import { NgModule } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { EffectsModule } from "@ngrx/effects";
+import { StoreModule } from "@ngrx/store";
+import { TranslateModule } from "@ngx-translate/core";
 
-import { measurementPresetReducer } from './store/measurement-preset.reducer';
-import { MeasurementPresetEffects } from './store/measurement-preset.effects';
-import { MeasurementPresetApiService } from './services/measurement-preset-api.service';
+import { MeasurementPresetApiService } from "./services/measurement-preset-api.service";
+import { MeasurementPresetEffects } from "./store/measurement-preset.effects";
+import { measurementPresetReducer } from "./store/measurement-preset.reducer";
 
 @NgModule({
   imports: [
@@ -16,12 +16,10 @@ import { MeasurementPresetApiService } from './services/measurement-preset-api.s
     HttpClientModule,
     FormsModule,
     TranslateModule,
-    StoreModule.forFeature('measurementPreset', measurementPresetReducer),
+    StoreModule.forFeature("measurementPreset", measurementPresetReducer),
     EffectsModule.forFeature([MeasurementPresetEffects])
   ],
-  providers: [
-    MeasurementPresetApiService
-  ],
+  providers: [MeasurementPresetApiService],
   exports: []
 })
-export class MeasurementPresetModule { }
+export class MeasurementPresetModule {}

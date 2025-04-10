@@ -5,9 +5,15 @@ import { createSelector } from "@ngrx/store";
 
 export const selectSolutions = createSelector(selectApp, (state: AppState): SolutionInterface[] => state.solutions);
 
-export const selectSolutionMatrices = createSelector(selectApp, (state: AppState): { [solutionId: number]: any } => state.solutionMatrices);
+export const selectSolutionMatrices = createSelector(
+  selectApp,
+  (state: AppState): { [solutionId: number]: any } => state.solutionMatrices
+);
 
-export const selectSolutionMatricesLoading = createSelector(selectApp, (state: AppState): Set<number> => state.solutionMatricesLoading);
+export const selectSolutionMatricesLoading = createSelector(
+  selectApp,
+  (state: AppState): Set<number> => state.solutionMatricesLoading
+);
 
 export const selectIsSolutionMatrixLoading = createSelector(
   selectSolutionMatricesLoading,

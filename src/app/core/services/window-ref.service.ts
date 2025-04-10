@@ -192,26 +192,26 @@ export class WindowRefService extends BaseService {
         return true;
       } else {
         // Fallback for browsers without clipboard API
-        const textArea = this.nativeWindow.document.createElement('textarea');
+        const textArea = this.nativeWindow.document.createElement("textarea");
         textArea.value = text;
-        
+
         // Avoid scrolling to bottom
-        textArea.style.top = '0';
-        textArea.style.left = '0';
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+
         this.nativeWindow.document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
-        
+
         try {
-          const successful = this.nativeWindow.document.execCommand('copy');
+          const successful = this.nativeWindow.document.execCommand("copy");
           this.nativeWindow.document.body.removeChild(textArea);
           return successful;
         } catch (err) {
           this.nativeWindow.document.body.removeChild(textArea);
-          console.warn('Fallback copy failed:', err);
+          console.warn("Fallback copy failed:", err);
           return false;
         }
       }

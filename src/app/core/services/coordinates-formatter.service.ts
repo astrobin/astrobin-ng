@@ -1,5 +1,5 @@
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 
 // Interface for raw coordinate data
 export interface CoordinateData {
@@ -68,8 +68,8 @@ export class CoordinatesFormatterService {
     },
     options?: {
       useClientCoords?: boolean; // Whether to use client coordinates instead of offset
-      naturalWidth?: number;    // Optional natural width if not available from image element
-      imageScale?: number;      // Optional scale to apply (for zoom)
+      naturalWidth?: number; // Optional natural width if not available from image element
+      imageScale?: number; // Optional scale to apply (for zoom)
     }
   ): {
     coordinates: CoordinateData;
@@ -111,8 +111,7 @@ export class CoordinatesFormatterService {
       ? imageElement.getBoundingClientRect().width
       : imageElement.clientWidth;
 
-    const imageNaturalWidth = options?.naturalWidth ||
-      ((imageElement as HTMLImageElement).naturalWidth) || 1824;
+    const imageNaturalWidth = options?.naturalWidth || (imageElement as HTMLImageElement).naturalWidth || 1824;
 
     // HD_WIDTH is a fixed reference width that the plate-solving matrix is based on
     const HD_WIDTH = 1824;
@@ -124,8 +123,8 @@ export class CoordinatesFormatterService {
 
     if (options?.useClientCoords) {
       // For fullscreen view: scaled coordinates based on rendered/HD ratio
-      scaledX = relativeX / imageRenderedWidth * HD_WIDTH;
-      scaledY = relativeY / imageRenderedWidth * HD_WIDTH;
+      scaledX = (relativeX / imageRenderedWidth) * HD_WIDTH;
+      scaledY = (relativeY / imageRenderedWidth) * HD_WIDTH;
     } else {
       // For regular view: calculate scale and apply to offset
       const scale = imageRenderedWidth / Math.min(imageNaturalWidth, HD_WIDTH);
@@ -141,11 +140,11 @@ export class CoordinatesFormatterService {
 
     // Set appropriate scale for the interpolation
     const interpolationScale = options?.useClientCoords
-      ? undefined   // Not needed for fullscreen, handled by scaledX/Y
+      ? undefined // Not needed for fullscreen, handled by scaledX/Y
       : imageRenderedWidth / Math.min(imageNaturalWidth, HD_WIDTH);
 
     // Check if CoordinateInterpolation is available (it's defined globally in assets/js/CoordinateInterpolation.js)
-    if (typeof CoordinateInterpolation === 'undefined' || !CoordinateInterpolation) {
+    if (typeof CoordinateInterpolation === "undefined" || !CoordinateInterpolation) {
       return null;
     }
 
@@ -165,7 +164,7 @@ export class CoordinatesFormatterService {
     // Get raw values from the interpolation
     const interpolationResult = interpolation.interpolate(scaledX, scaledY, true, true);
 
-    if (!interpolationResult || typeof interpolationResult.alpha !== 'number') {
+    if (!interpolationResult || typeof interpolationResult.alpha !== "number") {
       return null;
     }
 
@@ -331,8 +330,8 @@ export class CoordinatesFormatterService {
     },
     options?: {
       useClientCoords?: boolean; // Whether to use client coordinates instead of offset
-      naturalWidth?: number;    // Optional natural width if not available from image element
-      imageScale?: number;      // Optional scale to apply (for zoom)
+      naturalWidth?: number; // Optional natural width if not available from image element
+      imageScale?: number; // Optional scale to apply (for zoom)
     }
   ): {
     coordinates: FormattedCoordinates;
@@ -374,7 +373,7 @@ export class CoordinatesFormatterService {
     decMinutes: number | string,
     decSeconds: number | string,
     decSign: string = ""
-  ): { raHtml: string, decHtml: string } {
+  ): { raHtml: string; decHtml: string } {
     // Ensure proper padding
     const paddedRaHours = raHours.toString().padStart(2, "0");
     const paddedRaMinutes = raMinutes.toString().padStart(2, "0");
@@ -419,7 +418,7 @@ export class CoordinatesFormatterService {
     bMinutes: number | string,
     bSeconds: number | string,
     bSign: string = ""
-  ): { galacticRaHtml: string, galacticDecHtml: string } {
+  ): { galacticRaHtml: string; galacticDecHtml: string } {
     // Ensure proper padding
     const paddedLDegrees = lDegrees.toString().padStart(3, "0");
     const paddedLMinutes = lMinutes.toString().padStart(2, "0");
@@ -568,19 +567,24 @@ export class CoordinatesFormatterService {
    * @returns Formatted coordinate HTML strings
    */
   formatFromInterpolationObject(interpolationText: any): FormattedCoordinates {
-    const ra = interpolationText.alpha.trim().split(" ").map(x => x.padStart(2, "0"));
-    const dec = interpolationText.delta.trim().split(" ").map(x => x.padStart(2, "0"));
-    const galacticL = interpolationText.l.trim().split(" ").map(x => x.padStart(2, "0"));
-    const galacticB = interpolationText.b.trim().split(" ").map(x => x.padStart(2, "0"));
+    const ra = interpolationText.alpha
+      .trim()
+      .split(" ")
+      .map(x => x.padStart(2, "0"));
+    const dec = interpolationText.delta
+      .trim()
+      .split(" ")
+      .map(x => x.padStart(2, "0"));
+    const galacticL = interpolationText.l
+      .trim()
+      .split(" ")
+      .map(x => x.padStart(2, "0"));
+    const galacticB = interpolationText.b
+      .trim()
+      .split(" ")
+      .map(x => x.padStart(2, "0"));
 
-    return this.formatFromInterpolationText(
-      ra,
-      dec,
-      true,
-      true,
-      galacticL,
-      galacticB
-    );
+    return this.formatFromInterpolationText(ra, dec, true, true, galacticL, galacticB);
   }
 
   /**
@@ -590,7 +594,7 @@ export class CoordinatesFormatterService {
    * @param format Optional format specification ('sexagesimal', 'decimal', 'hms_dms')
    * @returns String with formatted coordinates
    */
-  formatCoordinatesVerbose(ra: number, dec: number, format: string = 'sexagesimal'): string {
+  formatCoordinatesVerbose(ra: number, dec: number, format: string = "sexagesimal"): string {
     if (ra === null || dec === null) {
       return "N/A";
     }
@@ -601,11 +605,11 @@ export class CoordinatesFormatterService {
 
     // Format based on the requested format
     switch (format) {
-      case 'decimal':
+      case "decimal":
         // Simple decimal format - keep 6 decimals for precision
-        return `${raHours.toFixed(6)}h, ${dec >= 0 ? '+' : ''}${dec.toFixed(6)}°`;
+        return `${raHours.toFixed(6)}h, ${dec >= 0 ? "+" : ""}${dec.toFixed(6)}°`;
 
-      case 'hms_dms':
+      case "hms_dms":
         // HMS/DMS format without symbols
         // Calculate HMS components
         const raHoursInt = Math.floor(raHours);
@@ -668,7 +672,7 @@ export class CoordinatesFormatterService {
 
         return `${paddedRaHours}:${paddedRaMinutes}:${paddedRaSeconds} ${decSign}${paddedDecDegrees}:${paddedDecMinutes}:${paddedDecSeconds}`;
 
-      case 'sexagesimal':
+      case "sexagesimal":
       default:
         // Full sexagesimal format with symbols
         // Calculate HMS components
@@ -734,5 +738,4 @@ export class CoordinatesFormatterService {
         return `${paddedRaHoursSex}h ${paddedRaMinutesSex}m ${paddedRaSecondsSex}s, ${decSignSex}${paddedDecDegreeSex}° ${paddedDecMinutesSex}' ${paddedDecSecondsSex}"`;
     }
   }
-
 }

@@ -1,8 +1,9 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { MeasurementPresetState } from './measurement-preset.reducer';
+import { createFeatureSelector, createSelector } from "@ngrx/store";
+
+import { MeasurementPresetState } from "./measurement-preset.reducer";
 
 // Feature selector
-export const selectMeasurementPresetState = createFeatureSelector<MeasurementPresetState>('measurementPreset');
+export const selectMeasurementPresetState = createFeatureSelector<MeasurementPresetState>("measurementPreset");
 
 // Selectors for individual pieces of state
 export const selectShowSavedMeasurements = createSelector(

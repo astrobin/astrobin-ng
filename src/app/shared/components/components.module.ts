@@ -58,11 +58,13 @@ import { ForumPreviewComponent } from "@shared/components/forums/forum-preview/f
 import { ImageGalleryLoadingComponent } from "@shared/components/image-gallery-loading-indicator/image-gallery-loading.component";
 import { MasonryLayoutComponent } from "@shared/components/masonry-layout/masonry-layout.component";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
+import { AnnotationToolModule } from "@shared/components/misc/annotation-tool/annotation-tool.module";
 import { AvatarComponent } from "@shared/components/misc/avatar/avatar.component";
 import { AvatarEditorComponent } from "@shared/components/misc/avatar-editor/avatar-editor.component";
 import { AvatarManagerComponent } from "@shared/components/misc/avatar-manager/avatar-manager.component";
 import { CameraComponent } from "@shared/components/misc/camera/camera.component";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { CoordinatesDisplayComponent } from "@shared/components/misc/coordinates-display/coordinates-display.component";
 import { CountDownComponent } from "@shared/components/misc/count-down/count-down.component";
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
@@ -74,6 +76,7 @@ import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field
 import { DragDropAreaComponent } from "@shared/components/misc/formly-field-chunked-file/drag-drop-area.component";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
 import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
+import { FormlyFieldColorPickerComponent } from "@shared/components/misc/formly-field-color-picker/formly-field-color-picker.component";
 import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
 import { FormlyFieldCustomRadioComponent } from "@shared/components/misc/formly-field-custom-radio/formly-field-custom-radio.component";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
@@ -83,7 +86,6 @@ import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-fi
 import { FormlyFieldImageCropperComponent } from "@shared/components/misc/formly-field-image-cropper/formly-field-image-cropper.component";
 import { FormlyFieldNgSelectComponent } from "@shared/components/misc/formly-field-ng-select/formly-field-ng-select.component";
 import { FormlyFieldSliderComponent } from "@shared/components/misc/formly-field-slider/formly-field-slider.component";
-import { FormlyFieldColorPickerComponent } from "@shared/components/misc/formly-field-color-picker/formly-field-color-picker.component";
 import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-field-stepper/formly-field-stepper.component";
 import { FormlyFieldTableComponent } from "@shared/components/misc/formly-field-table/formly-field-table.component";
 import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
@@ -126,6 +128,7 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { LoadingDialogComponent } from "@shared/components/misc/loading-dialog/loading-dialog.component";
 import { LoadingIndicatorComponent } from "@shared/components/misc/loading-indicator/loading-indicator.component";
+import { MeasuringToolModule } from "@shared/components/misc/measuring-tool/measuring-tool.module";
 import { NestedCommentComponent } from "@shared/components/misc/nested-comments/nested-comment.component";
 import { NestedCommentsComponent } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { NestedCommentsCountComponent } from "@shared/components/misc/nested-comments-count/nested-comments-count.component";
@@ -170,9 +173,6 @@ import { LoginModalComponent } from "./auth/login-modal/login-modal.component";
 import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
 import { ReadOnlyModeComponent } from "./misc/read-only-mode/read-only-mode.component";
 import { UsernameComponent } from "./misc/username/username.component";
-import { CoordinatesDisplayComponent } from "@shared/components/misc/coordinates-display/coordinates-display.component";
-import { MeasuringToolModule } from "@shared/components/misc/measuring-tool/measuring-tool.module";
-import { AnnotationToolModule } from "@shared/components/misc/annotation-tool/annotation-tool.module";
 
 const modules = [
   CommonModule,

@@ -1,4 +1,4 @@
-import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, Input, TemplateRef, ViewContainerRef } from "@angular/core";
 
 /**
  * A structural directive similar to ngIf but without the conditional check.
@@ -6,17 +6,14 @@ import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
  * in a variable to avoid re-evaluation.
  */
 @Directive({
-  selector: '[ngLet]',
+  selector: "[ngLet]"
 })
 export class NgLetDirective<T> {
   private context = {
-    ngLet: null as unknown as T,
+    ngLet: null as unknown as T
   };
 
-  constructor(
-    private viewContainer: ViewContainerRef,
-    private templateRef: TemplateRef<{ ngLet: T }>
-  ) {
+  constructor(private viewContainer: ViewContainerRef, private templateRef: TemplateRef<{ ngLet: T }>) {
     this.viewContainer.createEmbeddedView(this.templateRef, this.context);
   }
 

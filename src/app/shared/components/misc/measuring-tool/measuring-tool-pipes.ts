@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
+
 import { MeasurementPoint } from "./measuring-tool.component";
 
 @Pipe({
@@ -38,11 +39,11 @@ export class FormatCoordinatesCompactPipe implements PipeTransform {
     if (finalRaSeconds >= 60) {
       finalRaSeconds = 0;
       finalRaMinutes += 1;
-      
+
       if (finalRaMinutes >= 60) {
         finalRaMinutes = 0;
         finalRaHours += 1;
-        
+
         if (finalRaHours >= 24) {
           finalRaHours = 0;
         }
@@ -67,14 +68,18 @@ export class FormatCoordinatesCompactPipe implements PipeTransform {
     if (finalDecSeconds >= 60) {
       finalDecSeconds = 0;
       finalDecMinutes += 1;
-      
+
       if (finalDecMinutes >= 60) {
         finalDecMinutes = 0;
         finalDecDegrees += 1;
       }
     }
 
-    return `${finalRaHours.toString().padStart(2, "0")}h ${finalRaMinutes.toString().padStart(2, "0")}m ${finalRaSeconds.toString().padStart(2, "0")}s, ${decSign}${finalDecDegrees.toString().padStart(2, "0")}° ${finalDecMinutes.toString().padStart(2, "0")}' ${finalDecSeconds.toString().padStart(2, "0")}"`;
+    return `${finalRaHours.toString().padStart(2, "0")}h ${finalRaMinutes.toString().padStart(2, "0")}m ${finalRaSeconds
+      .toString()
+      .padStart(2, "0")}s, ${decSign}${finalDecDegrees.toString().padStart(2, "0")}° ${finalDecMinutes
+      .toString()
+      .padStart(2, "0")}' ${finalDecSeconds.toString().padStart(2, "0")}"`;
   }
 }
 
@@ -83,7 +88,8 @@ export class FormatCoordinatesCompactPipe implements PipeTransform {
   pure: true
 })
 export class GetCelestialDistancePipe implements PipeTransform {
-  transform(points: {
+  transform(
+    points: {
       startX: number;
       startY: number;
       endX: number;
@@ -93,18 +99,21 @@ export class GetCelestialDistancePipe implements PipeTransform {
       endRa: number | null;
       endDec: number | null;
       distance: string;
-    }, orientation: "horizontal" | "vertical",
+    },
+    orientation: "horizontal" | "vertical",
     advancedSolutionMatrix: any | null,
-    calculateCoordinatesAtPointFn: (x: number, y: number) => { ra: number, dec: number } | null,
+    calculateCoordinatesAtPointFn: (x: number, y: number) => { ra: number; dec: number } | null,
     calculateAngularDistanceFn: (ra1: number, dec1: number, ra2: number, dec2: number) => number,
-    formatAstronomicalAngleFn: (arcseconds: number) => string): string {
-
+    formatAstronomicalAngleFn: (arcseconds: number) => string
+  ): string {
     // If no valid advanced solution, return empty (template will show px)
-    if (!advancedSolutionMatrix ||
+    if (
+      !advancedSolutionMatrix ||
       !advancedSolutionMatrix.matrixRect ||
       !advancedSolutionMatrix.matrixDelta ||
       !advancedSolutionMatrix.raMatrix ||
-      !advancedSolutionMatrix.decMatrix) {
+      !advancedSolutionMatrix.decMatrix
+    ) {
       return "";
     }
 
@@ -132,12 +141,7 @@ export class GetCelestialDistancePipe implements PipeTransform {
 
     // If we have valid coordinates, calculate angular distance
     if (startCoords && endCoords) {
-      const angularDistance = calculateAngularDistanceFn(
-        startCoords.ra,
-        startCoords.dec,
-        endCoords.ra,
-        endCoords.dec
-      );
+      const angularDistance = calculateAngularDistanceFn(startCoords.ra, startCoords.dec, endCoords.ra, endCoords.dec);
 
       // Convert to arcseconds
       const arcseconds = angularDistance * 3600;
@@ -229,10 +233,7 @@ export class CalculateLabelPositionPipe implements PipeTransform {
 
     // Calculate how horizontal the line is
     const absAngle = Math.abs(angle);
-    const horizontalness = Math.min(
-      Math.abs(absAngle),
-      Math.abs(absAngle - Math.PI)
-    );
+    const horizontalness = Math.min(Math.abs(absAngle), Math.abs(absAngle - Math.PI));
 
     // Determine if line is nearly horizontal or vertical
     const isNearlyHorizontal = horizontalness < Math.PI / 8;
@@ -244,7 +245,7 @@ export class CalculateLabelPositionPipe implements PipeTransform {
 
     let extraDistance = 0;
     if (isNearlyHorizontal) {
-      const horizontalFactor = 1 - (horizontalness / (Math.PI / 8));
+      const horizontalFactor = 1 - horizontalness / (Math.PI / 8);
       extraDistance = labelDistance * 3.5 * horizontalFactor + verticalBoost;
     } else {
       extraDistance = verticalBoost;
@@ -260,18 +261,20 @@ export class CalculateLabelPositionPipe implements PipeTransform {
     // For vertical lines, add horizontal offset
     if (isNearlyVertical) {
       const horizontalOffset = 15;
-      if (angle > 0) { // Line pointing downward
+      if (angle > 0) {
+        // Line pointing downward
         posX += (position === "start" ? -1 : 1) * horizontalOffset;
-      } else { // Line pointing upward
+      } else {
+        // Line pointing upward
         posX += (position === "start" ? 1 : -1) * horizontalOffset;
       }
     }
 
     // Define label dimensions for collision detection
-    const coordLabelWidth = 150;  // Width of RA/Dec label
-    const coordLabelHeight = 20;  // Height of RA/Dec label
-    const dimLabelWidth = 60;     // Width of dimension label
-    const dimLabelHeight = 20;    // Height of dimension label
+    const coordLabelWidth = 150; // Width of RA/Dec label
+    const coordLabelHeight = 20; // Height of RA/Dec label
+    const dimLabelWidth = 60; // Width of dimension label
+    const dimLabelHeight = 20; // Height of dimension label
 
     // Create bounding boxes for collision detection
     const currentLabel: LabelBoundingBox = {
@@ -279,7 +282,7 @@ export class CalculateLabelPositionPipe implements PipeTransform {
       y: posY - coordLabelHeight / 2,
       width: coordLabelWidth,
       height: coordLabelHeight,
-      priority: 2,  // Point coordinates have medium priority
+      priority: 2, // Point coordinates have medium priority
       type: "point"
     };
 
@@ -287,8 +290,8 @@ export class CalculateLabelPositionPipe implements PipeTransform {
     const labels: LabelBoundingBox[] = [];
 
     // Width dimension label (horizontal)
-    const widthLabelX = (Math.min(startPoint.x, endPoint.x) +
-      Math.abs(endPoint.x - startPoint.x) / 2) - dimLabelWidth / 2;
+    const widthLabelX =
+      Math.min(startPoint.x, endPoint.x) + Math.abs(endPoint.x - startPoint.x) / 2 - dimLabelWidth / 2;
     const widthLabelY = Math.max(startPoint.y, endPoint.y) + 20;
 
     labels.push({
@@ -296,14 +299,14 @@ export class CalculateLabelPositionPipe implements PipeTransform {
       y: widthLabelY,
       width: dimLabelWidth,
       height: dimLabelHeight,
-      priority: 1,  // Dimension labels have higher priority
+      priority: 1, // Dimension labels have higher priority
       type: "dimension"
     });
 
     // Height dimension label (vertical)
     const heightLabelX = Math.max(startPoint.x, endPoint.x) + 20;
-    const heightLabelY = (Math.min(startPoint.y, endPoint.y) +
-      Math.abs(endPoint.y - startPoint.y) / 2) - dimLabelHeight / 2;
+    const heightLabelY =
+      Math.min(startPoint.y, endPoint.y) + Math.abs(endPoint.y - startPoint.y) / 2 - dimLabelHeight / 2;
 
     labels.push({
       x: heightLabelX,
@@ -341,7 +344,7 @@ export class CalculateLabelPositionPipe implements PipeTransform {
   }
 
   // Helper method to resolve collisions by moving labels
-  private resolveCollision(label1: LabelBoundingBox, label2: LabelBoundingBox): { x: number, y: number } {
+  private resolveCollision(label1: LabelBoundingBox, label2: LabelBoundingBox): { x: number; y: number } {
     // Determine which label to move (higher priority number gets moved)
     const labelToMove = label1.priority > label2.priority ? label1 : label2;
     const fixedLabel = label1.priority > label2.priority ? label2 : label1;
@@ -369,20 +372,15 @@ export class CalculateLabelPositionPipe implements PipeTransform {
 
       // Move horizontally or vertically based on smaller overlap
       if (overlapX < overlapY) {
-        newX = isRightOfFixed ?
-          fixedLabel.x + fixedLabel.width + 5 :
-          fixedLabel.x - labelToMove.width - 5;
+        newX = isRightOfFixed ? fixedLabel.x + fixedLabel.width + 5 : fixedLabel.x - labelToMove.width - 5;
       } else {
-        newY = isBelowFixed ?
-          fixedLabel.y + fixedLabel.height + 5 :
-          fixedLabel.y - labelToMove.height - 5;
+        newY = isBelowFixed ? fixedLabel.y + fixedLabel.height + 5 : fixedLabel.y - labelToMove.height - 5;
       }
     }
     // For dimension labels, prefer vertical movement
     else if (labelToMove.type === "dimension") {
-      newY = labelToMove.y > fixedLabel.y ?
-        fixedLabel.y + fixedLabel.height + 5 :
-        fixedLabel.y - labelToMove.height - 5;
+      newY =
+        labelToMove.y > fixedLabel.y ? fixedLabel.y + fixedLabel.height + 5 : fixedLabel.y - labelToMove.height - 5;
     }
 
     return { x: newX, y: newY };
@@ -395,12 +393,13 @@ export class CalculateLabelPositionPipe implements PipeTransform {
 })
 export class IsOutsideImageBoundariesPipe implements PipeTransform {
   transform(
-    measurement: { startX: number; startY: number; endX: number; endY: number; } | 
-              { x: number; y: number; } | 
-              { isCurrentMeasurement: boolean; },
+    measurement:
+      | { startX: number; startY: number; endX: number; endY: number }
+      | { x: number; y: number }
+      | { isCurrentMeasurement: boolean },
     imageElement: HTMLElement | null,
-    startPoint?: { x: number; y: number; } | null,
-    endPoint?: { x: number; y: number; } | null
+    startPoint?: { x: number; y: number } | null,
+    endPoint?: { x: number; y: number } | null
   ): boolean {
     // If no image element, we can't check boundaries
     if (!imageElement) {
@@ -410,7 +409,7 @@ export class IsOutsideImageBoundariesPipe implements PipeTransform {
     const imageRect = imageElement.getBoundingClientRect();
 
     // Case 1: Checking a measurement object with startX, startY, endX, endY properties
-    if ('startX' in measurement && 'endX' in measurement) {
+    if ("startX" in measurement && "endX" in measurement) {
       return (
         measurement.startX < imageRect.left ||
         measurement.startX > imageRect.right ||
@@ -422,9 +421,9 @@ export class IsOutsideImageBoundariesPipe implements PipeTransform {
         measurement.endY > imageRect.bottom
       );
     }
-    
+
     // Case 2: Checking a single point with x, y properties
-    if ('x' in measurement && 'y' in measurement) {
+    if ("x" in measurement && "y" in measurement) {
       return (
         measurement.x < imageRect.left ||
         measurement.x > imageRect.right ||
@@ -432,9 +431,9 @@ export class IsOutsideImageBoundariesPipe implements PipeTransform {
         measurement.y > imageRect.bottom
       );
     }
-    
+
     // Case 3: Current measurement check (using startPoint and endPoint)
-    if ('isCurrentMeasurement' in measurement && measurement.isCurrentMeasurement && startPoint && endPoint) {
+    if ("isCurrentMeasurement" in measurement && measurement.isCurrentMeasurement && startPoint && endPoint) {
       return (
         startPoint.x < imageRect.left ||
         startPoint.x > imageRect.right ||
@@ -446,7 +445,7 @@ export class IsOutsideImageBoundariesPipe implements PipeTransform {
         endPoint.y > imageRect.bottom
       );
     }
-    
+
     // Default case, no valid parameters provided
     return false;
   }

@@ -1,13 +1,14 @@
-import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable, of } from "rxjs";
-import { MeasurementPresetInterface } from "../measurement-preset.interface";
+import { Injectable } from "@angular/core";
 import { UserInterface } from "@core/interfaces/user.interface";
-import { catchError, finalize } from "rxjs/operators";
-import { TranslateService } from "@ngx-translate/core";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { environment } from "@env/environment";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, of } from "rxjs";
+import { catchError, finalize } from "rxjs/operators";
+
+import { MeasurementPresetInterface } from "../measurement-preset.interface";
 
 @Injectable({
   providedIn: "root"
@@ -20,8 +21,7 @@ export class MeasurementPresetApiService {
     public readonly translateService: TranslateService,
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService
-  ) {
-  }
+  ) {}
 
   /**
    * Set loading state
@@ -39,18 +39,16 @@ export class MeasurementPresetApiService {
   getMeasurementPresets(userId: UserInterface["id"]): Observable<MeasurementPresetInterface[]> {
     this.setLoading(true);
 
-    return this.http.get<MeasurementPresetInterface[]>(
-      this.baseUrl + `/equipment/measurement-preset/?user=${userId}`
-    ).pipe(
-      catchError(error => {
-        this.popNotificationsService.error(
-          this.translateService.instant("Error loading measurement presets")
-        );
-        this.setLoading(false);
-        return of([]);
-      }),
-      finalize(() => this.setLoading(false))
-    );
+    return this.http
+      .get<MeasurementPresetInterface[]>(this.baseUrl + `/equipment/measurement-preset/?user=${userId}`)
+      .pipe(
+        catchError(error => {
+          this.popNotificationsService.error(this.translateService.instant("Error loading measurement presets"));
+          this.setLoading(false);
+          return of([]);
+        }),
+        finalize(() => this.setLoading(false))
+      );
   }
 
   /**
@@ -62,7 +60,7 @@ export class MeasurementPresetApiService {
     const url = `${this.baseUrl}/equipment/measurement-preset/`;
 
     // Clean up the preset object before sending to API
-    const cleanPreset = {...preset};
+    const cleanPreset = { ...preset };
     if (cleanPreset.widthArcseconds === null || cleanPreset.widthArcseconds === undefined) {
       delete cleanPreset.widthArcseconds;
     }
@@ -75,10 +73,8 @@ export class MeasurementPresetApiService {
 
     return this.http.post<MeasurementPresetInterface>(url, cleanPreset).pipe(
       catchError(error => {
-        console.error('MeasurementPresetApiService: Error creating preset:', error);
-        this.popNotificationsService.error(
-          this.translateService.instant("Error creating measurement preset")
-        );
+        console.error("MeasurementPresetApiService: Error creating preset:", error);
+        this.popNotificationsService.error(this.translateService.instant("Error creating measurement preset"));
         this.setLoading(false);
         throw error;
       }),
@@ -100,19 +96,16 @@ export class MeasurementPresetApiService {
 
     this.setLoading(true);
 
-    return this.http.put<MeasurementPresetInterface>(
-      this.baseUrl + `/equipment/measurement-preset/${preset.id}/`,
-      preset
-    ).pipe(
-      catchError(error => {
-        this.popNotificationsService.error(
-          this.translateService.instant("Error updating measurement preset")
-        );
-        this.setLoading(false);
-        throw error;
-      }),
-      finalize(() => this.setLoading(false))
-    );
+    return this.http
+      .put<MeasurementPresetInterface>(this.baseUrl + `/equipment/measurement-preset/${preset.id}/`, preset)
+      .pipe(
+        catchError(error => {
+          this.popNotificationsService.error(this.translateService.instant("Error updating measurement preset"));
+          this.setLoading(false);
+          throw error;
+        }),
+        finalize(() => this.setLoading(false))
+      );
   }
 
   /**
@@ -123,13 +116,9 @@ export class MeasurementPresetApiService {
   deleteMeasurementPreset(presetId: number): Observable<void> {
     this.setLoading(true);
 
-    return this.http.delete<void>(
-      this.baseUrl + `/equipment/measurement-preset/${presetId}/`
-    ).pipe(
+    return this.http.delete<void>(this.baseUrl + `/equipment/measurement-preset/${presetId}/`).pipe(
       catchError(error => {
-        this.popNotificationsService.error(
-          this.translateService.instant("Error deleting measurement preset")
-        );
+        this.popNotificationsService.error(this.translateService.instant("Error deleting measurement preset"));
         this.setLoading(false);
         throw error;
       }),

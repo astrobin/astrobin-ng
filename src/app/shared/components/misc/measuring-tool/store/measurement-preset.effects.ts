@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { of } from "rxjs";
 import { catchError, map, mergeMap, switchMap } from "rxjs/operators";
-import { MeasurementPresetApiService } from "../services/measurement-preset-api.service";
+
 import {
   CreateMeasurementPreset,
   CreateMeasurementPresetFailure,
@@ -15,10 +15,10 @@ import {
   LoadMeasurementPresetsSuccess,
   MeasurementPresetActionTypes
 } from "./measurement-preset.actions";
+import { MeasurementPresetApiService } from "../services/measurement-preset-api.service";
 
 @Injectable()
 export class MeasurementPresetEffects {
-
   loadMeasurementPresets$ = createEffect(() =>
     this.actions$.pipe(
       ofType(MeasurementPresetActionTypes.LOAD_MEASUREMENT_PRESETS),
@@ -40,7 +40,7 @@ export class MeasurementPresetEffects {
             return new CreateMeasurementPresetSuccess({ preset });
           }),
           catchError(error => {
-            console.error('MeasurementPresetEffects: API call failed:', error);
+            console.error("MeasurementPresetEffects: API call failed:", error);
             return of(new CreateMeasurementPresetFailure({ error }));
           })
         );
@@ -60,8 +60,5 @@ export class MeasurementPresetEffects {
     )
   );
 
-  constructor(
-    private actions$: Actions,
-    private measurementPresetApiService: MeasurementPresetApiService
-  ) {}
+  constructor(private actions$: Actions, private measurementPresetApiService: MeasurementPresetApiService) {}
 }

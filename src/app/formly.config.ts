@@ -7,6 +7,7 @@ import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-
 import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
 import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
+import { FormlyFieldColorPickerComponent } from "@shared/components/misc/formly-field-color-picker/formly-field-color-picker.component";
 import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
 import { FormlyFieldCustomRadioComponent } from "@shared/components/misc/formly-field-custom-radio/formly-field-custom-radio.component";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
@@ -16,11 +17,10 @@ import { FormlyFieldImageCropperComponent } from "@shared/components/misc/formly
 import { FormlyFieldNgSelectComponent } from "@shared/components/misc/formly-field-ng-select/formly-field-ng-select.component";
 import { FormlyFieldSliderComponent } from "@shared/components/misc/formly-field-slider/formly-field-slider.component";
 import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-field-stepper/formly-field-stepper.component";
-import { FormlyFieldColorPickerComponent } from "@shared/components/misc/formly-field-color-picker/formly-field-color-picker.component";
-import { debounceTime, distinctUntilChanged, first, startWith, switchMap } from "rxjs/operators";
-import { of } from "rxjs";
 import { FormlyFieldTableComponent } from "@shared/components/misc/formly-field-table/formly-field-table.component";
 import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
+import { of } from "rxjs";
+import { debounceTime, distinctUntilChanged, first, startWith, switchMap } from "rxjs/operators";
 
 function getNestedValue(obj: any, path: string): any {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);

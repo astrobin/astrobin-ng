@@ -1,7 +1,10 @@
-import { Location, isPlatformBrowser } from "@angular/common";
+import { isPlatformBrowser, Location } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import {
+  AfterViewChecked,
+  AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -9,65 +12,57 @@ import {
   HostListener,
   Inject,
   Input,
-  Output,
-  PLATFORM_ID,
-  RendererStyleFlags2,
-  ViewChild,
-  AfterViewChecked,
-  AfterViewInit,
-  ChangeDetectorRef,
   OnChanges,
   OnDestroy,
   OnInit,
+  Output,
+  PLATFORM_ID,
   Renderer2,
+  RendererStyleFlags2,
   SimpleChanges,
-  TemplateRef
+  TemplateRef,
+  ViewChild
 } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ActivatedRoute } from "@angular/router";
 import { Throttle } from "@app/decorators";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { LoadSolutionMatrix } from "@app/store/actions/solution.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { selectIsSolutionMatrixLoading, selectSolutionMatrix } from "@app/store/selectors/app/solution.selectors";
 import { MainState } from "@app/store/state";
-import { select, Store } from "@ngrx/store";
-import { Actions, ofType } from "@ngrx/effects";
-import { AppActionTypes } from "@app/store/actions/app.actions";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import {
   FINAL_REVISION_LABEL,
   FullSizeLimitationDisplayOptions,
-  MouseHoverImageOptions,
-  ORIGINAL_REVISION_LABEL,
   ImageInterface,
-  ImageRevisionInterface
+  ImageRevisionInterface,
+  MouseHoverImageOptions,
+  ORIGINAL_REVISION_LABEL
 } from "@core/interfaces/image.interface";
 import { SolutionInterface, SolutionStatus } from "@core/interfaces/solution.interface";
 import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
 import { ContentTranslateService } from "@core/services/content-translate.service";
+import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
 import { DeviceService } from "@core/services/device.service";
 import { ImageService } from "@core/services/image/image.service";
-import { ActivatedRoute } from "@angular/router";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { LoadSolutionMatrix } from "@app/store/actions/solution.actions";
-import { selectIsSolutionMatrixLoading, selectSolutionMatrix } from "@app/store/selectors/app/solution.selectors";
-import { animationFrameScheduler, auditTime, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
-import { isPlatformBrowser, Location } from "@angular/common";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { WindowRefService } from "@core/services/window-ref.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { SearchService } from "@core/services/search.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { environment } from "@env/environment";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
+import { Actions, ofType } from "@ngrx/effects";
 import { select, Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
@@ -75,10 +70,21 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { CookieService } from "ngx-cookie";
-import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { SearchService } from "@core/services/search.service";
-import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
-
+import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
+import {
+  animationFrameScheduler,
+  auditTime,
+  combineLatest,
+  fromEvent,
+  merge,
+  Observable,
+  observeOn,
+  of,
+  Subject,
+  Subscription,
+  throttleTime
+} from "rxjs";
+import { delay, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-viewer",
@@ -233,7 +239,7 @@ export class ImageViewerComponent
   private _moonStartDragPosition = { x: 0, y: 0 };
   private _dataAreaScrollEventSubscription: Subscription;
   private _hideFullscreenImageSubscription: Subscription;
-  private _previousMouseHoverState: { forceViewMouseHover: boolean, forceViewAnnotationsMouseHover: boolean } = null;
+  private _previousMouseHoverState: { forceViewMouseHover: boolean; forceViewAnnotationsMouseHover: boolean } = null;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
   private _activeOffcanvas: NgbOffcanvasRef;
 
@@ -300,7 +306,7 @@ export class ImageViewerComponent
     // Check if URL has annotations parameter
     if (this.isBrowser) {
       const urlParams = new URL(this.windowRefService.nativeWindow.location.href).searchParams;
-      if (urlParams.has('annotations')) {
+      if (urlParams.has("annotations")) {
         // Set URL annotations flag
         this.hasUrlAnnotations = true;
 
@@ -309,7 +315,7 @@ export class ImageViewerComponent
         this.forceViewAnnotationsMouseHover = true;
         this.forceViewMouseHover = true;
 
-        console.log('URL has annotations, enabling annotations with hasUrlAnnotations =', this.hasUrlAnnotations);
+        console.log("URL has annotations, enabling annotations with hasUrlAnnotations =", this.hasUrlAnnotations);
       }
     }
 
@@ -318,30 +324,31 @@ export class ImageViewerComponent
     });
 
     // Subscribe to the HIDE_FULLSCREEN_IMAGE action to update our local state
-    this._hideFullscreenImageSubscription = this.actions$.pipe(
-      ofType(AppActionTypes.HIDE_FULLSCREEN_IMAGE),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this.viewingFullscreenImage = false;
+    this._hideFullscreenImageSubscription = this.actions$
+      .pipe(ofType(AppActionTypes.HIDE_FULLSCREEN_IMAGE), takeUntil(this.destroyed$))
+      .subscribe(() => {
+        this.viewingFullscreenImage = false;
 
-      // Get the latest image data from the store
-      this.store$.pipe(
-        select(selectImage, this.image.pk),
-        filter(image => !!image),
-        take(1)
-      ).subscribe((updatedImage: ImageInterface) => {
-        // Update the local image reference with the latest from the store
-        this.image = { ...updatedImage };
+        // Get the latest image data from the store
+        this.store$
+          .pipe(
+            select(selectImage, this.image.pk),
+            filter(image => !!image),
+            take(1)
+          )
+          .subscribe((updatedImage: ImageInterface) => {
+            // Update the local image reference with the latest from the store
+            this.image = { ...updatedImage };
 
-        // Refresh the revision with the latest data
-        this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+            // Refresh the revision with the latest data
+            this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
 
-        // Check for saved annotations again as they may have been updated in fullscreen
-        this._checkForSavedAnnotations();
+            // Check for saved annotations again as they may have been updated in fullscreen
+            this._checkForSavedAnnotations();
 
-        this.changeDetectorRef.markForCheck();
+            this.changeDetectorRef.markForCheck();
+          });
       });
-    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -555,7 +562,9 @@ export class ImageViewerComponent
     }
 
     // Don't do anything if annotation mode is active
-    if (this.isAnnotationMode) return;
+    if (this.isAnnotationMode) {
+      return;
+    }
 
     this.onToggleAnnotationsOnMouseHoverEnter();
     this._onMouseHoverSvgLoad();
@@ -577,7 +586,9 @@ export class ImageViewerComponent
     }
 
     // Don't do anything if annotation mode is active
-    if (this.isAnnotationMode) return;
+    if (this.isAnnotationMode) {
+      return;
+    }
 
     this.onToggleAnnotationsOnMouseHoverLeave();
   }
@@ -676,6 +687,161 @@ export class ImageViewerComponent
     }
   }
 
+  public exitFullscreen(): void {
+    this.store$.dispatch(new HideFullscreenImage());
+    this.viewingFullscreenImage = false;
+    this.toggleFullscreen.emit(false);
+
+    // Check for saved annotations again as they may have been updated in fullscreen
+    this._checkForSavedAnnotations();
+
+    if (this.isBrowser) {
+      const location_ = this.windowRefService.nativeWindow.location;
+      this.windowRefService.replaceState({}, `${location_.pathname}${location_.search}`);
+    }
+  }
+
+  /**
+   * Handle N keypress or button click for annotations
+   */
+  @HostListener("window:keyup.n", ["$event"])
+  enterFullscreenWithMeasurementTool(event: MouseEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Prevent default behavior
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Enter fullscreen with measurement tool activated
+    this.enterFullscreen(event, { activateMeasurementTool: true });
+  }
+
+  toggleAnnotationMode(event: KeyboardEvent | MouseEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Don't interfere with input fields if this is a keyboard event
+    if (event instanceof KeyboardEvent) {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+      ) {
+        return;
+      }
+    }
+
+    // Do nothing if the component is not active or if the revision is a video file
+    if (!this.active || (this.revision && this.revision.videoFile)) {
+      return;
+    }
+
+    if (event) {
+      event.preventDefault();
+      if (event instanceof MouseEvent) {
+        event.stopPropagation();
+      }
+    }
+
+    // For button click (MouseEvent), we use our enterFullscreen logic which handles enabling annotations
+    if (event instanceof MouseEvent) {
+      this.enterFullscreen(event);
+      return;
+    }
+
+    // For keyboard press (N key), toggle view mode only (always read-only)
+    // Store the previous state to restore later
+    if (!this.isAnnotationMode) {
+      this._previousMouseHoverState = {
+        forceViewMouseHover: this.forceViewMouseHover,
+        forceViewAnnotationsMouseHover: this.forceViewAnnotationsMouseHover
+      };
+
+      // Disable mouse hover while in annotation mode
+      this.forceViewMouseHover = false;
+      this.forceViewAnnotationsMouseHover = false;
+    } else {
+      // Restore previous mouse-hover state when exiting annotation mode
+      if (this._previousMouseHoverState) {
+        this.forceViewMouseHover = this._previousMouseHoverState.forceViewMouseHover;
+        this.forceViewAnnotationsMouseHover = this._previousMouseHoverState.forceViewAnnotationsMouseHover;
+      }
+    }
+
+    // Toggle annotation mode (always read-only)
+    this.isAnnotationMode = !this.isAnnotationMode;
+    this.annotationReadOnlyMode = true; // Always read-only in regular view
+
+    // Force change detection
+    this.changeDetectorRef.markForCheck();
+  }
+
+  /**
+   * Handle exiting annotation mode - when exiting, the annotations are cleared
+   * from the URL, and the tool emits this event to indicate it's done
+   */
+  onExitAnnotationMode(): void {
+    // Set annotation mode to false
+    this.isAnnotationMode = false;
+
+    // Reset to read-only mode for next time
+    this.annotationReadOnlyMode = true;
+
+    // Restore previous mouse-hover state when exiting annotation mode
+    if (this._previousMouseHoverState) {
+      this.forceViewMouseHover = this._previousMouseHoverState.forceViewMouseHover;
+      this.forceViewAnnotationsMouseHover = this._previousMouseHoverState.forceViewAnnotationsMouseHover;
+      this._previousMouseHoverState = null;
+    }
+
+    // Check if the URL still has annotations
+    if (this.isBrowser) {
+      const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
+      if (!currentUrl.searchParams.has("annotations")) {
+        // URL no longer has annotations, so clear the flag
+        this.hasUrlAnnotations = false;
+      }
+    }
+
+    // Check for saved annotations again to properly update the state
+    this._checkForSavedAnnotations();
+
+    // Important: Re-initialize annotations if we have saved annotations
+    // This fixes the issue where annotations disappear after exiting fullscreen mode
+    if (this.hasSavedAnnotations) {
+      // Short delay to ensure DOM is updated before re-initializing
+      this.utilsService.delay(100).subscribe(() => {
+        // Re-check and show annotations (if available) on the regular view
+        this._checkAndShowAnnotations();
+
+        // Force mouse hover annotations to be visible again
+        this.forceViewAnnotationsMouseHover = true;
+        this.forceViewMouseHover = true;
+
+        // Force change detection
+        this.changeDetectorRef.markForCheck();
+      });
+    }
+
+    // Force change detection to update the DOM
+    this.changeDetectorRef.markForCheck();
+  }
+
+  /**
+   * Toggle annotation edit mode between read-only and editable
+   */
+  toggleAnnotationEditMode(): void {
+    if (!this.isAnnotationMode) {
+      return;
+    }
+
+    this.annotationReadOnlyMode = !this.annotationReadOnlyMode;
+    this.changeDetectorRef.markForCheck();
+  }
+
   // Mobile menu event handlers
   protected onMobileMenuOpen(): void {
     // No special handling needed when menu opens
@@ -690,25 +856,32 @@ export class ImageViewerComponent
 
     // Get image element for annotation tool when the image is loaded
     if (this.isBrowser && this.imageArea) {
-      const imgElement = this.imageArea.nativeElement.querySelector('.image-area astrobin-image img');
+      const imgElement = this.imageArea.nativeElement.querySelector(".image-area astrobin-image img");
       if (imgElement) {
         this.imageElementForAnnotation = imgElement;
 
         // Check if we should activate annotation mode now that the image is loaded
         if (!this.isAnnotationMode) {
           // Check for annotations in URL
-          const hasAnnotationsInUrl = new URL(this.windowRefService.nativeWindow.location.href).searchParams.has('annotations');
+          const hasAnnotationsInUrl = new URL(this.windowRefService.nativeWindow.location.href).searchParams.has(
+            "annotations"
+          );
 
           // Update the URL annotations flag
           this.hasUrlAnnotations = hasAnnotationsInUrl;
 
           // Check for annotations in revision
-          const hasAnnotationsInRevision = this.revision && !!this.revision.annotations &&
-            this.revision.annotations.trim() !== '' && this.revision.annotations !== '[]';
+          const hasAnnotationsInRevision =
+            this.revision &&
+            !!this.revision.annotations &&
+            this.revision.annotations.trim() !== "" &&
+            this.revision.annotations !== "[]";
 
           if (hasAnnotationsInUrl || hasAnnotationsInRevision) {
-            console.log("Enabling annotation mode on image load - found annotations in",
-              hasAnnotationsInUrl ? "URL" : "revision");
+            console.log(
+              "Enabling annotation mode on image load - found annotations in",
+              hasAnnotationsInUrl ? "URL" : "revision"
+            );
 
             if (hasAnnotationsInUrl) {
               // For URL annotations, keep them always visible
@@ -720,11 +893,11 @@ export class ImageViewerComponent
               setTimeout(() => {
                 // Add class directly to host elements
                 if (this.elementRef?.nativeElement) {
-                  this.elementRef.nativeElement.classList.add('has-url-annotations');
+                  this.elementRef.nativeElement.classList.add("has-url-annotations");
                 }
 
                 if (this.imageArea?.nativeElement) {
-                  this.imageArea.nativeElement.classList.add('has-url-annotations');
+                  this.imageArea.nativeElement.classList.add("has-url-annotations");
                 }
 
                 this.changeDetectorRef.markForCheck();
@@ -944,6 +1117,8 @@ export class ImageViewerComponent
     this.changeDetectorRef.markForCheck();
   }
 
+  // Removed unnecessary wrapper method
+
   protected onMoonDrag(event: PointerEvent): void {
     if (!this.isDraggingMoon) {
       return;
@@ -1054,7 +1229,7 @@ export class ImageViewerComponent
         let enableAnnotations = false;
         if (event instanceof MouseEvent) {
           const target = event.target as HTMLElement;
-          const annotationButton = target.closest('.annotation-mode-button');
+          const annotationButton = target.closest(".annotation-mode-button");
           if (annotationButton) {
             enableAnnotations = true;
           }
@@ -1065,13 +1240,15 @@ export class ImageViewerComponent
           this.popNotificationsService.info(this.translateService.instant("Zoom disabled by the image owner."));
         }
 
-        this.store$.dispatch(new ShowFullscreenImage({
-          imageId: this.image.pk,
-          event,
-          externalSolutionMatrix: solutionMatrixToPass,
-          enableAnnotations, // Add this flag to the payload
-          allowZoom: allowReal // Pass zoom permission flag
-        }));
+        this.store$.dispatch(
+          new ShowFullscreenImage({
+            imageId: this.image.pk,
+            event,
+            externalSolutionMatrix: solutionMatrixToPass,
+            enableAnnotations, // Add this flag to the payload
+            allowZoom: allowReal // Pass zoom permission flag
+          })
+        );
         this.viewingFullscreenImage = true;
 
         // Reset moon overlay state when entering fullscreen
@@ -1090,12 +1267,12 @@ export class ImageViewerComponent
           // If we should activate the measurement tool, add 'measurements=1' to URL
           if (options.activateMeasurementTool) {
             const urlObj = new URL(location_.href);
-            urlObj.searchParams.set('measurements', '1');
+            urlObj.searchParams.set("measurements", "1");
             fullscreenUrl = `${urlObj.pathname}${urlObj.search}`;
           }
 
           // Add the fullscreen hash
-          fullscreenUrl += '#fullscreen';
+          fullscreenUrl += "#fullscreen";
 
           this.windowRefService.pushState(
             {
@@ -1109,22 +1286,6 @@ export class ImageViewerComponent
         }
       }
     });
-  }
-
-  // Removed unnecessary wrapper method
-
-  public exitFullscreen(): void {
-    this.store$.dispatch(new HideFullscreenImage());
-    this.viewingFullscreenImage = false;
-    this.toggleFullscreen.emit(false);
-
-    // Check for saved annotations again as they may have been updated in fullscreen
-    this._checkForSavedAnnotations();
-
-    if (this.isBrowser) {
-      const location_ = this.windowRefService.nativeWindow.location;
-      this.windowRefService.replaceState({}, `${location_.pathname}${location_.search}`);
-    }
   }
 
   protected onDescriptionClicked(event: MouseEvent) {
@@ -1216,6 +1377,15 @@ export class ImageViewerComponent
     // Clear the cached translation
     const imageId = this.image.hash || this.image.pk.toString();
     this.contentTranslateService.clearTranslation("image-description", imageId);
+  }
+
+  /**
+   * Utility method to set UI element hover state
+   * Used by child components to indicate when mouse is over UI elements
+   */
+  protected setMouseOverUIElement(value: boolean): void {
+    this.isMouseOverUIElement = value;
+    this.changeDetectorRef.markForCheck();
   }
 
   // Preload moon image in memory
@@ -1493,6 +1663,8 @@ export class ImageViewerComponent
     }
   }
 
+  // Removed _loadAdvancedSolutionMatrix$ in favor of _ensureSolutionMatrixLoaded
+
   private _setNonSolutionMouseHoverImage() {
     if (!this.revision) {
       return;
@@ -1592,49 +1764,51 @@ export class ImageViewerComponent
     this.loadingAdvancedSolutionMatrix = true;
 
     // First check if matrix is in the store
-    this.store$.pipe(
-      select(selectSolutionMatrix, solutionId),
-      take(1),
-      switchMap(matrixFromStore => {
-        if (matrixFromStore) {
-          // If matrix is already in store, use it
-          this.advancedSolutionMatrix = matrixFromStore;
-          this.loadingAdvancedSolutionMatrix = false;
-          return of(matrixFromStore);
-        } else {
-          // Otherwise, check if it's currently being loaded by another component
-          return this.store$.pipe(
-            select(selectIsSolutionMatrixLoading, solutionId),
-            take(1),
-            switchMap(isLoading => {
-              if (isLoading) {
-                // If already loading, wait for it to complete
-                return this.store$.pipe(
-                  select(selectSolutionMatrix, solutionId),
-                  filter(matrix => !!matrix), // Wait until matrix is available
-                  take(1)
-                );
-              } else {
-                // If not loading, dispatch action to load it
-                this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
+    this.store$
+      .pipe(
+        select(selectSolutionMatrix, solutionId),
+        take(1),
+        switchMap(matrixFromStore => {
+          if (matrixFromStore) {
+            // If matrix is already in store, use it
+            this.advancedSolutionMatrix = matrixFromStore;
+            this.loadingAdvancedSolutionMatrix = false;
+            return of(matrixFromStore);
+          } else {
+            // Otherwise, check if it's currently being loaded by another component
+            return this.store$.pipe(
+              select(selectIsSolutionMatrixLoading, solutionId),
+              take(1),
+              switchMap(isLoading => {
+                if (isLoading) {
+                  // If already loading, wait for it to complete
+                  return this.store$.pipe(
+                    select(selectSolutionMatrix, solutionId),
+                    filter(matrix => !!matrix), // Wait until matrix is available
+                    take(1)
+                  );
+                } else {
+                  // If not loading, dispatch action to load it
+                  this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
 
-                // Then wait for it to complete
-                return this.store$.pipe(
-                  select(selectSolutionMatrix, solutionId),
-                  filter(matrix => !!matrix), // Wait until matrix is available
-                  take(1)
-                );
-              }
-            })
-          );
-        }
-      })
-    ).subscribe(matrix => {
-      // Update component state with the matrix
-      this.advancedSolutionMatrix = matrix;
-      this.loadingAdvancedSolutionMatrix = false;
-      this.changeDetectorRef.markForCheck();
-    });
+                  // Then wait for it to complete
+                  return this.store$.pipe(
+                    select(selectSolutionMatrix, solutionId),
+                    filter(matrix => !!matrix), // Wait until matrix is available
+                    take(1)
+                  );
+                }
+              })
+            );
+          }
+        })
+      )
+      .subscribe(matrix => {
+        // Update component state with the matrix
+        this.advancedSolutionMatrix = matrix;
+        this.loadingAdvancedSolutionMatrix = false;
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   private _setShowPlateSolvingBanner() {
@@ -1680,8 +1854,6 @@ export class ImageViewerComponent
       })
     );
   }
-
-  // Removed _loadAdvancedSolutionMatrix$ in favor of _ensureSolutionMatrixLoaded
 
   private _onMouseHoverSvgLoad(): void {
     if (this.isBrowser) {
@@ -1836,165 +2008,17 @@ export class ImageViewerComponent
   }
 
   private _initCurrentUserIsImageOwner() {
-    this.currentUser$.pipe(
-      filter(user => !!user),
-      takeUntil(this.destroyed$)
-    ).subscribe(user => {
-      if (this.image && user) {
-        this.currentUserIsImageOwner = user.id === this.image.user;
-        this.changeDetectorRef.markForCheck();
-      }
-    });
-  }
-
-  /**
-   * Utility method to set UI element hover state
-   * Used by child components to indicate when mouse is over UI elements
-   */
-  protected setMouseOverUIElement(value: boolean): void {
-    this.isMouseOverUIElement = value;
-    this.changeDetectorRef.markForCheck();
-  }
-
-  /**
-   * Handle N keypress or button click for annotations
-   */
-  @HostListener("window:keyup.n", ["$event"])
-  enterFullscreenWithMeasurementTool(event: MouseEvent): void {
-    if (!this.isBrowser) {
-      return;
-    }
-
-    // Prevent default behavior
-    event.preventDefault();
-    event.stopPropagation();
-
-    // Enter fullscreen with measurement tool activated
-    this.enterFullscreen(event, { activateMeasurementTool: true });
-  }
-
-  toggleAnnotationMode(event: KeyboardEvent | MouseEvent): void {
-    if (!this.isBrowser) {
-      return;
-    }
-
-    // Don't interfere with input fields if this is a keyboard event
-    if (event instanceof KeyboardEvent) {
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement ||
-        (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
-      ) {
-        return;
-      }
-    }
-
-    // Do nothing if the component is not active or if the revision is a video file
-    if (!this.active || (this.revision && this.revision.videoFile)) {
-      return;
-    }
-
-    if (event) {
-      event.preventDefault();
-      if (event instanceof MouseEvent) {
-        event.stopPropagation();
-      }
-    }
-
-    // For button click (MouseEvent), we use our enterFullscreen logic which handles enabling annotations
-    if (event instanceof MouseEvent) {
-      this.enterFullscreen(event);
-      return;
-    }
-
-    // For keyboard press (N key), toggle view mode only (always read-only)
-    // Store the previous state to restore later
-    if (!this.isAnnotationMode) {
-      this._previousMouseHoverState = {
-        forceViewMouseHover: this.forceViewMouseHover,
-        forceViewAnnotationsMouseHover: this.forceViewAnnotationsMouseHover
-      };
-
-      // Disable mouse hover while in annotation mode
-      this.forceViewMouseHover = false;
-      this.forceViewAnnotationsMouseHover = false;
-    } else {
-      // Restore previous mouse-hover state when exiting annotation mode
-      if (this._previousMouseHoverState) {
-        this.forceViewMouseHover = this._previousMouseHoverState.forceViewMouseHover;
-        this.forceViewAnnotationsMouseHover = this._previousMouseHoverState.forceViewAnnotationsMouseHover;
-      }
-    }
-
-    // Toggle annotation mode (always read-only)
-    this.isAnnotationMode = !this.isAnnotationMode;
-    this.annotationReadOnlyMode = true; // Always read-only in regular view
-
-    // Force change detection
-    this.changeDetectorRef.markForCheck();
-  }
-
-  /**
-   * Handle exiting annotation mode - when exiting, the annotations are cleared
-   * from the URL, and the tool emits this event to indicate it's done
-   */
-  onExitAnnotationMode(): void {
-    // Set annotation mode to false
-    this.isAnnotationMode = false;
-
-    // Reset to read-only mode for next time
-    this.annotationReadOnlyMode = true;
-
-    // Restore previous mouse-hover state when exiting annotation mode
-    if (this._previousMouseHoverState) {
-      this.forceViewMouseHover = this._previousMouseHoverState.forceViewMouseHover;
-      this.forceViewAnnotationsMouseHover = this._previousMouseHoverState.forceViewAnnotationsMouseHover;
-      this._previousMouseHoverState = null;
-    }
-
-    // Check if the URL still has annotations
-    if (this.isBrowser) {
-      const currentUrl = new URL(this.windowRefService.nativeWindow.location.href);
-      if (!currentUrl.searchParams.has('annotations')) {
-        // URL no longer has annotations, so clear the flag
-        this.hasUrlAnnotations = false;
-      }
-    }
-
-    // Check for saved annotations again to properly update the state
-    this._checkForSavedAnnotations();
-
-    // Important: Re-initialize annotations if we have saved annotations
-    // This fixes the issue where annotations disappear after exiting fullscreen mode
-    if (this.hasSavedAnnotations) {
-      // Short delay to ensure DOM is updated before re-initializing
-      this.utilsService.delay(100).subscribe(() => {
-        // Re-check and show annotations (if available) on the regular view
-        this._checkAndShowAnnotations();
-
-        // Force mouse hover annotations to be visible again
-        this.forceViewAnnotationsMouseHover = true;
-        this.forceViewMouseHover = true;
-
-        // Force change detection
-        this.changeDetectorRef.markForCheck();
+    this.currentUser$
+      .pipe(
+        filter(user => !!user),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(user => {
+        if (this.image && user) {
+          this.currentUserIsImageOwner = user.id === this.image.user;
+          this.changeDetectorRef.markForCheck();
+        }
       });
-    }
-
-    // Force change detection to update the DOM
-    this.changeDetectorRef.markForCheck();
-  }
-
-  /**
-   * Toggle annotation edit mode between read-only and editable
-   */
-  toggleAnnotationEditMode(): void {
-    if (!this.isAnnotationMode) {
-      return;
-    }
-
-    this.annotationReadOnlyMode = !this.annotationReadOnlyMode;
-    this.changeDetectorRef.markForCheck();
   }
 
   private _initAutoOpenFullscreen() {
@@ -2131,8 +2155,8 @@ export class ImageViewerComponent
     }
 
     // Check for annotations in URL
-    const hasAnnotationsInUrl = this.isBrowser &&
-      new URL(this.windowRefService.nativeWindow.location.href).searchParams.has('annotations');
+    const hasAnnotationsInUrl =
+      this.isBrowser && new URL(this.windowRefService.nativeWindow.location.href).searchParams.has("annotations");
 
     // Set the flag for URL annotations
     this.hasUrlAnnotations = hasAnnotationsInUrl;
@@ -2141,9 +2165,12 @@ export class ImageViewerComponent
     this.utilsService.delay(100).subscribe(() => {
       // Check for annotations in revision or image (but only use if no URL annotations)
       // URL annotations should trump saved annotations
-      const hasAnnotationsInRevision = !hasAnnotationsInUrl &&
-        this.revision && !!this.revision.annotations &&
-        this.revision.annotations.trim() !== '' && this.revision.annotations !== '[]';
+      const hasAnnotationsInRevision =
+        !hasAnnotationsInUrl &&
+        this.revision &&
+        !!this.revision.annotations &&
+        this.revision.annotations.trim() !== "" &&
+        this.revision.annotations !== "[]";
 
       // Only check for saved annotations if there are no URL annotations
       if (!hasAnnotationsInUrl) {
@@ -2151,8 +2178,10 @@ export class ImageViewerComponent
       }
 
       if (hasAnnotationsInUrl || hasAnnotationsInRevision) {
-        console.log("Automatically enabling annotation mode - annotations found in",
-          hasAnnotationsInUrl ? "URL" : "revision");
+        console.log(
+          "Automatically enabling annotation mode - annotations found in",
+          hasAnnotationsInUrl ? "URL" : "revision"
+        );
 
         // Wait for the image to load since we need the image element
         this.utilsService.delay(500).subscribe(() => {
@@ -2188,7 +2217,7 @@ export class ImageViewerComponent
     try {
       // Check if there are annotations in the revision
       // Consider that a JSON array (even empty) is a saved state
-      if (this.revision.annotations && this.revision.annotations.trim() !== '') {
+      if (this.revision.annotations && this.revision.annotations.trim() !== "") {
         // Parse the annotations to check if it's a valid array
         const annotations = JSON.parse(this.revision.annotations);
         // Consider any array (even empty) as a saved state
@@ -2200,13 +2229,13 @@ export class ImageViewerComponent
       // Add a class to the image-area when there are saved annotations
       if (this.imageArea?.nativeElement) {
         if (this.hasSavedAnnotations) {
-          this.renderer.addClass(this.imageArea.nativeElement, 'has-saved-annotations');
+          this.renderer.addClass(this.imageArea.nativeElement, "has-saved-annotations");
         } else {
-          this.renderer.removeClass(this.imageArea.nativeElement, 'has-saved-annotations');
+          this.renderer.removeClass(this.imageArea.nativeElement, "has-saved-annotations");
         }
       }
     } catch (error) {
-      console.warn('Error checking for saved annotations:', error);
+      console.warn("Error checking for saved annotations:", error);
       this.hasSavedAnnotations = false;
     }
   }

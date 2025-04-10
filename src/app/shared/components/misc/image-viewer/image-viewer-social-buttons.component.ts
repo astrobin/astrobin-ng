@@ -166,11 +166,11 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap }
                       {{ like.displayName || like.username }}
                     </a>
                     <div class="d-xl-none">
-                      {{ like.timestamp | localDate | timeago  }}
+                      {{ like.timestamp | localDate | timeago }}
                     </div>
                   </td>
                   <td class="d-none d-xl-table-cell">
-                    {{ like.timestamp | localDate | timeago  }}
+                    {{ like.timestamp | localDate | timeago }}
                   </td>
                   <td class="text-end">
                     <astrobin-toggle-property
@@ -234,11 +234,11 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap }
                       {{ bookmark.displayName || bookmark.username }}
                     </a>
                     <div class="d-xl-none">
-                      {{ bookmark.timestamp | localDate | timeago  }}
+                      {{ bookmark.timestamp | localDate | timeago }}
                     </div>
                   </td>
                   <td class="d-none d-xl-table-cell">
-                    {{ bookmark.timestamp | localDate | timeago  }}
+                    {{ bookmark.timestamp | localDate | timeago }}
                   </td>
                   <td class="text-end">
                     <astrobin-toggle-property

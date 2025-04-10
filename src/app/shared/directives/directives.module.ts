@@ -6,13 +6,14 @@ import { EventPreventDefaultDirective } from "@shared/directives/event-prevent-d
 import { EventStopPropagationDirective } from "@shared/directives/event-stop-propagation/event-stop-propagation.directive";
 import { GtagOutboundClickEventDirective } from "@shared/directives/gtag-outbound-click-event/gtag-outbound-click-event.directive";
 import { LazyBackgroundDirective } from "@shared/directives/lazy-background.directive";
+import { NgLetDirective } from "@shared/directives/ng-let.directive";
 import { NoScrollDirective } from "@shared/directives/no-scroll/no-scroll.directive";
 import { PreventScrollClickDirective } from "@shared/directives/prevent-scroll-click.directive";
 import { ScrollToggleDirective } from "@shared/directives/scroll-toggle.directive";
 import { ScrollVisibilityDirective } from "@shared/directives/scroll-visibility.directive";
-import { DisableAutoFocusOnTouchDevicesDirective } from "./disable-auto-focus-on-touch-devices.directive";
 import { StickyDirective } from "@shared/directives/sticky-active.directive";
-import { NgLetDirective } from "@shared/directives/ng-let.directive";
+
+import { DisableAutoFocusOnTouchDevicesDirective } from "./disable-auto-focus-on-touch-devices.directive";
 
 @NgModule({
   declarations: [

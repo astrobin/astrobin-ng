@@ -104,9 +104,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
   deleteUncompressedSourceFile() {
     const modalRef = this.modalService.open(ConfirmationDialogComponent);
     const instance = modalRef.componentInstance;
-    instance.message = this.translate.instant(
-      "This action cannot be undone."
-    );
+    instance.message = this.translate.instant("This action cannot be undone.");
 
     modalRef.closed.pipe(take(1)).subscribe(() => {
       this.deleting = true;

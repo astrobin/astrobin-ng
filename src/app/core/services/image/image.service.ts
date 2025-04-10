@@ -1,15 +1,5 @@
-import { Inject, Injectable, NgZone, PLATFORM_ID } from "@angular/core";
-import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { Observable, Observer, of } from "rxjs";
-import { AcquisitionType, CelestialHemisphere, DataSource, FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, LicenseOptions, ORIGINAL_REVISION_LABEL, SolarSystemSubjectType, SubjectType } from "@core/interfaces/image.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { BortleScale, DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { filter, map, take, tap } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
-import { NgZone, Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { Inject, Injectable, NgZone, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadImageFailure, LoadImage } from "@app/store/actions/image.actions";
@@ -17,15 +7,15 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { DeepSkyAcquisitionInterface, BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
+import { BortleScale, DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
 import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
 import {
-  ImageInterface,
-  ImageRevisionInterface,
   AcquisitionType,
   CelestialHemisphere,
   DataSource,
   FINAL_REVISION_LABEL,
+  ImageInterface,
+  ImageRevisionInterface,
   LicenseOptions,
   ORIGINAL_REVISION_LABEL,
   SolarSystemSubjectType,
@@ -45,7 +35,7 @@ import { ofType, Actions } from "@ngrx/effects";
 import { select, Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { ActiveToast } from "ngx-toastr";
-import { Observable, of, Observer } from "rxjs";
+import { Observable, Observer, of } from "rxjs";
 import { filter, map, take, tap } from "rxjs/operators";
 
 @Injectable({

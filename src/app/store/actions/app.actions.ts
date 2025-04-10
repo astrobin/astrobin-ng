@@ -84,7 +84,8 @@ import {
   UndeleteImageSuccess,
   UnpublishImage,
   UnpublishImageFailure,
-  UnpublishImageSuccess, UpdateAnnotations
+  UnpublishImageSuccess,
+  UpdateAnnotations
 } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
@@ -112,7 +113,14 @@ import {
   LoadRemoteSourceAffiliatesFailure,
   LoadRemoteSourceAffiliatesSuccess
 } from "@app/store/actions/remote-source-affiliates.actions";
-import {LoadSolution, LoadSolutionFailure, LoadSolutionMatrix, LoadSolutionMatrixFailure, LoadSolutionMatrixStart, LoadSolutionMatrixSuccess, LoadSolutions,
+import {
+  LoadSolution,
+  LoadSolutionFailure,
+  LoadSolutionMatrix,
+  LoadSolutionMatrixFailure,
+  LoadSolutionMatrixStart,
+  LoadSolutionMatrixSuccess,
+  LoadSolutions,
   LoadSolutionsSuccess,
   LoadSolutionSuccess
 } from "@app/store/actions/solution.actions";
