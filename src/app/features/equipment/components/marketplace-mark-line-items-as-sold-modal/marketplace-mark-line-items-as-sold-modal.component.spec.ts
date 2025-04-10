@@ -1,12 +1,13 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 
 import { MarketplaceMarkLineItemsAsSoldModalComponent } from "./marketplace-mark-line-items-as-sold-modal.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
-import { initialMainState } from "@app/store/state";
 
 describe("MarketplaceMarkLineItemsAsSoldModalComponent", () => {
   let component: MarketplaceMarkLineItemsAsSoldModalComponent;

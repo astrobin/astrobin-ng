@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
+import type { BrandInterface } from "@features/equipment/types/brand.interface";
+import type { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { Store } from "@ngrx/store";
 
 export const PLACEHOLDER = "/assets/images/brand-placeholder.png?v=2";
 

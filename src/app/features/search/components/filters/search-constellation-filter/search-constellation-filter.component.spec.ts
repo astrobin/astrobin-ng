@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { SearchConstellationFilterComponent } from "./search-constellation-filter.component";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { MockBuilder } from "ng-mocks";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { ConstellationsService } from "@features/explore/services/constellations.service";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { SearchConstellationFilterComponent } from "./search-constellation-filter.component";
 
 describe("ConstellationFilterComponent", () => {
   let component: SearchConstellationFilterComponent;

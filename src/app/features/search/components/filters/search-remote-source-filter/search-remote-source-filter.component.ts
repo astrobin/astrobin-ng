@@ -1,15 +1,15 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
 import { RemoteSource } from "@core/interfaces/image.interface";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import type { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-search-remote-source-filter.search-filter-component",

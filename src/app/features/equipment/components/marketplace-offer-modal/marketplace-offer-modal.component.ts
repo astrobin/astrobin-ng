@@ -1,28 +1,27 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { TranslateService } from "@ngx-translate/core";
+import type { CurrencyPipe } from "@angular/common";
+import type { OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { CurrencyPipe } from "@angular/common";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { LoadingService } from "@core/services/loading.service";
-import { Actions } from "@ngrx/effects";
-import { take, takeUntil } from "rxjs/operators";
-import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import {
-  MarketplaceLineItemInterface,
-  MarketplaceShippingCostType
-} from "@features/equipment/types/marketplace-line-item.interface";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import type { MainState } from "@app/store/state";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceShippingCostType } from "@features/equipment/types/marketplace-line-item.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-offer-modal",
@@ -42,7 +41,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
   title: string = this.translateService.instant("Make an offer");
   rulesText = this.translateService.instant(
     "Before making an offer, please make sure you reviewed all the details of this listing. By making an offer, " +
-    "you agree to the {{0}}terms and conditions{{1}} of the AstroBin marketplace.",
+      "you agree to the {{0}}terms and conditions{{1}} of the AstroBin marketplace.",
     {
       0: `<a href='${this.classicRoutesService.MARKETPLACE_TERMS}' target='_blank'>`,
       1: "</a>"
@@ -79,10 +78,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     );
 
     if (sameCurrency) {
-      const amount = this.currencyPipe.transform(
-        this._getOfferTotalAmount(),
-        this.listing.lineItems[0].currency
-      );
+      const amount = this.currencyPipe.transform(this._getOfferTotalAmount(), this.listing.lineItems[0].currency);
 
       if (this.listing.deliveryByShipping) {
         return this.translateService.instant("Offer {{0}} incl. shipping", { 0: amount });
@@ -106,9 +102,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     event.preventDefault();
 
     if (this.form.get("terms") && !this.form.get("terms").value) {
-      this.popNotificationsService.error(
-        this.translateService.instant("You must agree to the terms of service.")
-      );
+      this.popNotificationsService.error(this.translateService.instant("You must agree to the terms of service."));
       return;
     }
 
@@ -156,7 +150,9 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       this.fields = this.listing.lineItems.map((lineItem, index) => {
         return {
           key: "",
-          fieldGroupClassName: `row ${!!lineItem.sold ? "sold" : ""} ${!!lineItem.reserved ? "reserved" : ""} flex-column flex-lg-row offer-row`,
+          fieldGroupClassName: `row ${!!lineItem.sold ? "sold" : ""} ${
+            !!lineItem.reserved ? "reserved" : ""
+          } flex-column flex-lg-row offer-row`,
           wrappers: ["default-wrapper"],
           fieldGroup: [
             {
@@ -175,7 +171,9 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               className: "hidden",
               hooks: {
                 onInit: field => {
-                  field.formControl.setValue(this.offers.find(offer => offer.lineItem === lineItem.id)?.masterOfferUuid);
+                  field.formControl.setValue(
+                    this.offers.find(offer => offer.lineItem === lineItem.id)?.masterOfferUuid
+                  );
                 }
               }
             },
@@ -200,11 +198,15 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                 "props.disabled": () => !!lineItem.sold || !!lineItem.reserved,
                 template: () => {
                   if (lineItem.sold) {
-                    return (lineItem.itemName || lineItem.itemPlainText) + ` (${this.translateService.instant("sold")})`;
+                    return (
+                      (lineItem.itemName || lineItem.itemPlainText) + ` (${this.translateService.instant("sold")})`
+                    );
                   }
 
                   if (lineItem.reserved) {
-                    return (lineItem.itemName || lineItem.itemPlainText) + ` (${this.translateService.instant("reserved")})`;
+                    return (
+                      (lineItem.itemName || lineItem.itemPlainText) + ` (${this.translateService.instant("reserved")})`
+                    );
                   }
 
                   return lineItem.itemName || lineItem.itemPlainText;
@@ -253,7 +255,11 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                         return this.translateService.instant("Covered by seller");
                       case MarketplaceShippingCostType.FIXED:
                         if (!!lineItem.shippingCost) {
-                          return this.currencyPipe.transform(+lineItem.shippingCost, lineItem.currency, "symbol-narrow");
+                          return this.currencyPipe.transform(
+                            +lineItem.shippingCost,
+                            lineItem.currency,
+                            "symbol-narrow"
+                          );
                         }
                         return this.translateService.instant("Free");
                       case MarketplaceShippingCostType.TO_BE_AGREED:
@@ -295,7 +301,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                   {
                     name: "min-value",
                     options: {
-                      minValue: .01
+                      minValue: 0.01
                     }
                   }
                 ]
@@ -312,8 +318,8 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                     let defaultValue;
 
                     if (
-                      (!!lineItem.sold && lineItem.soldTo != currentUser.id) ||
-                      (!!lineItem.reserved && lineItem.reservedTo != currentUser.id)
+                      (!!lineItem.sold && lineItem.soldTo !== currentUser.id) ||
+                      (!!lineItem.reserved && lineItem.reservedTo !== currentUser.id)
                     ) {
                       defaultValue = 0;
                     } else if (this.offers.length > 0 && this.offers.some(offer => offer.lineItem === lineItem.id)) {

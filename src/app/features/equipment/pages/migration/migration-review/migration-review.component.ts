@@ -1,19 +1,21 @@
-import { Component, OnInit } from "@angular/core";
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import type { Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { Store } from "@ngrx/store";
-import { TitleService } from "@core/services/title/title.service";
-import { TranslateService } from "@ngx-translate/core";
-import { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
-import { combineLatest, forkJoin, Observable, of } from "rxjs";
-import { map, switchMap, tap } from "rxjs/operators";
-import { UsernameService } from "@shared/components/misc/username/username.service";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { UserService } from "@core/services/user.service";
+import type { MainState } from "@app/store/state";
+import type { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
+import type { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
-import { Router } from "@angular/router";
-import { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { TitleService } from "@core/services/title/title.service";
+import type { UserService } from "@core/services/user.service";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import type { UsernameService } from "@shared/components/misc/username/username.service";
+import type { Observable } from "rxjs";
+import { combineLatest, forkJoin, of } from "rxjs";
+import { map, switchMap, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-migration-review",

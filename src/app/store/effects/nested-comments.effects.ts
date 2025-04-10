@@ -1,20 +1,36 @@
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { MainState } from "@app/store/state";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { LoadingService } from "@core/services/loading.service";
-import { fromEvent, Observable, of } from "rxjs";
-import { catchError, debounceTime, filter, first, map, mapTo, mergeMap, take, tap } from "rxjs/operators";
-import { ApproveNestedCommentFailure, ApproveNestedCommentSuccess, CreateNestedCommentFailure, CreateNestedCommentSuccess, DeleteNestedCommentFailure, DeleteNestedCommentSuccess, LoadNestedCommentFailure, LoadNestedCommentsSuccess, LoadNestedCommentSuccess, UpdateNestedComment, UpdateNestedCommentFailure, UpdateNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
-import { NestedCommentsApiService } from "@core/services/api/classic/nested-comments/nested-comments-api.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { selectNestedCommentById } from "@app/store/selectors/app/nested-comments.selectors";
 import { isPlatformBrowser } from "@angular/common";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import type { All } from "@app/store/actions/app.actions";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import type { UpdateNestedComment } from "@app/store/actions/nested-comments.actions";
+import {
+  ApproveNestedCommentFailure,
+  ApproveNestedCommentSuccess,
+  CreateNestedCommentFailure,
+  CreateNestedCommentSuccess,
+  DeleteNestedCommentFailure,
+  DeleteNestedCommentSuccess,
+  LoadNestedCommentFailure,
+  LoadNestedCommentsSuccess,
+  LoadNestedCommentSuccess,
+  UpdateNestedCommentFailure,
+  UpdateNestedCommentSuccess
+} from "@app/store/actions/nested-comments.actions";
+import { selectNestedCommentById } from "@app/store/selectors/app/nested-comments.selectors";
+import type { MainState } from "@app/store/state";
+import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import type { NestedCommentsApiService } from "@core/services/api/classic/nested-comments/nested-comments-api.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { Actions } from "@ngrx/effects";
+import { createEffect, ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
+import { fromEvent, of } from "rxjs";
+import { catchError, debounceTime, filter, first, map, mapTo, mergeMap, take, tap } from "rxjs/operators";
 
 @Injectable()
 export class NestedCommentsEffects {
@@ -25,11 +41,14 @@ export class NestedCommentsEffects {
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(payload =>
         this.nestedCommentsApiService.getForContentTypeIdAndObjectId(payload.contentTypeId, payload.objectId).pipe(
-          map(nestedComments => new LoadNestedCommentsSuccess({
-            contentTypeId: payload.contentTypeId,
-            objectId: payload.objectId,
-            nestedComments
-          })),
+          map(
+            nestedComments =>
+              new LoadNestedCommentsSuccess({
+                contentTypeId: payload.contentTypeId,
+                objectId: payload.objectId,
+                nestedComments
+              })
+          ),
           tap(() => this.loadingService.setLoading(false))
         )
       )
@@ -144,9 +163,7 @@ export class NestedCommentsEffects {
         tap(() => {
           this.loadingService.setLoading(false);
           this.popNotificationsService.error(
-            this.translateService.instant(
-              "Something went wrong while updating the comment. Please try again later."
-            )
+            this.translateService.instant("Something went wrong while updating the comment. Please try again later.")
           );
         }),
         map(() => void 0)
@@ -154,19 +171,18 @@ export class NestedCommentsEffects {
     { dispatch: false }
   );
 
-  ApproveNestedComment: Observable<ApproveNestedCommentSuccess | ApproveNestedCommentFailure> = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AppActionTypes.APPROVE_NESTED_COMMENT),
-        map(action => action.payload.id),
-        tap(() => this.loadingService.setLoading(true)),
-        mergeMap(id =>
-          this.nestedCommentsApiService.approve(id).pipe(
-            map(nestedComment => new ApproveNestedCommentSuccess({ nestedComment })),
-            catchError(error => of(new ApproveNestedCommentFailure({ id, error })))
-          )
+  ApproveNestedComment: Observable<ApproveNestedCommentSuccess | ApproveNestedCommentFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.APPROVE_NESTED_COMMENT),
+      map(action => action.payload.id),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(id =>
+        this.nestedCommentsApiService.approve(id).pipe(
+          map(nestedComment => new ApproveNestedCommentSuccess({ nestedComment })),
+          catchError(error => of(new ApproveNestedCommentFailure({ id, error })))
         )
       )
+    )
   );
 
   ApproveNestedCommentSuccess: Observable<void> = createEffect(
@@ -188,9 +204,7 @@ export class NestedCommentsEffects {
         tap(() => {
           this.loadingService.setLoading(false);
           this.popNotificationsService.error(
-            this.translateService.instant(
-              "Something went wrong while approving the comment. Please try again later."
-            )
+            this.translateService.instant("Something went wrong while approving the comment. Please try again later.")
           );
         }),
         map(() => void 0)
@@ -198,19 +212,18 @@ export class NestedCommentsEffects {
     { dispatch: false }
   );
 
-  DeleteNestedComment: Observable<DeleteNestedCommentSuccess | DeleteNestedCommentFailure> = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AppActionTypes.DELETE_NESTED_COMMENT),
-        map(action => action.payload.id),
-        tap(() => this.loadingService.setLoading(true)),
-        mergeMap(id =>
-          this.nestedCommentsApiService.delete(id).pipe(
-            map(() => new DeleteNestedCommentSuccess({ id })),
-            catchError(error => of(new DeleteNestedCommentFailure({ id, error })))
-          )
+  DeleteNestedComment: Observable<DeleteNestedCommentSuccess | DeleteNestedCommentFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_NESTED_COMMENT),
+      map(action => action.payload.id),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(id =>
+        this.nestedCommentsApiService.delete(id).pipe(
+          map(() => new DeleteNestedCommentSuccess({ id })),
+          catchError(error => of(new DeleteNestedCommentFailure({ id, error })))
         )
       )
+    )
   );
 
   DeleteNestedCommentSuccess: Observable<void> = createEffect(
@@ -232,9 +245,7 @@ export class NestedCommentsEffects {
         tap(() => {
           this.loadingService.setLoading(false);
           this.popNotificationsService.error(
-            this.translateService.instant(
-              "Something went wrong while deleting the comment. Please try again later."
-            )
+            this.translateService.instant("Something went wrong while deleting the comment. Please try again later.")
           );
         }),
         map(() => void 0)
@@ -252,6 +263,5 @@ export class NestedCommentsEffects {
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService
-  ) {
-  }
+  ) {}
 }

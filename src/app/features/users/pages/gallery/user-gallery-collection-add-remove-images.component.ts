@@ -1,23 +1,36 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { Actions, ofType } from "@ngrx/effects";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
+import type { ChangeDetectorRef, ElementRef, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import type {
+  AddImageToCollectionFailure,
+  AddImageToCollectionSuccess,
+  RemoveImageFromCollectionFailure,
+  RemoveImageFromCollectionSuccess
+} from "@app/store/actions/collection.actions";
+import {
+  AddImageToCollection,
+  LoadCollections,
+  RemoveImageFromCollection
+} from "@app/store/actions/collection.actions";
+import type { FindImagesSuccess } from "@app/store/actions/image.actions";
+import { FindImages } from "@app/store/actions/image.actions";
+import type { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import type { CollectionInterface } from "@core/interfaces/collection.interface";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { ImageService } from "@core/services/image/image.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { Actions } from "@ngrx/effects";
+import { ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import { fadeInOut } from "@shared/animations";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { fromEvent, Subject, throttleTime } from "rxjs";
 import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil } from "rxjs/operators";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import { fadeInOut } from "@shared/animations";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, LoadCollections, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess } from "@app/store/actions/collection.actions";
-import { ImageService } from "@core/services/image/image.service";
-import { ImageAlias } from "@core/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-user-gallery-collection-add-remove-images",
@@ -29,18 +42,14 @@ import { ImageAlias } from "@core/enums/image-alias.enum";
 
       <input
         (ngModelChange)="imagesSearchSubject.next($event)"
-        [ngModelOptions]="{standalone: true}"
+        [ngModelOptions]="{ standalone: true }"
         [(ngModel)]="imagesSearch"
         class="form-control mb-2"
         type="search"
         placeholder="{{ 'Search' | translate }}"
       />
 
-      <astrobin-loading-indicator
-        *ngIf="loadingImages"
-        @fadeInOut
-        class="mt-2"
-      ></astrobin-loading-indicator>
+      <astrobin-loading-indicator *ngIf="loadingImages" @fadeInOut class="mt-2"></astrobin-loading-indicator>
 
       <astrobin-masonry-layout
         *ngIf="!searching && images?.length > 0"
@@ -60,11 +69,7 @@ import { ImageAlias } from "@core/enums/image-alias.enum";
             class="image-container"
             container="body"
           >
-            <img
-              [src]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
-              [alt]="item.title"
-              loading="lazy"
-            />
+            <img [src]="imageService.getThumbnail(item, ImageAlias.REGULAR)" [alt]="item.title" loading="lazy" />
 
             <fa-icon class="check" icon="circle-check"></fa-icon>
             <fa-icon class="loading-indicator" icon="circle-notch" animation="spin"></fa-icon>
@@ -73,11 +78,7 @@ import { ImageAlias } from "@core/enums/image-alias.enum";
         </ng-template>
       </astrobin-masonry-layout>
 
-      <astrobin-loading-indicator
-        *ngIf="loadingMoreImages"
-        @fadeInOut
-        class="mt-2"
-      ></astrobin-loading-indicator>
+      <astrobin-loading-indicator *ngIf="loadingMoreImages" @fadeInOut class="mt-2"></astrobin-loading-indicator>
     </div>
   `,
   styleUrls: ["./user-gallery-collection-add-remove-images.component.scss"],
@@ -122,38 +123,39 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
 
     this._setupOnScroll();
 
-    this.imagesSearchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroyed$)
-    ).subscribe(searchTerm => {
-      this._searchImages(searchTerm);
-      this.changeDetectorRef.markForCheck();
-    });
+    this.imagesSearchSubject
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$))
+      .subscribe(searchTerm => {
+        this._searchImages(searchTerm);
+        this.changeDetectorRef.markForCheck();
+      });
 
-
-    this.action$.pipe(
-      ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
-      map((action: FindImagesSuccess) => action.payload),
-      takeUntil(this.destroyed$)
-    ).subscribe(payload => {
-      this.loadingImages = false;
-      this.loadingMoreImages = false;
-      this._next = payload.response.next;
-      this.images = this.images.concat(payload.response.results);
-      this.searching = false;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.action$
+      .pipe(
+        ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
+        map((action: FindImagesSuccess) => action.payload),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(payload => {
+        this.loadingImages = false;
+        this.loadingMoreImages = false;
+        this._next = payload.response.next;
+        this.images = this.images.concat(payload.response.results);
+        this.searching = false;
+        this.changeDetectorRef.markForCheck();
+      });
 
     this._searchImages(null);
 
     // Loads the collection again to get the images in it.
-    this.store$.dispatch(new LoadCollections({
-      params: {
-        ids: [this.collection.id],
-        action: "add-remove-images"
-      }
-    }));
+    this.store$.dispatch(
+      new LoadCollections({
+        params: {
+          ids: [this.collection.id],
+          action: "add-remove-images"
+        }
+      })
+    );
 
     this.loadingImages = true;
   }
@@ -161,55 +163,68 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
   protected toggleSelected(image: ImageInterface) {
     this.togglingImages.push(image.pk);
 
-    this.action$.pipe(
-      ofType(
-        AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS,
-        AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS,
-        AppActionTypes.ADD_IMAGE_TO_COLLECTION_FAILURE,
-        AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_FAILURE
-      ),
-      filter((action:
-        AddImageToCollectionSuccess |
-        AddImageToCollectionFailure |
-        RemoveImageFromCollectionSuccess |
-        RemoveImageFromCollectionFailure) => (action.payload.collectionId === this.collection.id)
-      ),
-      take(1)
-    ).subscribe(() => {
-      this.togglingImages = this.togglingImages.filter(pk => pk !== image.pk);
-      this.changeDetectorRef.markForCheck();
-    });
+    this.action$
+      .pipe(
+        ofType(
+          AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS,
+          AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS,
+          AppActionTypes.ADD_IMAGE_TO_COLLECTION_FAILURE,
+          AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_FAILURE
+        ),
+        filter(
+          (
+            action:
+              | AddImageToCollectionSuccess
+              | AddImageToCollectionFailure
+              | RemoveImageFromCollectionSuccess
+              | RemoveImageFromCollectionFailure
+          ) => action.payload.collectionId === this.collection.id
+        ),
+        take(1)
+      )
+      .subscribe(() => {
+        this.togglingImages = this.togglingImages.filter(pk => pk !== image.pk);
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.action$.pipe(
-      ofType(AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS),
-      map((action: AddImageToCollectionSuccess) => action.payload.collectionId),
-      filter(collectionId => collectionId === this.collection.id),
-      take(1)
-    ).subscribe(() => {
-      this.collection.images = [...(this.collection.images || []), image.pk];
-      this.changeDetectorRef.markForCheck();
-    });
+    this.action$
+      .pipe(
+        ofType(AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS),
+        map((action: AddImageToCollectionSuccess) => action.payload.collectionId),
+        filter(collectionId => collectionId === this.collection.id),
+        take(1)
+      )
+      .subscribe(() => {
+        this.collection.images = [...(this.collection.images || []), image.pk];
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.action$.pipe(
-      ofType(AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS),
-      map((action: RemoveImageFromCollectionSuccess) => action.payload.collectionId),
-      filter(collectionId => collectionId === this.collection.id),
-      take(1)
-    ).subscribe(() => {
-      this.collection.images = (this.collection.images || []).filter(pk => pk !== image.pk);
-      this.changeDetectorRef.markForCheck();
-    });
+    this.action$
+      .pipe(
+        ofType(AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS),
+        map((action: RemoveImageFromCollectionSuccess) => action.payload.collectionId),
+        filter(collectionId => collectionId === this.collection.id),
+        take(1)
+      )
+      .subscribe(() => {
+        this.collection.images = (this.collection.images || []).filter(pk => pk !== image.pk);
+        this.changeDetectorRef.markForCheck();
+      });
 
     if (this.collection.images?.includes(image.pk)) {
-      this.store$.dispatch(new RemoveImageFromCollection({
-        collectionId: this.collection.id,
-        imageId: image.pk
-      }));
+      this.store$.dispatch(
+        new RemoveImageFromCollection({
+          collectionId: this.collection.id,
+          imageId: image.pk
+        })
+      );
     } else {
-      this.store$.dispatch(new AddImageToCollection({
-        collectionId: this.collection.id,
-        imageId: image.pk
-      }));
+      this.store$.dispatch(
+        new AddImageToCollection({
+          collectionId: this.collection.id,
+          imageId: image.pk
+        })
+      );
     }
   }
 
@@ -220,15 +235,17 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
     this._page = 1;
     this._next = null;
 
-    this.store$.dispatch(new FindImages({
-      options: {
-        userId: this.user.id,
-        gallerySerializer: true,
-        includeStagingArea: true,
-        q: searchTerm,
-        page: this._page
-      }
-    }));
+    this.store$.dispatch(
+      new FindImages({
+        options: {
+          userId: this.user.id,
+          gallerySerializer: true,
+          includeStagingArea: true,
+          q: searchTerm,
+          page: this._page
+        }
+      })
+    );
   }
 
   private _setupOnScroll() {
@@ -236,35 +253,30 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
       return;
     }
 
-    const scrollableElement = UtilsService.getScrollableParent(
-      this.elementRef.nativeElement,
-      this.windowRefService
-    );
+    const scrollableElement = UtilsService.getScrollableParent(this.elementRef.nativeElement, this.windowRefService);
 
     fromEvent(scrollableElement, "scroll")
-      .pipe(
-        throttleTime(250),
-        takeUntil(this.destroyed$)
-      )
+      .pipe(throttleTime(250), takeUntil(this.destroyed$))
       .subscribe(() => {
-          const isNearBottom = this.utilsService.isNearBottom(this.windowRefService, this.elementRef);
+        const isNearBottom = this.utilsService.isNearBottom(this.windowRefService, this.elementRef);
 
-          if (isNearBottom && !this.loadingImages && !this.loadingMoreImages && this._next) {
-            this.loadingMoreImages = true;
-            this._page++;
+        if (isNearBottom && !this.loadingImages && !this.loadingMoreImages && this._next) {
+          this.loadingMoreImages = true;
+          this._page++;
 
-            this.store$.dispatch(new FindImages({
+          this.store$.dispatch(
+            new FindImages({
               options: {
                 userId: this.user.id,
                 gallerySerializer: true,
                 includeStagingArea: true,
                 page: this._page
               }
-            }));
+            })
+          );
 
-            this.changeDetectorRef.markForCheck();
-          }
+          this.changeDetectorRef.markForCheck();
         }
-      );
+      });
   }
 }

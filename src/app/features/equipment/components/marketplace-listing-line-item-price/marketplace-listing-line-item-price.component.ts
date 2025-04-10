@@ -1,19 +1,18 @@
-import { Component, Input, OnInit } from "@angular/core";
-import {
-  MarketplaceLineItemInterface,
-  MarketplaceShippingCostType
-} from "@features/equipment/types/marketplace-line-item.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { TranslateService } from "@ngx-translate/core";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { filter, take, takeUntil } from "rxjs/operators";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { selectUser } from "@features/account/store/auth.selectors";
-import { LoadUser } from "@features/account/store/auth.actions";
-import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
+import type { OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { UserInterface } from "@core/interfaces/user.interface";
 import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
+import { LoadUser } from "@features/account/store/auth.actions";
+import { selectUser } from "@features/account/store/auth.selectors";
+import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
+import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceShippingCostType } from "@features/equipment/types/marketplace-line-item.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { filter, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-price",
@@ -32,40 +31,43 @@ export class MarketplaceListingLineItemPriceComponent extends BaseComponentDirec
   soldToUser: UserInterface;
   reservedToUser: UserInterface;
 
-  constructor(
-    public readonly store$: Store<MainState>,
-    public readonly translateService: TranslateService
-  ) {
+  constructor(public readonly store$: Store<MainState>, public readonly translateService: TranslateService) {
     super(store$);
   }
 
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
-      filter(listing => !!listing),
-      distinctUntilChangedObj(),
-      takeUntil(this.destroyed$)
-    ).subscribe(listingFormStore => {
-      this.listing.lineItems.forEach((lineItem: MarketplaceLineItemInterface) => {
-        const lineItemFromStore = listingFormStore.lineItems.find(item => item.id === lineItem.id);
+    this.store$
+      .select(selectMarketplaceListing, { id: this.listing.id })
+      .pipe(
+        filter(listing => !!listing),
+        distinctUntilChangedObj(),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(listingFormStore => {
+        this.listing.lineItems.forEach((lineItem: MarketplaceLineItemInterface) => {
+          const lineItemFromStore = listingFormStore.lineItems.find(item => item.id === lineItem.id);
 
-        if (lineItemFromStore.soldTo) {
-          this.loadUser(lineItemFromStore.soldTo, user => this.soldToUser = user);
-        } else if (lineItemFromStore.reservedTo) {
-          this.loadUser(lineItemFromStore.reservedTo, user => this.reservedToUser = user);
-        }
+          if (lineItemFromStore.soldTo) {
+            this.loadUser(lineItemFromStore.soldTo, user => (this.soldToUser = user));
+          } else if (lineItemFromStore.reservedTo) {
+            this.loadUser(lineItemFromStore.reservedTo, user => (this.reservedToUser = user));
+          }
+        });
       });
-    });
   }
 
   private loadUser(userId: UserInterface["id"], callback: (user: UserInterface) => void): void {
     this.store$.dispatch(new LoadUser({ id: userId }));
-    this.store$.select(selectUser, userId).pipe(
-      filter(user => !!user),
-      take(1)
-    ).subscribe(user => {
-      callback(user);
-    });
+    this.store$
+      .select(selectUser, userId)
+      .pipe(
+        filter(user => !!user),
+        take(1)
+      )
+      .subscribe(user => {
+        callback(user);
+      });
   }
 }

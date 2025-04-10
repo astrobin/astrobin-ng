@@ -1,4 +1,4 @@
-import { UserInterface } from "@core/interfaces/user.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
 
 export interface BrandInterface {
   id: number;
@@ -8,7 +8,7 @@ export interface BrandInterface {
   lastAddedOrRemovedFromImage: string;
   name: string;
   website?: string;
-  logo?: string | { file: File, url: string }[];
+  logo?: string | { file: File; url: string }[];
   createdBy?: UserInterface["id"];
   imageCount: number;
   userCount: number;

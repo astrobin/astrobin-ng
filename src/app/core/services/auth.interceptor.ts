@@ -1,21 +1,17 @@
-import {
-  HttpErrorResponse,
-  HttpEvent,
-  HttpHandler,
-  HttpHeaders,
-  HttpInterceptor,
-  HttpRequest
-} from "@angular/common/http";
+import type { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { MainState } from "@app/store/state";
+import type { MainState } from "@app/store/state";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { environment } from "@env/environment";
 import { Logout } from "@features/account/store/auth.actions";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { Observable, throwError } from "rxjs";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
+import { throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { AuthService } from "./auth.service";
+
+import type { AuthService } from "./auth.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -24,8 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
     public readonly popNotificationsService: PopNotificationsService,
     public readonly authService: AuthService,
     public readonly translate: TranslateService
-  ) {
-  }
+  ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authToken: string;

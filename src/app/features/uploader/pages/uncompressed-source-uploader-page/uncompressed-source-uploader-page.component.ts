@@ -1,33 +1,40 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import type { AfterViewInit, ChangeDetectorRef, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import type { ActivatedRoute } from "@angular/router";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MainState } from "@app/store/state";
-import { environment } from "@env/environment";
-import { select, Store } from "@ngrx/store";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { TranslateService } from "@ngx-translate/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Constants } from "@shared/constants";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import type {
+  DeleteImageUncompressedSourceFileFailure,
+  DeleteImageUncompressedSourceFileSuccess
+} from "@app/store/actions/image.actions";
+import { DeleteImageUncompressedSourceFile } from "@app/store/actions/image.actions";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
+import type { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { ThumbnailGroupApiService } from "@core/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { TitleService } from "@core/services/title/title.service";
-import { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { UploadState, UploadxService } from "ngx-uploadx";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { ImageService } from "@core/services/image/image.service";
+import type { ModalService } from "@core/services/modal.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import { environment } from "@env/environment";
+import type { Actions } from "@ngrx/effects";
+import { ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import { select } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { Constants } from "@shared/constants";
+import type { UploadState, UploadxService } from "ngx-uploadx";
 import { Observable } from "rxjs";
 import { filter, map, take, takeUntil } from "rxjs/operators";
-import { ModalService } from "@core/services/modal.service";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess } from "@app/store/actions/image.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { ImageAlias } from "@core/enums/image-alias.enum";
-import { ImageService } from "@core/services/image/image.service";
 
 @Component({
   selector: "astrobin-uncompressed-source-uploader-page",
@@ -102,37 +109,40 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     const instance = modalRef.componentInstance;
     instance.message = this.translate.instant(
       "You are about to delete the uncompressed source file that you associated to this image. " +
-      "This action cannot be undone."
+        "This action cannot be undone."
     );
 
     modalRef.closed.pipe(take(1)).subscribe(() => {
       this.deleting = true;
       this.changeDetectorRef.markForCheck();
 
-      this.actions$.pipe(
-        ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS),
-        filter((action: DeleteImageUncompressedSourceFileSuccess) => this.image.pk === action.payload.image.pk),
-        take(1)
-      ).subscribe(() => {
-        this.deleting = false;
-        this.fields = this.fields.map(field => {
-          if (field.key === "download") {
-            field.template = "";
-          }
-          return field;
+      this.actions$
+        .pipe(
+          ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS),
+          filter((action: DeleteImageUncompressedSourceFileSuccess) => this.image.pk === action.payload.image.pk),
+          take(1)
+        )
+        .subscribe(() => {
+          this.deleting = false;
+          this.fields = this.fields.map(field => {
+            if (field.key === "download") {
+              field.template = "";
+            }
+            return field;
+          });
+          this.changeDetectorRef.markForCheck();
         });
-        this.changeDetectorRef.markForCheck();
-      });
 
-      this.actions$.pipe(
-        ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_FAILURE),
-        filter((action: DeleteImageUncompressedSourceFileFailure) => this.image.pk === action.payload.pk),
-        take(1)
-      ).subscribe(() => {
-        this.deleting = false;
-        this.changeDetectorRef.markForCheck();
-      });
-
+      this.actions$
+        .pipe(
+          ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_FAILURE),
+          filter((action: DeleteImageUncompressedSourceFileFailure) => this.image.pk === action.payload.pk),
+          take(1)
+        )
+        .subscribe(() => {
+          this.deleting = false;
+          this.changeDetectorRef.markForCheck();
+        });
 
       this.store$.dispatch(new DeleteImageUncompressedSourceFile({ pk: this.image.pk }));
     });
@@ -141,15 +151,17 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
   private _initImage(): void {
     this.image = this.route.snapshot.data.image;
 
-    this.store$.pipe(
-      select(selectImage, this.image.pk),
-      filter(image => !!image),
-      takeUntil(this.destroyed$)
-    ).subscribe(image => {
-      this.image = image;
-      this._initThumbnail();
-      this.changeDetectorRef.markForCheck();
-    });
+    this.store$
+      .pipe(
+        select(selectImage, this.image.pk),
+        filter(image => !!image),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(image => {
+        this.image = image;
+        this._initThumbnail();
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   private _initFields(): void {
@@ -164,7 +176,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
           allowedTypes: Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS,
           uploadLabel: this.uploadDataService.getUploadLabel(
             Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
-          ),
+          )
         }
       },
       {
@@ -174,7 +186,6 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
       }
     ];
   }
-
 
   private _getDownloadTemplate(): string {
     if (!this.image?.uncompressedSourceFile) {
@@ -202,11 +213,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
   private _initBreadcrumb(): void {
     this.store$.dispatch(
       new SetBreadcrumb({
-        breadcrumb: [
-          { label: this.translate.instant("Image") },
-          { label: this.image.title },
-          { label: this.pageTitle }
-        ]
+        breadcrumb: [{ label: this.translate.instant("Image") }, { label: this.image.title }, { label: this.pageTitle }]
       })
     );
   }

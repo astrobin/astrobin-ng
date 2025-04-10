@@ -1,16 +1,17 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { isPlatformBrowser } from "@angular/common";
+import type { OnInit } from "@angular/core";
+import { Component, Inject, PLATFORM_ID } from "@angular/core";
+import type { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
+import type { MainState } from "@app/store/state";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { TitleService } from "@core/services/title/title.service";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { interval } from "rxjs";
 import { take, tap } from "rxjs/operators";
-import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-logged-in-page",

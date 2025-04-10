@@ -1,15 +1,15 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
+import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
+import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import type { SearchFilterService } from "@features/search/services/search-filter.service";
+import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-personal-filters-filter.search-filter-component",
@@ -19,12 +19,22 @@ import { SearchAutoCompleteType } from "@features/search/enums/search-auto-compl
 export class SearchPersonalFiltersFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.PERSONAL_FILTERS;
   readonly category = SearchFilterCategory.GENERAL;
-  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchPersonalFiltersFilterComponent.key as SearchAutoCompleteType);
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
+    SearchPersonalFiltersFilterComponent.key as SearchAutoCompleteType
+  );
   readonly values: { [key: string]: string } = {
-    [SearchPersonalFiltersFilterValue.MY_IMAGES]: this.searchFilterService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_IMAGES),
-    [SearchPersonalFiltersFilterValue.MY_LIKES]: this.searchFilterService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_LIKES),
-    [SearchPersonalFiltersFilterValue.MY_BOOKMARKS]: this.searchFilterService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_BOOKMARKS),
-    [SearchPersonalFiltersFilterValue.MY_FOLLOWED_USERS]: this.searchFilterService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_FOLLOWED_USERS)
+    [SearchPersonalFiltersFilterValue.MY_IMAGES]: this.searchFilterService.humanizePersonalFilter(
+      SearchPersonalFiltersFilterValue.MY_IMAGES
+    ),
+    [SearchPersonalFiltersFilterValue.MY_LIKES]: this.searchFilterService.humanizePersonalFilter(
+      SearchPersonalFiltersFilterValue.MY_LIKES
+    ),
+    [SearchPersonalFiltersFilterValue.MY_BOOKMARKS]: this.searchFilterService.humanizePersonalFilter(
+      SearchPersonalFiltersFilterValue.MY_BOOKMARKS
+    ),
+    [SearchPersonalFiltersFilterValue.MY_FOLLOWED_USERS]: this.searchFilterService.humanizePersonalFilter(
+      SearchPersonalFiltersFilterValue.MY_FOLLOWED_USERS
+    )
   };
   readonly editFields = [
     {

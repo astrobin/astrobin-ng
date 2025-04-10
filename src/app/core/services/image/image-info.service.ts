@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { EquipmentService } from "@core/services/equipment.service";
-import { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
-import { TranslateService } from "@ngx-translate/core";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { EquipmentService } from "@core/services/equipment.service";
+import type { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
+import type { TranslateService } from "@ngx-translate/core";
 
 /**
  * Service to handle shared image information formatting
@@ -198,9 +198,10 @@ export class ImageInfoService {
   addFocalReducersEquipment(image: ImageInterface, lines: string[]): void {
     // Focal reducers (legacy)
     if (image.focalReducers?.length > 0) {
-      const focalReducersLabel = image.focalReducers.length > 1 ?
-        this.translateService.instant("Focal reducers") :
-        this.translateService.instant("Focal reducer");
+      const focalReducersLabel =
+        image.focalReducers.length > 1
+          ? this.translateService.instant("Focal reducers")
+          : this.translateService.instant("Focal reducer");
       const focalReducers = image.focalReducers.map(fr => this.formatEquipmentItem(fr));
       lines.push(`- ${focalReducersLabel}: ${focalReducers.join(", ")}`);
     }

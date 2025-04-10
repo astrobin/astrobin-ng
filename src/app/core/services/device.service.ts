@@ -1,8 +1,8 @@
-import { BaseService } from "@core/services/base.service";
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { BaseService } from "@core/services/base.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
 
 // Keep in sync with _breakpoints.scss
 export enum Breakpoint {
@@ -162,13 +162,10 @@ export class DeviceService extends BaseService {
 
     return (
       // Primary checks
-      'ontouchstart' in _window ||
+      "ontouchstart" in _window ||
       navigator.maxTouchPoints > 0 ||
       // Secondary checks (media queries)
-      (
-        _window.matchMedia("(hover: none)").matches &&
-        _window.matchMedia("(pointer: coarse)").matches
-      ) ||
+      (_window.matchMedia("(hover: none)").matches && _window.matchMedia("(pointer: coarse)").matches) ||
       // Older Android support
       (navigator as any).msMaxTouchPoints > 0
     );
@@ -180,7 +177,7 @@ export class DeviceService extends BaseService {
     }
 
     const _window = this.windowRefService.nativeWindow;
-    const hasTouch = 'ontouchstart' in _window || navigator.maxTouchPoints > 0;
+    const hasTouch = "ontouchstart" in _window || navigator.maxTouchPoints > 0;
     const hasFinePointer = _window.matchMedia("(pointer: fine)").matches;
     const isLargeScreen = _window.matchMedia("(min-width: 1920px)").matches;
 

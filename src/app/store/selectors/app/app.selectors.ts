@@ -1,7 +1,7 @@
-import { AppState } from "@app/store/reducers/app.reducers";
-import { MainState } from "@app/store/state";
+import type { AppState } from "@app/store/reducers/app.reducers";
+import type { MainState } from "@app/store/state";
+import type { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
 import { createSelector } from "@ngrx/store";
-import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
 
 export const selectApp = (state: MainState): AppState => state.app;
 
@@ -26,10 +26,6 @@ export const selectIotdMaxFutureIotds = createSelector(
   (backendConfig): number => backendConfig.IOTD_JUDGEMENT_MAX_FUTURE_DAYS
 );
 
-export const selectCurrentFullscreenImage = createSelector(
-  selectApp, state => state.currentFullscreenImage
-);
+export const selectCurrentFullscreenImage = createSelector(selectApp, state => state.currentFullscreenImage);
 
-export const selectCurrentFullscreenImageEvent = createSelector(
-  selectApp, state => state.currentFullscreenImageEvent
-);
+export const selectCurrentFullscreenImageEvent = createSelector(selectApp, state => state.currentFullscreenImageEvent);

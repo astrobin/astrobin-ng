@@ -1,17 +1,18 @@
-import { Component, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { ActivatedRoute } from "@angular/router";
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import type { ActivatedRoute } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import type { MainState } from "@app/store/state";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUserByUsername } from "@features/account/store/auth.selectors";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import type { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { filter, take, tap } from "rxjs/operators";
 
 @Component({
@@ -42,14 +43,17 @@ export class MarketplaceUserFeedbackListPageComponent extends BaseComponentDirec
 
     this.store$.dispatch(new LoadUser({ username }));
 
-    this.store$.select(selectUserByUsername, username).pipe(
-      filter(user => !!user),
-      take(1),
-      tap(user => this.user = user),
-      tap(() => this._setTitle()),
-      tap(() => this._setBreadCrumb()),
-      tap(() => this.loadFeedback(this.page))
-    ).subscribe();
+    this.store$
+      .select(selectUserByUsername, username)
+      .pipe(
+        filter(user => !!user),
+        take(1),
+        tap(user => (this.user = user)),
+        tap(() => this._setTitle()),
+        tap(() => this._setBreadCrumb()),
+        tap(() => this.loadFeedback(this.page))
+      )
+      .subscribe();
   }
 
   loadFeedback(page: number) {
@@ -61,29 +65,29 @@ export class MarketplaceUserFeedbackListPageComponent extends BaseComponentDirec
   }
 
   private _setTitle() {
-    this.title = this.translateService.instant(
-      `${this.user.displayName}'s marketplace feedback`
-    );
+    this.title = this.translateService.instant(`${this.user.displayName}'s marketplace feedback`);
   }
 
   private _setBreadCrumb() {
-    this.store$.dispatch(new SetBreadcrumb({
-      breadcrumb: [
-        {
-          label: this.translateService.instant("Equipment"),
-          link: "/equipment/explorer"
-        },
-        {
-          label: this.translateService.instant("Marketplace"),
-          link: "/equipment/marketplace"
-        },
-        {
-          label: this.user.displayName
-        },
-        {
-          label: this.translateService.instant("Feedback")
-        }
-      ]
-    }));
+    this.store$.dispatch(
+      new SetBreadcrumb({
+        breadcrumb: [
+          {
+            label: this.translateService.instant("Equipment"),
+            link: "/equipment/explorer"
+          },
+          {
+            label: this.translateService.instant("Marketplace"),
+            link: "/equipment/marketplace"
+          },
+          {
+            label: this.user.displayName
+          },
+          {
+            label: this.translateService.instant("Feedback")
+          }
+        ]
+      })
+    );
   }
 }

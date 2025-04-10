@@ -1,4 +1,5 @@
-import { GroupCategory, GroupInterface } from "@core/interfaces/group.interface";
+import type { GroupInterface } from "@core/interfaces/group.interface";
+import { GroupCategory } from "@core/interfaces/group.interface";
 
 export class AstroBinGroupGenerator {
   static group(): GroupInterface {
@@ -18,7 +19,7 @@ export class AstroBinGroupGenerator {
       joinRequests: [],
       images: [],
       forum: 1,
-      members: [1],
+      members: [1]
     };
   }
 }

@@ -1,20 +1,24 @@
-import { Component, OnInit } from "@angular/core";
-import {
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type {
   MarketplaceFilterModel,
   MarketplaceRefreshOptions
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { takeUntil } from "rxjs/operators";
 import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-followed-listings-page",
   templateUrl: "../listings-base/marketplace-listings-base-page.component.html",
   styleUrls: ["../listings-base/marketplace-listings-base-page.component.scss"]
 })
-export class MarketplaceUserFollowedListingsPageComponent extends MarketplaceListingsBasePageComponent implements OnInit {
+export class MarketplaceUserFollowedListingsPageComponent
+  extends MarketplaceListingsBasePageComponent
+  implements OnInit
+{
   public refresh(
     filterModel?: MarketplaceFilterModel,
     options: MarketplaceRefreshOptions = {

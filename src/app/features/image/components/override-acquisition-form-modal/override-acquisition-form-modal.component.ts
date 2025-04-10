@@ -1,15 +1,16 @@
-import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { ChangeDetectorRef, OnInit, TemplateRef } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { Actions } from "@ngrx/effects";
-import { LoadingService } from "@core/services/loading.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { MainState } from "@app/store/state";
+import type { LoadingService } from "@core/services/loading.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { of } from "rxjs";
-import { UtilsService } from "@core/services/utils/utils.service";
 
 export enum AcquisitionForm {
   LONG_EXPOSURE = "LONG_EXPOSURE",
@@ -74,7 +75,7 @@ export class OverrideAcquisitionFormModalComponent extends BaseComponentDirectiv
               value: AcquisitionForm.LONG_EXPOSURE,
               description: this.translateService.instant(
                 "You will specify things like number of frames and duration of each frame in seconds. Most commonly" +
-                " used for deep sky astrophotography."
+                  " used for deep sky astrophotography."
               )
             },
             {
@@ -82,7 +83,7 @@ export class OverrideAcquisitionFormModalComponent extends BaseComponentDirectiv
               value: AcquisitionForm.VIDEO_BASED,
               description: this.translateService.instant(
                 "You will specify things like number of frames, FPS, and duration of each frame in milliseconds. Most" +
-                " commonly used for planetary imaging."
+                  " commonly used for planetary imaging."
               )
             }
           ])

@@ -1,13 +1,14 @@
-import { Component, Input, OnChanges, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { selectEquipmentItem, selectMostOftenUsedWithForItem } from "@features/equipment/store/equipment.selectors";
-import { filter, take } from "rxjs/operators";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { OnChanges, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
+import type { MainState } from "@app/store/state";
 import { GetMostOftenUsedWith } from "@features/equipment/store/equipment.actions";
+import { selectEquipmentItem, selectMostOftenUsedWithForItem } from "@features/equipment/store/equipment.selectors";
+import type { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { filter, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-most-often-used-with-modal",

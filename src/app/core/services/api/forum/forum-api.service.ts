@@ -1,13 +1,14 @@
+import type { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BaseClassicApiService } from "../classic/base-classic-api.service";
-import { LoadingService } from "@core/services/loading.service";
-import { HttpClient } from "@angular/common/http";
-import { ForumInterface } from "@core/interfaces/forums/forum.interface";
-import { Observable } from "rxjs";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { TopicInterface } from "@core/interfaces/forums/topic.interface";
+import type { CategoryInterface } from "@core/interfaces/forums/category.interface";
+import type { ForumInterface } from "@core/interfaces/forums/forum.interface";
+import type { TopicInterface } from "@core/interfaces/forums/topic.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { CategoryInterface } from "@core/interfaces/forums/category.interface";
+import type { Observable } from "rxjs";
+
+import { BaseClassicApiService } from "../classic/base-classic-api.service";
 
 @Injectable({
   providedIn: "root"
@@ -40,8 +41,6 @@ export class ForumApiService extends BaseClassicApiService {
   }
 
   latestTopics(page = 1): Observable<PaginatedApiResultInterface<TopicInterface>> {
-    return this.http.get<PaginatedApiResultInterface<TopicInterface>>(
-      `${this.configUrl}/topic/latest/?page=${page}`
-    );
+    return this.http.get<PaginatedApiResultInterface<TopicInterface>>(`${this.configUrl}/topic/latest/?page=${page}`);
   }
 }

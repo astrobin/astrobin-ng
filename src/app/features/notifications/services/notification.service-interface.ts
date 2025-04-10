@@ -1,5 +1,5 @@
-import { NotificationListResponseInterface } from "@features/notifications/interfaces/notification-list-response.interface";
-import { Observable } from "rxjs";
+import type { NotificationListResponseInterface } from "@features/notifications/interfaces/notification-list-response.interface";
+import type { Observable } from "rxjs";
 
 export interface NotificationServiceInterface {
   refresh(number): void;

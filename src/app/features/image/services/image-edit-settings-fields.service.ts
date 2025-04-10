@@ -1,15 +1,22 @@
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@core/services/loading.service";
-import { DownloadLimitationOptions, FullSizeLimitationDisplayOptions, ImageInterface, ImageRevisionInterface, LicenseOptions, MouseHoverImageOptions } from "@core/interfaces/image.interface";
-import { ImageEditService, KeyValueTagsValidator } from "@features/image/services/image-edit.service";
-import { TranslateService } from "@ngx-translate/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { MainState } from "@app/store/state";
+import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import {
+  DownloadLimitationOptions,
+  FullSizeLimitationDisplayOptions,
+  LicenseOptions,
+  MouseHoverImageOptions
+} from "@core/interfaces/image.interface";
+import type { ImageService } from "@core/services/image/image.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
-import { ImageService } from "@core/services/image/image.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { UtilsService } from "@core/services/utils/utils.service";
+import type { ImageEditService } from "@features/image/services/image-edit.service";
+import { KeyValueTagsValidator } from "@features/image/services/image-edit.service";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
   providedIn: null
@@ -27,8 +34,7 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
     super(loadingService);
   }
 
-  onFieldsInitialized(): void {
-  }
+  onFieldsInitialized(): void {}
 
   getLicenseField(): FormlyFieldConfig {
     return {
@@ -41,8 +47,8 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
         label: this.translateService.instant("License"),
         description: this.translateService.instant(
           "You can associate a Creative Commons license with your content if you wish, to grant " +
-          "people the right to use your work under certain circumstances. For more information on what your options " +
-          "are, please visit the {{0}}Creative Commons website{{1}}.",
+            "people the right to use your work under certain circumstances. For more information on what your options " +
+            "are, please visit the {{0}}Creative Commons website{{1}}.",
           {
             0: `<a target="_blank" href="https://creativecommons.org/choose/">`,
             1: `</a>`
@@ -85,7 +91,7 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
     };
   }
 
-  basicMouseHoverOptions(): { value: MouseHoverImageOptions | string, label: string, disabled?: boolean }[] {
+  basicMouseHoverOptions(): { value: MouseHoverImageOptions | string; label: string; disabled?: boolean }[] {
     return [
       {
         value: MouseHoverImageOptions.NOTHING,
@@ -105,8 +111,8 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
   additionalMouseHoverOptions(
     sourceImageOrRevision: Partial<ImageInterface> | Partial<ImageRevisionInterface>,
     revisions: ImageRevisionInterface[]
-  ): { value: MouseHoverImageOptions | string, label: string, disabled?: boolean }[] {
-    const options: { value: MouseHoverImageOptions | string, label: string, disabled?: boolean }[] = [];
+  ): { value: MouseHoverImageOptions | string; label: string; disabled?: boolean }[] {
+    const options: { value: MouseHoverImageOptions | string; label: string; disabled?: boolean }[] = [];
 
     for (const revision of revisions) {
       const disabled = sourceImageOrRevision.w !== revision.w || sourceImageOrRevision.h !== revision.h;
@@ -129,9 +135,9 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
   }
 
   mouseHoverImageDescription(): string {
-    return  this.translateService.instant(
+    return this.translateService.instant(
       "Choose what will be displayed when somebody hovers the mouse over this image. Please note: only " +
-      "revisions with the same width and height of your original image can be considered."
+        "revisions with the same width and height of your original image can be considered."
     );
   }
 
@@ -172,9 +178,7 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
       id: "image-loop-video-field",
       props: {
         label: this.translateService.instant("Loop video"),
-        description: this.translateService.instant(
-          "If checked, the video will loop."
-        )
+        description: this.translateService.instant("If checked, the video will loop.")
       }
     };
   }
@@ -190,7 +194,7 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
         description:
           this.translateService.instant(
             "Provide a list of unique key/value pairs to tag this image with. Use the '=' symbol between key and " +
-            "value, and provide one pair per line. These tags can be used to sort images by arbitrary properties."
+              "value, and provide one pair per line. These tags can be used to sort images by arbitrary properties."
           ) +
           " <a target='_blank' href='https://welcome.astrobin.com/image-collections'>" +
           this.translateService.instant("Learn more") +
@@ -247,10 +251,12 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
         ]
       },
       validators: {
-        validation: [{
-          name: "enum-value",
-          options: { allowedValues: Object.values(FullSizeLimitationDisplayOptions) }
-        }]
+        validation: [
+          {
+            name: "enum-value",
+            options: { allowedValues: Object.values(FullSizeLimitationDisplayOptions) }
+          }
+        ]
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -259,8 +265,8 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
               this.popNotificationsService.info(
                 this.translateService.instant(
                   "Please note: if you submit this image for IOTD/TP consideration, it will be displayed in full size " +
-                  "to members of the IOTD/TP staff, regardless of this setting. This is necessary for them to evaluate " +
-                  "the image properly."
+                    "to members of the IOTD/TP staff, regardless of this setting. This is necessary for them to evaluate " +
+                    "the image properly."
                 )
               );
             }
@@ -276,7 +282,7 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
       type: "ng-select",
       id: "image-max-zoom-field",
       expressions: {
-        hide: "!model.fullSizeDisplayLimitation || model.fullSizeDisplayLimitation === 'NOBODY'",
+        hide: "!model.fullSizeDisplayLimitation || model.fullSizeDisplayLimitation === 'NOBODY'"
       },
       props: {
         clearable: true,
@@ -285,13 +291,11 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
           { value: 8, label: "8x" },
           { value: 4, label: "4x" },
           { value: 2, label: "2x" },
-          { value: 1, label: "1x" },
+          { value: 1, label: "1x" }
         ],
         label: this.translateService.instant("Max zoom level"),
-        description: this.translateService.instant(
-          "The maximum zoom level that will be available for this image."
-        )
-      },
+        description: this.translateService.instant("The maximum zoom level that will be available for this image.")
+      }
     };
   }
 

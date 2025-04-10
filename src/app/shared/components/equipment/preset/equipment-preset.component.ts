@@ -1,13 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { LoadingService } from "@core/services/loading.service";
-import { EquipmentService } from "@core/services/equipment.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
+import type { OnInit, TemplateRef } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { DeviceService } from "@core/services/device.service";
+import type { EquipmentService } from "@core/services/equipment.service";
+import type { LoadingService } from "@core/services/loading.service";
 import { selectEquipmentPreset } from "@features/equipment/store/equipment.selectors";
+import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { takeUntil } from "rxjs/operators";
 
 @Component({
@@ -35,7 +36,8 @@ export class EquipmentPresetComponent extends BaseComponentDirective implements 
   }
 
   ngOnInit() {
-    this.store$.select(selectEquipmentPreset, { id: this.preset.id })
+    this.store$
+      .select(selectEquipmentPreset, { id: this.preset.id })
       .pipe(takeUntil(this.destroyed$))
       .subscribe((preset: EquipmentPresetInterface) => {
         this.preset = preset;

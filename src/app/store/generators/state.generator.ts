@@ -1,10 +1,10 @@
-import { MainState } from "@app/store/state";
 import { AppStateGenerator } from "@app/store/generators/app-state.generator";
+import type { MainState } from "@app/store/state";
 import { AuthStateGenerator } from "@features/account/generators/auth-state.generator";
-import { NotificationStateGenerator } from "@features/notifications/generators/notification-state.generator";
 import { EquipmentStateGenerator } from "@features/equipment/generators/equipment-state.generator";
-import { SubscriptionsStateGenerator } from "@features/subscriptions/generators/subscription-state.generator";
+import { NotificationStateGenerator } from "@features/notifications/generators/notification-state.generator";
 import { SearchStateGenerator } from "@features/search/generators/search-state.generator";
+import { SubscriptionsStateGenerator } from "@features/subscriptions/generators/subscription-state.generator";
 
 export class StateGenerator {
   static default(): MainState {

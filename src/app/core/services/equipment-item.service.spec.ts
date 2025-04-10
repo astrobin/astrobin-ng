@@ -1,16 +1,16 @@
+import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
+import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
 import {
   EquipmentItemReviewerDecision,
   EquipmentItemReviewerRejectionReason
 } from "@features/equipment/types/equipment-item-base.interface";
-import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
-import { HttpClientModule } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { MockBuilder } from "ng-mocks";
 
 describe("EquipmentItemService", () => {
   let service: EquipmentItemService;
@@ -22,15 +22,17 @@ describe("EquipmentItemService", () => {
     cameraService = TestBed.inject(CameraService);
 
     jest.spyOn(service.equipmentItemServiceFactory, "getService").mockReturnValue(cameraService);
-    jest.spyOn(cameraService, "getSupportedPrintableProperties").mockReturnValue([
-      CameraDisplayProperty.NAME,
-      CameraDisplayProperty.TYPE,
-      CameraDisplayProperty.SENSOR,
-      CameraDisplayProperty.COOLED,
-      CameraDisplayProperty.MAX_COOLING,
-      CameraDisplayProperty.BACK_FOCUS,
-      CameraDisplayProperty.MODIFIED
-    ]);
+    jest
+      .spyOn(cameraService, "getSupportedPrintableProperties")
+      .mockReturnValue([
+        CameraDisplayProperty.NAME,
+        CameraDisplayProperty.TYPE,
+        CameraDisplayProperty.SENSOR,
+        CameraDisplayProperty.COOLED,
+        CameraDisplayProperty.MAX_COOLING,
+        CameraDisplayProperty.BACK_FOCUS,
+        CameraDisplayProperty.MODIFIED
+      ]);
   });
 
   it("should be created", () => {

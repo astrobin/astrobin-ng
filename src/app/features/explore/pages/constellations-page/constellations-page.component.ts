@@ -1,17 +1,18 @@
-import { Component, OnInit } from "@angular/core";
+import type { ViewportScroller } from "@angular/common";
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import type { Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
-import { ConstellationInterface, ConstellationsService } from "@features/explore/services/constellations.service";
-import { ViewportScroller } from "@angular/common";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
+import type { MainState } from "@app/store/state";
+import type { LoadingService } from "@core/services/loading.service";
+import type { SearchService } from "@core/services/search.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { ConstellationInterface, ConstellationsService } from "@features/explore/services/constellations.service";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { startWith, takeUntil } from "rxjs/operators";
-import { SearchService } from "@core/services/search.service";
-import { Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-constellations-page",
@@ -62,7 +63,7 @@ export class ConstellationsPageComponent extends BaseComponentDirective implemen
     return `/search?p=${params}`;
   }
 
-  findImages(event: MouseEvent, constellation: ConstellationInterface){
+  findImages(event: MouseEvent, constellation: ConstellationInterface) {
     if (event.ctrlKey || event.metaKey || event.button === 1) {
       return;
     }

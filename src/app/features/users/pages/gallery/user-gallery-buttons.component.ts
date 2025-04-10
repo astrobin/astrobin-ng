@@ -1,77 +1,63 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { CookieService } from "ngx-cookie";
 import { isPlatformBrowser } from "@angular/common";
+import type { OnChanges, OnInit, SimpleChanges, TemplateRef } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
+import type { MainState } from "@app/store/state";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { DeviceService } from "@core/services/device.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import type { CookieService } from "ngx-cookie";
 import { takeUntil } from "rxjs/operators";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
 
 @Component({
   selector: "astrobin-user-gallery-buttons",
   template: `
     <div class="d-flex gap-3 justify-content-end align-items-center">
       <div ngbDropdown class="mb-0 p-0">
-        <button
-          class="btn btn-outline-secondary btn-sm py-1 mb-0"
-          ngbDropdownToggle
-        >
+        <button class="btn btn-outline-secondary btn-sm py-1 mb-0" ngbDropdownToggle>
           {{ "Sort" | translate }}
         </button>
         <div ngbDropdownMenu>
-          <button
-            class="dropdown-item"
-            (click)="sortChange.emit('title')"
-          >
+          <button class="dropdown-item" (click)="sortChange.emit('title')">
             {{ "Title" | translate }}
             <fa-icon *ngIf="subsection === 'title'" icon="check"></fa-icon>
           </button>
-          <button
-            class="dropdown-item"
-            (click)="sortChange.emit('uploaded')"
-          >
+          <button class="dropdown-item" (click)="sortChange.emit('uploaded')">
             {{ "Publication date" | translate }}
             <fa-icon *ngIf="subsection === 'uploaded'" icon="check"></fa-icon>
           </button>
-          <button
-            class="dropdown-item"
-            (click)="sortChange.emit('acquired')"
-          >
+          <button class="dropdown-item" (click)="sortChange.emit('acquired')">
             {{ "Acquisition date" | translate }}
             <fa-icon *ngIf="subsection === 'acquired'" icon="check"></fa-icon>
           </button>
-          <button
-            class="dropdown-item"
-            (click)="sortChange.emit('views')"
-          >
+          <button class="dropdown-item" (click)="sortChange.emit('views')">
             {{ "Views" | translate }}
             <fa-icon *ngIf="ordering === 'views'" icon="check"></fa-icon>
           </button>
-          <button
-            class="dropdown-item"
-            (click)="sortChange.emit('likes')"
-          >
+          <button class="dropdown-item" (click)="sortChange.emit('likes')">
             {{ "Likes" | translate }}
             <fa-icon *ngIf="ordering === 'likes'" icon="check"></fa-icon>
           </button>
-          <button
-            class="dropdown-item"
-            (click)="sortChange.emit('bookmarks')"
-          >
+          <button class="dropdown-item" (click)="sortChange.emit('bookmarks')">
             {{ "Bookmarks" | translate }}
             <fa-icon *ngIf="ordering === 'bookmarks'" icon="check"></fa-icon>
           </button>
-          <button
-            class="dropdown-item"
-            (click)="sortChange.emit('comments')"
-          >
+          <button class="dropdown-item" (click)="sortChange.emit('comments')">
             {{ "Comments" | translate }}
             <fa-icon *ngIf="ordering === 'comments'" icon="check"></fa-icon>
           </button>
@@ -129,20 +115,15 @@ import { UserInterface } from "@core/interfaces/user.interface";
       </div>
       <div class="offcanvas-body">
         <p class="mb-3">
-          {{ "The CSV below contains the images currently visible on this page. To include more images, scroll down your gallery to load more before exporting." | translate }}
+          {{
+            "The CSV below contains the images currently visible on this page. To include more images, scroll down your gallery to load more before exporting."
+              | translate
+          }}
         </p>
 
-        <textarea
-          class="form-control mb-3"
-          rows="15"
-          readonly
-          [value]="csvContent"
-        ></textarea>
+        <textarea class="form-control mb-3" rows="15" readonly [value]="csvContent"></textarea>
 
-        <button
-          class="btn btn-secondary"
-          (click)="copyToClipboard()"
-        >
+        <button class="btn btn-secondary" (click)="copyToClipboard()">
           <fa-icon icon="copy" class="me-2"></fa-icon>
           {{ "Copy" | translate }}
         </button>
@@ -177,8 +158,8 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
   @ViewChild("exportCsvOffcanvas") exportCsvOffcanvas: TemplateRef<any>;
 
   protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
-  protected csvContent: string = "";
-  protected isOwner: boolean = false;
+  protected csvContent = "";
+  protected isOwner = false;
 
   private _currentUser: UserInterface | null = null;
   private readonly _isBrowser: boolean;
@@ -208,19 +189,17 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
       }
     }
 
-    this.currentUserWrapper$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(currentUserWrapper => {
-        this._currentUser = currentUserWrapper?.user;
-        if (currentUserWrapper && this.user) {
-          this.isOwner = currentUserWrapper.user?.id === this.user.id;
-        }
-      });
+    this.currentUserWrapper$.pipe(takeUntil(this.destroyed$)).subscribe(currentUserWrapper => {
+      this._currentUser = currentUserWrapper?.user;
+      if (currentUserWrapper && this.user) {
+        this.isOwner = currentUserWrapper.user?.id === this.user.id;
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.user && changes.user.currentValue) {
-      this.isOwner = this._currentUser?.id === this.user.id
+      this.isOwner = this._currentUser?.id === this.user.id;
     }
   }
 
@@ -236,22 +215,20 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
   openExportCsvOffcanvas() {
     this.generateCsvContent();
 
-    this.offcanvasService.open(
-      this.exportCsvOffcanvas, {
-        position: this.deviceService.offcanvasPosition(),
-        panelClass: 'gallery-csv-export-offcanvas'
-      }
-    );
+    this.offcanvasService.open(this.exportCsvOffcanvas, {
+      position: this.deviceService.offcanvasPosition(),
+      panelClass: "gallery-csv-export-offcanvas"
+    });
   }
 
   generateCsvContent() {
     // Create CSV header row
-    const headers = ['Title', 'Publication date', 'Views', 'Likes', 'Comments', 'Bookmarks'];
+    const headers = ["Title", "Publication date", "Views", "Likes", "Comments", "Bookmarks"];
 
     // Generate CSV rows from images data
     const rows = this.images.map(image => [
-      `"${image.title || ''}"`,
-      image.published || image.uploaded || '',
+      `"${image.title || ""}"`,
+      image.published || image.uploaded || "",
       image.viewCount || 0,
       image.likeCount || 0,
       image.commentCount || 0,
@@ -259,20 +236,16 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
     ]);
 
     // Combine header and rows
-    this.csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+    this.csvContent = [headers, ...rows].map(row => row.join(",")).join("\n");
   }
 
   async copyToClipboard() {
     const success = await this.windowRefService.copyToClipboard(this.csvContent);
 
     if (success) {
-      this.popNotificationsService.success(
-        this.translateService.instant('CSV data copied to clipboard.')
-      );
+      this.popNotificationsService.success(this.translateService.instant("CSV data copied to clipboard."));
     } else {
-      this.popNotificationsService.error(
-        this.translateService.instant('Failed to copy CSV data to clipboard.')
-      );
+      this.popNotificationsService.error(this.translateService.instant("Failed to copy CSV data to clipboard."));
     }
   }
 }

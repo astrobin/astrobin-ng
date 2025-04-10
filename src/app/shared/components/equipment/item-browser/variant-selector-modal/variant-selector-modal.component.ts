@@ -1,13 +1,13 @@
 import { Component, Input } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-variant-selector-modal",

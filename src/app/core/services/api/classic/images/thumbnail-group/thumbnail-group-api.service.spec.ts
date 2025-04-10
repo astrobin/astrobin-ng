@@ -6,6 +6,7 @@ import { Constants } from "@shared/constants";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { ThumbnailGroupGenerator } from "@shared/generators/thumbnail-group.generator";
 import { MockBuilder } from "ng-mocks";
+
 import { ThumbnailGroupApiService } from "./thumbnail-group-api.service";
 
 describe("ThumbnailGroupApiService", () => {

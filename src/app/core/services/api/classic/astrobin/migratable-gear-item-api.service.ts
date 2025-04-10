@@ -1,21 +1,27 @@
+import type { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { EMPTY, Observable } from "rxjs";
-import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import {
+import type {
   MigratableGearItemApiServiceInterface,
   MigrationFlag
 } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
-import { LoadingService } from "@core/services/loading.service";
-import { HttpClient } from "@angular/common/http";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { catchError } from "rxjs/operators";
+import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
+import type { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
+import type {
+  EquipmentItemBaseInterface,
+  EquipmentItemType
+} from "@features/equipment/types/equipment-item-base.interface";
+import { EMPTY } from "rxjs";
+import type { Observable } from "rxjs";
+import { catchError } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
 })
-export class MigratableGearItemApiService extends BaseClassicApiService
-  implements MigratableGearItemApiServiceInterface {
+export class MigratableGearItemApiService
+  extends BaseClassicApiService
+  implements MigratableGearItemApiServiceInterface
+{
   configUrl = this.baseUrl + "/astrobin/gear";
 
   constructor(public loadingService: LoadingService, public readonly http: HttpClient) {

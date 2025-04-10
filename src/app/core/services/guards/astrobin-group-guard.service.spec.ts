@@ -1,12 +1,13 @@
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import type { RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
-import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { AstroBinGroupGuardService } from "@core/services/guards/astrobin-group-guard.service";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { UserGenerator } from "@shared/generators/user.generator";
 import { MockBuilder, MockReset, MockService } from "ng-mocks";
 import { of } from "rxjs";
-import { UserGenerator } from "@shared/generators/user.generator";
 
 describe("AstroBinGroupGuardService", () => {
   let service: AstroBinGroupGuardService;
@@ -16,7 +17,9 @@ describe("AstroBinGroupGuardService", () => {
   afterEach(MockReset);
 
   beforeEach(async () => {
-    await MockBuilder(AstroBinGroupGuardService, AppModule).provide(provideMockStore({ initialState: initialMainState }));
+    await MockBuilder(AstroBinGroupGuardService, AppModule).provide(
+      provideMockStore({ initialState: initialMainState })
+    );
 
     store = TestBed.inject(MockStore);
     service = TestBed.inject(AstroBinGroupGuardService);

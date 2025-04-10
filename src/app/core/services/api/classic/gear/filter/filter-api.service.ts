@@ -1,10 +1,10 @@
-import { HttpClient } from "@angular/common/http";
+import type { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { FilterInterface } from "@core/interfaces/filter.interface";
+import type { FilterInterface } from "@core/interfaces/filter.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { FilterApiServiceInterface } from "@core/services/api/classic/gear/filter/filter-api.service-interface";
-import { LoadingService } from "@core/services/loading.service";
-import { Observable } from "rxjs";
+import type { FilterApiServiceInterface } from "@core/services/api/classic/gear/filter/filter-api.service-interface";
+import type { LoadingService } from "@core/services/loading.service";
+import type { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

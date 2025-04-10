@@ -1,15 +1,15 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import type { SearchService } from "@core/services/search.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import { CookieService } from "ngx-cookie";
-import { SearchService } from "@core/services/search.service";
+import type { SearchFilterService } from "@features/search/services/search-filter.service";
+import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import type { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-search-text-filter.search-filter-component",
@@ -24,8 +24,8 @@ export class SearchTextFilterComponent extends SearchBaseFilterComponent {
   readonly mayBeRemoved = false;
   readonly infoText = this.translateService.instant(
     "This searches the title, description, and most image attributes, even if the exact words don't match perfectly." +
-    " You can use quotation marks for exact matching, and the minus sign to exclude keywords. To do even more" +
-    " precise searches, add filters."
+      " You can use quotation marks for exact matching, and the minus sign to exclude keywords. To do even more" +
+      " precise searches, add filters."
   );
   readonly editFields = [
     {

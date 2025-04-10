@@ -1,25 +1,26 @@
-import { ChangeDetectorRef, Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { ChangeDetectorRef, OnInit, TemplateRef } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { Actions } from "@ngrx/effects";
-import { LoadingService } from "@core/services/loading.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { Observable, of, switchMap } from "rxjs";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import { filter, map, take } from "rxjs/operators";
-import { UtilsService } from "@core/services/utils/utils.service";
+import type { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { ImageEditService } from "@features/image/services/image-edit.service";
-import { ItemBrowserAdd, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
 import { selectUser } from "@features/account/store/auth.selectors";
+import { ItemBrowserAdd, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { ImageEditService } from "@features/image/services/image-edit.service";
+import type { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { Observable, of, switchMap } from "rxjs";
+import { filter, map, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-copy-acquisition-sessions-from-another-image-modal",
@@ -96,7 +97,7 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
   }
 
   load(image: ImageInterface) {
-    let newModel = {
+    const newModel = {
       ...this.imageEditService.model,
       ...{
         deepSkyAcquisitions: image.deepSkyAcquisitions.map(acquisition => ({
@@ -175,23 +176,28 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
       acquisitionWithFilters.forEach(acquisition => {
         const storeData = { id: acquisition.filter2, type: EquipmentItemType.FILTER };
         this.store$.dispatch(new LoadEquipmentItem(storeData));
-        this.store$.select(selectEquipmentItem, storeData).pipe(
-          filter(item => !!item),
-          take(1)
-        ).subscribe(item => {
-          this.store$.dispatch(new ItemBrowserAdd({
-            type: EquipmentItemType.FILTER,
-            usageType: undefined,
-            item,
-            componentId: this.editPageComponentId
-          }));
-          processedAcquisitions++;
+        this.store$
+          .select(selectEquipmentItem, storeData)
+          .pipe(
+            filter(item => !!item),
+            take(1)
+          )
+          .subscribe(item => {
+            this.store$.dispatch(
+              new ItemBrowserAdd({
+                type: EquipmentItemType.FILTER,
+                usageType: undefined,
+                item,
+                componentId: this.editPageComponentId
+              })
+            );
+            processedAcquisitions++;
 
-          if (processedAcquisitions == acquisitionWithFilters.length) {
-            this.loadingService.setLoading(false);
-            this.modal.close();
-          }
-        });
+            if (processedAcquisitions === acquisitionWithFilters.length) {
+              this.loadingService.setLoading(false);
+              this.modal.close();
+            }
+          });
       });
     } else {
       this.modal.close();
@@ -218,13 +224,9 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
     let label = "";
 
     if (this.imageEditService.isDeepSky()) {
-      label += ` ${this.translateService.instant(
-        "Copy dates too"
-      )}`;
+      label += ` ${this.translateService.instant("Copy dates too")}`;
     } else if (this.imageEditService.isSolarSystem()) {
-      label += ` ${this.translateService.instant(
-        "Copy dates and times too"
-      )}`;
+      label += ` ${this.translateService.instant("Copy dates and times too")}`;
     }
 
     return label;
@@ -238,9 +240,7 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
         "This includes: Bortle scale, mean SQM, mean FWMW, and temperature."
       )}`;
     } else if (this.imageEditService.isSolarSystem()) {
-      description += ` ${this.translateService.instant(
-        "This includes: CMI/CMII/CMIII, seeing, and transparency."
-      )}`;
+      description += ` ${this.translateService.instant("This includes: CMI/CMII/CMIII, seeing, and transparency.")}`;
     }
 
     return description;
@@ -268,15 +268,18 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
 
               const field = this.fields.find(f => f.key === "image");
 
-              this.store$.select(selectUser, this.imageEditService.model.user)
+              this.store$
+                .select(selectUser, this.imageEditService.model.user)
                 .pipe(
                   take(1),
-                  switchMap(user => this.imageApiService.findImages({
-                    userId: user.id,
-                    q,
-                    hasDeepSkyAcquisitions: this.imageEditService.isDeepSky(),
-                    hasSolarSystemAcquisitions: this.imageEditService.isSolarSystem()
-                  })),
+                  switchMap(user =>
+                    this.imageApiService.findImages({
+                      userId: user.id,
+                      q,
+                      hasDeepSkyAcquisitions: this.imageEditService.isDeepSky(),
+                      hasSolarSystemAcquisitions: this.imageEditService.isSolarSystem()
+                    })
+                  ),
                   map(response => response.results),
                   map(images => {
                     return images.map(image => ({

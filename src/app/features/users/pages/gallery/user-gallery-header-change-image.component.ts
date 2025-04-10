@@ -1,25 +1,28 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, PLATFORM_ID } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
+import { isPlatformBrowser } from "@angular/common";
+import type { AfterViewInit, ElementRef } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output, PLATFORM_ID } from "@angular/core";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import type { FindImagesSuccess } from "@app/store/actions/image.actions";
+import { FindImages } from "@app/store/actions/image.actions";
+import type { MainState } from "@app/store/state";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import type { ImageService } from "@core/services/image/image.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import { AuthActionTypes, ChangeUserProfileGalleryHeaderImage } from "@features/account/store/auth.actions";
+import type { Actions } from "@ngrx/effects";
+import { ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { ImageInterface } from "@core/interfaces/image.interface";
 import { fromEvent, Subject, throttleTime } from "rxjs";
 import { debounceTime, distinctUntilChanged, map, take, takeUntil } from "rxjs/operators";
-import { TranslateService } from "@ngx-translate/core";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import { AuthActionTypes, ChangeUserProfileGalleryHeaderImage } from "@features/account/store/auth.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { LoadingService } from "@core/services/loading.service";
-import { isPlatformBrowser } from "@angular/common";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { ImageService } from "@core/services/image/image.service";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import { fadeInOut } from "@shared/animations";
 
 @Component({
   selector: "astrobin-user-gallery-header-change-image",
@@ -37,11 +40,7 @@ import { fadeInOut } from "@shared/animations";
     />
 
     <div class="d-flex flex-wrap gap-2 justify-content-center">
-      <astrobin-loading-indicator
-        *ngIf="loadingImages"
-        @fadeInOut
-        class="mt-2"
-      ></astrobin-loading-indicator>
+      <astrobin-loading-indicator *ngIf="loadingImages" @fadeInOut class="mt-2"></astrobin-loading-indicator>
 
       <div
         *ngFor="let image of images; trackBy: imageTrackBy"
@@ -54,11 +53,7 @@ import { fadeInOut } from "@shared/animations";
         <img [src]="image.finalGalleryThumbnail" alt="" />
       </div>
 
-      <astrobin-loading-indicator
-        *ngIf="loadingMoreImages"
-        @fadeInOut
-        class="mt-2"
-      ></astrobin-loading-indicator>
+      <astrobin-loading-indicator *ngIf="loadingMoreImages" @fadeInOut class="mt-2"></astrobin-loading-indicator>
     </div>
   `,
   styleUrls: ["./user-gallery-header-change-image.component.scss"],
@@ -100,71 +95,71 @@ export class UserGalleryHeaderChangeImageComponent extends BaseComponentDirectiv
   ngAfterViewInit() {
     this._setupOnScroll();
 
-    this.action$.pipe(
-      ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
-      map((action: FindImagesSuccess) => action.payload),
-      takeUntil(this.destroyed$)
-    ).subscribe(payload => {
-      this.loadingImages = false;
-      this.loadingMoreImages = false;
-      this._next = payload.response.next;
-      this.images = this.images.concat(payload.response.results.map(image => ({
-        ...image,
-        finalGalleryThumbnail: this.imageService.getGalleryThumbnail(image)
-      })));
-    });
+    this.action$
+      .pipe(
+        ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
+        map((action: FindImagesSuccess) => action.payload),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(payload => {
+        this.loadingImages = false;
+        this.loadingMoreImages = false;
+        this._next = payload.response.next;
+        this.images = this.images.concat(
+          payload.response.results.map(image => ({
+            ...image,
+            finalGalleryThumbnail: this.imageService.getGalleryThumbnail(image)
+          }))
+        );
+      });
 
-    this.store$.dispatch(new FindImages({
-      options: {
-        userId: this.user.id,
-        gallerySerializer: true,
-        includeStagingArea: true,
-        page: this._page
-      }
-    }));
-
-    this._searchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroyed$)
-    ).subscribe(searchTerm => {
-      this._page = 1;
-      this.images = [];
-      this.loadingImages = true;
-
-      this.store$.dispatch(new FindImages({
+    this.store$.dispatch(
+      new FindImages({
         options: {
           userId: this.user.id,
           gallerySerializer: true,
           includeStagingArea: true,
-          page: this._page,
-          q: searchTerm
+          page: this._page
         }
-      }));
-    });
+      })
+    );
+
+    this._searchSubject
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$))
+      .subscribe(searchTerm => {
+        this._page = 1;
+        this.images = [];
+        this.loadingImages = true;
+
+        this.store$.dispatch(
+          new FindImages({
+            options: {
+              userId: this.user.id,
+              gallerySerializer: true,
+              includeStagingArea: true,
+              page: this._page,
+              q: searchTerm
+            }
+          })
+        );
+      });
 
     this.loadingImages = true;
   }
 
   protected onSelect(image: ImageInterface) {
-    this.action$.pipe(
-      ofType(AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_SUCCESS),
-      take(1)
-    ).subscribe(() => {
-      this.imageChange.emit(image);
-      this.popNotificationsService.success(
-        this.translateService.instant("Header image changed.")
-      );
-    });
+    this.action$
+      .pipe(ofType(AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_SUCCESS), take(1))
+      .subscribe(() => {
+        this.imageChange.emit(image);
+        this.popNotificationsService.success(this.translateService.instant("Header image changed."));
+      });
 
-    this.action$.pipe(
-      ofType(AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_FAILURE),
-      take(1)
-    ).subscribe(() => {
-      this.popNotificationsService.error(
-        this.translateService.instant("Error changing header image!")
-      );
-    });
+    this.action$
+      .pipe(ofType(AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_FAILURE), take(1))
+      .subscribe(() => {
+        this.popNotificationsService.error(this.translateService.instant("Error changing header image!"));
+      });
 
     this.store$.dispatch(
       new ChangeUserProfileGalleryHeaderImage({
@@ -187,33 +182,28 @@ export class UserGalleryHeaderChangeImageComponent extends BaseComponentDirectiv
       return;
     }
 
-    const scrollableElement = UtilsService.getScrollableParent(
-      this.elementRef.nativeElement,
-      this.windowRefService
-    );
+    const scrollableElement = UtilsService.getScrollableParent(this.elementRef.nativeElement, this.windowRefService);
 
     fromEvent(scrollableElement, "scroll")
-      .pipe(
-        throttleTime(250),
-        takeUntil(this.destroyed$)
-      )
+      .pipe(throttleTime(250), takeUntil(this.destroyed$))
       .subscribe(() => {
-          const isNearBottom = this.utilsService.isNearBottom(this.windowRefService, this.elementRef);
+        const isNearBottom = this.utilsService.isNearBottom(this.windowRefService, this.elementRef);
 
-          if (isNearBottom && !this.loadingImages && !this.loadingMoreImages && this._next) {
-            this.loadingMoreImages = true;
-            this._page++;
+        if (isNearBottom && !this.loadingImages && !this.loadingMoreImages && this._next) {
+          this.loadingMoreImages = true;
+          this._page++;
 
-            this.store$.dispatch(new FindImages({
+          this.store$.dispatch(
+            new FindImages({
               options: {
                 userId: this.user.id,
                 gallerySerializer: true,
                 includeStagingArea: true,
                 page: this._page
               }
-            }));
-          }
+            })
+          );
         }
-      );
+      });
   }
 }

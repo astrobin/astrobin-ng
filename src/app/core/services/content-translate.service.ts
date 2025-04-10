@@ -1,10 +1,11 @@
-import { Injectable, PLATFORM_ID, Inject } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { Observable, from, of } from "rxjs";
+import { Injectable, PLATFORM_ID, Inject } from "@angular/core";
+import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import type { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import type { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
+import { from, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 
 export interface ContentTranslationPreference {
   translated: boolean;
@@ -56,23 +57,12 @@ export class ContentTranslateService {
 
     // Otherwise perform new translation
     return from(
-      this.jsonApiService.translate(
-        text,
-        options.sourceLanguage,
-        this.translateService.currentLang,
-        { format }
-      )
+      this.jsonApiService.translate(text, options.sourceLanguage, this.translateService.currentLang, { format })
     ).pipe(
       map(response => {
         // Save the translation in localStorage (only in browser)
         if (this._isBrowser) {
-          this._saveTranslation(
-            itemType,
-            itemId,
-            true,
-            response.translation,
-            options.sourceLanguage
-          );
+          this._saveTranslation(itemType, itemId, true, response.translation, options.sourceLanguage);
         }
 
         return this._sanitizeContent(response.translation, format);
@@ -138,7 +128,7 @@ export class ContentTranslateService {
 
     try {
       // Get existing preferences or create new object
-      let translationPrefs = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '{}');
+      let translationPrefs = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || "{}");
 
       // Initialize container for this type if needed
       if (!translationPrefs[itemType]) {
@@ -165,13 +155,14 @@ export class ContentTranslateService {
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(translationPrefs));
       } catch (storageError) {
         // Check if we hit the storage quota
-        if (storageError.name === 'QuotaExceededError' ||
-            // For some browsers
-            storageError.code === 22 ||
-            // For others
-            storageError.code === 1014) {
-
-          console.warn('Storage quota exceeded. Pruning older translations...');
+        if (
+          storageError.name === "QuotaExceededError" ||
+          // For some browsers
+          storageError.code === 22 ||
+          // For others
+          storageError.code === 1014
+        ) {
+          console.warn("Storage quota exceeded. Pruning older translations...");
 
           // Flatten all entries with type and id info for sorting
           const allEntries = [];
@@ -210,7 +201,7 @@ export class ContentTranslateService {
             localStorage.setItem(this.STORAGE_KEY, JSON.stringify(translationPrefs));
           } catch (retryError) {
             // If still failing, clear everything except the current translation
-            console.warn('Still cannot save. Clearing all translations except current one.');
+            console.warn("Still cannot save. Clearing all translations except current one.");
 
             if (translated) {
               const currentTranslation = translationPrefs[itemType]?.[itemId];
@@ -221,7 +212,7 @@ export class ContentTranslateService {
               try {
                 localStorage.setItem(this.STORAGE_KEY, JSON.stringify(translationPrefs));
               } catch (finalError) {
-                console.error('Cannot save translations at all. Local storage may be disabled.');
+                console.error("Cannot save translations at all. Local storage may be disabled.");
               }
             }
           }
@@ -245,7 +236,7 @@ export class ContentTranslateService {
 
     try {
       // Get saved preferences
-      const translationPrefs = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '{}');
+      const translationPrefs = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || "{}");
       const currentTime = new Date().getTime();
       const expirationTime = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
       let changed = false;

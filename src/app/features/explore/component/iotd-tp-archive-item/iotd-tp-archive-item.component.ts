@@ -1,43 +1,40 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
-import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
-import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
+import type { OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
+import type { Router } from "@angular/router";
+import type { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
+import type { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
+import type { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
+import type { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
 import { take } from "rxjs/operators";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { Router } from "@angular/router";
-import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
   selector: "astrobin-iotd-tp-archive-item",
   template: `
     <div class="iotd-tp-archive-item">
-      <img
-        [alt]="item.image.title"
-        [src]="thumbnailUrl"
-      />
+      <img [alt]="item.image.title" [src]="thumbnailUrl" />
 
       <div class="info">
         <div class="title">
           {{ item.image.title }},
-          <span
-            *ngFor="let photographer of photographers; let last = last"
-          >
+          <span *ngFor="let photographer of photographers; let last = last">
             <a
               (click)="openGallery(photographer.username)"
               [href]="photographer.link"
               astrobinEventStopPropagation
               astrobinEventPreventDefault
               class="user-display-name"
-            >{{ photographer.displayName }}</a><span *ngIf="!last" class="separator">&middot;</span>
+              >{{ photographer.displayName }}</a
+            ><span *ngIf="!last" class="separator">&middot;</span>
           </span>
         </div>
 
         <div class="date">
-          {{ date | localDate | date: 'shortDate' }}
+          {{ date | localDate | date : "shortDate" }}
         </div>
       </div>
     </div>

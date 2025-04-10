@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
 
 @Component({
   selector: "astrobin-data-does-not-update-in-real-time",

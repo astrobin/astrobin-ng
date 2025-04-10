@@ -1,10 +1,10 @@
-import { HttpClient } from "@angular/common/http";
+import type { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AccessoryInterface } from "@core/interfaces/accessory.interface";
+import type { AccessoryInterface } from "@core/interfaces/accessory.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { AccessoryApiServiceInterface } from "@core/services/api/classic/gear/accessory/accessory-api.service-interface";
-import { LoadingService } from "@core/services/loading.service";
-import { Observable } from "rxjs";
+import type { AccessoryApiServiceInterface } from "@core/services/api/classic/gear/accessory/accessory-api.service-interface";
+import type { LoadingService } from "@core/services/loading.service";
+import type { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

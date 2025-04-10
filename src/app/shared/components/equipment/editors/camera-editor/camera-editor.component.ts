@@ -1,33 +1,36 @@
-import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
-import { Actions } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { ChangeDetectorRef, OnInit, TemplateRef } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
+import type { AbstractControl, FormControl } from "@angular/forms";
+import type { DomSanitizer } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { FormlyFieldService } from "@core/services/formly-field.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import { CameraDisplayProperty } from "@features/equipment/services/camera.service";
+import type { CameraService } from "@features/equipment/services/camera.service";
+import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { LoadBrand } from "@features/equipment/store/equipment.actions";
+import { selectBrand } from "@features/equipment/store/equipment.selectors";
+import { CameraType } from "@features/equipment/types/camera.interface";
+import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
-import { MainState } from "@app/store/state";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
-import { FormlyFieldService } from "@core/services/formly-field.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
-import { selectBrand } from "@features/equipment/store/equipment.selectors";
-import { of } from "rxjs";
-import { AbstractControl, FormControl } from "@angular/forms";
-import { LoadBrand } from "@features/equipment/store/equipment.actions";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { Constants } from "@shared/constants";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { of } from "rxjs";
+import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -395,7 +398,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING),
         description: this.translateService.instant(
           "A positive whole number that represents how many Celsius below ambient temperature this camera can " +
-          "be cooled."
+            "be cooled."
         )
       },
       validators: {

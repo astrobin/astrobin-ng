@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
-import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { MainState } from "@app/store/state";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { Observable } from "rxjs";
+import type { All } from "@app/store/actions/app.actions";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import type { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import type { MainState } from "@app/store/state";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { Actions } from "@ngrx/effects";
+import { createEffect, ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { Observable } from "rxjs";
 
 @Injectable()
 export class FullscreenImageEffects {
@@ -23,6 +25,5 @@ export class FullscreenImageEffects {
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions<All>,
     public readonly windowRef: WindowRefService
-  ) {
-  }
+  ) {}
 }

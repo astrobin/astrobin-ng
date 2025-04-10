@@ -1,16 +1,17 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { NestedCommentComponent } from "./nested-comment.component";
-import { MockBuilder } from "ng-mocks";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { NestedCommentGenerator } from "@shared/generators/nested-comment.generator";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
-import { provideMockActions } from "@ngrx/effects/testing";
-import { Observable, of } from "rxjs";
+import { ContentTranslateService } from "@core/services/content-translate.service";
 import { HighlightService } from "@core/services/highlight.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { ContentTranslateService } from "@core/services/content-translate.service";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { provideMockStore } from "@ngrx/store/testing";
+import { NestedCommentGenerator } from "@shared/generators/nested-comment.generator";
+import { MockBuilder } from "ng-mocks";
+import { Observable, of } from "rxjs";
+
+import { NestedCommentComponent } from "./nested-comment.component";
 
 describe("NestedCommentComponent", () => {
   let component: NestedCommentComponent;
@@ -35,14 +36,13 @@ describe("NestedCommentComponent", () => {
   };
 
   beforeEach(async () => {
-    await MockBuilder(NestedCommentComponent, AppModule)
-      .provide([
-        provideMockStore({ initialState: initialMainState }),
-        provideMockActions(() => of()),
-        { provide: HighlightService, useValue: mockHighlightService },
-        { provide: UtilsService, useValue: mockUtilsService },
-        { provide: ContentTranslateService, useValue: mockContentTranslateService }
-      ]);
+    await MockBuilder(NestedCommentComponent, AppModule).provide([
+      provideMockStore({ initialState: initialMainState }),
+      provideMockActions(() => of()),
+      { provide: HighlightService, useValue: mockHighlightService },
+      { provide: UtilsService, useValue: mockUtilsService },
+      { provide: ContentTranslateService, useValue: mockContentTranslateService }
+    ]);
   });
 
   beforeEach(() => {

@@ -1,15 +1,14 @@
 import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { TimeagoDefaultClock } from "ngx-timeago";
-import { EMPTY, Observable } from "rxjs";
+import type { Observable } from "rxjs";
+import { EMPTY } from "rxjs";
 
 @Injectable({
   providedIn: "root"
 })
 export class TimeagoAppClock extends TimeagoDefaultClock {
-  constructor(
-    @Inject(PLATFORM_ID) private readonly platformId: Record<string, unknown>
-  ) {
+  constructor(@Inject(PLATFORM_ID) private readonly platformId: Record<string, unknown>) {
     super();
   }
 

@@ -1,17 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, PLATFORM_ID } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { Observable } from "rxjs";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { TranslateService } from "@ngx-translate/core";
-import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
-import { UserSearchInterface } from "@core/interfaces/user-search.interface";
-import { UserSearchApiService } from "@core/services/api/classic/users/user-search-api.service";
+import type { ChangeDetectorRef, ElementRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { UserSearchInterface } from "@core/interfaces/user-search.interface";
+import type { UserSearchApiService } from "@core/services/api/classic/users/user-search-api.service";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { UserService } from "@core/services/user.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { UserService } from "@core/services/user.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
+import type { Observable } from "rxjs";
 import { take } from "rxjs/operators";
 
 @Component({
@@ -49,10 +50,7 @@ export class UserSearchComponent extends ScrollableSearchResultsBaseComponent<Us
 
   openUser(user: UserSearchInterface) {
     this.currentUserProfile$.pipe(take(1)).subscribe(currentUserProfile => {
-      this.userService.openGallery(
-        user.username,
-        !currentUserProfile || currentUserProfile.enableNewGalleryExperience
-      );
+      this.userService.openGallery(user.username, !currentUserProfile || currentUserProfile.enableNewGalleryExperience);
     });
   }
 }

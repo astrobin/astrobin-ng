@@ -1,10 +1,10 @@
-import { TestBed } from "@angular/core/testing";
-
-import { AppModule } from "@app/app.module";
-import { MockBuilder } from "ng-mocks";
-import { PaymentsApiService } from "./payments-api.service";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
+
+import { PaymentsApiService } from "./payments-api.service";
 
 describe("PaymentsApiService", () => {
   let service: PaymentsApiService;

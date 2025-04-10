@@ -1,15 +1,15 @@
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
-import { filter, map, take } from "rxjs/operators";
+import type { MainState } from "@app/store/state";
+import { BaseService } from "@core/services/base.service";
+import type { CookieConsentService } from "@core/services/cookie-consent/cookie-consent.service";
+import type { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
 import { CookieConsentEnum } from "@core/types/cookie-consent.enum";
-import { CookieConsentService } from "@core/services/cookie-consent/cookie-consent.service";
+import type { Store } from "@ngrx/store";
+import { filter, map, take } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -19,12 +19,12 @@ export class AdManagerService extends BaseService {
   private readonly _isBrowser: boolean;
   private _publisherId = "47890729";
   private _adConfigurations = {
-    "rectangular": {
+    rectangular: {
       adUnitPath: `/${this._publisherId}/astrobin-native-responsive-rectangular`,
       divId: "div-gpt-ad-1603646272754-0",
       adSize: ["fluid"]
     },
-    "wide": {
+    wide: {
       adUnitPath: `/${this._publisherId}/astrobin-native-responsive-wide`,
       divId: "div-gpt-ad-1726208728627-0",
       adSize: ["fluid"]
@@ -83,7 +83,7 @@ export class AdManagerService extends BaseService {
   }
 
   displayAd(divId: string): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (this._isBrowser) {
         const nativeWindow = this.windowRefService.nativeWindow as any;
         if (nativeWindow) {
@@ -93,7 +93,7 @@ export class AdManagerService extends BaseService {
             return;
           }
 
-          const renderListener = (event) => {
+          const renderListener = event => {
             if (event.slot === slot) {
               nativeWindow.googletag.pubads().removeEventListener("slotRenderEnded", renderListener);
 
@@ -101,7 +101,7 @@ export class AdManagerService extends BaseService {
                 resolve(false);
               } else {
                 // Add slotOnload listener only if we're expecting an ad
-                const loadListener = (loadEvent) => {
+                const loadListener = loadEvent => {
                   if (loadEvent.slot === slot) {
                     nativeWindow.googletag.pubads().removeEventListener("slotOnload", loadListener);
                     resolve(true);
@@ -139,7 +139,7 @@ export class AdManagerService extends BaseService {
         if (nativeWindow && this._adSlots[divId]) {
           const slot = this._adSlots[divId];
 
-          const listener = (event) => {
+          const listener = event => {
             if (event.slot === slot) {
               nativeWindow.googletag.pubads().removeEventListener("slotRenderEnded", listener);
               resolve(!event.isEmpty);
@@ -160,7 +160,7 @@ export class AdManagerService extends BaseService {
   }
 
   destroyAdSlot(divId: string): Promise<void> {
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(resolve => {
       if (this._isBrowser) {
         const nativeWindow = this.windowRefService.nativeWindow as any;
         nativeWindow.googletag.cmd.push(() => {
@@ -180,33 +180,36 @@ export class AdManagerService extends BaseService {
   private _initGooglePublisherTag() {
     const nativeWindow = this.windowRefService.nativeWindow as any;
     if (nativeWindow) {
-      this.store$.select(selectRequestCountry).pipe(
-        filter(requestCountry => !!requestCountry),
-        take(1),
-        map(requestCountry => {
-          if (requestCountry === "UNKNOWN") {
-            requestCountry = "US";
-          }
-
-          const isGDPRCountry = UtilsService.isGDPRCountry(requestCountry);
-          const hasCookieConsent = this.cookieConsentService.cookieGroupAccepted(CookieConsentEnum.ADVERTISING);
-
-          nativeWindow.googletag = nativeWindow.googletag || {};
-          nativeWindow.googletag.cmd = nativeWindow.googletag.cmd || [];
-          nativeWindow.googletag.cmd.push(() => {
-            nativeWindow.googletag.pubads().enableSingleRequest();
-            nativeWindow.googletag.enableServices();
-
-            if (isGDPRCountry && !hasCookieConsent) {
-              nativeWindow.googletag.pubads().setPrivacySettings({
-                limitedAds: true,
-                nonPersonalizedAds: true,
-                restrictDataProcessing: true
-              });
+      this.store$
+        .select(selectRequestCountry)
+        .pipe(
+          filter(requestCountry => !!requestCountry),
+          take(1),
+          map(requestCountry => {
+            if (requestCountry === "UNKNOWN") {
+              requestCountry = "US";
             }
-          });
-        })
-      ).subscribe();
+
+            const isGDPRCountry = UtilsService.isGDPRCountry(requestCountry);
+            const hasCookieConsent = this.cookieConsentService.cookieGroupAccepted(CookieConsentEnum.ADVERTISING);
+
+            nativeWindow.googletag = nativeWindow.googletag || {};
+            nativeWindow.googletag.cmd = nativeWindow.googletag.cmd || [];
+            nativeWindow.googletag.cmd.push(() => {
+              nativeWindow.googletag.pubads().enableSingleRequest();
+              nativeWindow.googletag.enableServices();
+
+              if (isGDPRCountry && !hasCookieConsent) {
+                nativeWindow.googletag.pubads().setPrivacySettings({
+                  limitedAds: true,
+                  nonPersonalizedAds: true,
+                  restrictDataProcessing: true
+                });
+              }
+            });
+          })
+        )
+        .subscribe();
     }
   }
 }

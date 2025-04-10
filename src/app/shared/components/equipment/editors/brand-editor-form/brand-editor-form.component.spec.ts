@@ -1,18 +1,22 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 
 import { BrandEditorFormComponent } from "./brand-editor-form.component";
-import { MockBuilder } from "ng-mocks";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { AppModule } from "@app/app.module";
-import { UtilsService } from "@core/services/utils/utils.service";
 
 describe("BrandEditorComponent", () => {
   let component: BrandEditorFormComponent;
   let fixture: ComponentFixture<BrandEditorFormComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(BrandEditorFormComponent, AppModule).provide([provideMockStore({ initialState: initialMainState }), UtilsService]);
+    await MockBuilder(BrandEditorFormComponent, AppModule).provide([
+      provideMockStore({ initialState: initialMainState }),
+      UtilsService
+    ]);
   });
 
   beforeEach(() => {

@@ -1,9 +1,8 @@
-import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 
 export const searchFeatureKey = "search";
 
-export interface SearchState {
-}
+export interface SearchState {}
 
 export const initialSearchState: SearchState = {};
 

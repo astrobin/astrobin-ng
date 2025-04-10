@@ -1,16 +1,16 @@
 import { Component, Input, ViewChild } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import type { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateService } from "@ngx-translate/core";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import {
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import type {
   NestedCommentsAutoStartTopLevelStrategy,
-  NestedCommentsComponent,
   NestedCommentsTopLevelFormPlacement
 } from "@shared/components/misc/nested-comments/nested-comments.component";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { NestedCommentsComponent } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { firstValueFrom } from "rxjs";
 
 @Component({
@@ -135,14 +135,14 @@ export class NestedCommentsModalComponent extends BaseComponentDirective {
       topLevelFormHeight?: number;
       allowSelfReply?: boolean;
       allowModeration?: boolean;
-      size?: 'sm' | 'lg' | 'xl' | 'xxl'; // Modal size
+      size?: "sm" | "lg" | "xl" | "xxl"; // Modal size
     }
   ): NgbModalRef {
     // Use a beforeDismiss handler to check for unsaved changes
     const modalRef = modalService.open(NestedCommentsModalComponent, {
       size: options.size || "lg", // Default to lg if not specified
       centered: true,
-      beforeDismiss: function() {
+      beforeDismiss: function () {
         // 'this' refers to the NgbModalRef instance
         const componentInstance = this.componentInstance as NestedCommentsModalComponent;
         // Return the Promise from confirmDismissIfDirty which resolves to a boolean
@@ -157,18 +157,42 @@ export class NestedCommentsModalComponent extends BaseComponentDirective {
     componentInstance.objectId = options.objectId;
 
     // Set optional properties
-    if (options.title !== undefined) componentInstance.title = options.title;
-    if (options.info !== undefined) componentInstance.info = options.info;
-    if (options.addCommentLabel !== undefined) componentInstance.addCommentLabel = options.addCommentLabel;
-    if (options.noCommentsLabel !== undefined) componentInstance.noCommentsLabel = options.noCommentsLabel;
-    if (options.highlightId !== undefined) componentInstance.highlightId = options.highlightId;
-    if (options.showReplyButton !== undefined) componentInstance.showReplyButton = options.showReplyButton;
-    if (options.showTopLevelButton !== undefined) componentInstance.showTopLevelButton = options.showTopLevelButton;
-    if (options.autoStartTopLevelStrategy !== undefined) componentInstance.autoStartTopLevelStrategy = options.autoStartTopLevelStrategy;
-    if (options.topLevelFormPlacement !== undefined) componentInstance.topLevelFormPlacement = options.topLevelFormPlacement;
-    if (options.topLevelFormHeight !== undefined) componentInstance.topLevelFormHeight = options.topLevelFormHeight;
-    if (options.allowSelfReply !== undefined) componentInstance.allowSelfReply = options.allowSelfReply;
-    if (options.allowModeration !== undefined) componentInstance.allowModeration = options.allowModeration;
+    if (options.title !== undefined) {
+      componentInstance.title = options.title;
+    }
+    if (options.info !== undefined) {
+      componentInstance.info = options.info;
+    }
+    if (options.addCommentLabel !== undefined) {
+      componentInstance.addCommentLabel = options.addCommentLabel;
+    }
+    if (options.noCommentsLabel !== undefined) {
+      componentInstance.noCommentsLabel = options.noCommentsLabel;
+    }
+    if (options.highlightId !== undefined) {
+      componentInstance.highlightId = options.highlightId;
+    }
+    if (options.showReplyButton !== undefined) {
+      componentInstance.showReplyButton = options.showReplyButton;
+    }
+    if (options.showTopLevelButton !== undefined) {
+      componentInstance.showTopLevelButton = options.showTopLevelButton;
+    }
+    if (options.autoStartTopLevelStrategy !== undefined) {
+      componentInstance.autoStartTopLevelStrategy = options.autoStartTopLevelStrategy;
+    }
+    if (options.topLevelFormPlacement !== undefined) {
+      componentInstance.topLevelFormPlacement = options.topLevelFormPlacement;
+    }
+    if (options.topLevelFormHeight !== undefined) {
+      componentInstance.topLevelFormHeight = options.topLevelFormHeight;
+    }
+    if (options.allowSelfReply !== undefined) {
+      componentInstance.allowSelfReply = options.allowSelfReply;
+    }
+    if (options.allowModeration !== undefined) {
+      componentInstance.allowModeration = options.allowModeration;
+    }
 
     // The modal component will handle the confirmation when dismissing
 

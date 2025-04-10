@@ -1,24 +1,25 @@
-import { Injectable, OnDestroy, TemplateRef } from "@angular/core";
-import { LoadingService } from "@core/services/loading.service";
-import { TranslateService } from "@ngx-translate/core";
-import { ImageEditService } from "@features/image/services/image-edit.service";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { OnDestroy, TemplateRef } from "@angular/core";
+import { Injectable } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import { BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
+import type { SubjectType } from "@core/interfaces/image.interface";
+import { SeeingScale, TransparencyScale } from "@core/interfaces/solar-system-acquisition.interface";
+import type { ImageService } from "@core/services/image/image.service";
+import type { LoadingService } from "@core/services/loading.service";
+import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
 import { selectEquipmentItems } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { map, takeUntil } from "rxjs/operators";
-import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from "@features/image/components/additional-deep-sky-acquisition-properties-modal/additional-deep-sky-acquisition-properties-modal.component";
-import { Subscription } from "rxjs";
-import { SubjectType } from "@core/interfaces/image.interface";
-import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 import { AdditionalSolarSystemAcquisitionPropertiesModalComponent } from "@features/image/components/additional-solar-system-acquisition-properties-modal/additional-solar-system-acquisition-properties-modal.component";
-import { SeeingScale, TransparencyScale } from "@core/interfaces/solar-system-acquisition.interface";
-import { BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
-import { ImageService } from "@core/services/image/image.service";
+import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
+import type { ImageEditService } from "@features/image/services/image-edit.service";
+import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
+import type { Subscription } from "rxjs";
+import { map, takeUntil } from "rxjs/operators";
 
 @Injectable({
   providedIn: null
@@ -216,7 +217,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               label: this.translateService.instant("f-number"),
               description: this.translateService.instant(
                 "If you used a camera lens, please specify the f-number (also known as f-ratio or f-stop) that you " +
-                "used for this acquisition session."
+                  "used for this acquisition session."
               ),
               required: false,
               step: 1,
@@ -316,7 +317,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             props: {
               label: this.translateService.instant("Bortle dark-sky scale"),
               description: this.translateService.instant(
-                "Quality of the sky according to <a href=\"http://en.wikipedia.org/wiki/Bortle_Dark-Sky_Scale\" target=\"_blank\">the Bortle Scale</a>."
+                'Quality of the sky according to <a href="http://en.wikipedia.org/wiki/Bortle_Dark-Sky_Scale" target="_blank">the Bortle Scale</a>.'
               ),
               required: false,
               options: [
@@ -726,7 +727,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   getUnsupportedSubjectTypeFields(): FormlyFieldConfig[] {
     const subjectType: string = this.imageService.humanizeSubjectType(this.imageEditService.model.subjectType);
     const message: string = this.translateService.instant(
-      "The subject type \"{{0}}\" does not support acquisition sessions.",
+      'The subject type "{{0}}" does not support acquisition sessions.',
       {
         0: subjectType
       }
@@ -748,7 +749,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   private _getUnsupportedSubjectTypeForAcquisitionsTemplate(subjectType: SubjectType): string {
     const value: string = this.imageService.humanizeSubjectType(subjectType);
     const message: string = this.translateService.instant(
-      "The subject type \"{{0}}\" does not support acquisition sessions.",
+      'The subject type "{{0}}" does not support acquisition sessions.',
       {
         0: value
       }

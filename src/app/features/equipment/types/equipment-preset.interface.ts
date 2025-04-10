@@ -1,10 +1,10 @@
-import { UserInterface } from "@core/interfaces/user.interface";
-import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { MountInterface } from "@features/equipment/types/mount.interface";
-import { FilterInterface } from "@features/equipment/types/filter.interface";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import type { FilterInterface } from "@features/equipment/types/filter.interface";
+import type { MountInterface } from "@features/equipment/types/mount.interface";
+import type { SoftwareInterface } from "@features/equipment/types/software.interface";
+import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 
 export interface EquipmentPresetInterface {
   id?: number;
@@ -23,7 +23,7 @@ export interface EquipmentPresetInterface {
   filters: FilterInterface["id"][];
   accessories: AccessoryInterface["id"][];
   software: SoftwareInterface["id"][];
-  imageFile?: string | { file: File, url: string  }[];
+  imageFile?: string | { file: File; url: string }[];
   thumbnail?: string;
   imageCount?: number;
   totalIntegration?: number;

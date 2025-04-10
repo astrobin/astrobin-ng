@@ -1,33 +1,31 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { Actions, ofType } from "@ngrx/effects";
+import type { OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import type { ActivatedRoute } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { filter, take } from "rxjs/operators";
-import { DeleteImage, DeleteImageSuccess } from "@app/store/actions/image.actions";
-import { ModalService } from "@core/services/modal.service";
-import { TranslateService } from "@ngx-translate/core";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { ActivatedRoute } from "@angular/router";
 import { RemoveImageFromCollection, SetCollectionCoverImage } from "@app/store/actions/collection.actions";
-import { ImageService } from "@core/services/image/image.service";
+import type { DeleteImageSuccess } from "@app/store/actions/image.actions";
+import { DeleteImage } from "@app/store/actions/image.actions";
+import type { MainState } from "@app/store/state";
+import type { CollectionInterface } from "@core/interfaces/collection.interface";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { ImageService } from "@core/services/image/image.service";
+import type { ModalService } from "@core/services/modal.service";
+import type { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import { ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { filter, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-user-gallery-image-menu",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div
-        *ngIf="currentUserWrapper.user?.id === user.id"
-        ngbDropdown
-        container="body"
-        class="image-menu"
-      >
+      <div *ngIf="currentUserWrapper.user?.id === user.id" ngbDropdown container="body" class="image-menu">
         <button
           class="btn btn-sm btn-link btn-no-block no-toggle"
           ngbDropdownToggle
@@ -38,24 +36,12 @@ import { ImageService } from "@core/services/image/image.service";
           <fa-icon icon="ellipsis"></fa-icon>
         </button>
 
-        <div
-          [attr.aria-labelledby]="'image-menu-dropdown-button-' + (image.hash || image.pk)"
-          ngbDropdownMenu
-        >
-          <a
-            (click)="imageService.navigateToEdit(image)"
-            astrobinEventPreventDefault
-            class="dropdown-item"
-          >
+        <div [attr.aria-labelledby]="'image-menu-dropdown-button-' + (image.hash || image.pk)" ngbDropdownMenu>
+          <a (click)="imageService.navigateToEdit(image)" astrobinEventPreventDefault class="dropdown-item">
             {{ "Edit" | translate }}
           </a>
 
-          <a
-            *ngIf="collectionId"
-            (click)="setAsCoverImage()"
-            class="dropdown-item"
-            astrobinEventPreventDefault
-          >
+          <a *ngIf="collectionId" (click)="setAsCoverImage()" class="dropdown-item" astrobinEventPreventDefault>
             {{ "Set as cover image" | translate }}
           </a>
 
@@ -85,8 +71,8 @@ export class UserGalleryImageMenuComponent extends BaseComponentDirective implem
 
   @Output() imageDeleted = new EventEmitter<ImageInterface["pk"]>();
   @Output() imageRemovedFromCollection = new EventEmitter<{
-    imageId: ImageInterface["pk"],
-    collectionId: CollectionInterface["id"]
+    imageId: ImageInterface["pk"];
+    collectionId: CollectionInterface["id"];
   }>();
 
   protected collectionId: CollectionInterface["id"];
@@ -108,10 +94,12 @@ export class UserGalleryImageMenuComponent extends BaseComponentDirective implem
   }
 
   protected setAsCoverImage() {
-    this.store$.dispatch(new SetCollectionCoverImage({
-      collectionId: this.collectionId,
-      imageId: this.image.pk
-    }));
+    this.store$.dispatch(
+      new SetCollectionCoverImage({
+        collectionId: this.collectionId,
+        imageId: this.image.pk
+      })
+    );
   }
 
   protected delete() {
@@ -120,20 +108,22 @@ export class UserGalleryImageMenuComponent extends BaseComponentDirective implem
 
     instance.message = this.translateService.instant(
       "Your image will be deleted along with all revisions and metadata. If you want to delete a specific " +
-      "revision only, please do so from the image page."
+        "revision only, please do so from the image page."
     );
 
     modalRef.closed.subscribe(() => {
       const loadingModalRef: NgbModalRef = this.modalService.openLoadingDialog();
 
-      this.actions$.pipe(
-        ofType(AppActionTypes.DELETE_IMAGE_SUCCESS),
-        filter((action: DeleteImageSuccess) => action.payload.pk === this.image.pk),
-        take(1)
-      ).subscribe(() => {
-        loadingModalRef.close();
-        this.imageDeleted.emit(this.image.pk);
-      });
+      this.actions$
+        .pipe(
+          ofType(AppActionTypes.DELETE_IMAGE_SUCCESS),
+          filter((action: DeleteImageSuccess) => action.payload.pk === this.image.pk),
+          take(1)
+        )
+        .subscribe(() => {
+          loadingModalRef.close();
+          this.imageDeleted.emit(this.image.pk);
+        });
 
       this.store$.dispatch(new DeleteImage({ pk: this.image.pk }));
     });
@@ -143,32 +133,34 @@ export class UserGalleryImageMenuComponent extends BaseComponentDirective implem
     const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
     const instance: ConfirmationDialogComponent = modalRef.componentInstance;
 
-    instance.message = this.translateService.instant(
-      "Are you sure you want to remove this image from the collection?"
-    );
+    instance.message = this.translateService.instant("Are you sure you want to remove this image from the collection?");
 
     modalRef.closed.subscribe(() => {
       const loadingModalRef: NgbModalRef = this.modalService.openLoadingDialog();
 
-      this.actions$.pipe(
-        ofType(AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS),
-        filter((action: RemoveImageFromCollection) =>
-          action.payload.imageId === this.image.pk &&
-          action.payload.collectionId === this.collectionId
-        ),
-        take(1)
-      ).subscribe(() => {
-        loadingModalRef.close();
-        this.imageRemovedFromCollection.emit({
-          imageId: this.image.pk,
-          collectionId: this.collectionId
+      this.actions$
+        .pipe(
+          ofType(AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS),
+          filter(
+            (action: RemoveImageFromCollection) =>
+              action.payload.imageId === this.image.pk && action.payload.collectionId === this.collectionId
+          ),
+          take(1)
+        )
+        .subscribe(() => {
+          loadingModalRef.close();
+          this.imageRemovedFromCollection.emit({
+            imageId: this.image.pk,
+            collectionId: this.collectionId
+          });
         });
-      });
 
-      this.store$.dispatch(new RemoveImageFromCollection({
-        collectionId: this.collectionId,
-        imageId: this.image.pk
-      }));
+      this.store$.dispatch(
+        new RemoveImageFromCollection({
+          collectionId: this.collectionId,
+          imageId: this.image.pk
+        })
+      );
     });
   }
 }

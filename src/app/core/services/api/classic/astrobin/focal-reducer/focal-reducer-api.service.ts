@@ -1,7 +1,7 @@
+import type { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@core/services/loading.service";
-import { HttpClient } from "@angular/common/http";
 import { MigratableGearItemApiService } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service";
+import type { LoadingService } from "@core/services/loading.service";
 
 @Injectable({
   providedIn: "root"

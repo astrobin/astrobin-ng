@@ -1,5 +1,5 @@
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
 
 export interface NestedCommentInterface {
   id: number;

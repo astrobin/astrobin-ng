@@ -1,10 +1,9 @@
-import { Inject, Injectable } from "@angular/core";
-import { SwUpdate, VersionEvent } from "@angular/service-worker";
-import { TranslateService } from "@ngx-translate/core";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { DOCUMENT } from "@angular/common";
-import { Subscription } from "rxjs";
-
+import { Inject, Injectable } from "@angular/core";
+import type { SwUpdate, VersionEvent } from "@angular/service-worker";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { TranslateService } from "@ngx-translate/core";
+import type { Subscription } from "rxjs";
 
 @Injectable({
   providedIn: "root"
@@ -17,8 +16,7 @@ export class VersionCheckService {
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService,
     @Inject(DOCUMENT) public readonly document: any
-  ) {
-  }
+  ) {}
 
   checkForUpdates() {
     if (!this.swUpdate.isEnabled) {
@@ -41,8 +39,8 @@ export class VersionCheckService {
   notifyAboutUpdates() {
     const notification = this.popNotificationsService.info(
       this.translateService.instant(
-    "AstroBin requires an update to continue working correctly. " +
-        "If you're editing a form or making changes, please save your work before clicking here to update."
+        "AstroBin requires an update to continue working correctly. " +
+          "If you're editing a form or making changes, please save your work before clicking here to update."
       ),
       this.translateService.instant("Update available"),
       {

@@ -1,9 +1,9 @@
 import { Component, Input } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-equipment-others-in-brand",

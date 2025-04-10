@@ -1,14 +1,15 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import type { OnInit } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
+import type { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
+import type { MainState } from "@app/store/state";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import type { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { LoadingService } from "@core/services/loading.service";
-import { TitleService } from "@core/services/title/title.service";
 
 @Component({
   selector: "astrobin-login-page",

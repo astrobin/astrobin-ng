@@ -1,16 +1,17 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { CameraService } from "@features/equipment/services/camera.service";
-import { SensorService } from "@features/equipment/services/sensor.service";
-import { TelescopeService } from "@features/equipment/services/telescope.service";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { LoadingService } from "@core/services/loading.service";
+import type { AccessoryService } from "@features/equipment/services/accessory.service";
+import type { CameraService } from "@features/equipment/services/camera.service";
+import type { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import type { FilterService } from "@features/equipment/services/filter.service";
+import type { MountService } from "@features/equipment/services/mount.service";
+import type { SensorService } from "@features/equipment/services/sensor.service";
+import type { SoftwareService } from "@features/equipment/services/software.service";
+import type { TelescopeService } from "@features/equipment/services/telescope.service";
 import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
-import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { MountService } from "@features/equipment/services/mount.service";
-import { FilterService } from "@features/equipment/services/filter.service";
-import { AccessoryService } from "@features/equipment/services/accessory.service";
-import { SoftwareService } from "@features/equipment/services/software.service";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 @Injectable({
   providedIn: "root"

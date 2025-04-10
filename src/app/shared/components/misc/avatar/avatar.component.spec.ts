@@ -1,15 +1,17 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { AvatarComponent } from "./avatar.component";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { of } from "rxjs";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { AvatarEditorComponent } from "@shared/components/misc/avatar-editor/avatar-editor.component";
 import { ChangeDetectorRef } from "@angular/core";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import type { UserInterface } from "@core/interfaces/user.interface";
 import { UserService } from "@core/services/user.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { setupAvatarTestingModule, setupComponentObservables } from "./avatar-testing.utils";
+import { AvatarEditorComponent } from "@shared/components/misc/avatar-editor/avatar-editor.component";
 import { Constants } from "@shared/constants";
+import { UserGenerator } from "@shared/generators/user.generator";
+import { of } from "rxjs";
+
+import { setupAvatarTestingModule, setupComponentObservables } from "./avatar-testing.utils";
+import { AvatarComponent } from "./avatar.component";
 
 describe("AvatarComponent", () => {
   let component: AvatarComponent;
@@ -254,7 +256,7 @@ describe("AvatarComponent", () => {
       const currentUser = UserGenerator.user({ id: 1 });
 
       // Replace the real Observable with our mock
-      component["currentUser$"] = of(currentUser);
+      component.currentUser$ = of(currentUser);
       component.user = mockUser;
 
       // Reset mocks
@@ -276,7 +278,7 @@ describe("AvatarComponent", () => {
       const currentUser = UserGenerator.user({ id: 2 });
 
       // Replace the real Observable with our mock
-      component["currentUser$"] = of(currentUser);
+      component.currentUser$ = of(currentUser);
       component.user = mockUser;
 
       // Reset mocks

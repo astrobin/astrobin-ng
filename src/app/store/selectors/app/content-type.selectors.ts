@@ -1,7 +1,7 @@
-import { AppState } from "@app/store/reducers/app.reducers";
+import type { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { createSelector } from "@ngrx/store";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 
 export const selectContentTypes = createSelector(
   selectApp,
@@ -21,9 +21,7 @@ export const selectContentType = createSelector(
 export const selectContentTypeById = createSelector(
   selectContentTypes,
   (contentTypes: ContentTypeInterface[], data: { id: ContentTypeInterface["id"] }): ContentTypeInterface => {
-    const matching = contentTypes.filter(
-      contentType => !!contentType && contentType.id === data.id
-    );
+    const matching = contentTypes.filter(contentType => !!contentType && contentType.id === data.id);
     return matching.length > 0 ? matching[0] : null;
   }
 );

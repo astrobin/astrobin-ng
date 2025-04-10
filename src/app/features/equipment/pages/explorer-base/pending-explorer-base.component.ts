@@ -1,14 +1,15 @@
-import { ChangeDetectorRef, Component, Inject, PLATFORM_ID } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { Actions } from "@ngrx/effects";
-import { ActivatedRoute, Router } from "@angular/router";
+import type { ChangeDetectorRef } from "@angular/core";
+import { Component, Inject, PLATFORM_ID } from "@angular/core";
+import type { ActivatedRoute, Router } from "@angular/router";
+import type { MainState } from "@app/store/state";
+import type { DeviceService } from "@core/services/device.service";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CookieService } from "ngx-cookie";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { DeviceService } from "@core/services/device.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { CookieService } from "ngx-cookie";
 
 export enum PendingType {
   PENDING_EDIT = "PENDING_EDIT",

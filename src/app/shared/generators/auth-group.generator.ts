@@ -1,4 +1,4 @@
-import { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
+import type { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
 
 export class AuthGroupGenerator {
   static group(): AuthGroupInterface {

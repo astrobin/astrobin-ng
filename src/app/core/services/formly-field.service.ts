@@ -1,18 +1,20 @@
-import { Injectable, TemplateRef } from "@angular/core";
+import type { TemplateRef } from "@angular/core";
+import { Injectable } from "@angular/core";
+import type { SafeHtml } from "@angular/platform-browser";
 import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { Observable, Subject } from "rxjs";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { SafeHtml } from "@angular/platform-browser";
+import type { LoadingService } from "@core/services/loading.service";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { Observable } from "rxjs";
+import { Subject } from "rxjs";
 
 export enum FormlyFieldMessageLevel {
   INFO = "INFO",
-  WARNING = "WARNING",
+  WARNING = "WARNING"
 }
 
 export interface FormlyFieldMessage {
   level: FormlyFieldMessageLevel;
-  scope: string;  // Identifier for the source of the message (validator name, component, etc.)
+  scope: string; // Identifier for the source of the message (validator name, component, etc.)
   text?: string | SafeHtml;
   template?: TemplateRef<any>;
   data?: any;
@@ -92,9 +94,7 @@ export class FormlyFieldService extends BaseService {
       }
 
       // Only remove messages that match both the scope and content
-      config["messages"] = config["messages"].filter(m =>
-        m.scope !== message.scope || !this._equals(m, message)
-      );
+      config["messages"] = config["messages"].filter(m => m.scope !== message.scope || !this._equals(m, message));
 
       if (emitEvent) {
         this.messagesChangesSubject.next(config["messages"]);
@@ -103,6 +103,11 @@ export class FormlyFieldService extends BaseService {
   }
 
   private _equals(a: FormlyFieldMessage, b: FormlyFieldMessage): boolean {
-    return a.scope === b.scope && a.text === b.text && a.template === b.template && JSON.stringify(a.data) === JSON.stringify(b.data);
+    return (
+      a.scope === b.scope &&
+      a.text === b.text &&
+      a.template === b.template &&
+      JSON.stringify(a.data) === JSON.stringify(b.data)
+    );
   }
 }

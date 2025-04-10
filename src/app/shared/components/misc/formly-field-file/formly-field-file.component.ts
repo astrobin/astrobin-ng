@@ -1,12 +1,14 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { FieldType } from "@ngx-formly/core";
-import { LoadingService } from "@core/services/loading.service";
+import type { CdkDragDrop, CdkDragEnter, CdkDragMove } from "@angular/cdk/drag-drop";
+import { moveItemInArray } from "@angular/cdk/drag-drop";
+import type { ChangeDetectorRef, ElementRef, OnInit } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
+import type { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { CdkDragDrop, CdkDragEnter, CdkDragMove, moveItemInArray } from "@angular/cdk/drag-drop";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import { FieldType } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-formly-field-file",
@@ -42,9 +44,8 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
       this.loadingService.setLoading(true);
 
       if (UtilsService.isArray(this.formControl.value)) {
-
         const promises = (this.formControl.value as string[]).map(async file => {
-          let file1 = await UtilsService.fileFromUrl(file);
+          const file1 = await UtilsService.fileFromUrl(file);
           this._setValueFromFiles([file1]);
         });
 
@@ -91,9 +92,9 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
         if (currentCount + newCount > this.props.maxFiles) {
           files = files.slice(0, this.props.maxFiles - currentCount);
           this.popNotificationsService.error(
-            this.translateService.instant(
-              "You can only upload a maximum of {{maxFiles}} files.", { maxFiles: this.props.maxFiles }
-            )
+            this.translateService.instant("You can only upload a maximum of {{maxFiles}} files.", {
+              maxFiles: this.props.maxFiles
+            })
           );
         }
       }
@@ -139,8 +140,7 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
       return;
     }
 
-    const placeholderElement =
-      this.dropListContainer.nativeElement.querySelector(".cdk-drag-placeholder");
+    const placeholderElement = this.dropListContainer.nativeElement.querySelector(".cdk-drag-placeholder");
 
     const receiverElement =
       this.dragDropInfo.dragIndex > this.dragDropInfo.dropIndex

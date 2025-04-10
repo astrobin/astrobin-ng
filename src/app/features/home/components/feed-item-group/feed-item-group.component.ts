@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from "@angular/core";
-import { MainState } from "@app/store/state";
+import type { ElementRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, ViewChild } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import type { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-feed-item-group",
@@ -18,17 +19,8 @@ import { ClassicRoutesService } from "@core/services/classic-routes.service";
       </div>
 
       <div class="feed-item-body">
-        <a
-          [href]="classicRoutesService.GROUP(+feedItem.actionObjectObjectId)"
-          class="main-image-container"
-        >
-          <img
-            #image
-            src="/assets/images/actstream-group-action.jpg"
-            alt=""
-            class="main-image"
-            loading="lazy"
-          />
+        <a [href]="classicRoutesService.GROUP(+feedItem.actionObjectObjectId)" class="main-image-container">
+          <img #image src="/assets/images/actstream-group-action.jpg" alt="" class="main-image" loading="lazy" />
         </a>
       </div>
 
@@ -45,20 +37,14 @@ import { ClassicRoutesService } from "@core/services/classic-routes.service";
       </div>
     </div>
   `,
-  styleUrls: [
-    "../feed-item/feed-item.component.scss",
-    "./feed-item-group.component.scss"
-  ],
+  styleUrls: ["../feed-item/feed-item.component.scss", "./feed-item-group.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedItemGroupComponent extends BaseComponentDirective {
   @Input() feedItem: FeedItemInterface;
   @ViewChild("image") imageElement: ElementRef<HTMLImageElement>;
 
-  constructor(
-    public readonly store$: Store<MainState>,
-    public readonly classicRoutesService: ClassicRoutesService
-  ) {
+  constructor(public readonly store$: Store<MainState>, public readonly classicRoutesService: ClassicRoutesService) {
     super(store$);
   }
 }

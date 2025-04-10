@@ -1,30 +1,37 @@
-import { AfterViewInit, Component, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { Actions, ofType } from "@ngrx/effects";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { fromEvent, Observable, of } from "rxjs";
-import { catchError, debounceTime, map, takeUntil, tap } from "rxjs/operators";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
-import { LoadingService } from "@core/services/loading.service";
-import { EquipmentActionTypes, GetAllBrands } from "@features/equipment/store/equipment.actions";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { selectEquipment, selectEquipmentContributors } from "@features/equipment/store/equipment.selectors";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { ActiveToast } from "ngx-toastr";
 import { isPlatformBrowser } from "@angular/common";
+import type { AfterViewInit, OnChanges, OnDestroy, OnInit, SimpleChanges } from "@angular/core";
+import { Component, Inject, Input, PLATFORM_ID } from "@angular/core";
+import type { ActivatedRoute, Router } from "@angular/router";
+import { NavigationEnd } from "@angular/router";
+import type { MainState } from "@app/store/state";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
+import { EquipmentActionTypes, GetAllBrands } from "@features/equipment/store/equipment.actions";
+import { selectEquipment, selectEquipmentContributors } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { Actions } from "@ngrx/effects";
+import { ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
+import type { ActiveToast } from "ngx-toastr";
+import type { Observable } from "rxjs";
+import { fromEvent, of } from "rxjs";
+import { catchError, debounceTime, map, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-equipment-item-type-nav",
   templateUrl: "./item-type-nav.component.html",
   styleUrls: ["./item-type-nav.component.scss"]
 })
-export class ItemTypeNavComponent extends BaseComponentDirective
-  implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+export class ItemTypeNavComponent
+  extends BaseComponentDirective
+  implements OnInit, OnChanges, AfterViewInit, OnDestroy
+{
   @Input()
   excludeTypes: EquipmentItemType[] = [];
 
@@ -386,9 +393,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective
 
             this.reviewPendingEditNotification = this.popNotificationsService.info(
               `${message} ` +
-              this.translateService.instant(
-                "Please contribute to the AstroBin equipment database by " + "reviewing them!"
-              ),
+                this.translateService.instant(
+                  "Please contribute to the AstroBin equipment database by " + "reviewing them!"
+                ),
               null,
               {
                 enableHtml: true,

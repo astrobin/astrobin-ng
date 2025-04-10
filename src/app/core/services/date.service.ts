@@ -1,9 +1,9 @@
-import { DatePipe } from "@angular/common";
+import type { DatePipe } from "@angular/common";
 import { Injectable } from "@angular/core";
-import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { TranslateService } from "@ngx-translate/core";
 import { Month } from "@core/enums/month.enum";
+import { BaseService } from "@core/services/base.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { TranslateService } from "@ngx-translate/core";
 import * as Sentry from "@sentry/browser";
 
 @Injectable({
@@ -32,8 +32,7 @@ export class DateService extends BaseService {
       }
 
       return result;
-    }
-  catch (e) {
+    } catch (e) {
       const logData = {
         error: e,
         dateObj: dateObj,
@@ -190,7 +189,10 @@ export class DateService extends BaseService {
 
     if (startYear !== endYear) {
       // If the range spans different years, show the year for both dates
-      return `${this.formatSingleDate(range[0])} - ${this.formatSingleDate(range[range.length - 1], startYear !== currentYear)}`;
+      return `${this.formatSingleDate(range[0])} - ${this.formatSingleDate(
+        range[range.length - 1],
+        startYear !== currentYear
+      )}`;
     }
 
     if (startYear === currentYear) {

@@ -1,31 +1,37 @@
+import type { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { ImageSearchApiService } from "@core/services/api/classic/images/image/image-search-api.service";
 import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
+import type { BBCodeService } from "@core/services/bbcode.service";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { SearchService } from "@core/services/search.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { EquipmentItemBaseInterface, EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { EditProposalChange, EditProposalInterface, EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
-import { Observable, of, from } from "rxjs";
-import { getEquipmentItemType, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { filter, map, switchMap, take } from "rxjs/operators";
+import type { WindowRefService } from "@core/services/window-ref.service";
 import { environment } from "@env/environment";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import type { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
+import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { getEquipmentItemType, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import type { BrandInterface } from "@features/equipment/types/brand.interface";
+import type { EditProposalChange, EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import {
+  MarketplaceListingCondition,
+  MarketplaceShippingCostType
+} from "@features/equipment/types/marketplace-line-item.interface";
 import { MarketplaceListingShippingMethod } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplaceListingCondition, MarketplaceShippingCostType } from "@features/equipment/types/marketplace-line-item.interface";
-import { HttpClient } from "@angular/common/http";
-import { BBCodeService } from "@core/services/bbcode.service";
-import { ImageSearchApiService } from "@core/services/api/classic/images/image/image-search-api.service";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { SearchService } from "@core/services/search.service";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
+import { of, from } from "rxjs";
+import { filter, map, switchMap, take } from "rxjs/operators";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
@@ -226,11 +232,7 @@ export class EquipmentItemService extends BaseService {
         );
       case EquipmentItemDisplayProperty.COMMUNITY_NOTES:
         // Use the async version since community notes can contain extensive BBCode
-        return from(
-          this.bbcodeService.transformBBCodeToHtml(
-            propertyValue.toString()
-          )
-        );
+        return from(this.bbcodeService.transformBBCodeToHtml(propertyValue.toString()));
     }
   }
 
@@ -278,9 +280,7 @@ export class EquipmentItemService extends BaseService {
     const service = this.equipmentItemServiceFactory.getService(item);
     const baseAllowedKeys = Object.values(EquipmentItemDisplayProperty) as string[];
     const serviceAllowedKeys = service.getSupportedPrintableProperties();
-    const allowedKeys = [
-      ...new Set([...baseAllowedKeys, ...serviceAllowedKeys])
-    ].map(key => key.toLowerCase());
+    const allowedKeys = [...new Set([...baseAllowedKeys, ...serviceAllowedKeys])].map(key => key.toLowerCase());
 
     const ignoredKeys = [
       "id",
@@ -342,13 +342,11 @@ export class EquipmentItemService extends BaseService {
       } else if (UtilsService.isString(value) && UtilsService.isNumeric(value) && value.indexOf(".") > -1) {
         try {
           value = parseFloat(value);
-        } catch (e) {
-        }
+        } catch (e) {}
       } else if (UtilsService.isString(value) && UtilsService.isNumeric(value)) {
         try {
           value = parseInt(value, 10);
-        } catch (e) {
-        }
+        } catch (e) {}
       }
 
       return value;
@@ -394,9 +392,9 @@ export class EquipmentItemService extends BaseService {
 
       let originalProperties:
         | {
-        name: string;
-        value: string | null;
-      }[]
+            name: string;
+            value: string | null;
+          }[]
         | null = null;
 
       if (editProposal.editProposalOriginalProperties) {
@@ -449,8 +447,8 @@ export class EquipmentItemService extends BaseService {
   nameChangeWarningMessage(): string {
     return this.translateService.instant(
       "<strong>Careful!</strong> Change the name only to fix a typo or the naming convention. This operation will " +
-      "change the name of this equipment item <strong>for all AstroBin images that use it</strong>, so you should " +
-      "not change the name if it becomes a different product."
+        "change the name of this equipment item <strong>for all AstroBin images that use it</strong>, so you should " +
+        "not change the name if it becomes a different product."
     );
   }
 
@@ -458,7 +456,7 @@ export class EquipmentItemService extends BaseService {
     this.popNotificationsService.error(
       this.translateService.instant(
         "This item cannot be selected it's been marked as ambiguous. Consider selecting or creating a non " +
-        "ambiguous variant instead."
+          "ambiguous variant instead."
       )
     );
   }
@@ -500,10 +498,12 @@ export class EquipmentItemService extends BaseService {
       usageType, // Deprecated
       ordering,
       [item.klass.toLowerCase()]: {
-        value: [{
-          id: item.id,
-          name: (item.brandName || this.translateService.instant("DIY")) + " " + item.name
-        }],
+        value: [
+          {
+            id: item.id,
+            name: (item.brandName || this.translateService.instant("DIY")) + " " + item.name
+          }
+        ],
         exactMatch: true,
         matchType: null,
         usageType

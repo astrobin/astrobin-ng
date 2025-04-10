@@ -1,62 +1,56 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges } from "@angular/core";
-import { SearchService } from "@core/services/search.service";
-import { Router } from "@angular/router";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
-import { CameraInterface as LegacyCameraInterface } from "@core/interfaces/camera.interface";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { ImageService } from "@core/services/image/image.service";
-import { TranslateService } from "@ngx-translate/core";
-import { CookieService } from "ngx-cookie";
-import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import type { ChangeDetectorRef, OnChanges, SimpleChanges } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
+import type { Router } from "@angular/router";
+import type { MainState } from "@app/store/state";
+import type { CameraInterface as LegacyCameraInterface } from "@core/interfaces/camera.interface";
+import type { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
+import type { CollapseSyncService } from "@core/services/collapse-sync.service";
+import type { ImageService } from "@core/services/image/image.service";
+import type { ImageViewerService } from "@core/services/image-viewer.service";
+import type { SearchService } from "@core/services/search.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
 import { ImageViewerBaseEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-base-equipment.component";
+import type { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-image-viewer-guiding-equipment",
   template: `
     <ng-container *ngIf="hasGuidingEquipment">
-      <div
-        (click)="toggleCollapse()"
-        [class.collapsed]="collapsed"
-        class="metadata-header supports-collapsing"
-      >
+      <div (click)="toggleCollapse()" [class.collapsed]="collapsed" class="metadata-header supports-collapsing">
         {{ "Guiding equipment" | translate }}
       </div>
 
-      <div
-        [collapsed]="collapsed"
-        collapseAnimation
-        class="metadata-section w-100"
-      >
+      <div [collapsed]="collapsed" collapseAnimation class="metadata-section w-100">
         <div class="equipment-section">
           <table class="table table-sm table-mobile-support mb-0">
             <tbody>
-            <ng-container *ngFor="let attr of guidingAttributes">
-              <tr *ngIf="this[attr]?.length">
-                <th>
-                  <div class="equipment-label">
-                    {{ attrToLabel[attr] }}
-                  </div>
-                </th>
-                <td>
-                  <div class="equipment-container">
-                    <astrobin-image-viewer-equipment-items
-                      [attr]="attr"
-                      [items]="this[attr]"
-                      [enableKlassIcon]="false"
-                      [attrToIcon]="attrToIcon"
-                      [legacyEquipmentUrl]="legacyEquipmentUrl.bind(this)"
-                      (equipmentItemClicked)="equipmentItemClicked($event.event, $event.item)"
-                      (legacyEquipmentItemClicked)="legacyEquipmentItemClicked($event.event, $event.item)">
-                    </astrobin-image-viewer-equipment-items>
-                  </div>
-                </td>
-              </tr>
-            </ng-container>
+              <ng-container *ngFor="let attr of guidingAttributes">
+                <tr *ngIf="this[attr]?.length">
+                  <th>
+                    <div class="equipment-label">
+                      {{ attrToLabel[attr] }}
+                    </div>
+                  </th>
+                  <td>
+                    <div class="equipment-container">
+                      <astrobin-image-viewer-equipment-items
+                        [attr]="attr"
+                        [items]="this[attr]"
+                        [enableKlassIcon]="false"
+                        [attrToIcon]="attrToIcon"
+                        [legacyEquipmentUrl]="legacyEquipmentUrl.bind(this)"
+                        (equipmentItemClicked)="equipmentItemClicked($event.event, $event.item)"
+                        (legacyEquipmentItemClicked)="legacyEquipmentItemClicked($event.event, $event.item)"
+                      >
+                      </astrobin-image-viewer-equipment-items>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
             </tbody>
           </table>
         </div>
@@ -80,10 +74,10 @@ export class ImageViewerGuidingEquipmentComponent extends ImageViewerBaseEquipme
     "legacyGuidingCameras"
   ];
   protected readonly attrToIcon = {
-    "guidingTelescopes": "telescope",
-    "legacyGuidingTelescopes": "telescope",
-    "guidingCameras": "camera",
-    "legacyGuidingCameras": "camera"
+    guidingTelescopes: "telescope",
+    legacyGuidingTelescopes: "telescope",
+    guidingCameras: "camera",
+    legacyGuidingCameras: "camera"
   };
   protected attrToLabel: { [key: string]: string };
 
@@ -112,7 +106,10 @@ export class ImageViewerGuidingEquipmentComponent extends ImageViewerBaseEquipme
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
+    if (
+      (changes.image && changes.image.currentValue) ||
+      (changes.revisionLabel && changes.revisionLabel.currentValue)
+    ) {
       const image = this.image;
       this.hasGuidingEquipment = this.imageService.hasGuidingEquipment(image);
       this.guidingTelescopes = image.guidingTelescopes2;
@@ -122,10 +119,16 @@ export class ImageViewerGuidingEquipmentComponent extends ImageViewerBaseEquipme
     }
 
     this.attrToLabel = {
-      "guidingTelescopes": this.translateService.instant("Guiding optics"),
-      "legacyGuidingTelescopes": this.translateService.instant("Guiding optics"),
-      "guidingCameras": this.guidingCameras?.length > 1 ? this.translateService.instant("Guiding cameras") : this.translateService.instant("Guiding camera"),
-      "legacyGuidingCameras": this.legacyGuidingCameras?.length > 1 ? this.translateService.instant("Guiding cameras") : this.translateService.instant("Guiding camera")
+      guidingTelescopes: this.translateService.instant("Guiding optics"),
+      legacyGuidingTelescopes: this.translateService.instant("Guiding optics"),
+      guidingCameras:
+        this.guidingCameras?.length > 1
+          ? this.translateService.instant("Guiding cameras")
+          : this.translateService.instant("Guiding camera"),
+      legacyGuidingCameras:
+        this.legacyGuidingCameras?.length > 1
+          ? this.translateService.instant("Guiding cameras")
+          : this.translateService.instant("Guiding camera")
     };
   }
 }

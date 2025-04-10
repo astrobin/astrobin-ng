@@ -1,5 +1,5 @@
-import { MainState } from "@app/store/state";
-import { SubscriptionsState } from "@features/subscriptions/store/subscriptions.reducers";
+import type { MainState } from "@app/store/state";
+import type { SubscriptionsState } from "@features/subscriptions/store/subscriptions.reducers";
 import { createSelector } from "@ngrx/store";
 
 export const selectSubscriptions = (state: MainState): SubscriptionsState => state.subscriptions;

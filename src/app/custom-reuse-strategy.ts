@@ -1,6 +1,7 @@
-import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy } from "@angular/router";
+import type { LocationStrategy } from "@angular/common";
+import { isPlatformBrowser } from "@angular/common";
 import { Inject, PLATFORM_ID } from "@angular/core";
-import { isPlatformBrowser, LocationStrategy } from "@angular/common";
+import type { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy } from "@angular/router";
 
 interface RouteReuseConfig {
   onlyReuseOnBackNavigation?: boolean;
@@ -23,10 +24,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
   private _cache: Map<string, RouteCacheEntry> = new Map();
   private _isBackNavigation = false;
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    locationStrategy: LocationStrategy
-  ) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, locationStrategy: LocationStrategy) {
     this._isBrowser = isPlatformBrowser(platformId);
     if (this._isBrowser) {
       locationStrategy.onPopState(() => {
@@ -118,8 +116,8 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
       .map(r => r.routeConfig!.path || "")
       .filter(Boolean);
 
-    const basePath = '/' + paths.join("/").replace(/\/+/g, '/');
-    return basePath.replace(/\/+$/g, '');
+    const basePath = "/" + paths.join("/").replace(/\/+/g, "/");
+    return basePath.replace(/\/+$/g, "");
   }
 
   private shouldCachePath(path: string): boolean {

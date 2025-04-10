@@ -1,22 +1,24 @@
-import { Component, ElementRef, Inject, PLATFORM_ID } from "@angular/core";
-import { MainState } from "@app/store/state";
+import type { ElementRef } from "@angular/core";
+import { Component, Inject, PLATFORM_ID } from "@angular/core";
+import { selectBackendConfig, selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
+import type { MainState } from "@app/store/state";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteVote, PostVote } from "@features/iotd/store/iotd.actions";
 import { selectReviewForImage, selectReviewQueueEntry, selectReviews } from "@features/iotd/store/iotd.selectors";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Store } from "@ngrx/store";
-import { LoadingService } from "@core/services/loading.service";
-import { Observable, of } from "rxjs";
+import type { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import type { CookieService } from "ngx-cookie";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
 import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { selectBackendConfig, selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
-import { CookieService } from "ngx-cookie";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { TranslateService } from "@ngx-translate/core";
-import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
-import { Actions } from "@ngrx/effects";
-import { UtilsService } from "@core/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-review-entry",
@@ -68,10 +70,10 @@ export class ReviewEntryComponent extends BasePromotionEntryComponent {
         return isPromoted
           ? of(false)
           : max$.pipe(
-            take(1),
-            switchMap(max => count$.pipe(map(count => ({ max, count })))),
-            map(({ max, count }) => count < max)
-          );
+              take(1),
+              switchMap(max => count$.pipe(map(count => ({ max, count })))),
+              map(({ max, count }) => count < max)
+            );
       })
     );
   }

@@ -1,15 +1,32 @@
-import { AfterContentChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, QueryList, Renderer2, ViewChild, ViewChildren } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FieldType, FormlyFieldConfig } from "@ngx-formly/core";
-import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@core/services/loading.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { NgWizardComponent, NgWizardService, NgWizardStep, NgWizardStepComponent, STEP_STATE, StepChangedArgs } from "@kronscht/ng-wizard";
 import { isPlatformServer } from "@angular/common";
-import { Subscription } from "rxjs";
-import { DeviceService } from "@core/services/device.service";
-import { UtilsService } from "@core/services/utils/utils.service";
+import type {
+  AfterContentChecked,
+  AfterViewInit,
+  ChangeDetectorRef,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  Renderer2
+} from "@angular/core";
+import { Component, ElementRef, Inject, PLATFORM_ID, ViewChild, ViewChildren } from "@angular/core";
+import type { ActivatedRoute, Router } from "@angular/router";
+import type { DeviceService } from "@core/services/device.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type {
+  NgWizardComponent,
+  NgWizardService,
+  NgWizardStep,
+  NgWizardStepComponent,
+  StepChangedArgs
+} from "@kronscht/ng-wizard";
+import { STEP_STATE } from "@kronscht/ng-wizard";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { FieldType } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
+import type { Subscription } from "rxjs";
 
 @Component({
   selector: "astrobin-formly-field-stepper",
@@ -18,7 +35,8 @@ import { UtilsService } from "@core/services/utils/utils.service";
 })
 export class FormlyFieldStepperComponent
   extends FieldType
-  implements OnInit, AfterViewInit, OnDestroy, AfterContentChecked {
+  implements OnInit, AfterViewInit, OnDestroy, AfterContentChecked
+{
   @ViewChild("wizard")
   wizard: NgWizardComponent;
 
@@ -103,7 +121,7 @@ export class FormlyFieldStepperComponent
       this.setHighestVisitedStep(event.step.index);
       this.utilsService.delay(100).subscribe(() => {
         this._scrollActiveNavItemIntoView();
-      })
+      });
     });
   }
 

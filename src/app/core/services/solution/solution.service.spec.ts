@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
-
 import { SolutionGenerator } from "@shared/generators/solution.generator";
+
 import { SolutionService } from "./solution.service";
 
 describe("SolutionService", () => {

@@ -1,10 +1,10 @@
+import type { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import type { LocationInterface } from "@core/interfaces/location.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { LoadingService } from "@core/services/loading.service";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { LocationInterface } from "@core/interfaces/location.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { LoadingService } from "@core/services/loading.service";
+import type { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

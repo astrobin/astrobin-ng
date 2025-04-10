@@ -1,12 +1,13 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { AvatarEditorComponent } from "./avatar-editor.component";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { By } from "@angular/platform-browser";
 import { ChangeDetectorRef } from "@angular/core";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
+import type { UserInterface } from "@core/interfaces/user.interface";
 import { NgbActiveOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { setupAvatarTestingModule, setupComponentObservables } from "../avatar/avatar-testing.utils";
+import { UserGenerator } from "@shared/generators/user.generator";
 
+import { AvatarEditorComponent } from "./avatar-editor.component";
+import { setupAvatarTestingModule, setupComponentObservables } from "../avatar/avatar-testing.utils";
 
 describe("AvatarEditorComponent", () => {
   let component: AvatarEditorComponent;
@@ -58,7 +59,7 @@ describe("AvatarEditorComponent", () => {
 
       // Assert avatarUpdated.emit was called immediately
       expect(component.avatarUpdated.emit).toHaveBeenCalledWith(newAvatarUrl);
-      
+
       // Now we need to wait for the setTimeout to complete before checking close()
       setTimeout(() => {
         expect(component.close).toHaveBeenCalled();

@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnChanges, PLATFORM_ID } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { UtilsService } from "@core/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
+import type { ChangeDetectorRef, OnChanges } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
+import type { MainState } from "@app/store/state";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-image-gallery-loading",
@@ -12,9 +13,13 @@ import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
     <ng-container *ngIf="isBrowser">
       <astrobin-masonry-layout
         [items]="placeholders"
-        [layout]="activeLayout === UserGalleryActiveLayout.SMALL
-          ? 'small'
-          : activeLayout === UserGalleryActiveLayout.MEDIUM ? 'medium' : 'large'"
+        [layout]="
+          activeLayout === UserGalleryActiveLayout.SMALL
+            ? 'small'
+            : activeLayout === UserGalleryActiveLayout.MEDIUM
+            ? 'medium'
+            : 'large'
+        "
         [leftAlignLastRow]="true"
       >
         <ng-template let-item>
@@ -57,16 +62,20 @@ export class ImageGalleryLoadingComponent extends BaseComponentDirective impleme
       const ratio = Math.random();
       let w: number, h: number;
 
-      if (ratio < 0.25) { // narrow
+      if (ratio < 0.25) {
+        // narrow
         w = 0.7;
         h = 1;
-      } else if (ratio < 0.5) { // square
+      } else if (ratio < 0.5) {
+        // square
         w = 1;
         h = 1;
-      } else if (ratio < 0.75) { // wide
+      } else if (ratio < 0.75) {
+        // wide
         w = 1.2;
         h = 1;
-      } else { // panoramic
+      } else {
+        // panoramic
         w = 2;
         h = 1;
       }

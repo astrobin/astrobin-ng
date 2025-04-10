@@ -1,29 +1,35 @@
-import { Component, ElementRef, HostBinding, Input, OnInit, ViewChild } from "@angular/core";
+import type { ElementRef, OnInit } from "@angular/core";
+import { Component, HostBinding, Input, ViewChild } from "@angular/core";
 import { ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { MainState } from "@app/store/state";
-import { ConfirmDismissModalComponent, DISMISSAL_NOTICE_COOKIE } from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
-import { DismissImage, DismissImageSuccess, HideImage, HideImageSuccess, IotdActionTypes, ShowImage } from "@features/iotd/store/iotd.actions";
+import { ForceCheckImageAutoLoad } from "@app/store/actions/image.actions";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
+import type { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import {
+  ConfirmDismissModalComponent,
+  DISMISSAL_NOTICE_COOKIE
+} from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
+import type { DismissImageSuccess, HideImageSuccess } from "@features/iotd/store/iotd.actions";
+import { DismissImage, HideImage, IotdActionTypes, ShowImage } from "@features/iotd/store/iotd.actions";
 import { selectDismissedImageByImageId, selectHiddenImageByImageId } from "@features/iotd/store/iotd.selectors";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Store } from "@ngrx/store";
+import type { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
+import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import { ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
-import { ImageAlias } from "@core/enums/image-alias.enum";
-import { Observable, Subscription } from "rxjs";
+import type { CookieService } from "ngx-cookie";
+import type { Observable, Subscription } from "rxjs";
 import { filter, map, take, takeUntil } from "rxjs/operators";
-import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
-import { CookieService } from "ngx-cookie";
-import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { Actions, ofType } from "@ngrx/effects";
-import { ForceCheckImageAutoLoad } from "@app/store/actions/image.actions";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
   selector: "astrobin-base-promotion-entry",
@@ -136,25 +142,29 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   }
 
   hide(pk: PromotionImageInterface["pk"]): void {
-    this.actions$.pipe(
-      ofType(IotdActionTypes.HIDE_IMAGE_SUCCESS),
-      filter((action: HideImageSuccess) => action.payload.hiddenImage.id === pk),
-      take(1)
-    ).subscribe(() => {
-      this.store$.dispatch(new ForceCheckImageAutoLoad({ imageId: pk }));
-    });
+    this.actions$
+      .pipe(
+        ofType(IotdActionTypes.HIDE_IMAGE_SUCCESS),
+        filter((action: HideImageSuccess) => action.payload.hiddenImage.id === pk),
+        take(1)
+      )
+      .subscribe(() => {
+        this.store$.dispatch(new ForceCheckImageAutoLoad({ imageId: pk }));
+      });
     this.store$.dispatch(new HideImage({ id: pk }));
   }
 
   dismiss(pk: PromotionImageInterface["pk"]): void {
     const _confirmDismiss = () => {
-      this.actions$.pipe(
-        ofType(IotdActionTypes.DISMISS_IMAGE_SUCCESS),
-        filter((action: DismissImageSuccess) => action.payload.dismissedImage.id === pk),
-        take(1)
-      ).subscribe(() => {
-        this.store$.dispatch(new ForceCheckImageAutoLoad({ imageId: pk }));
-      });
+      this.actions$
+        .pipe(
+          ofType(IotdActionTypes.DISMISS_IMAGE_SUCCESS),
+          filter((action: DismissImageSuccess) => action.payload.dismissedImage.id === pk),
+          take(1)
+        )
+        .subscribe(() => {
+          this.store$.dispatch(new ForceCheckImageAutoLoad({ imageId: pk }));
+        });
       this.store$.dispatch(new DismissImage({ id: pk }));
     };
 
@@ -197,10 +207,12 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
     }
 
     if (!this.image.loading && !!this.image.image && !this.image.image.videoFile) {
-      this.store$.dispatch(new ShowFullscreenImage({
-        imageId: pk,
-        event
-      }));
+      this.store$.dispatch(
+        new ShowFullscreenImage({
+          imageId: pk,
+          event
+        })
+      );
     }
   }
 }

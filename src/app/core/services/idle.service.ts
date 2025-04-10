@@ -1,7 +1,9 @@
-import { Inject, Injectable, OnDestroy, PLATFORM_ID } from "@angular/core";
-import { fromEvent, merge, Subscription } from "rxjs";
-import { throttleTime } from "rxjs/operators";
 import { isPlatformServer } from "@angular/common";
+import type { OnDestroy } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import type { Subscription } from "rxjs";
+import { fromEvent, merge } from "rxjs";
+import { throttleTime } from "rxjs/operators";
 
 @Injectable({ providedIn: "root" })
 export class IdleService implements OnDestroy {
@@ -33,10 +35,8 @@ export class IdleService implements OnDestroy {
     const keyDown$ = fromEvent(document, "keydown", options);
     const activity$ = merge(mouseMove$, keyDown$);
 
-    this._idleSubscription = activity$
-      .pipe(throttleTime(500))
-      .subscribe(() => {
-        this._lastActivity = Date.now();
-      });
+    this._idleSubscription = activity$.pipe(throttleTime(500)).subscribe(() => {
+      this._lastActivity = Date.now();
+    });
   }
 }

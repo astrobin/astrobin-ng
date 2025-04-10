@@ -1,10 +1,10 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import type { PipeTransform } from "@angular/core";
+import { Pipe } from "@angular/core";
 
 @Pipe({
   name: "numberSuffix"
 })
 export class NumberSuffixPipe implements PipeTransform {
-
   transform(value: number): string {
     if (value === null || value === undefined) {
       return null;
@@ -21,13 +21,21 @@ export class NumberSuffixPipe implements PipeTransform {
     // Thousands
     if (absValue >= 1000 && absValue < 1000000) {
       const result = (absValue / 1000).toFixed(1);
-      return (result === "1000.0" ? (isNegative ? "-1M" : "1M") : (isNegative ? "-" : "") + result.replace(/\.0$/, "") + "k");
+      return result === "1000.0"
+        ? isNegative
+          ? "-1M"
+          : "1M"
+        : (isNegative ? "-" : "") + result.replace(/\.0$/, "") + "k";
     }
 
     // Millions
     if (absValue >= 1000000 && absValue < 1000000000) {
       const result = (absValue / 1000000).toFixed(1);
-      return (result === "1000.0" ? (isNegative ? "-1B" : "1B") : (isNegative ? "-" : "") + result.replace(/\.0$/, "") + "M");
+      return result === "1000.0"
+        ? isNegative
+          ? "-1B"
+          : "1B"
+        : (isNegative ? "-" : "") + result.replace(/\.0$/, "") + "M";
     }
 
     // Billions

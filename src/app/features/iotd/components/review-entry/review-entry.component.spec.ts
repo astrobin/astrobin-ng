@@ -1,14 +1,15 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { IotdModule } from "@features/iotd/iotd.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
-import { ReviewEntryComponent } from "./review-entry.component";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
-import { AppModule } from "@app/app.module";
+
+import { ReviewEntryComponent } from "./review-entry.component";
 
 describe("ReviewEntryComponent", () => {
   let component: ReviewEntryComponent;

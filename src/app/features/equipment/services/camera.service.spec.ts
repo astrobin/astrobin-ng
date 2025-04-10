@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { CameraGenerator } from "@features/equipment/generators/camera.generator";
+import { MockBuilder } from "ng-mocks";
 
 import { CameraDisplayProperty, CameraService } from "./camera.service";
-import { MockBuilder } from "ng-mocks";
-import { CameraGenerator } from "@features/equipment/generators/camera.generator";
-import { AppModule } from "@app/app.module";
 
 describe("CameraService", () => {
   let service: CameraService;

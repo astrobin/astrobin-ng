@@ -1,9 +1,11 @@
 import { Component, EventEmitter, HostListener, Input, Output } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { MainState } from "@app/store/state";
+import type { FormBuilder, FormGroup } from "@angular/forms";
+import { Validators } from "@angular/forms";
+import type { MainState } from "@app/store/state";
 import { AuthActionTypes, Login } from "@features/account/store/auth.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
+import type { Actions } from "@ngrx/effects";
+import { ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

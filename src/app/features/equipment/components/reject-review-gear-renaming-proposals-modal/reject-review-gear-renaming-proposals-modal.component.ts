@@ -1,16 +1,17 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { HttpClient } from "@angular/common/http";
+import type { OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import type { MainState } from "@app/store/state";
+import type { LoadingService } from "@core/services/loading.service";
+import type { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoadingService } from "@core/services/loading.service";
-import { Actions } from "@ngrx/effects";
-import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "astrobin-reject-review-gear-renaming-proposals-modal",

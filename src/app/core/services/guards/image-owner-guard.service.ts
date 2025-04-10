@@ -1,24 +1,29 @@
-import { Location } from "@angular/common";
+import type { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { combineLatest, Observable, Observer } from "rxjs";
-import { filter, map } from "rxjs/operators";
-import { AuthService } from "../auth.service";
+import type { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import type { All } from "@app/store/actions/app.actions";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import type { LoadImageFailure } from "@app/store/actions/image.actions";
+import { LoadImage } from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
+import type { MainState } from "@app/store/state";
+import type { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { BaseService } from "@core/services/base.service";
+import type { LoadingService } from "@core/services/loading.service";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import { LoadImage, LoadImageFailure } from "@app/store/actions/image.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { All, AppActionTypes } from "@app/store/actions/app.actions";
+import type { Actions } from "@ngrx/effects";
+import { ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import { combineLatest, Observable } from "rxjs";
+import type { Observer } from "rxjs";
+import { filter, map } from "rxjs/operators";
+
+import type { AuthService } from "../auth.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class ImageOwnerGuardService extends BaseService  {
+export class ImageOwnerGuardService extends BaseService {
   constructor(
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions<All>,
@@ -58,9 +63,7 @@ export class ImageOwnerGuardService extends BaseService  {
         this.store$.dispatch(new LoadImage({ imageId: imageId, options: { skipThumbnails: true } }));
 
         combineLatest([
-          this.store$.select(selectCurrentUser).pipe(
-            filter(user => !!user)
-          ),
+          this.store$.select(selectCurrentUser).pipe(filter(user => !!user)),
           this.store$.select(selectImage, imageId).pipe(filter(image => !!image))
         ])
           .pipe(map(([currentUser, image]) => currentUser.id === image.user || currentUser.isSuperUser))
@@ -72,12 +75,14 @@ export class ImageOwnerGuardService extends BaseService  {
             }
           });
 
-        this.actions$.pipe(
-          ofType(AppActionTypes.LOAD_IMAGE_FAILURE),
-          filter((action: LoadImageFailure) => action.payload.imageId === imageId),
-        ).subscribe(error => {
-          onError(observer, "/404");
-        });
+        this.actions$
+          .pipe(
+            ofType(AppActionTypes.LOAD_IMAGE_FAILURE),
+            filter((action: LoadImageFailure) => action.payload.imageId === imageId)
+          )
+          .subscribe(error => {
+            onError(observer, "/404");
+          });
       });
     });
   }

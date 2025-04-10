@@ -1,9 +1,9 @@
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { ActiveToast, IndividualConfig, ToastrService } from "ngx-toastr";
 import { isPlatformServer } from "@angular/common";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { BaseService } from "@core/services/base.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { TranslateService } from "@ngx-translate/core";
+import type { ActiveToast, IndividualConfig, ToastrService } from "ngx-toastr";
 
 export interface ToastButtonInterface {
   id: string;

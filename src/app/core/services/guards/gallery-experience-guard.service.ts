@@ -1,16 +1,19 @@
-import { Inject, Injectable, PLATFORM_ID, Renderer2, RendererFactory2 } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
-import { Store } from "@ngrx/store";
-import { Observable, of } from "rxjs";
-import { catchError, filter, map, switchMap, take, timeout } from "rxjs/operators";
 import { DOCUMENT, isPlatformBrowser } from "@angular/common";
-import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import type { Renderer2, RendererFactory2 } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import type { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
+import type { MainState } from "@app/store/state";
+import type { AuthService } from "@core/services/auth.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
 import { environment } from "@env/environment";
-import { MainState } from "@app/store/state";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { Actions, ofType } from "@ngrx/effects";
 import { AuthActionTypes } from "@features/account/store/auth.actions";
-import { AuthService } from "@core/services/auth.service";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import type { Actions } from "@ngrx/effects";
+import { ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
+import { catchError, filter, map, switchMap, take, timeout } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -39,7 +42,7 @@ export class GalleryExperienceGuard implements CanActivate {
 
     // Check if the route has data configuration for the guard
     const guardData = route.data?.galleryExperienceGuard;
-    
+
     // For views like IOTD/TP Archive that only redirect with image param
     if (guardData?.redirectOnlyWithImageParam === true && !route.queryParams.i) {
       // If there's no 'i' param, and the route is configured to only redirect with an image param,
@@ -49,7 +52,7 @@ export class GalleryExperienceGuard implements CanActivate {
 
     // First check if user is authenticated at all
     const isAuthenticated = this.authService.getClassicApiToken() !== undefined;
-    
+
     // If not authenticated, we can safely proceed with the new gallery experience
     if (!isAuthenticated) {
       return of(true);
@@ -63,19 +66,21 @@ export class GalleryExperienceGuard implements CanActivate {
         if (userProfile !== null && userProfile !== undefined) {
           return this.handleUserProfile(userProfile, route);
         }
-        
+
         // If we don't have the user profile but the user is authenticated,
         // wait for the INITIALIZE_SUCCESS action which will populate the store
         return this.actions$.pipe(
           ofType(AuthActionTypes.INITIALIZE_SUCCESS),
-          take(1), 
+          take(1),
           // Once initialization is complete, get the profile again
-          switchMap(() => this.store$.select(selectCurrentUserProfile).pipe(
-            filter(profile => profile !== null && profile !== undefined),
-            take(1),
-            // Make the decision with the now-loaded profile
-            switchMap(profile => this.handleUserProfile(profile, route))
-          )),
+          switchMap(() =>
+            this.store$.select(selectCurrentUserProfile).pipe(
+              filter(profile => profile !== null && profile !== undefined),
+              take(1),
+              // Make the decision with the now-loaded profile
+              switchMap(profile => this.handleUserProfile(profile, route))
+            )
+          ),
           // Add a timeout to avoid hanging indefinitely
           timeout(5000),
           // If timeout occurs, default to allowing access

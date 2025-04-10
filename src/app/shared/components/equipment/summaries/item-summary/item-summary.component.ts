@@ -1,43 +1,67 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { EquipmentItemReviewerDecision, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { CameraInterface, CameraType, instanceOfCamera } from "@features/equipment/types/camera.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
+import type { ChangeDetectorRef, OnChanges, SimpleChanges, TemplateRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { AuthService } from "@core/services/auth.service";
+import type { DeviceService } from "@core/services/device.service";
+import { EquipmentItemDisplayProperty } from "@core/services/equipment-item.service";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { distinctUntilKeyChangedOrNull, UtilsService } from "@core/services/utils/utils.service";
-import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
-import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
-import { selectBrand, selectEquipmentItem, selectMostOftenUsedWithForItem } from "@features/equipment/store/equipment.selectors";
-import { Observable, of } from "rxjs";
-import { GetMostOftenUsedWith, LoadBrand, LoadEquipmentItem, LoadSensor } from "@features/equipment/store/equipment.actions";
-import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
-import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
-import { EquipmentItemDisplayProperty, EquipmentItemService } from "@core/services/equipment-item.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { instanceOfSensor, SensorInterface } from "@features/equipment/types/sensor.interface";
-import { MountInterface } from "@features/equipment/types/mount.interface";
-import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
-import { FilterInterface } from "@features/equipment/types/filter.interface";
-import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { selectUser } from "@features/account/store/auth.selectors";
-import { LoadUser } from "@features/account/store/auth.actions";
-import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { AuthService } from "@core/services/auth.service";
-import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import type { WindowRefService } from "@core/services/window-ref.service";
 import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
+import { LoadUser } from "@features/account/store/auth.actions";
+import { selectUser } from "@features/account/store/auth.selectors";
+import { AccessoryDisplayProperty } from "@features/equipment/services/accessory.service";
+import type { AccessoryService } from "@features/equipment/services/accessory.service";
+import { CameraDisplayProperty } from "@features/equipment/services/camera.service";
+import type { CameraService } from "@features/equipment/services/camera.service";
+import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { FilterDisplayProperty } from "@features/equipment/services/filter.service";
+import type { FilterService } from "@features/equipment/services/filter.service";
+import { MountDisplayProperty } from "@features/equipment/services/mount.service";
+import type { MountService } from "@features/equipment/services/mount.service";
+import { SensorDisplayProperty } from "@features/equipment/services/sensor.service";
+import type { SensorService } from "@features/equipment/services/sensor.service";
+import { TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
+import type { TelescopeService } from "@features/equipment/services/telescope.service";
+import {
+  GetMostOftenUsedWith,
+  LoadBrand,
+  LoadEquipmentItem,
+  LoadSensor
+} from "@features/equipment/store/equipment.actions";
+import {
+  selectBrand,
+  selectEquipmentItem,
+  selectMostOftenUsedWithForItem
+} from "@features/equipment/store/equipment.selectors";
+import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import type { BrandInterface } from "@features/equipment/types/brand.interface";
+import { CameraType, instanceOfCamera } from "@features/equipment/types/camera.interface";
+import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import {
+  EquipmentItemReviewerDecision,
+  EquipmentItemType
+} from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { FilterInterface } from "@features/equipment/types/filter.interface";
+import type { MountInterface } from "@features/equipment/types/mount.interface";
+import { instanceOfSensor } from "@features/equipment/types/sensor.interface";
+import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { TelescopeType } from "@features/equipment/types/telescope.interface";
+import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import type { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
 import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
-import { LoadingService } from "@core/services/loading.service";
-import { DeviceService } from "@core/services/device.service";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { of } from "rxjs";
+import type { Observable } from "rxjs";
+import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
 
 interface EquipmentItemProperty {
   name: string;
@@ -217,9 +241,12 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
           )
           .subscribe(camera => {
             this.relatedItems.push(camera);
-            this.moreRelatedItemsLabel = this.relatedItems.length > this.SHOW_MAX_RELATED_ITEMS
-              ? this.translateService.instant("+ {{ count }} more", { count: this.relatedItems.length - this.SHOW_MAX_RELATED_ITEMS })
-              : "";
+            this.moreRelatedItemsLabel =
+              this.relatedItems.length > this.SHOW_MAX_RELATED_ITEMS
+                ? this.translateService.instant("+ {{ count }} more", {
+                    count: this.relatedItems.length - this.SHOW_MAX_RELATED_ITEMS
+                  })
+                : "";
             this.changeDetectorRef.markForCheck();
           });
       });
@@ -251,10 +278,12 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       );
     }
 
-    this.computeProperties$().pipe(take(1)).subscribe(properties => {
-      this.properties = properties.filter(p => p !== null);
-      this.changeDetectorRef.markForCheck();
-    });
+    this.computeProperties$()
+      .pipe(take(1))
+      .subscribe(properties => {
+        this.properties = properties.filter(p => p !== null);
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   assign() {
@@ -273,7 +302,12 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   itemTypeSupportsMostOftenUsedWith(): boolean {
     return (
       this.item.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
-      [EquipmentItemType.CAMERA, EquipmentItemType.TELESCOPE, EquipmentItemType.MOUNT, EquipmentItemType.FILTER].indexOf(this.item.klass) > -1
+      [
+        EquipmentItemType.CAMERA,
+        EquipmentItemType.TELESCOPE,
+        EquipmentItemType.MOUNT,
+        EquipmentItemType.FILTER
+      ].indexOf(this.item.klass) > -1
     );
   }
 
@@ -314,13 +348,13 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   private _variantOfProperty(variantOfItem: EquipmentItem | null): EquipmentItemProperty {
     return variantOfItem
       ? {
-        name: this.equipmentItemService.getPrintablePropertyName(
-          variantOfItem.klass,
-          EquipmentItemDisplayProperty.VARIANT_OF
-        ),
-        value: this.equipmentItemService.getFullDisplayName$(variantOfItem),
-        link: `/equipment/explorer/${variantOfItem.klass.toLowerCase()}/${variantOfItem.id}`
-      }
+          name: this.equipmentItemService.getPrintablePropertyName(
+            variantOfItem.klass,
+            EquipmentItemDisplayProperty.VARIANT_OF
+          ),
+          value: this.equipmentItemService.getFullDisplayName$(variantOfItem),
+          link: `/equipment/explorer/${variantOfItem.klass.toLowerCase()}/${variantOfItem.id}`
+        }
       : null;
   }
 
@@ -342,7 +376,10 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY, true),
-        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.FULL_WELL_CAPACITY)
+        value: this.sensorService.getPrintableProperty$(
+          this.item as SensorInterface,
+          SensorDisplayProperty.FULL_WELL_CAPACITY
+        )
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE, true),
@@ -350,7 +387,10 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY, true),
-        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.QUANTUM_EFFICIENCY)
+        value: this.sensorService.getPrintableProperty$(
+          this.item as SensorInterface,
+          SensorDisplayProperty.QUANTUM_EFFICIENCY
+        )
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FRAME_RATE, true),
@@ -362,10 +402,13 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO, true),
-        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.COLOR_OR_MONO)
+        value: this.sensorService.getPrintableProperty$(
+          this.item as SensorInterface,
+          SensorDisplayProperty.COLOR_OR_MONO
+        )
       }
     ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+    return of(props.map(p => (p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p)));
   }
 
   private _cameraProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
@@ -379,22 +422,22 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       },
       item.type === CameraType.DEDICATED_DEEP_SKY
         ? {
-          name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED, true),
-          value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED)
-        }
+            name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED, true),
+            value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED)
+          }
         : null,
       item.type === CameraType.DEDICATED_DEEP_SKY && item.cooled
         ? {
-          name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING, true),
-          value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING)
-        }
+            name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING, true),
+            value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING)
+          }
         : null,
       {
         name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS, true),
         value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.BACK_FOCUS)
       }
     ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+    return of(props.map(p => (p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p)));
   }
 
   private _telescopeProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
@@ -423,7 +466,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       focalLength,
       weight
     ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+    return of(props.map(p => (p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p)));
   }
 
   private _mountProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
@@ -467,7 +510,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         ]
       ];
     }
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+    return of(props.map(p => (p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p)));
   }
 
   private _filterProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
@@ -488,7 +531,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.SIZE)
       }
     ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+    return of(props.map(p => (p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p)));
   }
 
   private _accessoryProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
@@ -501,7 +544,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         value: this.accessoryService.getPrintableProperty$(item, AccessoryDisplayProperty.TYPE)
       }
     ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+    return of(props.map(p => (p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p)));
   }
 
   private _softwareProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
@@ -509,7 +552,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       this._classProperty(EquipmentItemType.SOFTWARE),
       this._variantOfProperty(variantOfItem)
     ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+    return of(props.map(p => (p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p)));
   }
 
   private computeProperties$(): Observable<EquipmentItemProperty[]> {

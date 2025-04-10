@@ -1,46 +1,47 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
-import { LoadingService } from "@core/services/loading.service";
-import { delay, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { TitleService } from "@core/services/title/title.service";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { concat, EMPTY, forkJoin, Observable, of } from "rxjs";
-import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { Store } from "@ngrx/store";
-import { Actions } from "@ngrx/effects";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { HttpStatusCode } from "@angular/common/http";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { CameraApiService } from "@core/services/api/classic/astrobin/camera/camera-api.service";
-import { TelescopeApiService } from "@core/services/api/classic/astrobin/telescope/telescope-api.service";
-import { MountApiService } from "@core/services/api/classic/astrobin/mount/mount-api.service";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Component, ViewChild } from "@angular/core";
+import type { OnInit } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import type { ActivatedRoute, Router } from "@angular/router";
+import { NavigationEnd } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { TranslateService } from "@ngx-translate/core";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { MainState } from "@app/store/state";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { GearService } from "@core/services/gear/gear.service";
-import {
-  ItemBrowserComponent,
-  ItemBrowserLayout
-} from "@shared/components/equipment/item-browser/item-browser.component";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { FilterApiService } from "@core/services/api/classic/astrobin/filter/filter-api.service";
-import { SoftwareApiService } from "@core/services/api/classic/astrobin/software/software-api.service";
-import { isGroupMember } from "@shared/operators/is-group-member.operator";
-import { CombinedAccessoryAndFocalReducerApiService } from "@core/services/api/classic/astrobin/combined-accessory-and-focal-reducer/combined-accessory-and-focal-reducer-api.service";
-import { GearUserInfoInterface } from "@core/interfaces/gear-user-info.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import type { MainState } from "@app/store/state";
+import type { GearUserInfoInterface } from "@core/interfaces/gear-user-info.interface";
+import type { CameraApiService } from "@core/services/api/classic/astrobin/camera/camera-api.service";
+import type { CombinedAccessoryAndFocalReducerApiService } from "@core/services/api/classic/astrobin/combined-accessory-and-focal-reducer/combined-accessory-and-focal-reducer-api.service";
+import type { FilterApiService } from "@core/services/api/classic/astrobin/filter/filter-api.service";
+import type { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
+import type { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
+import type { MountApiService } from "@core/services/api/classic/astrobin/mount/mount-api.service";
+import type { SoftwareApiService } from "@core/services/api/classic/astrobin/software/software-api.service";
+import type { TelescopeApiService } from "@core/services/api/classic/astrobin/telescope/telescope-api.service";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { GearService } from "@core/services/gear/gear.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
+import type { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ActiveToast } from "ngx-toastr";
-import { UtilsService } from "@core/services/utils/utils.service";
 import { Constants } from "@shared/constants";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import type { ActiveToast } from "ngx-toastr";
+import { concat, EMPTY, forkJoin, Observable, of } from "rxjs";
+import { delay, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -264,9 +265,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
     componentInstant.message = this.translateService.instant(
       "Only do this if the legacy item is actually multiple products lumped together under the same name. " +
-      "This typically happens for LRGB filter sets when you didn't create individual filters back when you added " +
-      "this legacy item to the database. Sometimes this happens when you actually added multiple products using the " +
-      "same text box (e.g. 'Canon 70D / Canon 80D')."
+        "This typically happens for LRGB filter sets when you didn't create individual filters back when you added " +
+        "this legacy item to the database. Sometimes this happens when you actually added multiple products using the " +
+        "same text box (e.g. 'Canon 70D / Canon 80D')."
     );
 
     modalRef.closed.pipe(take(1)).subscribe(() => {
@@ -285,11 +286,11 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
     componentInstant.message = this.translateService.instant(
       "Only do this if the legacy item cannot be determined unambiguously. Sometimes this happens if back when you " +
-      "added this legacy item to the equipment database, you didn't specify a key property in its name, e.g. color vs " +
-      "mono, and then you used it for several images indiscriminately of that property. E.g. have an Atik 4000 Color " +
-      "and an Atik 4000 Mono, and you added a generic 'Atik 4000' and used it both for color and mono images. You " +
-      "cannot migrate it to either the color or mono variant of the new database entry, because some of your images " +
-      "will present the wrong information once their equipment association is changed."
+        "added this legacy item to the equipment database, you didn't specify a key property in its name, e.g. color vs " +
+        "mono, and then you used it for several images indiscriminately of that property. E.g. have an Atik 4000 Color " +
+        "and an Atik 4000 Mono, and you added a generic 'Atik 4000' and used it both for color and mono images. You " +
+        "cannot migrate it to either the color or mono variant of the new database entry, because some of your images " +
+        "will present the wrong information once their equipment association is changed."
     );
 
     modalRef.closed.pipe(take(1)).subscribe(() => {
@@ -367,9 +368,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
               return of(legacyItems);
             }
 
-            return forkJoin(
-              ...([legacyItems.map(item => this.legacyGearApi.lockForMigration(item.pk))] as const)
-            ).pipe(map(() => legacyItems));
+            return forkJoin(...([legacyItems.map(item => this.legacyGearApi.lockForMigration(item.pk))] as const)).pipe(
+              map(() => legacyItems)
+            );
           })
         )
         .subscribe(legacyItems => {
@@ -417,9 +418,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         if (isEquipmentModerator) {
           componentInstant.message = this.translateService.instant(
             "AstroBin will update <strong>all images by all users</strong> that use the legacy equipment item " +
-            "<strong>{{0}}</strong> to the new one that you selected." +
-            "<br/><br/>" +
-            this.translateService.instant("For this reason, they need to represent the same product."),
+              "<strong>{{0}}</strong> to the new one that you selected." +
+              "<br/><br/>" +
+              this.translateService.instant("For this reason, they need to represent the same product."),
             {
               0: `${object.make} ${object.name}`
             }
@@ -427,9 +428,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         } else {
           componentInstant.message = this.translateService.instant(
             "AstroBin will update <strong>all your images</strong> that use the legacy equipment item " +
-            "<strong>{{0}}</strong> to the new one that you selected." +
-            "<br/><br/>" +
-            this.translateService.instant("For this reason, they need to represent the same product."),
+              "<strong>{{0}}</strong> to the new one that you selected." +
+              "<br/><br/>" +
+              this.translateService.instant("For this reason, they need to represent the same product."),
             {
               0: `${object.make} ${object.name}`
             }
@@ -477,7 +478,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   multipleTooltip(): string {
     return this.translateService.instant(
       "The legacy object cannot be migrated because it consists of multiple objects in the same item (e.g. " +
-      "LRGB filter set, or multiple unrelated products)."
+        "LRGB filter set, or multiple unrelated products)."
     );
   }
 
@@ -488,15 +489,17 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   _updateCounts() {
-    this.currentUser$.pipe(take(1), isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP)).subscribe(isEquipmentModerator => {
-      this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount(isEquipmentModerator);
-      this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount(isEquipmentModerator);
-      this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount(isEquipmentModerator);
-      this.nonMigratedFiltersCount$ = this.legacyFilterApi.getNonMigratedCount(isEquipmentModerator);
-      this.nonMigratedAccessoriesCount$ =
-        this.legacyCombinedAccessoryAndFocalReducerApi.getNonMigratedCount(isEquipmentModerator);
-      this.nonMigratedSoftwareCount$ = this.legacySoftwareApi.getNonMigratedCount(isEquipmentModerator);
-    });
+    this.currentUser$
+      .pipe(take(1), isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP))
+      .subscribe(isEquipmentModerator => {
+        this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount(isEquipmentModerator);
+        this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount(isEquipmentModerator);
+        this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount(isEquipmentModerator);
+        this.nonMigratedFiltersCount$ = this.legacyFilterApi.getNonMigratedCount(isEquipmentModerator);
+        this.nonMigratedAccessoriesCount$ =
+          this.legacyCombinedAccessoryAndFocalReducerApi.getNonMigratedCount(isEquipmentModerator);
+        this.nonMigratedSoftwareCount$ = this.legacySoftwareApi.getNonMigratedCount(isEquipmentModerator);
+      });
   }
 
   _updateAppliedMigrations() {

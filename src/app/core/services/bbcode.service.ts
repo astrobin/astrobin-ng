@@ -1,7 +1,8 @@
-import { Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CKEditorService } from "@core/services/ckeditor.service";
+import type { Renderer2 } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import type { CKEditorService } from "@core/services/ckeditor.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
 
 @Injectable({ providedIn: "root" })
 export class BBCodeService {
@@ -22,10 +23,7 @@ export class BBCodeService {
    * @param renderer Optional Renderer2 instance
    * @returns Promise with HTML string result
    */
-  async transformBBCodeToHtml(
-    code: string,
-    renderer?: Renderer2
-  ): Promise<string> {
+  async transformBBCodeToHtml(code: string, renderer?: Renderer2): Promise<string> {
     // For server-side rendering, just return the original code
     if (!this._isBrowser || !code) {
       return code;
@@ -53,29 +51,31 @@ export class BBCodeService {
    * Strips all BBCode tags from a string, leaving only the plain text
    * This is useful for meta tags and other scenarios where you want
    * readable text without any markup
-   * 
+   *
    * @param code BBCode string to strip
    * @returns Plain text with BBCode tags removed
    */
   stripBBCode(code: string): string {
     if (!code) {
-      return '';
+      return "";
     }
-    
+
     // Replace common BBCode tags with either nothing or appropriate spaces
-    return code
-      // Remove [url=...] and similar tags with attributes
-      .replace(/\[\w+=[^\]]*\]/g, '')
-      // Remove simple opening and closing tags like [b], [i], [/b], [/i], etc.
-      .replace(/\[\/?\w+\]/g, '')
-      // Handle quote tags more specifically to preserve readability
-      .replace(/\[quote(?:=[^\]]*)?\]/g, '')
-      .replace(/\[\/quote\]/g, '')
-      // Convert list items to have dashes for better readability
-      .replace(/\[\*\]/g, '- ')
-      // Add spacing where needed to avoid words running together
-      .replace(/\n{3,}/g, '\n\n')
-      .trim();
+    return (
+      code
+        // Remove [url=...] and similar tags with attributes
+        .replace(/\[\w+=[^\]]*\]/g, "")
+        // Remove simple opening and closing tags like [b], [i], [/b], [/i], etc.
+        .replace(/\[\/?\w+\]/g, "")
+        // Handle quote tags more specifically to preserve readability
+        .replace(/\[quote(?:=[^\]]*)?\]/g, "")
+        .replace(/\[\/quote\]/g, "")
+        // Convert list items to have dashes for better readability
+        .replace(/\[\*\]/g, "- ")
+        // Add spacing where needed to avoid words running together
+        .replace(/\n{3,}/g, "\n\n")
+        .trim()
+    );
   }
 
   /**

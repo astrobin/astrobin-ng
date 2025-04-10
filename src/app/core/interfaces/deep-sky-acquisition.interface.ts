@@ -1,5 +1,5 @@
-import { FilterInterface as LegacyFilterInterface } from "@core/interfaces/filter.interface";
-import { FilterInterface } from "@features/equipment/types/filter.interface";
+import type { FilterInterface as LegacyFilterInterface } from "@core/interfaces/filter.interface";
+import type { FilterInterface } from "@features/equipment/types/filter.interface";
 
 export enum BortleScale {
   ONE = 1,

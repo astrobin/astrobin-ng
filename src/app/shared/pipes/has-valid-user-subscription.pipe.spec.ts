@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
+import { SubscriptionName } from "@core/types/subscription-name.type";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { HasValidUserSubscriptionPipe } from "@shared/pipes/has-valid-user-subscription.pipe";
-import { SubscriptionName } from "@core/types/subscription-name.type";
 import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
 

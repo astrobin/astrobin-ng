@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import { RouterStateSnapshot } from "@angular/router";
+import type { RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { AuthGuardService } from "@core/services/guards/auth-guard.service";
 import { MockBuilder } from "ng-mocks";

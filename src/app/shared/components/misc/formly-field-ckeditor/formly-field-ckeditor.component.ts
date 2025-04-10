@@ -1,11 +1,11 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, PLATFORM_ID } from "@angular/core";
-import { FieldType } from "@ngx-formly/core";
-import { TranslateService } from "@ngx-translate/core";
-import { CKEditorService } from "@core/services/ckeditor.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformServer } from "@angular/common";
-
+import type { AfterViewInit, ChangeDetectorRef, OnDestroy } from "@angular/core";
+import { Component, Inject, PLATFORM_ID } from "@angular/core";
+import type { CKEditorService } from "@core/services/ckeditor.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import { FieldType } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-formly-field-ckeditor",
@@ -96,7 +96,7 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
    * @param baseWaitMultiplier - Factor to adjust the base wait time (0 = normal, 1 = longer, 2 = longest)
    *                             Higher values result in longer initial wait times for more serious errors
    */
-  private _retryInitialization(baseWaitMultiplier: number = 0): void {
+  private _retryInitialization(baseWaitMultiplier = 0): void {
     // Track retry attempts in a static counter to avoid infinite loops
     if (!this._retryInitialization["attempts"]) {
       this._retryInitialization["attempts"] = 0;
@@ -132,7 +132,8 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
       return;
     }
 
-    this.ckeditorService.loadCKEditor()
+    this.ckeditorService
+      .loadCKEditor()
       .then(() => {
         const document = this.windowRefService.nativeWindow.document;
         const editorBase = document.getElementById(this.field.id);
@@ -155,8 +156,8 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
 
         // Setup error handler for any CKEditor creation errors
         if (typeof win.CKEDITOR.on === "function" && !win.CKEDITOR._errorHandlerAdded) {
-          win.CKEDITOR.on("instanceCreated", (event) => {
-            event.editor.on("error", (errorEvent) => {
+          win.CKEDITOR.on("instanceCreated", event => {
+            event.editor.on("error", errorEvent => {
               console.warn("CKEditor instance error intercepted:", errorEvent.data);
               errorEvent.cancel(); // Prevent errors from stopping editor functionality
             });

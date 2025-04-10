@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { CountrySelectionModalComponent } from "./country-selection-modal.component";
-import { MockBuilder } from "ng-mocks";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { CountrySelectionModalComponent } from "./country-selection-modal.component";
 
 describe("CountrySelectionModalComponent", () => {
   let component: CountrySelectionModalComponent;
@@ -21,9 +22,7 @@ describe("CountrySelectionModalComponent", () => {
     component = fixture.componentInstance;
 
     jest.spyOn(component.translateService, "currentLang", "get").mockReturnValue("en");
-    jest.spyOn(component.countryService, "getCountries").mockReturnValue([
-      { code: "US", name: "United States" },
-    ]);
+    jest.spyOn(component.countryService, "getCountries").mockReturnValue([{ code: "US", name: "United States" }]);
 
     fixture.detectChanges();
   });

@@ -1,7 +1,7 @@
-import { AppState } from "@app/store/reducers/app.reducers";
+import type { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
+import type { TelescopeInterface } from "@core/interfaces/telescope.interface";
 import { createSelector } from "@ngrx/store";
-import { TelescopeInterface } from "@core/interfaces/telescope.interface";
 
 export const selectTelescopes = createSelector(selectApp, (state: AppState): TelescopeInterface[] => state.telescopes);
 

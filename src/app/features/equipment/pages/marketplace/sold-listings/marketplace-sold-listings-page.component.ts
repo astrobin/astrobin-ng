@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import {
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type {
   MarketplaceFilterModel,
   MarketplaceRefreshOptions
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 @Component({
   selector: "astrobin-marketplace-sold-listings-page",
@@ -28,7 +28,9 @@ export class MarketplaceSoldListingsPageComponent extends MarketplaceListingsBas
     super.refresh(modifiedFilterModel, options);
   }
 
-  protected _getListingsFilterPredicate(currentUser: UserInterface | null): (listing: MarketplaceListingInterface) => boolean {
+  protected _getListingsFilterPredicate(
+    currentUser: UserInterface | null
+  ): (listing: MarketplaceListingInterface) => boolean {
     return listing => listing.lineItems.length > 0 && listing.lineItems.some(item => !!item.sold);
   }
 

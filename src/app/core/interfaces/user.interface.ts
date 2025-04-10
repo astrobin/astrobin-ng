@@ -1,7 +1,7 @@
-import { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
-import { PermissionInterface } from "@core/interfaces/permission.interface";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { GroupInterface } from "@core/interfaces/group.interface";
+import type { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
+import type { GroupInterface } from "@core/interfaces/group.interface";
+import type { PermissionInterface } from "@core/interfaces/permission.interface";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 
 export interface UserInterface {
   id: number;

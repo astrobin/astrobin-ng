@@ -1,12 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import type { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
+import type { MainState } from "@app/store/state";
+import type { AuthService } from "@core/services/auth.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { TitleService } from "@core/services/title/title.service";
-import { ActivatedRoute } from "@angular/router";
-import { AuthService } from "@core/services/auth.service";
 
 @Component({
   selector: "astrobin-logging-out-page",

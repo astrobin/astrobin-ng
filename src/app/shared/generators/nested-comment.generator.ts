@@ -1,4 +1,4 @@
-import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
 
 export class NestedCommentGenerator {
   static nestedComment(source: Partial<NestedCommentInterface> = {}): NestedCommentInterface {
@@ -20,7 +20,7 @@ export class NestedCommentGenerator {
       moderator: source.moderator || null,
       likes: source.likes || [],
       depth: source.depth || 1,
-      detectedLanguage: source.detectedLanguage || null,
+      detectedLanguage: source.detectedLanguage || null
     };
   }
 }

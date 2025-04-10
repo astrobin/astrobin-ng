@@ -1,7 +1,10 @@
-import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { MatchType } from "@features/search/enums/match-type.enum";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type {
+  EquipmentItemType,
+  EquipmentItemUsageType
+} from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { MatchType } from "@features/search/enums/match-type.enum";
 
 export enum SearchType {
   IMAGE = "image",

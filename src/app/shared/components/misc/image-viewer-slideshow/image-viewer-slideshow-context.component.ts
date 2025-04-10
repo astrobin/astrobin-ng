@@ -1,8 +1,12 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from "@angular/core";
-import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@core/services/image-viewer.service";
-import { fromEvent, Subscription, throttleTime } from "rxjs";
+import type { AfterViewInit, ElementRef, OnChanges, OnDestroy, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import type {
+  ImageViewerNavigationContext,
+  ImageViewerNavigationContextItem
+} from "@core/services/image-viewer.service";
 import { fadeInOut } from "@shared/animations";
-
+import type { Subscription } from "rxjs";
+import { fromEvent, throttleTime } from "rxjs";
 
 @Component({
   selector: "astrobin-image-viewer-slideshow-context",
@@ -24,11 +28,7 @@ import { fadeInOut } from "@shared/animations";
           class="navigation-context-item"
           [class.active]="item.imageId === activeId"
         >
-          <img
-            [id]="'image-viewer-context-' + item.imageId"
-            [src]="item.thumbnailUrl"
-            alt=""
-          />
+          <img [id]="'image-viewer-context-' + item.imageId" [src]="item.thumbnailUrl" alt="" />
 
           <astrobin-loading-indicator
             *ngIf="loadingImageId?.toString() === item.imageId.toString()"
@@ -92,15 +92,14 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
         }
       });
 
-    this._wheelEventSubscription = fromEvent<WheelEvent>(el, "wheel")
-      .subscribe((event: WheelEvent) => {
-        event.preventDefault();
-        const scrollAmount = event.deltaY;
+    this._wheelEventSubscription = fromEvent<WheelEvent>(el, "wheel").subscribe((event: WheelEvent) => {
+      event.preventDefault();
+      const scrollAmount = event.deltaY;
 
-        if (scrollAmount) {
-          el.scrollLeft += scrollAmount;
-        }
-      });
+      if (scrollAmount) {
+        el.scrollLeft += scrollAmount;
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -160,7 +159,7 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
       // Use the smooth scrolling behavior
       el.scrollTo({
         left: targetScrollPosition,
-        behavior: 'smooth'
+        behavior: "smooth"
       });
     }
   }

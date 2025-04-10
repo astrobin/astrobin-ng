@@ -1,20 +1,25 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoadingService } from "@core/services/loading.service";
-import { map, switchMap, take } from "rxjs/operators";
+import type { MainState } from "@app/store/state";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentActionTypes, RejectEquipmentItemEditProposal } from "@features/equipment/store/equipment.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import type {
+  EquipmentItemBaseInterface,
+  EquipmentItemType
+} from "@features/equipment/types/equipment-item-base.interface";
+import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import { ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { map, switchMap, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-reject-edit-proposal-modal",

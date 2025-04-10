@@ -1,54 +1,46 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input, OnInit,
-  Output,
-  TemplateRef,
-  ViewChild
-} from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import {
-  MarketplaceListingExpiration,
-  MarketplaceListingInterface,
-  MarketplaceListingShippingMethod,
-  MarketplaceListingType
-} from "@features/equipment/types/marketplace-listing.interface";
+import type { AfterViewInit, ElementRef, OnInit, TemplateRef } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { LoadingService } from "@core/services/loading.service";
+import type { ActivatedRoute, Router } from "@angular/router";
+import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
-import { filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
+import type { MainState } from "@app/store/state";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { CountryService } from "@core/services/country.service";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import {
   MarketplaceLineItemFindItemMode,
   MarketplaceListingCondition,
   MarketplaceShippingCostType
 } from "@features/equipment/types/marketplace-line-item.interface";
+import {
+  MarketplaceListingExpiration,
+  MarketplaceListingShippingMethod,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
-import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
-import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
-import { Constants } from "@shared/constants";
-import { TranslateService } from "@ngx-translate/core";
-import * as countryJs from "country-js";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { forkJoin } from "rxjs";
-import { ActivatedRoute, Router } from "@angular/router";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
-import { CountryService } from "@core/services/country.service";
-import { UserService } from "@core/services/user.service";
+import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
+import { Constants } from "@shared/constants";
+import * as countryJs from "country-js";
+import { forkJoin } from "rxjs";
+import { filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
-declare var google: any;
+declare let google: any;
 
 export enum MARKETPLACE_SALE_TYPE {
   MULTIPLE_IN_A_BUNDLE = "multiple-in-a-bundle",
@@ -128,7 +120,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   googleMapsAvailable = false;
 
   @Output()
-  save: EventEmitter<MarketplaceListingInterface & MarketplaceListingFormInitialCountInterface> = new EventEmitter<MarketplaceListingInterface>();
+  save: EventEmitter<MarketplaceListingInterface & MarketplaceListingFormInitialCountInterface> =
+    new EventEmitter<MarketplaceListingInterface>();
 
   @ViewChild("findItemModeOptionTemplate")
   findItemModeOptionTemplate: TemplateRef<any>;
@@ -262,16 +255,14 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               {
                 value: MARKETPLACE_SALE_TYPE.SINGLE,
                 label: this.translateService.instant("Just one"),
-                description: this.translateService.instant(
-                  "Create a listing for a single item."
-                )
+                description: this.translateService.instant("Create a listing for a single item.")
               },
               {
                 value: MARKETPLACE_SALE_TYPE.MULTIPLE_IN_A_BUNDLE,
                 label: this.translateService.instant("Multiple items in a bundle"),
                 description: this.translateService.instant(
                   "All items in the bundle will be sold together. Users will not be able to make offers for " +
-                  "individual items."
+                    "individual items."
                 )
               },
               {
@@ -279,8 +270,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 label: this.translateService.instant("Multiple items separately"),
                 description: this.translateService.instant(
                   "AstroBin will automatically create multiple listings for each item in the bundle, " +
-                  "allowing users to make offers for individual items. All listings will share common " +
-                  "information, such as the location of the objects and the shipping method."
+                    "allowing users to make offers for individual items. All listings will share common " +
+                    "information, such as the location of the objects and the shipping method."
                 )
               }
             ]
@@ -309,8 +300,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
             placeholder: this.translateService.instant("Enter a number"),
             description: this.translateService.instant(
               "The AstroBin Marketplace supports multiple line items per listing. This makes it easy for you to " +
-              "have a bundle sale or avoid repeating the same information in multiple listings if you're selling " +
-              "multiple items. PS: you can always add more line items later."
+                "have a bundle sale or avoid repeating the same information in multiple listings if you're selling " +
+                "multiple items. PS: you can always add more line items later."
             ),
             min: 1
           },
@@ -360,7 +351,11 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       return model;
     };
 
-    const _doInitFields = (lineItemMap: Map<number, EquipmentItemType>, initialCurrency: string, isModerator: boolean) => {
+    const _doInitFields = (
+      lineItemMap: Map<number, EquipmentItemType>,
+      initialCurrency: string,
+      isModerator: boolean
+    ) => {
       this.model = _preprocessModel(this.model);
 
       this.fields = [
@@ -533,7 +528,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                       label: this.translateService.instant("Simple text"),
                       description: this.translateService.instant(
                         "Keep things simple and let a moderator associate your " +
-                        "listing to an equipment item in the AstroBin equipment database."
+                          "listing to an equipment item in the AstroBin equipment database."
                       ),
                       value: MarketplaceLineItemFindItemMode.PLAIN
                     },
@@ -559,7 +554,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                       label: this.translateService.instant("Simple text"),
                       description: this.translateService.instant(
                         "Keep things simple and let a moderator associate your " +
-                        "listing to an equipment item in the AstroBin equipment database."
+                          "listing to an equipment item in the AstroBin equipment database."
                       ),
                       value: MarketplaceLineItemFindItemMode.PLAIN
                     };
@@ -644,7 +639,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   label: this.translateService.instant("What are you selling?"),
                   description: this.translateService.instant(
                     "Enter only one item. If you want to sell multiple items, add them as separate line items " +
-                    "using the button below."
+                      "using the button below."
                   )
                 },
                 expressions: {
@@ -666,7 +661,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     if (this.initialLineItemCount > 1) {
                       return this.translateService.instant(
                         "Enter only one item. If you want to sell multiple items, add them as separate line items " +
-                        "using the button below."
+                          "using the button below."
                       );
                     }
 
@@ -777,7 +772,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                       label: this.translateService.instant("Description"),
                       description: this.translateService.instant(
                         "Describe the item you are selling. This field refers to this specific equipment item, " +
-                        "and down below you can find a Description field that refers to the entire listing."
+                          "and down below you can find a Description field that refers to the entire listing."
                       ),
                       rows: 4,
                       modelOptions: {
@@ -798,7 +793,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
 
                         return this.translateService.instant(
                           "Describe the item you are selling. This field refers to this specific equipment item, " +
-                          "and down below you can find a Description field that refers to the entire listing."
+                            "and down below you can find a Description field that refers to the entire listing."
                         );
                       }
                     }
@@ -867,39 +862,45 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                         },
                         hooks: {
                           onInit: (field: FormlyFieldConfig) => {
-                            field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe((value: MarketplaceShippingCostType) => {
-                              const listing = this.model;
-                              const index = listing.lineItems.indexOf(field.model);
-                              const lineItem = listing.lineItems[index];
+                            field.formControl.valueChanges
+                              .pipe(takeUntil(this.destroyed$))
+                              .subscribe((value: MarketplaceShippingCostType) => {
+                                const listing = this.model;
+                                const index = listing.lineItems.indexOf(field.model);
+                                const lineItem = listing.lineItems[index];
 
-                              if (value === MarketplaceShippingCostType.NO_SHIPPING) {
-                                lineItem.shippingCost = null;
-                                this.form.get(`lineItems.${index}`).patchValue({ shippingCost: null });
-                              } else if (value === MarketplaceShippingCostType.COVERED_BY_SELLER) {
-                                listing.deliveryByShipping = true;
-                                this.form.get("deliveryByShipping").patchValue(true);
-                                lineItem.shippingCost = 0;
-                                this.form.get(`lineItems.${index}`).patchValue({ shippingCost: 0 });
-                              } else if (value === MarketplaceShippingCostType.FIXED) {
-                                listing.deliveryByShipping = true;
-                                this.form.get("deliveryByShipping").patchValue(true);
-                              } else if (value === MarketplaceShippingCostType.TO_BE_AGREED) {
-                                listing.deliveryByShipping = true;
-                                this.form.get("deliveryByShipping").patchValue(true);
-                                lineItem.shippingCost = null;
-                                this.form.get(`lineItems.${index}`).patchValue({ shippingCost: null });
-                              }
+                                if (value === MarketplaceShippingCostType.NO_SHIPPING) {
+                                  lineItem.shippingCost = null;
+                                  this.form.get(`lineItems.${index}`).patchValue({ shippingCost: null });
+                                } else if (value === MarketplaceShippingCostType.COVERED_BY_SELLER) {
+                                  listing.deliveryByShipping = true;
+                                  this.form.get("deliveryByShipping").patchValue(true);
+                                  lineItem.shippingCost = 0;
+                                  this.form.get(`lineItems.${index}`).patchValue({ shippingCost: 0 });
+                                } else if (value === MarketplaceShippingCostType.FIXED) {
+                                  listing.deliveryByShipping = true;
+                                  this.form.get("deliveryByShipping").patchValue(true);
+                                } else if (value === MarketplaceShippingCostType.TO_BE_AGREED) {
+                                  listing.deliveryByShipping = true;
+                                  this.form.get("deliveryByShipping").patchValue(true);
+                                  lineItem.shippingCost = null;
+                                  this.form.get(`lineItems.${index}`).patchValue({ shippingCost: null });
+                                }
 
-                              // If all line items have NO_SHIPPING, set deliveryByShipping to false and shippingMethod to null
-                              if (listing.lineItems.every(item => item.shippingCostType === MarketplaceShippingCostType.NO_SHIPPING)) {
-                                listing.deliveryByShipping = false;
-                                this.form.get("deliveryByShipping").patchValue(false);
-                                listing.shippingMethod = null;
-                                this.form.get("shippingMethod").patchValue(null);
-                              }
+                                // If all line items have NO_SHIPPING, set deliveryByShipping to false and shippingMethod to null
+                                if (
+                                  listing.lineItems.every(
+                                    item => item.shippingCostType === MarketplaceShippingCostType.NO_SHIPPING
+                                  )
+                                ) {
+                                  listing.deliveryByShipping = false;
+                                  this.form.get("deliveryByShipping").patchValue(false);
+                                  listing.shippingMethod = null;
+                                  this.form.get("shippingMethod").patchValue(null);
+                                }
 
-                              this.model = { ...listing, lineItems: [...listing.lineItems] };
-                            });
+                                this.model = { ...listing, lineItems: [...listing.lineItems] };
+                              });
                           }
                         }
                       },
@@ -960,7 +961,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     {
                       name: "file-size",
                       options: { max: 1024 * 1024 * 10 }
-                    }, {
+                    },
+                    {
                       name: "image-or-video-file"
                     }
                   ]
@@ -982,8 +984,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               wrappers: ["default-wrapper"],
               expressions: {
                 hide: () =>
-                  (
-                    this.model.lineItems.length === 1 ||
+                  (this.model.lineItems.length === 1 ||
                     this.initialLineItemCountModel.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE_SEPARATELY) &&
                   !this.model.title &&
                   !isModerator
@@ -1006,19 +1007,17 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               wrappers: ["default-wrapper"],
               expressions: {
                 hide: () =>
-                  (
-                    this.model.lineItems.length === 1 ||
-                    this.initialLineItemCountModel.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE_SEPARATELY
-                  ) &&
+                  (this.model.lineItems.length === 1 ||
+                    this.initialLineItemCountModel.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE_SEPARATELY) &&
                   !this.model.description
               },
               props: {
                 label: this.translateService.instant("Description for the entire listing"),
                 description: this.translateService.instant(
                   "This description field is for generic information that pertain this listing. You can find " +
-                  "Description field for individual equipment items above. Please do not list your equipment items " +
-                  "here, but rather describe the listing as a whole, if needed. If you're selling multiple items, " +
-                  "please add multiple equipment items above."
+                    "Description field for individual equipment items above. Please do not list your equipment items " +
+                    "here, but rather describe the listing as a whole, if needed. If you're selling multiple items, " +
+                    "please add multiple equipment items above."
                 ),
                 rows: 6,
                 modelOptions: {
@@ -1099,17 +1098,15 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     required: true,
                     description: this.translateService.instant(
                       "Drag the map to set the location. AstroBin will not disclose your exact location, but " +
-                      "only the city and country where the item is located. The location information will be used to " +
-                      "find listings within a certain distance from the user's location."
+                        "only the city and country where the item is located. The location information will be used to " +
+                        "find listings within a certain distance from the user's location."
                     ),
                     scrollwheel: false,
                     latitude: this.model.latitude,
                     longitude: this.model.longitude
                   },
                   validators: {
-                    validation: [
-                      "valid-coordinates"
-                    ]
+                    validation: ["valid-coordinates"]
                   },
                   hooks: {
                     onInit: field => {
@@ -1123,7 +1120,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                             if (status === "OK") {
                               if (results[0]) {
                                 const addressComponents = results[0].address_components;
-                                const country = this.googleMapsService.getCountryFromAddressComponent(addressComponents);
+                                const country =
+                                  this.googleMapsService.getCountryFromAddressComponent(addressComponents);
                                 const region = this.googleMapsService.getRegionFromAddressComponent(addressComponents);
                                 const city = this.googleMapsService.getCityFromAddressComponent(addressComponents);
 
@@ -1176,7 +1174,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 required: true,
                 description: this.translateService.instant(
                   "After this period, the listing will be automatically removed from the marketplace, but " +
-                  "you will be able to renew it."
+                    "you will be able to renew it."
                 )
               },
               hooks: {
@@ -1186,7 +1184,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     .subscribe(value => {
                       if (!!value) {
                         const now = new Date();
-                        let expirationDate = new Date(now);
+                        const expirationDate = new Date(now);
 
                         switch (value) {
                           case MarketplaceListingExpiration.ONE_WEEK:
@@ -1321,7 +1319,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   {
                     0: prefix,
                     1: suffix
-                  });
+                  }
+                );
               } else {
                 return this.translateService.instant(
                   "By creating a listing on the AstroBin Marketplace, you agree to the {{0}}terms of service{{1}}.",
@@ -1425,13 +1424,15 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 tap(itemType => lineItemMap.set(index, itemType))
               )
             )
-          ).pipe(
-            switchMap(() => this.currentUser$),
-            take(1)
-          ).subscribe(user => {
-            const isModerator = user && this.userService.isInGroup(user, Constants.MARKETPLACE_MODERATORS_GROUP);
-            _doInitFields(lineItemMap, initialCurrency, isModerator);
-          });
+          )
+            .pipe(
+              switchMap(() => this.currentUser$),
+              take(1)
+            )
+            .subscribe(user => {
+              const isModerator = user && this.userService.isInGroup(user, Constants.MARKETPLACE_MODERATORS_GROUP);
+              _doInitFields(lineItemMap, initialCurrency, isModerator);
+            });
 
           this.model.lineItems.forEach(lineItem => {
             this.store$.dispatch(new LoadContentTypeById({ id: lineItem.itemContentType }));
@@ -1455,35 +1456,41 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       model: value.toLowerCase()
     };
 
-    this.store$.select(selectContentType, payload).pipe(
-      tap(contentType => {
-        if (!contentType) {
-          this.store$.dispatch(new LoadContentType(payload));
-        }
-      }),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      const index = this.model.lineItems.indexOf(field.model);
-      this.model.lineItems[index].itemContentType = contentType.id;
-      this.form.get(`lineItems.${index}`).patchValue({ itemContentType: contentType.id });
-    });
+    this.store$
+      .select(selectContentType, payload)
+      .pipe(
+        tap(contentType => {
+          if (!contentType) {
+            this.store$.dispatch(new LoadContentType(payload));
+          }
+        }),
+        filter(contentType => !!contentType),
+        take(1)
+      )
+      .subscribe(contentType => {
+        const index = this.model.lineItems.indexOf(field.model);
+        this.model.lineItems[index].itemContentType = contentType.id;
+        this.form.get(`lineItems.${index}`).patchValue({ itemContentType: contentType.id });
+      });
   }
 
   private _setContentTypeSelectorValue(field: FormlyFieldConfig, contentTypeId: ContentTypeInterface["id"]) {
-    this.store$.select(selectContentTypeById, { id: contentTypeId }).pipe(
-      tap(contentType => {
-        if (!contentType) {
-          this.store$.dispatch(new LoadContentTypeById({ id: contentTypeId }));
-        }
-      }),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      const index = this.model.lineItems.indexOf(field.model);
-      const value = EquipmentItemType[contentType.model.toUpperCase()];
-      this.model.lineItems[index].itemContentTypeSelector = value;
-      this.form.get(`lineItems.${index}`).patchValue({ itemContentTypeSelector: value });
-    });
+    this.store$
+      .select(selectContentTypeById, { id: contentTypeId })
+      .pipe(
+        tap(contentType => {
+          if (!contentType) {
+            this.store$.dispatch(new LoadContentTypeById({ id: contentTypeId }));
+          }
+        }),
+        filter(contentType => !!contentType),
+        take(1)
+      )
+      .subscribe(contentType => {
+        const index = this.model.lineItems.indexOf(field.model);
+        const value = EquipmentItemType[contentType.model.toUpperCase()];
+        this.model.lineItems[index].itemContentTypeSelector = value;
+        this.form.get(`lineItems.${index}`).patchValue({ itemContentTypeSelector: value });
+      });
   }
 }

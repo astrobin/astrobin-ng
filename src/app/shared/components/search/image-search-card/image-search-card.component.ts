@@ -1,24 +1,25 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
+import type { ChangeDetectorRef, ElementRef, OnChanges, SimpleChanges } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID, ViewChild } from "@angular/core";
+import type { Router } from "@angular/router";
+import type { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { SearchService } from "@core/services/search.service";
-import { Router } from "@angular/router";
-import { filter, take } from "rxjs/operators";
+import type { ImageSearchInterface } from "@core/interfaces/image-search.interface";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { SearchService } from "@core/services/search.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
+import { filter, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-search-card",
@@ -128,14 +129,17 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
       } else {
         const { itemId, itemType, ...model } = this.model;
 
-        this.store$.select(selectEquipmentItem, { id: itemId, type: itemType }).pipe(
-          filter(item => !!item),
-          take(1)
-        ).subscribe(item => {
-          const params = this.equipmentItemService.getSearchParams(item, this.model.ordering, this.model.usageType);
-          this.searchUrl = `/search?p=${params}`;
-          this.changeDetectorRef.markForCheck();
-        });
+        this.store$
+          .select(selectEquipmentItem, { id: itemId, type: itemType })
+          .pipe(
+            filter(item => !!item),
+            take(1)
+          )
+          .subscribe(item => {
+            const params = this.equipmentItemService.getSearchParams(item, this.model.ordering, this.model.usageType);
+            this.searchUrl = `/search?p=${params}`;
+            this.changeDetectorRef.markForCheck();
+          });
 
         this.store$.dispatch(new LoadEquipmentItem({ id: itemId, type: itemType }));
       }

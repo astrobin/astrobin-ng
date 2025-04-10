@@ -1,18 +1,19 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { AppModule } from "@app/app.module";
-import { initialMainState } from "@app/store/state";
-import { provideMockStore } from "@ngrx/store/testing";
-import { MockBuilder, MockInstance, MockService } from "ng-mocks";
-import { JudgementQueueComponent } from "./judgement-queue.component";
-import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
-import { QueueSortButtonComponent } from "@features/iotd/components/queue-sort-button/queue-sort-button.component";
-import { IotdApiService } from "@features/iotd/services/iotd-api.service";
-import { of } from "rxjs";
-import { FutureIotdSlotsComponent } from "@features/iotd/components/future-iotd-slots/future-iotd-slots.component";
-import { JudgementEntryComponent } from "@features/iotd/components/judgement-entry/judgement-entry.component";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { FutureIotdSlotsComponent } from "@features/iotd/components/future-iotd-slots/future-iotd-slots.component";
+import { JudgementEntryComponent } from "@features/iotd/components/judgement-entry/judgement-entry.component";
+import { QueueSortButtonComponent } from "@features/iotd/components/queue-sort-button/queue-sort-button.component";
+import { IotdApiService } from "@features/iotd/services/iotd-api.service";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder, MockInstance, MockService } from "ng-mocks";
+import { of } from "rxjs";
+
+import { JudgementQueueComponent } from "./judgement-queue.component";
 
 describe("JudgementQueueComponent", () => {
   let component: JudgementQueueComponent;

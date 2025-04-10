@@ -1,14 +1,15 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
+import { QueueSortButtonComponent } from "@features/iotd/components/queue-sort-button/queue-sort-button.component";
+import { ReviewEntryComponent } from "@features/iotd/components/review-entry/review-entry.component";
+import { ReviewSlotsComponent } from "@features/iotd/components/review-slots/review-slots.component";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder, MockInstance, MockService } from "ng-mocks";
+
 import { ReviewQueueComponent } from "./review-queue.component";
-import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
-import { QueueSortButtonComponent } from "@features/iotd/components/queue-sort-button/queue-sort-button.component";
-import { ReviewSlotsComponent } from "@features/iotd/components/review-slots/review-slots.component";
-import { ReviewEntryComponent } from "@features/iotd/components/review-entry/review-entry.component";
 
 describe("ReviewQueueComponent", () => {
   let component: ReviewQueueComponent;

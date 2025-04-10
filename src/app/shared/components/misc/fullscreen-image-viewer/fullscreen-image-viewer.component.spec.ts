@@ -1,8 +1,10 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
+
 import { FullscreenImageViewerComponent } from "./fullscreen-image-viewer.component";
 
 describe("FullscreenImageViewerComponent", () => {
@@ -10,7 +12,9 @@ describe("FullscreenImageViewerComponent", () => {
   let fixture: ComponentFixture<FullscreenImageViewerComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(FullscreenImageViewerComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
+    await MockBuilder(FullscreenImageViewerComponent, AppModule).provide(
+      provideMockStore({ initialState: initialMainState })
+    );
   });
 
   beforeEach(() => {

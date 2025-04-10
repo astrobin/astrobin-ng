@@ -1,9 +1,10 @@
 import { TestBed } from "@angular/core/testing";
-import { ImageInfoService } from "./image-info.service";
-import { TranslateService } from "@ngx-translate/core";
+import type { ImageInterface } from "@core/interfaces/image.interface";
 import { EquipmentService } from "@core/services/equipment.service";
 import { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
-import { ImageInterface } from "@core/interfaces/image.interface";
+import { TranslateService } from "@ngx-translate/core";
+
+import { ImageInfoService } from "./image-info.service";
 
 describe("ImageInfoService", () => {
   let service: ImageInfoService;
@@ -104,7 +105,7 @@ describe("ImageInfoService", () => {
     it("should handle legacy equipment", () => {
       const mockImage: Partial<ImageInterface> = {
         imagingTelescopes: [{ pk: 1, name: "Telescope 1", make: "Brand" }] as any[],
-        imagingCameras: [{ pk: 1, name: "Camera 1", make: "Brand" }] as any[],
+        imagingCameras: [{ pk: 1, name: "Camera 1", make: "Brand" }] as any[]
       };
 
       const labels = service.getEquipmentLabels(mockImage as ImageInterface);
@@ -145,7 +146,7 @@ describe("ImageInfoService", () => {
     });
 
     it("should use DIY as brand when no brand is provided", () => {
-      translateService.instant.mockImplementation(key => key === "DIY" ? "DIY" : key);
+      translateService.instant.mockImplementation(key => (key === "DIY" ? "DIY" : key));
       const item = { name: "Item" } as any;
       expect(service.formatEquipmentItem(item)).toBe("DIY Item");
     });
@@ -192,8 +193,8 @@ describe("ImageInfoService", () => {
   describe("addFilterSummaries", () => {
     it("should add filter summaries to lines array", () => {
       const filterSummaries = {
-        "OIII": { totalIntegration: 3600, number: 10, duration: "360" },
-        "Ha": { totalIntegration: 7200, number: 20, duration: "360" }
+        OIII: { totalIntegration: 3600, number: 10, duration: "360" },
+        Ha: { totalIntegration: 7200, number: 20, duration: "360" }
       };
       const lines: string[] = [];
       const mockImageService = { formatIntegration: jest.fn().mockReturnValue("1h") };

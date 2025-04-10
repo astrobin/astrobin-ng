@@ -1,4 +1,5 @@
-import { DatePipe, isPlatformBrowser, LocationStrategy, registerLocaleData } from "@angular/common";
+import type { DatePipe } from "@angular/common";
+import { isPlatformBrowser, LocationStrategy, registerLocaleData } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import localeArabic from "@angular/common/locales/ar";
 import localeGerman from "@angular/common/locales/de";
@@ -13,48 +14,51 @@ import localeJapanese from "@angular/common/locales/ja";
 import localeDutch from "@angular/common/locales/nl";
 import localePolish from "@angular/common/locales/pl";
 import localePortuguese from "@angular/common/locales/pt";
-import localeUkrainian from "@angular/common/locales/uk";
 import localeRussian from "@angular/common/locales/ru";
 import localeAlbanian from "@angular/common/locales/sq";
 import localeTurkish from "@angular/common/locales/tr";
+import localeUkrainian from "@angular/common/locales/uk";
 import localeChinese from "@angular/common/locales/zh";
 import localeChineseSimplified from "@angular/common/locales/zh-Hans";
 import localeChineseTraditional from "@angular/common/locales/zh-Hant";
 import { APP_INITIALIZER, ErrorHandler, Inject, Injectable, NgModule, PLATFORM_ID } from "@angular/core";
-import { BrowserModule, Title, TransferState } from "@angular/platform-browser";
+import type { TransferState } from "@angular/platform-browser";
+import { BrowserModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { Router, RouteReuseStrategy } from "@angular/router";
+import { ServiceWorkerModule } from "@angular/service-worker";
 import { AppComponent } from "@app/app.component";
+import { CLIENT_IP } from "@app/client-ip.injector";
+import { CoreModule } from "@app/core/core.module";
+import { CustomRouteReuseStrategy } from "@app/custom-reuse-strategy";
 import { mainStateEffects, mainStateReducers, metaReducers, setInitialState } from "@app/store/state";
 import { CustomTranslateParser } from "@app/translate-parser";
+import { NGRX_STATE_KEY } from "@core/services/store-transfer.service";
+import { SwipeDownToCloseService } from "@core/services/swipe-down-to-close.service";
+import { TimeagoAppClock } from "@core/services/timeago-app-clock.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { environment } from "@env/environment";
 import { EffectsModule } from "@ngrx/effects";
-import { Store, StoreModule } from "@ngrx/store";
+import type { Store } from "@ngrx/store";
+import { StoreModule } from "@ngrx/store";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
+import { FormlyModule } from "@ngx-formly/core";
 import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateParser } from "@ngx-translate/core";
-import { WindowRefService } from "@core/services/window-ref.service";
+import * as Sentry from "@sentry/angular";
+import { FooterComponent } from "@shared/components/footer/footer.component";
+import { HeaderComponent } from "@shared/components/header/header.component";
+import { BetaBannerComponent } from "@shared/components/misc/beta-banner/beta-banner.component";
+import { BreadcrumbComponent } from "@shared/components/misc/breadcrumb/breadcrumb.component";
+import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
+import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
+import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
 import { SharedModule } from "@shared/shared.module";
 import { CookieModule, CookieService } from "ngx-cookie";
 import { TimeagoClock, TimeagoDefaultFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
+
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomMissingTranslationHandler } from "./missing-translation-handler";
 import { translateLoaderFactory } from "./translate-loader";
-import { SwipeDownToCloseService } from "@core/services/swipe-down-to-close.service";
-import * as Sentry from "@sentry/angular";
-import { Router, RouteReuseStrategy } from "@angular/router";
-import { CLIENT_IP } from "@app/client-ip.injector";
-import { TimeagoAppClock } from "@core/services/timeago-app-clock.service";
-import { NGRX_STATE_KEY } from "@core/services/store-transfer.service";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { CustomRouteReuseStrategy } from "@app/custom-reuse-strategy";
-import { CoreModule } from "@app/core/core.module";
-import { HeaderComponent } from "@shared/components/header/header.component";
-import { BetaBannerComponent } from "@shared/components/misc/beta-banner/beta-banner.component";
-import { FooterComponent } from "@shared/components/footer/footer.component";
-import { BreadcrumbComponent } from "@shared/components/misc/breadcrumb/breadcrumb.component";
-import { FormlyModule } from "@ngx-formly/core";
-import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
-import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
-import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 
 registerLocaleData(localeEnglish);
 registerLocaleData(localeBritishEnglish);
@@ -76,7 +80,6 @@ registerLocaleData(localeAlbanian);
 registerLocaleData(localeTurkish);
 registerLocaleData(localeChinese);
 registerLocaleData(localeChineseTraditional);
-
 
 @Injectable()
 export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
@@ -129,14 +132,13 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
       registrationStrategy: "registerWhenStable:30000"
     }),
     // Dependencies.
-    StoreModule.forRoot(mainStateReducers,
-      {
-        metaReducers,
-        runtimeChecks: {
-          strictStateImmutability: false,
-          strictActionImmutability: false
-        }
-      }),
+    StoreModule.forRoot(mainStateReducers, {
+      metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false
+      }
+    }),
     StoreDevtoolsModule.instrument({
       maxAge: 25, // Retains last 25 states
       logOnly: environment.production // Restrict extension to log-only mode
@@ -205,13 +207,7 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
     },
     { provide: CLIENT_IP, useValue: "" } // provide a fallback value for CLIENT_IP
   ],
-  declarations: [
-    AppComponent,
-    BetaBannerComponent,
-    BreadcrumbComponent,
-    HeaderComponent,
-    FooterComponent
-  ],
+  declarations: [AppComponent, BetaBannerComponent, BreadcrumbComponent, HeaderComponent, FooterComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

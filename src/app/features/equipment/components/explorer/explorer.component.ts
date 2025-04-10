@@ -1,53 +1,98 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges, ViewChild, ViewContainerRef } from "@angular/core";
-import { Action, Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { EquipmentItemBaseInterface, EquipmentItemReviewerDecision, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { Location } from "@angular/common";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
+import type { ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { LoadingService } from "@core/services/loading.service";
-import { ApproveEquipmentItemEditProposalSuccess, ApproveEquipmentItemSuccess, AssignItemSuccess, CreateAccessoryEditProposal, CreateCameraEditProposal, CreateFilterEditProposal, CreateMountEditProposal, CreateSensorEditProposal, CreateSoftwareEditProposal, CreateTelescopeEditProposal, EquipmentActionTypes, FindEquipmentItemEditProposals, FreezeEquipmentItemAsAmbiguous, FreezeEquipmentItemAsAmbiguousSuccess, LoadEquipmentItem, LoadMarketplaceListings, UnapproveEquipmentItemSuccess, UnfreezeEquipmentItemAsAmbiguous, UnfreezeEquipmentItemAsAmbiguousSuccess } from "@features/equipment/store/equipment.actions";
-import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
-import { Actions, ofType } from "@ngrx/effects";
-import { EditProposalInterface, EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
-import { BaseItemEditorComponent, EquipmentItemEditorMode } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
-import { selectEditProposalsForItem, selectEquipmentItem, selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
-import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MergeIntoModalComponent } from "@features/equipment/components/migration/merge-into-modal/merge-into-modal.component";
-import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import { MountInterface } from "@features/equipment/types/mount.interface";
-import { FilterInterface } from "@features/equipment/types/filter.interface";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { Observable, Subscription } from "rxjs";
-import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import type { ActivatedRoute, Router } from "@angular/router";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
-import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
-import { ActiveToast } from "ngx-toastr";
-import { CompareService } from "@features/equipment/services/compare.service";
-import { isPlatformBrowser, Location } from "@angular/common";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { RouterService } from "@core/services/router.service";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { UserService } from "@core/services/user.service";
-import { DeviceService } from "@core/services/device.service";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import type { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { ImageViewerService } from "@core/services/image-viewer.service";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import type { DeviceService } from "@core/services/device.service";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { ImageViewerService } from "@core/services/image-viewer.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { RouterService } from "@core/services/router.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { UserService } from "@core/services/user.service";
+import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
+import { MergeIntoModalComponent } from "@features/equipment/components/migration/merge-into-modal/merge-into-modal.component";
+import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
+import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
+import type { CompareService } from "@features/equipment/services/compare.service";
+import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import {
+  CreateAccessoryEditProposal,
+  CreateCameraEditProposal,
+  CreateFilterEditProposal,
+  CreateMountEditProposal,
+  CreateSensorEditProposal,
+  CreateSoftwareEditProposal,
+  CreateTelescopeEditProposal,
+  EquipmentActionTypes,
+  FindEquipmentItemEditProposals,
+  FreezeEquipmentItemAsAmbiguous,
+  LoadEquipmentItem,
+  LoadMarketplaceListings,
+  UnfreezeEquipmentItemAsAmbiguous
+} from "@features/equipment/store/equipment.actions";
+import type {
+  ApproveEquipmentItemEditProposalSuccess,
+  ApproveEquipmentItemSuccess,
+  AssignItemSuccess,
+  FreezeEquipmentItemAsAmbiguousSuccess,
+  UnapproveEquipmentItemSuccess,
+  UnfreezeEquipmentItemAsAmbiguousSuccess
+} from "@features/equipment/store/equipment.actions";
+import {
+  selectEditProposalsForItem,
+  selectEquipmentItem,
+  selectMarketplaceListings
+} from "@features/equipment/store/equipment.selectors";
+import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { CameraType } from "@features/equipment/types/camera.interface";
+import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import { EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
+import type { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import {
+  EquipmentItemReviewerDecision,
+  EquipmentItemType
+} from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import type { FilterInterface } from "@features/equipment/types/filter.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import type { MountInterface } from "@features/equipment/types/mount.interface";
+import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import type { SoftwareInterface } from "@features/equipment/types/software.interface";
+import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ofType } from "@ngrx/effects";
+import type { Actions } from "@ngrx/effects";
+import type { Action, Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { EquipmentItemEditorMode } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import type { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import type { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import type { ActiveToast } from "ngx-toastr";
+import type { Observable, Subscription } from "rxjs";
+import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -130,11 +175,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   marketplaceListings$: Observable<MarketplaceListingInterface[]> = this.store$.select(selectMarketplaceListings).pipe(
     map(listings =>
-      listings?.filter(
-        listing => listing.lineItems.some(
+      listings?.filter(listing =>
+        listing.lineItems.some(
           lineItem =>
-            lineItem.itemObjectId === this.selectedItem.id &&
-            lineItem.itemContentType === this.selectedItem.contentType
+            lineItem.itemObjectId === this.selectedItem.id && lineItem.itemContentType === this.selectedItem.contentType
         )
       )
     ),
@@ -264,7 +308,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   coolingPopoverMessage(): string {
     return this.translateService.instant(
       "Custom-cooled cameras are DSLR and mirrorless cameras that are not sold with cooling as stock, but a " +
-      "cooling mechanism is added as a custom modification."
+        "cooling mechanism is added as a custom modification."
     );
   }
 
@@ -379,7 +423,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
         this.popNotificationsService.error(
           this.translateService.instant(
             "You cannot propose an edit while there is a pending one. Please review the pending edit proposal first, " +
-            "thank you!"
+              "thank you!"
           )
         );
         return;
@@ -508,8 +552,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     if (!this.selectedItem.variants?.length) {
       this.popNotificationsService.error(
         "" +
-        "You cannot freeze this item as ambiguous because it doesn't have any variants. Please first create the " +
-        "appropriate unambiguous variants, and then try again."
+          "You cannot freeze this item as ambiguous because it doesn't have any variants. Please first create the " +
+          "appropriate unambiguous variants, and then try again."
       );
       return;
     }
@@ -524,9 +568,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
       componentInstance.message = this.translateService.instant(
         "You are about to freeze this item as ambiguous. The item will remain associated the images it's " +
-        "currently associated with. Nobody will be able to see this item (except moderators and the item's " +
-        "creator). Nobody will be able to add this item to images. Any items marked as 'variant of' this item will " +
-        "lose the relationship."
+          "currently associated with. Nobody will be able to see this item (except moderators and the item's " +
+          "creator). Nobody will be able to add this item to images. Any items marked as 'variant of' this item will " +
+          "lose the relationship."
       );
 
       this.actions$
@@ -792,10 +836,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     return (
       !!this.selectedItem &&
       !!this.selectedItem.listings &&
-      (
-        this.selectedItem.listings.brandListings?.length > 0 ||
-        this.selectedItem.listings.itemListings?.length > 0
-      ) &&
+      (this.selectedItem.listings.brandListings?.length > 0 || this.selectedItem.listings.itemListings?.length > 0) &&
       this.selectedItem.listings.allowFullRetailerIntegration
     );
   }
@@ -846,19 +887,26 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   private _loadMarketplaceLineItems() {
-    this.currentUser$.pipe(filter(user => !!user), take(1)).subscribe(user => {
-      if (this.selectedItem) {
-        this.store$.dispatch(new LoadMarketplaceListings({
-          options: {
-            page: 1,
-            itemId: this.selectedItem.id,
-            contentTypeId: this.selectedItem.contentType,
-            sold: false,
-            pendingModeration: false
-          }
-        }));
-      }
-    });
+    this.currentUser$
+      .pipe(
+        filter(user => !!user),
+        take(1)
+      )
+      .subscribe(user => {
+        if (this.selectedItem) {
+          this.store$.dispatch(
+            new LoadMarketplaceListings({
+              options: {
+                page: 1,
+                itemId: this.selectedItem.id,
+                contentTypeId: this.selectedItem.contentType,
+                sold: false,
+                pendingModeration: false
+              }
+            })
+          );
+        }
+      });
   }
 
   private _setSearchModel() {
@@ -874,9 +922,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
         value: [
           {
             id: this.selectedItem.id,
-            name: (this.selectedItem.brandName || this.translateService.instant("DIY")) +
-              " " +
-              this.selectedItem.name
+            name: (this.selectedItem.brandName || this.translateService.instant("DIY")) + " " + this.selectedItem.name
           }
         ],
         exactMatch: true

@@ -1,28 +1,29 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import type { ChangeDetectorRef, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import type { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { MainState } from "@app/store/state";
+import type { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { ImageService } from "@core/services/image/image.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
+import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import { SubscriptionName } from "@core/types/subscription-name.type";
 import { environment } from "@env/environment";
-import { Store } from "@ngrx/store";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { TranslateService } from "@ngx-translate/core";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { TitleService } from "@core/services/title/title.service";
-import { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { UploadState, UploadxService } from "ngx-uploadx";
+import type { UploadState, UploadxService } from "ngx-uploadx";
 import { Observable } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
-import { SubscriptionName } from "@core/types/subscription-name.type";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { Actions } from "@ngrx/effects";
-import { ImageService } from "@core/services/image/image.service";
-import { ImageAlias } from "@core/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-revision-uploader-page",
@@ -52,7 +53,10 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       props: {
         required: true,
         endpoint: `${environment.classicApiUrl}/api/v2/images/image-revision-upload/`,
-        allowedTypes: Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(",") + "," + Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS.join(","),
+        allowedTypes:
+          Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(",") +
+          "," +
+          Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS.join(","),
         uploadLabel: this.uploadDataService.getUploadLabel(
           Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.concat(Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS).join(",")
         ),
@@ -140,9 +144,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       this.currentUserProfile$
         .pipe(
           switchMap(currentUserProfile =>
-            this.store$
-              .select(selectBackendConfig)
-              .pipe(map(backendConfig => ({ currentUserProfile, backendConfig })))
+            this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ currentUserProfile, backendConfig })))
           ),
           map(({ currentUserProfile, backendConfig }) => {
             this.userSubscriptionService
@@ -207,9 +209,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       this.currentUserProfile$
         .pipe(
           switchMap(currentUserProfile =>
-            this.store$
-              .select(selectBackendConfig)
-              .pipe(map(backendConfig => ({ currentUserProfile, backendConfig })))
+            this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ currentUserProfile, backendConfig })))
           ),
           map(({ currentUserProfile, backendConfig }) => {
             this.userSubscriptionService
@@ -305,11 +305,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
   private _setBreadcrumb() {
     this.store$.dispatch(
       new SetBreadcrumb({
-        breadcrumb: [
-          { label: this.translate.instant("Image") },
-          { label: this.image.title },
-          { label: this.pageTitle }
-        ]
+        breadcrumb: [{ label: this.translate.instant("Image") }, { label: this.image.title }, { label: this.pageTitle }]
       })
     );
   }

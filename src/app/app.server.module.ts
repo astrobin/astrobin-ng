@@ -1,13 +1,14 @@
+import { HttpClient } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { ServerModule } from "@angular/platform-server";
-import { AppModule } from "./app.module";
-import { AppComponent } from "./app.component";
-import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { translateServerLoaderFactory } from "@app/translate-server-loader";
-import { HttpClient } from "@angular/common/http";
-import { CookieBackendModule } from "ngx-cookie-backend";
 import { CLIENT_IP } from "@app/client-ip.injector";
-import { StoreTransferService } from "@core/services/store-transfer.service";
+import { translateServerLoaderFactory } from "@app/translate-server-loader";
+import type { StoreTransferService } from "@core/services/store-transfer.service";
+import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { CookieBackendModule } from "ngx-cookie-backend";
+
+import { AppComponent } from "./app.component";
+import { AppModule } from "./app.module";
 
 @NgModule({
   imports: [

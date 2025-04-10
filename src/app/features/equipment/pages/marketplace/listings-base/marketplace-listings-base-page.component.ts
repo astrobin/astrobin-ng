@@ -1,31 +1,43 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { selectMarketplace, selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
-import { debounceTime, filter, map, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
-import { ClearMarketplaceListings, EquipmentActionTypes, LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
-import { LoadingService } from "@core/services/loading.service";
-import { MarketplaceFilterModel, marketplaceFilterModelKeys, MarketplaceRefreshOptions } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
-import { CountryService } from "@core/services/country.service";
-import { fromEvent, Observable } from "rxjs";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { Actions, concatLatestFrom, ofType } from "@ngrx/effects";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { LocalStorageService } from "@core/services/localstorage.service";
-import { NgbModal, NgbModalRef, NgbOffcanvas, NgbPaginationConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { RouterService } from "@core/services/router.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import { DeviceService } from "@core/services/device.service";
+import type { AfterViewInit, ChangeDetectorRef, OnInit } from "@angular/core";
+import { Component, ElementRef, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
+import type { ActivatedRoute, Router } from "@angular/router";
+import { NavigationEnd } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
+import type { MainState } from "@app/store/state";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { CountryService } from "@core/services/country.service";
+import type { DeviceService } from "@core/services/device.service";
+import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { LocalStorageService } from "@core/services/localstorage.service";
+import { RouterService } from "@core/services/router.service";
+import type { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type {
+  MarketplaceFilterModel,
+  MarketplaceRefreshOptions
+} from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
+import { marketplaceFilterModelKeys } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
+import {
+  ClearMarketplaceListings,
+  EquipmentActionTypes,
+  LoadMarketplaceListings
+} from "@features/equipment/store/equipment.actions";
+import { selectMarketplace, selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import type { NgbModal, NgbModalRef, NgbOffcanvas, NgbPaginationConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import { concatLatestFrom, ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
+import type { Observable } from "rxjs";
+import { fromEvent } from "rxjs";
+import { debounceTime, filter, map, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -33,7 +45,8 @@ import { DeviceService } from "@core/services/device.service";
 })
 export abstract class MarketplaceListingsBasePageComponent
   extends BaseComponentDirective
-  implements OnInit, AfterViewInit {
+  implements OnInit, AfterViewInit
+{
   readonly WORLDWIDE = "WORLDWIDE";
   readonly REGION_LOCAL_STORAGE_KEY = "marketplaceRegion";
   readonly UtilsService = UtilsService;
@@ -80,15 +93,18 @@ export abstract class MarketplaceListingsBasePageComponent
   ) {
     super(store$);
 
-    this.router.events.pipe(
-      filter(event =>
-        event instanceof NavigationEnd && router.url.startsWith("/" + RouterService.getCurrentPath(activatedRoute))
-      ),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this._setTitle();
-      this._setBreadcrumb();
-    });
+    this.router.events
+      .pipe(
+        filter(
+          event =>
+            event instanceof NavigationEnd && router.url.startsWith("/" + RouterService.getCurrentPath(activatedRoute))
+        ),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        this._setTitle();
+        this._setBreadcrumb();
+      });
   }
 
   ngOnInit(): void {
@@ -147,7 +163,7 @@ export abstract class MarketplaceListingsBasePageComponent
             const elementBottom = element.nativeElement.getBoundingClientRect().bottom;
             const windowHeight = window.innerHeight;
             return {
-              nearBottom: (elementBottom - windowHeight < 900),
+              nearBottom: elementBottom - windowHeight < 900,
               isLoading: isLoading
             };
           }),
@@ -313,9 +329,7 @@ export abstract class MarketplaceListingsBasePageComponent
       if (params.region) {
         if (this.localStorageService.getItem(this.REGION_LOCAL_STORAGE_KEY) !== params.region) {
           this._openSelectRegionTooltip(
-            this.translateService.instant(
-              "AstroBin selected your region. You can change it at any time."
-            )
+            this.translateService.instant("AstroBin selected your region. You can change it at any time.")
           );
         }
 

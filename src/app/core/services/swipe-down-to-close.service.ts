@@ -1,7 +1,8 @@
-import { Inject, Injectable, PLATFORM_ID, Renderer2, RendererFactory2 } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { SwipeDownService } from "@core/services/swipe-down.service";
+import type { Renderer2, RendererFactory2 } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import type { SwipeDownService } from "@core/services/swipe-down.service";
+import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 @Injectable({
   providedIn: "root"
@@ -116,7 +117,6 @@ export class SwipeDownToCloseService {
     };
 
     const handleTouchEnd = (event: TouchEvent) => {
-
       // Let SwipeDownService handle everything, including the callback
       // For offcanvas we use 'translate-only' animation
       this.swipeDownService.handleTouchEnd(
@@ -176,7 +176,6 @@ export class SwipeDownToCloseService {
       end: wrappedTouchEnd,
       elements: [offcanvasElement]
     };
-
   }
 
   /**
@@ -188,17 +187,9 @@ export class SwipeDownToCloseService {
 
     // But also animate the panel off-screen for a nicer visual effect
     const viewportHeight = window.innerHeight;
-    this.renderer.setStyle(
-      offcanvasElement,
-      "transform",
-      `translateY(${viewportHeight}px)`
-    );
+    this.renderer.setStyle(offcanvasElement, "transform", `translateY(${viewportHeight}px)`);
 
     // Make sure the transition is shorter for a more responsive feel
-    this.renderer.setStyle(
-      offcanvasElement,
-      "transition",
-      "transform 0.2s ease-out"
-    );
+    this.renderer.setStyle(offcanvasElement, "transition", "transform 0.2s ease-out");
   }
 }

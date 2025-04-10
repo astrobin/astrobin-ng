@@ -1,29 +1,32 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
-import { Actions } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { ChangeDetectorRef, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import type { DomSanitizer } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { FormlyFieldService } from "@core/services/formly-field.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import type { SensorService } from "@features/equipment/services/sensor.service";
+import { SensorDisplayProperty } from "@features/equipment/services/sensor.service";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { ColorOrMono } from "@features/equipment/types/sensor.interface";
+import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { MainState } from "@app/store/state";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { FormlyFieldService } from "@core/services/formly-field.service";
-import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { switchMap, take, takeUntil } from "rxjs/operators";
-import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { Constants } from "@shared/constants";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { of } from "rxjs";
+import { switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-sensor-editor",
@@ -87,11 +90,11 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
                 expression: control => {
                   return of(
                     control.value.toLowerCase().indexOf("(mono)") > -1 ||
-                    control.value.toLowerCase().indexOf("(color)") > -1
+                      control.value.toLowerCase().indexOf("(color)") > -1
                   );
                 },
                 message: this.translateService.instant(
-                  "For disambiguation purposes, please make sure that the sensor's name ends with \"(color)\" or \"(mono)\"."
+                  'For disambiguation purposes, please make sure that the sensor\'s name ends with "(color)" or "(mono)".'
                 )
               }
             }),
@@ -495,9 +498,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
-          field.formControl.valueChanges.pipe(
-            takeUntil(this.destroyed$)
-          ).subscribe((value: ColorOrMono) => {
+          field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe((value: ColorOrMono) => {
             const name = this.model.name;
 
             if (value === ColorOrMono.C) {

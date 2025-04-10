@@ -1,4 +1,4 @@
-import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import type { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 
 export class NotificationInterfaceGenerator {
   static notification(): NotificationInterface {

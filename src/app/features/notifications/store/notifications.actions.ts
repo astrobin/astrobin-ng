@@ -1,10 +1,13 @@
 /* eslint-disable max-classes-per-file */
 
-import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { Action } from "@ngrx/store";
-import { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
-import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
-import { NotificationContext, NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import type { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
+import type { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
+import type {
+  NotificationContext,
+  NotificationInterface
+} from "@features/notifications/interfaces/notification.interface";
+import type { Action } from "@ngrx/store";
 
 export enum NotificationsActionTypes {
   LOAD_TYPES = "[Notifications] Load types",
@@ -30,7 +33,7 @@ export enum NotificationsActionTypes {
 
   MARK_AS_READ = "[Notifications] Mark as read",
   MARK_AS_READ_SUCCESS = "[Notifications] Mark as read success",
-  MARK_AS_READ_FAILURE = "[Notifications] Mark as read failure",
+  MARK_AS_READ_FAILURE = "[Notifications] Mark as read failure"
 }
 
 export class LoadNotificationTypes implements Action {
@@ -40,8 +43,7 @@ export class LoadNotificationTypes implements Action {
 export class LoadNotificationTypesSuccess implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.LOAD_TYPES_SUCCESS;
 
-  constructor(public payload: { types: NotificationTypeInterface[] }) {
-  }
+  constructor(public payload: { types: NotificationTypeInterface[] }) {}
 }
 
 export class LoadNotificationSettings implements Action {
@@ -51,51 +53,49 @@ export class LoadNotificationSettings implements Action {
 export class LoadNotificationSettingsSuccess implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.LOAD_SETTINGS_SUCCESS;
 
-  constructor(public payload: { settings: NotificationSettingInterface[] }) {
-  }
+  constructor(public payload: { settings: NotificationSettingInterface[] }) {}
 }
 
 export class SetNotificationSetting implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.SET_SETTING;
 
-  constructor(public payload: { setting: NotificationSettingInterface }) {
-  }
+  constructor(public payload: { setting: NotificationSettingInterface }) {}
 }
 
 export class SetNotificationSettingSuccess implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.SET_SETTING_SUCCESS;
 
-  constructor(public payload: { setting: NotificationSettingInterface }) {
-  }
+  constructor(public payload: { setting: NotificationSettingInterface }) {}
 }
 
 export class LoadNotifications implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.LOAD_NOTIFICATIONS;
 
-  constructor(public payload: {
-    page: number,
-    read?: boolean,
-    context?: NotificationContext,
-    message?: string | null
-  }) {
-  }
+  constructor(
+    public payload: {
+      page: number;
+      read?: boolean;
+      context?: NotificationContext;
+      message?: string | null;
+    }
+  ) {}
 }
 
 export class LoadNotificationsSuccess implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.LOAD_NOTIFICATIONS_SUCCESS;
 
-  constructor(public payload: {
-    notifications: NotificationInterface[],
-    total: number
-  }) {
-  }
+  constructor(
+    public payload: {
+      notifications: NotificationInterface[];
+      total: number;
+    }
+  ) {}
 }
 
 export class LoadNotificationsFailure implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.LOAD_NOTIFICATIONS_FAILURE;
 
-  constructor(public payload: { error: string }) {
-  }
+  constructor(public payload: { error: string }) {}
 }
 
 export class GetUnreadCount implements Action {
@@ -105,15 +105,13 @@ export class GetUnreadCount implements Action {
 export class GetUnreadCountSuccess implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.GET_UNREAD_COUNT_SUCCESS;
 
-  constructor(public payload: { count: number }) {
-  }
+  constructor(public payload: { count: number }) {}
 }
 
 export class GetUnreadCountFailure implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.GET_UNREAD_COUNT_FAILURE;
 
-  constructor(public payload: { error: string }) {
-  }
+  constructor(public payload: { error: string }) {}
 }
 
 export class MarkAllAsRead implements Action {
@@ -127,29 +125,25 @@ export class MarkAllAsReadSuccess implements Action {
 export class MarkAllAsReadFailure implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.MARK_ALL_AS_READ_FAILURE;
 
-  constructor(public payload: { error: string }) {
-  }
+  constructor(public payload: { error: string }) {}
 }
 
 export class MarkAsRead implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.MARK_AS_READ;
 
-  constructor(public payload: { notificationId: NotificationInterface["id"], read: boolean }) {
-  }
+  constructor(public payload: { notificationId: NotificationInterface["id"]; read: boolean }) {}
 }
 
 export class MarkAsReadSuccess implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.MARK_AS_READ_SUCCESS;
 
-  constructor(public payload: { notificationId: NotificationInterface["id"], read: boolean }) {
-  }
+  constructor(public payload: { notificationId: NotificationInterface["id"]; read: boolean }) {}
 }
 
 export class MarkAsReadFailure implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.MARK_AS_READ_FAILURE;
 
-  constructor(public payload: { notificationId: NotificationInterface["id"], error: string }) {
-  }
+  constructor(public payload: { notificationId: NotificationInterface["id"]; error: string }) {}
 }
 
 export type All =

@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from "@angular/core";
-import { MainState } from "@app/store/state";
+import type { OnChanges } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import { FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
+import type { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
-import { ImageInterface } from "@core/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-feed-item",
@@ -20,10 +22,7 @@ import { ImageInterface } from "@core/interfaces/image.interface";
         [feedItem]="feedItem"
       ></astrobin-feed-item-marketplace-listing>
 
-      <astrobin-feed-item-group
-        *ngIf="isGroupFeedItem"
-        [feedItem]="feedItem"
-      ></astrobin-feed-item-group>
+      <astrobin-feed-item-group *ngIf="isGroupFeedItem" [feedItem]="feedItem"></astrobin-feed-item-group>
     </div>
   `,
   styleUrls: ["./feed-item.component.scss"],
@@ -42,21 +41,19 @@ export class FeedItemComponent extends BaseComponentDirective implements OnChang
   }
 
   ngOnChanges(): void {
-    this.isImageFeedItem = [
-      FeedItemVerb.VERB_UPLOADED_IMAGE,
-      FeedItemVerb.VERB_LIKED_IMAGE,
-      FeedItemVerb.VERB_BOOKMARKED_IMAGE,
-      FeedItemVerb.VERB_COMMENTED_IMAGE,
-      FeedItemVerb.VERB_UPLOADED_REVISION
-    ].indexOf(this.feedItem.verb) !== -1;
+    this.isImageFeedItem =
+      [
+        FeedItemVerb.VERB_UPLOADED_IMAGE,
+        FeedItemVerb.VERB_LIKED_IMAGE,
+        FeedItemVerb.VERB_BOOKMARKED_IMAGE,
+        FeedItemVerb.VERB_COMMENTED_IMAGE,
+        FeedItemVerb.VERB_UPLOADED_REVISION
+      ].indexOf(this.feedItem.verb) !== -1;
 
-    this.isMarketplaceListingFeedItem = [
-      FeedItemVerb.VERB_CREATED_MARKETPLACE_LISTING
-    ].indexOf(this.feedItem.verb) !== -1;
+    this.isMarketplaceListingFeedItem =
+      [FeedItemVerb.VERB_CREATED_MARKETPLACE_LISTING].indexOf(this.feedItem.verb) !== -1;
 
-    this.isGroupFeedItem = [
-      FeedItemVerb.VERB_JOINED_GROUP,
-      FeedItemVerb.VERB_CREATED_PUBLIC_GROUP
-    ].indexOf(this.feedItem.verb) !== -1;
+    this.isGroupFeedItem =
+      [FeedItemVerb.VERB_JOINED_GROUP, FeedItemVerb.VERB_CREATED_PUBLIC_GROUP].indexOf(this.feedItem.verb) !== -1;
   }
 }

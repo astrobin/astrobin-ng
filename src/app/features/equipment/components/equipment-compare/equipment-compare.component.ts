@@ -1,15 +1,16 @@
-import { Component, EventEmitter, HostBinding, OnInit, Output } from "@angular/core";
+import type { OnInit } from "@angular/core";
+import { Component, EventEmitter, HostBinding, Output } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentCompareModalComponent } from "@features/equipment/components/equipment-compare-modal/equipment-compare-modal.component";
+import type { CompareService } from "@features/equipment/services/compare.service";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { CompareService } from "@features/equipment/services/compare.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { fromEvent } from "rxjs";
 import { debounceTime, takeUntil } from "rxjs/operators";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { EquipmentCompareModalComponent } from "@features/equipment/components/equipment-compare-modal/equipment-compare-modal.component";
 
 @Component({
   selector: "astrobin-equipment-compare",

@@ -1,11 +1,13 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
 import { initialMainState } from "@app/store/state";
 import { IotdModule } from "@features/iotd/iotd.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
-import { ReviewSlotsComponent } from "./review-slots.component";
-import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
+
+import { ReviewSlotsComponent } from "./review-slots.component";
 
 describe("ReviewSlotsComponent", () => {
   let component: ReviewSlotsComponent;

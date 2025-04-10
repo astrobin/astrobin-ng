@@ -1,37 +1,36 @@
 import { Injectable } from "@angular/core";
+import type { MainState } from "@app/store/state";
 import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { forkJoin, Observable, of, Subject } from "rxjs";
-import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
-import { filter, map, switchMap, take } from "rxjs/operators";
-import {
-  EquipmentItemDisplayProperty,
-  EquipmentItemService
-} from "@core/services/equipment-item.service";
-import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
-import { TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import { EquipmentItemDisplayProperty } from "@core/services/equipment-item.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { SimplifiedSubscriptionName, SubscriptionName } from "@core/types/subscription-name.type";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { CameraDisplayProperty } from "@features/equipment/services/camera.service";
+import type { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
+import { SensorDisplayProperty } from "@features/equipment/services/sensor.service";
+import type { SensorService } from "@features/equipment/services/sensor.service";
+import { TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { forkJoin, Observable, of, Subject } from "rxjs";
+import { filter, map, switchMap, take } from "rxjs/operators";
 
 export enum CompareServiceError {
   NON_MATCHING_CLASS = "NON_MATCHING_CLASS",
   ITEM_NOT_FOUND = "ITEM_NOT_FOUND",
   TOO_MANY_ITEMS = "TOO_MANY_ITEMS",
-  ALREADY_IN_LIST = "ALREADY_IN_LIST",
+  ALREADY_IN_LIST = "ALREADY_IN_LIST"
 }
 
 export interface ComparisonInterface {
@@ -285,17 +284,17 @@ export class CompareService extends BaseService {
               name: this.sensorService.getPrintablePropertyName(sensorPrintableProperty, true),
               value$: !!camera.sensor
                 ? this.store$
-                  .select(selectEquipmentItem, {
-                    type: EquipmentItemType.SENSOR,
-                    id: camera.sensor
-                  })
-                  .pipe(
-                    filter(sensor => !!sensor),
-                    take(1),
-                    switchMap((sensor: SensorInterface) =>
-                      this.sensorService.getPrintableProperty$(sensor, sensorPrintableProperty)
+                    .select(selectEquipmentItem, {
+                      type: EquipmentItemType.SENSOR,
+                      id: camera.sensor
+                    })
+                    .pipe(
+                      filter(sensor => !!sensor),
+                      take(1),
+                      switchMap((sensor: SensorInterface) =>
+                        this.sensorService.getPrintableProperty$(sensor, sensorPrintableProperty)
+                      )
                     )
-                  )
                 : of(null)
             });
           }

@@ -1,4 +1,4 @@
-import { UserInterface } from "@core/interfaces/user.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
 
 export enum GroupCategory {
   PROFESSIONAL_NETWORK = "PROFESSIONAL_NETWORK",

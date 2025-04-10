@@ -1,12 +1,16 @@
 import { Injectable } from "@angular/core";
-import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadContentTypeById, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
+import type { All } from "@app/store/actions/app.actions";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import type { LoadContentTypeById } from "@app/store/actions/content-type.actions";
+import { LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import { MainState } from "@app/store/state";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import { EMPTY, Observable, of } from "rxjs";
+import type { MainState } from "@app/store/state";
+import type { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import type { Actions } from "@ngrx/effects";
+import { createEffect, ofType } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { Observable } from "rxjs";
+import { EMPTY, of } from "rxjs";
 import { catchError, map, mergeMap, take } from "rxjs/operators";
 
 @Injectable()
@@ -19,13 +23,13 @@ export class ContentTypeEffects {
           mergeMap(fromStore =>
             fromStore !== null
               ? of(fromStore).pipe(
-                take(1),
-                map(contentType => new LoadContentTypeSuccess(contentType))
-              )
+                  take(1),
+                  map(contentType => new LoadContentTypeSuccess(contentType))
+                )
               : this.commonApiService.getContentType(action.payload.appLabel, action.payload.model).pipe(
-                map(contentType => new LoadContentTypeSuccess(contentType)),
-                catchError(error => EMPTY)
-              )
+                  map(contentType => new LoadContentTypeSuccess(contentType)),
+                  catchError(error => EMPTY)
+                )
           )
         )
       )
@@ -41,13 +45,13 @@ export class ContentTypeEffects {
           mergeMap(fromStore =>
             fromStore !== null
               ? of(fromStore).pipe(
-                take(1),
-                map(contentType => new LoadContentTypeSuccess(contentType))
-              )
+                  take(1),
+                  map(contentType => new LoadContentTypeSuccess(contentType))
+                )
               : this.commonApiService.getContentTypeById(payload.id).pipe(
-                map(contentType => new LoadContentTypeSuccess(contentType)),
-                catchError(error => EMPTY)
-              )
+                  map(contentType => new LoadContentTypeSuccess(contentType)),
+                  catchError(error => EMPTY)
+                )
           )
         )
       )
@@ -58,6 +62,5 @@ export class ContentTypeEffects {
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions<All>,
     public readonly commonApiService: CommonApiService
-  ) {
-  }
+  ) {}
 }

@@ -1,5 +1,5 @@
-import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import type { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import type { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 export interface SearchAutoCompleteItem {
   type: SearchAutoCompleteType;

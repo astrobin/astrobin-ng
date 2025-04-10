@@ -37,29 +37,18 @@ declare class EphemUtils {
 
   static longitudeDegreesConstrained(deg: number): number;
 
-  static sphericalToRectangular(s: {
-    lon: number;
-    lat: number;
-  }): {
+  static sphericalToRectangular(s: { lon: number; lat: number }): {
     x: number;
     y: number;
     z: number;
   };
 
-  static rectangularToSpherical(r: {
-    x: number;
-    y: number;
-    z: number;
-  }): {
+  static rectangularToSpherical(r: { x: number; y: number; z: number }): {
     lon: number;
     lat: number;
   };
 
-  static rectangularToSphericalDegreesConstrained(r: {
-    x: number;
-    y: number;
-    z: number;
-  }): {
+  static rectangularToSphericalDegreesConstrained(r: { x: number; y: number; z: number }): {
     lon: number;
     lat: number;
   };
@@ -74,11 +63,7 @@ declare class EphemUtils {
     z: number;
   };
 
-  static rectangularEquatorialToGalactic(r: {
-    x: number;
-    y: number;
-    z: number;
-  }): {
+  static rectangularEquatorialToGalactic(r: { x: number; y: number; z: number }): {
     x: number;
     y: number;
     z: number;
@@ -147,11 +132,5 @@ declare class CoordinateInterpolation {
     beta?: string;
   };
 
-  protected angleString(
-    angle: number,
-    range: number,
-    sign: boolean,
-    precision: number,
-    units: boolean
-  ): string;
+  protected angleString(angle: number, range: number, sign: boolean, precision: number, units: boolean): string;
 }

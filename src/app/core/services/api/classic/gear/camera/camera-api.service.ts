@@ -1,10 +1,10 @@
-import { HttpClient } from "@angular/common/http";
+import type { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { CameraInterface } from "@core/interfaces/camera.interface";
+import type { CameraInterface } from "@core/interfaces/camera.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { CameraApiServiceInterface } from "@core/services/api/classic/gear/camera/camera-api.service-interface";
-import { LoadingService } from "@core/services/loading.service";
-import { Observable } from "rxjs";
+import type { CameraApiServiceInterface } from "@core/services/api/classic/gear/camera/camera-api.service-interface";
+import type { LoadingService } from "@core/services/loading.service";
+import type { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

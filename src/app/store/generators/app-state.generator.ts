@@ -1,8 +1,8 @@
-import { AppState } from "@app/store/reducers/app.reducers";
+import type { AppState } from "@app/store/reducers/app.reducers";
+import { SubscriptionName } from "@core/types/subscription-name.type";
 import { BackendConfigGenerator } from "@shared/generators/backend-config.generator";
 import { SubscriptionGenerator } from "@shared/generators/subscription.generator";
 import { TestConstants } from "@shared/test-constants";
-import { SubscriptionName } from "@core/types/subscription-name.type";
 
 export class AppStateGenerator {
   static default(): AppState {
@@ -46,7 +46,7 @@ export class AppStateGenerator {
       toggleProperties: [],
       remoteSourceAffiliates: [],
       groups: [],
-      collections: [],
+      collections: []
     };
   }
 }

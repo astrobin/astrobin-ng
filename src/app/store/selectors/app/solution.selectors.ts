@@ -1,7 +1,7 @@
-import { AppState } from "@app/store/reducers/app.reducers";
+import type { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
+import type { SolutionInterface } from "@core/interfaces/solution.interface";
 import { createSelector } from "@ngrx/store";
-import { SolutionInterface } from "@core/interfaces/solution.interface";
 
 export const selectSolutions = createSelector(selectApp, (state: AppState): SolutionInterface[] => state.solutions);
 

@@ -1,7 +1,8 @@
-import { MockBuilder, MockRender } from "ng-mocks";
-import { FooterComponent } from "./footer.component";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder, MockRender } from "ng-mocks";
+
+import { FooterComponent } from "./footer.component";
 
 describe("FooterComponent", () => {
   let component: FooterComponent;

@@ -1,10 +1,10 @@
 import { Component, Input } from "@angular/core";
+import type { FormGroup } from "@angular/forms";
+import type { MainState } from "@app/store/state";
+import type { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-search-filter-editor-modal",
@@ -21,10 +21,7 @@ export class SearchFilterEditorModalComponent extends BaseComponentDirective {
   @Input()
   fields: FormlyFieldConfig[];
 
-  constructor(
-    public readonly store$: Store<MainState>,
-    public readonly modal: NgbActiveModal
-  ) {
+  constructor(public readonly store$: Store<MainState>, public readonly modal: NgbActiveModal) {
     super(store$);
   }
 

@@ -1,11 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { selectBreadcrumb } from "@app/store/selectors/app/app.selectors";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
+import type { MainState } from "@app/store/state";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { Observable } from "rxjs";
+import type { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
+import type { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
 @Component({

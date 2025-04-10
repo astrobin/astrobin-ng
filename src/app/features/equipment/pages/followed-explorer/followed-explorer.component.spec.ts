@@ -1,15 +1,16 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { provideMockStore } from "@ngrx/store/testing";
+import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
+import { MockBuilder } from "ng-mocks";
+import { EMPTY, of, ReplaySubject } from "rxjs";
 
 import { FollowedExplorerComponent } from "./followed-explorer.component";
-import { MockBuilder } from "ng-mocks";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { AppModule } from "@app/app.module";
-import { ActivatedRoute, Router } from "@angular/router";
-import { EMPTY, of, ReplaySubject } from "rxjs";
-import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
-import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
-import { provideMockActions } from "@ngrx/effects/testing";
 
 describe("FollowedExplorerComponent", () => {
   let component: FollowedExplorerComponent;

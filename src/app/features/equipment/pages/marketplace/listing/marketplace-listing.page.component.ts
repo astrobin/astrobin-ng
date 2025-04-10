@@ -1,42 +1,69 @@
-import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { MarketplaceListingInterface, MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
-import { LoadingService } from "@core/services/loading.service";
-import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
-import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
-import { merge, Observable, of, Subscription } from "rxjs";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { Actions, ofType } from "@ngrx/effects";
-import { ApproveMarketplaceListing, ApproveMarketplaceListingSuccess, CreateMarketplacePrivateConversation, CreateMarketplacePrivateConversationSuccess, DeleteMarketplaceListing, DeleteMarketplaceListingSuccess, DeleteMarketplacePrivateConversation, DeleteMarketplacePrivateConversationSuccess, EquipmentActionTypes, LoadMarketplacePrivateConversations, RenewMarketplaceListing, UpdateMarketplacePrivateConversation } from "@features/equipment/store/equipment.actions";
-import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
-import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
-import { LoadNestedComment, LoadNestedComments, LoadNestedCommentsSuccess } from "@app/store/actions/nested-comments.actions";
+import type { Location } from "@angular/common";
+import { isPlatformBrowser } from "@angular/common";
+import type { AfterViewInit, OnInit } from "@angular/core";
+import { Component, Inject, PLATFORM_ID } from "@angular/core";
+import type { ActivatedRoute, Router } from "@angular/router";
+import { NavigationEnd } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { selectMarketplaceListing, selectMarketplaceOffersByUser, selectMarketplacePrivateConversation, selectMarketplacePrivateConversations } from "@features/equipment/store/equipment.selectors";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
+import { LoadNestedComment, LoadNestedComments } from "@app/store/actions/nested-comments.actions";
+import type { LoadNestedCommentsSuccess } from "@app/store/actions/nested-comments.actions";
+import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { selectNestedCommentById } from "@app/store/selectors/app/nested-comments.selectors";
-import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
-import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { RouterService } from "@core/services/router.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { MainState } from "@app/store/state";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { DeviceService } from "@core/services/device.service";
+import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { RouterService } from "@core/services/router.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
 import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
-import { isPlatformBrowser, Location } from "@angular/common";
+import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
+import {
+  ApproveMarketplaceListing,
+  CreateMarketplacePrivateConversation,
+  DeleteMarketplaceListing,
+  DeleteMarketplacePrivateConversation,
+  EquipmentActionTypes,
+  LoadMarketplacePrivateConversations,
+  RenewMarketplaceListing,
+  UpdateMarketplacePrivateConversation
+} from "@features/equipment/store/equipment.actions";
+import type {
+  ApproveMarketplaceListingSuccess,
+  CreateMarketplacePrivateConversationSuccess,
+  DeleteMarketplaceListingSuccess,
+  DeleteMarketplacePrivateConversationSuccess
+} from "@features/equipment/store/equipment.actions";
+import {
+  selectMarketplaceListing,
+  selectMarketplaceOffersByUser,
+  selectMarketplacePrivateConversation,
+  selectMarketplacePrivateConversations
+} from "@features/equipment/store/equipment.selectors";
+import { MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import type { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import type { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ofType } from "@ngrx/effects";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { DeviceService } from "@core/services/device.service";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
+import { merge, of } from "rxjs";
+import type { Observable, Subscription } from "rxjs";
+import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -233,9 +260,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       const message = this.translateService.instant("Your listing has some offers");
 
       if (this.windowRefService.nativeWindow.innerWidth < 768) {
-        this.popNotificationsService.info(
-          message + " " + this.translateService.instant("Scroll down to see them.")
-        );
+        this.popNotificationsService.info(message + " " + this.translateService.instant("Scroll down to see them."));
       } else {
         this.popNotificationsService.info(
           message + " " + this.translateService.instant("Find them on the right side of the page")
@@ -291,7 +316,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     if (this.equipmentMarketplaceService.listingHasPendingOffers(this.listing)) {
       this.popNotificationsService.error(
         "You cannot mark a listing as sold if it has pending offers. " +
-        "Please accept or reject all offers before marking this listing as sold."
+          "Please accept or reject all offers before marking this listing as sold."
       );
       return;
     }
@@ -354,10 +379,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         email = userProfile.email;
       }
 
-      this.windowRefService.nativeWindow.open(
-        `${url}?email=${email}&listingUrl=${window.location.href}`,
-        "_blank"
-      );
+      this.windowRefService.nativeWindow.open(`${url}?email=${email}&listingUrl=${window.location.href}`, "_blank");
     });
   }
 
@@ -410,19 +432,22 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         const title =
           currentUser.id === this.listing.user
             ? this.translateService.instant("Private conversation with {{0}}", {
-              0: privateConversation.userDisplayName
-            })
+                0: privateConversation.userDisplayName
+              })
             : this.translateService.instant("Private conversation with {{0}}", {
-              0: this.listing.userDisplayName
-            });
-            
+                0: this.listing.userDisplayName
+              });
+
         let info = null;
         if (currentUser.id === this.listing.user || currentUser.id === privateConversation.user) {
-          info = this.translateService.instant(
+          info =
+            this.translateService.instant(
               "For your safety, keep all communications on AstroBin. Off-platform conversations pose risks. " +
-              "Messages here are permanent and can be used as evidence if needed."
-            ) + ` <a href="https://welcome.astrobin.com/features/marketplace#faq-safety-tips" target="_blank">` +
-            this.translateService.instant("Learn more") + `</a>`;
+                "Messages here are permanent and can be used as evidence if needed."
+            ) +
+            ` <a href="https://welcome.astrobin.com/features/marketplace#faq-safety-tips" target="_blank">` +
+            this.translateService.instant("Learn more") +
+            `</a>`;
         }
 
         const modalRef = NestedCommentsModalComponent.open(this.modalService, {
@@ -581,11 +606,14 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       this._listingUpdatedSubscription.unsubscribe();
     }
 
-    this._listingUpdatedSubscription = this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
-      filter(listing => !!listing && listing.id === this.listing.id),
-      takeUntil(this.destroyed$)
-    ).subscribe(listing => {
-      this.setListing(listing);
-    });
+    this._listingUpdatedSubscription = this.store$
+      .select(selectMarketplaceListing, { id: this.listing.id })
+      .pipe(
+        filter(listing => !!listing && listing.id === this.listing.id),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(listing => {
+        this.setListing(listing);
+      });
   }
 }

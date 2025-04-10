@@ -1,3 +1,4 @@
+import type { ComponentFixture } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
@@ -6,7 +7,6 @@ import { UploaderModule } from "@features/uploader/uploader.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder, MockRender } from "ng-mocks";
-import { ComponentFixture } from "@angular/core/testing";
 
 describe("RevisionUploader.PageComponent", () => {
   let fixture: ComponentFixture<RevisionUploaderPageComponent>;

@@ -1,19 +1,22 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { EquipmentItemDisplayNameComponent } from "./equipment-item-display-name.component";
-import { MockBuilder } from "ng-mocks";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
+
+import { EquipmentItemDisplayNameComponent } from "./equipment-item-display-name.component";
 
 describe("EquipmentItemDisplayNameComponent", () => {
   let component: EquipmentItemDisplayNameComponent;
   let fixture: ComponentFixture<EquipmentItemDisplayNameComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(EquipmentItemDisplayNameComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
+    await MockBuilder(EquipmentItemDisplayNameComponent, AppModule).provide(
+      provideMockStore({ initialState: initialMainState })
+    );
   });
 
   beforeEach(() => {

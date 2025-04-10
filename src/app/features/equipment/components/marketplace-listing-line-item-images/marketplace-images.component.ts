@@ -1,11 +1,12 @@
-import { Component, Input, OnChanges } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
+import type { OnChanges } from "@angular/core";
+import { Component, Input } from "@angular/core";
+import type { MainState } from "@app/store/state";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { IAlbum, Lightbox } from "ngx-lightbox";
-import { TranslateService } from "@ngx-translate/core";
+import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import type { IAlbum, Lightbox } from "ngx-lightbox";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-images",
@@ -15,7 +16,7 @@ import { TranslateService } from "@ngx-translate/core";
 export class MarketplaceImagesComponent extends BaseComponentDirective implements OnChanges {
   readonly UtilsService = UtilsService;
 
-  sliderImages: Array<IAlbum> = [];
+  sliderImages: IAlbum[] = [];
 
   @Input()
   images: MarketplaceLineItemInterface["images"];
@@ -51,11 +52,11 @@ export class MarketplaceImagesComponent extends BaseComponentDirective implement
         thumbnailUrl = url;
       }
 
-      return ({
+      return {
         src: url,
         thumb: thumbnailUrl,
         caption: this.translateService.instant("Image") + " " + (index + 1)
-      });
+      };
     });
   }
 

@@ -1,7 +1,8 @@
-import { Directive, ElementRef, EventEmitter, Output, OnDestroy } from '@angular/core';
+import type { ElementRef, OnDestroy } from "@angular/core";
+import { Directive, EventEmitter, Output } from "@angular/core";
 
 @Directive({
-  selector: '[astrobinPreventScrollClick]'
+  selector: "[astrobinPreventScrollClick]"
 })
 export class PreventScrollClickDirective implements OnDestroy {
   @Output() intentionalClick = new EventEmitter<MouseEvent | TouchEvent>();
@@ -20,7 +21,9 @@ export class PreventScrollClickDirective implements OnDestroy {
   };
 
   private touchMoveHandler = (e: TouchEvent) => {
-    if (!this.touchStartPos) return;
+    if (!this.touchStartPos) {
+      return;
+    }
 
     const touch = e.touches[0];
     const deltaX = Math.abs(touch.clientX - this.touchStartPos.x);
@@ -46,17 +49,17 @@ export class PreventScrollClickDirective implements OnDestroy {
   };
 
   constructor(private el: ElementRef) {
-    this.el.nativeElement.addEventListener('touchstart', this.touchStartHandler);
-    this.el.nativeElement.addEventListener('touchmove', this.touchMoveHandler);
-    this.el.nativeElement.addEventListener('touchend', this.touchEndHandler);
-    this.el.nativeElement.addEventListener('click', this.clickHandler);
+    this.el.nativeElement.addEventListener("touchstart", this.touchStartHandler);
+    this.el.nativeElement.addEventListener("touchmove", this.touchMoveHandler);
+    this.el.nativeElement.addEventListener("touchend", this.touchEndHandler);
+    this.el.nativeElement.addEventListener("click", this.clickHandler);
   }
 
   ngOnDestroy() {
     // Clean up event listeners
-    this.el.nativeElement.removeEventListener('touchstart', this.touchStartHandler);
-    this.el.nativeElement.removeEventListener('touchmove', this.touchMoveHandler);
-    this.el.nativeElement.removeEventListener('touchend', this.touchEndHandler);
-    this.el.nativeElement.removeEventListener('click', this.clickHandler);
+    this.el.nativeElement.removeEventListener("touchstart", this.touchStartHandler);
+    this.el.nativeElement.removeEventListener("touchmove", this.touchMoveHandler);
+    this.el.nativeElement.removeEventListener("touchend", this.touchEndHandler);
+    this.el.nativeElement.removeEventListener("click", this.clickHandler);
   }
 }

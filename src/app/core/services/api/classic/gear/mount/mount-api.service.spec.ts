@@ -2,8 +2,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { MountGenerator } from "@shared/generators/mount.generator";
 import { MountApiService } from "@core/services/api/classic/gear/mount/mount-api.service";
+import { MountGenerator } from "@shared/generators/mount.generator";
 import { MockBuilder } from "ng-mocks";
 
 describe("mountApiService", () => {

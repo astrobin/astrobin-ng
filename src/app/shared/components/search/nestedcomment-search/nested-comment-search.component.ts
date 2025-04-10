@@ -1,17 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, PLATFORM_ID } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { Observable } from "rxjs";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { TranslateService } from "@ngx-translate/core";
-import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
-import { NestedCommentSearchInterface } from "@core/interfaces/nestedcomment-search.interface";
-import { NestedCommentsSearchApiService } from "@core/services/api/classic/nested-comments/nested-comments-search-api.service";
+import type { ChangeDetectorRef, ElementRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { NestedCommentSearchInterface } from "@core/interfaces/nestedcomment-search.interface";
+import type { NestedCommentsSearchApiService } from "@core/services/api/classic/nested-comments/nested-comments-search-api.service";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
 import { environment } from "@env/environment";
-import { UtilsService } from "@core/services/utils/utils.service";
+import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
+import type { Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-nested-comment-search",
@@ -46,14 +47,11 @@ export class NestedCommentSearchComponent extends ScrollableSearchResultsBaseCom
 
     if (comment.className === "Image") {
       this.windowRefService.nativeWindow.open(
-        environment.classicBaseUrl  + comment.contentObjectUrl + `#c${commentId}`,
+        environment.classicBaseUrl + comment.contentObjectUrl + `#c${commentId}`,
         "_self"
       );
     } else {
-      this.windowRefService.nativeWindow.open(
-        `${comment.contentObjectUrl}#c${commentId}`,
-        "_self"
-      );
+      this.windowRefService.nativeWindow.open(`${comment.contentObjectUrl}#c${commentId}`, "_self");
     }
   }
 }

@@ -1,20 +1,20 @@
 import { Injectable } from "@angular/core";
-import { MainState } from "@app/store/state";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
-import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-import { Constants } from "@shared/constants";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import type { MainState } from "@app/store/state";
+import type { SubscriptionInterface } from "@core/interfaces/subscription.interface";
+import type { UtilsService } from "@core/services/utils/utils.service";
 import { SubscriptionName } from "@core/types/subscription-name.type";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import type { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
+import type { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
+import type { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { Constants } from "@shared/constants";
 import * as countryJs from "country-js";
 import { BehaviorSubject, Observable } from "rxjs";
 import { filter, map, switchMap, take } from "rxjs/operators";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
-import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
-import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 
 @Injectable({
   providedIn: "root"
@@ -24,10 +24,15 @@ export class SubscriptionsService {
 
   currency: string;
   stripeCustomerPortalUrl$: Observable<string> = this.store$.select(selectBackendConfig).pipe(
-    switchMap(config => this.store$.select(selectCurrentUserProfile).pipe(filter(profile => !!profile), map(profile => ({
-      config,
-      profile
-    })))),
+    switchMap(config =>
+      this.store$.select(selectCurrentUserProfile).pipe(
+        filter(profile => !!profile),
+        map(profile => ({
+          config,
+          profile
+        }))
+      )
+    ),
     map(
       ({ config, profile }) =>
         `https://billing.stripe.com/p/login/${config.STRIPE_CUSTOMER_PORTAL_KEY}?prefilled_email=${profile.email}`

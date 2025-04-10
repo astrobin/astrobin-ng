@@ -1,23 +1,24 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
+import type { ChangeDetectorRef, OnInit } from "@angular/core";
+import { Component, Inject, PLATFORM_ID } from "@angular/core";
+import type { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { TitleService } from "@core/services/title/title.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Actions } from "@ngrx/effects";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { tap } from "rxjs/operators";
+import type { MainState } from "@app/store/state";
+import type { DeviceService } from "@core/services/device.service";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
 import {
   PendingExplorerBaseComponent,
   PendingType
 } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { CookieService } from "ngx-cookie";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { DeviceService } from "@core/services/device.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import type { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import type { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import type { CookieService } from "ngx-cookie";
+import { tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-equipment-pending-edit-explorer",

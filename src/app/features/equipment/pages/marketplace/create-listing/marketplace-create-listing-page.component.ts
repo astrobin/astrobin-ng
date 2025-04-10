@@ -1,30 +1,29 @@
-import { Component, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import type { Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { take, tap } from "rxjs/operators";
-import {
-  CreateMarketplaceListing,
+import type { MainState } from "@app/store/state";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { RouterService } from "@core/services/router.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { MARKETPLACE_SALE_TYPE } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
+import type { MarketplaceListingFormInitialCountInterface } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
+import { CreateMarketplaceListing, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import type {
   CreateMarketplaceListingFailure,
-  CreateMarketplaceListingSuccess,
-  EquipmentActionTypes
+  CreateMarketplaceListingSuccess
 } from "@features/equipment/store/equipment.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { LoadingService } from "@core/services/loading.service";
-import { Router } from "@angular/router";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { RouterService } from "@core/services/router.service";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import {
-  MARKETPLACE_SALE_TYPE,
-  MarketplaceListingFormInitialCountInterface
-} from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { MarketplaceShippingCostType } from "@features/equipment/types/marketplace-line-item.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { ofType } from "@ngrx/effects";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",
@@ -81,15 +80,16 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     let listings: MarketplaceListingInterface[];
     let listingsProcessed = 0;
 
-    if (
-      value.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE_SEPARATELY &&
-      value.count > 1
-    ) {
+    if (value.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE_SEPARATELY && value.count > 1) {
       // Create multiple listings, each one gets one of the line items, and all other data is the same.
       listings = Array.from({ length: value.count }, (_, i) => ({
         ...value,
-        shippingMethod: value.lineItems[i].shippingCostType !== MarketplaceShippingCostType.NO_SHIPPING ? value.shippingMethod : null,
-        deliveryByShipping: value.lineItems[i].shippingCostType !== MarketplaceShippingCostType.NO_SHIPPING ? value.deliveryByShipping : false,
+        shippingMethod:
+          value.lineItems[i].shippingCostType !== MarketplaceShippingCostType.NO_SHIPPING ? value.shippingMethod : null,
+        deliveryByShipping:
+          value.lineItems[i].shippingCostType !== MarketplaceShippingCostType.NO_SHIPPING
+            ? value.deliveryByShipping
+            : false,
         lineItems: [value.lineItems[i]]
       }));
     } else {

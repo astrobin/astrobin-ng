@@ -1,6 +1,7 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import type { PipeTransform } from "@angular/core";
+import { Pipe } from "@angular/core";
 import { SafeHtml } from "@angular/platform-browser";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 @Pipe({
   name: "yesNoIcon"

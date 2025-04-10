@@ -1,8 +1,8 @@
-import { AppState } from "@app/store/reducers/app.reducers";
+import type { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import type { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
 import { createSelector } from "@ngrx/store";
-import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 
 export const selectNestedComments = createSelector(
   selectApp,
@@ -10,8 +10,10 @@ export const selectNestedComments = createSelector(
 );
 
 export const selectNestedCommentsByContentTypeIdAndObjectId = (
-  contentTypeId: ContentTypeInterface["id"], objectId: number
-) => createSelector(selectNestedComments, nestedComments => {
+  contentTypeId: ContentTypeInterface["id"],
+  objectId: number
+) =>
+  createSelector(selectNestedComments, nestedComments => {
     if (nestedComments === null || nestedComments === undefined) {
       return null;
     }
@@ -19,8 +21,7 @@ export const selectNestedCommentsByContentTypeIdAndObjectId = (
     return nestedComments.filter(
       nestedComment => nestedComment.contentType === contentTypeId && nestedComment.objectId === objectId
     );
-  }
-);
+  });
 
 export const selectNestedCommentById = createSelector(
   selectNestedComments,

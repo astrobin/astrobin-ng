@@ -1,24 +1,27 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import type { ChangeDetectorRef, OnInit } from "@angular/core";
+import { Component, Inject, PLATFORM_ID } from "@angular/core";
+import type { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MainState } from "@app/store/state";
+import type { MainState } from "@app/store/state";
+import type { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { TitleService } from "@core/services/title/title.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
-import { IotdApiService, IotdInterface } from "@features/iotd/services/iotd-api.service";
+import type { IotdApiService, IotdInterface } from "@features/iotd/services/iotd-api.service";
 import { ClearJudgementQueue, LoadFutureIods, LoadJudgementQueue } from "@features/iotd/store/iotd.actions";
 import { selectFutureIotds, selectJudgementQueue } from "@features/iotd/store/iotd.selectors";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TitleService } from "@core/services/title/title.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { forkJoin, Observable } from "rxjs";
-import { ActivatedRoute, Router } from "@angular/router";
-import { CookieService } from "ngx-cookie";
-import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
-import { Actions } from "@ngrx/effects";
-import { TimeagoClock, TimeagoFormatter, TimeagoIntl, TimeagoPipe } from "ngx-timeago";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import type { Actions } from "@ngrx/effects";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
+import type { CookieService } from "ngx-cookie";
+import type { TimeagoClock, TimeagoFormatter, TimeagoIntl } from "ngx-timeago";
+import { TimeagoPipe } from "ngx-timeago";
+import type { Observable } from "rxjs";
+import { forkJoin } from "rxjs";
 import { filter, takeUntil, tap } from "rxjs/operators";
 
 @Component({
@@ -27,9 +30,11 @@ import { filter, takeUntil, tap } from "rxjs/operators";
   styleUrls: ["./judgement-queue.component.scss"]
 })
 export class JudgementQueueComponent extends BasePromotionQueueComponent implements OnInit {
-  queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$
-    .select(selectJudgementQueue)
-    .pipe(filter(queue => !!queue), tap(() => this.loadingQueue = false), takeUntil(this.destroyed$));
+  queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$.select(selectJudgementQueue).pipe(
+    filter(queue => !!queue),
+    tap(() => (this.loadingQueue = false)),
+    takeUntil(this.destroyed$)
+  );
   promotions$: Observable<IotdInterface[]> = this.store$.select(selectFutureIotds).pipe(takeUntil(this.destroyed$));
   cannotSelectReason: string;
   nextAvailableSelectionTime: string;

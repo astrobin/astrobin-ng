@@ -1,25 +1,26 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
-import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { ImageService } from "@core/services/image/image.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
-import { TranslateService } from "@ngx-translate/core";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { ImageAlias } from "@core/enums/image-alias.enum";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { takeUntil } from "rxjs/operators";
-import { Subject } from "rxjs";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { UserService } from "@core/services/user.service";
 import { DatePipe } from "@angular/common";
-import { EquipmentService } from "@core/services/equipment.service";
-import { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
-import { ImageInfoService } from "@core/services/image/image-info.service";
+import type { ChangeDetectorRef, OnChanges, OnDestroy, TemplateRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, ViewChild } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import type { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import type { DeviceService } from "@core/services/device.service";
+import type { EquipmentService } from "@core/services/equipment.service";
+import type { ImageInfoService } from "@core/services/image/image-info.service";
+import type { ImageService } from "@core/services/image/image.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { UserService } from "@core/services/user.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
+import type { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import type { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import type { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 enum SharingMode {
   LINK = "link",
@@ -38,10 +39,7 @@ enum ThumbnailSize {
   selector: "astrobin-image-viewer-share-button",
   providers: [DatePipe],
   template: `
-    <button
-      (click)="openShare($event)"
-      class="btn btn-no-block btn-link link-secondary open-share"
-    >
+    <button (click)="openShare($event)" class="btn btn-no-block btn-link link-secondary open-share">
       <fa-icon
         [ngbTooltip]="'Share' | translate"
         triggers="hover click"
@@ -53,21 +51,12 @@ enum ThumbnailSize {
 
     <ng-template #shareTemplate let-offcanvas>
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title">{{ 'Share' | translate }}</h5>
-        <button
-          type="button"
-          class="btn-close"
-          (click)="offcanvas.dismiss()"
-          aria-label="Close"
-        ></button>
+        <h5 class="offcanvas-title">{{ "Share" | translate }}</h5>
+        <button type="button" class="btn-close" (click)="offcanvas.dismiss()" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
         <form>
-          <formly-form
-            [form]="shareForm"
-            [fields]="shareFields"
-            [model]="shareModel"
-          ></formly-form>
+          <formly-form [form]="shareForm" [fields]="shareFields" [model]="shareModel"></formly-form>
         </form>
 
         <button class="btn btn-secondary mt-3" (click)="copyShareModelCode()">{{ copyButtonLabel }}</button>
@@ -80,7 +69,10 @@ enum ThumbnailSize {
             </label>
 
             <p class="small">
-              {{ "If embedding direct links to images hosted on the AstroBin servers, kindly provide a link to AstroBin." | translate }}
+              {{
+                "If embedding direct links to images hosted on the AstroBin servers, kindly provide a link to AstroBin."
+                  | translate
+              }}
             </p>
 
             <ul class="mt-3">
@@ -175,15 +167,13 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
       },
       hooks: {
         onInit: field => {
-          field.formControl.valueChanges
-            .pipe(takeUntil(this.formDestroyed$))
-            .subscribe(value => {
-              this.shareModel = {
-                ...this.shareModel,
-                code: this.getSharingValue(value, this.shareModel.thumbnailSize)
-              };
-              this.changeDetectorRef.markForCheck();
-            });
+          field.formControl.valueChanges.pipe(takeUntil(this.formDestroyed$)).subscribe(value => {
+            this.shareModel = {
+              ...this.shareModel,
+              code: this.getSharingValue(value, this.shareModel.thumbnailSize)
+            };
+            this.changeDetectorRef.markForCheck();
+          });
         }
       }
     },
@@ -193,7 +183,8 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
       wrappers: ["default-wrapper"],
       defaultValue: ThumbnailSize.SMALL,
       expressions: {
-        hide: () => this.shareModel.sharingMode === SharingMode.LINK || this.shareModel.sharingMode === SharingMode.DETAILED
+        hide: () =>
+          this.shareModel.sharingMode === SharingMode.LINK || this.shareModel.sharingMode === SharingMode.DETAILED
       },
       props: {
         label: this.translateService.instant("Thumbnail size"),
@@ -207,15 +198,13 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
       },
       hooks: {
         onInit: field => {
-          field.formControl.valueChanges
-            .pipe(takeUntil(this.formDestroyed$))
-            .subscribe(value => {
-              this.shareModel = {
-                ...this.shareModel,
-                code: this.getSharingValue(this.shareModel.sharingMode, value)
-              };
-              this.changeDetectorRef.markForCheck();
-            });
+          field.formControl.valueChanges.pipe(takeUntil(this.formDestroyed$)).subscribe(value => {
+            this.shareModel = {
+              ...this.shareModel,
+              code: this.getSharingValue(this.shareModel.sharingMode, value)
+            };
+            this.changeDetectorRef.markForCheck();
+          });
         }
       }
     },
@@ -280,12 +269,14 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
 
     if (isNativeShareSupported && isMobile) {
       try {
-        navigator.share({
-          title: this.image.title,
-          url: this.getSharingValue(SharingMode.LINK)
-        }).catch(error => {
-          console.error("Sharing failed:", error);
-        });
+        navigator
+          .share({
+            title: this.image.title,
+            url: this.getSharingValue(SharingMode.LINK)
+          })
+          .catch(error => {
+            console.error("Sharing failed:", error);
+          });
       } catch (error) {
         if (error.name !== "AbortError") {
           console.error("Sharing failed:", error);
@@ -471,11 +462,13 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
    */
   private addDeepSkyIntegration(lines: string[]): void {
     // Extract the total integration time in seconds for plain text display
-    const totalIntegrationSeconds = this.image.deepSkyAcquisitions?.length > 0 ?
-      this.image.deepSkyAcquisitions
-        .filter(acq => acq.number !== null && acq.duration !== null)
-        .map(acq => acq.number * parseFloat(acq.duration))
-        .reduce((acc, val) => acc + val, 0) : 0;
+    const totalIntegrationSeconds =
+      this.image.deepSkyAcquisitions?.length > 0
+        ? this.image.deepSkyAcquisitions
+            .filter(acq => acq.number !== null && acq.duration !== null)
+            .map(acq => acq.number * parseFloat(acq.duration))
+            .reduce((acc, val) => acc + val, 0)
+        : 0;
 
     const plainTextIntegration = this.imageService.formatIntegration(totalIntegrationSeconds, false);
     lines.push(`${this.translateService.instant("Total integration")}: ${plainTextIntegration}`);
@@ -490,16 +483,19 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
   /**
    * Builds filter summaries from image acquisition data
    */
-  private buildFilterSummaries(): { [key: string]: { totalIntegration: number, number: number, duration: string } } {
+  private buildFilterSummaries(): { [key: string]: { totalIntegration: number; number: number; duration: string } } {
     return this.filterAcquisitionService.buildFilterSummaries(this.image);
   }
 
   /**
    * Adds filter summaries to the output lines
    */
-  private addFilterSummaries(lines: string[], filterSummaries: {
-    [key: string]: { totalIntegration: number, number: number, duration: string }
-  }): void {
+  private addFilterSummaries(
+    lines: string[],
+    filterSummaries: {
+      [key: string]: { totalIntegration: number; number: number; duration: string };
+    }
+  ): void {
     this.imageInfoService.addFilterSummaries(lines, filterSummaries, this.imageService);
   }
 

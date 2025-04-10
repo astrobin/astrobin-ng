@@ -1,19 +1,20 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { MarketplaceListingPageComponent } from "./marketplace-listing.page.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
-import { mainStateEffects, mainStateReducers, initialMainState } from "@app/store/state";
-import { StoreModule } from "@ngrx/store";
-import { EffectsModule } from "@ngrx/effects";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { EMPTY, of } from "rxjs";
-import { UserGenerator } from "@shared/generators/user.generator";
+import { AppModule } from "@app/app.module";
+import { mainStateEffects, mainStateReducers, initialMainState } from "@app/store/state";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { EffectsModule } from "@ngrx/effects";
+import { StoreModule } from "@ngrx/store";
+import { provideMockStore } from "@ngrx/store/testing";
+import { UserGenerator } from "@shared/generators/user.generator";
+import { MockBuilder } from "ng-mocks";
+import { EMPTY, of } from "rxjs";
+
+import { MarketplaceListingPageComponent } from "./marketplace-listing.page.component";
 
 describe("MarketplaceListingPageComponent", () => {
   let component: MarketplaceListingPageComponent;
@@ -52,9 +53,7 @@ describe("MarketplaceListingPageComponent", () => {
 
     jest.spyOn(component.windowRefService, "scroll").mockImplementation(() => {});
 
-    jest.spyOn(
-      component.equipmentMarketplaceService, "getListingUser$"
-    ).mockReturnValue(of(UserGenerator.user()));
+    jest.spyOn(component.equipmentMarketplaceService, "getListingUser$").mockReturnValue(of(UserGenerator.user()));
     fixture.detectChanges();
   });
 

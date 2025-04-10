@@ -1,17 +1,16 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import {
-  MarketplaceListingInterface,
-  MarketplaceListingType
-} from "@features/equipment/types/marketplace-listing.interface";
-import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
-import { CountryService } from "@core/services/country.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import type { ElementRef, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { CountryService } from "@core/services/country.service";
+import type { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import type { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
 import { MARKETPLACE_SALE_TYPE } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
+import { MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import type { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-marketplace-listing",

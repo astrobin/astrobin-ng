@@ -1,4 +1,5 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import type { PipeTransform } from "@angular/core";
+import { Pipe } from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
 
 @Pipe({
@@ -16,15 +17,17 @@ export class AddDaysPipe implements PipeTransform {
     }
 
     // Ensure the date is in UTC by creating a new Date object using UTC methods
-    const utcDate = new Date(Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      date.getUTCDate(),
-      date.getUTCHours(),
-      date.getUTCMinutes(),
-      date.getUTCSeconds(),
-      date.getUTCMilliseconds()
-    ));
+    const utcDate = new Date(
+      Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds(),
+        date.getUTCMilliseconds()
+      )
+    );
 
     // Add the specified number of days to the date
     utcDate.setUTCDate(utcDate.getUTCDate() + days);

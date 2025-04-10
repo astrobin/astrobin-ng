@@ -1,20 +1,19 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, TemplateRef } from "@angular/core";
+import type { ChangeDetectorRef, TemplateRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import type { Router } from "@angular/router";
+import type { MainState } from "@app/store/state";
+import type { CollapseSyncService } from "@core/services/collapse-sync.service";
+import type { ImageViewerService } from "@core/services/image-viewer.service";
+import type { SearchService } from "@core/services/search.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { Store } from "@ngrx/store";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { SearchService } from "@core/services/search.service";
-import { Router } from "@angular/router";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CookieService } from "ngx-cookie";
-import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import type { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-image-viewer-custom-message-banner",
   template: `
-    <div
-      class="image-viewer-banner alert alert-{{ alertClass }} d-flex align-items-center gap-2"
-    >
+    <div class="image-viewer-banner alert alert-{{ alertClass }} d-flex align-items-center gap-2">
       <ng-container [ngTemplateOutlet]="messageTemplate"></ng-container>
     </div>
   `,
@@ -23,7 +22,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
 })
 export class ImageViewerCustomMessageBannerComponent extends ImageViewerSectionBaseComponent {
   @Input() messageTemplate: TemplateRef<any>;
-  @Input() alertClass = "info"
+  @Input() alertClass = "info";
 
   public constructor(
     public readonly store$: Store<MainState>,

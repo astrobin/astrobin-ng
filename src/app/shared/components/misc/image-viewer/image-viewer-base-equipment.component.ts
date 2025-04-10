@@ -1,17 +1,17 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from "@angular/core";
-import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@core/services/search.service";
-import { Router } from "@angular/router";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { WindowRefService } from "@core/services/window-ref.service";
+import type { ChangeDetectorRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
+import type { Router } from "@angular/router";
+import type { MainState } from "@app/store/state";
+import type { CollapseSyncService } from "@core/services/collapse-sync.service";
+import type { ImageViewerService } from "@core/services/image-viewer.service";
+import type { SearchService } from "@core/services/search.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import { CookieService } from "ngx-cookie";
-import { CollapseSyncService } from "@core/services/collapse-sync.service";
-import { LegacyEquipmentItem } from "@shared/components/misc/image-viewer/image-viewer-equipment-items.component";
-
+import type { Store } from "@ngrx/store";
+import type { LegacyEquipmentItem } from "@shared/components/misc/image-viewer/image-viewer-equipment-items.component";
+import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
+import type { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-image-viewer-base-equipment",
@@ -86,6 +86,6 @@ export abstract class ImageViewerBaseEquipmentComponent extends ImageViewerSecti
   }
 
   private _legacyItemSearchText(item: LegacyEquipmentItem): string {
-    return "\"" + ((item.make || "") + " " + (item.name || "")).trim() + "\"";
+    return '"' + ((item.make || "") + " " + (item.name || "")).trim() + '"';
   }
 }

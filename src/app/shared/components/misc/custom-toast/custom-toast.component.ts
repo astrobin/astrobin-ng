@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
-
-import { Toast, ToastPackage, ToastrService } from "ngx-toastr";
-import { ExtendedIndividualConfig, ToastButtonInterface } from "@core/services/pop-notifications.service";
+import type { ExtendedIndividualConfig, ToastButtonInterface } from "@core/services/pop-notifications.service";
+import type { ToastPackage, ToastrService } from "ngx-toastr";
+import { Toast } from "ngx-toastr";
 
 @Component({
   selector: "astrobin-custom-toast-component",

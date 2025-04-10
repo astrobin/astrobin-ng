@@ -1,5 +1,5 @@
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import type { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
 
 export class BackendConfigGenerator {
   static backendConfig(): BackendConfigInterface {

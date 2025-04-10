@@ -1,31 +1,29 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { ActivatedRoute } from "@angular/router";
-import { takeUntil } from "rxjs/operators";
+import type { ChangeDetectorRef, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import type { ActivatedRoute } from "@angular/router";
+import type { MainState } from "@app/store/state";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
+import type { Store } from "@ngrx/store";
+import type { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
-import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { takeUntil } from "rxjs/operators";
 
 export enum SmartFolderType {
   YEAR = "year",
   GEAR = "gear",
   SUBJECT = "subject",
   CONSTELLATION = "constellation",
-  NO_DATA = 'nodata'
+  NO_DATA = "nodata"
 }
 
 @Component({
   selector: "astrobin-user-gallery-smart-folders",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div
-        *ngIf="!activeFolderType"
-        class="d-flex flex-wrap gap-4 justify-content-center"
-      >
+      <div *ngIf="!activeFolderType" class="d-flex flex-wrap gap-4 justify-content-center">
         <ng-container *ngFor="let smartFolder of smartFolders">
           <a
             *ngIf="!smartFolder.onlyOwner || currentUserWrapper.user?.id === user.id"
@@ -74,8 +72,8 @@ export class UserGallerySmartFoldersComponent extends BaseComponentDirective imp
   @Input() userProfile: UserProfileInterface;
 
   @Output() readonly activeChange = new EventEmitter<{
-    active: string,
-    menu: FindImagesResponseInterface["menu"]
+    active: string;
+    menu: FindImagesResponseInterface["menu"];
   }>();
 
   public readonly smartFolders = [

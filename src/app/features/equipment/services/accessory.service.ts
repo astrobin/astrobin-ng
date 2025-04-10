@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { AccessoryInterface, AccessoryType } from "@features/equipment/types/accessory.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { Observable, of } from "rxjs";
-import { UtilsService } from "@core/services/utils/utils.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { UtilsService } from "@core/services/utils/utils.service";
+import type { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { AccessoryType } from "@features/equipment/types/accessory.interface";
+import type { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
 
 export enum AccessoryDisplayProperty {
   TYPE = "TYPE"

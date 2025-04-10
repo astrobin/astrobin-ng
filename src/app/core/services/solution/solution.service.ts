@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { SolutionInterface, SolutionStatus } from "@core/interfaces/solution.interface";
+import type { SolutionInterface } from "@core/interfaces/solution.interface";
+import { SolutionStatus } from "@core/interfaces/solution.interface";
 import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-
+import type { LoadingService } from "@core/services/loading.service";
 
 export const COMMON_OBJECTS = [
   "47 Tuc Cluster",
@@ -138,13 +138,10 @@ export class SolutionService extends BaseService {
       return false;
     }
 
-    return (
-      solution.status === SolutionStatus.PENDING ||
-      solution.status === SolutionStatus.ADVANCED_PENDING
-    );
+    return solution.status === SolutionStatus.PENDING || solution.status === SolutionStatus.ADVANCED_PENDING;
   }
 
-  getObjectsInField(solution: SolutionInterface, clean: boolean = true): string[] {
+  getObjectsInField(solution: SolutionInterface, clean = true): string[] {
     const names: string[] = [];
 
     // Step 1: Add objects from objectsInField
@@ -191,7 +188,7 @@ export class SolutionService extends BaseService {
 
   sortObjects(a: string, b: string): number {
     const COMMON_OBJECTS_INDEX = COMMON_OBJECTS.map(obj => obj.toLowerCase());
-    const PRIORITY_CATALOGS = ['M', 'NGC', 'IC', 'LDN', 'LBN', 'Sh2-', 'VdB'];
+    const PRIORITY_CATALOGS = ["M", "NGC", "IC", "LDN", "LBN", "Sh2-", "VdB"];
 
     // Helper function to determine the catalog and number from an object name
     const getCatalogPriority = (obj: string) => {
@@ -199,7 +196,7 @@ export class SolutionService extends BaseService {
 
       // Check if the object is in COMMON_OBJECTS
       if (COMMON_OBJECTS_INDEX.includes(lowerCaseObj)) {
-        return { priority: 0, catalog: '', number: 0, name: obj };
+        return { priority: 0, catalog: "", number: 0, name: obj };
       }
 
       // Check if the object belongs to one of the PRIORITY_CATALOGS
@@ -207,13 +204,13 @@ export class SolutionService extends BaseService {
       const matches = obj.match(regex);
       if (matches) {
         const catalog = matches[1];
-        const number = matches[2] ? parseInt(matches[2], 10) : 0;  // Default to 0 if no number
+        const number = matches[2] ? parseInt(matches[2], 10) : 0; // Default to 0 if no number
         const priority = PRIORITY_CATALOGS.indexOf(catalog);
         return { priority: priority + 1, catalog, number, name: obj };
       }
 
       // Everything else is lower priority
-      return { priority: PRIORITY_CATALOGS.length + 1, catalog: '', number: 0, name: obj };
+      return { priority: PRIORITY_CATALOGS.length + 1, catalog: "", number: 0, name: obj };
     };
 
     const objA = getCatalogPriority(a);

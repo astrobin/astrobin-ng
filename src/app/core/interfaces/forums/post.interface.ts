@@ -1,5 +1,5 @@
-import { TopicInterface } from "@core/interfaces/forums/topic.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
+import type { TopicInterface } from "@core/interfaces/forums/topic.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
 
 export interface PostInterface {
   id: number;

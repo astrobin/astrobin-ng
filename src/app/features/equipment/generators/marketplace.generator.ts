@@ -1,13 +1,11 @@
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import {
-  MarketplaceListingInterface,
-  MarketplaceListingType
-} from "@features/equipment/types/marketplace-listing.interface";
-import {
-  MarketplaceLineItemInterface,
   MarketplaceListingCondition,
   MarketplaceShippingCostType
 } from "@features/equipment/types/marketplace-line-item.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
 import { UserGenerator } from "@shared/generators/user.generator";
 
 export class MarketplaceGenerator {

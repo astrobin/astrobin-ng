@@ -1,5 +1,5 @@
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 export interface MarketplacePrivateConversationInterface {
   id?: number;

@@ -1,9 +1,11 @@
-import { ElementRef, Inject, Injectable, OnDestroy, PLATFORM_ID } from "@angular/core";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { fromEvent, Subject, Subscription } from "rxjs";
-import { auditTime, takeUntil } from "rxjs/operators";
 import { isPlatformBrowser } from "@angular/common";
+import type { ElementRef, OnDestroy } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { Subscription } from "rxjs";
+import { fromEvent, Subject } from "rxjs";
+import { auditTime, takeUntil } from "rxjs/operators";
 
 interface RegisteredComponent {
   element: HTMLElement;
@@ -31,8 +33,7 @@ export class ViewportInitService implements OnDestroy {
     private windowRefService: WindowRefService,
     private utilsService: UtilsService,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {
-  }
+  ) {}
 
   register(id: string, elementRef: ElementRef, onInit: () => void): void {
     if (!isPlatformBrowser(this.platformId)) {
@@ -54,16 +55,19 @@ export class ViewportInitService implements OnDestroy {
     this._initScrollListenerForParent(scrollParentId, scrollParentElement);
 
     // Use IntersectionObserver for initial check
-    const observer = new IntersectionObserver((entries) => {
-      const entry = entries[0];
-      if (entry.isIntersecting) {
-        observer.disconnect();
-        this._initializeComponent(id);
+    const observer = new IntersectionObserver(
+      entries => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          observer.disconnect();
+          this._initializeComponent(id);
+        }
+      },
+      {
+        root: scrollParentElement instanceof Window ? null : (scrollParentElement as HTMLElement),
+        rootMargin: "500px" // Match verticalTolerance
       }
-    }, {
-      root: scrollParentElement instanceof Window ? null : scrollParentElement as HTMLElement,
-      rootMargin: "500px" // Match verticalTolerance
-    });
+    );
 
     observer.observe(element);
   }
@@ -122,10 +126,7 @@ export class ViewportInitService implements OnDestroy {
     }
 
     const subscription = fromEvent(element, "scroll")
-      .pipe(
-        auditTime(250),
-        takeUntil(this._destroyed$)
-      )
+      .pipe(auditTime(250), takeUntil(this._destroyed$))
       .subscribe(() => {
         if (!this._checkingViewport) {
           this._checkingViewport = true;
@@ -143,8 +144,10 @@ export class ViewportInitService implements OnDestroy {
   private _checkViewportForParent(scrollParentId: string): void {
     // Only check components that belong to this scroll parent
     for (const [id, component] of this._components.entries()) {
-      if (component.scrollParentId === scrollParentId &&
-        this.utilsService.isNearOrInViewport(component.element, { verticalTolerance: 500 })) {
+      if (
+        component.scrollParentId === scrollParentId &&
+        this.utilsService.isNearOrInViewport(component.element, { verticalTolerance: 500 })
+      ) {
         this._initializeComponent(id);
       }
     }

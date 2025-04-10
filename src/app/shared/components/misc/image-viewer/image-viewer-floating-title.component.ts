@@ -1,25 +1,28 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from "@angular/core";
+import type { ChangeDetectorRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
+import type { Router } from "@angular/router";
+import type { MainState } from "@app/store/state";
+import type { CollapseSyncService } from "@core/services/collapse-sync.service";
+import type { DeviceService } from "@core/services/device.service";
+import type { ImageViewerService } from "@core/services/image-viewer.service";
+import type { SearchService } from "@core/services/search.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { Store } from "@ngrx/store";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { SearchService } from "@core/services/search.service";
-import { Router } from "@angular/router";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { DeviceService } from "@core/services/device.service";
-import { CookieService } from "ngx-cookie";
-import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import type { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-image-viewer-floating-title",
   template: `
-    <div class="
+    <div
+      class="
       d-flex
       flex-nowrap
       gap-3
       justify-content-between
       align-items-center
-    ">
+    "
+    >
       <div class="image-title">
         {{ image.title }}
       </div>

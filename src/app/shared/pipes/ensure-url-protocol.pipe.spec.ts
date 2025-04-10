@@ -1,5 +1,6 @@
-import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
 import { UtilsService } from "@core/services/utils/utils.service";
+
+import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
 
 describe("EnsureUrlProtocolPipe", () => {
   let pipe: EnsureUrlProtocolPipe;
