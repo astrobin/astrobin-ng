@@ -1,55 +1,71 @@
 {
   "root": true,
-  "ignorePatterns": [
-    "projects/**/*"
-  ],
+  "plugins": ["import", "unused-imports"],
+  "ignorePatterns": ["projects/**/*", "dist/**/*", "node_modules/**/*"],
   "overrides": [
     {
-      "files": [
-        "*.ts"
-      ],
+      "files": ["*.ts"],
+      "parser": "@typescript-eslint/parser",
       "parserOptions": {
-        "project": [
-          "tsconfig.json"
-        ],
-        "createDefaultProgram": true
+        "project": "./src/tsconfig.eslint.json",
+        "tsconfigRootDir": "."
       },
       "extends": [
         "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended",
-        "plugin:@angular-eslint/template/recommended"
+        "plugin:prettier/recommended"
       ],
       "rules": {
-        "@angular-eslint/component-selector": [
+        "prettier/prettier": "error",
+        "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 1, "maxBOF": 0 }],
+        "@typescript-eslint/no-unused-expressions": "error",
+        "@typescript-eslint/array-type": ["error", { "default": "array" }],
+        "@typescript-eslint/consistent-type-assertions": "error",
+        "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+        "eqeqeq": ["error", "always"],
+        "prefer-const": "error",
+        "curly": "error",
+        "dot-notation": ["error", { "allowPattern": "^\\w+$" }],
+        "no-throw-literal": "error",
+        "@typescript-eslint/no-shadow": "error",
+        "@typescript-eslint/ban-types": "error",
+        "@typescript-eslint/consistent-type-imports": "error",
+        "import/order": [
           "error",
           {
-            "prefix": "astrobin",
-            "style": "kebab-case",
-            "type": "element"
+            "groups": [["builtin", "external"], "internal", ["parent", "sibling", "index"]],
+            "newlines-between": "always",
+            "alphabetize": { "order": "asc", "caseInsensitive": true }
           }
         ],
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "prefix": "astrobin",
-            "style": "camelCase",
-            "type": "attribute"
-          }
-        ],
-        "arrow-parens": [
-          "error",
-          "as-needed"
+        "import/no-duplicates": "error",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "unused-imports/no-unused-vars": [
+          "warn",
+          { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
         ]
       }
     },
     {
-      "files": [
-        "*.html"
-      ],
-      "extends": [
-        "plugin:@angular-eslint/template/recommended"
-      ],
+      "files": ["*.component.html"],
+      "parser": "@angular-eslint/template-parser",
+      "extends": ["plugin:@angular-eslint/template/recommended", "plugin:prettier/recommended"],
+      "rules": {
+        "prettier/prettier": "error"
+      }
+    },
+    {
+      "files": ["*.html"],
+      "excludedFiles": ["*.component.html"],
       "rules": {}
+    },
+    {
+      "files": ["*.scss", "*.css"],
+      "extends": ["plugin:prettier/recommended"],
+      "rules": {
+        "prettier/prettier": "error"
+      }
     }
   ]
 }
