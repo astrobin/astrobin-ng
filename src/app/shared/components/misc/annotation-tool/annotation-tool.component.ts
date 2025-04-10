@@ -13,8 +13,6 @@ import {
   OnInit,
   Output,
   PLATFORM_ID,
-  Pipe,
-  PipeTransform,
   SimpleChanges,
   TemplateRef,
   ViewChild
@@ -172,6 +170,7 @@ export class AnnotationToolComponent
   protected colors: string[] = [];
   // Flag to detect browser environment
   protected isBrowser: boolean;
+  protected isResizing = false; // Flag to track when window is being resized
   // Flag to prevent duplicate actions when both click and touchend fire
   private _lastActionTime = 0;
   private readonly ACTION_DEBOUNCE_MS = 300;
@@ -179,7 +178,6 @@ export class AnnotationToolComponent
   private readonly DRAG_THRESHOLD = 10; // Minimum pixels to move before considering it a drag
   private readonly CLICK_PREVENTION_TIMEOUT_MS = 100; // Timeout to prevent accidental double clicks
   private readonly RESIZE_DEBOUNCE_MS = 300; // Debounce time for window resize events
-  private _isResizing = false; // Flag to track when window is being resized
   // Subjects for controlling drag operations
   private _shapeDragStart$ = new Subject<{ event: MouseEvent; id: string }>();
   private _shapeDragEnd$ = new Subject<MouseEvent>();
@@ -198,6 +196,12 @@ export class AnnotationToolComponent
       )
     : new Subject<UIEvent>();
   private _dragInProgress = false;
+  // We'll define these in ngOnInit after isBrowser is initialized
+  private _windowScroll$: Subject<Event> | any;
+
+  // We directly use the passed imageElement from the parent component
+  // Subscription for image load events
+  private _imageLoadSubscription: Subscription = null;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -219,8 +223,6 @@ export class AnnotationToolComponent
     super(store$);
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
-
-  // We directly use the passed imageElement from the parent component
 
   ngOnChanges(changes: SimpleChanges): void {
     // Emit annotation mode active status whenever it changes
@@ -325,7 +327,7 @@ export class AnnotationToolComponent
         .pipe(takeUntil(this.destroyed$))
         .subscribe(() => {
           // Set resizing flag as soon as resize starts
-          this._isResizing = true;
+          this.isResizing = true;
           this.cdRef.markForCheck();
         });
     }
@@ -519,7 +521,7 @@ export class AnnotationToolComponent
         // Then call the existing handler
         this.handleWindowResize(event);
         // Reset the resizing flag after the resize is complete (debounced)
-        this._isResizing = false;
+        this.isResizing = false;
         this.cdRef.markForCheck();
       });
 
@@ -528,12 +530,6 @@ export class AnnotationToolComponent
       });
     }
   }
-
-  // We'll define these in ngOnInit after isBrowser is initialized
-  private _windowScroll$: Subject<Event> | any;
-
-  // Subscription for image load events
-  private _imageLoadSubscription: Subscription = null;
 
   ngOnDestroy(): void {
     if (this.isBrowser) {

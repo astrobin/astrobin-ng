@@ -198,7 +198,7 @@
     class="annotation-container"
     data-ignore-swipe-down="true"
     style="z-index: 999"
-    [class.hidden-during-resize]="_isResizing"
+    [class.hidden-during-resize]="isResizing"
   >
     <!-- Annotations layer -->
     <div class="annotation-layer" data-ignore-swipe-down="true">
@@ -226,7 +226,7 @@
         <!-- Title display -->
         <div *ngIf="ann.title" class="annotation-title">
           {{ ann.title }}
-          <!-- 
+          <!--
                ANNOTATION ICONS LOGIC:
                - Saved annotation icon shows only for annotations that exactly match what was saved in the revision
                - Shared annotation icon shows only for annotations loaded from URL that aren't from saved annotations
