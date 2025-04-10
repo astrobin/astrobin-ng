@@ -26,14 +26,8 @@
             <div class="search-filter-selection-list">
               <div *ngFor="let filter of categoryFilters(SearchFilterCategory[category])">
                 <div class="search-filter-selection-item">
-                  <div
-                    (click)="onSelect(filter)"
-                    class="search-filter-selection-item-label"
-                  >
-                    <span
-                      class="search-filter-selection-item-label-text"
-                      [ngClass]="filter.key"
-                    >
+                  <div (click)="onSelect(filter)" class="search-filter-selection-item-label">
+                    <span class="search-filter-selection-item-label-text" [ngClass]="filter.key">
                       {{ filter.label }}
                     </span>
                     <span class="search-filter-selection-item-label-icon">

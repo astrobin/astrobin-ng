@@ -1,6 +1,5 @@
 <nav *ngIf="breadcrumb$ | async as breadcrumb" aria-label="breadcrumb">
   <ol *ngIf="breadcrumb.length" class="breadcrumb">
-
     <li class="breadcrumb-item">
       <a routerLink="/">
         <fa-icon icon="home"></fa-icon>
@@ -9,7 +8,6 @@
     </li>
 
     <li *ngFor="let item of breadcrumb; let i = index" class="breadcrumb-item">
-
       <a *ngIf="item?.link" [routerLink]="item?.link">
         {{ item.label }}
       </a>
@@ -21,7 +19,6 @@
       <span *ngIf="!item?.link && !item?.externalLink">
         {{ item.label }}
       </span>
-
     </li>
   </ol>
 </nav>

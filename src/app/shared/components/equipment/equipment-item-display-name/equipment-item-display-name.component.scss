@@ -3,18 +3,17 @@
 :host {
   display: inline-flex;
   align-items: center;
-  gap: .5rem;
+  @include flex-gap(row, 0.5rem);
   position: relative;
 
-
   .klass-icon {
-    opacity: .75;
-    width: .8rem;
-    height: .8rem;
+    opacity: 0.75;
+    width: 0.8rem;
+    height: 0.8rem;
   }
 
   .brand-name-icons {
-    gap: .25rem;
+    @include flex-gap(row, 0.25rem);
   }
 
   .brand {
@@ -23,7 +22,7 @@
     a {
       color: var(--white);
       border-bottom: 1px solid var(--lighterGrey);
-      transition: color .3s, border-color .3s;
+      transition: color 0.3s, border-color 0.3s;
 
       @media (hover: hover) {
         &:hover {
@@ -36,48 +35,48 @@
   }
 
   .name {
-    [icon=asterisk] {
-      font-size: .5rem;
+    [icon="asterisk"] {
+      font-size: 0.5rem;
       vertical-align: super;
     }
 
-    [icon=snowflake] {
-      font-size: .85rem;
+    [icon="snowflake"] {
+      font-size: 0.85rem;
       color: teal;
-      margin-left: .25rem;
+      margin-left: 0.25rem;
       vertical-align: top;
     }
 
-    [icon=bell] {
-      font-size: .85rem;
+    [icon="bell"] {
+      font-size: 0.85rem;
       color: var(--gold);
-      margin-left: .25rem;
+      margin-left: 0.25rem;
       vertical-align: middle;
     }
   }
 
   .btn-retailers {
     .ng-fa-icon {
-      padding: 0 .25rem;
-      margin-left: .25rem;
-      font-size: .85rem;
+      padding: 0 0.25rem;
+      margin-left: 0.25rem;
+      font-size: 0.85rem;
       color: var(--gold);
     }
   }
 
   .btn-info-modal {
     color: var(--lighterGrey);
-    padding: 0 .25rem;
+    padding: 0 0.25rem;
     position: absolute;
-    top: -.5rem;
-    right: -.5rem;
+    top: -0.5rem;
+    right: -0.5rem;
     opacity: 0;
-    transition: opacity .2s, color .2s;
-    filter: drop-shadow(0 0 .25rem rgba(0, 0, 0, .5));
+    transition: opacity 0.2s, color 0.2s;
+    filter: drop-shadow(0 0 0.25rem rgba(0, 0, 0, 0.5));
 
     fa-icon {
       margin-right: 0;
-      font-size: .85rem;
+      font-size: 0.85rem;
     }
 
     @media (hover: hover) {
@@ -90,14 +89,14 @@
 
   &.with-klass-icon {
     background: var(--grey);
-    padding: .5rem .75rem;
-    border-radius: .5rem;
-    transition: background .3s;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    transition: background 0.3s;
 
     .brand-name-icons {
-      padding-left: .5rem;
+      padding-left: 0.5rem;
       border-left: 1px solid var(--lightGrey);
-      transition: border-color .3s;
+      transition: border-color 0.3s;
     }
 
     @media (hover: hover) {
@@ -137,11 +136,11 @@
     .popover-header {
       @include darkest-background-texture;
       color: var(--white);
-      padding: .75rem;
+      padding: 0.75rem;
 
       .ng-fa-icon {
         color: var(--lighterGrey);
-        transition: color .3s;
+        transition: color 0.3s;
 
         @media (hover: hover) {
           &:hover {
@@ -152,7 +151,7 @@
     }
 
     .popover-content {
-      padding: .75rem;
+      padding: 0.75rem;
     }
 
     .table.properties {

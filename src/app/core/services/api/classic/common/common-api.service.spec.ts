@@ -2,11 +2,12 @@ import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
+import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
 import { ContentTypeGenerator } from "@shared/generators/content-type.generator";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
 import { MockBuilder } from "ng-mocks";
+
 import { CommonApiService } from "./common-api.service";
 
 describe("CommonApiService", () => {

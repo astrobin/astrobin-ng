@@ -1,12 +1,12 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
-import { FieldArrayType, FormlyFieldConfig } from "@ngx-formly/core";
-import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
-import { TranslateService } from "@ngx-translate/core";
+import { ChangeDetectorRef, OnDestroy, OnInit, TemplateRef, Component, ViewChild } from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { startWith } from "rxjs/operators";
-import { Subscription } from "rxjs";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyFieldConfig, FieldArrayType } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { TableColumn, ColumnMode } from "@swimlane/ngx-datatable";
+import { Subscription } from "rxjs";
+import { startWith } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-formly-field-table",

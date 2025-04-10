@@ -1,25 +1,39 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostListener, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
 import { SafeHtml } from "@angular/platform-browser";
-import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { ImageService } from "@core/services/image/image.service";
-import { TranslateService } from "@ngx-translate/core";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateService } from "@ngx-translate/core";
 import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-image-viewer-additional-buttons",
   template: `
-    <div class="btn-container" 
-         [class.collapsed]="isCollapsed" 
-         [class.expanded]="!isCollapsed"
-         (mouseenter)="handleMouseEnter()"
-         (mouseleave)="handleMouseLeave()">
-      
+    <div
+      class="btn-container"
+      [class.collapsed]="isCollapsed"
+      [class.expanded]="!isCollapsed"
+      (mouseenter)="handleMouseEnter()"
+      (mouseleave)="handleMouseLeave()"
+    >
       <!-- Toggle button - only visible when collapsed -->
-      <button *ngIf="isCollapsed"
+      <button
+        *ngIf="isCollapsed"
         (click)="toggleCollapse($event)"
         astrobinEventPreventDefault
         class="toggle-buttons-btn"
@@ -28,7 +42,7 @@ import { isPlatformBrowser } from "@angular/common";
       >
         <fa-icon icon="chevron-left"></fa-icon>
       </button>
-      
+
       <!-- Buttons wrapper - expandable container -->
       <div class="buttons-wrapper">
         <button
@@ -51,11 +65,7 @@ import { isPlatformBrowser } from "@angular/common";
           [class.active]="allowTogglingAnnotationsOnMouseHover && showAnnotationsOnMouseHover"
           [class.disabled]="!allowTogglingAnnotationsOnMouseHover"
         >
-          <fa-icon
-            [ngbTooltip]="toggleAnnotationsOnMouseHoverTooltip"
-            container="body"
-            icon="crosshairs"
-          ></fa-icon>
+          <fa-icon [ngbTooltip]="toggleAnnotationsOnMouseHoverTooltip" container="body" icon="crosshairs"></fa-icon>
         </button>
 
         <button
@@ -79,23 +89,11 @@ import { isPlatformBrowser } from "@angular/common";
           astrobinEventPreventDefault
           class="skyplot-button btn btn-link text-light"
         >
-          <fa-icon
-            [ngbTooltip]="'View sky map' | translate"
-            container="body"
-            icon="map"
-          ></fa-icon>
+          <fa-icon [ngbTooltip]="'View sky map' | translate" container="body" icon="map"></fa-icon>
         </button>
 
-        <button
-          *ngIf="!revision?.videoFile"
-          class="histogram-button btn btn-link text-light"
-          (click)="openHistogram()"
-        >
-          <fa-icon
-            [ngbTooltip]="'View histogram' | translate"
-            container="body"
-            icon="chart-simple"
-          ></fa-icon>
+        <button *ngIf="!revision?.videoFile" class="histogram-button btn btn-link text-light" (click)="openHistogram()">
+          <fa-icon [ngbTooltip]="'View histogram' | translate" container="body" icon="chart-simple"></fa-icon>
         </button>
 
         <!-- Measurement tool button - opens fullscreen mode with measurement tool -->
@@ -105,11 +103,7 @@ import { isPlatformBrowser } from "@angular/common";
           astrobinEventPreventDefault
           class="measurement-tool-button btn btn-link text-light"
         >
-          <fa-icon
-            [ngbTooltip]="'Measurement tool' | translate"
-            container="body"
-            icon="ruler"
-          ></fa-icon>
+          <fa-icon [ngbTooltip]="'Measurement tool' | translate" container="body" icon="ruler"></fa-icon>
         </button>
 
         <!-- Annotation button - opens fullscreen mode with annotations -->
@@ -124,7 +118,9 @@ import { isPlatformBrowser } from "@angular/common";
           [class.active]="hasUrlAnnotations"
         >
           <fa-icon
-            [ngbTooltip]="hasUrlAnnotations ? ('Annotations from URL available' | translate) : ('Annotation tool' | translate)"
+            [ngbTooltip]="
+              hasUrlAnnotations ? ('Annotations from URL available' | translate) : ('Annotation tool' | translate)
+            "
             container="body"
             icon="file-text"
           ></fa-icon>
@@ -132,20 +128,15 @@ import { isPlatformBrowser } from "@angular/common";
 
         <button
           *ngIf="
-            image.allowImageAdjustmentsWidget === true || (
-              image.allowImageAdjustmentsWidget === null &&
-              image.defaultAllowImageAdjustmentsWidget
-            )"
+            image.allowImageAdjustmentsWidget === true ||
+            (image.allowImageAdjustmentsWidget === null && image.defaultAllowImageAdjustmentsWidget)
+          "
           (click)="showAdjustmentsEditor.emit()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
           class="adjustments-editor-button btn btn-link text-light d-none d-md-block"
         >
-          <fa-icon
-            [ngbTooltip]="'Image adjustments' | translate"
-            container="body"
-            icon="sliders"
-          ></fa-icon>
+          <fa-icon [ngbTooltip]="'Image adjustments' | translate" container="body" icon="sliders"></fa-icon>
         </button>
       </div>
     </div>
@@ -154,7 +145,7 @@ import { isPlatformBrowser } from "@angular/common";
       <div class="modal-body">
         <img
           [src]="revision?.solution?.pixinsightFindingChart || revision?.solution?.skyplotZoom1"
-          [ngStyle]="{'filter': revision.solution.pixinsightFindingChart ? 'none' : 'grayscale(100%)'}"
+          [ngStyle]="{ filter: revision.solution.pixinsightFindingChart ? 'none' : 'grayscale(100%)' }"
           class="w-100"
           alt=""
         />
@@ -217,7 +208,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges, OnInit {
   protected toggleAnnotationsOnMouseHoverTooltip: string;
   protected showMoonScaleTooltip: string;
   protected hideMoonScaleTooltip: string;
-  
+
   // Collapsible state
   protected isCollapsed = true;
   private _hoverTimeout: any;
@@ -239,7 +230,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges, OnInit {
     this.showMoonScaleTooltip = this.translateService.instant("Show Moon scale (M)");
     this.hideMoonScaleTooltip = this.translateService.instant("Hide Moon scale (M)");
   }
-  
+
   ngOnInit(): void {
     // Start collapsed
     this.isCollapsed = true;
@@ -272,39 +263,39 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges, OnInit {
     this.modalService.open(this.histogramModalTemplate, { size: "sm" });
     this.loadingHistogram = true;
 
-    this.imageApiService.getThumbnail(
-      this.image.hash || this.image.pk, this.revisionLabel, ImageAlias.HISTOGRAM
-    ).subscribe(thumbnail => {
-      this.loadingHistogram = false;
-      this.histogram = thumbnail.url;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.imageApiService
+      .getThumbnail(this.image.hash || this.image.pk, this.revisionLabel, ImageAlias.HISTOGRAM)
+      .subscribe(thumbnail => {
+        this.loadingHistogram = false;
+        this.histogram = thumbnail.url;
+        this.changeDetectorRef.markForCheck();
+      });
   }
-  
+
   /**
    * Show tools when clicking the chevron button
    */
   toggleCollapse(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    
+
     // Always expand, never collapse on click
     this.isCollapsed = false;
     this.changeDetectorRef.markForCheck();
-    
+
     // Clear any pending timeouts
     if (this._hoverTimeout) {
       clearTimeout(this._hoverTimeout);
       this._hoverTimeout = null;
     }
-    
+
     // For touch devices, auto-hide after a longer timeout
     if (this.isTouchOnly) {
       // Clear any existing timeouts
       if (this._touchTimeout) {
         clearTimeout(this._touchTimeout);
       }
-      
+
       // Set a timeout to auto-collapse on touch devices
       this._touchTimeout = setTimeout(() => {
         this.isCollapsed = true;
@@ -312,7 +303,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges, OnInit {
       }, 3000); // 3 seconds is enough time to interact with buttons
     }
   }
-  
+
   /**
    * Handle mouse enter - expand immediately
    * Only applies to non-touch devices
@@ -324,13 +315,13 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges, OnInit {
       if (this._hoverTimeout) {
         clearTimeout(this._hoverTimeout);
       }
-      
+
       // Expand immediately without delay
       this.isCollapsed = false;
       this.changeDetectorRef.markForCheck();
     }
   }
-  
+
   /**
    * Handle mouse leave - collapse after a delay
    * Only applies to non-touch devices
@@ -342,7 +333,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges, OnInit {
       if (this._hoverTimeout) {
         clearTimeout(this._hoverTimeout);
       }
-      
+
       // Set a longer delay before collapsing to allow user to move cursor to the buttons
       this._hoverTimeout = setTimeout(() => {
         this.isCollapsed = true;
@@ -350,7 +341,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges, OnInit {
       }, 1000);
     }
   }
-  
+
   /**
    * Cleanup any timeouts when component is destroyed
    */
@@ -358,7 +349,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges, OnInit {
     if (this._hoverTimeout) {
       clearTimeout(this._hoverTimeout);
     }
-    
+
     if (this._touchTimeout) {
       clearTimeout(this._touchTimeout);
     }
@@ -367,12 +358,8 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges, OnInit {
   private _updateToggleAnnotationsOnMouseHoverTooltip(): void {
     if (this.allowTogglingAnnotationsOnMouseHover) {
       this.toggleAnnotationsOnMouseHoverTooltip = this.showAnnotationsOnMouseHover
-        ? this.translateService.instant(
-          "Click to show annotations on button hover only (or hold A)"
-        )
-        : this.translateService.instant(
-          "Click to show annotations on image hover (or hold A)"
-        );
+        ? this.translateService.instant("Click to show annotations on button hover only (or hold A)")
+        : this.translateService.instant("Click to show annotations on image hover (or hold A)");
     } else {
       this.toggleAnnotationsOnMouseHoverTooltip = null;
     }

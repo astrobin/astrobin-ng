@@ -1,24 +1,24 @@
-import { isPlatformBrowser, Location } from "@angular/common";
+import { Location, isPlatformBrowser } from "@angular/common";
 import { ApplicationRef, ComponentRef, createComponent, Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { DeleteImageSuccess } from "@app/store/actions/image.actions";
-import { map, take, takeUntil } from "rxjs/operators";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { DeviceService } from "@core/services/device.service";
-import { Actions, ofType } from "@ngrx/effects";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { TitleService } from "@core/services/title/title.service";
-import { ImageService } from "@core/services/image/image.service";
-import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { DeleteImageSuccess } from "@app/store/actions/image.actions";
+import { MainState } from "@app/store/state";
+import { ImageInterface, ImageRevisionInterface, FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { BaseService } from "@core/services/base.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
+import { TitleService } from "@core/services/title/title.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { EMPTY, Observable, Subject, Subscription } from "rxjs";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 import { CookieService } from "ngx-cookie";
+import { Subscription, EMPTY, Observable, Subject } from "rxjs";
+import { map, take, takeUntil } from "rxjs/operators";
 
 export const SHOW_ANNOTATIONS_ON_MOUSE_HOVER_COOKIE = "astrobin-images-show-annotations-on-mouse-hover";
 
@@ -67,23 +67,22 @@ export class ImageViewerService extends BaseService {
 
     this._isBrowser = isPlatformBrowser(platformId);
 
-    this.actions$.pipe(
-      ofType(AppActionTypes.DELETE_IMAGE_SUCCESS),
-      takeUntil(this.destroyed$),
-      map((action: DeleteImageSuccess) => action.payload.pk)
-    ).subscribe((pk: ImageInterface["pk"]) => {
-      if (this.slideshow && this.slideshow.instance.activeImage.pk === pk) {
-        this.closeSlideShow(true);
-      }
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.DELETE_IMAGE_SUCCESS),
+        takeUntil(this.destroyed$),
+        map((action: DeleteImageSuccess) => action.payload.pk)
+      )
+      .subscribe((pk: ImageInterface["pk"]) => {
+        if (this.slideshow && this.slideshow.instance.activeImage.pk === pk) {
+          this.closeSlideShow(true);
+        }
+      });
 
     this._initShowAnnotationsOnMouseHover();
   }
 
-  autoOpenSlideshow(
-    callerComponentId: string,
-    activatedRoute: ActivatedRoute
-  ): void {
+  autoOpenSlideshow(callerComponentId: string, activatedRoute: ActivatedRoute): void {
     const queryParams = activatedRoute.snapshot.queryParams;
 
     if (queryParams["i"]) {
@@ -120,22 +119,21 @@ export class ImageViewerService extends BaseService {
         this._previousDescription = this.titleService.getDescription();
         this._previousUrl = this.windowRefService.getCurrentUrl().toString();
 
-
-        this.slideshow = createComponent(
-          ImageViewerSlideshowComponent, {
-            environmentInjector: this.applicationRef.injector
-          }
-        );
+        this.slideshow = createComponent(ImageViewerSlideshowComponent, {
+          environmentInjector: this.applicationRef.injector
+        });
 
         this.utilsService.delay(100).subscribe(() => {
           if (!this._routerEventsSubscription) {
-            this._routerEventsSubscription = this.router.events.pipe(
-              takeUntil(this.slideshow.instance.closeSlideshow)  // Unsubscribe when slideshow closes
-            ).subscribe(event => {
-              if (event instanceof NavigationEnd) {
-                this.closeSlideShow(false);
-              }
-            });
+            this._routerEventsSubscription = this.router.events
+              .pipe(
+                takeUntil(this.slideshow.instance.closeSlideshow) // Unsubscribe when slideshow closes
+              )
+              .subscribe(event => {
+                if (event instanceof NavigationEnd) {
+                  this.closeSlideShow(false);
+                }
+              });
           }
         });
 
@@ -209,10 +207,7 @@ export class ImageViewerService extends BaseService {
         url = UtilsService.removeUrlParam(url, "measurements");
         url = url.split("#")[0];
 
-        this.windowRefService.replaceState(
-          {},
-          url
-        );
+        this.windowRefService.replaceState({}, url);
       }
     }
   }

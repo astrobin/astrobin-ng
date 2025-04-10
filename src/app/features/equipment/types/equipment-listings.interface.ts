@@ -1,12 +1,12 @@
-import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { StockStatus } from "@features/equipment/types/stock-status.type";
 
 export enum EquipmentItemListingType {
   SELLS = "SELLS",
-  PAIRS_WELL = "PAIRS_WELL",
+  PAIRS_WELL = "PAIRS_WELL"
 }
 
 export interface EquipmentRetailerInterface {

@@ -10,38 +10,38 @@
   </span>
 
   <span *ngIf="pricing$ | async as pricing; else loadingTemplate" class="price">
-      <astrobin-price
-        [currency]="subscriptionsService.currency"
-        [pricing]="pricing[product]"
-        [recurringUnit]="recurringUnit"
-        [showRecurringUnit]="false"
-      ></astrobin-price>
+    <astrobin-price
+      [currency]="subscriptionsService.currency"
+      [pricing]="pricing[product]"
+      [recurringUnit]="recurringUnit"
+      [showRecurringUnit]="false"
+    ></astrobin-price>
 
-      <div class="btn-group ms-3" role="group">
-        <input
-          (click)="payYearly()"
-          [checked]="recurringUnit === RecurringUnit.YEARLY"
-          autocomplete="off"
-          checked
-          class="btn-check"
-          id="pay-yearly"
-          name="pay-yearly"
-          type="radio"
-        />
-        <label class="btn btn-outline-primary" for="pay-yearly">{{ "Yearly" | translate }}</label>
+    <div class="btn-group ms-3" role="group">
+      <input
+        (click)="payYearly()"
+        [checked]="recurringUnit === RecurringUnit.YEARLY"
+        autocomplete="off"
+        checked
+        class="btn-check"
+        id="pay-yearly"
+        name="pay-yearly"
+        type="radio"
+      />
+      <label class="btn btn-outline-primary" for="pay-yearly">{{ "Yearly" | translate }}</label>
 
-        <input
-          (click)="payMonthly()"
-          [checked]="recurringUnit === RecurringUnit.MONTHLY"
-          autocomplete="off"
-          class="btn-check"
-          id="pay-monthly"
-          name="pay-monthly"
-          type="radio"
-        />
-        <label class="btn btn-outline-primary" for="pay-monthly">{{ "Monthly" | translate }}</label>
-      </div>
-    </span>
+      <input
+        (click)="payMonthly()"
+        [checked]="recurringUnit === RecurringUnit.MONTHLY"
+        autocomplete="off"
+        class="btn-check"
+        id="pay-monthly"
+        name="pay-monthly"
+        type="radio"
+      />
+      <label class="btn btn-outline-primary" for="pay-monthly">{{ "Monthly" | translate }}</label>
+    </div>
+  </span>
 </h1>
 
 <small *ngIf="(availableSubscriptions$ | async)?.nonAutorenewingSupported">
@@ -63,10 +63,7 @@
 
 <ngb-accordion class="info">
   <ngb-panel
-    *ngIf="
-      (alreadySubscribedLower$ | async) === true &&
-      (userSubscriptionService.upgradeAllowed$() | async) === false
-    "
+    *ngIf="(alreadySubscribedLower$ | async) === true && (userSubscriptionService.upgradeAllowed$() | async) === false"
     title="{{ 'Want to upgrade from a lower subscription tier?' | translate }}"
   >
     <ng-template ngbPanelContent>
@@ -138,9 +135,9 @@
 
       <ng-template #alreadyCancelledTemplate>
         <p
-          [translateParams]="{'0': activeUserSubscription.expires | localDate | date: 'mediumDate'}"
-          [translate]="'Your subscription is currently cancelled and it will expire on {{0}}.'">
-        </p>
+          [translateParams]="{ '0': activeUserSubscription.expires | localDate | date : 'mediumDate' }"
+          [translate]="'Your subscription is currently cancelled and it will expire on {{0}}.'"
+        ></p>
       </ng-template>
     </ng-container>
   </ng-container>

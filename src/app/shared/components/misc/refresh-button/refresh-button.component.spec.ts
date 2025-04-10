@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { MockBuilder } from "ng-mocks";
-import { RefreshButtonComponent } from "./refresh-button.component";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { RefreshButtonComponent } from "./refresh-button.component";
 
 describe("RefreshButtonComponent", () => {
   let component: RefreshButtonComponent;

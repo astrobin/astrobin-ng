@@ -16,7 +16,10 @@ phases:
 
   build:
     commands:
-      - npm run lint
+      - git fetch origin master # Needed for git diff to work
+      - git diff origin/master...HEAD --name-only
+      - npm run lint:changed
+      - npm run format:changed
       - npm run build:prod
       - npm run build:ssr:prod
 

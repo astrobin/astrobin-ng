@@ -1,8 +1,15 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { AfterViewInit, OnInit, TemplateRef, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { FormlyFieldService, FormlyFieldMessageLevel } from "@core/services/formly-field.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { of } from "rxjs";
 import {
   debounceTime,
@@ -16,13 +23,6 @@ import {
   takeUntil,
   tap
 } from "rxjs/operators";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { Store } from "@ngrx/store";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
-import { UtilsService } from "@core/services/utils/utils.service";
 
 const PROHIBITED_DIY_WORDS = [
   // English
@@ -166,14 +166,12 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
           },
           nina: {
             expression: (control: FormControl) => {
-              return of(
-                control.value.toLowerCase().indexOf("nina") === -1
-              );
+              return of(control.value.toLowerCase().indexOf("nina") === -1);
             },
             message: (error, field: FormlyFieldConfig) => {
               return this.translateService.instant(
                 `N.I.N.A. is a software and not a brand, and it does not need to be added again. Please ` +
-                `search for it as: 'Stefan Berg Nighttime Imaging 'N' Astronomy (N.I.N.A. / NINA)'.`
+                  `search for it as: 'Stefan Berg Nighttime Imaging 'N' Astronomy (N.I.N.A. / NINA)'.`
               );
             }
           },
@@ -181,9 +179,9 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
             expression: (control: FormControl) => {
               return of(
                 control.value.toLowerCase().indexOf("teleskop-express") === -1 &&
-                control.value.toLowerCase().indexOf("teleskop express") === -1 &&
-                control.value.toLowerCase().indexOf("teleskop-service") === -1 &&
-                control.value.toLowerCase().indexOf("teleskop service") === -1
+                  control.value.toLowerCase().indexOf("teleskop express") === -1 &&
+                  control.value.toLowerCase().indexOf("teleskop-service") === -1 &&
+                  control.value.toLowerCase().indexOf("teleskop service") === -1
               );
             },
             message: (error, field: FormlyFieldConfig) => {

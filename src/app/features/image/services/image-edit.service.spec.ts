@@ -1,11 +1,11 @@
 import { TestBed } from "@angular/core/testing";
-
-import { ImageEditService } from "./image-edit.service";
-import { MockBuilder } from "ng-mocks";
-import { ImageModule } from "@features/image/image.module";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { SolarSystemSubjectType, SubjectType } from "@core/interfaces/image.interface";
+import { ImageModule } from "@features/image/image.module";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { ImageEditService } from "./image-edit.service";
 
 describe("ImageEditService", () => {
   let service: ImageEditService;

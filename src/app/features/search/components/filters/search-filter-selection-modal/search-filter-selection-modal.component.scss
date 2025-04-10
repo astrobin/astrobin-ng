@@ -1,3 +1,5 @@
+@import "../../../../../styles/mixins";
+
 :host {
   max-height: calc(100vh - 3rem);
   overflow-y: auto;
@@ -5,12 +7,12 @@
   .search-filter-selection-item-label {
     display: flex;
     justify-content: space-between;
-    padding: .5rem 0;
+    padding: 0.5rem 0;
     cursor: pointer;
     width: 100%;
 
     &:not(:last-child) {
-      margin-bottom: .5rem;
+      margin-bottom: 0.5rem;
     }
 
     &:hover {
@@ -19,7 +21,7 @@
 
     .search-filter-selection-item-label-text {
       display: flex;
-      gap: .5rem;
+      @include flex-gap(row, 0.5rem);
       align-items: center;
       flex-grow: 1;
     }
@@ -35,7 +37,7 @@
       width: calc(100% - 2rem);
 
       .dropdown-item {
-        padding: .75rem .5rem;
+        padding: 0.75rem 0.5rem;
 
         &.active,
         &:active,

@@ -1,13 +1,38 @@
 import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { of } from "rxjs";
-import { catchError, map, mergeMap, tap } from "rxjs/operators";
-import { CollectionApiService } from "@core/services/api/classic/collections/collection-api.service";
-import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, CreateCollection, CreateCollectionFailure, CreateCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, SetCollectionCoverImage, SetCollectionCoverImageFailure, SetCollectionCoverImageSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
+import {
+  AddImageToCollection,
+  CreateCollection,
+  DeleteCollection,
+  FindCollections,
+  LoadCollections,
+  RemoveImageFromCollection,
+  SetCollectionCoverImage,
+  UpdateCollection,
+  AddImageToCollectionFailure,
+  AddImageToCollectionSuccess,
+  CreateCollectionFailure,
+  CreateCollectionSuccess,
+  DeleteCollectionFailure,
+  DeleteCollectionSuccess,
+  FindCollectionsFailure,
+  FindCollectionsSuccess,
+  LoadCollectionsFailure,
+  LoadCollectionsSuccess,
+  RemoveImageFromCollectionFailure,
+  RemoveImageFromCollectionSuccess,
+  SetCollectionCoverImageFailure,
+  SetCollectionCoverImageSuccess,
+  UpdateCollectionFailure,
+  UpdateCollectionSuccess
+} from "@app/store/actions/collection.actions";
+import { CollectionApiService } from "@core/services/api/classic/collections/collection-api.service";
 import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { createEffect, ofType, Actions } from "@ngrx/effects";
 import { TranslateService } from "@ngx-translate/core";
+import { of } from "rxjs";
+import { catchError, map, mergeMap, tap } from "rxjs/operators";
 
 @Injectable()
 export class CollectionEffects {
@@ -24,7 +49,8 @@ export class CollectionEffects {
     )
   );
 
-  loadCollectionsSuccess$ = createEffect(() =>
+  loadCollectionsSuccess$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.LOAD_COLLECTIONS_SUCCESS),
         tap(() => this.loadingService.setLoading(false))
@@ -32,7 +58,8 @@ export class CollectionEffects {
     { dispatch: false }
   );
 
-  loadCollectionsFailure$ = createEffect(() =>
+  loadCollectionsFailure$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.LOAD_COLLECTIONS_FAILURE),
         tap(() => this.loadingService.setLoading(false))
@@ -53,7 +80,8 @@ export class CollectionEffects {
     )
   );
 
-  findCollectionsSuccess$ = createEffect(() =>
+  findCollectionsSuccess$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.FIND_COLLECTIONS_SUCCESS),
         tap(() => this.loadingService.setLoading(false))
@@ -61,7 +89,8 @@ export class CollectionEffects {
     { dispatch: false }
   );
 
-  findCollectionsFailure$ = createEffect(() =>
+  findCollectionsFailure$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.FIND_COLLECTIONS_FAILURE),
         tap(() => this.loadingService.setLoading(false))
@@ -73,17 +102,17 @@ export class CollectionEffects {
     this.actions$.pipe(
       ofType(AppActionTypes.UPDATE_COLLECTION),
       mergeMap((action: UpdateCollection) => {
-          this.loadingService.setLoading(true);
-          return this.collectionApiService.update(action.payload.collection).pipe(
-            map(collection => new UpdateCollectionSuccess({ collection })),
-            catchError(error => of(new UpdateCollectionFailure({ collection: action.payload.collection, error })))
-          );
-        }
-      )
+        this.loadingService.setLoading(true);
+        return this.collectionApiService.update(action.payload.collection).pipe(
+          map(collection => new UpdateCollectionSuccess({ collection })),
+          catchError(error => of(new UpdateCollectionFailure({ collection: action.payload.collection, error })))
+        );
+      })
     )
   );
 
-  updateCollectionSuccess$ = createEffect(() =>
+  updateCollectionSuccess$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.UPDATE_COLLECTION_SUCCESS),
         tap(() => this.loadingService.setLoading(false))
@@ -91,7 +120,8 @@ export class CollectionEffects {
     { dispatch: false }
   );
 
-  updateCollectionFailure$ = createEffect(() =>
+  updateCollectionFailure$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.UPDATE_COLLECTION_FAILURE),
         tap(() => this.loadingService.setLoading(false))
@@ -103,22 +133,19 @@ export class CollectionEffects {
     this.actions$.pipe(
       ofType(AppActionTypes.CREATE_COLLECTION),
       mergeMap((action: CreateCollection) => {
-          this.loadingService.setLoading(true);
-          return this.collectionApiService.create(
-            action.payload.parent,
-            action.payload.name,
-            action.payload.description,
-            action.payload.orderByTag
-          ).pipe(
+        this.loadingService.setLoading(true);
+        return this.collectionApiService
+          .create(action.payload.parent, action.payload.name, action.payload.description, action.payload.orderByTag)
+          .pipe(
             map(collection => new CreateCollectionSuccess({ collection })),
             catchError(error => of(new CreateCollectionFailure({ error })))
           );
-        }
-      )
+      })
     )
   );
 
-  createCollectionSuccess$ = createEffect(() =>
+  createCollectionSuccess$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.CREATE_COLLECTION_SUCCESS),
         tap(() => this.loadingService.setLoading(false))
@@ -126,7 +153,8 @@ export class CollectionEffects {
     { dispatch: false }
   );
 
-  createCollectionFailure$ = createEffect(() =>
+  createCollectionFailure$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.CREATE_COLLECTION_FAILURE),
         tap(() => this.loadingService.setLoading(false))
@@ -138,17 +166,17 @@ export class CollectionEffects {
     this.actions$.pipe(
       ofType(AppActionTypes.DELETE_COLLECTION),
       mergeMap((action: DeleteCollection) => {
-          this.loadingService.setLoading(true);
-          return this.collectionApiService.delete(action.payload.collectionId).pipe(
-            map(() => new DeleteCollectionSuccess({ collectionId: action.payload.collectionId })),
-            catchError(error => of(new DeleteCollectionFailure({ collectionId: action.payload.collectionId, error })))
-          );
-        }
-      )
+        this.loadingService.setLoading(true);
+        return this.collectionApiService.delete(action.payload.collectionId).pipe(
+          map(() => new DeleteCollectionSuccess({ collectionId: action.payload.collectionId })),
+          catchError(error => of(new DeleteCollectionFailure({ collectionId: action.payload.collectionId, error })))
+        );
+      })
     )
   );
 
-  deleteCollectionSuccess$ = createEffect(() =>
+  deleteCollectionSuccess$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.DELETE_COLLECTION_SUCCESS),
         tap(() => this.loadingService.setLoading(false))
@@ -156,7 +184,8 @@ export class CollectionEffects {
     { dispatch: false }
   );
 
-  deleteCollectionFailure$ = createEffect(() =>
+  deleteCollectionFailure$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.DELETE_COLLECTION_FAILURE),
         tap(() => this.loadingService.setLoading(false))
@@ -168,24 +197,31 @@ export class CollectionEffects {
     this.actions$.pipe(
       ofType(AppActionTypes.ADD_IMAGE_TO_COLLECTION),
       mergeMap((action: AddImageToCollection) => {
-          this.loadingService.setLoading(true);
-          return this.collectionApiService.addImage(action.payload.collectionId, action.payload.imageId).pipe(
-            map(() => new AddImageToCollectionSuccess({
-              collectionId: action.payload.collectionId,
-              imageId: action.payload.imageId
-            })),
-            catchError(error => of(new AddImageToCollectionFailure({
-              collectionId: action.payload.collectionId,
-              imageId: action.payload.imageId,
-              error
-            })))
-          );
-        }
-      )
+        this.loadingService.setLoading(true);
+        return this.collectionApiService.addImage(action.payload.collectionId, action.payload.imageId).pipe(
+          map(
+            () =>
+              new AddImageToCollectionSuccess({
+                collectionId: action.payload.collectionId,
+                imageId: action.payload.imageId
+              })
+          ),
+          catchError(error =>
+            of(
+              new AddImageToCollectionFailure({
+                collectionId: action.payload.collectionId,
+                imageId: action.payload.imageId,
+                error
+              })
+            )
+          )
+        );
+      })
     )
   );
 
-  addImageSuccess$ = createEffect(() =>
+  addImageSuccess$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS),
         tap(() => this.loadingService.setLoading(false))
@@ -193,7 +229,8 @@ export class CollectionEffects {
     { dispatch: false }
   );
 
-  addImageFailure$ = createEffect(() =>
+  addImageFailure$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.ADD_IMAGE_TO_COLLECTION_FAILURE),
         tap(() => {
@@ -210,24 +247,31 @@ export class CollectionEffects {
     this.actions$.pipe(
       ofType(AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION),
       mergeMap((action: RemoveImageFromCollection) => {
-          this.loadingService.setLoading(true);
-          return this.collectionApiService.removeImage(action.payload.collectionId, action.payload.imageId).pipe(
-            map(() => new RemoveImageFromCollectionSuccess({
-              collectionId: action.payload.collectionId,
-              imageId: action.payload.imageId
-            })),
-            catchError(error => of(new RemoveImageFromCollectionFailure({
-              collectionId: action.payload.collectionId,
-              imageId: action.payload.imageId,
-              error
-            })))
-          );
-        }
-      )
+        this.loadingService.setLoading(true);
+        return this.collectionApiService.removeImage(action.payload.collectionId, action.payload.imageId).pipe(
+          map(
+            () =>
+              new RemoveImageFromCollectionSuccess({
+                collectionId: action.payload.collectionId,
+                imageId: action.payload.imageId
+              })
+          ),
+          catchError(error =>
+            of(
+              new RemoveImageFromCollectionFailure({
+                collectionId: action.payload.collectionId,
+                imageId: action.payload.imageId,
+                error
+              })
+            )
+          )
+        );
+      })
     )
   );
 
-  removeImageSuccess$ = createEffect(() =>
+  removeImageSuccess$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS),
         tap(() => this.loadingService.setLoading(false))
@@ -235,7 +279,8 @@ export class CollectionEffects {
     { dispatch: false }
   );
 
-  removeImageFailure$ = createEffect(() =>
+  removeImageFailure$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_FAILURE),
         tap(() => {
@@ -252,42 +297,48 @@ export class CollectionEffects {
     this.actions$.pipe(
       ofType(AppActionTypes.SET_COLLECTION_COVER_IMAGE),
       mergeMap((action: SetCollectionCoverImage) => {
-          this.loadingService.setLoading(true);
-          return this.collectionApiService.setCoverImage(action.payload.collectionId, action.payload.imageId).pipe(
-            map(collection => new SetCollectionCoverImageSuccess({
-              collectionId: action.payload.collectionId,
-              imageId: action.payload.imageId,
-              coverThumbnail: collection.coverThumbnail,
-              coverThumbnailHd: collection.coverThumbnailHd,
-              squareCropping: collection.squareCropping,
-              w: collection.w,
-              h: collection.h
-            })),
-            catchError(error => of(new SetCollectionCoverImageFailure({
-              collectionId: action.payload.collectionId,
-              imageId: action.payload.imageId,
-              error
-            })))
-          );
-        }
-      )
+        this.loadingService.setLoading(true);
+        return this.collectionApiService.setCoverImage(action.payload.collectionId, action.payload.imageId).pipe(
+          map(
+            collection =>
+              new SetCollectionCoverImageSuccess({
+                collectionId: action.payload.collectionId,
+                imageId: action.payload.imageId,
+                coverThumbnail: collection.coverThumbnail,
+                coverThumbnailHd: collection.coverThumbnailHd,
+                squareCropping: collection.squareCropping,
+                w: collection.w,
+                h: collection.h
+              })
+          ),
+          catchError(error =>
+            of(
+              new SetCollectionCoverImageFailure({
+                collectionId: action.payload.collectionId,
+                imageId: action.payload.imageId,
+                error
+              })
+            )
+          )
+        );
+      })
     )
   );
 
-  setCoverImageSuccess$ = createEffect(() =>
+  setCoverImageSuccess$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.SET_COLLECTION_COVER_IMAGE_SUCCESS),
         tap(() => {
-          this.popNotificationsService.success(
-            this.translateService.instant("Cover image set successfully.")
-          );
+          this.popNotificationsService.success(this.translateService.instant("Cover image set successfully."));
           this.loadingService.setLoading(false);
         })
       ),
     { dispatch: false }
   );
 
-  setCoverImageFailure$ = createEffect(() =>
+  setCoverImageFailure$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(AppActionTypes.SET_COLLECTION_COVER_IMAGE_FAILURE),
         tap(() => {
@@ -306,6 +357,5 @@ export class CollectionEffects {
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService
-  ) {
-  }
+  ) {}
 }

@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { FeedComponent } from "@features/home/components/feed/feed.component";
+import { IotdComponent } from "@features/home/components/iotd/iotd.component";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+import { EMPTY } from "rxjs";
 
 import { HomeComponent } from "./home.component";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { ActivatedRoute, Router } from "@angular/router";
-import { EMPTY } from "rxjs";
-import { IotdComponent } from "@features/home/components/iotd/iotd.component";
-import { FeedComponent } from "@features/home/components/feed/feed.component";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;

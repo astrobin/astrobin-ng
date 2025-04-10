@@ -42,7 +42,7 @@ export interface FeedItemInterface {
   imageW: number;
   imageH: number;
   thumbnail: string;
-  verb: FeedItemVerb,
+  verb: FeedItemVerb;
   description: string;
   timestamp: string;
   public: boolean;

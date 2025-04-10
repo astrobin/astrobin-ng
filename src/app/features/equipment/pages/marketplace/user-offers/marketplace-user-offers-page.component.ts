@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { OnInit, Component } from "@angular/core";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { UserInterface } from "@core/interfaces/user.interface";
 import {
   MarketplaceFilterModel,
   MarketplaceRefreshOptions
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { takeUntil } from "rxjs/operators";
-import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
 
 @Component({
   selector: "astrobin-marketplace-my-offers-page",
@@ -66,7 +66,6 @@ export class MarketplaceUserOffersPageComponent extends MarketplaceListingsBaseP
   protected _getListingsFilterPredicate(
     currentUser: UserInterface | null
   ): (listing: MarketplaceListingInterface) => boolean {
-    return listing =>
-      listing.lineItems.some(lineItem => lineItem.offers.some(offer => offer.user === currentUser?.id));
+    return listing => listing.lineItems.some(lineItem => lineItem.offers.some(offer => offer.user === currentUser?.id));
   }
 }

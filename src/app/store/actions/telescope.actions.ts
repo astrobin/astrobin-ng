@@ -7,13 +7,11 @@ import { TelescopeInterface } from "@core/interfaces/telescope.interface";
 export class LoadTelescope implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_TELESCOPE;
 
-  constructor(public payload: number) {
-  }
+  constructor(public payload: number) {}
 }
 
 export class LoadTelescopeSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_TELESCOPE_SUCCESS;
 
-  constructor(public payload: TelescopeInterface) {
-  }
+  constructor(public payload: TelescopeInterface) {}
 }

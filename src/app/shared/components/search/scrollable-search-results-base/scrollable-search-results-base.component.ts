@@ -1,22 +1,35 @@
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
-import { auditTime, fromEvent, Observable } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
-import { takeUntil } from "rxjs/operators";
-import { Store } from "@ngrx/store";
+import {
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID,
+  ChangeDetectorRef,
+  ElementRef,
+  OnChanges,
+  OnInit,
+  SimpleChanges
+} from "@angular/core";
 import { MainState } from "@app/store/state";
+import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
+import { SearchService } from "@core/services/search.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { SearchService } from "@core/services/search.service";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { auditTime, fromEvent, Observable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-scrollable-search-results-base",
   template: ""
 })
-export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseComponentDirective implements OnInit, OnChanges {
+export abstract class ScrollableSearchResultsBaseComponent<T>
+  extends BaseComponentDirective
+  implements OnInit, OnChanges
+{
   initialLoading = false;
   loading = false;
   page = 1;
@@ -61,11 +74,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (
-      this.isInViewport &&
-      changes.model &&
-      changes.model.currentValue
-    ) {
+    if (this.isInViewport && changes.model && changes.model.currentValue) {
       this.loadData();
     }
   }
@@ -81,23 +90,22 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     const ignoreModelKeys = ["page", "pageSize", "searchType", "ordering"];
     const modelKeys = Object.keys(this.model).filter(key => !ignoreModelKeys.includes(key));
 
-    return modelKeys.filter(key => !ignoreModelKeys.includes(key)).every(key => {
-      const value = this.model[key];
+    return modelKeys
+      .filter(key => !ignoreModelKeys.includes(key))
+      .every(key => {
+        const value = this.model[key];
 
-      return (
-        value === "" ||
-        value === null ||
-        value === undefined ||
-        (
-          UtilsService.isObject(value) && (
-            value.value === "" ||
-            value.value === null ||
-            value.value === undefined ||
-            (UtilsService.isArray(value.value) && value.value.length === 0)
-          )
-        )
-      );
-    });
+        return (
+          value === "" ||
+          value === null ||
+          value === undefined ||
+          (UtilsService.isObject(value) &&
+            (value.value === "" ||
+              value.value === null ||
+              value.value === undefined ||
+              (UtilsService.isArray(value.value) && value.value.length === 0)))
+        );
+      });
   }
 
   updateLastResultsCount(count: number): void {
@@ -111,11 +119,17 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     } else if (count === 1) {
       this.lastResultsCount = this.translateService.instant("1 result");
     } else if (count >= 10000 && count < 100000) {
-      this.lastResultsCount = this.translateService.instant("{{ count }} results", { count: Math.round(count / 10000) * 10000 });
+      this.lastResultsCount = this.translateService.instant("{{ count }} results", {
+        count: Math.round(count / 10000) * 10000
+      });
     } else if (count >= 100000 && count < 1000000) {
-      this.lastResultsCount = this.translateService.instant("{{ count }} results", { count: Math.round(count / 100000) * 100000 });
+      this.lastResultsCount = this.translateService.instant("{{ count }} results", {
+        count: Math.round(count / 100000) * 100000
+      });
     } else if (count >= 1000000 && count < 10000000) {
-      this.lastResultsCount = this.translateService.instant("{{ count }} results", { count: Math.round(count / 1000000) * 1000000 });
+      this.lastResultsCount = this.translateService.instant("{{ count }} results", {
+        count: Math.round(count / 1000000) * 1000000
+      });
     } else {
       this.lastResultsCount = this.translateService.instant("{{ count }} results", { count });
     }

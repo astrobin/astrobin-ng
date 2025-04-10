@@ -1,7 +1,9 @@
 <div class="page has-breadcrumb">
   <h1>{{ title }}</h1>
   <small>
-    {{ "Feedback received by this user in the marketplace. Please be kind and respectful in your comments." | translate }}
+    {{
+      "Feedback received by this user in the marketplace. Please be kind and respectful in your comments." | translate
+    }}
   </small>
 
   <div *ngIf="feedback !== undefined; else loadingTemplate">

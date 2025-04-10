@@ -7,20 +7,17 @@ import { LocationInterface } from "@core/interfaces/location.interface";
 export class CreateLocationAddTag implements PayloadActionInterface {
   readonly type = AppActionTypes.CREATE_LOCATION_ADD_TAG;
 
-  constructor(public payload: string) {
-  }
+  constructor(public payload: string) {}
 }
 
 export class CreateLocation implements PayloadActionInterface {
   readonly type = AppActionTypes.CREATE_LOCATION;
 
-  constructor(public payload: Omit<LocationInterface, "id">) {
-  }
+  constructor(public payload: Omit<LocationInterface, "id">) {}
 }
 
 export class CreateLocationSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.CREATE_LOCATION_SUCCESS;
 
-  constructor(public payload: LocationInterface) {
-  }
+  constructor(public payload: LocationInterface) {}
 }

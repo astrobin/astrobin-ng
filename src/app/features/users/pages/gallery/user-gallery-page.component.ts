@@ -1,40 +1,39 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, OnInit, ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Actions, ofType } from "@ngrx/effects";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { TitleService } from "@core/services/title/title.service";
-import { TranslateService } from "@ngx-translate/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { DefaultGallerySortingOption, UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { filter, map, take, takeUntil } from "rxjs/operators";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { FindCollections, FindCollectionsSuccess } from "@app/store/actions/collection.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { selectCurrentUser, selectCurrentUserProfile, selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { FindCollectionsSuccess, FindCollections } from "@app/store/actions/collection.actions";
+import { MainState } from "@app/store/state";
+import { UserProfileInterface, DefaultGallerySortingOption } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import {
+  selectCurrentUser,
+  selectCurrentUserProfile,
+  selectUser,
+  selectUserProfile
+} from "@features/account/store/auth.selectors";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-user-gallery-page",
   template: `
-    <div
-      *ngIf="currentUserWrapper$ | async as currentUserWrapper"
-      class="page has-infinite-scroll"
-    >
+    <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="page has-infinite-scroll">
       <astrobin-ad-manager
         #ad
         [style.visibility]="showAd ? 'visible' : 'hidden'"
         [configName]="showAd ? 'wide' : null"
       ></astrobin-ad-manager>
 
-      <astrobin-user-gallery-header
-        [user]="user"
-        [userProfile]="userProfile"
-      ></astrobin-user-gallery-header>
+      <astrobin-user-gallery-header [user]="user" [userProfile]="userProfile"></astrobin-user-gallery-header>
 
       <p
         *ngIf="currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)"
@@ -43,10 +42,7 @@ import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manage
         {{ "You shadow-banned this user. They won't be able to contact you." | translate }}
       </p>
 
-      <astrobin-user-gallery-navigation
-        [user]="user"
-        [userProfile]="userProfile"
-      ></astrobin-user-gallery-navigation>
+      <astrobin-user-gallery-navigation [user]="user" [userProfile]="userProfile"></astrobin-user-gallery-navigation>
     </div>
   `,
   styleUrls: ["./user-gallery-page.component.scss"],
@@ -80,44 +76,49 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.actions$.pipe(
-      ofType(AppActionTypes.FIND_COLLECTIONS_SUCCESS),
-      map((action: FindCollectionsSuccess) => action.payload.response),
-      takeUntil(this.destroyed$)
-    ).subscribe(response => {
-      if (response.next) {
-        const page = response.next.match(/page=(\d+)/)[1];
-        if (page) {
-          this.store$.dispatch(new FindCollections({ params: { user: this.user.id, page: +page } }));
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.FIND_COLLECTIONS_SUCCESS),
+        map((action: FindCollectionsSuccess) => action.payload.response),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(response => {
+        if (response.next) {
+          const page = response.next.match(/page=(\d+)/)[1];
+          if (page) {
+            this.store$.dispatch(new FindCollections({ params: { user: this.user.id, page: +page } }));
+          }
         }
-      }
-    });
-
-    this.route.data.pipe(takeUntil(this.destroyed$)).subscribe((data: {
-      userData: {
-        user: UserInterface, userProfile: UserProfileInterface
-      }
-    }) => {
-      this.user = data.userData.user;
-      this.userProfile = data.userData.userProfile;
-      this.changeDetectorRef.markForCheck();
-
-      this.userSubscriptionService.displayAds$().pipe(
-        filter(showAd => typeof showAd !== "undefined"),
-        take(1)
-      ).subscribe(showAd => {
-        /*
-         * showAd = if the viewer gets ads.
-         * this.userProfile.allowAds = if the user allows ads to be shown on their profile.
-         */
-        this.allowAds = showAd && this.userProfile.allowAds;
-        this.showAd = this.allowAds && !this.activatedRoute.snapshot.data.image;
-        this.changeDetectorRef.markForCheck();
       });
 
-      this.imageViewerService.slideshowState$
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(isOpen => {
+    this.route.data.pipe(takeUntil(this.destroyed$)).subscribe(
+      (data: {
+        userData: {
+          user: UserInterface;
+          userProfile: UserProfileInterface;
+        };
+      }) => {
+        this.user = data.userData.user;
+        this.userProfile = data.userData.userProfile;
+        this.changeDetectorRef.markForCheck();
+
+        this.userSubscriptionService
+          .displayAds$()
+          .pipe(
+            filter(showAd => typeof showAd !== "undefined"),
+            take(1)
+          )
+          .subscribe(showAd => {
+            /*
+             * showAd = if the viewer gets ads.
+             * this.userProfile.allowAds = if the user allows ads to be shown on their profile.
+             */
+            this.allowAds = showAd && this.userProfile.allowAds;
+            this.showAd = this.allowAds && !this.activatedRoute.snapshot.data.image;
+            this.changeDetectorRef.markForCheck();
+          });
+
+        this.imageViewerService.slideshowState$.pipe(takeUntil(this.destroyed$)).subscribe(isOpen => {
           this.showAd = this.allowAds && !isOpen;
 
           if (!this.showAd && this.adManagerComponent) {
@@ -128,70 +129,71 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
           this.changeDetectorRef.markForCheck();
         });
 
-      if (!this.activatedRoute.snapshot.fragment) {
-        switch (this.userProfile.defaultGallerySorting) {
-          case DefaultGallerySortingOption.PUBLICATION:
-            this.router.navigate([], {
-              fragment: "gallery",
-              replaceUrl: true,
-              queryParamsHandling: "merge"
-            });
-            break;
-          case DefaultGallerySortingOption.COLLECTIONS: {
-            if (this.userProfile.displayCollectionsOnPublicGallery) {
+        if (!this.activatedRoute.snapshot.fragment) {
+          switch (this.userProfile.defaultGallerySorting) {
+            case DefaultGallerySortingOption.PUBLICATION:
               this.router.navigate([], {
                 fragment: "gallery",
                 replaceUrl: true,
                 queryParamsHandling: "merge"
               });
-            } else {
+              break;
+            case DefaultGallerySortingOption.COLLECTIONS: {
+              if (this.userProfile.displayCollectionsOnPublicGallery) {
+                this.router.navigate([], {
+                  fragment: "gallery",
+                  replaceUrl: true,
+                  queryParamsHandling: "merge"
+                });
+              } else {
+                this.router.navigate([], {
+                  fragment: "collections",
+                  replaceUrl: true,
+                  queryParamsHandling: "merge"
+                });
+              }
+              break;
+            }
+            case DefaultGallerySortingOption.SUBJECT_TYPE:
               this.router.navigate([], {
-                fragment: "collections",
+                queryParams: { "folder-type": "subject" },
+                fragment: "smart-folders",
                 replaceUrl: true,
                 queryParamsHandling: "merge"
               });
-            }
-            break;
+              break;
+            case DefaultGallerySortingOption.YEAR:
+              this.router.navigate([], {
+                queryParams: { "folder-type": "year" },
+                fragment: "smart-folders",
+                replaceUrl: true,
+                queryParamsHandling: "merge"
+              });
+              break;
+            case DefaultGallerySortingOption.GEAR:
+              this.router.navigate([], {
+                queryParams: { "folder-type": "gear" },
+                fragment: "smart-folders",
+                replaceUrl: true,
+                queryParamsHandling: "merge"
+              });
+              break;
+            case DefaultGallerySortingOption.CONSTELLATION:
+              this.router.navigate([], {
+                queryParams: { "folder-type": "constellation" },
+                fragment: "smart-folders",
+                replaceUrl: true,
+                queryParamsHandling: "merge"
+              });
+              break;
           }
-          case DefaultGallerySortingOption.SUBJECT_TYPE:
-            this.router.navigate([], {
-              queryParams: { "folder-type": "subject" },
-              fragment: "smart-folders",
-              replaceUrl: true,
-              queryParamsHandling: "merge"
-            });
-            break;
-          case DefaultGallerySortingOption.YEAR:
-            this.router.navigate([], {
-              queryParams: { "folder-type": "year" },
-              fragment: "smart-folders",
-              replaceUrl: true,
-              queryParamsHandling: "merge"
-            });
-            break;
-          case DefaultGallerySortingOption.GEAR:
-            this.router.navigate([], {
-              queryParams: { "folder-type": "gear" },
-              fragment: "smart-folders",
-              replaceUrl: true,
-              queryParamsHandling: "merge"
-            });
-            break;
-          case DefaultGallerySortingOption.CONSTELLATION:
-            this.router.navigate([], {
-              queryParams: { "folder-type": "constellation" },
-              fragment: "smart-folders",
-              replaceUrl: true,
-              queryParamsHandling: "merge"
-            });
-            break;
         }
-      }
 
-      this._setMetaTags();
-      this._listenToUserChanges();
-      this.store$.dispatch(new FindCollections({ params: { user: this.user.id } }));
-    });
+        this._setMetaTags();
+        this._listenToUserChanges();
+        this.store$.dispatch(new FindCollections({ params: { user: this.user.id } }));
+      }
+    );
   }
 
   ngAfterViewInit() {

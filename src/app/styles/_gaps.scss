@@ -1,0 +1,91 @@
+@import "breakpoints";
+
+// Define Bootstrap-style gap values
+$gap-values: (
+  0: 0,
+  1: 0.25rem,
+  2: 0.5rem,
+  3: 1rem,
+  4: 1.5rem,
+  5: 3rem
+);
+
+// Your breakpoints (min only — match Bootstrap behavior)
+$breakpoints: (
+  sm: $sm-min,
+  md: $md-min,
+  lg: $lg-min,
+  xl: $xl-min,
+  xxl: $xxl-min
+);
+
+// Unprefixed .gap-{n} fallback
+@supports not (inset: 0) {
+  @each $i, $val in $gap-values {
+    // Default: row + nowrap
+    .gap-#{$i}:not(.flex-column):not(.flex-wrap) > * {
+      margin-right: $val;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    // row + wrap
+    .gap-#{$i}:not(.flex-column).flex-wrap > * {
+      margin-right: $val;
+      margin-bottom: $val;
+    }
+
+    // column + nowrap
+    .gap-#{$i}.flex-column:not(.flex-wrap) > * {
+      margin-bottom: $val;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    // column + wrap
+    .gap-#{$i}.flex-column.flex-wrap > * {
+      margin-bottom: $val;
+      margin-right: $val;
+    }
+  }
+
+  @each $bp, $min in $breakpoints {
+    @media (min-width: #{$min}) {
+      @each $i, $val in $gap-values {
+        // row + nowrap
+        .gap-#{$bp}-#{$i}:not(.flex-column):not(.flex-wrap) > * {
+          margin-right: $val;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+
+        // row + wrap
+        .gap-#{$bp}-#{$i}:not(.flex-column).flex-wrap > * {
+          margin-right: $val;
+          margin-bottom: $val;
+        }
+
+        // column + nowrap
+        .gap-#{$bp}-#{$i}.flex-column:not(.flex-wrap) > * {
+          margin-bottom: $val;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+
+        // column + wrap
+        .gap-#{$bp}-#{$i}.flex-column.flex-wrap > * {
+          margin-bottom: $val;
+          margin-right: $val;
+        }
+      }
+    }
+  }
+}

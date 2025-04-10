@@ -1,25 +1,55 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
 import { setTimeagoIntl } from "@app/translate-loader";
-import { AuthActionTypes, ChangeUserProfileGalleryHeaderImage, ChangeUserProfileGalleryHeaderImageFailure, ChangeUserProfileGalleryHeaderImageSuccess, DeleteAvatar, DeleteAvatarFailure, DeleteAvatarSuccess, InitializeAuthSuccess, LoadUser, LoadUserFailure, LoadUserProfile, LoadUserProfileFailure, LoadUserProfileSuccess, LoadUserSuccess, Login, LoginFailure, LoginSuccess, LogoutSuccess, RemoveShadowBanUserProfile, RemoveShadowBanUserProfileFailure, RemoveShadowBanUserProfileSuccess, ShadowBanUserProfile, ShadowBanUserProfileFailure, ShadowBanUserProfileSuccess, UpdateUserProfile, UpdateUserProfileSuccess, UploadAvatar, UploadAvatarFailure, UploadAvatarSuccess } from "@features/account/store/auth.actions";
-import { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
-import { act, Actions, createEffect, ofType } from "@ngrx/effects";
-import { TranslateService } from "@ngx-translate/core";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
 import { AuthService } from "@core/services/auth.service";
 import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import {
+  ChangeUserProfileGalleryHeaderImage,
+  DeleteAvatar,
+  LoadUser,
+  LoadUserProfile,
+  Login,
+  RemoveShadowBanUserProfile,
+  ShadowBanUserProfile,
+  UpdateUserProfile,
+  UploadAvatar,
+  AuthActionTypes,
+  ChangeUserProfileGalleryHeaderImageFailure,
+  ChangeUserProfileGalleryHeaderImageSuccess,
+  DeleteAvatarFailure,
+  DeleteAvatarSuccess,
+  InitializeAuthSuccess,
+  LoadUserFailure,
+  LoadUserProfileFailure,
+  LoadUserProfileSuccess,
+  LoadUserSuccess,
+  LoginFailure,
+  LoginSuccess,
+  LogoutSuccess,
+  RemoveShadowBanUserProfileFailure,
+  RemoveShadowBanUserProfileSuccess,
+  ShadowBanUserProfileFailure,
+  ShadowBanUserProfileSuccess,
+  UpdateUserProfileSuccess,
+  UploadAvatarFailure,
+  UploadAvatarSuccess
+} from "@features/account/store/auth.actions";
+import { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
+import { selectUser, selectUserByUsername, selectUserProfile } from "@features/account/store/auth.selectors";
+import { Actions, act, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { Constants } from "@shared/constants";
 import { CookieService } from "ngx-cookie";
 import { TimeagoIntl } from "ngx-timeago";
 import { EMPTY, Observable, of } from "rxjs";
 import { catchError, concatMap, map, mergeMap, switchMap, tap } from "rxjs/operators";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { selectUser, selectUserByUsername, selectUserProfile } from "@features/account/store/auth.selectors";
-import { Constants } from "@shared/constants";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 @Injectable()
 export class AuthEffects {
@@ -91,13 +121,9 @@ export class AuthEffects {
             userFromStore !== null
               ? of(userFromStore).pipe(map(() => new LoadUserSuccess({ user: userFromStore })))
               : this.commonApiService.getUser(payload.id, payload.username).pipe(
-                map(
-                  user => !!user
-                    ? new LoadUserSuccess({ user })
-                    : new LoadUserFailure(payload),
-                ),
-                catchError(error => of(new LoadUserFailure(payload)))
-              )
+                  map(user => (!!user ? new LoadUserSuccess({ user }) : new LoadUserFailure(payload))),
+                  catchError(error => of(new LoadUserFailure(payload)))
+                )
           )
         );
       })
@@ -113,31 +139,39 @@ export class AuthEffects {
           switchMap(userProfileFromStore =>
             userProfileFromStore !== null
               ? of(userProfileFromStore).pipe(
-                map(() => new LoadUserProfileSuccess({ userProfile: userProfileFromStore }))
-              )
-              : this.commonApiService.getUserProfile(payload.id).pipe(
-                map(userProfile => new LoadUserProfileSuccess({ userProfile }),
-                  catchError(error => of(new LoadUserProfileFailure({ id: payload.id, error })))
+                  map(() => new LoadUserProfileSuccess({ userProfile: userProfileFromStore }))
                 )
-              )
+              : this.commonApiService.getUserProfile(payload.id).pipe(
+                  map(
+                    userProfile => new LoadUserProfileSuccess({ userProfile }),
+                    catchError(error => of(new LoadUserProfileFailure({ id: payload.id, error })))
+                  )
+                )
           )
         )
       )
     )
   );
 
-  ChangeUserProfileGalleryHeaderImage: Observable<ChangeUserProfileGalleryHeaderImageSuccess | ChangeUserProfileGalleryHeaderImageFailure> = createEffect(() =>
+  ChangeUserProfileGalleryHeaderImage: Observable<
+    ChangeUserProfileGalleryHeaderImageSuccess | ChangeUserProfileGalleryHeaderImageFailure
+  > = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE),
       map((action: ChangeUserProfileGalleryHeaderImage) => action.payload),
       switchMap(payload =>
         this.commonApiService.changeUserProfileGalleryHeaderImage(payload.id, payload.imageId).pipe(
           tap(() => this.loadingService.setLoading(true)),
-          map(userProfile =>
-            new ChangeUserProfileGalleryHeaderImageSuccess({ userProfile, imageId: payload.imageId })),
-          catchError(error => of(new ChangeUserProfileGalleryHeaderImageFailure({
-            id: payload.id, imageId: payload.imageId, error
-          })))
+          map(userProfile => new ChangeUserProfileGalleryHeaderImageSuccess({ userProfile, imageId: payload.imageId })),
+          catchError(error =>
+            of(
+              new ChangeUserProfileGalleryHeaderImageFailure({
+                id: payload.id,
+                imageId: payload.imageId,
+                error
+              })
+            )
+          )
         )
       )
     )
@@ -165,21 +199,23 @@ export class AuthEffects {
     { dispatch: false }
   );
 
-  ShadowBanUserProfile: Observable<ShadowBanUserProfileSuccess | ShadowBanUserProfileFailure> = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AuthActionTypes.SHADOW_BAN_USER_PROFILE),
-        map((action: ShadowBanUserProfile) => action.payload),
-        switchMap(payload =>
-          this.commonApiService.shadowBanUserProfile(payload.id).pipe(
-            map(response => new ShadowBanUserProfileSuccess({
-              id: payload.id,
-              message: response.message
-            })),
-            catchError(error => of(new ShadowBanUserProfileFailure({ id: payload.id, error })))
-          )
+  ShadowBanUserProfile: Observable<ShadowBanUserProfileSuccess | ShadowBanUserProfileFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActionTypes.SHADOW_BAN_USER_PROFILE),
+      map((action: ShadowBanUserProfile) => action.payload),
+      switchMap(payload =>
+        this.commonApiService.shadowBanUserProfile(payload.id).pipe(
+          map(
+            response =>
+              new ShadowBanUserProfileSuccess({
+                id: payload.id,
+                message: response.message
+              })
+          ),
+          catchError(error => of(new ShadowBanUserProfileFailure({ id: payload.id, error })))
         )
       )
+    )
   );
 
   ShadowBanUserProfileSuccess: Observable<string> = createEffect(
@@ -207,22 +243,25 @@ export class AuthEffects {
     { dispatch: false }
   );
 
-  RemoveShadowBanUserProfile: Observable<RemoveShadowBanUserProfileSuccess | RemoveShadowBanUserProfileFailure> = createEffect(
-    () =>
+  RemoveShadowBanUserProfile: Observable<RemoveShadowBanUserProfileSuccess | RemoveShadowBanUserProfileFailure> =
+    createEffect(() =>
       this.actions$.pipe(
         ofType(AuthActionTypes.REMOVE_SHADOW_BAN_USER_PROFILE),
         map((action: RemoveShadowBanUserProfile) => action.payload),
         switchMap(payload =>
           this.commonApiService.removeShadowBanUserProfile(payload.id).pipe(
-            map(response => new RemoveShadowBanUserProfileSuccess({
-              id: payload.id,
-              message: response.message
-            })),
+            map(
+              response =>
+                new RemoveShadowBanUserProfileSuccess({
+                  id: payload.id,
+                  message: response.message
+                })
+            ),
             catchError(error => of(new RemoveShadowBanUserProfileFailure({ id: payload.id, error })))
           )
         )
       )
-  );
+    );
 
   RemoveShadowBanUserProfileSuccess: Observable<string> = createEffect(
     () =>
@@ -373,8 +412,7 @@ export class AuthEffects {
     public readonly translateService: TranslateService,
     public readonly timeagoIntl: TimeagoIntl,
     public readonly popNotificationsService: PopNotificationsService
-  ) {
-  }
+  ) {}
 
   private _setLanguage(language: string): Observable<any> {
     this.translateService.setDefaultLang(language);
@@ -408,16 +446,12 @@ export class AuthEffects {
                 errorMessage = response.errors.avatar.join(", ");
               }
 
-              this.popNotificationsService.error(
-                this.translateService.instant(errorMessage)
-              );
+              this.popNotificationsService.error(this.translateService.instant(errorMessage));
               return new UploadAvatarFailure({ error: response.errors });
             }
           }),
           catchError(error => {
-            this.popNotificationsService.error(
-              this.translateService.instant("Error uploading avatar")
-            );
+            this.popNotificationsService.error(this.translateService.instant("Error uploading avatar"));
             this.loadingService.setLoading(false);
             return of(new UploadAvatarFailure({ error }));
           }),
@@ -448,16 +482,12 @@ export class AuthEffects {
               const errorMessage = response.message
                 ? response.message
                 : this.translateService.instant("Error deleting avatar");
-              this.popNotificationsService.error(
-                this.translateService.instant(errorMessage)
-              );
+              this.popNotificationsService.error(this.translateService.instant(errorMessage));
               return new DeleteAvatarFailure({ avatarId: action.payload.avatarId, error: response.message });
             }
           }),
           catchError(error => {
-            this.popNotificationsService.error(
-              this.translateService.instant("Error deleting avatar")
-            );
+            this.popNotificationsService.error(this.translateService.instant("Error deleting avatar"));
             this.loadingService.setLoading(false);
             return of(new DeleteAvatarFailure({ avatarId: action.payload.avatarId, error }));
           }),

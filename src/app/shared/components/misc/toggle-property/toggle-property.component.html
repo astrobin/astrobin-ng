@@ -1,57 +1,33 @@
 <button
   (click)="onClick($event)"
-  [class.loading]="(showLoadingIndicator && (loading || !initialized || toggled === undefined))"
+  [class.loading]="showLoadingIndicator && (loading || !initialized || toggled === undefined)"
   [class.toggled]="!!toggled"
   [class.toggling]="toggling"
   [class]="btnClass"
   [disabled]="disabled"
   [ngbTooltip]="
-    showTooltip &&
-    !isTouchDevice &&
-    !showLabel ? (
-      !toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel
-    ) : ''
+    showTooltip && !isTouchDevice && !showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : ''
   "
   [openDelay]="1000"
-  [attr.aria-label]="
-    !showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null
-  "
+  [attr.aria-label]="!showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null"
   container="body"
 >
   <ng-container *ngIf="toggled">
-    <fa-icon
-      *ngIf="showIcon"
-      [icon]="togglePropertyIcon"
-    ></fa-icon>
-    <span
-      *ngIf="showLabel"
-      class="label"
-    >
+    <fa-icon *ngIf="showIcon" [icon]="togglePropertyIcon"></fa-icon>
+    <span *ngIf="showLabel" class="label">
       {{ unsetTogglePropertyLabel }}
     </span>
-    <span
-      *ngIf="count !== undefined && count !== null"
-      class="count"
-    >
+    <span *ngIf="count !== undefined && count !== null" class="count">
       {{ count | numberSuffix }}
     </span>
   </ng-container>
 
   <ng-container *ngIf="!toggled">
-    <fa-icon
-      *ngIf="showIcon"
-      [icon]="togglePropertyIcon"
-    ></fa-icon>
-    <span
-      *ngIf="showLabel"
-      class="label"
-    >
+    <fa-icon *ngIf="showIcon" [icon]="togglePropertyIcon"></fa-icon>
+    <span *ngIf="showLabel" class="label">
       {{ setTogglePropertyLabel }}
     </span>
-    <span
-      *ngIf="count !== undefined && count !== null"
-      class="count"
-    >
+    <span *ngIf="count !== undefined && count !== null" class="count">
       {{ count | numberSuffix }}
     </span>
   </ng-container>

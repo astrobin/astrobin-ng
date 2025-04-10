@@ -19,7 +19,7 @@
   </div>
 
   <div
-    [@collapse]="(props.collapsible && props.collapsed) ? 'collapsed' : 'expanded'"
+    [@collapse]="props.collapsible && props.collapsed ? 'collapsed' : 'expanded'"
     [class.overflow-hidden]="props.collapsible && props.collapsed"
     class="card-body"
   >

@@ -14,12 +14,12 @@
 
     .background {
       background-color: var(--secondaryAccentColor);
-      height: .3rem;
+      height: 0.3rem;
       width: 100%;
     }
 
     &.loading {
-      padding: .15rem 0;
+      padding: 0.15rem 0;
 
       .background {
         position: absolute;
@@ -27,21 +27,21 @@
         right: 0;
         top: 0;
         bottom: 0;
-        height: .5rem;
+        height: 0.5rem;
         width: calc(100% + 46px);
         z-index: -1;
 
         background: repeating-linear-gradient(
-            -55deg,
-            var(--lighterSecondaryAccentColor) 1px,
-            var(--secondaryAccentColor) 2px,
-            var(--secondaryAccentColor) 11px,
-            var(--lighterSecondaryAccentColor) 12px,
-            var(--lighterSecondaryAccentColor) 20px
+          -55deg,
+          var(--lighterSecondaryAccentColor) 1px,
+          var(--secondaryAccentColor) 2px,
+          var(--secondaryAccentColor) 11px,
+          var(--lighterSecondaryAccentColor) 12px,
+          var(--lighterSecondaryAccentColor) 20px
         );
 
         animation-name: move-striped-loading-indicator;
-        animation-duration: .5s;
+        animation-duration: 0.5s;
         animation-timing-function: linear;
         animation-iteration-count: infinite;
       }

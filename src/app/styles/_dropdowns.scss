@@ -4,11 +4,11 @@
 .dropup {
   @media (max-width: $xs-max) {
     display: block;
-    padding-top: .75rem;
-    padding-bottom: .75rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
 
     &:not(:last-child) {
-      margin-bottom: .5rem;
+      margin-bottom: 0.5rem;
     }
   }
 
@@ -28,7 +28,7 @@
   border: 0;
 
   @media (max-width: $xs-max) {
-    margin-top: .25rem;
+    margin-top: 0.25rem;
 
     &.fullscreen-on-mobile {
       position: fixed !important;
@@ -65,7 +65,7 @@
     }
 
     @media (max-width: $xs-max) {
-      padding: .5rem .75rem;
+      padding: 0.5rem 0.75rem;
     }
   }
 
@@ -80,6 +80,6 @@
 }
 
 .dropdown-header {
-  font-size: .9rem;
+  font-size: 0.9rem;
   color: var(--lighterGrey);
 }

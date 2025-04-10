@@ -1,15 +1,15 @@
-import { Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
-import { BaseService } from "@core/services/base.service";
-import { environment } from "@env/environment";
-import { LoadingService } from "@core/services/loading.service";
-import { AuthService } from "@core/services/auth.service";
-import { AbstractControl } from "@angular/forms";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { catchError, map } from "rxjs/operators";
-import { of } from "rxjs";
-import { HttpClient } from "@angular/common/http";
 import { isPlatformBrowser } from "@angular/common";
+import { HttpClient } from "@angular/common/http";
+import { Renderer2, Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { AbstractControl } from "@angular/forms";
+import { AuthService } from "@core/services/auth.service";
+import { BaseService } from "@core/services/base.service";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { environment } from "@env/environment";
+import { of } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 
 declare const CKEDITOR: any;
 
@@ -44,11 +44,11 @@ export class CKEditorService extends BaseService {
 
     bbcodeFilter.addRules({
       elements: {
-        p: (element) => {
+        p: element => {
           element.replaceWithChildren();
           element.add(new CKEDITOR.htmlParser.text("\n\n"));
         },
-        blockquote: (element) => {
+        blockquote: element => {
           const quoted = new CKEDITOR.htmlParser.element("div");
           quoted.children = element.children;
           element.children = [quoted];
@@ -60,7 +60,7 @@ export class CKEditorService extends BaseService {
             element.children.unshift(cite);
           }
         },
-        span: (element) => {
+        span: element => {
           let bbcode;
           if ((bbcode = element.attributes.bbcode)) {
             if (bbcode === "img") {
@@ -96,7 +96,7 @@ export class CKEditorService extends BaseService {
             }
           }
         },
-        ol: (element) => {
+        ol: element => {
           if (element.attributes.listType) {
             if (element.attributes.listType !== "decimal") {
               element.attributes.style = "list-style-type:" + element.attributes.listType;
@@ -106,12 +106,12 @@ export class CKEditorService extends BaseService {
           }
           delete element.attributes.listType;
         },
-        a: (element) => {
+        a: element => {
           if (!element.attributes.href) {
             element.attributes.href = element.children[0].value;
           }
         },
-        smiley: (element) => {
+        smiley: element => {
           element.name = "img";
           const editorConfig = this.options(null);
           const description = element.attributes.desc;
@@ -127,7 +127,7 @@ export class CKEditorService extends BaseService {
             alt: description
           };
         },
-        img: (element) => {
+        img: element => {
           if (!renderer) {
             return;
           }
@@ -141,11 +141,9 @@ export class CKEditorService extends BaseService {
             const fileName = "f" + src.split("/").pop().split(".")[0].replace(/-/gi, "");
             element.attributes.class = `loading ${fileName}`;
 
-            this._fetchThumbnail(src, (thumbnailSrc) => {
+            this._fetchThumbnail(src, thumbnailSrc => {
               setTimeout(() => {
-                const imgElement = this.windowRefService.nativeWindow.document.querySelector(
-                  `img.${fileName}`
-                );
+                const imgElement = this.windowRefService.nativeWindow.document.querySelector(`img.${fileName}`);
                 if (imgElement) {
                   renderer.setAttribute(imgElement, "src", thumbnailSrc);
                   renderer.setAttribute(imgElement, "data-src", src);
@@ -682,7 +680,7 @@ export class CKEditorService extends BaseService {
           this._waitForCKEditorCore(win, baseUrl, timestamp, resolve, reject);
         };
 
-        mainScript.onerror = (error) => {
+        mainScript.onerror = error => {
           console.error("Error loading CKEditor main script:", error);
           reject("Failed to load CKEditor main script");
         };
@@ -701,14 +699,11 @@ export class CKEditorService extends BaseService {
 
   private _isCKEditorReady(win: any): boolean {
     // Basic availability of core CKEditor functionality
-    const coreAvailable = win.CKEDITOR &&
-      typeof win.CKEDITOR.replace === "function" &&
-      typeof win.CKEDITOR.getUrl === "function";
+    const coreAvailable =
+      win.CKEDITOR && typeof win.CKEDITOR.replace === "function" && typeof win.CKEDITOR.getUrl === "function";
 
     // Check if dom elements are available
-    const domAvailable = coreAvailable &&
-      win.CKEDITOR.dom &&
-      win.CKEDITOR.dom.element;
+    const domAvailable = coreAvailable && win.CKEDITOR.dom && win.CKEDITOR.dom.element;
 
     return coreAvailable && domAvailable;
   }
@@ -719,7 +714,7 @@ export class CKEditorService extends BaseService {
     timestamp: string,
     resolve: (value: void | PromiseLike<void>) => void,
     reject: (reason?: any) => void,
-    retryCount: number = 0
+    retryCount = 0
   ): void {
     // Check if CKEDITOR is fully ready with all necessary functionality
     const isCoreReady = this._isCKEditorReady(win);
@@ -784,7 +779,10 @@ export class CKEditorService extends BaseService {
     }
   }
 
-  private _finalizeCKEditorInitialization(resolve: (value: void | PromiseLike<void>) => void, reject: (reason?: any) => void): void {
+  private _finalizeCKEditorInitialization(
+    resolve: (value: void | PromiseLike<void>) => void,
+    reject: (reason?: any) => void
+  ): void {
     const win = this.windowRefService.nativeWindow as any;
     const timestamp = environment.ckeditorTimestamp;
 
@@ -863,13 +861,13 @@ export class CKEditorService extends BaseService {
     this.http
       .get<{ thumbnail: string }>(url)
       .pipe(
-        map((response) => response.thumbnail),
-        catchError((error) => {
+        map(response => response.thumbnail),
+        catchError(error => {
           console.error("Error fetching thumbnail:", error);
           return of(src);
         })
       )
-      .subscribe((thumbnail) => {
+      .subscribe(thumbnail => {
         if (thumbnail) {
           callback(thumbnail);
         } else {

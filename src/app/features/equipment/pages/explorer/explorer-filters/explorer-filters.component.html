@@ -1,5 +1,4 @@
 <ng-container *ngIf="permissions$ | async as permissions">
-
   <div class="row g-0" *ngIf="availableFilters.length > 0">
     <div class="col">
       <div class="d-flex flex-wrap align-items-center gap-2">
@@ -8,14 +7,13 @@
             {{ "Filter results" | translate }}
           </button>
           <div ngbDropdownMenu [attr.aria-labelledby]="'add-filter'" class="fullscreen-on-mobile">
-            <button
-              *ngIf="!permissions.mayAccess"
-              ngbDropdownItem
-              (click)="showSubscriptionRequiredModal()"
-            >
+            <button *ngIf="!permissions.mayAccess" ngbDropdownItem (click)="showSubscriptionRequiredModal()">
               <fa-icon icon="lock"></fa-icon>
               <span
-                [innerHTML]="'To use this feature, you need the <strong>{{0}}</strong> subscription or higher.' | translate: {'0': SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020}"
+                [innerHTML]="
+                  'To use this feature, you need the <strong>{{0}}</strong> subscription or higher.'
+                    | translate : { '0': SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020 }
+                "
               >
               </span>
             </button>
@@ -33,7 +31,6 @@
 
         <div *ngFor="let filter of activeFilters" class="filter">
           <div class="widget">
-
             <ng-container *ngIf="filter.widget === FilterWidget.SELECT">
               <div ngbDropdown class="p-0 w-auto">
                 <button
@@ -43,13 +40,12 @@
                   ngbDropdownToggle
                 >
                   <fa-icon [icon]="filter.icon"></fa-icon>
-                  {{ filter.label }} = {{ filter.value ? filter.humanizeValueFunction(filter.value) : "Any" | translate }}
+                  {{ filter.label }} =
+                  {{ filter.value ? filter.humanizeValueFunction(filter.value) : ("Any" | translate) }}
 
                   <div ngbDropdownMenu [attr.aria-labelledby]="'filter-dropdown-' + filter.type">
                     <div class="widget-content">
-                      <label class="mb-2">
-                        {{ "Select" | translate }}:
-                      </label>
+                      <label class="mb-2"> {{ "Select" | translate }}: </label>
                       <ng-select
                         bindValue="value"
                         bindLabel="label"
@@ -62,7 +58,11 @@
                     </div>
                   </div>
                 </button>
-                <button type="button" class="btn btn-outline-secondary btn-xs btn-close btn-no-block" (click)="removeFilter(filter)">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-xs btn-close btn-no-block"
+                  (click)="removeFilter(filter)"
+                >
                   &times;
                 </button>
               </div>
@@ -76,7 +76,7 @@
                   [id]="'filter-dropdown-' + filter.type"
                   ngbDropdownToggle
                 >
-                  <fa-icon [icon]="filter.icon"></fa-icon> {{ filter.label }} = {{ filter.value | yesNo}}
+                  <fa-icon [icon]="filter.icon"></fa-icon> {{ filter.label }} = {{ filter.value | yesNo }}
 
                   <div ngbDropdownMenu [attr.aria-labelledby]="'filter-dropdown-' + filter.type">
                     <div class="widget-content">
@@ -88,7 +88,11 @@
                     </div>
                   </div>
                 </button>
-                <button type="button" class="btn btn-outline-secondary btn-xs btn-close btn-no-block" (click)="removeFilter(filter)">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-xs btn-close btn-no-block"
+                  (click)="removeFilter(filter)"
+                >
                   &times;
                 </button>
               </div>
@@ -103,7 +107,7 @@
                   ngbDropdownToggle
                 >
                   <fa-icon [icon]="filter.icon"></fa-icon>
-                  {{ filter.label }} = {{ filter.value.from || 0}} - {{ filter.value.to || 0 }}
+                  {{ filter.label }} = {{ filter.value.from || 0 }} - {{ filter.value.to || 0 }}
 
                   <div ngbDropdownMenu [attr.aria-labelledby]="'filter-dropdown-' + filter.type">
                     <div class="widget-content">
@@ -116,8 +120,8 @@
                           class="form-control"
                           [id]="'filter-dropdown-' + filter.type + '-from'"
                           [(ngModel)]="filter.value.from"
-                          (change)="setFilterValue(filter, {from: filter.value.from, to: filter.value.to})"
-                        >
+                          (change)="setFilterValue(filter, { from: filter.value.from, to: filter.value.to })"
+                        />
                       </div>
                       <div>
                         <label [for]="'filter-dropdown-' + filter.type + '-to'" class="form-label">
@@ -128,27 +132,25 @@
                           class="form-control"
                           [id]="'filter-dropdown-' + filter.type + '-to'"
                           [(ngModel)]="filter.value.to"
-                          (change)="setFilterValue(filter, {from: filter.value.from, to: filter.value.to})"
-                        >
+                          (change)="setFilterValue(filter, { from: filter.value.from, to: filter.value.to })"
+                        />
                       </div>
                     </div>
                   </div>
                 </button>
-                <button type="button" class="btn btn-outline-secondary btn-xs btn-close btn-no-block" (click)="removeFilter(filter)">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-xs btn-close btn-no-block"
+                  (click)="removeFilter(filter)"
+                >
                   &times;
                 </button>
               </div>
             </ng-container>
-
           </div>
         </div>
 
-        <button
-          *ngIf="changed"
-          type="button"
-          class="btn btn-primary btn-xs btn-no-block"
-          (click)="apply()"
-        >
+        <button *ngIf="changed" type="button" class="btn btn-primary btn-xs btn-no-block" (click)="apply()">
           {{ "Apply" | translate }}
         </button>
 
@@ -163,8 +165,10 @@
             {{ "Clear all filters" | translate }}
           </span>
         </a>
-      </div> <!-- flex -->
-    </div> <!-- col -->
-  </div> <!-- row -->
-
+      </div>
+      <!-- flex -->
+    </div>
+    <!-- col -->
+  </div>
+  <!-- row -->
 </ng-container>

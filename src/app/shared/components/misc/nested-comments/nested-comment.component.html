@@ -6,7 +6,7 @@
     id="c{{ comment.id }}"
   >
     <div class="avatar">
-      <img [src]="avatarUrl" alt="">
+      <img [src]="avatarUrl" alt="" />
     </div>
 
     <div class="nested-comment-content">
@@ -14,10 +14,12 @@
         <div>
           <a
             *ngIf="!comment.deleted"
-            (click)="userService.openGallery(
-              comment.authorUsername,
-              !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-           )"
+            (click)="
+              userService.openGallery(
+                comment.authorUsername,
+                !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+              )
+            "
             [href]="userGalleryUrl"
             astrobinEventPreventDefault
             class="username"
@@ -26,24 +28,17 @@
           </a>
 
           <span *ngIf="comment.deleted" class="username">
-          {{ "(deleted)" | translate }}
-        </span>
+            {{ "(deleted)" | translate }}
+          </span>
 
           <span [attr.data-test-value]="comment.created" class="timestamp">
-          {{ comment.created | localDate | timeago }}
-        </span>
+            {{ comment.created | localDate | timeago  }}
+          </span>
 
           <astrobin-toggle-property
-            *ngIf="
-            !comment.pendingModeration &&
-            !comment.deleted &&
-            commentContentType
-          "
+            *ngIf="!comment.pendingModeration && !comment.deleted && commentContentType"
             [contentType]="commentContentType.id"
-            [disabled]="
-            !currentUserWrapper.user?.id ||
-            currentUserWrapper.user.id === comment.author
-          "
+            [disabled]="!currentUserWrapper.user?.id || currentUserWrapper.user.id === comment.author"
             [objectId]="comment.id"
             [count]="comment.likes.length"
             [userId]="currentUserWrapper.user?.id"
@@ -74,10 +69,7 @@
 
             <button
               (click)="onEditClicked($event)"
-              *ngIf="
-            !comment.deleted &&
-            currentUserWrapper.user?.id === comment.author
-          "
+              *ngIf="!comment.deleted && currentUserWrapper.user?.id === comment.author"
               [hidden]="showReplyForm"
               class="dropdown-item"
             >
@@ -87,11 +79,7 @@
         </div>
       </div>
 
-      <div
-        *ngIf="!comment.pendingModeration"
-        class="text"
-        [class.translated-content]="translated"
-      >
+      <div *ngIf="!comment.pendingModeration" class="text" [class.translated-content]="translated">
         <small *ngIf="translated" class="text-muted fst-italic d-block mb-2">{{ "Translated" | translate }}</small>
         <div [innerHTML]="html"></div>
       </div>
@@ -125,7 +113,8 @@
           *ngIf="
             !translated &&
             !!currentUserWrapper.user &&
-            comment.detectedLanguage && comment.detectedLanguage !== translateService.currentLang
+            comment.detectedLanguage &&
+            comment.detectedLanguage !== translateService.currentLang
           "
           (click)="onTranslateClicked($event)"
           [class.loading]="translating"
@@ -149,18 +138,10 @@
           *ngIf="
             !comment.pendingModeration &&
             !comment.deleted &&
-            showReplyButton && (
-              (
-                currentUserWrapper.user?.id !== comment.author &&
-                (
-                  !restrictReplyToUserId ||
-                  (restrictReplyToUserId && restrictReplyToUserId === comment.author)
-                )
-              ) ||
-              (
-                currentUserWrapper.user?.id === comment.author && allowSelfReply
-              )
-            )
+            showReplyButton &&
+            ((currentUserWrapper.user?.id !== comment.author &&
+              (!restrictReplyToUserId || (restrictReplyToUserId && restrictReplyToUserId === comment.author))) ||
+              (currentUserWrapper.user?.id === comment.author && allowSelfReply))
           "
           [hidden]="showReplyForm"
           class="btn btn-sm btn-no-block btn-link reply"

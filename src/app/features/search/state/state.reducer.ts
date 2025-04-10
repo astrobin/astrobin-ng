@@ -2,8 +2,7 @@ import { PayloadActionInterface } from "@app/store/actions/payload-action.interf
 
 export const searchFeatureKey = "search";
 
-export interface SearchState {
-}
+export interface SearchState {}
 
 export const initialSearchState: SearchState = {};
 

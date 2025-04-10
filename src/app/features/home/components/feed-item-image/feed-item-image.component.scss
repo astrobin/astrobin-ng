@@ -1,4 +1,4 @@
-@import '../../../../styles/breakpoints';
+@import "../../../../styles/breakpoints";
 
 img {
   width: 100%;
@@ -8,14 +8,14 @@ img {
 }
 
 .comment-body {
-  font-size: .9rem;
+  font-size: 0.9rem;
   margin-top: 1.5rem;
   margin-bottom: 1rem;
-  padding: .75rem 1.25rem;
-  border-left: .25rem solid var(--grey);
+  padding: 0.75rem 1.25rem;
+  border-left: 0.25rem solid var(--grey);
   color: var(--lighterGrey);
-  background: rgba(0, 0, 0, .2);
-  box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
 
   ::ng-deep img {
     max-width: 100%;
@@ -30,10 +30,10 @@ img {
 
 astrobin-toggle-property ::ng-deep .count {
   color: var(--lightestGrey) !important;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, .35);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.35);
 }
 
-.ng-fa-icon[icon='comment'],
-.ng-fa-icon[icon='comment'] + .count {
+.ng-fa-icon[icon="comment"],
+.ng-fa-icon[icon="comment"] + .count {
   color: var(--lightestGrey) !important;
 }

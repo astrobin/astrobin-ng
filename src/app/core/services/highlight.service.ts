@@ -1,7 +1,7 @@
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Injectable({
   providedIn: "root"
@@ -52,11 +52,13 @@ export class HighlightService {
     }
 
     // Quick check for code blocks in the HTML
-    return html.includes("<pre><code") ||
+    return (
+      html.includes("<pre><code") ||
       html.includes("<pre code") ||
       html.includes("<pre><code>") ||
       html.includes("<code class=") ||
-      html.includes("<code>");
+      html.includes("<code>")
+    );
   }
 
   /**
@@ -86,46 +88,51 @@ export class HighlightService {
         const win = this.windowRefService.nativeWindow as any;
         const document = this.windowRefService.nativeWindow.document;
 
-      // Check if highlight.js is already available
-      if (win.hljs && typeof win.hljs === "object") {
-        this._scriptsLoaded = true;
-        resolve();
-        return;
-      }
+        // Check if highlight.js is already available
+        if (win.hljs && typeof win.hljs === "object") {
+          this._scriptsLoaded = true;
+          resolve();
+          return;
+        }
 
-      // First load the CSS stylesheet
-      this._loadStylesheet().then(() => {
-        // Then load main highlight.js script
-        const mainScript = document.createElement("script");
-        mainScript.src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js";
-        mainScript.crossOrigin = "anonymous";
-        mainScript.integrity = "sha512-EBLzUL8XLl+va/zAsmXwS7Z2B1F9HUHkZwyS/VKwh3S7T/U0nF4BaU29EP/ZSf6zgiIxYAnKLu6bJ8dqpmX5uw==";
-        mainScript.referrerPolicy = "no-referrer";
+        // First load the CSS stylesheet
+        this._loadStylesheet()
+          .then(() => {
+            // Then load main highlight.js script
+            const mainScript = document.createElement("script");
+            mainScript.src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js";
+            mainScript.crossOrigin = "anonymous";
+            mainScript.integrity =
+              "sha512-EBLzUL8XLl+va/zAsmXwS7Z2B1F9HUHkZwyS/VKwh3S7T/U0nF4BaU29EP/ZSf6zgiIxYAnKLu6bJ8dqpmX5uw==";
+            mainScript.referrerPolicy = "no-referrer";
 
-        mainScript.onload = () => {
-          // Load the line numbers plugin
-          this._loadLineNumbersPlugin().then(() => {
-            // Resolve the promise once everything is loaded
-            this._scriptsLoaded = true;
-            resolve();
-          }).catch(error => {
-            // Still resolve if line numbers plugin fails
-            console.warn("Failed to load line numbers plugin:", error);
-            this._scriptsLoaded = true;
-            resolve();
+            mainScript.onload = () => {
+              // Load the line numbers plugin
+              this._loadLineNumbersPlugin()
+                .then(() => {
+                  // Resolve the promise once everything is loaded
+                  this._scriptsLoaded = true;
+                  resolve();
+                })
+                .catch(error => {
+                  // Still resolve if line numbers plugin fails
+                  console.warn("Failed to load line numbers plugin:", error);
+                  this._scriptsLoaded = true;
+                  resolve();
+                });
+            };
+
+            mainScript.onerror = error => {
+              this._loadingPromise = null;
+              reject("Failed to load highlight.js main script");
+            };
+
+            document.body.appendChild(mainScript);
+          })
+          .catch(error => {
+            this._loadingPromise = null;
+            reject("Failed to load highlight.js stylesheet");
           });
-        };
-
-        mainScript.onerror = (error) => {
-          this._loadingPromise = null;
-          reject("Failed to load highlight.js main script");
-        };
-
-        document.body.appendChild(mainScript);
-      }).catch(error => {
-        this._loadingPromise = null;
-        reject("Failed to load highlight.js stylesheet");
-      });
       } catch (error) {
         // Handle any unexpected errors, particularly related to DOM access during SSR
         this._loadingPromise = null;
@@ -197,33 +204,33 @@ export class HighlightService {
 
         const document = this.windowRefService.nativeWindow.document;
 
-      // Check if the stylesheet is already loaded
-      const existingStylesheet = document.querySelector("link[href*=\"highlight.js\"]");
-      if (existingStylesheet) {
-        this._cssLoaded = true;
-        resolve();
-        return;
-      }
+        // Check if the stylesheet is already loaded
+        const existingStylesheet = document.querySelector('link[href*="highlight.js"]');
+        if (existingStylesheet) {
+          this._cssLoaded = true;
+          resolve();
+          return;
+        }
 
-      // Create and append the stylesheet link
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/github-dark.min.css";
+        // Create and append the stylesheet link
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/github-dark.min.css";
 
-      // Use media print for initial loading, then switch to all (for performance)
-      link.media = "print";
+        // Use media print for initial loading, then switch to all (for performance)
+        link.media = "print";
 
-      // Use load event for stylesheets
-      link.onload = () => {
-        // Switch to all media once loaded
-        link.media = "all";
-        this._cssLoaded = true;
-        resolve();
-      };
+        // Use load event for stylesheets
+        link.onload = () => {
+          // Switch to all media once loaded
+          link.media = "all";
+          this._cssLoaded = true;
+          resolve();
+        };
 
-      link.onerror = () => reject("Failed to load highlight.js stylesheet");
+        link.onerror = () => reject("Failed to load highlight.js stylesheet");
 
-      document.head.appendChild(link);
+        document.head.appendChild(link);
       } catch (error) {
         reject(`Error loading highlight.js stylesheet: ${error}`);
       }
@@ -244,15 +251,17 @@ export class HighlightService {
         const document = this.windowRefService.nativeWindow.document;
         const script = document.createElement("script");
 
-      script.src = "https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js";
-      script.crossOrigin = "anonymous";
-      script.integrity = "sha512-axd5V66bnXpNVQzm1c7u1M614TVRXXtouyWCE+eMYl8ALK8ePJEs96Xtx7VVrPBc0UraCn63U1+ARFI3ofW+aA==";
-      script.referrerPolicy = "no-referrer";
+        script.src =
+          "https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js";
+        script.crossOrigin = "anonymous";
+        script.integrity =
+          "sha512-axd5V66bnXpNVQzm1c7u1M614TVRXXtouyWCE+eMYl8ALK8ePJEs96Xtx7VVrPBc0UraCn63U1+ARFI3ofW+aA==";
+        script.referrerPolicy = "no-referrer";
 
-      script.onload = () => resolve();
-      script.onerror = (error) => reject("Failed to load line numbers plugin");
+        script.onload = () => resolve();
+        script.onerror = error => reject("Failed to load line numbers plugin");
 
-      document.body.appendChild(script);
+        document.body.appendChild(script);
       } catch (error) {
         reject(`Error loading line numbers plugin: ${error}`);
       }

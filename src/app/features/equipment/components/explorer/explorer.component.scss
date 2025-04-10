@@ -2,7 +2,7 @@
 
 astrobin-equipment-item-browser {
   display: block;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 .card {
@@ -10,18 +10,18 @@ astrobin-equipment-item-browser {
     margin: -1rem;
     margin-bottom: 1rem;
     border-radius: 0;
-    padding: .25rem 1rem;
-    font-size: .9rem;
+    padding: 0.25rem 1rem;
+    font-size: 0.9rem;
 
     @media screen and (max-width: $md-max) {
-      margin: -.5rem -.5rem .5rem -.5rem;
+      margin: -0.5rem -0.5rem 0.5rem -0.5rem;
     }
   }
 }
 
 astrobin-equipment-item-summary {
   display: block;
-  padding: .5rem;
+  padding: 0.5rem;
 
   @media screen and (max-width: $md-max) {
     padding: 0;
@@ -30,7 +30,7 @@ astrobin-equipment-item-summary {
 
 .add-to-compare {
   color: var(--lighterGrey);
-  padding: .5rem;
+  padding: 0.5rem;
 
   @media screen and (max-width: $md-max) {
     display: none;
@@ -39,11 +39,11 @@ astrobin-equipment-item-summary {
 
 .loading-edit-proposals {
   font-style: italic;
-  font-size: .9rem;
-  padding: .25rem 1rem;
+  font-size: 0.9rem;
+  padding: 0.25rem 1rem;
   background: var(--darkerGrey);
   color: var(--lighterGrey);
-  border-radius: 0 0 .25rem .25rem;
+  border-radius: 0 0 0.25rem 0.25rem;
 }
 
 .edit-proposals {
@@ -53,43 +53,43 @@ astrobin-equipment-item-summary {
   margin-right: 1rem;
 
   .edit-proposals-header {
-    padding: 1rem 1rem .5rem 1rem;
+    padding: 1rem 1rem 0.5rem 1rem;
     border-bottom: 1px dashed var(--grey);
     font-weight: bold;
     cursor: pointer;
   }
 
   .edit-proposals-collapsed {
-    padding: 1rem 1rem .5rem 1rem;
+    padding: 1rem 1rem 0.5rem 1rem;
     color: var(--gray);
     cursor: pointer;
   }
 }
 
 .item-variants-container {
-  padding: .75rem 1.5rem;
+  padding: 0.75rem 1.5rem;
   margin: -1.25rem;
   margin-top: 1rem;
-  font-size: .85rem;
+  font-size: 0.85rem;
   font-style: italic;
 
   .item-variant {
     border-bottom: 0;
-    margin-left: .5rem;
+    margin-left: 0.5rem;
 
     &:not(:last-child) {
       &::after {
-        content: '\b7'; /* middot */
-        margin-left: .25rem
+        content: "\b7"; /* middot */
+        margin-left: 0.25rem;
       }
     }
 
-    [icon=plus] {
-      margin: 0 .5rem;
+    [icon="plus"] {
+      margin: 0 0.5rem;
     }
 
     &:first-child {
-      margin-top: .5rem;
+      margin-top: 0.5rem;
     }
   }
 }

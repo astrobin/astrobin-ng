@@ -1,20 +1,26 @@
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@core/services/loading.service";
-import { AcquisitionType, DataSource, RemoteSource, SolarSystemSubjectType, SubjectType } from "@core/interfaces/image.interface";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Observable, of, Subscription } from "rxjs";
 import { CreateLocationAddTag } from "@app/store/actions/location.actions";
+import { MainState } from "@app/store/state";
+import {
+  AcquisitionType,
+  DataSource,
+  RemoteSource,
+  SolarSystemSubjectType,
+  SubjectType
+} from "@core/interfaces/image.interface";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { CreateLocationModalComponent } from "@features/image/components/create-location-modal/create-location-modal.component";
-import { take } from "rxjs/operators";
-import { TranslateService } from "@ngx-translate/core";
+import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
+import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
-import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
-import { ImageService } from "@core/services/image/image.service";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, Subscription, of } from "rxjs";
+import { take } from "rxjs/operators";
 
 @Injectable({
   providedIn: null
@@ -34,8 +40,7 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
     super(loadingService);
   }
 
-  onFieldsInitialized(): void {
-  }
+  onFieldsInitialized(): void {}
 
   getAcquisitionTypeField(): FormlyFieldConfig {
     return {
@@ -90,19 +95,16 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
         })),
         changeConfirmationCondition: (currentValue: SubjectType, newValue: SubjectType): boolean => {
           if (
-            (
-              this.imageEditService.isLongExposure(currentValue) ||
-              this.imageEditService.model.overrideAcquisitionForm === AcquisitionForm.LONG_EXPOSURE
-            ) &&
-            !this.imageEditService.isLongExposure(newValue)) {
+            (this.imageEditService.isLongExposure(currentValue) ||
+              this.imageEditService.model.overrideAcquisitionForm === AcquisitionForm.LONG_EXPOSURE) &&
+            !this.imageEditService.isLongExposure(newValue)
+          ) {
             return this.imageEditService.hasDeepSkyAcquisitions();
           }
 
           if (
-            (
-              this.imageEditService.isVideoBased(currentValue) ||
-              this.imageEditService.model.overrideAcquisitionForm === AcquisitionForm.VIDEO_BASED
-            ) &&
+            (this.imageEditService.isVideoBased(currentValue) ||
+              this.imageEditService.model.overrideAcquisitionForm === AcquisitionForm.VIDEO_BASED) &&
             !this.imageEditService.isVideoBased(newValue)
           ) {
             return this.imageEditService.hasSolarSystemAcquisitions();
@@ -177,17 +179,13 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
           {
             value: DataSource.BACKYARD,
             label: this.imageService.humanizeDataSource(DataSource.BACKYARD),
-            description: this.translateService.instant(
-              "Images captured with your own equipment near home."
-            ),
+            description: this.translateService.instant("Images captured with your own equipment near home."),
             group: this.translateService.instant("Self-acquired")
           },
           {
             value: DataSource.TRAVELLER,
             label: this.imageService.humanizeDataSource(DataSource.TRAVELLER),
-            description: this.translateService.instant(
-              "Images captured with portable gear at distant locations."
-            ),
+            description: this.translateService.instant("Images captured with portable gear at distant locations."),
             group: this.translateService.instant("Self-acquired")
           },
           {
@@ -225,25 +223,19 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
           {
             value: DataSource.MIX,
             label: this.imageService.humanizeDataSource(DataSource.MIX),
-            description: this.translateService.instant(
-              "Images processed from a mix of the above sources."
-            ),
+            description: this.translateService.instant("Images processed from a mix of the above sources."),
             group: this.translateService.instant("External sources")
           },
           {
             value: DataSource.OTHER,
             label: this.imageService.humanizeDataSource(DataSource.OTHER),
-            description: this.translateService.instant(
-              "Images acquired or processed from a source not listed above."
-            ),
+            description: this.translateService.instant("Images acquired or processed from a source not listed above."),
             group: this.translateService.instant("External sources")
           },
           {
             value: DataSource.UNKNOWN,
             label: this.imageService.humanizeDataSource(DataSource.UNKNOWN),
-            description: this.translateService.instant(
-              "You're not sure where the data comes from."
-            ),
+            description: this.translateService.instant("You're not sure where the data comes from."),
             group: this.translateService.instant("External sources")
           }
         ]
@@ -347,9 +339,7 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
             };
 
             const stepperField = this.imageEditService.fields.filter(field => field.id === "image-stepper-field")[0];
-            const contentFieldGroup = stepperField.fieldGroup.filter(
-              group => group.id === "image-stepper-content"
-            )[0];
+            const contentFieldGroup = stepperField.fieldGroup.filter(group => group.id === "image-stepper-content")[0];
             const locationsField = contentFieldGroup.fieldGroup.filter(
               group => group.id === "image-locations-field"
             )[0];
@@ -381,15 +371,14 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
     let description =
       this.translateService.instant("Submit this image to the selected groups.") +
       " " +
-      "<a href=\"https://welcome.astrobin.com/features/groups\" target=\"_blank\">" +
+      '<a href="https://welcome.astrobin.com/features/groups" target="_blank">' +
       this.translateService.instant("Learn more about AstroBin Groups.") +
       "</a>";
 
     if (this.imageEditService.groups.length === 0) {
       const reason = this.translateService.instant("This field is disabled because you haven't joined any groups yet.");
       description += ` <strong>${reason}</strong>`;
-    }
- else if (this.imageEditService.model.isWip) {
+    } else if (this.imageEditService.model.isWip) {
       const publicationInfo = this.translateService.instant(
         "This setting will take affect after the image will be moved to your public area."
       );
@@ -418,7 +407,7 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
     let description =
       this.translateService.instant("Add this image to the selected collections.") +
       " " +
-      "<a href=\"https://welcome.astrobin.com/image-collections\" target=\"_blank\">" +
+      '<a href="https://welcome.astrobin.com/image-collections" target="_blank">' +
       this.translateService.instant("Learn more about collections.") +
       "</a>";
 

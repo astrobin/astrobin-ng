@@ -1,13 +1,15 @@
+@import "../../../../styles/mixins";
+
 :host {
-  background-color: rgba(0, 0, 0, .75);
-  opacity: .75;
+  background-color: rgba(0, 0, 0, 0.75);
+  opacity: 0.75;
 }
 
 .adjuster {
   display: flex;
   flex-wrap: nowrap;
   align-items: baseline;
-  gap: .5rem;
+  @include flex-gap(row, 0.5rem);
 
   .ng-fa-icon {
     color: var(--white);
@@ -29,15 +31,15 @@
     .ngx-slider-bubble {
       top: 1.5rem;
       bottom: unset;
-      background: rgba(0, 0, 0, .8);
-      padding: 0 .5rem;
-      border-radius: .5rem;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 0 0.5rem;
+      border-radius: 0.5rem;
     }
   }
 }
 
 .btn {
-  padding: .5rem;
+  padding: 0.5rem;
   cursor: pointer;
   font-size: 1.25rem;
 }

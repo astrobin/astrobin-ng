@@ -1,22 +1,22 @@
-import { Component, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { OnInit, Component } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { CreateLocation } from "@app/store/actions/location.actions";
+import { selectApp } from "@app/store/selectors/app/app.selectors";
+import { MainState } from "@app/store/state";
+import { LocationInterface } from "@core/interfaces/location.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
+import { LoadingService } from "@core/services/loading.service";
+import { AuthActionTypes, UpdateUserProfileSuccess } from "@features/account/store/auth.actions";
+import { google } from "@google/maps";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { AuthActionTypes, UpdateUserProfileSuccess } from "@features/account/store/auth.actions";
-import { map, take, tap } from "rxjs/operators";
-import { Actions, ofType } from "@ngrx/effects";
-import { CreateLocation } from "@app/store/actions/location.actions";
-import { LocationInterface } from "@core/interfaces/location.interface";
-import { selectApp } from "@app/store/selectors/app/app.selectors";
-import { LoadingService } from "@core/services/loading.service";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Observable } from "rxjs";
-import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { google } from "@google/maps";
+import { map, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-create-location-modal",

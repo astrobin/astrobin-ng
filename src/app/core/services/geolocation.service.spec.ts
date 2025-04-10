@@ -1,6 +1,7 @@
-import { GeolocationService } from "./geolocation.service";
-import { TestBed } from "@angular/core/testing";
 import { PLATFORM_ID } from "@angular/core";
+import { TestBed } from "@angular/core/testing";
+
+import { GeolocationService } from "./geolocation.service";
 
 describe("GeolocationService", () => {
   let service: GeolocationService;
@@ -65,7 +66,9 @@ describe("GeolocationService", () => {
 
     it("should reject if not in browser context", async () => {
       if (typeof window === "undefined") {
-        await expect(service.getCurrentPosition()).rejects.toThrow("Geolocation is not available in server-side rendering.");
+        await expect(service.getCurrentPosition()).rejects.toThrow(
+          "Geolocation is not available in server-side rendering."
+        );
       }
     });
   });

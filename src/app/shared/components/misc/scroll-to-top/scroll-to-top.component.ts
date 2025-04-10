@@ -1,11 +1,22 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { auditTime, fromEvent, Subscription } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID
+} from "@angular/core";
+import { MainState } from "@app/store/state";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
 import { fadeInOut } from "@shared/animations";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Subscription, auditTime, fromEvent } from "rxjs";
 
 @Component({
   selector: "astrobin-scroll-to-top",
@@ -126,7 +137,9 @@ export class ScrollToTopComponent extends BaseComponentDirective implements OnCh
 
   private _getScrollTop(element: HTMLElement | Window): number {
     if (element instanceof Window) {
-      return this.windowRefService.nativeWindow.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+      return (
+        this.windowRefService.nativeWindow.scrollY || document.documentElement.scrollTop || document.body.scrollTop
+      );
     } else {
       return element.scrollTop;
     }

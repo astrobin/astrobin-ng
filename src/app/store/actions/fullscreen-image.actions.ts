@@ -2,27 +2,26 @@
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { Action } from "@ngrx/store";
 import { ImageInterface } from "@core/interfaces/image.interface";
+import { Action } from "@ngrx/store";
 
 export class ShowFullscreenImage implements PayloadActionInterface {
   readonly type = AppActionTypes.SHOW_FULLSCREEN_IMAGE;
 
   constructor(
     public payload: {
-      imageId: ImageInterface["pk"],
-      event?: MouseEvent | TouchEvent | null,
+      imageId: ImageInterface["pk"];
+      event?: MouseEvent | TouchEvent | null;
       externalSolutionMatrix?: {
         matrixRect: string;
         matrixDelta: number;
         raMatrix: string;
         decMatrix: string;
       },
-      enableAnnotations?: boolean,
-      allowZoom?: boolean
+      enableAnnotations?: boolean;
+      allowZoom?: boolean;
     }
-  ) {
-  }
+  ) {}
 }
 
 export class HideFullscreenImage implements Action {

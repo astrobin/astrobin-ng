@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
 
 import { NothingHereComponent } from "./nothing-here.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
 
 describe("NothingHereComponent", () => {
   let component: NothingHereComponent;

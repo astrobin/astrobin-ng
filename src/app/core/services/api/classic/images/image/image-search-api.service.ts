@@ -1,16 +1,16 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { LoadingService } from "@core/services/loading.service";
-import { Observable } from "rxjs";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
+import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"
@@ -29,7 +29,11 @@ export class ImageSearchApiService extends BaseClassicApiService {
   getFilterParamName(itemType: EquipmentItemType, usageType?: EquipmentItemUsageType): string | null {
     let usageTypePrefix = "";
 
-    if (itemType === EquipmentItemType.TELESCOPE || itemType === EquipmentItemType.CAMERA || itemType === EquipmentItemType.SENSOR) {
+    if (
+      itemType === EquipmentItemType.TELESCOPE ||
+      itemType === EquipmentItemType.CAMERA ||
+      itemType === EquipmentItemType.SENSOR
+    ) {
       if (usageType === EquipmentItemUsageType.GUIDING) {
         usageTypePrefix = "guiding_";
       } else if (usageType === EquipmentItemUsageType.IMAGING) {

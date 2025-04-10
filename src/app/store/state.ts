@@ -1,29 +1,38 @@
 import { CameraEffects } from "@app/store/effects/camera.effects";
+import { CollectionEffects } from "@app/store/effects/collection.effects";
 import { ContentTypeEffects } from "@app/store/effects/content-type.effects";
 import { FullscreenImageEffects } from "@app/store/effects/fullscreen-image.effects";
+import { GroupEffects } from "@app/store/effects/group.effect";
 import { ImageEffects } from "@app/store/effects/image.effects";
 import { InitializeAppEffects } from "@app/store/effects/initialize-app.effects";
+import { LocationEffects } from "@app/store/effects/location.effects";
+import { NestedCommentsEffects } from "@app/store/effects/nested-comments.effects";
+import { RemoteSourceAffiliatesEffects } from "@app/store/effects/remote-source-affiliates.effects";
 import { SolutionEffects } from "@app/store/effects/solution.effects";
 import { TelescopeEffects } from "@app/store/effects/telescope.effects";
 import { ThumbnailEffects } from "@app/store/effects/thumbnail.effects";
-import { AuthEffects } from "@features/account/store/auth.effects";
-import { authReducer, AuthState, initialAuthState } from "@features/account/store/auth.reducers";
-import { initialNotificationsState, notificationsReducer, NotificationsState } from "@features/notifications/store/notifications.reducers";
-import { appReducer, AppState, initialAppState } from "./reducers/app.reducers";
-import { LocationEffects } from "@app/store/effects/location.effects";
-import { NotificationsEffects } from "@features/notifications/store/notifications.effects";
-import { equipmentReducer, EquipmentState, initialEquipmentState } from "@features/equipment/store/equipment.reducer";
-import { NestedCommentsEffects } from "@app/store/effects/nested-comments.effects";
-import { EquipmentEffects } from "@features/equipment/store/equipment.effects";
-import { initialSubscriptionsState, subscriptionsReducer, SubscriptionsState } from "@features/subscriptions/store/subscriptions.reducers";
-import { SubscriptionsEffects } from "@features/subscriptions/store/subscriptions.effects";
 import { TogglePropertyEffects } from "@app/store/effects/toggle-property.effects";
-import { initialSearchState, searchReducer, SearchState } from "@features/search/state/state.reducer";
+import { AuthEffects } from "@features/account/store/auth.effects";
+import { AuthState, authReducer, initialAuthState } from "@features/account/store/auth.reducers";
+import { EquipmentEffects } from "@features/equipment/store/equipment.effects";
+import { EquipmentState, equipmentReducer, initialEquipmentState } from "@features/equipment/store/equipment.reducer";
+import { NotificationsEffects } from "@features/notifications/store/notifications.effects";
+import {
+  initialNotificationsState,
+  notificationsReducer,
+  NotificationsState
+} from "@features/notifications/store/notifications.reducers";
 import { SearchEffects } from "@features/search/state/search.effects";
-import { RemoteSourceAffiliatesEffects } from "@app/store/effects/remote-source-affiliates.effects";
-import { GroupEffects } from "@app/store/effects/group.effect";
-import { CollectionEffects } from "@app/store/effects/collection.effects";
-import { Action, ActionReducer, ActionReducerMap, createAction, MetaReducer, props } from "@ngrx/store";
+import { SearchState, initialSearchState, searchReducer } from "@features/search/state/state.reducer";
+import { SubscriptionsEffects } from "@features/subscriptions/store/subscriptions.effects";
+import {
+  SubscriptionsState,
+  initialSubscriptionsState,
+  subscriptionsReducer
+} from "@features/subscriptions/store/subscriptions.reducers";
+import { Action, ActionReducer, ActionReducerMap, MetaReducer, createAction, props } from "@ngrx/store";
+
+import { appReducer, initialAppState, AppState } from "./reducers/app.reducers";
 
 export interface MainState {
   app: AppState;
@@ -52,10 +61,7 @@ export const mainStateReducers: ActionReducerMap<MainState> = {
   subscriptions: subscriptionsReducer
 };
 
-export const setInitialState = createAction(
-  '[Main] Set initial state',
-  props<{ payload: MainState }>()
-);
+export const setInitialState = createAction("[Main] Set initial state", props<{ payload: MainState }>());
 
 export function rootMetaReducer(reducer: ActionReducer<MainState>): ActionReducer<MainState> {
   return (state: MainState | undefined, action: Action) => {

@@ -12,16 +12,16 @@
     }
 
     &:not(:last-child) {
-      margin-right: .25rem;
+      margin-right: 0.25rem;
 
       &::after {
-        content: '\b7'; /* middot */
-        margin-left: .25rem;
+        content: "\b7"; /* middot */
+        margin-left: 0.25rem;
       }
     }
   }
 }
 
 [icon="info-circle"] {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
 }

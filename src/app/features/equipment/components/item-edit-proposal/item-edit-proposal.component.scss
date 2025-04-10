@@ -9,14 +9,14 @@
   }
 
   .edit-proposal {
-    padding: .25rem 1rem;
+    padding: 0.25rem 1rem;
     cursor: pointer;
 
     @media (min-width: $lg-min) {
       &::after {
         content: "";
         position: absolute;
-        right: .5rem;
+        right: 0.5rem;
         top: calc(1rem - 2px);
         width: 0;
         height: 0;
@@ -28,7 +28,7 @@
 
       &.pending:not(.opened) {
         &::after {
-          animation: tinyBounce .9s ease-out infinite;
+          animation: tinyBounce 0.9s ease-out infinite;
         }
       }
     }
@@ -41,7 +41,7 @@
     }
 
     &:not(.opened):hover {
-      background-color: rgba(255, 255, 255, .025);
+      background-color: rgba(255, 255, 255, 0.025);
     }
 
     .status {
@@ -75,7 +75,7 @@
       padding-left: 1rem;
       width: 90%;
       margin: 2rem auto 3rem;
-      box-shadow: 0 0 2rem rgba(0, 0, 0, .5);
+      box-shadow: 0 0 2rem rgba(0, 0, 0, 0.5);
 
       th,
       td {
@@ -121,7 +121,7 @@
     }
 
     .approve-disabled-reason {
-      font-size: .9rem;
+      font-size: 0.9rem;
       text-align: center;
       margin-top: -2.5rem;
       margin-bottom: 2rem;
@@ -138,8 +138,8 @@
 
   .alert-warning {
     font-size: 0.85rem;
-    padding: .5rem;
-    margin-top: .5rem;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
 
     &::after {
       content: "";
@@ -156,10 +156,10 @@
   }
 
   .assign {
-    padding: .5rem;
+    padding: 0.5rem;
 
     fa-icon {
-      font-size: .66rem;
+      font-size: 0.66rem;
     }
   }
 }

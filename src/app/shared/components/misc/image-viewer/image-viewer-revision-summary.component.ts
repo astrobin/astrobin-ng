@@ -1,32 +1,32 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
-import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@core/services/search.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CookieService } from "ngx-cookie";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
+import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-image-viewer-revision-summary",
   template: `
-    <div
-      (click)="toggleCollapse()"
-      [class.collapsed]="collapsed"
-      class="metadata-header supports-collapsing"
-    >
+    <div (click)="toggleCollapse()" [class.collapsed]="collapsed" class="metadata-header supports-collapsing">
       {{ "Revision" | translate }}: {{ label }}
     </div>
 
-    <div
-      [collapsed]="collapsed"
-      collapseAnimation
-      class="metadata-section"
-    >
+    <div [collapsed]="collapsed" collapseAnimation class="metadata-section">
       <div class="metadata-item">
         <div class="metadata-label">
           <div class="revision-summary">
@@ -42,7 +42,7 @@ import { TranslateService } from "@ngx-translate/core";
 
             <div *ngIf="published">
               <strong>{{ "Published" | translate }}</strong>
-              {{ published | date: "medium" }}
+              {{ published | date : "medium" }}
             </div>
           </div>
         </div>
@@ -83,15 +83,15 @@ export class ImageViewerRevisionSummaryComponent extends ImageViewerSectionBaseC
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.isRevision =this.revision.hasOwnProperty("label");
+    this.isRevision = this.revision.hasOwnProperty("label");
 
     if (this.isRevision) {
-      this.label = (this.revision as ImageRevisionInterface).label
+      this.label = (this.revision as ImageRevisionInterface).label;
     } else {
       this.label = this.translateService.instant("Original");
     }
 
-    if(this.isRevision) {
+    if (this.isRevision) {
       this.published = (this.revision as ImageRevisionInterface).uploaded;
     } else {
       this.published = (this.revision as ImageInterface).published || (this.revision as ImageInterface).uploaded;

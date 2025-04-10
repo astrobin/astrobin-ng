@@ -1,24 +1,29 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { Actions, ofType } from "@ngrx/effects";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { OnInit, ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { AuthActionTypes, UpdateUserProfile } from "@features/account/store/auth.actions";
+import { MainState } from "@app/store/state";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { UserService } from "@core/services/user.service";
-import { TranslateService } from "@ngx-translate/core";
-import { filter, take } from "rxjs/operators";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { AuthActionTypes, UpdateUserProfile } from "@features/account/store/auth.actions";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { filter, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-user-gallery-about",
   template: `
     <div class="about-section">
       <ng-container *ngIf="!isEditing; else editingTemplate">
-        <ng-container *ngIf="userProfile.about || userProfile.job || userProfile.hobbies || userProfile.website; else noAboutTemplate">
+        <ng-container
+          *ngIf="
+            userProfile.about || userProfile.job || userProfile.hobbies || userProfile.website;
+            else noAboutTemplate
+          "
+        >
           <div *ngIf="userProfile.about" class="about">
             <h5 translate="About"></h5>
             <p [innerHTML]="userProfile.about"></p>
@@ -76,11 +81,7 @@ import { UtilsService } from "@core/services/utils/utils.service";
         <div *ngIf="isCurrentUser">
           <p class="text-muted text-center" translate="You haven't added any information about yourself yet."></p>
           <div class="text-center">
-            <button
-              class="btn btn-outline-primary btn-sm"
-              (click)="toggleEdit()"
-              translate="Add info"
-            ></button>
+            <button class="btn btn-outline-primary btn-sm" (click)="toggleEdit()" translate="Add info"></button>
           </div>
         </div>
         <astrobin-nothing-here
@@ -137,53 +138,57 @@ export class UserGalleryAboutComponent extends BaseComponentDirective implements
 
   initForm(): void {
     this.model = {
-      about: this.userProfile?.about || '',
-      website: this.userProfile?.website || '',
-      job: this.userProfile?.job || '',
-      hobbies: this.userProfile?.hobbies || ''
+      about: this.userProfile?.about || "",
+      website: this.userProfile?.website || "",
+      job: this.userProfile?.job || "",
+      hobbies: this.userProfile?.hobbies || ""
     };
 
     this.fields = [
       {
-        key: 'about',
-        type: 'textarea',
-        wrappers: ['default-wrapper'],
+        key: "about",
+        type: "textarea",
+        wrappers: ["default-wrapper"],
         props: {
-          label: this.translateService.instant('About'),
-          description: this.translateService.instant('Tell the community about yourself, your interests in astronomy, and your astrophotography journey.'),
+          label: this.translateService.instant("About"),
+          description: this.translateService.instant(
+            "Tell the community about yourself, your interests in astronomy, and your astrophotography journey."
+          ),
           rows: 8
         }
       },
       {
-        key: 'website',
-        type: 'input',
-        wrappers: ['default-wrapper'],
+        key: "website",
+        type: "input",
+        wrappers: ["default-wrapper"],
         props: {
-          label: this.translateService.instant('Website'),
-          description: this.translateService.instant('Share your personal website, blog, or social media profiles.'),
-          placeholder: 'https://',
+          label: this.translateService.instant("Website"),
+          description: this.translateService.instant("Share your personal website, blog, or social media profiles."),
+          placeholder: "https://",
           required: false
         },
         validators: {
-          validation: ['url']
+          validation: ["url"]
         }
       },
       {
-        key: 'job',
-        type: 'input',
-        wrappers: ['default-wrapper'],
+        key: "job",
+        type: "input",
+        wrappers: ["default-wrapper"],
         props: {
-          label: this.translateService.instant('Job'),
-          description: this.translateService.instant('What do you do professionally?')
+          label: this.translateService.instant("Job"),
+          description: this.translateService.instant("What do you do professionally?")
         }
       },
       {
-        key: 'hobbies',
-        type: 'textarea',
-        wrappers: ['default-wrapper'],
+        key: "hobbies",
+        type: "textarea",
+        wrappers: ["default-wrapper"],
         props: {
-          label: this.translateService.instant('Hobbies'),
-          description: this.translateService.instant('What other activities or interests do you enjoy besides astrophotography?'),
+          label: this.translateService.instant("Hobbies"),
+          description: this.translateService.instant(
+            "What other activities or interests do you enjoy besides astrophotography?"
+          ),
           rows: 4
         }
       }
@@ -202,37 +207,37 @@ export class UserGalleryAboutComponent extends BaseComponentDirective implements
         id: this.userProfile.id
       };
 
-      if (this.form.get('about').dirty) {
-        updatedProfile.about = this.form.get('about').value;
+      if (this.form.get("about").dirty) {
+        updatedProfile.about = this.form.get("about").value;
       }
 
-      if (this.form.get('website').dirty) {
+      if (this.form.get("website").dirty) {
         // Ensure website URL has a protocol before saving
-        const websiteValue = this.form.get('website').value;
+        const websiteValue = this.form.get("website").value;
         updatedProfile.website = websiteValue ? UtilsService.ensureUrlProtocol(websiteValue) : websiteValue;
       }
 
-      if (this.form.get('job').dirty) {
-        updatedProfile.job = this.form.get('job').value;
+      if (this.form.get("job").dirty) {
+        updatedProfile.job = this.form.get("job").value;
       }
 
-      if (this.form.get('hobbies').dirty) {
-        updatedProfile.hobbies = this.form.get('hobbies').value;
+      if (this.form.get("hobbies").dirty) {
+        updatedProfile.hobbies = this.form.get("hobbies").value;
       }
 
       this.store$.dispatch(new UpdateUserProfile(updatedProfile));
 
       // Listen for the success or failure action
-      this.actions$.pipe(
-        ofType(
-          AuthActionTypes.UPDATE_USER_PROFILE_SUCCESS
-        ),
-        filter(action => (action as any).payload.id === this.userProfile.id),
-        take(1)
-      ).subscribe(() => {
-        this.isLoading = false;
-        this.isEditing = false;
-      });
+      this.actions$
+        .pipe(
+          ofType(AuthActionTypes.UPDATE_USER_PROFILE_SUCCESS),
+          filter(action => (action as any).payload.id === this.userProfile.id),
+          take(1)
+        )
+        .subscribe(() => {
+          this.isLoading = false;
+          this.isEditing = false;
+        });
     }
   }
 }

@@ -1,7 +1,7 @@
-import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
 import { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
-import { All, NotificationsActionTypes } from "@features/notifications/store/notifications.actions";
+import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
 import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import { All, NotificationsActionTypes } from "@features/notifications/store/notifications.actions";
 
 export interface NotificationsState {
   types: NotificationTypeInterface[] | null;
@@ -62,7 +62,7 @@ export function notificationsReducer(state = initialNotificationsState, action: 
             return {
               ...notification,
               read: action.payload.read
-            }
+            };
           }
 
           return notification;

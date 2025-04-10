@@ -6,8 +6,16 @@
     class="preset-wrapper w-100 h-100"
   >
     <div class="preset-overlay"></div>
-    <img *ngIf="preset.thumbnail || preset.imageFile" [src]="preset.thumbnail || preset.imageFile" class="preset-image" />
-    <img *ngIf="!preset.thumbnail && !preset.imageFile" src="/assets/images/equipment-preset.png?v=1" class="preset-image default">
+    <img
+      *ngIf="preset.thumbnail || preset.imageFile"
+      [src]="preset.thumbnail || preset.imageFile"
+      class="preset-image"
+    />
+    <img
+      *ngIf="!preset.thumbnail && !preset.imageFile"
+      src="/assets/images/equipment-preset.png?v=1"
+      class="preset-image default"
+    />
     <div class="preset-name">
       {{ preset.name }}
     </div>
@@ -22,11 +30,7 @@
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-secondary btn-edit-preset"
   >
-    <fa-icon
-      icon="pencil"
-      [ngbTooltip]="'Edit' | translate"
-      container="body"
-    ></fa-icon>
+    <fa-icon icon="pencil" [ngbTooltip]="'Edit' | translate" container="body"></fa-icon>
   </button>
 
   <button
@@ -35,23 +39,14 @@
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-secondary btn-delete-preset"
   >
-    <fa-icon
-      icon="trash"
-      [ngbTooltip]="'Delete' | translate"
-      container="body"
-    ></fa-icon>
+    <fa-icon icon="trash" [ngbTooltip]="'Delete' | translate" container="body"></fa-icon>
   </button>
 </ng-container>
 
 <ng-template #presetEditOffcanvas let-offcanvas>
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">{{ "Edit setup" | translate }}</h5>
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Close"
-      (click)="offcanvas.close()"
-    ></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.close()"></button>
   </div>
 
   <div class="offcanvas-body">

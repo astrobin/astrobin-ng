@@ -1,9 +1,9 @@
+import { HttpClient } from "@angular/common/http";
+import { normalizeToSupportedLanguage } from "@app/translate-loader";
+import { TranslatePoHttpLoader } from "@tobyodonnell-aiau/ngx-translate-po-http-loader";
+import * as fs from "fs";
 import { join } from "path";
 import { Observable } from "rxjs";
-import * as fs from "fs";
-import { HttpClient } from "@angular/common/http";
-import { TranslatePoHttpLoader } from "@tobyodonnell-aiau/ngx-translate-po-http-loader";
-import { normalizeToSupportedLanguage } from "@app/translate-loader";
 
 export class TranslateServerLoader extends TranslatePoHttpLoader {
   constructor(

@@ -22,10 +22,10 @@ astrobin-loading-indicator {
 }
 
 .category-description {
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   background: var(--darkestGrey);
   margin: 0 1rem;
-  border-radius: 0 0 .5rem .5rem;
+  border-radius: 0 0 0.5rem 0.5rem;
   font-style: italic;
   color: var(--lightGrey);
 }
@@ -40,7 +40,7 @@ astrobin-loading-indicator {
   }
 
   .read-status {
-    font-size: .8rem;
+    font-size: 0.8rem;
     white-space: nowrap;
     width: 1px;
   }
@@ -74,8 +74,8 @@ astrobin-loading-indicator {
     }
 
     .meta {
-      font-size: .8rem;
-      margin-top: .25rem;
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
       color: var(--lighterGrey);
 
       .forum-name {
@@ -105,9 +105,9 @@ astrobin-loading-indicator {
       a {
         color: var(--lighterGrey);
         @include underline;
-        font-size: .8rem;
+        font-size: 0.8rem;
         font-weight: normal;
-        margin-right: .25rem;
+        margin-right: 0.25rem;
 
         &:hover {
           color: var(--accentColor);
@@ -117,7 +117,7 @@ astrobin-loading-indicator {
   }
 
   .stats {
-    font-size: .8rem;
+    font-size: 0.8rem;
     color: var(--lighterGrey);
     white-space: nowrap;
     width: 1px;

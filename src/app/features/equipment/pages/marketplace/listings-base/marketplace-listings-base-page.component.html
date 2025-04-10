@@ -51,17 +51,11 @@
 
 <ng-template #sellSeekButtons>
   <div class="fixed-mobile-buttons">
-    <a
-      (click)="equipmentMarketplaceService.onCreateListingClicked($event)"
-      class="btn btn-primary btn-lg w-100 mb-2"
-    >
+    <a (click)="equipmentMarketplaceService.onCreateListingClicked($event)" class="btn btn-primary btn-lg w-100 mb-2">
       {{ "Sell" | translate }}
     </a>
 
-    <a
-      (click)="equipmentMarketplaceService.onPostWantedClicked($event)"
-      class="btn btn-secondary btn-lg w-100 mb-3"
-    >
+    <a (click)="equipmentMarketplaceService.onPostWantedClicked($event)" class="btn btn-secondary btn-lg w-100 mb-3">
       {{ "Seek" | translate }}
     </a>
   </div>
@@ -159,11 +153,7 @@
     "AstroBin is the best place to buy and sell astrophotography equipment. You can find telescopes, cameras, mounts, filters, and much more."
       | translate
   }}
-  <a
-    class="learn-more"
-    href="https://welcome.astrobin.com/features/marketplace"
-    target="_blank"
-  >
+  <a class="learn-more" href="https://welcome.astrobin.com/features/marketplace" target="_blank">
     {{ "Learn more" }}.
   </a>
 </ng-template>

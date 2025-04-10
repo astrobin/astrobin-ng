@@ -1,11 +1,12 @@
 import { TestBed } from "@angular/core/testing";
-import { CompareService, CompareServiceError } from "./compare.service";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { MountGenerator } from "@features/equipment/generators/mount.generator";
-import { of } from "rxjs";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
+
+import { CompareService, CompareServiceError } from "./compare.service";
 
 describe("CompareService", () => {
   let service: CompareService;

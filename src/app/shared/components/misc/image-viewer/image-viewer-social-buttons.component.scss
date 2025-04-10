@@ -1,3 +1,5 @@
+@import "../../../../styles/mixins";
+
 .buttons {
   ::ng-deep {
     .ng-fa-icon,
@@ -8,20 +10,20 @@
     .btn:not(.btn-link) {
       display: flex;
       align-items: center;
-      gap: .5rem;
+      @include flex-gap(row, 0.5rem);
       background: var(--accentColor);
       color: var(--textOnAccentColor);
-      border-radius: .25rem;
+      border-radius: 0.25rem;
 
       &[disabled] {
         color: var(--lighterAccentColor) !important;
         border-color: transparent !important;
-        opacity: .5;
+        opacity: 0.5;
       }
 
       .count {
-        font-size: .75rem;
-        opacity: .65;
+        font-size: 0.75rem;
+        opacity: 0.65;
       }
     }
   }
@@ -30,7 +32,7 @@
   .bookmark-count {
     color: var(--accentColor);
     border-bottom: 1px dashed var(--darkerAccentColor);
-    font-size: .9rem;
+    font-size: 0.9rem;
     cursor: pointer;
     display: flex;
     flex-wrap: nowrap;

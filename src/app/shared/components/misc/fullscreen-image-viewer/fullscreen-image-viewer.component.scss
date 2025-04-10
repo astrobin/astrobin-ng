@@ -1,4 +1,5 @@
 @import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
 
 $header-height: 63px;
 
@@ -48,7 +49,7 @@ $header-height: 63px;
   justify-content: center;
   align-items: center;
   opacity: 0;
-  transition: opacity .2s ease;
+  transition: opacity 0.2s ease;
   pointer-events: none;
 
   // For swipe-down gesture - improves performance with composite layers
@@ -84,16 +85,16 @@ $header-height: 63px;
     opacity: 1;
     pointer-events: all;
   }
-  
+
   &.zoom-disabled {
     .touch-real-container {
       pointer-events: none !important;
     }
-    
+
     .image-zoom {
       pointer-events: none !important;
     }
-    
+
     // Show the static image instead
     .static-image-container {
       pointer-events: all;
@@ -204,58 +205,58 @@ $header-height: 63px;
     position: absolute;
     top: 1.1rem;
     left: 3.5rem;
-    box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
-    background: rgba(0, 0, 0, .5);
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5);
     border-radius: 1rem;
-    padding: .25rem .5rem;
-    font-size: .9rem;
-    transition: background .2s ease-in-out;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+    transition: background 0.2s ease-in-out;
 
     a {
       color: var(--white);
     }
 
     &.beyond-one {
-      background: rgba(255, 0, 0, .5);
+      background: rgba(255, 0, 0, 0.5);
     }
 
     &.frozen {
-      background: rgba(0, 100, 200, .7);
+      background: rgba(0, 100, 200, 0.7);
     }
   }
 
   .instruction-container {
     position: absolute;
-    bottom: .5rem;
+    bottom: 0.5rem;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;
 
     .instructions {
-      background: rgba(0, 0, 0, .5);
-      padding: .5rem 1rem;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 0.5rem 1rem;
       border-radius: 1rem;
-      border: 1px solid rgba(255, 255, 255, .05);
-      box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
-      font-size: .9rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
+      font-size: 0.9rem;
       cursor: default;
       animation: tinyBounce 1s 3;
 
       .ng-fa-icon {
-        margin-right: .5rem;
+        margin-right: 0.5rem;
       }
     }
   }
 
   .loading-indicator-container {
     position: absolute;
-    bottom: .5rem;
+    bottom: 0.5rem;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
 
     &.has-message {
-      background-color: rgba(0, 0, 0, .5);
+      background-color: rgba(0, 0, 0, 0.5);
       padding: 1rem;
       border-radius: 1rem;
     }
@@ -315,7 +316,7 @@ $header-height: 63px;
       z-index: 1000;
 
       &.beyond-one {
-        background: rgba(255, 0, 0, .5);
+        background: rgba(255, 0, 0, 0.5);
       }
     }
 
@@ -391,7 +392,7 @@ $header-height: 63px;
     position: absolute;
     top: .5rem;
     border-radius: 1rem;
-    padding: .25rem .5rem;
+    padding: 0.25rem 0.5rem;
     color: var(--white);
     z-index: 5;
   }
@@ -573,7 +574,7 @@ $header-height: 63px;
     top: 1rem;
     left: 50%;
     transform: translateX(-50%);
-    opacity: .5;
+    opacity: 0.5;
 
     img {
       height: 2rem;

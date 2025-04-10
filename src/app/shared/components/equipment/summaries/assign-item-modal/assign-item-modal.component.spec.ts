@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { CameraGenerator } from "@features/equipment/generators/camera.generator";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+import { of, ReplaySubject } from "rxjs";
 
 import { AssignItemModalComponent } from "./assign-item-modal.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { CameraGenerator } from "@features/equipment/generators/camera.generator";
-import { of, ReplaySubject } from "rxjs";
-import { provideMockActions } from "@ngrx/effects/testing";
 
 describe("AssignItemModalComponent", () => {
   let component: AssignItemModalComponent;

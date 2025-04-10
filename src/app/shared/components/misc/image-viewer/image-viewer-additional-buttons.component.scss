@@ -79,22 +79,22 @@
     
     .ng-fa-icon {
       margin: 0 !important;
-      transition: color .25s;
+      transition: color 0.25s;
     }
 
     &.active .ng-fa-icon {
       color: var(--accentColor);
     }
-    
+
     &.active-moon .ng-fa-icon {
-      color: #FFD700; /* Gold/yellow color for the moon */
+      color: #ffd700; /* Gold/yellow color for the moon */
     }
 
     &.disabled {
       cursor: not-allowed !important;
 
       .ng-fa-icon {
-        opacity: .5;
+        opacity: 0.5;
       }
     }
   }

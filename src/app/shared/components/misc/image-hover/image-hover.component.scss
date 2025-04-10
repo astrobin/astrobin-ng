@@ -8,19 +8,19 @@
 
 .static-overlay {
   position: absolute;
-  bottom: .25rem;
-  left: .75rem;
+  bottom: 0.25rem;
+  left: 0.75rem;
   color: var(--white);
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
   font-weight: bold;
-  font-size: .85rem;
-  transition: opacity .25s ease-in-out;
+  font-size: 0.85rem;
+  transition: opacity 0.25s ease-in-out;
   white-space: nowrap;
 
   .ng-fa-icon {
     width: 1em;
     display: inline-block;
-    margin-right: .25em;
+    margin-right: 0.25em;
   }
 }
 
@@ -28,18 +28,18 @@
   opacity: 0;
   position: absolute;
   bottom: 0;
-  padding: .75rem;
+  padding: 0.75rem;
   width: 100%;
   min-height: fit-content;
   max-height: 80%;
   overflow: hidden;
   text-overflow: ellipsis;
-  background: rgba(0, 0, 0, .75);
-  transition: opacity .25s ease-in-out;
-  border-bottom-left-radius: .75rem;
-  border-bottom-right-radius: .75rem;
+  background: rgba(0, 0, 0, 0.75);
+  transition: opacity 0.25s ease-in-out;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
   z-index: 2;
-  font-size: .75rem;  // Base font size
+  font-size: 0.75rem; // Base font size
   pointer-events: none;
 
   .title {
@@ -50,7 +50,7 @@
     line-clamp: 3;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 1em;  // Same as parent
+    font-size: 1em; // Same as parent
     /* Firefox */
     display: -moz-box;
     -moz-box-orient: vertical;
@@ -60,7 +60,7 @@
 
   .author {
     color: var(--lighterGrey);
-    font-size: .9em;  // Slightly smaller than parent
+    font-size: 0.9em; // Slightly smaller than parent
   }
 
   .title,
@@ -74,11 +74,11 @@
   .published,
   .uploaded {
     color: var(--lighterGrey);
-    font-size: 0.85em;  // Slightly smaller than parent
+    font-size: 0.85em; // Slightly smaller than parent
   }
 
   .counters {
-    gap: .25rem;
+    @include flex-gap(row, 0.25rem);
 
     .counter {
       color: var(--lighterGrey);
@@ -87,10 +87,10 @@
       line-height: 1rem;
 
       .ng-fa-icon {
-        width: 1em;  // Changed to em
+        width: 1em; // Changed to em
         display: inline-block;
         text-align: center;
-        margin-right: .35em;  // Changed to em
+        margin-right: 0.35em; // Changed to em
       }
 
       > .value {
@@ -107,26 +107,26 @@
   }
 
   @container (max-width: 200px) {
-    font-size: .7rem;
+    font-size: 0.7rem;
 
     .counters {
-      gap: .1rem;
+      @include flex-gap(row, 0.1rem);
     }
   }
 
   @container (max-width: 150px) {
-    font-size: .6rem;
+    font-size: 0.6rem;
 
     .counters {
-      gap: .05rem;
+      @include flex-gap(row, 0.05rem);
     }
   }
 
   @container (max-width: 100px) {
-    font-size: .5rem;
+    font-size: 0.5rem;
 
     .counters {
-      gap: 0;
+      @include flex-gap(row, 0);
     }
   }
 }

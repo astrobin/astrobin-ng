@@ -1,18 +1,21 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { ForumPostSearchComponent } from "./forum-post-search.component";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { ForumPostSearchComponent } from "./forum-post-search.component";
 
 describe("ForumPostSearchComponent", () => {
   let component: ForumPostSearchComponent;
   let fixture: ComponentFixture<ForumPostSearchComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(ForumPostSearchComponent, AppModule).provide([WindowRefService, provideMockStore({ initialState: initialMainState })]);
+    await MockBuilder(ForumPostSearchComponent, AppModule).provide([
+      WindowRefService,
+      provideMockStore({ initialState: initialMainState })
+    ]);
   });
 
   beforeEach(() => {

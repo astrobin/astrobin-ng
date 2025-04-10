@@ -10,11 +10,7 @@
 <div class="modal-body">
   <ng-container *ngIf="(this.loadingService.loading$ | async) === false; else loading">
     <ng-container *ngIf="similarLegacyItems.length > 0; else noSimilarItems">
-      <p
-        [innerHTML]="message"
-        class="alert alert-info"
-      >
-      </p>
+      <p [innerHTML]="message" class="alert alert-info"></p>
 
       <form [formGroup]="form" class="mt-4 ms-3">
         <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>

@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { SoftwareService } from "@features/equipment/services/software.service";
+import { MockBuilder } from "ng-mocks";
 
 describe("SoftwareService", () => {
   let service: SoftwareService;

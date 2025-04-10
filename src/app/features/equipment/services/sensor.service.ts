@@ -1,17 +1,17 @@
 import { Injectable } from "@angular/core";
+import { MainState } from "@app/store/state";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateService } from "@ngx-translate/core";
-import { combineLatest, Observable, of } from "rxjs";
-import { filter, map, take } from "rxjs/operators";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { SensorInterface, ColorOrMono } from "@features/equipment/types/sensor.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, combineLatest, of } from "rxjs";
+import { filter, map, take } from "rxjs/operators";
 
 export enum SensorDisplayProperty {
   QUANTUM_EFFICIENCY = "QUANTUM_EFFICIENCY",
@@ -101,8 +101,9 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         }
         return of(
           propertyValue || (item.sensorWidth && item.sensorHeight)
-            ? `${propertyValue?.sensorWidth || item.sensorWidth} x ${propertyValue?.sensorHeight ||
-            item.sensorHeight} mm`
+            ? `${propertyValue?.sensorWidth || item.sensorWidth} x ${
+                propertyValue?.sensorHeight || item.sensorHeight
+              } mm`
             : ""
         );
       case SensorDisplayProperty.SENSOR_WIDTH:
@@ -134,7 +135,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
           return of(null);
         }
 
-        let cameras$ = [];
+        const cameras$ = [];
         for (const id of ids) {
           const payload = {
             id,
@@ -142,19 +143,19 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
           };
           this.store$.dispatch(new LoadEquipmentItem(payload));
 
-          cameras$.push(this.store$.select(selectEquipmentItem, payload).pipe(
-            filter(camera => !!camera),
-            take(1),
-            map(
-              camera =>
-                `${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}`
+          cameras$.push(
+            this.store$.select(selectEquipmentItem, payload).pipe(
+              filter(camera => !!camera),
+              take(1),
+              map(
+                camera =>
+                  `${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}`
+              )
             )
-          ));
+          );
         }
 
-        return combineLatest(cameras$).pipe(
-          map(cameras => cameras.join(", "))
-        );
+        return combineLatest(cameras$).pipe(map(cameras => cameras.join(", ")));
 
       default:
         throw Error(`Invalid property: ${property}`);

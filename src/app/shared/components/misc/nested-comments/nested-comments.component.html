@@ -2,10 +2,10 @@
   astrobinScrollVisibility
   [forceVisible]="forceVisible"
   [viewportOptions]="{
-       verticalTolerance: 500,
-       horizontalTolerance: 10,
-       shouldCheckHorizontal: false
-     }"
+    verticalTolerance: 500,
+    horizontalTolerance: 10,
+    shouldCheckHorizontal: false
+  }"
   (visibilityChange)="onVisibilityChange($event)"
 >
   <div *ngIf="comments$ | async as comments; else loadingTpl" class="nested-comments card" @fadeInOut>
@@ -14,13 +14,15 @@
 
       <div class="actions">
         <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
-        <button (click)="close.emit()" *ngIf="showCloseButton"
-                class="btn btn-link btn-no-block btn-close ms-2"></button>
+        <button
+          (click)="close.emit()"
+          *ngIf="showCloseButton"
+          class="btn btn-link btn-no-block btn-close ms-2"
+        ></button>
       </div>
     </div>
 
     <div class="card-body">
-
       <p *ngIf="!!info">
         <fa-icon class="me-2" icon="info-circle"></fa-icon>
         <span [innerHTML]="info"></span>
@@ -54,10 +56,10 @@
         *ngIf="showTopLevelButton && topLevelFormPlacement === 'BOTTOM' && !showTopLevelForm"
         [ngTemplateOutlet]="addCommentButtonTpl"
       ></ng-container>
-
-    </div> <!-- card-body -->
-
-  </div> <!-- card -->
+    </div>
+    <!-- card-body -->
+  </div>
+  <!-- card -->
 </div>
 
 <ng-template #loadingTpl>
@@ -66,9 +68,7 @@
 
 <ng-template #topLevelFormTpl>
   <div class="top-level-form">
-    <astrobin-read-only-mode
-      *ngIf="(readOnlyMode$ | async) === true; else formTemplate"
-    ></astrobin-read-only-mode>
+    <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else formTemplate"></astrobin-read-only-mode>
 
     <ng-template #formTemplate>
       <form [formGroup]="form">
@@ -94,11 +94,7 @@
           {{ "Submit" | translate }}
         </button>
 
-        <button
-          (click)="close.emit()"
-          *ngIf="showCloseButton"
-          class="btn btn-secondary btn-sm ms-md-1"
-        >
+        <button (click)="close.emit()" *ngIf="showCloseButton" class="btn btn-secondary btn-sm ms-md-1">
           {{ "Close" | translate }}
         </button>
       </div>

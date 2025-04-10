@@ -17,8 +17,8 @@
     <div class="col-9">
       <form (ngSubmit)="onSubmit()" [formGroup]="form">
         <div class="form-group">
-          <label>{{"Target image" | translate}}</label>
-          <p class="d-block mb-4">{{image.title}}</p>
+          <label>{{ "Target image" | translate }}</label>
+          <p class="d-block mb-4">{{ image.title }}</p>
         </div>
 
         <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
@@ -29,7 +29,8 @@
             (click)="deleteUncompressedSourceFile()"
             [class.loading]="deleting"
             [disabled]="deleting"
-            class="btn btn btn-outline-danger">
+            class="btn btn btn-outline-danger"
+          >
             <fa-icon icon="remove"></fa-icon>
             {{ "Delete current file" | translate }}
           </button>
@@ -38,7 +39,8 @@
             [class.loading]="uploadButtonLoading()"
             [disabled]="uploadButtonLoading()"
             class="btn btn btn-primary"
-            type="submit">
+            type="submit"
+          >
             <fa-icon icon="upload"></fa-icon>
             <ng-container *ngIf="image.uncompressedSourceFile">
               {{ "Replace current file" | translate }}

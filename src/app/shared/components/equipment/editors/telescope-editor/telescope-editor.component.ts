@@ -1,28 +1,28 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { ChangeDetectorRef, OnInit, Component } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { FormlyFieldService, FormlyFieldMessageLevel } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { TelescopeService, TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { TelescopeType, TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { DomSanitizer } from "@angular/platform-browser";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { MainState } from "@app/store/state";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
-import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
-import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { switchMap, take, takeUntil } from "rxjs/operators";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { Constants } from "@shared/constants";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-telescope-editor",
@@ -178,7 +178,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
                 level: FormlyFieldMessageLevel.INFO,
                 text: this.translateService.instant(
                   "The recommended naming convention for camera lenses is: optional model name, focal length " +
-                  "range, f-ratio range, additional properties. E.g. <strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
+                    "range, f-ratio range, additional properties. E.g. <strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
                 )
               });
             } else {

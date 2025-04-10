@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { CreateLocationModalComponent } from "./create-location-modal.component";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { CreateLocationModalComponent } from "./create-location-modal.component";
 
 describe("CreateLocationModalComponent", () => {
   let component: CreateLocationModalComponent;
@@ -176,16 +177,7 @@ describe("CreateLocationModalComponent", () => {
 
   describe("buildLocationObject", () => {
     it("should work with zeroes", () => {
-      expect(component.buildLocationObject(
-        "Home",
-        0,
-        0,
-        400,
-        "Zurich",
-        "ZH",
-        "CH",
-        1
-      )).toEqual({
+      expect(component.buildLocationObject("Home", 0, 0, 400, "Zurich", "ZH", "CH", 1)).toEqual({
         name: "Home",
         lat_deg: 0,
         lat_min: 0,
@@ -205,16 +197,7 @@ describe("CreateLocationModalComponent", () => {
 
     it("should work for New York (N/W)", () => {
       expect(
-        component.buildLocationObject(
-          "NY Observatory",
-          40.785091,
-          -73.968285,
-          10,
-          "New York",
-          "NY",
-          "US",
-          1
-        )
+        component.buildLocationObject("NY Observatory", 40.785091, -73.968285, 10, "New York", "NY", "US", 1)
       ).toEqual({
         name: "NY Observatory",
         lat_deg: 40,
@@ -234,16 +217,7 @@ describe("CreateLocationModalComponent", () => {
     });
 
     it("should work with N/E", () => {
-      expect(component.buildLocationObject(
-        "Home",
-        0.1,
-        0.1,
-        400,
-        "Zurich",
-        "ZH",
-        "CH",
-        1
-      )).toEqual({
+      expect(component.buildLocationObject("Home", 0.1, 0.1, 400, "Zurich", "ZH", "CH", 1)).toEqual({
         name: "Home",
         lat_deg: 0,
         lat_min: 6,
@@ -262,16 +236,7 @@ describe("CreateLocationModalComponent", () => {
     });
 
     it("should work S/W", () => {
-      expect(component.buildLocationObject(
-        "Home",
-        -0.1,
-        -0.1,
-        400,
-        "Zurich",
-        "ZH",
-        "CH",
-        1
-      )).toEqual({
+      expect(component.buildLocationObject("Home", -0.1, -0.1, 400, "Zurich", "ZH", "CH", 1)).toEqual({
         name: "Home",
         lat_deg: 0,
         lat_min: 6,

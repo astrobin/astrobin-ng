@@ -1,16 +1,16 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AstroUtilsService } from "@core/services/astro-utils/astro-utils.service";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { AstroUtilsService } from "@core/services/astro-utils/astro-utils.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-coords-filter.search-filter-component",
@@ -42,7 +42,7 @@ export class SearchCoordsFilterComponent extends SearchBaseFilterComponent {
             showInputs: false,
             sliderOptions: {
               floor: 0,
-              ceil: 1440,  // 24 hours * 60 minutes
+              ceil: 1440, // 24 hours * 60 minutes
               step: 1,
               translate: (value: number): string => this.astroUtilsService.formatRa(value)
             }
@@ -59,7 +59,7 @@ export class SearchCoordsFilterComponent extends SearchBaseFilterComponent {
             sliderOptions: {
               floor: -90,
               ceil: 90,
-              step: .1,
+              step: 0.1,
               translate: (value: number): string => this.astroUtilsService.formatDec(value)
             }
           }

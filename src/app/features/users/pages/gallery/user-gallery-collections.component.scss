@@ -1,3 +1,5 @@
+@import "../../../../styles/mixins";
+
 .collection-header {
   width: 100%;
   text-align: center;
@@ -6,7 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1.5rem;
+    @include flex-gap(row, 1.5rem);
 
     .up {
       width: 2rem; // Matches astrobin-user-gallery-collection-menu so things are centered.
@@ -59,8 +61,8 @@
   }
 
   small {
-    margin-top: -.25rem;
-    font-size: .85rem;
+    margin-top: -0.25rem;
+    font-size: 0.85rem;
     color: var(--lighterGrey);
     display: block;
   }

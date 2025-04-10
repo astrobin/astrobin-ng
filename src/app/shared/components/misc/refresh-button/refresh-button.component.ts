@@ -1,8 +1,8 @@
 import { Component, Input } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { MainState } from "@app/store/state";
 import { LoadingService } from "@core/services/loading.service";
 import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-refresh-button",

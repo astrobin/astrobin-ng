@@ -1,50 +1,50 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { OnChanges, SimpleChanges, Component, EventEmitter, Input, Output } from "@angular/core";
+import { MainState } from "@app/store/state";
 import { UserInterface } from "@core/interfaces/user.interface";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { filter, map, take, takeUntil } from "rxjs/operators";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { LoadUser } from "@features/account/store/auth.actions";
+import { selectUser } from "@features/account/store/auth.selectors";
+import { MarketplaceAcceptRejectRetractOfferModalComponent } from "@features/equipment/components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component";
+import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
+import {
+  AcceptMarketplaceOffer,
+  CreateMarketplacePrivateConversation,
+  EquipmentActionTypes,
+  RejectMarketplaceOffer,
+  AcceptMarketplaceOfferFailure,
+  AcceptMarketplaceOfferSuccess,
+  CreateMarketplacePrivateConversationSuccess,
+  RejectMarketplaceOfferFailure,
+  RejectMarketplaceOfferSuccess
+} from "@features/equipment/store/equipment.actions";
 import {
   selectMarketplaceListing,
   selectMarketplacePrivateConversations
 } from "@features/equipment/store/equipment.selectors";
-import { MainState } from "@app/store/state";
-import { select, Store } from "@ngrx/store";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import { Actions, ofType } from "@ngrx/effects";
-import {
-  AcceptMarketplaceOffer,
-  AcceptMarketplaceOfferFailure,
-  AcceptMarketplaceOfferSuccess,
-  CreateMarketplacePrivateConversation,
-  CreateMarketplacePrivateConversationSuccess,
-  EquipmentActionTypes,
-  RejectMarketplaceOffer,
-  RejectMarketplaceOfferFailure,
-  RejectMarketplaceOfferSuccess
-} from "@features/equipment/store/equipment.actions";
-import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@core/services/loading.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
-import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceMasterOfferInterface } from "@features/equipment/types/marketplace-master-offer.interface";
-import { selectUser } from "@features/account/store/auth.selectors";
+import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { Subscription } from "rxjs";
-import { MarketplaceAcceptRejectRetractOfferModalComponent } from "@features/equipment/components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component";
-import { UserService } from "@core/services/user.service";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 
 interface OfferGroup {
   [key: MarketplaceMasterOfferInterface["id"]]: (MarketplaceOfferInterface & {
-    userObj: UserInterface,
-    lineItemObj: MarketplaceLineItemInterface
+    userObj: UserInterface;
+    lineItemObj: MarketplaceLineItemInterface;
   })[];
 }
 
@@ -181,17 +181,20 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     return this.listing.lineItems.find(lineItem => lineItem.id === id);
   }
 
-  onAcceptOfferClicked(event: Event, offers: (MarketplaceOfferInterface & {
-    userObj: UserInterface,
-    lineItemObj: MarketplaceLineItemInterface
-  })[]) {
+  onAcceptOfferClicked(
+    event: Event,
+    offers: (MarketplaceOfferInterface & {
+      userObj: UserInterface;
+      lineItemObj: MarketplaceLineItemInterface;
+    })[]
+  ) {
     const modalRef: NgbModalRef = this.modalService.open(MarketplaceAcceptRejectRetractOfferModalComponent);
     const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
     componentInstance.message = this.translateService.instant(
       "Accepting this offer will mark the affected line items as reserved, and it constitutes a binding agreement " +
-      "with the buyer. Failure to deliver the equipment as described may result in negative feedback and " +
-      "possible disciplinary action. Are you sure you want to proceed?"
+        "with the buyer. Failure to deliver the equipment as described may result in negative feedback and " +
+        "possible disciplinary action. Are you sure you want to proceed?"
     );
 
     modalRef.closed.subscribe(message => {
@@ -226,13 +229,11 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
                   .subscribe(() => {
                     if (index === offers.length - 1) {
                       this.popNotificationsService.success(
-                        this.translateService.instant(
-                          "The offer has been accepted. The buyer will be notified."
-                        ) +
-                        " " +
-                        this.translateService.instant(
-                          "Please use the 'Exchange payment/delivery info' to coordinate with the buyer."
-                        )
+                        this.translateService.instant("The offer has been accepted. The buyer will be notified.") +
+                          " " +
+                          this.translateService.instant(
+                            "Please use the 'Exchange payment/delivery info' to coordinate with the buyer."
+                          )
                       );
                     }
                   });
@@ -248,10 +249,13 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     });
   }
 
-  onRejectOfferClicked(event: Event, offers: (MarketplaceOfferInterface & {
-    userObj: UserInterface,
-    lineItemObj: MarketplaceLineItemInterface
-  })[]) {
+  onRejectOfferClicked(
+    event: Event,
+    offers: (MarketplaceOfferInterface & {
+      userObj: UserInterface;
+      lineItemObj: MarketplaceLineItemInterface;
+    })[]
+  ) {
     const modalRef: NgbModalRef = this.modalService.open(MarketplaceAcceptRejectRetractOfferModalComponent);
     const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
@@ -260,8 +264,8 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     if (offers[0].status === MarketplaceOfferStatus.ACCEPTED) {
       componentInstance.message = this.translateService.instant(
         "Careful! If you reject an offer that you already accepted, and have not reached a mutual " +
-        "agreement with the buyer concerning this, you may risk disciplinary action. Offers are considered binding " +
-        "agreements between buyers and sellers. Are you sure you want to retract your offer?"
+          "agreement with the buyer concerning this, you may risk disciplinary action. Offers are considered binding " +
+          "agreements between buyers and sellers. Are you sure you want to retract your offer?"
       );
     } else {
       componentInstance.showMessage = false;
@@ -308,10 +312,13 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     });
   }
 
-  onModifyOfferClicked(event: Event, offers: (MarketplaceOfferInterface & {
-    userObj: UserInterface,
-    lineItemObj: MarketplaceLineItemInterface
-  })[]) {
+  onModifyOfferClicked(
+    event: Event,
+    offers: (MarketplaceOfferInterface & {
+      userObj: UserInterface;
+      lineItemObj: MarketplaceLineItemInterface;
+    })[]
+  ) {
     event.preventDefault();
 
     const modalRef: NgbModalRef = this.modalService.open(MarketplaceOfferModalComponent, { size: "xl" });
@@ -321,10 +328,13 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     component.offers = offers;
   }
 
-  onRetractOfferClicked(event: Event, offers: (MarketplaceOfferInterface & {
-    userObj: UserInterface,
-    lineItemObj: MarketplaceLineItemInterface
-  })[]) {
+  onRetractOfferClicked(
+    event: Event,
+    offers: (MarketplaceOfferInterface & {
+      userObj: UserInterface;
+      lineItemObj: MarketplaceLineItemInterface;
+    })[]
+  ) {
     this.equipmentMarketplaceService.retractOffer(this.listing, offers);
   }
 
@@ -336,9 +346,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     this.store$
       .pipe(select(selectMarketplacePrivateConversations(this.listing.id, userId)), take(1))
       .subscribe(privateConversations => {
-        privateConversations = privateConversations.filter(
-          privateConversation => privateConversation.user === userId
-        );
+        privateConversations = privateConversations.filter(privateConversation => privateConversation.user === userId);
 
         if (privateConversations.length === 0) {
           this.actions$

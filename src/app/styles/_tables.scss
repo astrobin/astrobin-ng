@@ -3,7 +3,7 @@
 
 .table {
   thead,
-  tfoot{
+  tfoot {
     th {
       @include darkest-background-texture;
       color: var(--white);
@@ -12,7 +12,7 @@
       .help-tooltip {
         color: var(--lighterGrey);
         border-bottom-color: var(--lighterGrey);
-        margin-left: .5rem;
+        margin-left: 0.5rem;
       }
     }
   }
@@ -31,7 +31,7 @@
   tbody {
     tr.spacer-row {
       td {
-        padding: .325rem .5rem !important;
+        padding: 0.325rem 0.5rem !important;
         border: 0;
         background-color: transparent;
         box-shadow: none;
@@ -40,7 +40,7 @@
 
     tr.small-spacer-row {
       td {
-        padding: .25rem .5rem !important;
+        padding: 0.25rem 0.5rem !important;
         border: 0;
         background-color: transparent;
         box-shadow: none;
@@ -81,9 +81,8 @@
 
   tbody tr td {
     display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
-    padding: .5rem 1rem;
+    @include flex-gap(row, 0.5rem);
+    padding: 0.5rem 1rem;
     width: auto;
     border-bottom-width: 0;
 
@@ -99,7 +98,7 @@
   }
 
   .restore .btn {
-    margin-left: -.5rem; // Compensate for gap.
+    margin-left: -0.5rem; // Compensate for gap.
   }
 
   .thumbnail {

@@ -1,18 +1,18 @@
 import { Injectable } from "@angular/core";
+import { SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
 import { BaseService } from "@core/services/base.service";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { forkJoin, Observable } from "rxjs";
-import { map } from "rxjs/operators";
 import { LoadingService } from "@core/services/loading.service";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
+import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
+import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
 import { MatchType } from "@features/search/enums/match-type.enum";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
-import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { forkJoin, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -35,33 +35,21 @@ export class SearchFilterService extends BaseService {
       this.userSubscriptionService.isClassicPremium$(),
       this.userSubscriptionService.isUltimate$()
     ]).pipe(
-      map(([
-        isLite,
-        isClassicLite,
-        isPremium,
-        isClassicPremium,
-        isUltimate
-      ]) => ({
+      map(([isLite, isClassicLite, isPremium, isClassicPremium, isUltimate]) => ({
         isLite,
         isClassicLite,
         isPremium,
         isClassicPremium,
         isUltimate
       })),
-      map(({
-        isLite,
-        isClassicLite,
-        isPremium,
-        isClassicPremium,
-        isUltimate
-      }) => {
+      map(({ isLite, isClassicLite, isPremium, isClassicPremium, isUltimate }) => {
         return (
-          (minimumSubscription === null || minimumSubscription === undefined) ||
+          minimumSubscription === null ||
+          minimumSubscription === undefined ||
           (minimumSubscription === PayableProductInterface.LITE && (isLite || isPremium || isUltimate)) ||
           (minimumSubscription === PayableProductInterface.PREMIUM && (isPremium || isUltimate)) ||
-          (minimumSubscription === PayableProductInterface.ULTIMATE && (
-              isClassicLite || isClassicPremium || isUltimate) // Grandfathered users + Ultimate.
-          )
+          (minimumSubscription === PayableProductInterface.ULTIMATE &&
+            (isClassicLite || isClassicPremium || isUltimate)) // Grandfathered users + Ultimate.
         );
       })
     );

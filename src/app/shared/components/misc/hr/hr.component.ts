@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-hr",

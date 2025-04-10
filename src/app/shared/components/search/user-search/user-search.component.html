@@ -1,31 +1,26 @@
 <div
   astrobinScrollVisibility
   [viewportOptions]="{
-       verticalTolerance: 200,
-       horizontalTolerance: 10,
-       shouldCheckHorizontal: false
-     }"
+    verticalTolerance: 200,
+    horizontalTolerance: 10,
+    shouldCheckHorizontal: false
+  }"
   (visibilityChange)="onVisibilityChange($event)"
-  class="search-results"
+  class="search-results flex-wrap"
 >
   <ng-container *ngIf="!initialLoading; else loadingTemplate">
     <ng-container *ngIf="results !== null; else loadingTemplate">
       <ng-container *ngIf="results.length > 0; else noResultsTemplate">
-        <div
-          (click)="openUser(user)"
-          *ngFor="let user of results" class="card"
-        >
+        <div (click)="openUser(user)" *ngFor="let user of results" class="card">
           <div class="card-header">
-              <h4 [innerHTML]="(user.displayName || user.username) | highlight:model.text?.value"></h4>
-              <small>
-                <span
-                  *ngIf="user.displayName && user.displayName !== user.username"
-                  [innerHTML]="user.username | highlight:model.text?.value"
-                ></span>
-                <span *ngIf="!user.displayName || user.displayName === user.username">
-                  &nbsp;
-                </span>
-              </small>
+            <h4 [innerHTML]="user.displayName || user.username | highlight : model.text?.value"></h4>
+            <small>
+              <span
+                *ngIf="user.displayName && user.displayName !== user.username"
+                [innerHTML]="user.username | highlight : model.text?.value"
+              ></span>
+              <span *ngIf="!user.displayName || user.displayName === user.username"> &nbsp; </span>
+            </small>
           </div>
           <div class="card-body">
             <img [src]="avatarUrl(user)" [alt]="user.displayName" class="avatar" />

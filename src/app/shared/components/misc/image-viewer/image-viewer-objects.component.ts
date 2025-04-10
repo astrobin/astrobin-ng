@@ -1,18 +1,26 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageService } from "@core/services/image/image.service";
-import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@core/services/search.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { SolutionService } from "@core/services/solution/solution.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
 import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchService } from "@core/services/search.service";
+import { SolutionService } from "@core/services/solution/solution.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-image-viewer-objects",
@@ -33,14 +41,9 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
       class="metadata-section bg-transparent"
     >
       <div class="metadata-item objects-in-field">
-        <div class="metadata-label">
-          <a
-            *ngFor="let item of objectsInField"
-            (click)="objectInFieldClicked($event, item)"
-            href="#"
-            class="value"
-          >
-            <span class="name" [innerHTML]="item | highlight: highlightTerms"></span>
+        <div class="metadata-label flex-wrap">
+          <a *ngFor="let item of objectsInField" (click)="objectInFieldClicked($event, item)" href="#" class="value">
+            <span class="name" [innerHTML]="item | highlight : highlightTerms"></span>
           </a>
 
           <a
@@ -61,10 +64,10 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
         <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
       </div>
       <div class="offcanvas-body">
-        <ul>
+        <ul class="flex-wrap">
           <li *ngFor="let item of moreObjectsInField">
             <a (click)="objectInFieldClicked($event, item)" href="#" class="value">
-              <span class="name" [innerHTML]="item | highlight: highlightTerms"></span>
+              <span class="name" [innerHTML]="item | highlight : highlightTerms"></span>
             </a>
           </li>
         </ul>
@@ -110,7 +113,10 @@ export class ImageViewerObjectsComponent extends ImageViewerSectionBaseComponent
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
+    if (
+      (changes.image && changes.image.currentValue) ||
+      (changes.revisionLabel && changes.revisionLabel.currentValue)
+    ) {
       const image = this.image;
       this.revision = this.imageService.getRevision(image, this.revisionLabel);
       this.objectsInField = this.solutionService.getObjectsInField(this.revision.solution);
@@ -136,9 +142,7 @@ export class ImageViewerObjectsComponent extends ImageViewerSectionBaseComponent
     this.offcanvasService.dismiss();
     this.search({
       subjects: {
-        value: [
-          subject
-        ],
+        value: [subject],
         matchType: null
       }
     });

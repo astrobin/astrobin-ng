@@ -1,34 +1,44 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  ComponentRef,
+  ElementRef,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MainState } from "@app/store/state";
+import { ImageInterface, DataSource, FINAL_REVISION_LABEL, SubjectType } from "@core/interfaces/image.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerNavigationContext, ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
+import { RouterService } from "@core/services/router.service";
+import { SearchService } from "@core/services/search.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { environment } from "@env/environment";
+import { IotdApiService } from "@features/iotd/services/iotd-api.service";
+import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
+import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
+import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
+import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { IotdApiService } from "@features/iotd/services/iotd-api.service";
-import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { auditTime, fromEvent, Observable, Subscription } from "rxjs";
-import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
-import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
-import { isPlatformBrowser } from "@angular/common";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { filter, take, takeUntil } from "rxjs/operators";
-import { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
 import { fadeInOut } from "@shared/animations";
-import { DataSource, FINAL_REVISION_LABEL, ImageInterface, SubjectType } from "@core/interfaces/image.interface";
-import { ImageViewerNavigationContext, ImageViewerService } from "@core/services/image-viewer.service";
-import { ImageService } from "@core/services/image/image.service";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
-import { SearchService } from "@core/services/search.service";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
-import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
-import { RouterService } from "@core/services/router.service";
-import { environment } from "@env/environment";
-import { LoadingService } from "@core/services/loading.service";
+import { Subscription, auditTime, fromEvent, Observable } from "rxjs";
+import { filter, take, takeUntil } from "rxjs/operators";
 
 enum ArchiveType {
   IOTD = SearchAwardFilterValue.IOTD,
@@ -41,14 +51,7 @@ enum ArchiveType {
   template: `
     <div class="page has-breadcrumb">
       <div class="tabs-container d-flex justify-content-between align-items-center mb-1 mb-md-2 mb-lg-3">
-
-        <ul
-          ngbNav
-          #nav="ngbNav"
-          (navChange)="onTabChange($event)"
-          [(activeId)]="activeTab"
-          class="nav-tabs"
-        >
+        <ul ngbNav #nav="ngbNav" (navChange)="onTabChange($event)" [(activeId)]="activeTab" class="nav-tabs">
           <li [ngbNavItem]="ArchiveType.IOTD">
             <button ngbNavLink>
               <span class="d-none d-md-inline">{{ "Image of the day" | translate }}</span>
@@ -120,10 +123,7 @@ enum ArchiveType {
         <ng-template [ngTemplateOutlet]="loadingTemplate"></ng-template>
       </ng-container>
 
-      <astrobin-masonry-layout
-        [layout]="'small'"
-        [items]="items"
-      >
+      <astrobin-masonry-layout [layout]="'small'" [items]="items">
         <ng-template let-item>
           <astrobin-iotd-tp-archive-item
             @fadeInOut
@@ -190,15 +190,18 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
 
-    this.router.events.pipe(
-      filter(event =>
-        event instanceof NavigationEnd && router.url.startsWith("/" + RouterService.getCurrentPath(activatedRoute))
-      ),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this._initTitleAndBreadcrumb();
-      this.changeDetectorRef.markForCheck();
-    });
+    this.router.events
+      .pipe(
+        filter(
+          event =>
+            event instanceof NavigationEnd && router.url.startsWith("/" + RouterService.getCurrentPath(activatedRoute))
+        ),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        this._initTitleAndBreadcrumb();
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   async ngOnInit() {
@@ -209,35 +212,33 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
   }
 
   openImageById(imageId: ImageInterface["hash"] | ImageInterface["pk"]): void {
-    this.currentUserProfile$.pipe(
-      take(1)
-    ).subscribe(userProfile => {
+    this.currentUserProfile$.pipe(take(1)).subscribe(userProfile => {
       if (userProfile && userProfile.enableNewGalleryExperience === false) {
         this.loadingService.setLoading(true);
         this.windowRefService.nativeWindow.location.href = `${environment.classicBaseUrl}/${imageId}`;
       } else {
-        this.imageViewerService.openSlideshow(
-          this.componentId,
-          imageId,
-          FINAL_REVISION_LABEL,
-          this.items.map(item => ({
-            imageId: item.image["hash"] || item.image["pk"],
-            thumbnailUrl: this.imageService.getGalleryThumbnail(item.image)
-          })),
-          true
-        ).subscribe(slideshow => {
-          this._setupSlideshowPagination(
-            slideshow,
-            (results) =>
+        this.imageViewerService
+          .openSlideshow(
+            this.componentId,
+            imageId,
+            FINAL_REVISION_LABEL,
+            this.items.map(item => ({
+              imageId: item.image["hash"] || item.image["pk"],
+              thumbnailUrl: this.imageService.getGalleryThumbnail(item.image)
+            })),
+            true
+          )
+          .subscribe(slideshow => {
+            this._setupSlideshowPagination(slideshow, results =>
               results.map(result => {
                 return {
                   imageId: result.image["hash"] || result.image["pk"],
                   thumbnailUrl: this.imageService.getGalleryThumbnail(result.image)
                 };
               })
-          );
-          this.changeDetectorRef.markForCheck();
-        });
+            );
+            this.changeDetectorRef.markForCheck();
+          });
       }
     });
   }
@@ -260,7 +261,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
   }
 
   protected onTabChange(event: NgbNavChangeEvent<ArchiveType>) {
-    if (this.activeTab == event.nextId && this.items !== undefined) {
+    if (this.activeTab === event.nextId && this.items !== undefined) {
       return;
     }
 
@@ -287,27 +288,28 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
 
   private _initTitleAndBreadcrumb() {
     this.titleService.setTitle(this.title);
-    this.store$.dispatch(new SetBreadcrumb({
-      breadcrumb: [
-        {
-          label: this.translateService.instant("Explore")
-        },
-        {
-          label: this.title
-        }
-      ]
-    }));
+    this.store$.dispatch(
+      new SetBreadcrumb({
+        breadcrumb: [
+          {
+            label: this.translateService.instant("Explore")
+          },
+          {
+            label: this.title
+          }
+        ]
+      })
+    );
   }
 
   private _initScrollListener() {
     if (this._isBrowser) {
-      fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
-        auditTime(250),
-        takeUntil(this.destroyed$)
-      ).subscribe(() => {
-        this._onScroll();
-        this.changeDetectorRef.markForCheck();
-      });
+      fromEvent(this.windowRefService.nativeWindow, "scroll")
+        .pipe(auditTime(250), takeUntil(this.destroyed$))
+        .subscribe(() => {
+          this._onScroll();
+          this.changeDetectorRef.markForCheck();
+        });
     }
   }
 
@@ -316,24 +318,26 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       const fragment = this.activatedRoute.snapshot.fragment;
 
       this.onTabChange({
-        nextId: fragment
-          ? (fragment as any) as ArchiveType
-          : ArchiveType.IOTD
+        nextId: fragment ? (fragment as any as ArchiveType) : ArchiveType.IOTD
       } as NgbNavChangeEvent<ArchiveType>);
     };
 
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      doInit();
-      this.changeDetectorRef.markForCheck();
-    });
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        doInit();
+        this.changeDetectorRef.markForCheck();
+      });
 
     doInit();
   }
 
-  private _loadData(): Observable<(IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface)[]> {
+  private _loadData(): Observable<
+    (IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface)[]
+  > {
     if (this._page === 1) {
       this.loading = true;
     } else {
@@ -343,11 +347,9 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     return new Observable(subscriber => {
       const requestId = ++this._currentRequestId;
 
-      let api: Observable<PaginatedApiResultInterface<(
-        IotdArchiveInterface |
-        TopPickArchiveInterface |
-        TopPickNominationArchiveInterface
-        )>>;
+      let api: Observable<
+        PaginatedApiResultInterface<IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface>
+      >;
 
       switch (this.activeTab) {
         case ArchiveType.IOTD:
@@ -374,13 +376,13 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
 
         switch (this.activeTab) {
           case ArchiveType.IOTD:
-            this.items = [...this.items || [], ...response.results as IotdArchiveInterface[]];
+            this.items = [...(this.items || []), ...(response.results as IotdArchiveInterface[])];
             break;
           case ArchiveType.TP:
-            this.items = [...this.items || [], ...response.results as TopPickArchiveInterface[]];
+            this.items = [...(this.items || []), ...(response.results as TopPickArchiveInterface[])];
             break;
           case ArchiveType.TPN:
-            this.items = [...this.items || [], ...response.results as TopPickNominationArchiveInterface[]];
+            this.items = [...(this.items || []), ...(response.results as TopPickNominationArchiveInterface[])];
             break;
         }
 
@@ -412,8 +414,9 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
 
   private _setupSlideshowPagination(
     slideshow: ComponentRef<ImageViewerSlideshowComponent>,
-    getNewNavigationContext:
-      (results: (IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface)[]) => ImageViewerNavigationContext
+    getNewNavigationContext: (
+      results: (IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface)[]
+    ) => ImageViewerNavigationContext
   ): void {
     if (this._nearEndOfContextSubscription) {
       this._nearEndOfContextSubscription.unsubscribe();
@@ -425,11 +428,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
         takeUntil(this.destroyed$)
       )
       .subscribe(() => {
-        if (
-          this.loading ||
-          this.loadingMore ||
-          this._next === null
-        ) {
+        if (this.loading || this.loadingMore || this._next === null) {
           return;
         }
 
@@ -438,10 +437,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
           const currentNavigationContext = slideshow.instance.navigationContext;
           const newItems = getNewNavigationContext(results);
 
-          const newNavigationContext = [
-            ...currentNavigationContext,
-            ...newItems
-          ];
+          const newNavigationContext = [...currentNavigationContext, ...newItems];
 
           slideshow.instance.setNavigationContext(newNavigationContext);
           this.changeDetectorRef.markForCheck();

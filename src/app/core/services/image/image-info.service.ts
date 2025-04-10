@@ -198,9 +198,10 @@ export class ImageInfoService {
   addFocalReducersEquipment(image: ImageInterface, lines: string[]): void {
     // Focal reducers (legacy)
     if (image.focalReducers?.length > 0) {
-      const focalReducersLabel = image.focalReducers.length > 1 ?
-        this.translateService.instant("Focal reducers") :
-        this.translateService.instant("Focal reducer");
+      const focalReducersLabel =
+        image.focalReducers.length > 1
+          ? this.translateService.instant("Focal reducers")
+          : this.translateService.instant("Focal reducer");
       const focalReducers = image.focalReducers.map(fr => this.formatEquipmentItem(fr));
       lines.push(`- ${focalReducersLabel}: ${focalReducers.join(", ")}`);
     }

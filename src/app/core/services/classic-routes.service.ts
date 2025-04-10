@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { environment } from "@env/environment";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseService } from "@core/services/base.service";
-import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { GroupInterface } from "@core/interfaces/group.interface";
+import { environment } from "@env/environment";
 
 const BASE_URL = environment.classicBaseUrl;
 
@@ -26,13 +26,13 @@ export class ClassicRoutesService extends BaseService {
   FORUM_HOME = BASE_URL + "/forum/";
   FORUM_LATEST = BASE_URL + "/forum/topic/latest/";
   FORUM_SUBSCRIBED = BASE_URL + "/forum/topic/subscribed";
-  FORUM= (id: number) => BASE_URL + `/forum/forum/${id}/`;
+  FORUM = (id: number) => BASE_URL + `/forum/forum/${id}/`;
   FORUM_POST = (id: string) => BASE_URL + `/forum/post/${id}/`;
   SEARCH = BASE_URL + "/search/";
   TOP_PICK_NOMINATIONS = BASE_URL + "/explore/top-pick-nominations/";
   TOP_PICKS = BASE_URL + "/explore/top-picks/";
   IOTD = BASE_URL + "/iotd/archive/";
-  GROUP = (id : GroupInterface["id"]) => BASE_URL + `/groups/${id}/`;
+  GROUP = (id: GroupInterface["id"]) => BASE_URL + `/groups/${id}/`;
   GROUPS = BASE_URL + "/groups/";
   REMOTE_ASTROPHOTOGRAPHY = "https://welcome.astrobin.com/remote-astrophotography";
   ASTROPHOTOGRAPHERS_LIST = BASE_URL + "/astrophotographers-list/";
@@ -76,5 +76,6 @@ export class ClassicRoutesService extends BaseService {
 
   EDIT_IMAGE_REVISION = (id: string) => BASE_URL + `/edit/revision/${id}/`;
 
-  COMPOSE_MESSAGE = (username: string, subject: string) => BASE_URL + `/messages/compose/${username}/?subject=${subject}`;
+  COMPOSE_MESSAGE = (username: string, subject: string) =>
+    BASE_URL + `/messages/compose/${username}/?subject=${subject}`;
 }

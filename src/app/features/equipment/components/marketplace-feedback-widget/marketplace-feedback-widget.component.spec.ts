@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { MarketplaceFeedbackWidgetComponent } from "./marketplace-feedback-widget.component";
-import { MockBuilder } from "ng-mocks";
+import { ActivatedRoute } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 import { provideMockStore } from "@ngrx/store/testing";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
-import { ActivatedRoute } from "@angular/router";
+import { MockBuilder } from "ng-mocks";
+
+import { MarketplaceFeedbackWidgetComponent } from "./marketplace-feedback-widget.component";
 
 describe("MarketplaceFeedbackWidgetComponent", () => {
   let component: MarketplaceFeedbackWidgetComponent;

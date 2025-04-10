@@ -23,16 +23,11 @@
 
   .iotd-footer {
     position: absolute;
-    border-bottom-left-radius: .25rem;
-    border-bottom-right-radius: .25rem;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
     bottom: 0;
     left: 0;
-    background: linear-gradient(
-        180deg,
-        transparent 0,
-        rgba(0, 0, 0, .2) 20%,
-        rgba(0, 0, 0, .7)
-    );
+    background: linear-gradient(180deg, transparent 0, rgba(0, 0, 0, 0.2) 20%, rgba(0, 0, 0, 0.7));
     width: 100%;
     padding: 1rem 2rem;
 
@@ -48,7 +43,7 @@
 
       .text {
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.65);
-        margin-right: .5rem;
+        margin-right: 0.5rem;
       }
 
       .ng-fa-icon[icon="info-circle"] {
@@ -58,7 +53,7 @@
       .info-link,
       .stats-link {
         color: var(--white);
-        font-size: .8rem;
+        font-size: 0.8rem;
         vertical-align: super;
 
         &:hover {
@@ -74,7 +69,7 @@
 
     .iotd-users {
       color: var(--lightestGrey);
-      font-size: .8rem;
+      font-size: 0.8rem;
       font-style: italic;
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
@@ -106,7 +101,8 @@
   border-collapse: collapse;
   margin-bottom: 1rem;
 
-  th, td {
+  th,
+  td {
     padding: 0.75rem;
   }
 }
@@ -128,7 +124,7 @@
 }
 
 .table-note {
-  font-size: .875rem;
+  font-size: 0.875rem;
   color: var(--lightGrey);
   font-style: italic;
 }
@@ -139,7 +135,7 @@
   }
 
   .stats-table {
-    font-size: .875rem;
+    font-size: 0.875rem;
   }
 }
 

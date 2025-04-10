@@ -20,7 +20,7 @@ export class NestedCommentGenerator {
       moderator: source.moderator || null,
       likes: source.likes || [],
       depth: source.depth || 1,
-      detectedLanguage: source.detectedLanguage || null,
+      detectedLanguage: source.detectedLanguage || null
     };
   }
 }

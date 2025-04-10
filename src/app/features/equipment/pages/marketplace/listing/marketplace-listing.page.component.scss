@@ -1,7 +1,8 @@
 @import "../../../../../styles/breakpoints";
+@import "../../../../../styles/mixins";
 
 .back-to-marketplace {
-  font-size: .9rem;
+  font-size: 0.9rem;
   text-shadow: none;
   font-weight: normal;
 }
@@ -14,29 +15,29 @@
     cursor: pointer;
 
     @media screen and (max-width: $xl-max) {
-      width: calc(50% - .5rem);
+      width: calc(50% - 0.5rem);
     }
 
     @media screen and (max-width: $lg-max) {
-      width: calc(100% - .5rem);
+      width: calc(100% - 0.5rem);
     }
 
     @media screen and (max-width: $md-max) {
-      width: calc(50% - .5rem);
+      width: calc(50% - 0.5rem);
     }
 
     astrobin-avatar {
-      width: 80px
+      width: 80px;
     }
 
     .badge {
       position: absolute;
-      top: -.25rem;
+      top: -0.25rem;
       left: calc(50% + 1rem);
     }
 
     .buyer {
-      font-size: .9rem;
+      font-size: 0.9rem;
       color: var(--lighterGrey);
     }
   }
@@ -58,12 +59,12 @@
         right: 0.75rem;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
+        @include flex-gap(column, 1rem);
         z-index: 1;
         max-height: calc(100vh - 5.5rem);
         overflow-y: auto;
         flex-wrap: nowrap !important;
-        padding: .5rem 0;
+        padding: 0.5rem 0;
 
         .avatar-wrapper {
           margin: 0;
@@ -96,7 +97,7 @@ astrobin-marketplace-more-from-user {
   font-weight: normal;
 
   fa-icon {
-    margin-right: .25rem;
+    margin-right: 0.25rem;
   }
 
   @media (max-width: $sm-max) {
@@ -111,10 +112,10 @@ astrobin-marketplace-more-from-user {
 
   @media (min-width: $md-min) {
     color: var(--lighterGrey);
-    margin-top: .5rem;
+    margin-top: 0.5rem;
 
     .listing-info-section-separator {
-      padding: 0 .5rem;
+      padding: 0 0.5rem;
     }
   }
 }
@@ -139,7 +140,7 @@ astrobin-marketplace-more-from-user {
 .btn-report {
   fa-icon,
   .btn-text {
-    font-size: .9rem;
+    font-size: 0.9rem;
     color: var(--lighterGrey);
   }
 }

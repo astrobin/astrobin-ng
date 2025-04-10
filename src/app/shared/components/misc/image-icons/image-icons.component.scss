@@ -1,13 +1,13 @@
 @import "../../../../styles/mixins";
 
 :host {
-  transition: opacity .25s ease-in-out;
+  transition: opacity 0.25s ease-in-out;
 }
 
 .wip-icon {
   position: absolute;
-  bottom: .5rem;
-  right: .75rem;
+  bottom: 0.5rem;
+  right: 0.75rem;
   font-size: 1rem;
   line-height: 1rem;
   color: var(--white);
@@ -19,20 +19,20 @@
   line-height: 1rem;
   color: var(--lightestGrey);
   top: calc(50% - 1rem);
-  left: calc(50% - .75rem);
-  opacity: .75;
+  left: calc(50% - 0.75rem);
+  opacity: 0.75;
 }
 
 .badges {
   display: flex;
   justify-content: flex-start;
-  gap: .25rem;
+  @include flex-gap(row, 0.25rem);
   position: absolute;
-  top: .375rem;
-  left: .375rem;
+  top: 0.375rem;
+  left: 0.375rem;
 
   [icon] {
-    font-size: .75rem;
+    font-size: 0.75rem;
     display: inline-flex;
     justify-content: center;
     align-items: center;

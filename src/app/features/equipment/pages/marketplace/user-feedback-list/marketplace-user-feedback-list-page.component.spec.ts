@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 
 import { MarketplaceUserFeedbackListPageComponent } from "./marketplace-user-feedback-list-page.component";
-import { MockBuilder } from "ng-mocks";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { AppModule } from "@app/app.module";
-import { ActivatedRoute } from "@angular/router";
 
 describe("MarketplaceUserFeedbackListPageComponent", () => {
   let component: MarketplaceUserFeedbackListPageComponent;

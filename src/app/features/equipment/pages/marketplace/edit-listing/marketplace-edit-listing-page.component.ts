@@ -1,21 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { LoadingService } from "@core/services/loading.service";
+import { OnInit, Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import {
-  EquipmentActionTypes,
-  UpdateMarketplaceListing,
-  UpdateMarketplaceListingSuccess
-} from "@features/equipment/store/equipment.actions";
-import { map, take } from "rxjs/operators";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { MainState } from "@app/store/state";
 import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { LoadingService } from "@core/services/loading.service";
+import { TitleService } from "@core/services/title/title.service";
+import {
+  UpdateMarketplaceListingSuccess,
+  EquipmentActionTypes,
+  UpdateMarketplaceListing
+} from "@features/equipment/store/equipment.actions";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { map, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",

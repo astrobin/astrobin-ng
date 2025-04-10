@@ -5,7 +5,7 @@
   display: block;
   width: calc(100% + 2rem);
   background: var(--darkestGrey);
-  padding: .75rem;
+  padding: 0.75rem;
   margin: -1rem -1rem 1rem -1rem;
 }
 
@@ -30,7 +30,7 @@ h4 {
   border-bottom: 1px solid var(--lightGrey);
   font-size: 1.1rem;
   color: var(--lighterGrey);
-  padding-bottom: .25rem;
+  padding-bottom: 0.25rem;
   margin-bottom: 1.5rem;
 }
 
@@ -58,13 +58,13 @@ h4 {
   }
 
   .item-variants-info {
-    margin-left: .5rem;
-    margin-right: .5rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
     color: var(--lightGrey);
   }
 
   .item-variants-list {
-    font-size: .9rem;
+    font-size: 0.9rem;
     color: var(--lighterGrey);
 
     > span {
@@ -75,12 +75,11 @@ h4 {
       }
 
       &:not(:last-child) {
-        margin-right: .5rem;
-
+        margin-right: 0.5rem;
 
         &::after {
-          content: '\b7'; /* middot */
-          margin-left: .25rem;
+          content: "\b7"; /* middot */
+          margin-left: 0.25rem;
         }
       }
     }

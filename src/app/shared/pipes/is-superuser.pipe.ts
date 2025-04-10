@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { PipeTransform, Pipe } from "@angular/core";
 import { UserInterface } from "@core/interfaces/user.interface";
 
 @Pipe({

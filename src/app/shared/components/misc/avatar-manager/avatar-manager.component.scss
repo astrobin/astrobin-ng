@@ -1,4 +1,5 @@
 @import "src/app/styles/breakpoints";
+@import "src/app/styles/mixins";
 
 .avatar-manager-container {
   height: 100%;
@@ -67,7 +68,7 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
+            box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
           }
         }
 
@@ -85,13 +86,13 @@
 
           .delete-btn {
             width: 100%;
-            margin-bottom: .5rem;
+            margin-bottom: 0.5rem;
           }
 
           .delete-note {
-            font-size: .8rem;
+            font-size: 0.8rem;
             color: var(--textSecondaryColor);
-            margin-top: .25rem;
+            margin-top: 0.25rem;
           }
         }
       }
@@ -139,18 +140,18 @@
             .upload-icon {
               font-size: 2.5rem;
               color: var(--accentColor);
-              margin-bottom: .5rem;
+              margin-bottom: 0.5rem;
             }
 
             .upload-note {
               margin-bottom: 1rem;
               color: var(--lightGrey);
-              font-size: .9rem;
+              font-size: 0.9rem;
             }
 
             .upload-actions {
               display: flex;
-              gap: .5rem;
+              @include flex-gap(row, 0.5rem);
 
               @media (max-width: $sm-max) {
                 width: 100%;
@@ -211,7 +212,7 @@
 
                 .transform-actions {
                   display: flex;
-                  gap: .5rem;
+                  @include flex-gap(row, 0.5rem);
 
                   button {
                     width: 32px;
@@ -228,7 +229,7 @@
                     }
 
                     fa-icon {
-                      font-size: .85rem;
+                      font-size: 0.85rem;
                       color: white;
                     }
                   }
@@ -246,14 +247,14 @@
 
                 @media (max-width: $sm-max) {
                   flex-direction: column;
-                  gap: 1rem;
+                  @include flex-gap(column, 1rem);
                   align-items: center;
                   padding: 1.5rem;
                 }
 
                 .preview-actions {
                   display: flex;
-                  gap: .75rem;
+                  @include flex-gap(row, 0.75rem);
                   flex-shrink: 0;
 
                   @media (max-width: $sm-max) {
@@ -267,7 +268,7 @@
                   display: flex;
                   flex-direction: row;
                   justify-content: flex-end;
-                  font-size: .85rem;
+                  font-size: 0.85rem;
                   padding: 0;
                   background-color: transparent;
                   margin-left: 1rem;
@@ -288,7 +289,7 @@
 
                   .file-size {
                     color: var(--textSecondaryColor);
-                    margin-left: .5rem;
+                    margin-left: 0.5rem;
                     white-space: nowrap;
                   }
                 }
@@ -311,13 +312,13 @@
 
           h5 {
             font-weight: 500;
-            margin-bottom: .5rem;
+            margin-bottom: 0.5rem;
           }
 
           .upload-note {
-            font-size: .8rem;
+            font-size: 0.8rem;
             color: var(--textSecondaryColor);
-            margin-bottom: .25rem;
+            margin-bottom: 0.25rem;
 
             &:last-child {
               margin-bottom: 0;

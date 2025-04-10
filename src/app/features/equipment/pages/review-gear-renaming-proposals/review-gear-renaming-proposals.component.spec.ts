@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { ReviewGearRenamingProposalsComponent } from "./review-gear-renaming-proposals.component";
-import { AppModule } from "@app/app.module";
-import { MockBuilder } from "ng-mocks";
-import { ActivatedRoute } from "@angular/router";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { ReviewGearRenamingProposalsComponent } from "./review-gear-renaming-proposals.component";
 
 describe("ReviewGearRenamingProposalsComponent", () => {
   let component: ReviewGearRenamingProposalsComponent;
@@ -33,8 +33,7 @@ describe("ReviewGearRenamingProposalsComponent", () => {
     fixture = TestBed.createComponent(ReviewGearRenamingProposalsComponent);
     component = fixture.componentInstance;
 
-    jest.spyOn(component, "getProposals").mockImplementation(() => {
-    });
+    jest.spyOn(component, "getProposals").mockImplementation(() => {});
 
     fixture.detectChanges();
   });

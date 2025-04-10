@@ -1,12 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { SolutionInterface } from "@core/interfaces/solution.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
 import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
 
 @Injectable({
   providedIn: "root"
@@ -31,17 +31,15 @@ export class SolutionApiService extends BaseClassicApiService {
       url = UtilsService.addOrUpdateUrlParam(url, "include-pixinsight-details", "true");
     }
 
-    return this.http
-      .get<SolutionInterface[]>(url)
-      .pipe(
-        map(response => {
-          if (response.length === 0) {
-            return null;
-          }
+    return this.http.get<SolutionInterface[]>(url).pipe(
+      map(response => {
+        if (response.length === 0) {
+          return null;
+        }
 
-          return response[0];
-        })
-      );
+        return response[0];
+      })
+    );
   }
 
   getSolutions(contentType: number, objectIds: string[]): Observable<SolutionInterface[]> {

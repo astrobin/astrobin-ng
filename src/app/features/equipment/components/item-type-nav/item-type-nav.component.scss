@@ -1,7 +1,8 @@
 @import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
 
 .nav {
-  font-size: .9rem;
+  font-size: 0.9rem;
 }
 
 .nav-item {
@@ -9,20 +10,20 @@
   min-height: 3rem;
 
   &:not(:last-child) {
-    margin-bottom: .25rem;
+    margin-bottom: 0.25rem;
   }
 
   .nav-link {
     display: flex;
     align-items: center;
-    gap: .5rem;
+    @include flex-gap(row, 0.5rem);
 
     .type-label {
       flex-grow: 1;
     }
 
     .count {
-      font-size: .8rem;
+      font-size: 0.8rem;
       line-height: 1rem;
       opacity: 0.5;
     }

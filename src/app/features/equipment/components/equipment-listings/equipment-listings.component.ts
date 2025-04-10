@@ -1,23 +1,28 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { OnChanges, OnInit, SimpleChanges, TemplateRef, Component, Input, ViewChild } from "@angular/core";
 import { MainState } from "@app/store/state";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { EquipmentBrandListingInterface, EquipmentItemListingInterface, EquipmentItemListingType, EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { TranslateService } from "@ngx-translate/core";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
-import { take } from "rxjs/operators";
-import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { AuthService } from "@core/services/auth.service";
-import { RemoveAdsDialogComponent } from "@shared/components/misc/remove-ads-dialog/remove-ads-dialog.component";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import {
+  EquipmentBrandListingInterface,
+  EquipmentItemListingInterface,
+  EquipmentListingsInterface,
+  EquipmentItemListingType
+} from "@features/equipment/types/equipment-listings.interface";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
+import { RemoveAdsDialogComponent } from "@shared/components/misc/remove-ads-dialog/remove-ads-dialog.component";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-equipment-listings",
@@ -139,8 +144,8 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
     const componentInstance = modalRef.componentInstance;
     componentInstance.message = this.translateService.instant(
       "AstroBin partners with retailer of astrophotography equipment in your country. For some of them, when " +
-      "you make a purchase within a few weeks after clicking on a link on a page like this, AstroBin gets a " +
-      "commission and it doesn't cost you anything."
+        "you make a purchase within a few weeks after clicking on a link on a page like this, AstroBin gets a " +
+        "commission and it doesn't cost you anything."
     );
   }
 
@@ -164,8 +169,12 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
   }
 
   private _setListings() {
-    this.sellsListings = this.listings.itemListings.filter(listing => listing.listingType === EquipmentItemListingType.SELLS);
-    this.pairsWellListings = this.listings.itemListings.filter(listing => listing.listingType === EquipmentItemListingType.PAIRS_WELL);
+    this.sellsListings = this.listings.itemListings.filter(
+      listing => listing.listingType === EquipmentItemListingType.SELLS
+    );
+    this.pairsWellListings = this.listings.itemListings.filter(
+      listing => listing.listingType === EquipmentItemListingType.PAIRS_WELL
+    );
   }
 
   private _setCardTemplates(): void {

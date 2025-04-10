@@ -1,26 +1,37 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
-import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
-import { Actions, ofType } from "@ngrx/effects";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnInit,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { filter, map, take, takeUntil } from "rxjs/operators";
+import { FindImagesSuccess, FindImages } from "@app/store/actions/image.actions";
+import { MainState } from "@app/store/state";
+import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@core/services/device.service";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
-import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
+import { ofType, Actions } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-user-gallery-smart-folder",
@@ -73,12 +84,11 @@ import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
             [user]="user"
             [userProfile]="userProfile"
             [options]="{
-                includeStagingArea:
-                  currentUserWrapper.user?.id === user.id &&
-                  userProfile.displayWipImagesOnPublicGallery,
-                subsection: activeType,
-                active: active
-              }"
+              includeStagingArea:
+                currentUserWrapper.user?.id === user.id && userProfile.displayWipImagesOnPublicGallery,
+              subsection: activeType,
+              active: active
+            }"
           ></astrobin-user-gallery-images>
         </div>
       </ng-container>
@@ -96,8 +106,8 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   @Input() galleryFragment = "smart-folders";
 
   @Output() readonly activeChange = new EventEmitter<{
-    active: string,
-    menu: FindImagesResponseInterface["menu"]
+    active: string;
+    menu: FindImagesResponseInterface["menu"];
   }>();
 
   protected loading = true;
@@ -126,23 +136,27 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   ngOnInit() {
     super.ngOnInit();
 
-    this.activatedRoute.queryParamMap.pipe(
-      map(queryParamMap => queryParamMap.get("active")),
-      filter(active => active !== null && active !== this.active),
-      takeUntil(this.destroyed$)
-    ).subscribe(active => {
-      this.active = active;
-      this.onActiveSmartFolderChange({ active, menu: this.menu });
-      this.changeDetectorRef.markForCheck();
-    });
+    this.activatedRoute.queryParamMap
+      .pipe(
+        map(queryParamMap => queryParamMap.get("active")),
+        filter(active => active !== null && active !== this.active),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(active => {
+        this.active = active;
+        this.onActiveSmartFolderChange({ active, menu: this.menu });
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this._setSmartFolderFromRoute();
-      this.changeDetectorRef.markForCheck();
-    });
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        this._setSmartFolderFromRoute();
+        this.changeDetectorRef.markForCheck();
+      });
 
     this._setSmartFolderFromRoute();
   }
@@ -172,30 +186,31 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   private _loadImages() {
     this.loading = true;
 
-    this.actions$.pipe(
-      ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
-      map((action: FindImagesSuccess) => action.payload),
-      filter(payload =>
-        payload.options.userId === this.user.id &&
-        payload.options.subsection === this.folderType
-      ),
-      take(1)
-    ).subscribe(payload => {
-      this.menu = payload.response.menu;
-      this.onActiveSmartFolderChange({ active: this.active, menu: this.menu });
-      this.loading = false;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
+        map((action: FindImagesSuccess) => action.payload),
+        filter(payload => payload.options.userId === this.user.id && payload.options.subsection === this.folderType),
+        take(1)
+      )
+      .subscribe(payload => {
+        this.menu = payload.response.menu;
+        this.onActiveSmartFolderChange({ active: this.active, menu: this.menu });
+        this.loading = false;
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.store$.dispatch(new FindImages({
-      options: {
-        userId: this.user.id,
-        page: 1,
-        subsection: this.folderType,
-        gallerySerializer: true,
-        active: this.active
-      }
-    }));
+    this.store$.dispatch(
+      new FindImages({
+        options: {
+          userId: this.user.id,
+          page: 1,
+          subsection: this.folderType,
+          gallerySerializer: true,
+          active: this.active
+        }
+      })
+    );
   }
 
   protected humanizeFolderType(): string {
@@ -213,10 +228,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
     }
   }
 
-  protected onActiveSmartFolderChange(event: {
-    active: string,
-    menu: FindImagesResponseInterface["menu"]
-  }) {
+  protected onActiveSmartFolderChange(event: { active: string; menu: FindImagesResponseInterface["menu"] }) {
     this.active = event.active;
     this.activeChange.emit(event);
 
@@ -239,11 +251,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   }
 
   private _isGearFolder(): boolean {
-    return (
-      this.activeType === SmartFolderType.GEAR &&
-      this.active?.length > 0 &&
-      this.active[0] === "N"
-    );
+    return this.activeType === SmartFolderType.GEAR && this.active?.length > 0 && this.active[0] === "N";
   }
 
   private _handleGearEquipment() {
@@ -272,25 +280,28 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   private _loadEquipmentItem(itemId: number, equipmentType: EquipmentItemType) {
     const payload = { id: itemId, type: equipmentType };
 
-    this.store$.pipe(
-      select(selectEquipmentItem, payload),
-      filter(item => !!item),
-      take(1)
-    ).subscribe(item => {
-      this.activeEquipmentItem = item;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.store$
+      .pipe(
+        select(selectEquipmentItem, payload),
+        filter(item => !!item),
+        take(1)
+      )
+      .subscribe(item => {
+        this.activeEquipmentItem = item;
+        this.changeDetectorRef.markForCheck();
+      });
 
     this.store$.dispatch(new LoadEquipmentItem(payload));
   }
 
   private _openSmartFolderGalleryOffcanvas() {
-    this.utilsService.delay(1).pipe(
-      take(1)
-    ).subscribe(() => {
-      const offcanvasRef = this._createOffcanvas();
-      this._setupDismissHandler(offcanvasRef);
-    });
+    this.utilsService
+      .delay(1)
+      .pipe(take(1))
+      .subscribe(() => {
+        const offcanvasRef = this._createOffcanvas();
+        this._setupDismissHandler(offcanvasRef);
+      });
   }
 
   private _createOffcanvas() {
@@ -301,9 +312,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   }
 
   private _setupDismissHandler(offcanvasRef: NgbOffcanvasRef) {
-    const dismissSubscription = offcanvasRef.dismissed.pipe(
-      take(1)
-    ).subscribe(() => {
+    const dismissSubscription = offcanvasRef.dismissed.pipe(take(1)).subscribe(() => {
       this._handleDismiss();
     });
 
@@ -313,13 +322,15 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   }
 
   private _handleDismiss() {
-    this.router.navigate([], {
-      queryParams: { active: null },
-      queryParamsHandling: "merge",
-      fragment: this.galleryFragment
-    }).then(() => {
-      this.onActiveSmartFolderChange({ active: null, menu: this.menu });
-      this.changeDetectorRef.markForCheck();
-    });
+    this.router
+      .navigate([], {
+        queryParams: { active: null },
+        queryParamsHandling: "merge",
+        fragment: this.galleryFragment
+      })
+      .then(() => {
+        this.onActiveSmartFolderChange({ active: null, menu: this.menu });
+        this.changeDetectorRef.markForCheck();
+      });
   }
 }

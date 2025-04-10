@@ -1,21 +1,23 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { CameraGenerator } from "@features/equipment/generators/camera.generator";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
 
 import { MarketplaceListingCardComponent } from "./marketplace-listing-card.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
-import { CameraGenerator } from "@features/equipment/generators/camera.generator";
-import { of } from "rxjs";
 
 describe("MarketplaceListingCardComponent", () => {
   let component: MarketplaceListingCardComponent;
   let fixture: ComponentFixture<MarketplaceListingCardComponent>;
-  let camera = CameraGenerator.camera();
+  const camera = CameraGenerator.camera();
 
   beforeEach(async () => {
-    await MockBuilder(MarketplaceListingCardComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
+    await MockBuilder(MarketplaceListingCardComponent, AppModule).provide(
+      provideMockStore({ initialState: initialMainState })
+    );
 
     fixture = TestBed.createComponent(MarketplaceListingCardComponent);
     component = fixture.componentInstance;

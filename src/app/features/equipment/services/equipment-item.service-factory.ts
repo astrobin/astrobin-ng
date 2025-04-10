@@ -1,16 +1,16 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { CameraService } from "@features/equipment/services/camera.service";
-import { SensorService } from "@features/equipment/services/sensor.service";
-import { TelescopeService } from "@features/equipment/services/telescope.service";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
-import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { MountService } from "@features/equipment/services/mount.service";
-import { FilterService } from "@features/equipment/services/filter.service";
 import { AccessoryService } from "@features/equipment/services/accessory.service";
+import { CameraService } from "@features/equipment/services/camera.service";
+import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import { FilterService } from "@features/equipment/services/filter.service";
+import { MountService } from "@features/equipment/services/mount.service";
+import { SensorService } from "@features/equipment/services/sensor.service";
 import { SoftwareService } from "@features/equipment/services/software.service";
+import { TelescopeService } from "@features/equipment/services/telescope.service";
+import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 @Injectable({
   providedIn: "root"

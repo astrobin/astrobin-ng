@@ -1,6 +1,6 @@
+import { animate, state, style, transition, trigger } from "@angular/animations";
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
 import { FieldWrapper } from "@ngx-formly/core";
-import { animate, state, style, transition, trigger } from "@angular/animations";
 
 @Component({
   selector: "astrobin-formly-card-wrapper",
@@ -8,14 +8,20 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
   styleUrls: ["./formly-card-wrapper.component.scss"],
   animations: [
     trigger("collapse", [
-      state("collapsed", style({
-        maxHeight: "0px",
-        padding: "0"
-      })),
-      state("expanded", style({
-        maxHeight: "9999px",
-        padding: "1rem"
-      })),
+      state(
+        "collapsed",
+        style({
+          maxHeight: "0px",
+          padding: "0"
+        })
+      ),
+      state(
+        "expanded",
+        style({
+          maxHeight: "9999px",
+          padding: "1rem"
+        })
+      ),
       transition("expanded => collapsed", [
         style({ padding: "0" }), // Apply styles immediately when collapsing
         style({ maxHeight: "0px" })

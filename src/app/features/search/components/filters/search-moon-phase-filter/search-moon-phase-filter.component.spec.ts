@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 
 import { SearchMoonPhaseFilterComponent } from "./search-moon-phase-filter.component";
-import { AppModule } from "@app/app.module";
-import { MockBuilder } from "ng-mocks";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
 
 describe("IntegrationTimeSizeFilterComponent", () => {
   let component: SearchMoonPhaseFilterComponent;

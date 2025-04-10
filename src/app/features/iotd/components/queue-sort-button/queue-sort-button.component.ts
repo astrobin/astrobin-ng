@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Output } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { LoadingService } from "@core/services/loading.service";
-import { Observable } from "rxjs";
 import { selectStaffMemberSettings } from "@features/iotd/store/iotd.selectors";
-import { map } from "rxjs/operators";
 import { QueueSortOrder } from "@features/iotd/types/staff-member-settings.interface";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-queue-sort-button",

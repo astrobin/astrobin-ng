@@ -1,6 +1,6 @@
-import { UserInterface } from "@core/interfaces/user.interface";
 import { ImageInterface } from "@core/interfaces/image.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 
 export interface CollectionInterface {
   id: number;

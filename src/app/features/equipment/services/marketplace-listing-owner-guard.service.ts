@@ -1,19 +1,19 @@
 import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { All } from "@app/store/actions/app.actions";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
+import { AuthService } from "@core/services/auth.service";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { combineLatest, Observable, Observer } from "rxjs";
-import { filter, map } from "rxjs/operators";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import { Actions, ofType } from "@ngrx/effects";
-import { All } from "@app/store/actions/app.actions";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentActionTypes, LoadMarketplaceListing } from "@features/equipment/store/equipment.actions";
 import { selectMarketplaceListingByHash } from "@features/equipment/store/equipment.selectors";
-import { AuthService } from "@core/services/auth.service";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { Observer, combineLatest, Observable } from "rxjs";
+import { filter, map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"

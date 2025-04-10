@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { LoadingDialogComponent } from "./loading-dialog.component";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
+import { MockBuilder } from "ng-mocks";
+
+import { LoadingDialogComponent } from "./loading-dialog.component";
 
 describe("LoadingDialogComponent", () => {
   let component: LoadingDialogComponent;

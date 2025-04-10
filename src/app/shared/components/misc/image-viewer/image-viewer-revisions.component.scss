@@ -1,4 +1,5 @@
 @import "src/app/styles/breakpoints";
+@import "src/app/styles/mixins";
 
 :host {
   .revisions {
@@ -11,14 +12,14 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: .5rem;
+    @include flex-gap(row, 0.5rem);
     padding: 1rem;
 
     .revision {
       width: 3rem;
       height: 3rem;
       position: relative;
-      transition: transform .2s ease-in-out, background .2s ease-in-out;
+      transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
 
       img {
         width: 100%;
@@ -26,9 +27,9 @@
         object-fit: cover;
         border: 1px solid var(--lightGrey);
         border-radius: 10px;
-        box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
         cursor: pointer;
-        transition: border-radius .2s ease-in-out;
+        transition: border-radius 0.2s ease-in-out;
       }
 
       .label {
@@ -36,14 +37,14 @@
         bottom: 0;
         left: 0;
         right: 0;
-        padding: .25rem;
-        background: rgba(0, 0, 0, .5);
+        padding: 0.25rem;
+        background: rgba(0, 0, 0, 0.5);
         color: var(--white);
-        font-size: .75rem;
+        font-size: 0.75rem;
         text-align: center;
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
-        transition: border-radius .2s ease-in-out;
+        transition: border-radius 0.2s ease-in-out;
         pointer-events: none;
       }
 
@@ -53,12 +54,12 @@
         align-items: center;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, .5);
+        background: rgba(0, 0, 0, 0.5);
         color: var(--white);
         font-size: 1.5rem;
         cursor: pointer;
         border-radius: 10px;
-        transition: background .2s ease-in-out;
+        transition: background 0.2s ease-in-out;
       }
 
       .dropdown {
@@ -66,14 +67,14 @@
         top: -2.5rem;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, .5);
+        background: rgba(0, 0, 0, 0.5);
         color: var(--white);
         opacity: 1;
-        transition: opacity .2s ease-in-out;
-        border-radius: .5rem;
+        transition: opacity 0.2s ease-in-out;
+        border-radius: 0.5rem;
 
         .ng-fa-icon {
-          padding: .75rem;
+          padding: 0.75rem;
           font-size: 1.25rem;
           color: var(--white);
         }
@@ -82,13 +83,13 @@
       &.active::after {
         content: "▲";
         display: block;
-        font-size: .75rem;
+        font-size: 0.75rem;
         position: absolute;
         bottom: calc(-1rem - 2px);
         width: 100%;
         text-align: center;
         color: var(--accentColor);
-        transition: transform .2s ease-in-out;
+        transition: transform 0.2s ease-in-out;
       }
 
       &.final {
@@ -96,15 +97,15 @@
           border-color: var(--accentColor);
         }
       }
-      
+
       &.deleting {
         pointer-events: none;
-        
+
         img {
           opacity: 0.5;
           filter: grayscale(50%);
         }
-        
+
         .loading-overlay {
           position: absolute;
           top: 0;
@@ -125,7 +126,7 @@
         }
 
         &:hover {
-          transform: translateY(-.25rem);
+          transform: translateY(-0.25rem);
 
           .dropdown {
             opacity: 1;
@@ -137,13 +138,13 @@
         .dropdown {
           opacity: 1;
           text-align: center;
-          padding: .25rem 0;
+          padding: 0.25rem 0;
           width: 2rem;
           top: -2.5rem;
           border-radius: 50%;
 
           .ng-fa-icon {
-            padding: .5rem;
+            padding: 0.5rem;
             font-size: 1rem;
           }
         }
@@ -151,8 +152,8 @@
     }
 
     @media (max-width: $md-max) {
-      bottom: .5rem;
-      padding: 0 .5rem;
+      bottom: 0.5rem;
+      padding: 0 0.5rem;
 
       .revision {
         width: 3rem;

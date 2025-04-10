@@ -3,7 +3,7 @@
 
   .ad-container {
     opacity: 0;
-    transition: opacity .3s;
+    transition: opacity 0.3s;
 
     :not(.ad-rendered) {
       pointer-events: none;
@@ -22,15 +22,15 @@
 
   .remove-ads {
     position: absolute;
-    bottom: .25rem;
-    right: .25rem;
-    background: rgba(0, 0, 0, .75);
+    bottom: 0.25rem;
+    right: 0.25rem;
+    background: rgba(0, 0, 0, 0.75);
     color: var(--ligherGray);
-    padding: .25rem .5rem;
-    font-size: .7rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
     z-index: 2;
     opacity: 0;
-    transition: opacity .3s;
+    transition: opacity 0.3s;
   }
 
   &:hover .remove-ads {

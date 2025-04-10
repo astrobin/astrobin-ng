@@ -1,13 +1,32 @@
 import { Injectable } from "@angular/core";
+import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
+import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
+import {
+  LoadNotifications,
+  MarkAsRead,
+  SetNotificationSetting,
+  GetUnreadCountFailure,
+  GetUnreadCountSuccess,
+  LoadNotificationSettingsSuccess,
+  LoadNotificationsFailure,
+  LoadNotificationsSuccess,
+  LoadNotificationTypesSuccess,
+  MarkAllAsReadFailure,
+  MarkAllAsReadSuccess,
+  MarkAsReadFailure,
+  MarkAsReadSuccess,
+  NotificationsActionTypes,
+  SetNotificationSettingSuccess
+} from "@features/notifications/store/notifications.actions";
+import {
+  selectNotificationSettings,
+  selectNotificationTypes
+} from "@features/notifications/store/notifications.selectors";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
-import { EMPTY, Observable, of } from "rxjs";
-import { GetUnreadCountFailure, GetUnreadCountSuccess, LoadNotifications, LoadNotificationSettingsSuccess, LoadNotificationsFailure, LoadNotificationsSuccess, LoadNotificationTypesSuccess, MarkAllAsReadFailure, MarkAllAsReadSuccess, MarkAsRead, MarkAsReadFailure, MarkAsReadSuccess, NotificationsActionTypes, SetNotificationSetting, SetNotificationSettingSuccess } from "@features/notifications/store/notifications.actions";
+import { Observable, EMPTY, of } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
-import { selectNotificationSettings, selectNotificationTypes } from "@features/notifications/store/notifications.selectors";
-import { LoadingService } from "@core/services/loading.service";
 
 @Injectable()
 export class NotificationsEffects {
@@ -20,9 +39,9 @@ export class NotificationsEffects {
             typesFromStore !== null
               ? of(typesFromStore).pipe(map(types => new LoadNotificationTypesSuccess({ types })))
               : this.notificationsApiService.getTypes().pipe(
-                map(types => new LoadNotificationTypesSuccess({ types })),
-                catchError(() => EMPTY)
-              )
+                  map(types => new LoadNotificationTypesSuccess({ types })),
+                  catchError(() => EMPTY)
+                )
           )
         )
       )
@@ -38,9 +57,9 @@ export class NotificationsEffects {
             settingsFromStore !== null
               ? of(settingsFromStore).pipe(map(settings => new LoadNotificationSettingsSuccess({ settings })))
               : this.notificationsApiService.getSettings().pipe(
-                map(settings => new LoadNotificationSettingsSuccess({ settings })),
-                catchError(() => EMPTY)
-              )
+                  map(settings => new LoadNotificationSettingsSuccess({ settings })),
+                  catchError(() => EMPTY)
+                )
           )
         )
       )
@@ -65,34 +84,38 @@ export class NotificationsEffects {
       ofType(NotificationsActionTypes.LOAD_NOTIFICATIONS),
       mergeMap((action: LoadNotifications) => {
         this.loadingService.setLoading(true);
-        return this.notificationsApiService.getAll(
-          action.payload.page,
-          action.payload.read,
-          action.payload.context,
-          action.payload.message
-        ).pipe(
-          map(response => new LoadNotificationsSuccess({
-            notifications: response.results,
-            total: response.count
-          })),
-          catchError(error => of(new LoadNotificationsFailure({ error: error.statusText })))
-        );
+        return this.notificationsApiService
+          .getAll(action.payload.page, action.payload.read, action.payload.context, action.payload.message)
+          .pipe(
+            map(
+              response =>
+                new LoadNotificationsSuccess({
+                  notifications: response.results,
+                  total: response.count
+                })
+            ),
+            catchError(error => of(new LoadNotificationsFailure({ error: error.statusText })))
+          );
       })
     )
   );
 
-  LoadNotificationsSuccess: Observable<void> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(NotificationsActionTypes.LOAD_NOTIFICATIONS_SUCCESS),
-      tap(() => this.loadingService.setLoading(false))
-    ), { dispatch: false }
+  LoadNotificationsSuccess: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(NotificationsActionTypes.LOAD_NOTIFICATIONS_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
   );
 
-  LoadNotificationsFailure: Observable<void> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(NotificationsActionTypes.LOAD_NOTIFICATIONS_FAILURE),
-      tap(() => this.loadingService.setLoading(false))
-    ), { dispatch: false }
+  LoadNotificationsFailure: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(NotificationsActionTypes.LOAD_NOTIFICATIONS_FAILURE),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
   );
 
   GetUnreadCount: Observable<GetUnreadCountSuccess | GetUnreadCountFailure> = createEffect(() =>
@@ -108,18 +131,22 @@ export class NotificationsEffects {
     )
   );
 
-  GetUnreadCountSuccess: Observable<void> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(NotificationsActionTypes.GET_UNREAD_COUNT_SUCCESS),
-      tap(() => this.loadingService.setLoading(false))
-    ), { dispatch: false }
+  GetUnreadCountSuccess: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(NotificationsActionTypes.GET_UNREAD_COUNT_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
   );
 
-  GetUnreadCountFailure: Observable<void> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(NotificationsActionTypes.GET_UNREAD_COUNT_FAILURE),
-      tap(() => this.loadingService.setLoading(false))
-    ), { dispatch: false }
+  GetUnreadCountFailure: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(NotificationsActionTypes.GET_UNREAD_COUNT_FAILURE),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
   );
 
   MarkAllAsRead: Observable<MarkAllAsReadSuccess | MarkAllAsReadFailure> = createEffect(() =>
@@ -135,18 +162,22 @@ export class NotificationsEffects {
     )
   );
 
-  MarkAllAsReadSuccess: Observable<void> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(NotificationsActionTypes.MARK_ALL_AS_READ_SUCCESS),
-      tap(() => this.loadingService.setLoading(false))
-    ), { dispatch: false }
+  MarkAllAsReadSuccess: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(NotificationsActionTypes.MARK_ALL_AS_READ_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
   );
 
-  MarkAllAsReadFailure: Observable<void> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(NotificationsActionTypes.MARK_ALL_AS_READ_FAILURE),
-      tap(() => this.loadingService.setLoading(false))
-    ), { dispatch: false }
+  MarkAllAsReadFailure: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(NotificationsActionTypes.MARK_ALL_AS_READ_FAILURE),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
   );
 
   MarkAsRead: Observable<MarkAsReadSuccess | MarkAsReadFailure> = createEffect(() =>
@@ -157,27 +188,35 @@ export class NotificationsEffects {
         this.loadingService.setLoading(true);
         return this.notificationsApiService.markAsRead(payload.notificationId, payload.read).pipe(
           map(() => new MarkAsReadSuccess({ notificationId: payload.notificationId, read: payload.read })),
-          catchError(error => of(new MarkAsReadFailure({
-            notificationId: payload.notificationId,
-            error: error.statusText
-          })))
+          catchError(error =>
+            of(
+              new MarkAsReadFailure({
+                notificationId: payload.notificationId,
+                error: error.statusText
+              })
+            )
+          )
         );
       })
     )
   );
 
-  MarkAsReadSuccess: Observable<void> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(NotificationsActionTypes.MARK_AS_READ_SUCCESS),
-      tap(() => this.loadingService.setLoading(false))
-    ), { dispatch: false }
+  MarkAsReadSuccess: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(NotificationsActionTypes.MARK_AS_READ_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
   );
 
-  MarkAsReadFailure: Observable<void> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(NotificationsActionTypes.MARK_AS_READ_FAILURE),
-      tap(() => this.loadingService.setLoading(false))
-    ), { dispatch: false }
+  MarkAsReadFailure: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(NotificationsActionTypes.MARK_AS_READ_FAILURE),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
   );
 
   constructor(
@@ -185,6 +224,5 @@ export class NotificationsEffects {
     public readonly actions$: Actions,
     public readonly notificationsApiService: NotificationsApiService,
     public readonly loadingService: LoadingService
-  ) {
-  }
+  ) {}
 }

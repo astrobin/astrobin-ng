@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { FilterGenerator } from "@features/equipment/generators/filter.generator";
+import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { FilterSize, FilterType } from "@features/equipment/types/filter.interface";
+import { MockBuilder } from "ng-mocks";
 
 describe("FilterService", () => {
   let service: FilterService;

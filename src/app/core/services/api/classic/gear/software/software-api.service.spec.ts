@@ -2,8 +2,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { SoftwareGenerator } from "@shared/generators/software.generator";
 import { SoftwareApiService } from "@core/services/api/classic/gear/software/software-api.service";
+import { SoftwareGenerator } from "@shared/generators/software.generator";
 import { MockBuilder } from "ng-mocks";
 
 describe("softwareApiService", () => {

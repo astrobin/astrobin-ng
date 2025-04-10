@@ -1,14 +1,15 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { environment } from "@env/environment";
 import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { JsonApiServiceInterface } from "@core/services/api/classic/json/json-api.service-interface";
 import { LoadingService } from "@core/services/loading.service";
+import { environment } from "@env/environment";
 import { Observable } from "rxjs";
-import { BaseClassicApiService } from "../base-classic-api.service";
 import { map } from "rxjs/operators";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+
+import { BaseClassicApiService } from "../base-classic-api.service";
 
 @Injectable({
   providedIn: "root"
@@ -68,15 +69,15 @@ export class JsonApiService extends BaseClassicApiService implements JsonApiServ
     sourceLanguage: string,
     targetLanguage: string,
     options: {
-      format?: "bbcode" | "html"
+      format?: "bbcode" | "html";
     } = {}
   ): Observable<{
-    translation: string,
-    remaining_requests: number
+    translation: string;
+    remaining_requests: number;
   }> {
     return this.http.post<{
-      translation: string,
-      remaining_requests: number
+      translation: string;
+      remaining_requests: number;
     }>(`${this.configUrl}/common/translate/`, {
       text,
       source_language: sourceLanguage,

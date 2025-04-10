@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
-import { FieldWrapper } from "@ngx-formly/core";
+import { ChangeDetectorRef, OnDestroy, Component } from "@angular/core";
 import { FormlyFieldMessage, FormlyFieldService } from "@core/services/formly-field.service";
+import { FieldWrapper } from "@ngx-formly/core";
 import { Subscription } from "rxjs";
 
 @Component({

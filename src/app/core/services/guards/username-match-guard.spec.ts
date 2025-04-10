@@ -1,11 +1,12 @@
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, convertToParamMap, Router, UrlTree } from "@angular/router";
-import { UsernameMatchGuard } from "./username-match-guard"; // Update with actual path
-import { MockBuilder } from "ng-mocks";
+import { ActivatedRouteSnapshot, UrlTree, convertToParamMap, Router } from "@angular/router";
 import { AppModule } from "@app/app.module"; // Update with actual path
-import { Store } from "@ngrx/store";
-import { of } from "rxjs";
 import { RouterService } from "@core/services/router.service"; // Update with actual path
+import { Store } from "@ngrx/store";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
+
+import { UsernameMatchGuard } from "./username-match-guard"; // Update with actual path
 
 describe("UsernameMatchGuard", () => {
   let guard: UsernameMatchGuard;
@@ -14,10 +15,7 @@ describe("UsernameMatchGuard", () => {
   let routerService: RouterService;
 
   beforeEach(() => {
-    return MockBuilder(UsernameMatchGuard, AppModule)
-      .mock(Router)
-      .mock(Store)
-      .mock(RouterService);
+    return MockBuilder(UsernameMatchGuard, AppModule).mock(Router).mock(Store).mock(RouterService);
   });
 
   beforeEach(() => {

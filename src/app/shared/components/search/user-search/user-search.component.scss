@@ -4,7 +4,7 @@
 .search-results {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  @include flex-gap(row, 1rem);
 
   ::ng-deep .highlight {
     @include highlight;
@@ -28,13 +28,13 @@
 
       small {
         display: block;
-        font-size: .85rem;
+        font-size: 0.85rem;
         color: var(--lighterGrey);
         font-weight: normal;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        margin-top: .25rem;
+        margin-top: 0.25rem;
       }
     }
 
@@ -55,15 +55,15 @@
         width: 100%;
         display: flex;
         justify-content: space-around;
-        background: rgba(0, 0, 0, .75);
-        padding: .5rem 0;
+        background: rgba(0, 0, 0, 0.75);
+        padding: 0.5rem 0;
 
         .images,
         .likes,
         .followers {
           display: flex;
           flex-direction: column;
-          gap: .25rem;
+          @include flex-gap(column, 0.25rem);
           text-align: center;
         }
       }

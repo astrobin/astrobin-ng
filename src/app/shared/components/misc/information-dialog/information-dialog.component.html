@@ -23,7 +23,7 @@
       {{ button.label | translate }}
     </button>
   </ng-container>
-  
+
   <!-- Default close button if no custom buttons -->
   <button *ngIf="!buttons || buttons.length === 0"
     (click)="modal.close()"

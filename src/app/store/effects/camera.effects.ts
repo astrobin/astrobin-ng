@@ -3,10 +3,10 @@ import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadCameraSuccess } from "@app/store/actions/camera.actions";
 import { selectCamera } from "@app/store/selectors/app/camera.selectors";
 import { MainState } from "@app/store/state";
+import { CameraApiService } from "@core/services/api/classic/gear/camera/camera-api.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { CameraApiService } from "@core/services/api/classic/gear/camera/camera-api.service";
-import { EMPTY, Observable, of } from "rxjs";
+import { Observable, EMPTY, of } from "rxjs";
 import { catchError, map, mergeMap, switchMap, take } from "rxjs/operators";
 
 @Injectable()
@@ -19,13 +19,13 @@ export class CameraEffects {
           switchMap(cameraFromStore =>
             cameraFromStore !== null
               ? of(cameraFromStore).pipe(
-                take(1),
-                map(camera => new LoadCameraSuccess(camera))
-              )
+                  take(1),
+                  map(camera => new LoadCameraSuccess(camera))
+                )
               : this.cameraApiService.get(action.payload).pipe(
-                map(camera => new LoadCameraSuccess(camera)),
-                catchError(_error => EMPTY)
-              )
+                  map(camera => new LoadCameraSuccess(camera)),
+                  catchError(_error => EMPTY)
+                )
           )
         )
       )
@@ -36,6 +36,5 @@ export class CameraEffects {
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions<All>,
     public readonly cameraApiService: CameraApiService
-  ) {
-  }
+  ) {}
 }

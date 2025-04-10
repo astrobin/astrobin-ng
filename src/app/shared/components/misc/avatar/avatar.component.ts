@@ -1,27 +1,27 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
+import { ChangeDetectorRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { Router } from "@angular/router";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { LoadToggleProperty } from "@app/store/actions/toggle-property.actions";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import { selectToggleProperty } from "@app/store/selectors/app/toggle-property.selectors";
 import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UserService } from "@core/services/user.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
-import { filter, switchMap, take, tap } from "rxjs/operators";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { Router } from "@angular/router";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { UserService } from "@core/services/user.service";
-import { LoadToggleProperty } from "@app/store/actions/toggle-property.actions";
-import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
-import { Constants } from "@shared/constants";
-import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { selectToggleProperty } from "@app/store/selectors/app/toggle-property.selectors";
-import { fadeInOut } from "@shared/animations";
-import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { select, Store } from "@ngrx/store";
+import { fadeInOut } from "@shared/animations";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AvatarEditorComponent } from "@shared/components/misc/avatar-editor/avatar-editor.component";
+import { Constants } from "@shared/constants";
+import { filter, switchMap, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-avatar",
@@ -72,17 +72,20 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
       this.followsYou = false;
 
       if (this.userId && !this.user) {
-        this.store$.select(selectUser, this.userId).pipe(
-          filter(user => !!user),
-          take(1)
-        ).subscribe(user => {
-          this.user = user;
-          this._setAvatar();
-          this._setUrl();
-          this._setFollowsYou();
-          this._checkIsCurrentUser();
-          this.changeDetectorRef.markForCheck();
-        });
+        this.store$
+          .select(selectUser, this.userId)
+          .pipe(
+            filter(user => !!user),
+            take(1)
+          )
+          .subscribe(user => {
+            this.user = user;
+            this._setAvatar();
+            this._setUrl();
+            this._setFollowsYou();
+            this._checkIsCurrentUser();
+            this.changeDetectorRef.markForCheck();
+          });
 
         this.store$.dispatch(new LoadUser({ id: this.userId }));
       } else if (this.user) {
@@ -102,25 +105,25 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
       );
     });
   }
-  
+
   protected openAvatarEditor(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    
+
     // Create options without the circular reference
     const options = {
-      position: 'end' as 'end', // Type as a literal 'end'
-      panelClass: 'avatar-editor-offcanvas',
-      backdropClass: 'avatar-editor-backdrop',
-      backdrop: 'static' as 'static' // Prevent closing by clicking outside
+      position: "end" as const, // Type as a literal 'end'
+      panelClass: "avatar-editor-offcanvas",
+      backdropClass: "avatar-editor-backdrop",
+      backdrop: "static" as const // Prevent closing by clicking outside
     };
-    
+
     // Open the offcanvas with the AvatarEditorComponent
     const offcanvasRef = this.offcanvasService.open(AvatarEditorComponent, options);
-    
+
     // Pass the user to the component
     offcanvasRef.componentInstance.user = this.user;
-    
+
     // When the avatar is updated, update this component as well
     offcanvasRef.componentInstance.avatarUpdated.subscribe((newAvatarUrl: string) => {
       this.avatarUrl = newAvatarUrl;
@@ -131,8 +134,8 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
   private _setAvatar(): void {
     if (
       this.user.hasOwnProperty("largeAvatar") &&
-      typeof this.user.largeAvatar === "string"
-      && this.user.largeAvatar.indexOf("default-avatar") > -1
+      typeof this.user.largeAvatar === "string" &&
+      this.user.largeAvatar.indexOf("default-avatar") > -1
     ) {
       this.avatarUrl = Constants.DEFAULT_AVATAR;
     } else {
@@ -155,45 +158,55 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
         return;
       }
 
-      this.store$.pipe(
-        select(selectContentType, {
+      this.store$
+        .pipe(
+          select(selectContentType, {
+            appLabel: "auth",
+            model: "user"
+          }),
+          filter(contentType => !!contentType),
+          take(1),
+          tap((contentType: ContentTypeInterface) => {
+            this.store$.dispatch(
+              new LoadToggleProperty({
+                toggleProperty: {
+                  propertyType: "follow",
+                  user: this.user ? this.user.id : this.userId,
+                  contentType: contentType.id,
+                  objectId: currentUser.id
+                }
+              })
+            );
+          }),
+          switchMap((contentType: ContentTypeInterface) =>
+            this.store$.pipe(
+              select(
+                selectToggleProperty({
+                  propertyType: "follow",
+                  user: this.user ? this.user.id : this.userId,
+                  contentType: contentType.id,
+                  objectId: currentUser.id
+                })
+              ),
+              filter(toggleProperties => !!toggleProperties),
+              take(1)
+            )
+          )
+        )
+        .subscribe((toggleProperty: TogglePropertyInterface) => {
+          this.followsYou = true;
+          this.changeDetectorRef.markForCheck();
+        });
+
+      this.store$.dispatch(
+        new LoadContentType({
           appLabel: "auth",
           model: "user"
-        }),
-        filter(contentType => !!contentType),
-        take(1),
-        tap((contentType: ContentTypeInterface) => {
-          this.store$.dispatch(new LoadToggleProperty({
-            toggleProperty: {
-              propertyType: "follow",
-              user: this.user ? this.user.id : this.userId,
-              contentType: contentType.id,
-              objectId: currentUser.id
-            }
-          }));
-        }),
-        switchMap((contentType: ContentTypeInterface) => this.store$.pipe(
-          select(selectToggleProperty({
-            propertyType: "follow",
-            user: this.user ? this.user.id : this.userId,
-            contentType: contentType.id,
-            objectId: currentUser.id
-          })),
-          filter(toggleProperties => !!toggleProperties),
-          take(1)
-        ))
-      ).subscribe((toggleProperty: TogglePropertyInterface) => {
-        this.followsYou = true;
-        this.changeDetectorRef.markForCheck();
-      });
-
-      this.store$.dispatch(new LoadContentType({
-        appLabel: "auth",
-        model: "user"
-      }));
+        })
+      );
     });
   }
-  
+
   private _checkIsCurrentUser(): void {
     this.currentUser$.pipe(take(1)).subscribe(currentUser => {
       if (currentUser && this.user) {

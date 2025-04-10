@@ -1,26 +1,172 @@
 import { Injectable } from "@angular/core";
-import { concat, finalize, forkJoin, last, Observable, of } from "rxjs";
-import {
-  AcceptMarketplaceOffer, AcceptMarketplaceOfferFailure, AcceptMarketplaceOfferSuccess, ApproveEquipmentItem, ApproveEquipmentItemEditProposal, ApproveEquipmentItemEditProposalSuccess, ApproveEquipmentItemSuccess, ApproveMarketplaceListing, ApproveMarketplaceListingFailure, ApproveMarketplaceListingSuccess, AssignEditProposal, AssignEditProposalSuccess, AssignItem, AssignItemSuccess, CreateAccessory, CreateAccessoryEditProposal, CreateAccessoryEditProposalSuccess, CreateAccessorySuccess, CreateBrand, CreateBrandSuccess, CreateCamera, CreateCameraEditProposal, CreateCameraEditProposalSuccess, CreateCameraSuccess, CreateEquipmentPreset, CreateEquipmentPresetSuccess, CreateFilter, CreateFilterEditProposal, CreateFilterEditProposalSuccess, CreateFilterSuccess, CreateMarketplaceFeedback, CreateMarketplaceFeedbackFailure, CreateMarketplaceFeedbackSuccess, CreateMarketplaceListing, CreateMarketplaceListingFailure, CreateMarketplaceListingSuccess, CreateMarketplaceOffer, CreateMarketplaceOfferFailure, CreateMarketplaceOfferSuccess, CreateMarketplacePrivateConversation, CreateMarketplacePrivateConversationFailure, CreateMarketplacePrivateConversationSuccess, CreateMount, CreateMountEditProposal, CreateMountEditProposalSuccess, CreateMountSuccess, CreateSensor, CreateSensorEditProposal, CreateSensorEditProposalSuccess, CreateSensorSuccess, CreateSoftware, CreateSoftwareEditProposal, CreateSoftwareEditProposalSuccess, CreateSoftwareSuccess, CreateTelescope, CreateTelescopeEditProposal, CreateTelescopeEditProposalSuccess, CreateTelescopeSuccess, DeleteEquipmentPreset, DeleteEquipmentPresetSuccess, DeleteMarketplaceListing, DeleteMarketplaceListingFailure, DeleteMarketplaceListingSuccess, DeleteMarketplacePrivateConversation, DeleteMarketplacePrivateConversationFailure, DeleteMarketplacePrivateConversationSuccess, EquipmentActionTypes, FindAllBrands, FindAllBrandsSuccess, FindAllEquipmentItems, FindAllEquipmentItemsSuccess, FindCameraVariants, FindCameraVariantsSuccess, FindEquipmentItemEditProposals, FindEquipmentItemEditProposalsSuccess, FindEquipmentPresets, FindEquipmentPresetsFailure, FindEquipmentPresetsSuccess, FindRecentlyUsedEquipmentItems, FindRecentlyUsedEquipmentItemsSuccess, FindSimilarInBrand, FindSimilarInBrandSuccess, FreezeEquipmentItemAsAmbiguous, FreezeEquipmentItemAsAmbiguousSuccess, GetAllBrands, GetAllBrandsSuccess, GetAllInBrand, GetAllInBrandSuccess, GetContributorsSuccess, GetMarketplaceFeedback, GetMarketplaceFeedbackFailure, GetMarketplaceFeedbackSuccess, GetMostOftenUsedWith, GetMostOftenUsedWithSuccess, GetOthersInBrand, GetOthersInBrandSuccess, LoadBrand, LoadBrandSuccess, LoadEquipmentItem, LoadEquipmentItemFailure, LoadEquipmentItemSuccess, LoadMarketplaceListing, LoadMarketplaceListingFailure, LoadMarketplaceListings, LoadMarketplaceListingsSuccess, LoadMarketplaceListingSuccess, LoadMarketplacePrivateConversations, LoadMarketplacePrivateConversationsFailure, LoadMarketplacePrivateConversationsSuccess, LoadSensor, LoadSensorSuccess, MarkMarketplaceLineItemAsSold, MarkMarketplaceLineItemAsSoldFailure, MarkMarketplaceLineItemAsSoldSuccess, RejectEquipmentItem, RejectEquipmentItemEditProposal, RejectEquipmentItemEditProposalSuccess, RejectEquipmentItemSuccess, RejectMarketplaceOffer, RejectMarketplaceOfferFailure, RejectMarketplaceOfferSuccess, RenewMarketplaceListing, RenewMarketplaceListingFailure, RenewMarketplaceListingSuccess, RetractMarketplaceOffer, RetractMarketplaceOfferFailure, RetractMarketplaceOfferSuccess, UnapproveEquipmentItem, UnapproveEquipmentItemSuccess, UnfreezeEquipmentItemAsAmbiguous, UnfreezeEquipmentItemAsAmbiguousSuccess, UpdateEquipmentPreset, UpdateEquipmentPresetFailure, UpdateEquipmentPresetSuccess, UpdateMarketplaceListing, UpdateMarketplaceListingFailure, UpdateMarketplaceListingSuccess, UpdateMarketplaceOffer, UpdateMarketplaceOfferFailure, UpdateMarketplaceOfferSuccess, UpdateMarketplacePrivateConversation, UpdateMarketplacePrivateConversationFailure, UpdateMarketplacePrivateConversationSuccess
-} from "@features/equipment/store/equipment.actions";
-import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { catchError, filter, map, mergeMap, switchMap, tap } from "rxjs/operators";
-import { selectBrand, selectEquipmentItem, selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
-import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { SelectorWithProps } from "@ngrx/store/src/models";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
 import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import {
+  AcceptMarketplaceOfferFailure,
+  AcceptMarketplaceOfferSuccess,
+  ApproveEquipmentItemEditProposalSuccess,
+  ApproveEquipmentItemSuccess,
+  ApproveMarketplaceListingFailure,
+  ApproveMarketplaceListingSuccess,
+  AssignEditProposalSuccess,
+  AssignItemSuccess,
+  CreateAccessoryEditProposalSuccess,
+  CreateAccessorySuccess,
+  CreateBrandSuccess,
+  CreateCameraEditProposalSuccess,
+  CreateCameraSuccess,
+  CreateEquipmentPresetSuccess,
+  CreateFilterEditProposalSuccess,
+  CreateFilterSuccess,
+  CreateMarketplaceFeedbackFailure,
+  CreateMarketplaceFeedbackSuccess,
+  CreateMarketplaceListingFailure,
+  CreateMarketplaceListingSuccess,
+  CreateMarketplaceOfferFailure,
+  CreateMarketplaceOfferSuccess,
+  CreateMarketplacePrivateConversationFailure,
+  CreateMarketplacePrivateConversationSuccess,
+  CreateMountEditProposalSuccess,
+  CreateMountSuccess,
+  CreateSensorEditProposalSuccess,
+  CreateSensorSuccess,
+  CreateSoftwareEditProposalSuccess,
+  CreateSoftwareSuccess,
+  CreateTelescopeEditProposalSuccess,
+  CreateTelescopeSuccess,
+  DeleteEquipmentPresetSuccess,
+  DeleteMarketplaceListingFailure,
+  DeleteMarketplaceListingSuccess,
+  DeleteMarketplacePrivateConversationFailure,
+  DeleteMarketplacePrivateConversationSuccess,
+  EquipmentActionTypes,
+  FindAllBrandsSuccess,
+  FindAllEquipmentItemsSuccess,
+  FindCameraVariantsSuccess,
+  FindEquipmentItemEditProposalsSuccess,
+  FindEquipmentPresetsFailure,
+  FindEquipmentPresetsSuccess,
+  FindRecentlyUsedEquipmentItemsSuccess,
+  FindSimilarInBrandSuccess,
+  FreezeEquipmentItemAsAmbiguousSuccess,
+  GetAllBrandsSuccess,
+  GetAllInBrandSuccess,
+  GetContributorsSuccess,
+  GetMarketplaceFeedbackFailure,
+  GetMarketplaceFeedbackSuccess,
+  GetMostOftenUsedWithSuccess,
+  GetOthersInBrandSuccess,
+  LoadBrandSuccess,
+  LoadEquipmentItemFailure,
+  LoadEquipmentItemSuccess,
+  LoadMarketplaceListingFailure,
+  LoadMarketplaceListingsSuccess,
+  LoadMarketplaceListingSuccess,
+  LoadMarketplacePrivateConversationsFailure,
+  LoadMarketplacePrivateConversationsSuccess,
+  LoadSensorSuccess,
+  MarkMarketplaceLineItemAsSoldFailure,
+  MarkMarketplaceLineItemAsSoldSuccess,
+  RejectEquipmentItemEditProposalSuccess,
+  RejectEquipmentItemSuccess,
+  RejectMarketplaceOfferFailure,
+  RejectMarketplaceOfferSuccess,
+  RenewMarketplaceListingFailure,
+  RenewMarketplaceListingSuccess,
+  RetractMarketplaceOfferFailure,
+  RetractMarketplaceOfferSuccess,
+  UnapproveEquipmentItemSuccess,
+  UnfreezeEquipmentItemAsAmbiguousSuccess,
+  UpdateEquipmentPresetFailure,
+  UpdateEquipmentPresetSuccess,
+  UpdateMarketplaceListingFailure,
+  UpdateMarketplaceListingSuccess,
+  UpdateMarketplaceOfferFailure,
+  UpdateMarketplaceOfferSuccess,
+  UpdateMarketplacePrivateConversationFailure,
+  UpdateMarketplacePrivateConversationSuccess,
+  AcceptMarketplaceOffer,
+  ApproveEquipmentItem,
+  ApproveEquipmentItemEditProposal,
+  ApproveMarketplaceListing,
+  AssignEditProposal,
+  AssignItem,
+  CreateAccessory,
+  CreateAccessoryEditProposal,
+  CreateBrand,
+  CreateCamera,
+  CreateCameraEditProposal,
+  CreateEquipmentPreset,
+  CreateFilter,
+  CreateFilterEditProposal,
+  CreateMarketplaceFeedback,
+  CreateMarketplaceListing,
+  CreateMarketplaceOffer,
+  CreateMarketplacePrivateConversation,
+  CreateMount,
+  CreateMountEditProposal,
+  CreateSensor,
+  CreateSensorEditProposal,
+  CreateSoftware,
+  CreateSoftwareEditProposal,
+  CreateTelescope,
+  CreateTelescopeEditProposal,
+  DeleteEquipmentPreset,
+  DeleteMarketplaceListing,
+  DeleteMarketplacePrivateConversation,
+  FindAllBrands,
+  FindAllEquipmentItems,
+  FindCameraVariants,
+  FindEquipmentItemEditProposals,
+  FindEquipmentPresets,
+  FindRecentlyUsedEquipmentItems,
+  FindSimilarInBrand,
+  FreezeEquipmentItemAsAmbiguous,
+  GetAllBrands,
+  GetAllInBrand,
+  GetMarketplaceFeedback,
+  GetMostOftenUsedWith,
+  GetOthersInBrand,
+  LoadBrand,
+  LoadEquipmentItem,
+  LoadMarketplaceListing,
+  LoadMarketplaceListings,
+  LoadMarketplacePrivateConversations,
+  LoadSensor,
+  MarkMarketplaceLineItemAsSold,
+  RejectEquipmentItem,
+  RejectEquipmentItemEditProposal,
+  RejectMarketplaceOffer,
+  RenewMarketplaceListing,
+  RetractMarketplaceOffer,
+  UnapproveEquipmentItem,
+  UnfreezeEquipmentItemAsAmbiguous,
+  UpdateEquipmentPreset,
+  UpdateMarketplaceListing,
+  UpdateMarketplaceOffer,
+  UpdateMarketplacePrivateConversation
+} from "@features/equipment/store/equipment.actions";
+import {
+  selectBrand,
+  selectEquipmentItem,
+  selectMarketplaceListing
+} from "@features/equipment/store/equipment.selectors";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { EquipmentItemType, EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { concatLatestFrom, createEffect, ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { SelectorWithProps } from "@ngrx/store/src/models";
+import { TranslateService } from "@ngx-translate/core";
 import { LocalDatePipe } from "@shared/pipes/local-date.pipe";
+import { concat, finalize, forkJoin, last, of, Observable } from "rxjs";
+import { catchError, filter, map, mergeMap, switchMap, tap } from "rxjs/operators";
 
 function getFromStoreOrApiByIdAndType<T>(
   store$: Store<MainState>,
@@ -156,23 +302,25 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS),
       map((action: FindRecentlyUsedEquipmentItems) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService.findRecentlyUsedEquipmentItems(
-          payload.type,
-          payload.usageType,
-          payload.includeFrozen,
-          payload.query,
-          payload.userId
-        ).pipe(
-          map(
-            items =>
-              new FindRecentlyUsedEquipmentItemsSuccess({
-                type: payload.type,
-                usageType: payload.usageType,
-                userId: payload.userId,
-                items
-              })
+        this.equipmentApiService
+          .findRecentlyUsedEquipmentItems(
+            payload.type,
+            payload.usageType,
+            payload.includeFrozen,
+            payload.query,
+            payload.userId
           )
-        )
+          .pipe(
+            map(
+              items =>
+                new FindRecentlyUsedEquipmentItemsSuccess({
+                  type: payload.type,
+                  usageType: payload.usageType,
+                  userId: payload.userId,
+                  items
+                })
+            )
+          )
       )
     )
   );
@@ -318,8 +466,7 @@ export class EquipmentEffects {
           .rejectEditProposal(payload.editProposal, payload.comment)
           .pipe(
             map(
-              rejectedEditProposal =>
-                new RejectEquipmentItemEditProposalSuccess({ editProposal: rejectedEditProposal })
+              rejectedEditProposal => new RejectEquipmentItemEditProposalSuccess({ editProposal: rejectedEditProposal })
             )
           )
       )
@@ -384,12 +531,10 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.FIND_EQUIPMENT_PRESETS),
       map((action: FindEquipmentPresets) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService
-          .findEquipmentPresets(payload.userId)
-          .pipe(
-            map(presets => new FindEquipmentPresetsSuccess({ userId: payload.userId, presets })),
-            catchError(error => of(new FindEquipmentPresetsFailure({ userId: payload.userId, error })))
-          )
+        this.equipmentApiService.findEquipmentPresets(payload.userId).pipe(
+          map(presets => new FindEquipmentPresetsSuccess({ userId: payload.userId, presets })),
+          catchError(error => of(new FindEquipmentPresetsFailure({ userId: payload.userId, error })))
+        )
       )
     )
   );
@@ -399,12 +544,10 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.CREATE_EQUIPMENT_PRESET),
       map((action: CreateEquipmentPreset) => action.payload.preset),
       mergeMap(preset =>
-        this.equipmentApiService
-          .createEquipmentPreset(preset)
-          .pipe(
-            map(savedPreset => new CreateEquipmentPresetSuccess({ preset: savedPreset })),
-            catchError(error => of(new CreateEquipmentPresetSuccess({ preset })))
-          )
+        this.equipmentApiService.createEquipmentPreset(preset).pipe(
+          map(savedPreset => new CreateEquipmentPresetSuccess({ preset: savedPreset })),
+          catchError(error => of(new CreateEquipmentPresetSuccess({ preset })))
+        )
       )
     )
   );
@@ -414,12 +557,10 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET),
       map((action: UpdateEquipmentPreset) => action.payload.preset),
       mergeMap(preset =>
-        this.equipmentApiService
-          .updateEquipmentPreset(preset)
-          .pipe(
-            map(updatedPreset => new UpdateEquipmentPresetSuccess({ preset: updatedPreset })),
-            catchError(error => of(new UpdateEquipmentPresetFailure({ preset, error })))
-          )
+        this.equipmentApiService.updateEquipmentPreset(preset).pipe(
+          map(updatedPreset => new UpdateEquipmentPresetSuccess({ preset: updatedPreset })),
+          catchError(error => of(new UpdateEquipmentPresetFailure({ preset, error })))
+        )
       )
     )
   );
@@ -589,8 +730,7 @@ export class EquipmentEffects {
           .createMountEditProposal(mount)
           .pipe(
             map(
-              createdMountEditProposal =>
-                new CreateMountEditProposalSuccess({ editProposal: createdMountEditProposal })
+              createdMountEditProposal => new CreateMountEditProposalSuccess({ editProposal: createdMountEditProposal })
             )
           )
       )
@@ -735,9 +875,8 @@ export class EquipmentEffects {
                 listing.lineItems.map((lineItem, index) =>
                   of(null).pipe(
                     tap(() => {
-                      toast.toastRef.componentInstance.message = this.translateService.instant(
-                        `Working on equipment items...`
-                      );
+                      toast.toastRef.componentInstance.message =
+                        this.translateService.instant(`Working on equipment items...`);
                     }),
                     mergeMap(() =>
                       this.equipmentApiService
@@ -747,32 +886,31 @@ export class EquipmentEffects {
                         })
                         .pipe(
                           switchMap(createdLineItem =>
-                            lineItem.images?.length ?
-                              forkJoin(
-                                Object.keys(lineItem.images).map((key, index) => {
-                                  const image = lineItem.images[key];
+                            lineItem.images?.length
+                              ? forkJoin(
+                                  Object.keys(lineItem.images).map((key, index) => {
+                                    const image = lineItem.images[key];
 
-                                  if (!image) {
-                                    return of(null);
-                                  }
+                                    if (!image) {
+                                      return of(null);
+                                    }
 
-                                  return of(null).pipe(
-                                    tap(() => {
-                                      toast.toastRef.componentInstance.message = this.translateService.instant(
-                                        `Working on images...`
-                                      );
-                                    }),
-                                    mergeMap(() =>
-                                      this.equipmentApiService.createMarketplaceImage(
-                                        createdListing.id,
-                                        createdLineItem.id,
-                                        image.file,
-                                        index
+                                    return of(null).pipe(
+                                      tap(() => {
+                                        toast.toastRef.componentInstance.message =
+                                          this.translateService.instant(`Working on images...`);
+                                      }),
+                                      mergeMap(() =>
+                                        this.equipmentApiService.createMarketplaceImage(
+                                          createdListing.id,
+                                          createdLineItem.id,
+                                          image.file,
+                                          index
+                                        )
                                       )
-                                    )
-                                  );
-                                })
-                              )
+                                    );
+                                  })
+                                )
                               : of([null])
                           )
                         )
@@ -846,14 +984,14 @@ export class EquipmentEffects {
         map((action: UpdateMarketplaceListing) => action.payload.listing),
         concatLatestFrom(updatedListing => this.store$.select(selectMarketplaceListing, { id: updatedListing.id })),
         switchMap(([updatedListing, previousListing]) => {
-          let [preserved, added, removed] = this.equipmentMarketplaceService.compareLineItems(
+          const [initialPreserved, added, initialRemoved] = this.equipmentMarketplaceService.compareLineItems(
             updatedListing,
             previousListing
           );
 
           // We don't edit or delete sold or reserved line items.
-          preserved = preserved.filter(lineItem => !lineItem.sold && !lineItem.reserved);
-          removed = removed.filter(lineItem => !lineItem.sold && !lineItem.reserved);
+          const preserved = initialPreserved.filter(lineItem => !lineItem.sold && !lineItem.reserved);
+          const removed = initialRemoved.filter(lineItem => !lineItem.sold && !lineItem.reserved);
 
           const toast = this.popNotificationsService.info(
             this.translateService.instant("Updating listing..."),
@@ -873,9 +1011,7 @@ export class EquipmentEffects {
               return of(null).pipe(
                 tap(
                   () =>
-                    (toast.toastRef.componentInstance.message = this.translateService.instant(
-                      `Working on images...`
-                    ))
+                    (toast.toastRef.componentInstance.message = this.translateService.instant(`Working on images...`))
                 ),
                 switchMap(() =>
                   this.equipmentApiService.createMarketplaceImage(updatedListing.id, lineItem.id, image.file, index)
@@ -885,9 +1021,11 @@ export class EquipmentEffects {
           };
 
           const deleteImageOperations$ = preserved.map(lineItem =>
-            previousListing.lineItems.find(previousLineItem => previousLineItem.id === lineItem.id).images.map(image =>
-              this.equipmentApiService.deleteMarketplaceImage(updatedListing.id, lineItem.id, image.id)
-            )
+            previousListing.lineItems
+              .find(previousLineItem => previousLineItem.id === lineItem.id)
+              .images.map(image =>
+                this.equipmentApiService.deleteMarketplaceImage(updatedListing.id, lineItem.id, image.id)
+              )
           );
 
           const createImageOperations$ = preserved.map(lineItem => _buildImageOperations(lineItem));
@@ -896,9 +1034,8 @@ export class EquipmentEffects {
             of(null).pipe(
               tap(
                 () =>
-                  (toast.toastRef.componentInstance.message = this.translateService.instant(
-                    `Working on equipment items...`
-                  ))
+                  (toast.toastRef.componentInstance.message =
+                    this.translateService.instant(`Working on equipment items...`))
               ),
               mergeMap(() => this.equipmentApiService.updateMarketplaceLineItem(lineItem))
             )
@@ -908,7 +1045,9 @@ export class EquipmentEffects {
             of(null).pipe(
               tap(
                 () =>
-                  (toast.toastRef.componentInstance.message = this.translateService.instant("Working on equipment items..."))
+                  (toast.toastRef.componentInstance.message = this.translateService.instant(
+                    "Working on equipment items..."
+                  ))
               ),
               mergeMap(() =>
                 this.equipmentApiService.createMarketplaceLineItem(lineItem).pipe(
@@ -939,9 +1078,8 @@ export class EquipmentEffects {
             of(null).pipe(
               tap(
                 () =>
-                  (toast.toastRef.componentInstance.message = this.translateService.instant(
-                    `Working on equipment items...`
-                  ))
+                  (toast.toastRef.componentInstance.message =
+                    this.translateService.instant(`Working on equipment items...`))
               ),
               switchMap(() =>
                 forkJoin(
@@ -1043,7 +1181,9 @@ export class EquipmentEffects {
     { dispatch: false }
   );
 
-  MarkMarketplaceLineItemAsSold: Observable<MarkMarketplaceLineItemAsSoldSuccess | MarkMarketplaceLineItemAsSoldFailure> = createEffect(() =>
+  MarkMarketplaceLineItemAsSold: Observable<
+    MarkMarketplaceLineItemAsSoldSuccess | MarkMarketplaceLineItemAsSoldFailure
+  > = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD),
       map((action: MarkMarketplaceLineItemAsSold) => action.payload),
@@ -1066,7 +1206,9 @@ export class EquipmentEffects {
     )
   );
 
-  LoadMarketplacePrivateConversations: Observable<LoadMarketplacePrivateConversationsSuccess | LoadMarketplacePrivateConversationsFailure> = createEffect(() =>
+  LoadMarketplacePrivateConversations: Observable<
+    LoadMarketplacePrivateConversationsSuccess | LoadMarketplacePrivateConversationsFailure
+  > = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS),
       map((action: LoadMarketplacePrivateConversations) => action.payload),
@@ -1092,7 +1234,9 @@ export class EquipmentEffects {
     )
   );
 
-  CreateMarketplacePrivateConversation: Observable<CreateMarketplacePrivateConversationSuccess | CreateMarketplacePrivateConversationFailure> = createEffect(() =>
+  CreateMarketplacePrivateConversation: Observable<
+    CreateMarketplacePrivateConversationSuccess | CreateMarketplacePrivateConversationFailure
+  > = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION),
       map((action: CreateMarketplacePrivateConversation) => action.payload),
@@ -1118,7 +1262,9 @@ export class EquipmentEffects {
     )
   );
 
-  UpdateMarketplacePrivateConversation: Observable<UpdateMarketplacePrivateConversationSuccess | UpdateMarketplacePrivateConversationFailure> = createEffect(() =>
+  UpdateMarketplacePrivateConversation: Observable<
+    UpdateMarketplacePrivateConversationSuccess | UpdateMarketplacePrivateConversationFailure
+  > = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_PRIVATE_CONVERSATION),
       map((action: UpdateMarketplacePrivateConversation) => action.payload),
@@ -1143,7 +1289,9 @@ export class EquipmentEffects {
     )
   );
 
-  DeleteMarketplacePrivateConversation: Observable<DeleteMarketplacePrivateConversationSuccess | DeleteMarketplacePrivateConversationFailure> = createEffect(() =>
+  DeleteMarketplacePrivateConversation: Observable<
+    DeleteMarketplacePrivateConversationSuccess | DeleteMarketplacePrivateConversationFailure
+  > = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION),
       map((action: DeleteMarketplacePrivateConversation) => action.payload),

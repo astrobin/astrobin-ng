@@ -45,8 +45,11 @@
 
 <ng-template #footerTemplateExtra>
   <div class="text-muted">
-    {{ "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!" | translate }}
-    <a href="https://welcome.astrobin.com/features/equipment-database" target="_blank">{{"Learn more"}}.</a>
+    {{
+      "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!"
+        | translate
+    }}
+    <a href="https://welcome.astrobin.com/features/equipment-database" target="_blank">{{ "Learn more" }}.</a>
   </div>
 </ng-template>
 
@@ -64,9 +67,7 @@
       </div>
 
       <div class="card-body">
-        <astrobin-read-only-mode
-          *ngIf="(readOnlyMode$ | async) === true; else formTemplate"
-        ></astrobin-read-only-mode>
+        <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else formTemplate"></astrobin-read-only-mode>
 
         <ng-template #formTemplate>
           <astrobin-camera-editor

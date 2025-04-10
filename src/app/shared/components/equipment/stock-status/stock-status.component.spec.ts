@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
+import { StockStatus } from "@features/equipment/types/stock-status.type";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 
 import { StockStatusComponent } from "./stock-status.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { StockStatus } from "@features/equipment/types/stock-status.type";
-import { EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
 
 describe("StockStatusComponent", () => {
   let component: StockStatusComponent;

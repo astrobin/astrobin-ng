@@ -1,19 +1,18 @@
-import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { CommonModule, CurrencyPipe, DatePipe } from "@angular/common";
-import { Store } from "@ngrx/store";
-import { Actions } from "@ngrx/effects";
-import * as Sentry from "@sentry/angular";
-import { FORMLY_CONFIG } from "@ngx-formly/core";
-import { formlyConfig } from "@app/formly.config";
-import { TranslateService } from "@ngx-translate/core";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { HAMMER_GESTURE_CONFIG } from "@angular/platform-browser";
-import { appInitializer, AstroBinHammerConfig } from "@shared/shared.module";
-import { ApiModule } from "@core/services/api/api.module";
-import { ToastrModule } from "ngx-toastr";
-import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
+import { formlyConfig } from "@app/formly.config";
 import { AUTO_COMPLETE_ONLY_FILTERS_TOKEN, SEARCH_FILTERS_TOKEN } from "@core/injection-tokens/search-filter.tokens";
-
+import { ApiModule } from "@core/services/api/api.module";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FORMLY_CONFIG } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import * as Sentry from "@sentry/angular";
+import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
+import { appInitializer, AstroBinHammerConfig } from "@shared/shared.module";
+import { ToastrModule } from "ngx-toastr";
 
 @NgModule({
   declarations: [],
@@ -39,8 +38,7 @@ import { AUTO_COMPLETE_ONLY_FILTERS_TOKEN, SEARCH_FILTERS_TOKEN } from "@core/in
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: () => () => {
-      },
+      useFactory: () => () => {},
       deps: [Sentry.TraceService],
       multi: true
     },
@@ -65,5 +63,4 @@ import { AUTO_COMPLETE_ONLY_FILTERS_TOKEN, SEARCH_FILTERS_TOKEN } from "@core/in
     }
   ]
 })
-export class CoreModule {
-}
+export class CoreModule {}

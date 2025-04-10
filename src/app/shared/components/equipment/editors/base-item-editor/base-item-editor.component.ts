@@ -1,43 +1,75 @@
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  OnInit,
+  TemplateRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
 import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
-import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { EMPTY, Observable, of } from "rxjs";
-import { CreateBrand, CreateBrandSuccess, EquipmentActionTypes, FindAllBrands, FindAllBrandsSuccess, FindSimilarInBrand, FindSimilarInBrandSuccess, GetOthersInBrand, GetOthersInBrandSuccess, LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { debounceTime, distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { LoadingService } from "@core/services/loading.service";
+import { DomSanitizer } from "@angular/platform-browser";
 import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService, EquipmentItemDisplayProperty } from "@core/services/equipment-item.service";
+import { FormlyFieldService, FormlyFieldMessageLevel } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import {
+  CreateBrand,
+  EquipmentActionTypes,
+  FindAllBrands,
+  FindSimilarInBrand,
+  GetOthersInBrand,
+  LoadBrand,
+  LoadEquipmentItem,
+  CreateBrandSuccess,
+  FindAllBrandsSuccess,
+  FindSimilarInBrandSuccess,
+  GetOthersInBrandSuccess
+} from "@features/equipment/store/equipment.actions";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { EquipmentItemDisplayProperty, EquipmentItemService } from "@core/services/equipment-item.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { CameraType, CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentItemType, EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
-import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
+import { EMPTY, Observable, of } from "rxjs";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from "rxjs/operators";
 
 export enum EquipmentItemEditorMode {
   CREATION = "CREATION",
   EDIT_PROPOSAL = "EDIT_PROPOSAL"
 }
 
-export type AsyncValidator = {
+export interface AsyncValidator {
   expression: (control: FormControl) => Promise<boolean> | Observable<boolean>;
   message: string | ((error: any, field: FormlyFieldConfig) => string);
-};
+}
 
-export type AsyncValidatorsMap = {
+export interface AsyncValidatorsMap {
   [key: string]: AsyncValidator;
-};
+}
 
 const DIY_PROHIBITED_WORDS = [
   "diy",
@@ -118,7 +150,8 @@ const OWN_INSTANCE_PROHIBITED_WORDS = [
 })
 export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB extends EquipmentItemBaseInterface>
   extends BaseComponentDirective
-  implements OnInit, AfterViewInit {
+  implements OnInit, AfterViewInit
+{
   fields: FormlyFieldConfig[];
 
   @Input()
@@ -309,7 +342,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       type: "checkbox",
       id: "equipment-item-field-diy",
       expressions: {
-        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress ||formState.editorMode === 'EDIT_PROPOSAL'"
+        "props.disabled":
+          "formState.subCreation.inProgress || formState.brandCreation.inProgress ||formState.editorMode === 'EDIT_PROPOSAL'"
       },
       defaultValue: false,
       props: {
@@ -319,9 +353,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
             ? this.translateService.instant("Editing this field is not possible.")
             : this.translateService.instant(
-              "Check this box if this item is self-made, and/or was never on the market as a commercial " +
-              "product, and therefore does not have a brand."
-            )
+                "Check this box if this item is self-made, and/or was never on the market as a commercial " +
+                  "product, and therefore does not have a brand."
+              )
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -335,8 +369,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
 
                   informationModalInstance.message = this.translateService.instant(
                     "Marking an item as DIY (i.e. self-made) means that you, or someone on your behalf, actually " +
-                    "made this equipment item, and it's something unique that other people literally cannot " +
-                    "obtain. This item will not be available to others to add to their images."
+                      "made this equipment item, and it's something unique that other people literally cannot " +
+                      "obtain. This item will not be available to others to add to their images."
                   );
 
                   informationModalRef.closed.pipe(take(1)).subscribe(() => {
@@ -360,7 +394,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       type: "ng-select",
       id: "equipment-item-field-brand",
       expressions: {
-        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress || formState.editorMode === 'EDIT_PROPOSAL' || model.diy",
+        "props.disabled":
+          "formState.subCreation.inProgress || formState.brandCreation.inProgress || formState.editorMode === 'EDIT_PROPOSAL' || model.diy",
         "props.required": "!model.diy"
       },
       props: {
@@ -378,16 +413,16 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         options:
           this.model && this.model.brand
             ? this.store$.select(selectBrand, this.model.brand).pipe(
-              filter(brand => !!brand),
-              take(1),
-              map(brand => [
-                {
-                  value: brand.id,
-                  label: brand.name,
-                  brand
-                }
-              ])
-            )
+                filter(brand => !!brand),
+                take(1),
+                map(brand => [
+                  {
+                    value: brand.id,
+                    label: brand.name,
+                    brand
+                  }
+                ])
+              )
             : of([]),
         enableFullscreen: true,
         onSearch: (term: string): Observable<any[]> => {
@@ -431,7 +466,10 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                         ])
                       };
 
-                      this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name"), "brandChange");
+                      this.formlyFieldService.clearMessages(
+                        this.fields.find(f => f.key === "name"),
+                        "brandChange"
+                      );
                       this._validateCanonAndCentralDS();
                       this._similarItemSuggestion();
                       this._othersInBrand(brand.name);
@@ -486,52 +524,49 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             return of(true);
           }
 
-          return this.equipmentApiService.getByBrandAndName(
-            type,
-            this.model.brand,
-            control.value,
-            {
+          return this.equipmentApiService
+            .getByBrandAndName(type, this.model.brand, control.value, {
               allowUnapproved: true
-            }
-          ).pipe(
-            map(item => {
-              const nameField = this.fields.find(field => field.key === "name");
-
-              // Clear any existing messages first
-              if (nameField) {
-                this.formlyFieldService.clearMessages(nameField, "uniqueForBrand");
-              }
-
-              // If we found an item, check if it's unapproved and add a special message
-              if (item && !item.reviewerDecision) {
-                if (nameField) {
-                  // Create a mailto link
-                  const subject = encodeURIComponent(
-                    `Review request for unapproved ${item.klass}: ${item.brandName || ""} ${item.name}`
-                  );
-                  const emailLink = `<a href="mailto:support@astrobin.com?subject=${subject}">support@astrobin.com</a>`;
-                  const messageText = this.translateService.instant(
-                    "Unapproved duplicate exists. Please email {{0}} to request an expedited review.",
-                    { 0: emailLink }
-                  );
-
-                  const message ={
-                    scope: "uniqueForBrand",
-                    level: FormlyFieldMessageLevel.WARNING,
-                    text: this.sanitizer.bypassSecurityTrustHtml(messageText) as string
-                  };
-
-                  this.formlyFieldService.addMessage(nameField, message);
-                }
-              }
-
-              if (this.editorMode === EquipmentItemEditorMode.CREATION) {
-                return !item;
-              }
-
-              return !item || item.name === this.model.name;
             })
-          );
+            .pipe(
+              map(item => {
+                const nameField = this.fields.find(field => field.key === "name");
+
+                // Clear any existing messages first
+                if (nameField) {
+                  this.formlyFieldService.clearMessages(nameField, "uniqueForBrand");
+                }
+
+                // If we found an item, check if it's unapproved and add a special message
+                if (item && !item.reviewerDecision) {
+                  if (nameField) {
+                    // Create a mailto link
+                    const subject = encodeURIComponent(
+                      `Review request for unapproved ${item.klass}: ${item.brandName || ""} ${item.name}`
+                    );
+                    const emailLink = `<a href="mailto:support@astrobin.com?subject=${subject}">support@astrobin.com</a>`;
+                    const messageText = this.translateService.instant(
+                      "Unapproved duplicate exists. Please email {{0}} to request an expedited review.",
+                      { 0: emailLink }
+                    );
+
+                    const message = {
+                      scope: "uniqueForBrand",
+                      level: FormlyFieldMessageLevel.WARNING,
+                      text: this.sanitizer.bypassSecurityTrustHtml(messageText) as string
+                    };
+
+                    this.formlyFieldService.addMessage(nameField, message);
+                  }
+                }
+
+                if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+                  return !item;
+                }
+
+                return !item || item.name === this.model.name;
+              })
+            );
         },
         message: this.translateService.instant("An item of the same class, brand, and name already exists.")
       },
@@ -560,8 +595,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             if (new RegExp(`\\b${word}\\b`).test(field.formControl.value.toLowerCase())) {
               return this.translateService.instant(
                 `Your usage of the word "{{0}}" suggests that you are using this field to specify a property ` +
-                "of this item that is only relevant to your own copy. Remember that here you are creating or editing " +
-                "the generic instance that will be shared by all owners on AstroBin.",
+                  "of this item that is only relevant to your own copy. Remember that here you are creating or editing " +
+                  "the generic instance that will be shared by all owners on AstroBin.",
                 {
                   "0": word
                 }
@@ -574,7 +609,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               const label = this.translateService.instant("Self-made / non-commercial (no brand)");
               return this.translateService.instant(
                 `You don't need to use the word "{{0}}", as this meaning is already conveyed by clicking on ` +
-                `the checkbox above: "{{1}}".`,
+                  `the checkbox above: "{{1}}".`,
                 {
                   "0": word,
                   "1": label
@@ -607,10 +642,10 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           this.model.diy
             ? null
             : this.translateService.instant(
-              "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
-            ) +
-            " " +
-            this.translateService.instant("Try to use the official product name in English, if applicable.")
+                "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
+              ) +
+              " " +
+              this.translateService.instant("Try to use the official product name in English, if applicable.")
       },
       props: {
         required: true
@@ -628,7 +663,10 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               tap((value: string) => {
                 this.formlyFieldService.clearMessages(field, "nameChange");
                 if (this.fields.find(f => f.key === "brand")) {
-                  this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand"), "nameChange");
+                  this.formlyFieldService.clearMessages(
+                    this.fields.find(f => f.key === "brand"),
+                    "nameChange"
+                  );
                 }
                 this._validateCanonAndCentralDS();
                 this._similarItemSuggestion();
@@ -653,7 +691,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         label: this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.COMMUNITY_NOTES),
         description: this.translateService.instant(
           "This section can be used as a community page to share information about this item that doesn't fit " +
-          "the available data fields. Please use English and do not include any personal information or anecdotes."
+            "the available data fields. Please use English and do not include any personal information or anecdotes."
         ),
         required: false
       }
@@ -678,8 +716,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         label: this.equipmentItemService.getPrintablePropertyName(itemType, EquipmentItemDisplayProperty.VARIANT_OF),
         description: this.translateService.instant(
           "If this item is a variant of another product, please select it here. This is typically used for " +
-          "products that have multiple versions (e.g. filter size, filter wheel size and number of slots, software " +
-          "versions...) and AstroBin will use this information to group certain pieces of data (e.g. search results)."
+            "products that have multiple versions (e.g. filter size, filter wheel size and number of slots, software " +
+            "versions...) and AstroBin will use this information to group certain pieces of data (e.g. search results)."
         ),
         itemType,
         quickAddRecentFromUserId: null,

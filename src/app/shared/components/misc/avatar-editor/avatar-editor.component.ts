@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { ChangeDetectorRef, ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { NgbActiveOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-avatar-editor",

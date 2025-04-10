@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { MarketplaceMoreFromUserComponent } from "./marketplace-more-from-user.component";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { MarketplaceMoreFromUserComponent } from "./marketplace-more-from-user.component";
 
 describe("MarketplaceMmoreFromUserComponent", () => {
   let component: MarketplaceMoreFromUserComponent;

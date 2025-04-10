@@ -1,15 +1,15 @@
-import { Component, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { OnInit, Component } from "@angular/core";
+import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { CompareService, ComparisonInterface } from "@features/equipment/services/compare.service";
 import { EquipmentItemDisplayProperty } from "@core/services/equipment-item.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { CompareService, ComparisonInterface } from "@features/equipment/services/compare.service";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { fromEvent } from "rxjs";
 import { debounceTime } from "rxjs/operators";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-equipment-compare-modal",

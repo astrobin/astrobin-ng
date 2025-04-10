@@ -12,7 +12,7 @@
   .ng-value-container {
     .ng-value {
       cursor: default;
-      padding-left: .5rem;
+      padding-left: 0.5rem;
     }
 
     .ng-input {
@@ -22,10 +22,10 @@
     .ng-placeholder {
       color: var(--lightGrey) !important;
       padding-left: 1rem !important;
-      font-size: .9rem;
+      font-size: 0.9rem;
 
       @media (max-width: $xs-max) {
-        font-size: .8rem;
+        font-size: 0.8rem;
       }
     }
   }
@@ -66,8 +66,8 @@
     .ng-select-container .ng-value-container .ng-value {
       background: var(--grey) !important;
       border: 1px dotted var(--lightGrey) !important;
-      padding: .0625rem .6rem !important;
-      margin-right: .5rem !important;
+      padding: 0.0625rem 0.6rem !important;
+      margin-right: 0.5rem !important;
       white-space: normal !important;
       position: relative;
 
@@ -77,8 +77,8 @@
         background: var(--lighterGrey);
         border-radius: 50%;
         position: absolute;
-        right: -.5rem;
-        top: -.5rem;
+        right: -0.5rem;
+        top: -0.5rem;
         width: 1rem;
         height: 1rem;
         line-height: 1rem;
@@ -199,13 +199,13 @@
           }
 
           .item-variants-info {
-            margin-left: .5rem;
-            margin-right: .5rem;
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
             color: var(--lightGrey);
           }
 
           .item-variants-list {
-            font-size: .9rem;
+            font-size: 0.9rem;
             color: var(--lighterGrey);
 
             > span {
@@ -216,12 +216,11 @@
               }
 
               &:not(:last-child) {
-                margin-right: .5rem;
-
+                margin-right: 0.5rem;
 
                 &::after {
-                  content: '\b7'; /* middot */
-                  margin-left: .25rem;
+                  content: "\b7"; /* middot */
+                  margin-left: 0.25rem;
                 }
               }
             }
@@ -236,8 +235,8 @@
 
             .property-name,
             .property-value {
-              font-size: .85rem;
-              opacity: .8;
+              font-size: 0.85rem;
+              opacity: 0.8;
               border: 0 !important;
             }
 
@@ -260,7 +259,7 @@
 .ng-dropdown-panel {
   background: var(--black) !important;
   border-top: 1px solid var(--darkGrey) !important;
-  box-shadow: .25rem .5rem 1rem rgba(0, 0, 0, .5) !important;
+  box-shadow: 0.25rem 0.5rem 1rem rgba(0, 0, 0, 0.5) !important;
 
   .ng-dropdown-header {
     background-color: var(--black);
@@ -277,11 +276,11 @@
   .ng-optgroup {
     color: var(--white) !important;
     font-weight: bold !important;
-    padding: .75rem !important;
+    padding: 0.75rem !important;
   }
 
   .ng-option {
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     color: var(--lightestGrey) !important;
     white-space: normal !important;
     line-height: 1.15rem !important;

@@ -1,16 +1,21 @@
 @import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
 
 .listings {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  @include flex-gap(row, 1.5rem);
 
   .line-item {
-    width: calc(50% - .75rem);
+    width: calc(50% - 0.75rem);
+
+    @supports not (inset: 0) {
+      width: calc(50% - 1.5rem);
+    }
   }
 
   @media screen and (max-width: $md-max) {
-    gap: 1rem;
+    @include flex-gap(row, 1rem);
     .line-item {
       width: 100%;
     }

@@ -1,27 +1,27 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import {
-  MarketplaceFeedbackInterface,
-  MarketplaceFeedbackTargetType
-} from "@features/equipment/types/marketplace-feedback.interface";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { OnInit, Component, Input } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { filter, take, takeUntil } from "rxjs/operators";
-import { ActivatedRoute } from "@angular/router";
-import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { LoadMarketplaceListing } from "@features/equipment/store/equipment.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
-import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 import { MarketplaceFeedbackModalComponent } from "@features/equipment/components/marketplace-feedback-modal/marketplace-feedback-modal.component";
+import { LoadMarketplaceListing } from "@features/equipment/store/equipment.actions";
+import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
+import {
+  MarketplaceFeedbackTargetType,
+  MarketplaceFeedbackInterface
+} from "@features/equipment/types/marketplace-feedback.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
+import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
+import { filter, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-feedback",
@@ -59,56 +59,64 @@ export class MarketplaceFeedbackComponent extends BaseComponentDirective impleme
     this.store$.dispatch(new LoadMarketplaceListing({ id: this.feedback.listing }));
     this.store$.dispatch(new LoadContentType(contentTypePayload));
 
-    this.store$.select(selectUser, this.feedback.recipient).pipe(
-      filter(user => !!user),
-      takeUntil(this.destroyed$)
-    ).subscribe(user => {
-      this.recipient = user;
-    });
+    this.store$
+      .select(selectUser, this.feedback.recipient)
+      .pipe(
+        filter(user => !!user),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(user => {
+        this.recipient = user;
+      });
 
-    this.store$.select(selectMarketplaceListing, { id: this.feedback.listing }).pipe(
-      filter(listing => !!listing),
-      takeUntil(this.destroyed$)
-    ).subscribe(listing => {
-      this.listing = { ...listing };
-      const feedback = listing.feedbacks.find(f => f.id === this.feedback.id);
-      if (feedback) {
-        this.feedback = { ...feedback };
-      }
-    });
+    this.store$
+      .select(selectMarketplaceListing, { id: this.feedback.listing })
+      .pipe(
+        filter(listing => !!listing),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(listing => {
+        this.listing = { ...listing };
+        const feedback = listing.feedbacks.find(f => f.id === this.feedback.id);
+        if (feedback) {
+          this.feedback = { ...feedback };
+        }
+      });
 
-    this.store$.select(selectContentType, contentTypePayload).pipe(
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      this.contentType = contentType;
+    this.store$
+      .select(selectContentType, contentTypePayload)
+      .pipe(
+        filter(contentType => !!contentType),
+        take(1)
+      )
+      .subscribe(contentType => {
+        this.contentType = contentType;
 
-      const fragment = this.route.snapshot.fragment;
-      if (fragment && fragment[0] === "c") {
-        this.openCommentsModal();
-      }
-    });
+        const fragment = this.route.snapshot.fragment;
+        if (fragment && fragment[0] === "c") {
+          this.openCommentsModal();
+        }
+      });
   }
 
   openFeedbackModal(event: Event) {
     event.preventDefault();
 
-    this.currentUser$
-      .pipe(take(1))
-      .subscribe(currentUser => {
-        const targetType = currentUser.id === this.listing.user
+    this.currentUser$.pipe(take(1)).subscribe(currentUser => {
+      const targetType =
+        currentUser.id === this.listing.user
           ? MarketplaceFeedbackTargetType.BUYER
           : MarketplaceFeedbackTargetType.SELLER;
 
-        const modalRef = this.modalService.open(MarketplaceFeedbackModalComponent, {
-          size: targetType === MarketplaceFeedbackTargetType.SELLER ? "xl" : "lg"
-        });
-        const componentInstance: MarketplaceFeedbackModalComponent = modalRef.componentInstance;
-
-        componentInstance.listing = this.listing;
-        componentInstance.user = this.recipient;
-        componentInstance.targetType = targetType;
+      const modalRef = this.modalService.open(MarketplaceFeedbackModalComponent, {
+        size: targetType === MarketplaceFeedbackTargetType.SELLER ? "xl" : "lg"
       });
+      const componentInstance: MarketplaceFeedbackModalComponent = modalRef.componentInstance;
+
+      componentInstance.listing = this.listing;
+      componentInstance.user = this.recipient;
+      componentInstance.targetType = targetType;
+    });
   }
 
   openCommentsModal(event?: Event) {
