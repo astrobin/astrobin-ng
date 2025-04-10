@@ -4,7 +4,7 @@
       <div class="name">
         <ng-container *ngIf="!!displayName; else textLoadingTemplate">
           <span *ngIf="listing.listingType === MarketplaceListingType.WANTED" class="wanted">
-            [{{ "Wanted" | translate}}]
+            [{{ "Wanted" | translate }}]
           </span>
           {{ displayName }}
         </ng-container>
@@ -53,7 +53,9 @@
           {{ countryService.getCountryName(listing.country) }}
         </div>
         <div *ngIf="!!totalPrice" class="price">
-          {{ totalPrice | currency : listing.lineItems[0].currency : "symbol" : "1.2-2" : translateService.currentLang }}
+          {{
+            totalPrice | currency : listing.lineItems[0].currency : "symbol" : "1.2-2" : translateService.currentLang
+          }}
         </div>
       </div>
     </div>

@@ -5,11 +5,11 @@
   @include darker-background-texture;
   margin-top: 1rem;
   margin-bottom: 0;
-  border-radius: .25rem .25rem 0 0;
-  padding: .65rem 1rem;
+  border-radius: 0.25rem 0.25rem 0 0;
+  padding: 0.65rem 1rem;
   position: relative;
   z-index: 1;
-  font-size: .85rem;
+  font-size: 0.85rem;
 
   @media screen and (max-width: $md-max) {
     display: none;
@@ -18,7 +18,7 @@
   > .breadcrumb-item:last-child > span {
     color: var(--textOnSecondaryAccentColor);
     background: var(--secondaryAccentColor);
-    padding: .25rem .5rem;
-    border-radius: .25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
   }
 }

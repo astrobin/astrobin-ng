@@ -25,11 +25,11 @@ astrobin-toggle-property {
     &:not(.btn-no-block) {
       display: block;
       width: 100%;
-      padding-top: .75rem;
-      padding-bottom: .75rem;
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
 
       &:not(:last-child) {
-        margin-bottom: .5rem;
+        margin-bottom: 0.5rem;
       }
     }
   }
@@ -41,21 +41,21 @@ astrobin-toggle-property {
 
   img.icon,
   .ng-fa-icon {
-    margin-right: .25rem;
+    margin-right: 0.25rem;
     fill: currentColor;
-    transition: opacity .5s ease;
+    transition: opacity 0.5s ease;
 
     &:last-of-type:not(:only-child) {
-      margin-right: .5rem;
+      margin-right: 0.5rem;
     }
   }
 
   .badge {
-    margin-left: .5rem;
+    margin-left: 0.5rem;
   }
 
   &.disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
@@ -75,8 +75,8 @@ astrobin-toggle-property {
   }
 
   &.btn-xs {
-    padding: 0.25rem .5rem;
-    font-size: .75rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
   }
 
   &.btn-lg {
@@ -85,7 +85,7 @@ astrobin-toggle-property {
   }
 
   &.btn-xl {
-    padding: .75rem 1.5rem;
+    padding: 0.75rem 1.5rem;
     font-size: 1.5rem;
     line-height: 1.5rem;
   }
@@ -95,20 +95,20 @@ astrobin-toggle-property {
     overflow: hidden;
 
     .btn-text {
-      opacity: .5;
+      opacity: 0.5;
     }
 
     .ng-fa-icon {
-      opacity: .5;
+      opacity: 0.5;
     }
 
     .badge {
-      opacity: .5;
+      opacity: 0.5;
     }
 
     .count,
     .btn-text {
-      opacity: .5;
+      opacity: 0.5;
     }
 
     &.btn-link {
@@ -143,20 +143,20 @@ astrobin-toggle-property {
       border: 0;
       margin: 0;
       background-image: linear-gradient(
-          -45deg,
-          rgba(255, 255, 255, 0.1) 25%,
-          transparent 25%,
-          transparent 50%,
-          rgba(255, 255, 255, 0.1) 50%,
-          rgba(255, 255, 255, 0.1) 75%,
-          transparent 75%,
-          transparent
+        -45deg,
+        rgba(255, 255, 255, 0.1) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.1) 75%,
+        transparent 75%,
+        transparent
       );
       background-size: 25px 25px;
       animation: slide 5s steps(60) infinite;
       pointer-events: none;
       opacity: 1;
-      transition: opacity .5s ease;
+      transition: opacity 0.5s ease;
       transform: translateZ(0);
     }
   }
@@ -164,14 +164,14 @@ astrobin-toggle-property {
   &.btn-secondary {
     &::before {
       background-image: linear-gradient(
-          -45deg,
-          rgba(255, 255, 255, 0.5) 25%,
-          transparent 25%,
-          transparent 50%,
-          rgba(255, 255, 255, 0.5) 50%,
-          rgba(255, 255, 255, 0.5) 75%,
-          transparent 75%,
-          transparent
+        -45deg,
+        rgba(255, 255, 255, 0.5) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0.5) 75%,
+        transparent 75%,
+        transparent
       );
     }
   }
@@ -199,13 +199,13 @@ astrobin-toggle-property {
       border-radius: 0;
 
       &:first-of-type {
-        border-top-left-radius: .25rem;
-        border-top-right-radius: .25rem;
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
       }
 
       &:last-of-type {
-        border-bottom-left-radius: .25rem;
-        border-bottom-right-radius: .25rem;
+        border-bottom-left-radius: 0.25rem;
+        border-bottom-right-radius: 0.25rem;
         border-top: 0;
         margin-left: 0;
         margin-top: -1px;
@@ -219,13 +219,13 @@ astrobin-toggle-property {
     position: fixed;
     display: flex;
     flex-direction: row;
-    @include flex-gap(row, .25rem);
+    @include flex-gap(row, 0.25rem);
     bottom: 0;
     left: 0;
     width: 100%;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem .5rem;
+    padding: 1rem 0.5rem;
     background: var(--darkestGrey);
     border-top: 1px solid var(--lightGrey);
     z-index: 1001;

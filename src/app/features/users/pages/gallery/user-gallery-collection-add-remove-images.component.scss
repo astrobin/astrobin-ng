@@ -7,8 +7,8 @@
   .ng-fa-icon.loading-indicator {
     display: none;
     position: absolute;
-    top: .5rem;
-    right: .25rem;
+    top: 0.5rem;
+    right: 0.25rem;
     z-index: 1;
     font-size: 22px;
     line-height: 1rem;
@@ -23,8 +23,8 @@
   .ng-fa-icon.wip {
     display: none;
     position: absolute;
-    bottom: .25rem;
-    right: .5rem;
+    bottom: 0.25rem;
+    right: 0.5rem;
     z-index: 1;
     color: var(--lightestGrey);
   }

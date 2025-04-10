@@ -4,8 +4,7 @@ $portraitLayoutBreakpoint: $md-max;
 $maxAspectRatio: 1;
 
 @mixin portrait-layout {
-  @media (max-aspect-ratio: $maxAspectRatio),
-  (max-width: $portraitLayoutBreakpoint) and (orientation: portrait) {
+  @media (max-aspect-ratio: $maxAspectRatio), (max-width: $portraitLayoutBreakpoint) and (orientation: portrait) {
     @content;
   }
 }

@@ -16,76 +16,62 @@
 
 <ng-template #tableTemplate>
   <ng-container *ngIf="!loading; else loadingTemplate">
-    <table
-      *ngIf="topics?.length > 0; else noTopicsTemplate"
-      [class.table-striped]="striped"
-      class="table mb-0"
-    >
+    <table *ngIf="topics?.length > 0; else noTopicsTemplate" [class.table-striped]="striped" class="table mb-0">
       <tbody>
-      <tr *ngFor="let topic of topics; trackBy: topicTrackByFn">
-        <td class="read-status">
-          <fa-icon
-            *ngIf="topic.read"
-            icon="circle"
-            class="text-muted"
-            [title]="'Read' | translate"
-          ></fa-icon>
+        <tr *ngFor="let topic of topics; trackBy: topicTrackByFn">
+          <td class="read-status">
+            <fa-icon *ngIf="topic.read" icon="circle" class="text-muted" [title]="'Read' | translate"></fa-icon>
 
-          <fa-icon
-            *ngIf="!topic.read"
-            icon="circle"
-            class="text-primary"
-            [title]="'Unread' | translate"
-          ></fa-icon>
-        </td>
+            <fa-icon *ngIf="!topic.read" icon="circle" class="text-primary" [title]="'Unread' | translate"></fa-icon>
+          </td>
 
-        <td class="title">
-          <a [href]="topicUrl(topic.id)" class="mb-2 mb-xl-0">
-            {{ topic.name }}
-          </a>
+          <td class="title">
+            <a [href]="topicUrl(topic.id)" class="mb-2 mb-xl-0">
+              {{ topic.name }}
+            </a>
 
-          <div class="meta d-flex gap-xl-3 flex-column flex-xl-row align-items-xl-center">
-            <span *ngIf="!forumId && topic.forumName" class="forum-name">
-              <a [href]="classicRoutesService.FORUM(topic.forum)">
-                {{ topic.forumName }}
-              </a>
-            </span>
-            <div class="started">
-              <a [routerLink]="['/u', topic.username]">{{ topic.displayName }}</a>&middot;
-              <abbr [attr.title]="topic.created | localDate">
-                {{ topic.created | localDate | timeago: true }}
-              </abbr>
+            <div class="meta d-flex gap-xl-3 flex-column flex-xl-row align-items-xl-center">
+              <span *ngIf="!forumId && topic.forumName" class="forum-name">
+                <a [href]="classicRoutesService.FORUM(topic.forum)">
+                  {{ topic.forumName }}
+                </a>
+              </span>
+              <div class="started">
+                <a [routerLink]="['/u', topic.username]">{{ topic.displayName }}</a
+                >&middot;
+                <abbr [attr.title]="topic.created | localDate">
+                  {{ topic.created | localDate | timeago : true }}
+                </abbr>
+              </div>
+              <div class="last-post">
+                {{ "Last post by" | translate }}
+                <a [routerLink]="['/u', topic.lastPostUsername]">{{ topic.lastPostUserDisplayName }}</a
+                >&middot;
+                <abbr [attr.title]="topic.lastPostTimestamp | localDate">
+                  {{ topic.lastPostTimestamp | localDate | timeago : true }}
+                </abbr>
+              </div>
             </div>
-            <div class="last-post">
-              {{ "Last post by" | translate }}
-              <a [routerLink]="['/u', topic.lastPostUsername]">{{ topic.lastPostUserDisplayName }}</a>&middot;
-              <abbr [attr.title]="topic.lastPostTimestamp | localDate">
-                {{ topic.lastPostTimestamp | localDate | timeago: true }}
-              </abbr>
-            </div>
-          </div>
-        </td>
+          </td>
 
-        <td class="stats d-none d-md-table-cell">
-          <div class="d-flex gap-3">
-            <div>
-              <fa-icon icon="comment" class="me-1"></fa-icon>
-              {{ topic.postCount - 1 }}
-            </div>
+          <td class="stats d-none d-md-table-cell">
+            <div class="d-flex gap-3">
+              <div>
+                <fa-icon icon="comment" class="me-1"></fa-icon>
+                {{ topic.postCount - 1 }}
+              </div>
 
-            <div>
-              <fa-icon icon="eye" class="me-1"></fa-icon>
-              {{ topic.views }}
+              <div>
+                <fa-icon icon="eye" class="me-1"></fa-icon>
+                {{ topic.views }}
+              </div>
             </div>
-          </div>
-        </td>
+          </td>
 
-        <td class="go-to-last-post">
-          <a class="p-3" [href]="classicRoutesService.FORUM_POST(topic.lastPostId.toString())">
-            &rsaquo;
-          </a>
-        </td>
-      </tr>
+          <td class="go-to-last-post">
+            <a class="p-3" [href]="classicRoutesService.FORUM_POST(topic.lastPostId.toString())"> &rsaquo; </a>
+          </td>
+        </tr>
       </tbody>
     </table>
   </ng-container>
@@ -102,16 +88,16 @@
         {{ "There are no topics in this forum." | translate }}
       </span>
       <span>
-      <a [href]="forumNewTopicUrl">
-        {{ "Want to be the first to post?" | translate }}
-      </a>
-    </span>
+        <a [href]="forumNewTopicUrl">
+          {{ "Want to be the first to post?" | translate }}
+        </a>
+      </span>
     </p>
 
     <p *ngIf="category?.slug === 'equipment-forums'" class="text-muted">
       {{
         "When you start a new discussions here, everybody who has used this equipment item on AstroBin will be notified " +
-        "unless they opted-out." | translate
+          "unless they opted-out." | translate
       }}
     </p>
   </ng-container>
@@ -122,7 +108,6 @@
     </p>
   </ng-container>
 </ng-template>
-
 
 <ng-container *ngIf="useCard">
   <div class="card">
@@ -156,5 +141,4 @@
   *ngIf="category?.slug === 'equipment-forums' && topics?.length > 0"
   [innerHTML]="equipmentCategoryDescription"
   class="category-description"
->
-</div>
+></div>

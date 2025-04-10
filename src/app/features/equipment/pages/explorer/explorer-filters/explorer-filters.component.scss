@@ -2,12 +2,12 @@
 
 .widget {
   .dropdown-menu {
-    padding: .75rem;
+    padding: 0.75rem;
     border: 1px solid var(--grey);
-    box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
 
     .widget-content {
-      transform: scale(.85);
+      transform: scale(0.85);
     }
   }
 
@@ -38,7 +38,7 @@
   .btn-close {
     border: 1px solid var(--lighterGrey);
     border-left-color: var(--lightGrey);
-    border-radius: 0 .25rem .25rem 0;
+    border-radius: 0 0.25rem 0.25rem 0;
     background: none;
     box-sizing: initial;
     width: auto;
@@ -46,7 +46,7 @@
     opacity: 1;
     color: var(--lighterGrey);
     font-size: 1rem;
-    padding: 1px .375rem;
+    padding: 1px 0.375rem;
 
     &:hover {
       color: var(--accentColor);

@@ -37,11 +37,11 @@
         <img [alt]="item.value.title" [src]="getGalleryThumbnail(item.value)" class="w-100" />
       </div>
       <div class="col ps-2">
-        <h5 class="title">{{item.value.title}}</h5>
+        <h5 class="title">{{ item.value.title }}</h5>
         <div class="uploaded">
-          {{ "Published" | translate}}:
+          {{ "Published" | translate }}:
           <abbr *ngIf="!!item.value.published; else unpublishedTemplate" [title]="item.value.published | localDate">
-            {{ item.value.published | localDate | timeago: true }}
+            {{ item.value.published | localDate | timeago : true }}
           </abbr>
 
           <ng-template #unpublishedTemplate>

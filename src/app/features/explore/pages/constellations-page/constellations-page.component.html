@@ -17,16 +17,11 @@
     </ng-select>
   </div>
 
-  <div
-    *ngFor="let constellation of constellations"
-    class="constellation"
-    id="constellation-{{ constellation.id }}"
-  >
+  <div *ngFor="let constellation of constellations" class="constellation" id="constellation-{{ constellation.id }}">
     <ng-container *ngIf="constellation.data$ | async as constellationData">
       <div class="row align-items-center">
         <div class="col-12 col-lg-4">
-          <img [alt]="constellation.name" [src]="constellationData.originalimage?.source"
-               class="constellation-image" />
+          <img [alt]="constellation.name" [src]="constellationData.originalimage?.source" class="constellation-image" />
         </div>
         <div class="col-12 col-lg-8">
           <h3 class="mt-4 mt-lg-0">

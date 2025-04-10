@@ -4,7 +4,7 @@
       <div *ngFor="let item of compareService.getAll(); trackBy: equipmentItemService.trackBy" class="comparison-item">
         <div class="d-flex justify-content-center align-items-center flex-column">
           <img class="image" [src]="image(item)" />
-          <hr/>
+          <hr />
           <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
           <span class="remove" (click)="compareService.remove(item)">&times;</span>
         </div>

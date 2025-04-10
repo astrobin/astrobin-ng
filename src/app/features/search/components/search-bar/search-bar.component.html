@@ -4,11 +4,7 @@
     [class.show-auto-complete-items]="showAutoCompleteGroups"
     class="search-bar-input-container form-control flex-wrap"
   >
-    <div
-      *ngIf="loadingAutoCompleteItems"
-      @fadeInOut
-      class="loading-overlay"
-    ></div>
+    <div *ngIf="loadingAutoCompleteItems" @fadeInOut class="loading-overlay"></div>
 
     <form
       (ngSubmit)="onFormSubmit()"
@@ -16,10 +12,7 @@
       action="#"
       class="search-form d-flex align-items-center w-100"
     >
-      <astrobin-loading-indicator
-        *ngIf="!isBrowser"
-        class="search-bar-input-loading-indicator"
-      >
+      <astrobin-loading-indicator *ngIf="!isBrowser" class="search-bar-input-loading-indicator">
       </astrobin-loading-indicator>
       <input
         *ngIf="isBrowser"
@@ -27,7 +20,7 @@
         (keydown.escape)="closeAutoCompleteSuggestions($event)"
         (ngModelChange)="onModelChangeDebounced($event)"
         (keydown.tab)="!isTouchDevice && openAutoCompleteSuggestions($event)"
-        [ngModelOptions]="{standalone: true}"
+        [ngModelOptions]="{ standalone: true }"
         [(ngModel)]="model.text.value"
         [placeholder]="placeholder"
         disableAutoFocusOnTouchDevices
@@ -100,24 +93,14 @@
     </form>
   </div>
 
-  <div
-    *ngIf="showAutoCompleteGroups && hasAutoCompleteGroups()"
-    class="search-bar-autocomplete-items"
-  >
-    <div
-      *ngFor="let group of autoCompleteGroups|keys"
-      class="search-bar-autocomplete-group flex-wrap"
-    >
+  <div *ngIf="showAutoCompleteGroups && hasAutoCompleteGroups()" class="search-bar-autocomplete-items">
+    <div *ngFor="let group of autoCompleteGroups | keys" class="search-bar-autocomplete-group flex-wrap">
       <h4 class="search-bar-autocomplete-title">
         {{ searchFilterService.humanizeSearchAutoCompleteType(group.key) }}
       </h4>
 
       <ng-container *ngIf="group.value === null">
-        <fa-icon
-          class="search-bar-autocomplete-item"
-          icon="circle-notch"
-          animation="spin"
-        ></fa-icon>
+        <fa-icon class="search-bar-autocomplete-item" icon="circle-notch" animation="spin"></fa-icon>
       </ng-container>
 
       <ng-container *ngIf="group.value !== null">
@@ -129,7 +112,7 @@
           [class.selected]="item.type === selectedAutoCompleteGroup && i === selectedAutoCompleteItemIndex"
           class="search-bar-autocomplete-item"
         >
-          <span [innerHTML]="item.label | highlight: model.text?.value"></span>
+          <span [innerHTML]="item.label | highlight : model.text?.value"></span>
           <ng-container *ngIf="(searchFilterService.allowFilter$(item.minimumSubscription) | async) === false">
             <fa-icon icon="lock" class="ms-2"></fa-icon>
           </ng-container>
@@ -145,17 +128,15 @@
 
     <ng-template #resetAutoCompleteTemplate>
       <ng-container *ngIf="showAutoCompleteGroups && hasAutoCompleteGroups(); else iconsTemplate">
-        <fa-icon
-          (click)="resetAutoCompleteItems()"
-          icon="times"
-        ></fa-icon>
+        <fa-icon (click)="resetAutoCompleteItems()" icon="times"></fa-icon>
       </ng-container>
     </ng-template>
 
     <ng-template #iconsTemplate>
-
       <fa-icon
-        *ngIf="!searchSettingsModel.simpleMode && (model.searchType === SearchType.IMAGE || model.searchType === undefined)"
+        *ngIf="
+          !searchSettingsModel.simpleMode && (model.searchType === SearchType.IMAGE || model.searchType === undefined)
+        "
         (click)="onFilterSelectionClicked($event)"
         [ngbTooltip]="isTouchDevice ? '' : ('Filters' | translate)"
         icon="sliders"
@@ -170,12 +151,7 @@
         placement="start-top"
         container="body"
       >
-        <button
-          class="btn btn-link no-toggle mb-0"
-          ngbDropdownToggle
-          type="button"
-          id="ordering-button"
-        >
+        <button class="btn btn-link no-toggle mb-0" ngbDropdownToggle type="button" id="ordering-button">
           <fa-icon
             [ngbTooltip]="isTouchDevice ? '' : ('Sort results' | translate)"
             icon="sort"
@@ -188,46 +164,31 @@
             {{ "Sort by" | translate }}
           </div>
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('relevance')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('relevance')">
             <fa-icon icon="dot-circle"></fa-icon>
             <span>{{ "Relevance" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === 'relevance'"></fa-icon>
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('-published')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('-published')">
             <fa-icon icon="calendar"></fa-icon>
             <span>{{ "Publication date" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-published'"></fa-icon>
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('-likes')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('-likes')">
             <fa-icon icon="thumbs-up"></fa-icon>
             <span>{{ "Number of likes" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-likes'"></fa-icon>
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('-bookmarks')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('-bookmarks')">
             <fa-icon icon="bookmark"></fa-icon>
             <span>{{ "Number of bookmarks" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-bookmarks'"></fa-icon>
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('-views')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('-views')">
             <fa-icon icon="eye"></fa-icon>
             <span>{{ "Number of views" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-views'"></fa-icon>
@@ -235,10 +196,7 @@
 
           <hr />
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('-integration')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('-integration')">
             <fa-icon icon="clock"></fa-icon>
             <span>{{ "Integration time" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-integration'"></fa-icon>
@@ -246,19 +204,13 @@
 
           <hr />
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('-field_radius')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('-field_radius')">
             <fa-icon icon="arrows-left-right-to-line"></fa-icon>
             <span>{{ "Field radius (large first)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-field_radius'"></fa-icon>
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('field_radius')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('field_radius')">
             <fa-icon icon="arrows-left-right-to-line"></fa-icon>
             <span>{{ "Field radius (small first)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === 'field_radius'"></fa-icon>
@@ -266,19 +218,13 @@
 
           <hr />
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('-pixel_scale')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('-pixel_scale')">
             <fa-icon icon="square"></fa-icon>
             <span>{{ "Pixel scale (large first)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-pixel_scale'"></fa-icon>
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('pixel_scale')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('pixel_scale')">
             <fa-icon icon="square"></fa-icon>
             <span>{{ "Pixel scale (small first)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === 'pixel_scale'"></fa-icon>
@@ -286,19 +232,13 @@
 
           <hr />
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('-coord_ra_min')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('-coord_ra_min')">
             <fa-icon icon="crosshairs"></fa-icon>
             <span>{{ "Right ascension (descending)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-coord_ra_min'"></fa-icon>
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('coord_ra_min')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('coord_ra_min')">
             <fa-icon icon="crosshairs"></fa-icon>
             <span>{{ "Right ascension (ascending)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === 'coord_ra_min'"></fa-icon>
@@ -306,19 +246,13 @@
 
           <hr />
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('-coord_dec_min')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('-coord_dec_min')">
             <fa-icon icon="crosshairs"></fa-icon>
             <span>{{ "Declination (descending)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-coord_dec_min'"></fa-icon>
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('coord_dec_min')"
-          >
+          <button ngbDropdownItem (click)="onOrderingChanged('coord_dec_min')">
             <fa-icon icon="crosshairs"></fa-icon>
             <span>{{ "Declination (ascending)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === 'coord_dec_min'"></fa-icon>
@@ -326,18 +260,8 @@
         </div>
       </div>
 
-      <div
-        ngbDropdown
-        class="mb-0"
-        placement="start-top"
-        container="body"
-      >
-        <button
-          class="btn btn-link no-toggle mb-0"
-          ngbDropdownToggle
-          type="button"
-          id="search-type-button"
-        >
+      <div ngbDropdown class="mb-0" placement="start-top" container="body">
+        <button class="btn btn-link no-toggle mb-0" ngbDropdownToggle type="button" id="search-type-button">
           <fa-icon
             [icon]="getSearchTypeIcon(model.searchType)"
             [ngbTooltip]="isTouchDevice ? '' : ('Search area' | translate)"
@@ -350,10 +274,7 @@
             {{ "Search area" | translate }}
           </div>
 
-          <button
-            ngbDropdownItem
-            (click)="onSearchTypeChanged(SearchType.IMAGE)"
-          >
+          <button ngbDropdownItem (click)="onSearchTypeChanged(SearchType.IMAGE)">
             <fa-icon [icon]="getSearchTypeIcon(SearchType.IMAGE)"></fa-icon>
             <span>{{ "Images" | translate }}</span>
             <fa-icon
@@ -362,40 +283,22 @@
             ></fa-icon>
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="onSearchTypeChanged(SearchType.FORUM)"
-          >
+          <button ngbDropdownItem (click)="onSearchTypeChanged(SearchType.FORUM)">
             <fa-icon [icon]="getSearchTypeIcon(SearchType.FORUM)"></fa-icon>
             <span>{{ "Forums" | translate }}</span>
-            <fa-icon
-              icon="check"
-              *ngIf="model.searchType === SearchType.FORUM"
-            ></fa-icon>
+            <fa-icon icon="check" *ngIf="model.searchType === SearchType.FORUM"></fa-icon>
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="onSearchTypeChanged(SearchType.COMMENTS)"
-          >
+          <button ngbDropdownItem (click)="onSearchTypeChanged(SearchType.COMMENTS)">
             <fa-icon [icon]="getSearchTypeIcon(SearchType.COMMENTS)"></fa-icon>
             <span>{{ "Comments" | translate }}</span>
-            <fa-icon
-              icon="check"
-              *ngIf="model.searchType === SearchType.COMMENTS"
-            ></fa-icon>
+            <fa-icon icon="check" *ngIf="model.searchType === SearchType.COMMENTS"></fa-icon>
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="onSearchTypeChanged(SearchType.USERS)"
-          >
+          <button ngbDropdownItem (click)="onSearchTypeChanged(SearchType.USERS)">
             <fa-icon [icon]="getSearchTypeIcon(SearchType.USERS)"></fa-icon>
             <span>{{ "Users" | translate }}</span>
-            <fa-icon
-              icon="check"
-              *ngIf="model.searchType === SearchType.USERS"
-            ></fa-icon>
+            <fa-icon icon="check" *ngIf="model.searchType === SearchType.USERS"></fa-icon>
           </button>
         </div>
       </div>
@@ -422,12 +325,12 @@
   </div>
 </div>
 
-<div
-  *ngIf="firstSearchDone && model.text?.value"
-  class="alert alert-dark alert-mini search-bar-free-text-alert"
->
+<div *ngIf="firstSearchDone && model.text?.value" class="alert alert-dark alert-mini search-bar-free-text-alert">
   <fa-icon icon="info-circle"></fa-icon>
-  {{ "AstroBin's search is powerful and flexible. We recommend that you use specific filters, instead of doing a free text search, if possible." | translate }}
+  {{
+    "AstroBin's search is powerful and flexible. We recommend that you use specific filters, instead of doing a free text search, if possible."
+      | translate
+  }}
   <a
     (click)="showTabOrEnterInformation()"
     href="#"
@@ -472,11 +375,7 @@
 <ng-template #tabOrEnterInformationOffcanvasTemplate let-offcanvas>
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">{{ "Info about the AstroBin Search" | translate }}</h5>
-    <button
-      type="button"
-      class="btn-close text-reset"
-      (click)="offcanvas.close()"
-    ></button>
+    <button type="button" class="btn-close text-reset" (click)="offcanvas.close()"></button>
   </div>
 
   <div class="offcanvas-body">
@@ -485,28 +384,37 @@
 </ng-template>
 
 <ng-template #filterSearchRecommendationTemplate>
-  <p [innerHTML]="'AstroBin recommends using specific filters to find equipment items, celestial subjects, and users. You can add filters by selecting the <strong>Filters</strong> icon on the right end of the search bar.' | translate"></p>
+  <p
+    [innerHTML]="
+      'AstroBin recommends using specific filters to find equipment items, celestial subjects, and users. You can add filters by selecting the <strong>Filters</strong> icon on the right end of the search bar.'
+        | translate
+    "
+  ></p>
 
-  <p [innerHTML]="'If you want to perform a free text search, you can press <kbd>Enter</kbd> after typing. Free text searches are usually more inclusive and may return more results, as they search in all available fields. AstroBin will still try to show relevant results by matching your free text search to a filter, if there is a perfect match.' | translate"></p>
+  <p
+    [innerHTML]="
+      'If you want to perform a free text search, you can press <kbd>Enter</kbd> after typing. Free text searches are usually more inclusive and may return more results, as they search in all available fields. AstroBin will still try to show relevant results by matching your free text search to a filter, if there is a perfect match.'
+        | translate
+    "
+  ></p>
 
-  <p [innerHTML]="'The distinction between a free text search and a search using a specific filter can be illustrated with the following example. If you search for <strong>Orion</strong>, AstroBin cannot know if you want to see images OF the Orion constellations, images IN the Orion constellation, images of the Orion nebula, images taken with an Orion telescope, or images with somebody whose username is Orion. By using filters, you can specify what you are looking for exactly.' | translate"></p>
+  <p
+    [innerHTML]="
+      'The distinction between a free text search and a search using a specific filter can be illustrated with the following example. If you search for <strong>Orion</strong>, AstroBin cannot know if you want to see images OF the Orion constellations, images IN the Orion constellation, images of the Orion nebula, images taken with an Orion telescope, or images with somebody whose username is Orion. By using filters, you can specify what you are looking for exactly.'
+        | translate
+    "
+  ></p>
 </ng-template>
 
 <ng-template #searchSettingsOffcanvasTemplate let-offcanvas>
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">{{ "Search settings" | translate }}</h5>
-    <button
-      type="button"
-      class="btn-close text-reset"
-      (click)="offcanvas.close()"
-    ></button>
+    <button type="button" class="btn-close text-reset" (click)="offcanvas.close()"></button>
   </div>
 
   <div class="offcanvas-body d-flex flex-column justify-content-between">
     <div class="mb-4 mb-md-0">
-      <form
-        class="search-settings-form"
-      >
+      <form class="search-settings-form">
         <formly-form
           [form]="searchSettingsForm"
           [fields]="searchSettingsFields"
@@ -516,11 +424,7 @@
     </div>
 
     <div class="d-flex justify-content-end">
-      <button
-        type="button"
-        (click)="offcanvas.close()"
-        class="btn btn-secondary"
-      >
+      <button type="button" (click)="offcanvas.close()" class="btn btn-secondary">
         {{ "Close" | translate }}
       </button>
     </div>

@@ -1,11 +1,12 @@
 <div [class.has-error]="showError" class="form-group">
   <div class="row">
     <div *ngIf="!!props.showPlaceholderImage" class="col-1 d-none d-lg-inline">
-      <img class="placeholder-image mt-lg-3 mt-xl-2"
-           src="/assets/images/{{ props.itemType.toLowerCase() }}-placeholder.png?v=2" />
+      <img
+        class="placeholder-image mt-lg-3 mt-xl-2"
+        src="/assets/images/{{ props.itemType.toLowerCase() }}-placeholder.png?v=2"
+      />
     </div>
     <div class="col">
-
       <ng-template #fieldComponent></ng-template>
 
       <div *ngIf="showError" [style.display]="'block'" class="invalid-feedback">

@@ -1,8 +1,8 @@
-@import '../../../../styles/mixins';
+@import "../../../../styles/mixins";
 
 @mixin overlay-background {
-  padding: .75rem 1rem;
-  background: rgba(0, 0, 0, .3);
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.3);
 }
 
 :host {
@@ -13,10 +13,10 @@
 .feed-item-content {
   position: relative;
   height: 100%;
-  border-radius: .75rem;
+  border-radius: 0.75rem;
   overflow: hidden;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, .35);
-  transition: filter .2s ease-in-out;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.35);
+  transition: filter 0.2s ease-in-out;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -26,7 +26,7 @@
 
   ::ng-deep {
     .feed-item-component {
-      box-shadow: 0 0 .5rem rgba(0, 0, 0, .375);
+      box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.375);
       height: 100%;
     }
 
@@ -34,7 +34,7 @@
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      @include flex-gap(row, .75rem);
+      @include flex-gap(row, 0.75rem);
       color: var(--lightestGrey);
       position: absolute;
       top: 0;
@@ -47,15 +47,15 @@
         width: 3rem;
         height: 3rem;
         border-radius: 50%;
-        box-shadow: 0 0 .5rem rgba(0, 0, 0, .75);
-        border: 1px solid rgba(255, 255, 255, .25)
+        box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.25);
       }
 
       .feed-item-header-text {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        font-size: .9rem;
+        font-size: 0.9rem;
       }
 
       @media (min-width: $md-min) {
@@ -69,7 +69,7 @@
       }
 
       .feed-item-header-text-2 {
-        font-size: .8rem;
+        font-size: 0.8rem;
       }
     }
 
@@ -85,19 +85,19 @@
       right: 0;
 
       .feed-item-footer-text {
-        font-size: .9rem;
+        font-size: 0.9rem;
         color: var(--lightestGrey);
       }
 
       .timestamp {
         color: var(--lighterGrey);
-        font-size: .75rem;
+        font-size: 0.75rem;
       }
     }
 
     .feed-item-extra {
       @media (min-width: $md-min) {
-        margin-top: .25rem;
+        margin-top: 0.25rem;
       }
 
       astrobin-toggle-property {
@@ -118,9 +118,9 @@
 
       astrobin-toggle-property .count,
       .ng-fa-icon[icon="comment"] + .count {
-        font-size: .8rem;
+        font-size: 0.8rem;
         color: var(--lighterGrey);
-        margin-left: .375rem;
+        margin-left: 0.375rem;
       }
 
       .ng-fa-icon[icon="comment"] {

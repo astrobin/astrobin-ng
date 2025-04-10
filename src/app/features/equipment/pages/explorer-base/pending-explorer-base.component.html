@@ -21,9 +21,7 @@
 </ng-template>
 
 <ng-template #navTemplate>
-  <astrobin-equipment-item-type-nav
-    #itemTypeNavComponent
-  ></astrobin-equipment-item-type-nav>
+  <astrobin-equipment-item-type-nav #itemTypeNavComponent></astrobin-equipment-item-type-nav>
 </ng-template>
 
 <div class="page has-mobile-menu">
@@ -48,32 +46,32 @@
 
         <table class="table table-striped">
           <thead>
-          <tr>
-            <th>
-              {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true) }}
-            </th>
-            <th *ngIf="pendingType === PendingType.PENDING_REVIEW">{{ "Assignee" | translate }}</th>
-            <th>{{ "Created" | translate }}</th>
-          </tr>
+            <tr>
+              <th>
+                {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true) }}
+              </th>
+              <th *ngIf="pendingType === PendingType.PENDING_REVIEW">{{ "Assignee" | translate }}</th>
+              <th>{{ "Created" | translate }}</th>
+            </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let item of items.results">
-            <td>
-              <a
-                [queryParams]="{'back-on-close': true}"
-                [routerLink]="['/equipment/explorer', activeType.toLowerCase(), item.id]"
-              >
-                <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
-              </a>
-            </td>
-            <td *ngIf="pendingType === PendingType.PENDING_REVIEW">
-              <astrobin-username *ngIf="!!item.assignee" [userId]="item.assignee"></astrobin-username>
-              <span *ngIf="!item.assignee">{{ "Any moderator" | translate }}</span>
-            </td>
-            <td>
-              {{ item.created | localDate | timeago: true }}
-            </td>
-          </tr>
+            <tr *ngFor="let item of items.results">
+              <td>
+                <a
+                  [queryParams]="{ 'back-on-close': true }"
+                  [routerLink]="['/equipment/explorer', activeType.toLowerCase(), item.id]"
+                >
+                  <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
+                </a>
+              </td>
+              <td *ngIf="pendingType === PendingType.PENDING_REVIEW">
+                <astrobin-username *ngIf="!!item.assignee" [userId]="item.assignee"></astrobin-username>
+                <span *ngIf="!item.assignee">{{ "Any moderator" | translate }}</span>
+              </td>
+              <td>
+                {{ item.created | localDate | timeago : true }}
+              </td>
+            </tr>
           </tbody>
         </table>
 
@@ -94,4 +92,3 @@
 <ng-template #loading>
   <astrobin-loading-indicator></astrobin-loading-indicator>
 </ng-template>
-

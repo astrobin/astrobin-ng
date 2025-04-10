@@ -7,7 +7,7 @@
   @include flex-gap(row, 1.5rem);
 
   .line-item {
-    width: calc(50% - .75rem);
+    width: calc(50% - 0.75rem);
 
     @supports not (inset: 0) {
       width: calc(50% - 1.5rem);

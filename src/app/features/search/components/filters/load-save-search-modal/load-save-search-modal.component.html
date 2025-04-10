@@ -17,21 +17,17 @@
           <ul class="list-group" *ngIf="savedSearches.length > 0; else noSavedSearchesTemplate">
             <li
               *ngFor="let search of savedSearches"
-              class="list-group-item d-flex justify-content-between align-items-center py-2">
+              class="list-group-item d-flex justify-content-between align-items-center py-2"
+            >
               <div class="search-name">
                 {{ search.name }}
               </div>
               <div class="no-wrap d-flex align-items-center">
-                <button
-                  class="btn btn-sm btn-no-block btn-outline-secondary me-3"
-                  (click)="onLoadSearch(search)"
-                >{{ 'Load' | translate }}
+                <button class="btn btn-sm btn-no-block btn-outline-secondary me-3" (click)="onLoadSearch(search)">
+                  {{ "Load" | translate }}
                 </button>
 
-                <button
-                  class="btn btn-link btn-no-block link-danger"
-                  (click)="onDeleteSearch(search.id)"
-                >
+                <button class="btn btn-link btn-no-block link-danger" (click)="onDeleteSearch(search.id)">
                   <fa-icon icon="trash-alt"></fa-icon>
                 </button>
               </div>

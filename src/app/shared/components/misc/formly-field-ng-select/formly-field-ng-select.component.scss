@@ -1,8 +1,8 @@
 @import "../../../../styles/breakpoints";
 
 @mixin optionDescription {
-  margin-top: .5rem;
-  font-size: .9rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
   color: var(--mutedAccentColor);
 }
 
@@ -11,19 +11,19 @@
   padding: 1rem;
   background: var(--darkerGrey);
   border: 1px solid var(--grey);
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .35);
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.35);
 }
 
 label {
   display: block;
   width: calc(100% + 2rem);
   background: var(--darkestGrey);
-  padding: .75rem;
+  padding: 0.75rem;
   margin: -1rem -1rem 1rem -1rem;
 }
 
 .add-tag .btn {
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 }
 
 .toggle-enable-fullscreen {
@@ -36,10 +36,10 @@ label {
 
 .too-many-options-label {
   color: var(--warningColor);
-  padding: .5rem;
+  padding: 0.5rem;
 
   @media screen and (max-width: $sm-max) {
-    padding: .25rem;
+    padding: 0.25rem;
   }
 }
 
@@ -51,7 +51,7 @@ label {
 }
 
 .footer-template-extra {
-  font-size: .85rem;
+  font-size: 0.85rem;
 }
 
 ::ng-deep {
@@ -60,5 +60,3 @@ label {
     @include optionDescription;
   }
 }
-
-

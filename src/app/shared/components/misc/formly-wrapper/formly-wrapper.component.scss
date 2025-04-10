@@ -4,8 +4,8 @@
 
   .close {
     position: absolute;
-    top: .25rem;
-    right: .5rem;
+    top: 0.25rem;
+    right: 0.5rem;
   }
 
   &.alert-warning .close {
@@ -20,8 +20,8 @@
 .required-marker,
 .optional-marker {
   display: inline-block;
-  margin-left: .25rem;
-  font-size: .85rem;
+  margin-left: 0.25rem;
+  font-size: 0.85rem;
   font-style: italic;
 }
 

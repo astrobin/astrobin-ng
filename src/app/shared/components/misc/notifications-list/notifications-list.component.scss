@@ -17,7 +17,7 @@
 
     .read-indicator {
       cursor: pointer;
-      padding: .5rem;
+      padding: 0.5rem;
       width: 1%;
 
       &.read .read-icon {
@@ -30,23 +30,23 @@
     }
 
     .notification-context {
-      padding: .5rem;
+      padding: 0.5rem;
       width: 1%;
     }
 
     .message {
-      padding: 1rem .5rem;
+      padding: 1rem 0.5rem;
       cursor: pointer;
       color: var(--lightestGrey);
 
       ::ng-deep {
         a {
           color: var(--lightestGrey);
-          transition: color .1s ease;
+          transition: color 0.1s ease;
         }
 
         strong {
-          transition: color .1s ease;
+          transition: color 0.1s ease;
           color: inherit;
           font-weight: normal !important;
           text-decoration: underline;
@@ -73,12 +73,12 @@
     }
 
     .created {
-      padding: .5rem;
+      padding: 0.5rem;
       width: 1%;
     }
 
     abbr {
-      font-size: .85rem;
+      font-size: 0.85rem;
       color: var(--lighterGrey);
     }
   }

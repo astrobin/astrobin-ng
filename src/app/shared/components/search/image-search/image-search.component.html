@@ -2,10 +2,10 @@
   <div
     astrobinScrollVisibility
     [viewportOptions]="{
-       verticalTolerance: 200,
-       horizontalTolerance: 10,
-       shouldCheckHorizontal: false
-     }"
+      verticalTolerance: 200,
+      horizontalTolerance: 10,
+      shouldCheckHorizontal: false
+    }"
     (visibilityChange)="onVisibilityChange($event)"
   >
     <ng-container *ngIf="!initialLoading && results !== null; else loadingTemplate">
@@ -24,21 +24,13 @@
             <ng-container *ngIf="itemListings?.length">
               <div>
                 <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
-                <span
-                  [innerHTML]="itemListings[0] | itemListingMessage"
-                  class="me-2"
-                ></span>
+                <span [innerHTML]="itemListings[0] | itemListingMessage" class="me-2"></span>
               </div>
               <div class="list flex-wrap">
-                <a
-                  *ngFor="let item of itemListings"
-                  [href]="item.url"
-                  class="link"
-                  target="_blank"
-                >
+                <a *ngFor="let item of itemListings" [href]="item.url" class="link" target="_blank">
                   <img [src]="item.imageUrl || item.retailer.logo" [alt]="item.retailer.name" class="image" />
                   <span *ngIf="item.listingType === EquipmentItemListingType.PAIRS_WELL" class="pairs-well-badge">
-                    {{ 'Pairs well!' | translate }}
+                    {{ "Pairs well!" | translate }}
                   </span>
                 </a>
               </div>
@@ -47,34 +39,20 @@
             <ng-container *ngIf="(!itemListings || itemListings.length === 0) && brandListings?.length > 0">
               <div>
                 <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
-                <span
-                  [innerHTML]="brandListings[0].brand | brandListingMessage"
-                  class="me-2"
-                ></span>
+                <span [innerHTML]="brandListings[0].brand | brandListingMessage" class="me-2"></span>
               </div>
               <div class="list flex-wrap">
-                <a
-                  *ngFor="let item of brandListings"
-                  [href]="item.url"
-                  class="link"
-                  target="_blank"
-                >
+                <a *ngFor="let item of brandListings" [href]="item.url" class="link" target="_blank">
                   <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
                 </a>
               </div>
             </ng-container>
           </div>
 
-          <div
-            *ngIf="marketplaceLineItems?.length"
-            class="alert alert-light marketplace-listings"
-          >
+          <div *ngIf="marketplaceLineItems?.length" class="alert alert-light marketplace-listings">
             <div>
               <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
-              <span
-                [innerHTML]="marketplaceMessage"
-                class="me-2"
-              ></span>
+              <span [innerHTML]="marketplaceMessage" class="me-2"></span>
             </div>
             <div class="list flex-wrap">
               <a
@@ -109,20 +87,17 @@
         >
           <ng-template let-item>
             <div class="image-container">
-              <a
-                (click)="openImage($event, item)"
-                [href]="'/i/' + (item.hash || item.objectId)"
-              >
+              <a (click)="openImage($event, item)" [href]="'/i/' + (item.hash || item.objectId)">
                 <ng-container *ngIf="imageService.getObjectFit(item) as fit">
                   <div
                     [astrobinLazyBackground]="item.regularThumbnail"
                     [highResolutionUrl]="item.hdThumbnail"
                     [useHighResolution]="fit.scale > 3"
                     [ngStyle]="{
-                        'background-position': fit.position.x + '% ' + fit.position.y + '%',
-                        'background-size': fit.scale > 1.5 ? (fit.scale * 100) + '%' : 'cover',
-                        'background-repeat': 'no-repeat'
-                      }"
+                      'background-position': fit.position.x + '% ' + fit.position.y + '%',
+                      'background-size': fit.scale > 1.5 ? fit.scale * 100 + '%' : 'cover',
+                      'background-repeat': 'no-repeat'
+                    }"
                     [attr.aria-label]="item.title"
                     role="img"
                   ></div>
@@ -148,14 +123,8 @@
           </ng-template>
         </astrobin-masonry-layout>
 
-        <div
-          *ngIf="!loading && !initialLoading && !!next"
-          class="w-100 d-flex justify-content-center mt-4"
-        >
-          <button
-            (click)="loadMore().subscribe()"
-            class="btn btn-outline-primary btn-no-block"
-          >
+        <div *ngIf="!loading && !initialLoading && !!next" class="w-100 d-flex justify-content-center mt-4">
+          <button (click)="loadMore().subscribe()" class="btn btn-outline-primary btn-no-block">
             {{ "Load more" | translate }}
           </button>
         </div>

@@ -30,21 +30,10 @@
     </span>
   </ng-template>
 
-  <span
-    *ngIf="editFields?.length > 0 || mayBeRemoved || infoText"
-    class="search-filter__icons"
-  >
-    <fa-icon
-      *ngIf="editFields?.length"
-      (click)="edit()"
-      icon="pencil-alt"
-    ></fa-icon>
+  <span *ngIf="editFields?.length > 0 || mayBeRemoved || infoText" class="search-filter__icons">
+    <fa-icon *ngIf="editFields?.length" (click)="edit()" icon="pencil-alt"></fa-icon>
 
-    <fa-icon
-      *ngIf="mayBeRemoved"
-      (click)="remove.emit()"
-      icon="remove"
-    ></fa-icon>
+    <fa-icon *ngIf="mayBeRemoved" (click)="remove.emit()" icon="remove"></fa-icon>
 
     <fa-icon
       *ngIf="infoText"

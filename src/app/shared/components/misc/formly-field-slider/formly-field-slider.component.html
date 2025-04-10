@@ -10,20 +10,10 @@
 <div *ngIf="props.showInputs" class="inputs d-flex gap-4 justify-content-between align-content-center mt-4">
   <div class="form-group mb-0">
     <label [for]="props.id + '-min'">{{ "Min" | translate }}</label>
-    <input
-      [(ngModel)]="value"
-      [id]="props.id + '-min'"
-      class="form-control"
-      type="number"
-    >
+    <input [(ngModel)]="value" [id]="props.id + '-min'" class="form-control" type="number" />
   </div>
   <div class="form-group mb-0">
     <label [for]="props.id + '-max'">{{ "Max" | translate }}</label>
-    <input
-      [(ngModel)]="highValue"
-      [id]="props.id + '-max'"
-      class="form-control"
-      type="number"
-    >
+    <input [(ngModel)]="highValue" [id]="props.id + '-max'" class="form-control" type="number" />
   </div>
 </div>

@@ -3,19 +3,11 @@
 </p>
 
 <form [formGroup]="form" novalidate>
-  <formly-form
-    [fields]="fields"
-    [form]="form"
-    [model]="model"
-  ></formly-form>
+  <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 </form>
 
 <div class="form-actions">
-  <button
-    (click)="onSaveClicked()"
-    [class.loading]="loadingService.loading$ | async"
-    class="btn btn-primary"
-  >
+  <button (click)="onSaveClicked()" [class.loading]="loadingService.loading$ | async" class="btn btn-primary">
     {{ "Save" | translate }}
   </button>
 </div>

@@ -7,23 +7,23 @@
 
 .card-badges {
   position: absolute;
-  top: -.5rem;
-  right: -.5rem;
+  top: -0.5rem;
+  right: -0.5rem;
 
   @media (max-width: $sm-max) {
     right: 0;
   }
 
   .badge:not(:last-child) {
-    margin-right: .25rem;
+    margin-right: 0.25rem;
   }
 }
 
 .card {
-  box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
 
   &.disabled {
-    opacity: .33;
+    opacity: 0.33;
     pointer-events: none;
   }
 
@@ -39,7 +39,7 @@
       height: 100%;
       z-index: 999;
       pointer-events: none;
-      background: rgba(0, 0, 0, .75);
+      background: rgba(0, 0, 0, 0.75);
     }
   }
 
@@ -48,14 +48,14 @@
     box-shadow: none;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    font-size: .9rem;
+    font-size: 0.9rem;
     font-style: italic;
   }
 
   .card-header {
     @include darkest-background-texture;
     color: var(--white);
-    padding: .75rem 1rem;
+    padding: 0.75rem 1rem;
     font-size: 1rem;
     font-weight: bold;
 
@@ -80,7 +80,7 @@
     padding: 1rem;
 
     @media screen and (max-width: $md-max) {
-      padding: .5rem;
+      padding: 0.5rem;
     }
   }
 
@@ -90,7 +90,7 @@
     justify-content: end;
     flex-direction: row;
     align-items: center;
-    @include flex-gap(row, .25rem);
+    @include flex-gap(row, 0.25rem);
 
     .middot-separator {
       &:after {
@@ -109,20 +109,20 @@
     .btn:not(:last-child),
     astrobin-toggle-property:not(:last-child) {
       @media screen and (max-width: $xs-max) {
-        margin-bottom: .5rem;
+        margin-bottom: 0.5rem;
       }
 
       @media screen and (min-width: $sm-min) {
-        margin-right: .5rem;
+        margin-right: 0.5rem;
       }
     }
 
     .btn-link {
       border-bottom: 1px dotted;
       border-radius: 0;
-      padding-bottom: .125rem;
-      font-size: .9rem;
-      margin: .5rem 0;
+      padding-bottom: 0.125rem;
+      font-size: 0.9rem;
+      margin: 0.5rem 0;
 
       &:not(:last-child) {
         @media screen and (min-width: $md-min) {

@@ -13,12 +13,7 @@
       <ng-container *ngTemplateOutlet="fileChooserTemplate"></ng-container>
     </div>
 
-    <div
-      *ngFor="let selectedFile of selectedFiles; let i = index"
-      [cdkDropListData]="i"
-      cdkDropList
-      class="files"
-    >
+    <div *ngFor="let selectedFile of selectedFiles; let i = index" [cdkDropListData]="i" cdkDropList class="files">
       <div
         (cdkDragDropped)="dragDropped($event)"
         (cdkDragEntered)="dragEntered($event)"
@@ -100,6 +95,6 @@
 
 <ng-template #maxFilesTemplate>
   <ng-container *ngIf="props.maxFiles">
-    <div class="text-muted">({{selectedFiles.length}}/{{ props.maxFiles }})</div>
+    <div class="text-muted">({{ selectedFiles.length }}/{{ props.maxFiles }})</div>
   </ng-container>
 </ng-template>

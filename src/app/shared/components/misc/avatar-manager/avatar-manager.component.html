@@ -1,13 +1,21 @@
 <div class="avatar-manager-container">
   <div class="avatar-manager" [class.has-preview]="previewUrl">
     <!-- Hidden file input accessible from both panels -->
-    <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/jpeg,image/png"
-           [disabled]="loading" class="file-input">
+    <input
+      type="file"
+      #fileInput
+      (change)="onFileSelected($event)"
+      accept="image/jpeg,image/png"
+      [disabled]="loading"
+      class="file-input"
+    />
 
     <div class="avatar-panel-container">
       <!-- Current avatar panel -->
-      <div class="avatar-panel current-avatar-panel"
-           *ngIf="avatarUrl !== defaultAvatarUrl && !isDeletingAvatar && !previewUrl">
+      <div
+        class="avatar-panel current-avatar-panel"
+        *ngIf="avatarUrl !== defaultAvatarUrl && !isDeletingAvatar && !previewUrl"
+      >
         <div class="avatar-container">
           <img [src]="avatarUrl" [alt]="user?.username" class="current-avatar-image" *ngIf="!loading && avatarUrl" />
           <astrobin-loading-indicator *ngIf="loading" size="medium"></astrobin-loading-indicator>
@@ -31,8 +39,10 @@
       </div>
 
       <!-- Upload panel -->
-      <div class="avatar-panel upload-panel"
-           *ngIf="(!avatarUrl || avatarUrl === defaultAvatarUrl || previewUrl) && !isDeletingAvatar">
+      <div
+        class="avatar-panel upload-panel"
+        *ngIf="(!avatarUrl || avatarUrl === defaultAvatarUrl || previewUrl) && !isDeletingAvatar"
+      >
         <div class="upload-container">
           <div class="upload-dropzone" [class.has-preview]="previewUrl">
             <ng-container *ngIf="!previewUrl; else previewTemplate">
@@ -51,35 +61,57 @@
               <div class="preview-container">
                 <div class="preview-image-container" #previewContainer>
                   <img [src]="previewUrl" class="preview-image" #previewImage (load)="onImageLoad(previewContainer)" />
-                  <div class="avatar-preview-circle" [style.width.px]="circleDiameter"
-                       [style.height.px]="circleDiameter"></div>
+                  <div
+                    class="avatar-preview-circle"
+                    [style.width.px]="circleDiameter"
+                    [style.height.px]="circleDiameter"
+                  ></div>
                 </div>
                 <div class="image-transform-controls">
                   <div class="transform-actions">
-                    <button class="btn btn-outline-secondary btn-sm m-0" (click)="rotateImage()" [disabled]="loading"
-                            title="{{ 'Rotate' | translate }}">
+                    <button
+                      class="btn btn-outline-secondary btn-sm m-0"
+                      (click)="rotateImage()"
+                      [disabled]="loading"
+                      title="{{ 'Rotate' | translate }}"
+                    >
                       <fa-icon icon="rotate-left"></fa-icon>
                     </button>
-                    <button class="btn btn-outline-secondary btn-sm m-0" (click)="flipImageHorizontal()"
-                            [disabled]="loading" title="{{ 'Flip horizontally' | translate }}">
+                    <button
+                      class="btn btn-outline-secondary btn-sm m-0"
+                      (click)="flipImageHorizontal()"
+                      [disabled]="loading"
+                      title="{{ 'Flip horizontally' | translate }}"
+                    >
                       <fa-icon icon="arrows-left-right"></fa-icon>
                     </button>
-                    <button class="btn btn-outline-secondary btn-sm m-0" (click)="flipImageVertical()"
-                            [disabled]="loading" title="{{ 'Flip vertically' | translate }}">
+                    <button
+                      class="btn btn-outline-secondary btn-sm m-0"
+                      (click)="flipImageVertical()"
+                      [disabled]="loading"
+                      title="{{ 'Flip vertically' | translate }}"
+                    >
                       <fa-icon icon="arrows-up-down"></fa-icon>
                     </button>
                   </div>
                 </div>
                 <div class="preview-footer">
                   <div class="preview-actions">
-                    <button class="btn btn-success btn-sm m-0" (click)="uploadAvatar()" [disabled]="loading"
-                            [class.loading]="loading">
+                    <button
+                      class="btn btn-success btn-sm m-0"
+                      (click)="uploadAvatar()"
+                      [disabled]="loading"
+                      [class.loading]="loading"
+                    >
                       <fa-icon icon="check" *ngIf="!loading"></fa-icon>
                       <fa-icon icon="spinner" [spin]="true" *ngIf="loading"></fa-icon>
                       {{ loading ? ("Uploading" | translate) : ("Upload" | translate) }}
                     </button>
-                    <button class="btn btn-outline-secondary btn-sm m-0" (click)="cancelSelection()"
-                            [disabled]="loading">
+                    <button
+                      class="btn btn-outline-secondary btn-sm m-0"
+                      (click)="cancelSelection()"
+                      [disabled]="loading"
+                    >
                       <fa-icon icon="times"></fa-icon>
                       {{ "Cancel" | translate }}
                     </button>
@@ -95,7 +127,6 @@
         </div>
       </div>
 
-
       <!-- Deleting indicator -->
       <div class="avatar-panel deleting-panel" *ngIf="isDeletingAvatar">
         <div class="deleting-container">
@@ -105,3 +136,4 @@
       </div>
     </div>
   </div>
+</div>

@@ -17,10 +17,7 @@
 <!-- browser row -->
 
 <div class="row g-0 g-3">
-  <div
-    [class.col-lg-9]="showListings()"
-    class="col-12 order-last order-lg-first"
-  >
+  <div [class.col-lg-9]="showListings()" class="col-12 order-last order-lg-first">
     <div *ngIf="!!selectedItem" [class.disabled-with-backdrop]="subCreationMode" class="card">
       <div class="backdrop"></div>
 
@@ -42,8 +39,8 @@
       <div class="card-body">
         <div *ngIf="selectedItem.reviewerDecision === null && !!selectedItem.brand" class="alert alert-warning">
           {{
-          "This item has not been approved yet, so it's not available to be associated with images, except for the user who created it."
-            | translate
+            "This item has not been approved yet, so it's not available to be associated with images, except for the user who created it."
+              | translate
           }}
         </div>
 
@@ -255,11 +252,11 @@
                   </button>
                 </ng-container>
 
-                <ng-container
-                  *ngIf="(!selectedItem.assignee || selectedItem.assignee === currentUserWrapper.user?.id)"
-                >
+                <ng-container *ngIf="!selectedItem.assignee || selectedItem.assignee === currentUserWrapper.user?.id">
                   <ng-container
-                    *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUserWrapper.user?.id"
+                    *ngIf="
+                      selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUserWrapper.user?.id
+                    "
                   >
                     <button
                       (click)="startRejection()"
@@ -494,9 +491,7 @@
           </div>
 
           <div class="card-body">
-            <astrobin-marketplace-listing-cards
-              [listings]="listings"
-            ></astrobin-marketplace-listing-cards>
+            <astrobin-marketplace-listing-cards [listings]="listings"></astrobin-marketplace-listing-cards>
           </div>
         </div>
       </ng-container>
@@ -523,10 +518,7 @@
   </div>
   <!-- main pane -->
 
-  <div
-    *ngIf="showListings() "
-    class="col-12 col-lg-3 sidebar"
-  >
+  <div *ngIf="showListings()" class="col-12 col-lg-3 sidebar">
     <astrobin-equipment-listings
       [item]="selectedItem"
       [listings]="selectedItem.listings"

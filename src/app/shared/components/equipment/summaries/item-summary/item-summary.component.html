@@ -28,153 +28,149 @@
         class="table table-sm properties"
       >
         <tbody>
-        <ng-container *ngFor="let property of properties">
-          <tr *ngIf="(property?.show | async) === true" class="property">
-            <th class="property-name">{{ property.name }}</th>
-            <td class="property-value">
-              <ng-container *ngIf="!!property.link; else noLink">
-                <a [routerLink]="property.link">
-                  <ng-container *ngTemplateOutlet="propertyValueTemplate"></ng-container>
-                </a>
-              </ng-container>
-
-              <ng-template #noLink>
-                <ng-container *ngTemplateOutlet="propertyValueTemplate"></ng-container>
-              </ng-template>
-
-              <ng-template #propertyValueTemplate>
-                <ng-container *ngIf="property.value | async as value; else noValue">
-                  <span [innerHTML]="value" class="property-value"></span>
-                </ng-container>
-              </ng-template>
-
-              <ng-template #noValue>
-                <span class="property-value">{{ "n/a" | translate }}</span>
-              </ng-template>
-
-              <fa-icon
-                (click)="editButtonClick.emit(item)"
-                *ngIf="showEditButtons && (property.value | async) === ''"
-                class="edit"
-                icon="pen"
-              ></fa-icon>
-            </td>
-          </tr>
-        </ng-container>
-
-        <tr *ngIf="showSubItem && !!subItem && subItemCollapsed" class="property">
-          <th class="property-name">
-            {{ subItemLabel }}
-          </th>
-          <td class="property-value">
-            <a (click)="subItemCollapsed = false" astrobinEventPreventDefault astrobinEventStopPropagation href="#">
-              <astrobin-equipment-item-display-name [item]="subItem"></astrobin-equipment-item-display-name>
-            </a>
-          </td>
-        </tr>
-
-        <tr *ngIf="relatedItems?.length > 0" class="property related-items">
-          <th class="property-name">{{ relatedItemsLabel }}</th>
-          <td class="property-value">
-            <ng-container *ngFor="let relatedItem of relatedItems.slice(0, SHOW_MAX_RELATED_ITEMS); let last = last">
-              <a
-                [routerLink]="['/equipment/explorer', relatedItem.klass.toLowerCase(), relatedItem.id]"
-              >
-                <astrobin-equipment-item-display-name [item]="relatedItem"></astrobin-equipment-item-display-name>
-              </a>
-
-              <span *ngIf="!last" class="d-inline-block me-2">
-                ,
-              </span>
-            </ng-container>
-
-            <ng-container *ngIf="relatedItems.length > SHOW_MAX_RELATED_ITEMS">
-              <button (click)="viewMoreRelatedItems()" class="btn btn-link btn-no-block ms-2">
-                <span class="related-item-pill more-button">{{ moreRelatedItemsLabel }}</span>
-              </button>
-            </ng-container>
-          </td>
-        </tr>
-
-        <ng-container *ngIf="showStats">
-          <tr class="property">
-            <th class="property-name">
-              {{ "Users" | translate }}
-              <astrobin-data-does-not-update-in-real-time
-                *ngIf="showDataDoesNotUpdateInRealTime"
-                class="d-none d-md-inline"
-              ></astrobin-data-does-not-update-in-real-time>
-            </th>
-            <td class="property-value">{{ item.userCount || 0 }}</td>
-          </tr>
-
-          <tr class="property">
-            <th class="property-name">
-              {{ "Images" | translate }}
-              <astrobin-data-does-not-update-in-real-time
-                *ngIf="showDataDoesNotUpdateInRealTime"
-                class="d-none d-md-inline"
-              ></astrobin-data-does-not-update-in-real-time>
-            </th>
-            <td class="property-value">{{ item.imageCount || 0 }}</td>
-          </tr>
-        </ng-container>
-
-        <tr *ngIf="showMostOftenUsedWith && itemTypeSupportsMostOftenUsedWith()" class="property">
-          <th class="property-name">
-            {{ "Most often used with" | translate }}
-            <astrobin-data-does-not-update-in-real-time
-              *ngIf="showDataDoesNotUpdateInRealTime"
-              class="d-none d-md-inline"
-            ></astrobin-data-does-not-update-in-real-time>
-          </th>
-          <td class="property-value most-often-used-with">
-            <ng-container *ngIf="mostOftenUsedWith$ | async as mostOftenUsedWith; else loadingTemplate">
-              <ng-container *ngIf="mostOftenUsedWith.length > 0; else noMostOftenUsedWithTemplate">
-                <ng-container *ngIf="mostOftenUsedWith[0].item$ | async as currentItem">
-                  <a
-                    [ngbTooltip]="'{{0}} images in common' | translate:{'0': mostOftenUsedWith[0].matches}"
-                    [routerLink]="['/equipment/explorer', currentItem.klass.toLowerCase(), currentItem.id]"
-                  >
-                    <astrobin-equipment-item-display-name [item]="currentItem"></astrobin-equipment-item-display-name>
+          <ng-container *ngFor="let property of properties">
+            <tr *ngIf="(property?.show | async) === true" class="property">
+              <th class="property-name">{{ property.name }}</th>
+              <td class="property-value">
+                <ng-container *ngIf="!!property.link; else noLink">
+                  <a [routerLink]="property.link">
+                    <ng-container *ngTemplateOutlet="propertyValueTemplate"></ng-container>
                   </a>
                 </ng-container>
+
+                <ng-template #noLink>
+                  <ng-container *ngTemplateOutlet="propertyValueTemplate"></ng-container>
+                </ng-template>
+
+                <ng-template #propertyValueTemplate>
+                  <ng-container *ngIf="property.value | async as value; else noValue">
+                    <span [innerHTML]="value" class="property-value"></span>
+                  </ng-container>
+                </ng-template>
+
+                <ng-template #noValue>
+                  <span class="property-value">{{ "n/a" | translate }}</span>
+                </ng-template>
+
+                <fa-icon
+                  (click)="editButtonClick.emit(item)"
+                  *ngIf="showEditButtons && (property.value | async) === ''"
+                  class="edit"
+                  icon="pen"
+                ></fa-icon>
+              </td>
+            </tr>
+          </ng-container>
+
+          <tr *ngIf="showSubItem && !!subItem && subItemCollapsed" class="property">
+            <th class="property-name">
+              {{ subItemLabel }}
+            </th>
+            <td class="property-value">
+              <a (click)="subItemCollapsed = false" astrobinEventPreventDefault astrobinEventStopPropagation href="#">
+                <astrobin-equipment-item-display-name [item]="subItem"></astrobin-equipment-item-display-name>
+              </a>
+            </td>
+          </tr>
+
+          <tr *ngIf="relatedItems?.length > 0" class="property related-items">
+            <th class="property-name">{{ relatedItemsLabel }}</th>
+            <td class="property-value">
+              <ng-container *ngFor="let relatedItem of relatedItems.slice(0, SHOW_MAX_RELATED_ITEMS); let last = last">
+                <a [routerLink]="['/equipment/explorer', relatedItem.klass.toLowerCase(), relatedItem.id]">
+                  <astrobin-equipment-item-display-name [item]="relatedItem"></astrobin-equipment-item-display-name>
+                </a>
+
+                <span *ngIf="!last" class="d-inline-block me-2"> , </span>
               </ng-container>
 
-              <button
-                (click)="viewMoreMostOftenUsedWith()"
-                *ngIf="mostOftenUsedWith.length > 0"
-                [class.loading]="loadingService.loading$ | async"
-                class="ms-2 btn btn-outline-primary btn-sm d-none d-lg-inline"
-              >
-                {{ "More" | translate }}
-              </button>
+              <ng-container *ngIf="relatedItems.length > SHOW_MAX_RELATED_ITEMS">
+                <button (click)="viewMoreRelatedItems()" class="btn btn-link btn-no-block ms-2">
+                  <span class="related-item-pill more-button">{{ moreRelatedItemsLabel }}</span>
+                </button>
+              </ng-container>
+            </td>
+          </tr>
 
-              <ng-template #noMostOftenUsedWithTemplate>
-                <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
-              </ng-template>
-            </ng-container>
-          </td>
-        </tr>
+          <ng-container *ngIf="showStats">
+            <tr class="property">
+              <th class="property-name">
+                {{ "Users" | translate }}
+                <astrobin-data-does-not-update-in-real-time
+                  *ngIf="showDataDoesNotUpdateInRealTime"
+                  class="d-none d-md-inline"
+                ></astrobin-data-does-not-update-in-real-time>
+              </th>
+              <td class="property-value">{{ item.userCount || 0 }}</td>
+            </tr>
 
-        <tr *ngIf="item.listings?.itemListings?.length" class="property">
-          <th class="property-name">
-            {{ "Known retailers" | translate }}
-          </th>
-          <td class="property-value retailers">
-            <ng-container *ngFor="let listing of item.listings.itemListings; let isLast = last">
-              <a [href]="listing.url" target="_blank">
-                {{ listing.retailer.name }}
-              </a>
+            <tr class="property">
+              <th class="property-name">
+                {{ "Images" | translate }}
+                <astrobin-data-does-not-update-in-real-time
+                  *ngIf="showDataDoesNotUpdateInRealTime"
+                  class="d-none d-md-inline"
+                ></astrobin-data-does-not-update-in-real-time>
+              </th>
+              <td class="property-value">{{ item.imageCount || 0 }}</td>
+            </tr>
+          </ng-container>
 
-              <span *ngIf="!!listing.stockStatus" class="no-wrap small">
-                (<astrobin-stock-status [listing]="listing"></astrobin-stock-status>)
-              </span>
+          <tr *ngIf="showMostOftenUsedWith && itemTypeSupportsMostOftenUsedWith()" class="property">
+            <th class="property-name">
+              {{ "Most often used with" | translate }}
+              <astrobin-data-does-not-update-in-real-time
+                *ngIf="showDataDoesNotUpdateInRealTime"
+                class="d-none d-md-inline"
+              ></astrobin-data-does-not-update-in-real-time>
+            </th>
+            <td class="property-value most-often-used-with">
+              <ng-container *ngIf="mostOftenUsedWith$ | async as mostOftenUsedWith; else loadingTemplate">
+                <ng-container *ngIf="mostOftenUsedWith.length > 0; else noMostOftenUsedWithTemplate">
+                  <ng-container *ngIf="mostOftenUsedWith[0].item$ | async as currentItem">
+                    <a
+                      [ngbTooltip]="'{{0}} images in common' | translate : { '0': mostOftenUsedWith[0].matches }"
+                      [routerLink]="['/equipment/explorer', currentItem.klass.toLowerCase(), currentItem.id]"
+                    >
+                      <astrobin-equipment-item-display-name [item]="currentItem"></astrobin-equipment-item-display-name>
+                    </a>
+                  </ng-container>
+                </ng-container>
 
-              {{ isLast ? "" : "&nbsp;&middot;&nbsp;" }}
-            </ng-container>
-          </td>
-        </tr>
+                <button
+                  (click)="viewMoreMostOftenUsedWith()"
+                  *ngIf="mostOftenUsedWith.length > 0"
+                  [class.loading]="loadingService.loading$ | async"
+                  class="ms-2 btn btn-outline-primary btn-sm d-none d-lg-inline"
+                >
+                  {{ "More" | translate }}
+                </button>
+
+                <ng-template #noMostOftenUsedWithTemplate>
+                  <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
+                </ng-template>
+              </ng-container>
+            </td>
+          </tr>
+
+          <tr *ngIf="item.listings?.itemListings?.length" class="property">
+            <th class="property-name">
+              {{ "Known retailers" | translate }}
+            </th>
+            <td class="property-value retailers">
+              <ng-container *ngFor="let listing of item.listings.itemListings; let isLast = last">
+                <a [href]="listing.url" target="_blank">
+                  {{ listing.retailer.name }}
+                </a>
+
+                <span *ngIf="!!listing.stockStatus" class="no-wrap small">
+                  (<astrobin-stock-status [listing]="listing"></astrobin-stock-status>)
+                </span>
+
+                {{ isLast ? "" : "&nbsp;&middot;&nbsp;" }}
+              </ng-container>
+            </td>
+          </tr>
         </tbody>
       </table>
 
@@ -186,11 +182,14 @@
         <h5>
           {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.COMMUNITY_NOTES) }}
         </h5>
-        <div *ngIf="(item.communityNotes | BBCodeToHtml) | async as html; else communityNotesLoading"
-             [innerHTML]="html" class="community-notes-content"></div>
+        <div
+          *ngIf="item.communityNotes | BBCodeToHtml | async as html; else communityNotesLoading"
+          [innerHTML]="html"
+          class="community-notes-content"
+        ></div>
         <ng-template #communityNotesLoading>
           <div class="community-notes-content">
-            <small><fa-icon icon="spinner" animation="spin"></fa-icon> {{ 'Loading content...' | translate }}</small>
+            <small><fa-icon icon="spinner" animation="spin"></fa-icon> {{ "Loading content..." | translate }}</small>
           </div>
         </ng-template>
       </div>
@@ -219,7 +218,7 @@
         <p *ngIf="item.createdBy">
           <strong>{{ "Created by" | translate }}:</strong>
           <astrobin-username [user]="createdBy$ | async"></astrobin-username>
-          <abbr [attr.title]="item.created | localDate"> ({{ item.created | localDate | timeago: true }}) </abbr>
+          <abbr [attr.title]="item.created | localDate"> ({{ item.created | localDate | timeago : true }}) </abbr>
         </p>
 
         <p *ngIf="!item.reviewerDecision">
@@ -243,13 +242,13 @@
           <strong>{{ "Reviewed by" | translate }}:</strong>
           <astrobin-username [user]="reviewedBy$ | async"></astrobin-username>
           <abbr *ngIf="item.reviewedTimestamp" [attr.title]="item.reviewedTimestamp | localDate">
-            ({{ item.reviewedTimestamp | localDate | timeago: true }})
+            ({{ item.reviewedTimestamp | localDate | timeago : true }})
           </abbr>
         </p>
         <p *ngIf="lastUpdateVisible">
           <strong>{{ "Last update" | translate }}:</strong>
           <abbr [attr.title]="item.updated | localDate">
-            {{ item.updated | localDate | timeago: true }}
+            {{ item.updated | localDate | timeago : true }}
           </abbr>
         </p>
       </div>

@@ -6,7 +6,7 @@
   bottom: 1rem;
   z-index: 1029;
   font-size: 1.5rem;
-  transition: transform .25s ease-in-out;
+  transition: transform 0.25s ease-in-out;
 
   &.position-left {
     right: auto;
@@ -25,7 +25,7 @@
   }
 
   .ng-fa-icon {
-    filter: drop-shadow(0 0 .5rem rgba(0, 0, 0, .5));
+    filter: drop-shadow(0 0 0.5rem rgba(0, 0, 0, 0.5));
   }
 }
 

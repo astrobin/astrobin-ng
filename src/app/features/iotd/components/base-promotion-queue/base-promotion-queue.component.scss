@@ -10,10 +10,10 @@
     margin-bottom: 2rem;
     margin-left: -1rem;
     margin-right: -1rem;
-    transition: transform .2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
 
     &.sticky {
-      transform: scale(.7);
+      transform: scale(0.7);
     }
   }
 

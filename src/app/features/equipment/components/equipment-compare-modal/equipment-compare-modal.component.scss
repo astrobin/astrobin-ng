@@ -10,7 +10,7 @@
       }
 
       td {
-        padding: .75rem 1.5rem .75rem .75rem;
+        padding: 0.75rem 1.5rem 0.75rem 0.75rem;
         position: relative;
 
         ::ng-deep img {
@@ -28,15 +28,15 @@
         }
 
         .edit-button {
-          font-size: .8rem;
+          font-size: 0.8rem;
           color: var(--lighterGrey);
-          margin-right: .5rem;
+          margin-right: 0.5rem;
           opacity: 0;
-          transition: opacity .2s ease-in-out;
+          transition: opacity 0.2s ease-in-out;
           cursor: pointer;
           position: absolute;
           right: 0;
-          top: calc(50% - .5rem);
+          top: calc(50% - 0.5rem);
 
           &:hover {
             color: var(--accentColor);
@@ -56,7 +56,7 @@
         }
 
         td {
-          ::ng-deep a[target=_blank] {
+          ::ng-deep a[target="_blank"] {
             &:after {
               display: none;
             }

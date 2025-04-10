@@ -40,11 +40,7 @@
   <div class="row main-row">
     <div class="col-md-6 col-lg-5 col-form">
       <form [formGroup]="form">
-        <formly-form
-          [fields]="fields"
-          [form]="form"
-          [model]="model"
-        ></formly-form>
+        <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 
         <button
           (click)="onSave($event)"
