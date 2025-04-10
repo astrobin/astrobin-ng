@@ -1,24 +1,25 @@
-import { EquipmentState } from "@features/equipment/store/equipment.reducer";
-import { MainState } from "@app/store/state";
-import { createSelector } from "@ngrx/store";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import { instanceOfSensor } from "@features/equipment/types/sensor.interface";
-import { instanceOfCamera } from "@features/equipment/types/camera.interface";
-import { instanceOfTelescope } from "@features/equipment/types/telescope.interface";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { instanceOfMount } from "@features/equipment/types/mount.interface";
-import { instanceOfFilter } from "@features/equipment/types/filter.interface";
-import { instanceOfAccessory } from "@features/equipment/types/accessory.interface";
-import { instanceOfSoftware } from "@features/equipment/types/software.interface";
-import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
+import type { MainState } from "@app/store/state";
+import type { UserInterface } from "@core/interfaces/user.interface";
 import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import type { EquipmentState } from "@features/equipment/store/equipment.reducer";
+import { instanceOfAccessory } from "@features/equipment/types/accessory.interface";
+import type { BrandInterface } from "@features/equipment/types/brand.interface";
+import { instanceOfCamera } from "@features/equipment/types/camera.interface";
+import type { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { instanceOfFilter } from "@features/equipment/types/filter.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import type { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { instanceOfMount } from "@features/equipment/types/mount.interface";
+import { instanceOfSensor } from "@features/equipment/types/sensor.interface";
+import { instanceOfSoftware } from "@features/equipment/types/software.interface";
+import { instanceOfTelescope } from "@features/equipment/types/telescope.interface";
+import { createSelector } from "@ngrx/store";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
   if (instanceOfSensor(item)) {
@@ -151,17 +152,15 @@ export const selectMarketplacePrivateConversations = (
   userId?: UserInterface["id"]
 ) =>
   createSelector(selectMarketplace, marketplace =>
-    marketplace.privateConversations.filter(
-      conversation => {
-        let result = conversation.listing === listingId;
+    marketplace.privateConversations.filter(conversation => {
+      let result = conversation.listing === listingId;
 
-        if (userId) {
-          result = result && conversation.user === userId;
-        }
-
-        return result;
+      if (userId) {
+        result = result && conversation.user === userId;
       }
-    )
+
+      return result;
+    })
   );
 
 export const selectMarketplacePrivateConversation = (conversationId: MarketplacePrivateConversationInterface["id"]) =>
@@ -172,7 +171,7 @@ export const selectMarketplacePrivateConversation = (conversationId: Marketplace
 
 export const selectMarketplaceOffers = (listingId: MarketplaceListingInterface["id"]) => {
   return createSelector(selectMarketplace, marketplace => {
-    const listing = marketplace.listings.find(listing => listing.id === listingId);
+    const listing = marketplace.listings.find(listingItem => listingItem.id === listingId);
 
     if (!!listing) {
       return listing.lineItems.reduce<MarketplaceOfferInterface[]>((offers, lineItem) => {
@@ -189,7 +188,7 @@ export const selectMarketplaceOffersByUser = (
   listingId: MarketplaceListingInterface["id"]
 ) => {
   return createSelector(selectMarketplace, marketplace => {
-    const listing = marketplace.listings.find(listing => listing.id === listingId);
+    const listing = marketplace.listings.find(listingItem => listingItem.id === listingId);
 
     if (!!listing) {
       return EquipmentMarketplaceService.offersByUser(userId, listing);

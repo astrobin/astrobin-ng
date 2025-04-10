@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { Constants } from "@shared/constants";
-import { environment } from "@env/environment";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { environment } from "@env/environment";
+import { Constants } from "@shared/constants";
 import { CookieService } from "ngx-cookie";
 
 export enum Theme {
@@ -20,8 +20,7 @@ export class ThemeService {
     public readonly windowRef: WindowRefService,
     public readonly cookieService: CookieService,
     public readonly utilsService: UtilsService
-  ) {
-  }
+  ) {}
 
   preferredTheme(): Theme {
     const cookie = this.cookieService.get(Constants.USE_HIGH_CONTRAST_THEME_COOKIE);

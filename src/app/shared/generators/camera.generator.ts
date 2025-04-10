@@ -1,4 +1,4 @@
-import { CameraInterface } from "@core/interfaces/camera.interface";
+import type { CameraInterface } from "@core/interfaces/camera.interface";
 
 export class CameraGenerator {
   static camera(): CameraInterface {

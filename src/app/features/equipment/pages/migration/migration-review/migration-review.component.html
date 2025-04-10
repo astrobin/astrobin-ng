@@ -7,7 +7,7 @@
     </div>
     <div class="col-md-9">
       <ng-container *ngIf="migrationStrategies !== undefined; else loading">
-        <div class="alert alert-info" *ngIf="migrationStrategies.length === 0; else pendingReviewTemplate">
+        <div *ngIf="migrationStrategies.length === 0; else pendingReviewTemplate" class="alert alert-info">
           The review queue is empty.
         </div>
       </ng-container>
@@ -26,9 +26,7 @@
         <strong>Warning!</strong> These are migrations created by moderators, and not regular end-user. When you approve
         migrations on this page, they get applied to all users and images that match that particular equipment items.
       </p>
-      <p>
-        When a regular end-user create their own migrations, instead, the apply only to their own images.
-      </p>
+      <p>When a regular end-user create their own migrations, instead, the apply only to their own images.</p>
     </div>
     <table class="table table-striped">
       <caption>
@@ -49,15 +47,15 @@
           </td>
           <td class="with-help-tooltip">
             {{ migrationStrategy.migrationFlag }}
-            <span class="help-tooltip" [ngbTooltip]="migrationFlagTooltip(migrationStrategy.migrationFlag)">
+            <span [ngbTooltip]="migrationFlagTooltip(migrationStrategy.migrationFlag)" class="help-tooltip">
               <fa-icon icon="question-circle"></fa-icon>
             </span>
           </td>
           <td>
             <a
-              class="btn btn-mini btn-primary btn-review"
-              [class.disabled]="(reviewButtonDisabled$(migrationStrategy) | async) === true"
               (click)="reviewItem($event, migrationStrategy.pk)"
+              [class.disabled]="(reviewButtonDisabled$(migrationStrategy) | async) === true"
+              class="btn btn-mini btn-primary btn-review"
             >
               Review
               <fa-icon [icon]="reviewButtonIcon$(migrationStrategy) | async"></fa-icon>

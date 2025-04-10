@@ -1,9 +1,9 @@
 <astrobin-mobile-menu
   (menuClose)="onMobileMenuClose()"
   (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
   [descriptionTemplate]="descriptionTemplate"
   [template]="navTemplate"
+  [titleTemplate]="titleTemplate"
 ></astrobin-mobile-menu>
 
 <ng-template #titleTemplate>
@@ -21,15 +21,17 @@
 </ng-template>
 
 <ng-template #navTemplate>
-  <astrobin-equipment-item-type-nav
-    #itemTypeNavComponent
-  ></astrobin-equipment-item-type-nav>
+  <astrobin-equipment-item-type-nav #itemTypeNavComponent></astrobin-equipment-item-type-nav>
 </ng-template>
 
 <div class="page has-mobile-menu">
   <ng-container *ngIf="breakpointMdMin">
-    <h1><ng-container [ngTemplateOutlet]="titleTemplate"></ng-container></h1>
-    <small><ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container></small>
+    <h1>
+      <ng-container [ngTemplateOutlet]="titleTemplate"></ng-container>
+    </h1>
+    <small>
+      <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
+    </small>
   </ng-container>
 
   <div class="row g-0 g-3">
@@ -58,27 +60,27 @@
                         <h6 *ngIf="!!activeBrand.website" class="website">
                           <a [href]="activeBrand.website" target="_blank">{{
                             UtilsService.shortenUrl(activeBrand.website)
-                            }}</a>
+                          }}</a>
                         </h6>
                       </div>
 
                       <table class="table table-sm table-striped properties">
                         <tbody>
-                        <tr>
-                          <th class="property-name">
-                            {{ "Users" | translate }}
-                            <astrobin-data-does-not-update-in-real-time></astrobin-data-does-not-update-in-real-time>
-                          </th>
-                          <td class="property-value">{{ activeBrand.userCount || 0 }}</td>
-                        </tr>
+                          <tr>
+                            <th class="property-name">
+                              {{ "Users" | translate }}
+                              <astrobin-data-does-not-update-in-real-time></astrobin-data-does-not-update-in-real-time>
+                            </th>
+                            <td class="property-value">{{ activeBrand.userCount || 0 }}</td>
+                          </tr>
 
-                        <tr class="property">
-                          <th class="property-name">
-                            {{ "Images" | translate }}
-                            <astrobin-data-does-not-update-in-real-time></astrobin-data-does-not-update-in-real-time>
-                          </th>
-                          <td class="property-value">{{ activeBrand.imageCount || 0 }}</td>
-                        </tr>
+                          <tr class="property">
+                            <th class="property-name">
+                              {{ "Images" | translate }}
+                              <astrobin-data-does-not-update-in-real-time></astrobin-data-does-not-update-in-real-time>
+                            </th>
+                            <td class="property-value">{{ activeBrand.imageCount || 0 }}</td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -97,89 +99,18 @@
                 class="table table-sm table-striped items-in-brand"
               >
                 <thead>
-                <tr>
-                  <th>
-                    <button (click)="toggleAZSorting()" class="btn btn-link btn-no-block">
-                      {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true) }}
-                      <fa-icon *ngIf="sortOrder === ExplorerPageSortOrder.AZ_DESC" icon="sort-alpha-down"></fa-icon>
-                      <fa-icon *ngIf="sortOrder === ExplorerPageSortOrder.AZ" icon="sort-alpha-up"></fa-icon>
-                    </button>
-                  </th>
-                  <th>
-                    {{ "Class" | translate }}
-                  </th>
-                  <th>
-                    <button (click)="toggleUsersSorting()" class="btn btn-link btn-no-block">
-                      {{ "Users" | translate }}
-                      <fa-icon
-                        *ngIf="sortOrder === ExplorerPageSortOrder.USERS_DESC"
-                        icon="sort-numeric-down"
-                      ></fa-icon>
-                      <fa-icon *ngIf="sortOrder === ExplorerPageSortOrder.USERS" icon="sort-numeric-up"></fa-icon>
-                    </button>
-                  </th>
-                  <th>
-                    <button (click)="toggleImagesSorting()" class="btn btn-link btn-no-block">
-                      {{ "Images" | translate }}
-                      <fa-icon
-                        *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES_DESC"
-                        icon="sort-numeric-down"
-                      ></fa-icon>
-                      <fa-icon *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES" icon="sort-numeric-up"></fa-icon>
-                    </button>
-                  </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let item of itemsInBrand; trackBy: equipmentItemService.trackBy">
-                  <td class="item-name">
-                    <a
-                      (click)="viewItem(item)"
-                      [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
-                      astrobinEventPreventDefault
-                    >
-                      <astrobin-equipment-item-display-name
-                        [item]="item"
-                        [showFrozenAsAmbiguous]="item.variants.length === 0"
-                      ></astrobin-equipment-item-display-name>
-                      <span
-                        *ngIf="item.variants?.length > 0"
-                        [innerHTML]="'+ {{numVariants}} variants' | translate:{numVariants: item.variants.length}"
-                        class="variant-count"
-                      >
-                      </span>
-                    </a>
-                  </td>
-                  <td>{{ equipmentItemService.humanizeType(item.klass) }}</td>
-                  <td>{{ item.userCount }}</td>
-                  <td>{{ item.imageCount }}</td>
-                </tr>
-                </tbody>
-              </table>
-
-              <astrobin-image-search-card
-                [header]="'Acquired with this brand' | translate"
-                [model]="{ text: { value: activeBrand.name, matchType: MatchType.ALL, onlySearchInTitlesAndDescriptions: false } }"
-                [showRetailers]="false"
-                [showMarketplaceItems]="false"
-                [showStaticOverlay]="false"
-                [showMoreButton]="false"
-                class="mt-5 d-block"
-                ordering="-likes"
-              ></astrobin-image-search-card>
-            </ng-container>
-
-            <ng-container *ngIf="!activeBrand">
-              <ng-container *ngIf="items$ | async as brands; else loading">
-                <table *ngIf="!activeBrand" class="table table-striped table-sm brands">
-                  <thead>
                   <tr>
                     <th>
                       <button (click)="toggleAZSorting()" class="btn btn-link btn-no-block">
-                        {{ "Name" | translate }}
+                        {{
+                          equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true)
+                        }}
                         <fa-icon *ngIf="sortOrder === ExplorerPageSortOrder.AZ_DESC" icon="sort-alpha-down"></fa-icon>
                         <fa-icon *ngIf="sortOrder === ExplorerPageSortOrder.AZ" icon="sort-alpha-up"></fa-icon>
                       </button>
+                    </th>
+                    <th>
+                      {{ "Class" | translate }}
                     </th>
                     <th>
                       <button (click)="toggleUsersSorting()" class="btn btn-link btn-no-block">
@@ -202,21 +133,96 @@
                       </button>
                     </th>
                   </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let brand of brands" data-id="{{ brand.id }}">
-                    <td>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of itemsInBrand; trackBy: equipmentItemService.trackBy">
+                    <td class="item-name">
                       <a
-                        (click)="viewBrand(brand)"
-                        [href]="'/equipment/explorer/brand/' + brand.id + '/' + UtilsService.slugify(brand.name)"
+                        (click)="viewItem(item)"
+                        [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
                         astrobinEventPreventDefault
                       >
-                        {{ brand.name }}
+                        <astrobin-equipment-item-display-name
+                          [item]="item"
+                          [showFrozenAsAmbiguous]="item.variants.length === 0"
+                        ></astrobin-equipment-item-display-name>
+                        <span
+                          *ngIf="item.variants?.length > 0"
+                          [innerHTML]="'+ {{numVariants}} variants' | translate : { numVariants: item.variants.length }"
+                          class="variant-count"
+                        >
+                        </span>
                       </a>
                     </td>
-                    <td>{{ brand.userCount }}</td>
-                    <td>{{ brand.imageCount }}</td>
+                    <td>{{ equipmentItemService.humanizeType(item.klass) }}</td>
+                    <td>{{ item.userCount }}</td>
+                    <td>{{ item.imageCount }}</td>
                   </tr>
+                </tbody>
+              </table>
+
+              <astrobin-image-search-card
+                [header]="'Acquired with this brand' | translate"
+                [model]="{
+                  text: { value: activeBrand.name, matchType: MatchType.ALL, onlySearchInTitlesAndDescriptions: false }
+                }"
+                [showMarketplaceItems]="false"
+                [showMoreButton]="false"
+                [showRetailers]="false"
+                [showStaticOverlay]="false"
+                class="mt-5 d-block"
+                ordering="-likes"
+              ></astrobin-image-search-card>
+            </ng-container>
+
+            <ng-container *ngIf="!activeBrand">
+              <ng-container *ngIf="items$ | async as brands; else loading">
+                <table *ngIf="!activeBrand" class="table table-striped table-sm brands">
+                  <thead>
+                    <tr>
+                      <th>
+                        <button (click)="toggleAZSorting()" class="btn btn-link btn-no-block">
+                          {{ "Name" | translate }}
+                          <fa-icon *ngIf="sortOrder === ExplorerPageSortOrder.AZ_DESC" icon="sort-alpha-down"></fa-icon>
+                          <fa-icon *ngIf="sortOrder === ExplorerPageSortOrder.AZ" icon="sort-alpha-up"></fa-icon>
+                        </button>
+                      </th>
+                      <th>
+                        <button (click)="toggleUsersSorting()" class="btn btn-link btn-no-block">
+                          {{ "Users" | translate }}
+                          <fa-icon
+                            *ngIf="sortOrder === ExplorerPageSortOrder.USERS_DESC"
+                            icon="sort-numeric-down"
+                          ></fa-icon>
+                          <fa-icon *ngIf="sortOrder === ExplorerPageSortOrder.USERS" icon="sort-numeric-up"></fa-icon>
+                        </button>
+                      </th>
+                      <th>
+                        <button (click)="toggleImagesSorting()" class="btn btn-link btn-no-block">
+                          {{ "Images" | translate }}
+                          <fa-icon
+                            *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES_DESC"
+                            icon="sort-numeric-down"
+                          ></fa-icon>
+                          <fa-icon *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES" icon="sort-numeric-up"></fa-icon>
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let brand of brands" data-id="{{ brand.id }}">
+                      <td>
+                        <a
+                          (click)="viewBrand(brand)"
+                          [href]="'/equipment/explorer/brand/' + brand.id + '/' + UtilsService.slugify(brand.name)"
+                          astrobinEventPreventDefault
+                        >
+                          {{ brand.name }}
+                        </a>
+                      </td>
+                      <td>{{ brand.userCount }}</td>
+                      <td>{{ brand.imageCount }}</td>
+                    </tr>
                   </tbody>
                 </table>
 
@@ -225,7 +231,6 @@
               <!-- items$ -->
             </ng-container>
             <!-- !activeBrand -->
-
           </ng-container>
         </div>
         <!-- brand main col -->

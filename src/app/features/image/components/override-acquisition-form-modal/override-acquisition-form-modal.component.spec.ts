@@ -1,13 +1,14 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { OverrideAcquisitionFormModalComponent } from "./override-acquisition-form-modal.component";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { MockBuilder } from "ng-mocks";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { ImageEditService } from "@features/image/services/image-edit.service";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { ImageEditService } from "@features/image/services/image-edit.service";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { OverrideAcquisitionFormModalComponent } from "./override-acquisition-form-modal.component";
 
 describe("CopyAcquisitionSessionsFromAnotherImageModalComponent", () => {
   let component: OverrideAcquisitionFormModalComponent;

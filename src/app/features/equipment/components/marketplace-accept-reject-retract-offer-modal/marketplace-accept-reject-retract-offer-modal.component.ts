@@ -1,12 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import type { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { LoadingService } from "@core/services/loading.service";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-marketplace-accept-reject-retract-offer-modal",

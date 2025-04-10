@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { MountInterface, MountType } from "@features/equipment/types/mount.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { Observable, of } from "rxjs";
 import { UtilsService } from "@core/services/utils/utils.service";
+import type { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import type { MountInterface } from "@features/equipment/types/mount.interface";
+import { MountType } from "@features/equipment/types/mount.interface";
+import { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
 
 export enum MountDisplayProperty {
   TYPE = "TYPE",
@@ -65,8 +67,7 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
   getPrintableProperty$(
     item: MountInterface,
     property: MountDisplayProperty,
-    propertyValue?: any,
-    shortForm?: boolean
+    propertyValue?: any
   ): Observable<string | null> {
     let result: string;
 

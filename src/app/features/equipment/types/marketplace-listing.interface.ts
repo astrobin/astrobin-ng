@@ -1,23 +1,23 @@
-import { UserInterface } from "@core/interfaces/user.interface";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 
 export enum MarketplaceListingType {
   FOR_SALE = "FOR_SALE",
-  WANTED = "WANTED",
+  WANTED = "WANTED"
 }
 
 export enum MarketplaceListingShippingMethod {
   STANDARD_MAIL = "STANDARD_MAIL",
   COURIER = "COURIER",
   ELECTRONIC = "ELECTRONIC",
-  OTHER = "OTHER",
+  OTHER = "OTHER"
 }
 
 export enum MarketplaceListingExpiration {
   ONE_WEEK = "ONE_WEEK",
   TWO_WEEKS = "TWO_WEEKS",
-  ONE_MONTH = "ONE_MONTH",
+  ONE_MONTH = "ONE_MONTH"
 }
 
 export interface MarketplaceListingInterface {

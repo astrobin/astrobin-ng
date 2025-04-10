@@ -1,22 +1,137 @@
 /* eslint-disable max-classes-per-file */
 
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
-import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
-import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import {
-  AcceptCollaboratorRequest, AcceptCollaboratorRequestFailure, AcceptCollaboratorRequestSuccess, DeleteImage, DeleteImageFailure, DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, DenyCollaboratorRequest, DenyCollaboratorRequestFailure, DenyCollaboratorRequestSuccess, FindImages, FindImagesFailure, FindImagesSuccess, ForceCheckImageAutoLoad, ForceCheckTogglePropertyAutoLoad, LoadImage, LoadImageFailure, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, RemoveCollaborator, RemoveCollaboratorFailure, RemoveCollaboratorSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, SubmitImageForIotdTpConsideration, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UndeleteImage, UndeleteImageFailure, UndeleteImageSuccess, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess
+import type { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import type { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
+import type {
+  AddImageToCollection,
+  AddImageToCollectionFailure,
+  AddImageToCollectionSuccess,
+  CreateCollection,
+  CreateCollectionFailure,
+  CreateCollectionSuccess,
+  DeleteCollection,
+  DeleteCollectionFailure,
+  DeleteCollectionSuccess,
+  FindCollections,
+  FindCollectionsFailure,
+  FindCollectionsSuccess,
+  LoadCollections,
+  LoadCollectionsFailure,
+  LoadCollectionsSuccess,
+  RemoveImageFromCollection,
+  RemoveImageFromCollectionFailure,
+  RemoveImageFromCollectionSuccess,
+  SetCollectionCoverImage,
+  SetCollectionCoverImageFailure,
+  SetCollectionCoverImageSuccess,
+  UpdateCollection,
+  UpdateCollectionFailure,
+  UpdateCollectionSuccess
+} from "@app/store/actions/collection.actions";
+import type { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
+import type { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import type { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
+import type {
+  AcceptCollaboratorRequest,
+  AcceptCollaboratorRequestFailure,
+  AcceptCollaboratorRequestSuccess,
+  DeleteImage,
+  DeleteImageFailure,
+  DeleteImageRevision,
+  DeleteImageRevisionFailure,
+  DeleteImageRevisionSuccess,
+  DeleteImageSuccess,
+  DeleteImageUncompressedSourceFile,
+  DeleteImageUncompressedSourceFileFailure,
+  DeleteImageUncompressedSourceFileSuccess,
+  DeleteOriginalImage,
+  DeleteOriginalImageFailure,
+  DeleteOriginalImageSuccess,
+  DenyCollaboratorRequest,
+  DenyCollaboratorRequestFailure,
+  DenyCollaboratorRequestSuccess,
+  FindImages,
+  FindImagesFailure,
+  FindImagesSuccess,
+  ForceCheckImageAutoLoad,
+  ForceCheckTogglePropertyAutoLoad,
+  LoadImage,
+  LoadImageFailure,
+  LoadImages,
+  LoadImagesSuccess,
+  LoadImageSuccess,
+  MarkImageAsFinal,
+  MarkImageAsFinalFailure,
+  MarkImageAsFinalSuccess,
+  PublishImage,
+  PublishImageFailure,
+  PublishImageSuccess,
+  RemoveCollaborator,
+  RemoveCollaboratorFailure,
+  RemoveCollaboratorSuccess,
+  SaveImage,
+  SaveImageFailure,
+  SaveImageRevision,
+  SaveImageRevisionFailure,
+  SaveImageRevisionSuccess,
+  SaveImageSuccess,
+  SetImage,
+  SubmitImageForIotdTpConsideration,
+  SubmitImageForIotdTpConsiderationFailure,
+  SubmitImageForIotdTpConsiderationSuccess,
+  UndeleteImage,
+  UndeleteImageFailure,
+  UndeleteImageSuccess,
+  UnpublishImage,
+  UnpublishImageFailure,
+  UnpublishImageSuccess
 } from "@app/store/actions/image.actions";
-import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
-import { LoadSolution, LoadSolutionFailure, LoadSolutions, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
-import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
-import { LoadThumbnail, LoadThumbnailCancel, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
-import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
-import { ApproveNestedComment, ApproveNestedCommentFailure, ApproveNestedCommentSuccess, CreateNestedComment, CreateNestedCommentFailure, CreateNestedCommentSuccess, DeleteNestedComment, DeleteNestedCommentFailure, DeleteNestedCommentSuccess, LoadNestedComment, LoadNestedCommentFailure, LoadNestedComments, LoadNestedCommentsSuccess, LoadNestedCommentSuccess, UpdateNestedComment, UpdateNestedCommentFailure, UpdateNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
-import { CreateToggleProperty, CreateTogglePropertyFailure, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertyFailure, DeleteTogglePropertySuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
-import { LoadRemoteSourceAffiliates, LoadRemoteSourceAffiliatesFailure, LoadRemoteSourceAffiliatesSuccess } from "@app/store/actions/remote-source-affiliates.actions";
-import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, CreateCollection, CreateCollectionFailure, CreateCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, SetCollectionCoverImage, SetCollectionCoverImageFailure, SetCollectionCoverImageSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
-import { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
+import type { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
+import type { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
+import type {
+  ApproveNestedComment,
+  ApproveNestedCommentFailure,
+  ApproveNestedCommentSuccess,
+  CreateNestedComment,
+  CreateNestedCommentFailure,
+  CreateNestedCommentSuccess,
+  DeleteNestedComment,
+  DeleteNestedCommentFailure,
+  DeleteNestedCommentSuccess,
+  LoadNestedComment,
+  LoadNestedCommentFailure,
+  LoadNestedComments,
+  LoadNestedCommentsSuccess,
+  LoadNestedCommentSuccess,
+  UpdateNestedComment,
+  UpdateNestedCommentFailure,
+  UpdateNestedCommentSuccess
+} from "@app/store/actions/nested-comments.actions";
+import type {
+  LoadRemoteSourceAffiliates,
+  LoadRemoteSourceAffiliatesFailure,
+  LoadRemoteSourceAffiliatesSuccess
+} from "@app/store/actions/remote-source-affiliates.actions";
+import type {
+  LoadSolution,
+  LoadSolutionFailure,
+  LoadSolutions,
+  LoadSolutionsSuccess,
+  LoadSolutionSuccess
+} from "@app/store/actions/solution.actions";
+import type { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
+import type { LoadThumbnail, LoadThumbnailCancel, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
+import type {
+  CreateToggleProperty,
+  CreateTogglePropertyFailure,
+  CreateTogglePropertySuccess,
+  DeleteToggleProperty,
+  DeleteTogglePropertyFailure,
+  DeleteTogglePropertySuccess,
+  LoadToggleProperty,
+  LoadTogglePropertyFailure,
+  LoadTogglePropertySuccess
+} from "@app/store/actions/toggle-property.actions";
 
 export enum AppActionTypes {
   INITIALIZE = "[App] Initialize",

@@ -1,4 +1,4 @@
-import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
+import type { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
 
 export enum NotificationMedium {
   ON_SITE,

@@ -1,43 +1,48 @@
-import { Injectable } from "@angular/core";
-import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { EMPTY, Observable, of } from "rxjs";
-import { EquipmentItemBaseInterface, EquipmentItemReviewerRejectionReason, EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { catchError, expand, map, reduce, switchMap, take } from "rxjs/operators";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { Injectable } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
 import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { BaseService } from "@core/services/base.service";
+import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { MountInterface } from "@features/equipment/types/mount.interface";
-import { FilterInterface } from "@features/equipment/types/filter.interface";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import type { ExplorerFilterInterface } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
-import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
-import { ExplorerFilterInterface } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { ContributorInterface } from "@features/equipment/types/contributor.interface";
+import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import type { BrandInterface } from "@features/equipment/types/brand.interface";
+import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import type { ContributorInterface } from "@features/equipment/types/contributor.interface";
+import type { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type {
+  EquipmentItemBaseInterface,
+  EquipmentItemReviewerRejectionReason,
+  EquipmentItemUsageType
+} from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
+import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import type { FilterInterface } from "@features/equipment/types/filter.interface";
+import type { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import type { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
+import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import type { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import type { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import type { MountInterface } from "@features/equipment/types/mount.interface";
+import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import type { SoftwareInterface } from "@features/equipment/types/software.interface";
+import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
-import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
-import { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
-import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import { TranslateService } from "@ngx-translate/core";
+import { EMPTY, Observable, of } from "rxjs";
+import { catchError, expand, map, reduce, switchMap, take } from "rxjs/operators";
 
 export interface AllEquipmentItemsOptionsInterface {
   brand?: BrandInterface["id"];
@@ -55,7 +60,7 @@ export enum EquipmentItemsSortOrder {
   USERS = "users",
   USERS_DESC = "-users",
   IMAGES = "images",
-  IMAGES_DESC = "-images",
+  IMAGES_DESC = "-images"
 }
 
 @Injectable({
@@ -300,7 +305,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   ): Observable<EquipmentItemBaseInterface> | null {
     if (properties.allowUnapproved) {
       properties["allow-unapproved"] = properties.allowUnapproved;
-      delete properties.allowUnapproved
+      delete properties.allowUnapproved;
     }
 
     const path = EquipmentItemType[type].toLowerCase();
@@ -444,10 +449,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     updatedPreset: EquipmentPresetInterface
   ): Observable<EquipmentPresetInterface> {
     if (preset.imageFile && UtilsService.isArray(preset.imageFile) && preset.imageFile.length > 0) {
-      return this.uploadEquipmentPresetImage(
-        updatedPreset.id,
-        (preset.imageFile as { file: File }[])[0].file
-      ).pipe(
+      return this.uploadEquipmentPresetImage(updatedPreset.id, (preset.imageFile as { file: File }[])[0].file).pipe(
         take(1),
         catchError(error => {
           let message = "";
@@ -467,7 +469,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     } else if (preset.imageFile && UtilsService.isArray(preset.imageFile) && preset.imageFile.length === 0) {
       return this.clearEquipmentPresetImage(updatedPreset.id).pipe(
         take(1),
-        catchError(error => {
+        catchError(() => {
           this.popNotificationService.warning(
             this.translateService.instant(
               `Something went wrong with clearing the image, but this setup was updated anyway.`
@@ -484,12 +486,11 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   private _saveEquipmentPreset(
     preset: EquipmentPresetInterface,
-    method: 'post' | 'put'
+    method: "post" | "put"
   ): Observable<EquipmentPresetInterface> {
-    const { imageFile, thumbnail, ...presetWithoutImage } = preset;
-    const url = method === 'post'
-      ? `${this.configUrl}/equipment-preset/`
-      : `${this.configUrl}/equipment-preset/${preset.id}/`;
+    const { ...presetWithoutImage } = preset;
+    const url =
+      method === "post" ? `${this.configUrl}/equipment-preset/` : `${this.configUrl}/equipment-preset/${preset.id}/`;
 
     return this.http[method]<EquipmentPresetInterface>(url, presetWithoutImage).pipe(
       take(1),
@@ -498,14 +499,17 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   createEquipmentPreset(preset: EquipmentPresetInterface): Observable<EquipmentPresetInterface> {
-    return this._saveEquipmentPreset(preset, 'post');
+    return this._saveEquipmentPreset(preset, "post");
   }
 
   updateEquipmentPreset(preset: EquipmentPresetInterface): Observable<EquipmentPresetInterface> {
-    return this._saveEquipmentPreset(preset, 'put');
+    return this._saveEquipmentPreset(preset, "put");
   }
 
-  uploadEquipmentPresetImage(id: EquipmentPresetInterface["id"], imageFile: File): Observable<EquipmentPresetInterface> {
+  uploadEquipmentPresetImage(
+    id: EquipmentPresetInterface["id"],
+    imageFile: File
+  ): Observable<EquipmentPresetInterface> {
     const formData: FormData = new FormData();
     formData.append("image_file", imageFile);
 
@@ -657,7 +661,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   createBrand(brand: Omit<BrandInterface, "id">): Observable<BrandInterface> {
-    const { logo, ...brandWithoutLogo } = brand;
+    const { ...brandWithoutLogo } = brand;
 
     return new Observable<BrandInterface>(observer => {
       this.http
@@ -821,9 +825,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   getMount(id: MountInterface["id"]): Observable<MountInterface> {
-    return this.http
-      .get<MountInterface>(`${this.configUrl}/mount/${id}/`)
-      .pipe(map(mount => this._parseMount(mount)));
+    return this.http.get<MountInterface>(`${this.configUrl}/mount/${id}/`).pipe(map(mount => this._parseMount(mount)));
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -897,9 +899,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     Object.keys(options).forEach(key => {
       const value = options[key];
-      if (value != null && value !== "" && value !== "undefined") {
+      if (value !== null && value !== "" && value !== "undefined") {
         const paramKey = UtilsService.camelCaseToSnakeCase(key);
-        let valueStr = value.toString();
+        const valueStr = value.toString();
         url = UtilsService.addOrUpdateUrlParam(url, paramKey, valueStr);
       }
     });
@@ -915,10 +917,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   public createMarketplaceListing(
     listing: Omit<MarketplaceListingInterface, "id">
   ): Observable<MarketplaceListingInterface> {
-    return this.http.post<MarketplaceListingInterface>(
-      `${this.configUrl}/marketplace/listing/`,
-      (({ lineItems, ...rest }) => rest)(listing)
-    );
+    return this.http.post<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/`, listing);
   }
 
   public loadMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<MarketplaceListingInterface> {
@@ -943,10 +942,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   public updateMarketplaceListing(listing: MarketplaceListingInterface): Observable<MarketplaceListingInterface> {
-    return this.http.put<MarketplaceListingInterface>(
-      `${this.configUrl}/marketplace/listing/${listing.id}/`,
-      (({ lineItems, ...rest }) => rest)(listing)
-    );
+    return this.http.put<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/${listing.id}/`, listing);
   }
 
   public deleteMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<void> {
@@ -966,7 +962,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   ): Observable<MarketplaceLineItemInterface> {
     return this.http.post<MarketplaceLineItemInterface>(
       `${this.configUrl}/marketplace/listing/${lineItem.listing}/line-item/`,
-      (({ images, ...rest }) => rest)(lineItem)
+      lineItem
     );
   }
 
@@ -977,7 +973,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     return this.http.put<MarketplaceLineItemInterface>(
       `${this.configUrl}/marketplace/listing/${lineItem.listing}/line-item/${lineItem.id}/`,
-      (({ images, ...rest }) => rest)(lineItem)
+      lineItem
     );
   }
 
@@ -1126,7 +1122,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.post<MarketplaceFeedbackInterface>(url, feedback);
   }
 
-  public getMarketplaceFeedback(listingId: MarketplaceListingInterface["id"]): Observable<MarketplaceFeedbackInterface[]> {
+  public getMarketplaceFeedback(
+    listingId: MarketplaceListingInterface["id"]
+  ): Observable<MarketplaceFeedbackInterface[]> {
     const url = `${this.configUrl}/marketplace/listing/${listingId}/feedback/`;
 
     return this.http.get<MarketplaceFeedbackInterface[]>(url);
@@ -1188,8 +1186,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         sensorWidth: item.sensorWidth !== null ? parseFloat(item.sensorWidth as unknown as string) : null,
         sensorHeight: item.sensorHeight !== null ? parseFloat(item.sensorHeight as unknown as string) : null,
         readNoise: item.readNoise !== null ? parseFloat(item.readNoise as unknown as string) : null,
-        fullWellCapacity:
-          item.fullWellCapacity !== null ? parseFloat(item.fullWellCapacity as unknown as string) : null
+        fullWellCapacity: item.fullWellCapacity !== null ? parseFloat(item.fullWellCapacity as unknown as string) : null
       }
     };
   }
@@ -1244,7 +1241,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   private _createItem<T extends EquipmentItemBaseInterface>(item: Omit<T, "id">, path: string): Observable<T> {
-    const { image, thumbnail, ...itemWithoutImage } = item;
+    const { ...itemWithoutImage } = item;
 
     if (itemWithoutImage.diy) {
       itemWithoutImage.brand = null;
@@ -1315,7 +1312,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     item: Omit<EditProposalInterface<T>, "id">,
     path: string
   ): Observable<EditProposalInterface<T>> {
-    const { image, thumbnail, ...itemWithoutImage } = item;
+    const { ...itemWithoutImage } = item;
 
     return new Observable<EditProposalInterface<T>>(observer => {
       this.http

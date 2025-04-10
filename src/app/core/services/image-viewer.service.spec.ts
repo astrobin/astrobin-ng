@@ -1,15 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-
-import { ImageViewerService } from './image-viewer.service';
-import { MockBuilder } from "ng-mocks";
+import { TestBed } from "@angular/core/testing";
+import { Router } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 import { EMPTY, of } from "rxjs";
-import { Router } from "@angular/router";
 
-describe('ImageViewerService', () => {
+import { ImageViewerService } from "./image-viewer.service";
+
+describe("ImageViewerService", () => {
   let service: ImageViewerService;
 
   beforeEach(async () => {
@@ -26,7 +26,7 @@ describe('ImageViewerService', () => {
     service = TestBed.inject(ImageViewerService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

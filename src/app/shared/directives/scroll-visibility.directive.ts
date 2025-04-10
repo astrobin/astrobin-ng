@@ -1,8 +1,10 @@
-import { Directive, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
-import { WindowRefService } from "@core/services/window-ref.service";
+import type { OnDestroy, OnInit } from "@angular/core";
+import { Directive, ElementRef, EventEmitter, Inject, Input, Output, PLATFORM_ID } from "@angular/core";
 import { UtilsService, ViewportCheckOptions } from "@core/services/utils/utils.service";
-import { fromEvent, merge, Subject, Subscription } from "rxjs";
+import { WindowRefService } from "@core/services/window-ref.service";
+import type { Subscription } from "rxjs";
+import { fromEvent, merge, Subject } from "rxjs";
 import { auditTime, takeUntil } from "rxjs/operators";
 
 @Directive({
@@ -26,7 +28,7 @@ export class ScrollVisibilityDirective implements OnInit, OnDestroy {
 
   constructor(
     private elementRef: ElementRef,
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId: object,
     private windowRefService: WindowRefService,
     private utilsService: UtilsService
   ) {
@@ -60,42 +62,37 @@ export class ScrollVisibilityDirective implements OnInit, OnDestroy {
     }
 
     const delay = this.delays[this._checkAttempts];
-    this.utilsService.delay(delay).pipe(
-      takeUntil(this._destroyed$)
-    ).subscribe(() => {
-      this._checkVisibility();
+    this.utilsService
+      .delay(delay)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(() => {
+        this._checkVisibility();
 
-      // If still not visible and not reached max attempts, try again
-      if (!this._isVisible) {
-        this._checkAttempts++;
-        this._checkWithBackoff();
-      }
-    });
+        // If still not visible and not reached max attempts, try again
+        if (!this._isVisible) {
+          this._checkAttempts++;
+          this._checkWithBackoff();
+        }
+      });
   }
 
   private _setupScrollListener() {
-    const scrollElement = UtilsService.getScrollableParent(
-      this.elementRef.nativeElement,
-      this.windowRefService
-    );
+    const scrollElement = UtilsService.getScrollableParent(this.elementRef.nativeElement, this.windowRefService);
 
     const scroll$ = fromEvent(scrollElement, "scroll");
     const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize");
 
-    this._scrollSubscription = merge(scroll$, resize$).pipe(
-      auditTime(100),
-      takeUntil(this._destroyed$)
-    ).subscribe(() => {
-      this._checkVisibility();
-    });
+    this._scrollSubscription = merge(scroll$, resize$)
+      .pipe(auditTime(100), takeUntil(this._destroyed$))
+      .subscribe(() => {
+        this._checkVisibility();
+      });
   }
 
   private _checkVisibility() {
     const wasVisible = this._isVisible;
-    this._isVisible = this.forceVisible || this.utilsService.isNearOrInViewport(
-      this.elementRef.nativeElement,
-      this.viewportOptions
-    );
+    this._isVisible =
+      this.forceVisible || this.utilsService.isNearOrInViewport(this.elementRef.nativeElement, this.viewportOptions);
 
     if (wasVisible !== this._isVisible) {
       this.visibilityChange.emit(this._isVisible);

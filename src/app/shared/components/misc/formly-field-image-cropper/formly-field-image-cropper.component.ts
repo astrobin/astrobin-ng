@@ -1,17 +1,19 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, PLATFORM_ID } from "@angular/core";
-import { MainState } from "@app/store/state";
+import { isPlatformBrowser } from "@angular/common";
+import type { OnDestroy } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
 import { selectImageEditorState } from "@features/image/store/image.selectors";
 import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
-import { fromEvent, Subscription } from "rxjs";
+import type { CropperPosition, Dimensions, ImageCroppedEvent } from "ngx-image-cropper";
+import type { Subscription } from "rxjs";
+import { fromEvent } from "rxjs";
 import { debounceTime, filter, map, take, tap } from "rxjs/operators";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { isPlatformBrowser } from "@angular/common";
-import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-formly-field-image-cropper",
@@ -28,16 +30,14 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
   ratio: number;
   cropperReady = false;
   firstReset = false;
-  showCropper$ = this.store$
-    .select(selectImageEditorState)
-    .pipe(
-      map(state => state.cropperShown),
-      tap(cropperShown => {
-        if (cropperShown) {
-          this.onCropperReady(null);
-        }
-      })
-    );
+  showCropper$ = this.store$.select(selectImageEditorState).pipe(
+    map(state => state.cropperShown),
+    tap(cropperShown => {
+      if (cropperShown) {
+        this.onCropperReady(null);
+      }
+    })
+  );
 
   private readonly _resizeEventSubscription: Subscription;
 
@@ -46,7 +46,7 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
     public readonly windowRefService: WindowRefService,
     public readonly popNotificationService: PopNotificationsService,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super();
@@ -89,7 +89,7 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
       this.ratio = image.w / dimensions.width;
 
       this.cropper = {
-        x1: parseInt(image.squareCropping.split(",")[0], 10)/ this.ratio,
+        x1: parseInt(image.squareCropping.split(",")[0], 10) / this.ratio,
         y1: parseInt(image.squareCropping.split(",")[1], 10) / this.ratio,
         x2: parseInt(image.squareCropping.split(",")[2], 10) / this.ratio,
         y2: parseInt(image.squareCropping.split(",")[3], 10) / this.ratio
@@ -100,12 +100,12 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
       const size = Math.min(w, h);
 
       // Calculate the coordinates of the top left corner of the square
-      let x1 = (w - size) / 2;
-      let y1 = (h - size) / 2;
+      const x1 = (w - size) / 2;
+      const y1 = (h - size) / 2;
 
       // Calculate the coordinates of the bottom right corner of the square
-      let x2 = x1 + size;
-      let y2 = y1 + size;
+      const x2 = x1 + size;
+      const y2 = y1 + size;
 
       this.cropper = {
         x1,
@@ -134,7 +134,7 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
     }
   }
 
-  onImageLoaded(imageLoaded: LoadedImage) {
+  onImageLoaded() {
     this.cropperReady = true;
   }
 

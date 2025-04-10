@@ -1,6 +1,7 @@
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
-import { FilterInterface, FilterSize, FilterType } from "@features/equipment/types/filter.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { FilterInterface } from "@features/equipment/types/filter.interface";
+import { FilterSize, FilterType } from "@features/equipment/types/filter.interface";
 
 export class FilterGenerator {
   static filter(source: Partial<FilterInterface> = {}): FilterInterface {

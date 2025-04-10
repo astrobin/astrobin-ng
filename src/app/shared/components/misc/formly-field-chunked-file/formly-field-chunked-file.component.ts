@@ -1,22 +1,25 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, NgZone, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { FieldType } from "@ngx-formly/core";
-import { TranslateService } from "@ngx-translate/core";
-import { FileUpload } from "@shared/components/misc/formly-field-chunked-file/file-upload";
-import { Constants } from "@shared/constants";
+import type { OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone } from "@angular/core";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import type { MainState } from "@app/store/state";
 import { AuthService } from "@core/services/auth.service";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { Tus, UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
-import { forkJoin, Observable, of, Subscription, switchMap } from "rxjs";
-import { filter, map, take } from "rxjs/operators";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { Store } from "@ngrx/store";
+import { FieldType } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
+import { FileUpload } from "@shared/components/misc/formly-field-chunked-file/file-upload";
+import { Constants } from "@shared/constants";
+import type { UploadState, UploadxOptions } from "ngx-uploadx";
+import { Tus, UploadxService } from "ngx-uploadx";
+import type { Subscription } from "rxjs";
+import { forkJoin, Observable, of, switchMap } from "rxjs";
+import { filter, map, take } from "rxjs/operators";
 
 // PLEASE NOTE: due to the usage of the UploadDataService, there can be only one chunked file upload field on a page
 // at any given time.
@@ -136,10 +139,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       .subscribe(backendConfig => {
         this.uploadOptions = {
           ...this.uploadOptions,
-          maxChunkSize: Math.min(
-            this.uploadOptions.maxChunkSize,
-            backendConfig.DATA_UPLOAD_MAX_MEMORY_SIZE
-          )
+          maxChunkSize: Math.min(this.uploadOptions.maxChunkSize, backendConfig.DATA_UPLOAD_MAX_MEMORY_SIZE)
         };
         this._initUploader();
         this.changeDetectorRef.markForCheck();
@@ -242,8 +242,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
           case 0:
             message = this.translateService.instant(
               "AstroBin could not connect to the server. Often this is caused by an anti-virus or privacy " +
-              "extension that blocks the connection. Please try disabling them and try again. If the problem " +
-              "persists, please contact us."
+                "extension that blocks the connection. Please try disabling them and try again. If the problem " +
+                "persists, please contact us."
             );
             break;
           default:
@@ -282,9 +282,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     });
 
     this._metadataChangesSubscription = this.uploadDataService.metadataChanges$
-      .pipe(
-        filter(event => !!event)
-      )
+      .pipe(filter(event => !!event))
       .subscribe(event => {
         this.uploadOptions = {
           ...this.uploadOptions,
@@ -315,54 +313,56 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
   private _checkFileSize(filename: string, size: number): Observable<boolean> {
     return new Observable<boolean>(observer => {
-      this.store$.select(selectBackendConfig).pipe(
-        filter(backendConfig => !!backendConfig),
-        take(1),
-        switchMap(backendConfig => {
-          if (!!backendConfig.MAX_FILE_SIZE && size > backendConfig.MAX_FILE_SIZE) {
-            this.popNotificationsService.error(
-              this.translateService.instant(
-                "Sorry, but this file is too large. For technical reasons, the largest size that's possible on " +
-                "AstroBin is {{max}}.",
-                {
-                  max: UtilsService.humanFileSize(backendConfig.MAX_FILE_SIZE)
-                }
-              )
-            );
-            observer.next(false);
-            observer.complete();
-          } else {
-            return this.userSubscriptionService.fileSizeAllowed(size).pipe(
-              map(result => {
-                if (result.allowed) {
-                  this._warnAboutVeryLargeFile(filename, size);
-                  observer.next(true);
-                } else {
-                  this.popNotificationsService.error(
-                    this.translateService.instant(
-                      "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
-                      "allowed image size is {{max}}.",
-                      {
-                        max: UtilsService.humanFileSize(result.max)
-                      }
-                    )
-                  );
-                  observer.next(false);
-                }
+      this.store$
+        .select(selectBackendConfig)
+        .pipe(
+          filter(backendConfig => !!backendConfig),
+          take(1),
+          switchMap(backendConfig => {
+            if (!!backendConfig.MAX_FILE_SIZE && size > backendConfig.MAX_FILE_SIZE) {
+              this.popNotificationsService.error(
+                this.translateService.instant(
+                  "Sorry, but this file is too large. For technical reasons, the largest size that's possible on " +
+                    "AstroBin is {{max}}.",
+                  {
+                    max: UtilsService.humanFileSize(backendConfig.MAX_FILE_SIZE)
+                  }
+                )
+              );
+              observer.next(false);
+              observer.complete();
+            } else {
+              return this.userSubscriptionService.fileSizeAllowed(size).pipe(
+                map(result => {
+                  if (result.allowed) {
+                    this._warnAboutVeryLargeFile(filename, size);
+                    observer.next(true);
+                  } else {
+                    this.popNotificationsService.error(
+                      this.translateService.instant(
+                        "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
+                          "allowed image size is {{max}}.",
+                        {
+                          max: UtilsService.humanFileSize(result.max)
+                        }
+                      )
+                    );
+                    observer.next(false);
+                  }
 
-                observer.complete();
-              })
-            );
-          }
-        })
-      ).subscribe();
+                  observer.complete();
+                })
+              );
+            }
+          })
+        )
+        .subscribe();
     });
   }
 
   private _checkImageDimensions(file: File): Observable<boolean> {
     if (UtilsService.isImage(file.name)) {
       return new Observable<boolean>(observer => {
-        // @ts-ignore
         const image = new Image();
 
         image.onerror = () => {
@@ -453,8 +453,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         message =
           this.translateService.instant(
             "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
-            "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 500 MB or " +
-            "~16000x16000 pixels will work. Feel free to give it a shot tho!"
+              "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 500 MB or " +
+              "~16000x16000 pixels will work. Feel free to give it a shot tho!"
           ) +
           " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
           this.translateService.instant("Learn more") +
@@ -463,7 +463,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         message =
           this.translateService.instant(
             "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
-            "people will want to see it at its full resolution, if it will take too long for them to download it."
+              "people will want to see it at its full resolution, if it will take too long for them to download it."
           ) +
           " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
           this.translateService.instant("Learn more") +

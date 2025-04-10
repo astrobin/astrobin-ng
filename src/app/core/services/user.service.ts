@@ -1,19 +1,19 @@
 import { Injectable } from "@angular/core";
-import { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
+import { Router } from "@angular/router";
+import type { MainState } from "@app/store/state";
+import type { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
+import type { CollectionInterface } from "@core/interfaces/collection.interface";
+import type { GroupInterface } from "@core/interfaces/group.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
 import { BaseService } from "@core/services/base.service";
-import { UserServiceInterface } from "@core/services/user.service-interface";
-import { Observable } from "rxjs";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
+import type { UserServiceInterface } from "@core/services/user.service-interface";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { LoadingService } from "@core/services/loading.service";
-import { GroupInterface } from "@core/interfaces/group.interface";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { Router } from "@angular/router";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { ImageViewerService } from "@core/services/image-viewer.service";
+import type { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"
@@ -76,12 +76,12 @@ export class UserService extends BaseService implements UserServiceInterface {
       return `/u/${username}?collection=${collectionId}#${fragment}`;
     }
 
-    return this.classicRoutesService.GALLERY(username) + 'collections/' + collectionId;
+    return this.classicRoutesService.GALLERY(username) + "collections/" + collectionId;
   }
 
   openGallery(username: UserInterface["username"], newGalleryExperience: boolean): void {
     if (newGalleryExperience) {
-      this.router.navigateByUrl('/u/' + username).then(() => {
+      this.router.navigateByUrl("/u/" + username).then(() => {
         this.imageViewerService.closeSlideShow(false);
       });
     } else {
@@ -91,7 +91,7 @@ export class UserService extends BaseService implements UserServiceInterface {
 
   openStaging(username: UserInterface["username"], newGalleryExperience: boolean): void {
     if (newGalleryExperience) {
-      this.router.navigateByUrl('/u/' + username + '#staging').then(() => {
+      this.router.navigateByUrl("/u/" + username + "#staging").then(() => {
         this.imageViewerService.closeSlideShow(false);
       });
     } else {

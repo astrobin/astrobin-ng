@@ -1,4 +1,4 @@
-import { ImageAlias } from "@core/enums/image-alias.enum";
+import type { ImageAlias } from "@core/enums/image-alias.enum";
 
 export interface ImageThumbnailInterface {
   id: number;

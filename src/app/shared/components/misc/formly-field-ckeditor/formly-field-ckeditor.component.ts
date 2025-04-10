@@ -1,11 +1,11 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, PLATFORM_ID } from "@angular/core";
-import { FieldType } from "@ngx-formly/core";
-import { TranslateService } from "@ngx-translate/core";
+import { isPlatformServer } from "@angular/common";
+import type { AfterViewInit, OnDestroy } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { CKEditorService } from "@core/services/ckeditor.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { isPlatformServer } from "@angular/common";
-
+import { FieldType } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-formly-field-ckeditor",
@@ -21,7 +21,7 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
     public readonly ckeditorService: CKEditorService,
     public readonly utilsService: UtilsService,
     public readonly windowRefService: WindowRefService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super();
@@ -63,13 +63,13 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
         this.changeDetectorRef.detectChanges();
         this.utilsService.delay(20).subscribe(() => {
           // Find the .cke_wysiwyg_div element.
-          const wysiwygDiv = this.windowRefService.nativeWindow.document.querySelector(
+          const wysiwygDiv: HTMLElement = this.windowRefService.nativeWindow.document.querySelector(
             `#cke_${this.field.id} .cke_wysiwyg_div`
           );
 
           // Set its min-height to prop.height or 300.
           if (wysiwygDiv) {
-            wysiwygDiv["style"].minHeight = `${this.field?.props?.height || 300}px`;
+            wysiwygDiv.style.minHeight = `${this.field?.props?.height || 300}px`;
           }
         });
       } else {
@@ -132,7 +132,8 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
       return;
     }
 
-    this.ckeditorService.loadCKEditor()
+    this.ckeditorService
+      .loadCKEditor()
       .then(() => {
         const document = this.windowRefService.nativeWindow.document;
         const editorBase = document.getElementById(this.field.id);
@@ -155,8 +156,8 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
 
         // Setup error handler for any CKEditor creation errors
         if (typeof win.CKEDITOR.on === "function" && !win.CKEDITOR._errorHandlerAdded) {
-          win.CKEDITOR.on("instanceCreated", (event) => {
-            event.editor.on("error", (errorEvent) => {
+          win.CKEDITOR.on("instanceCreated", event => {
+            event.editor.on("error", errorEvent => {
               console.warn("CKEditor instance error intercepted:", errorEvent.data);
               errorEvent.cancel(); // Prevent errors from stopping editor functionality
             });

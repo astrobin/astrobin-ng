@@ -1,13 +1,14 @@
-import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
+import type { AfterViewInit, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { LoadTelescope } from "@app/store/actions/telescope.actions";
 import { selectTelescope } from "@app/store/selectors/app/telescope.selectors";
-import { MainState } from "@app/store/state";
+import type { MainState } from "@app/store/state";
+import type { TelescopeInterface } from "@core/interfaces/telescope.interface";
+import { GearService } from "@core/services/gear/gear.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { TelescopeInterface } from "@core/interfaces/telescope.interface";
-import { GearService } from "@core/services/gear/gear.service";
-import { Observable } from "rxjs";
-import { UtilsService } from "@core/services/utils/utils.service";
+import type { Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-telescope",

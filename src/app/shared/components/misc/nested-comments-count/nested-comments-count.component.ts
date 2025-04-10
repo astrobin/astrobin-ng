@@ -1,17 +1,16 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnChanges } from "@angular/core";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { Subscription } from "rxjs";
+import type { OnChanges } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input } from "@angular/core";
 import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
+import type { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import type { Subscription } from "rxjs";
 import { filter, map, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-nested-comments-count",
-  template: `
-    <span class="count">{{ count }}</span>
-  `,
+  template: ` <span class="count">{{ count }}</span> `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NestedCommentsCountComponent extends BaseComponentDirective implements OnChanges {
@@ -31,10 +30,7 @@ export class NestedCommentsCountComponent extends BaseComponentDirective impleme
 
   private _storeSubscription: Subscription;
 
-  constructor(
-    public readonly store$: Store<MainState>,
-    public readonly changeDetectorRef: ChangeDetectorRef
-  ) {
+  constructor(public readonly store$: Store<MainState>, public readonly changeDetectorRef: ChangeDetectorRef) {
     super(store$);
   }
 
@@ -48,17 +44,18 @@ export class NestedCommentsCountComponent extends BaseComponentDirective impleme
     }
 
     // Assume that the nested comments are already loaded.
-    this._storeSubscription = this.store$.select(
-      selectNestedCommentsByContentTypeIdAndObjectId(this.contentType.id, this.objectId)
-    ).pipe(
-      filter(nestedComments => nestedComments !== null),
-      map(nestedComments => nestedComments.length),
-      tap(count => {
-        this.count = count;
-        this.hide = count === 0 && this.hideZero;
-        this.changeDetectorRef.markForCheck();
-      }),
-      takeUntil(this.destroyed$)
-    ).subscribe();
+    this._storeSubscription = this.store$
+      .select(selectNestedCommentsByContentTypeIdAndObjectId(this.contentType.id, this.objectId))
+      .pipe(
+        filter(nestedComments => nestedComments !== null),
+        map(nestedComments => nestedComments.length),
+        tap(count => {
+          this.count = count;
+          this.hide = count === 0 && this.hideZero;
+          this.changeDetectorRef.markForCheck();
+        }),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe();
   }
 }

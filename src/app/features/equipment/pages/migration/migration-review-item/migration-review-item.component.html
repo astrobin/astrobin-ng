@@ -37,9 +37,7 @@
                     <td>{{ migrationStrategy.migrationFlag }}</td>
                   </tr>
                   <tr>
-                    <th scope="col">
-                      Global or Personal
-                    </th>
+                    <th scope="col">Global or Personal</th>
                     <td>
                       <ng-container *ngIf="!migrationStrategy.user">
                         Global
@@ -74,13 +72,13 @@
                   </tr>
                   <tr>
                     <th scope="col">{{ "When" | translate }}</th>
-                    <td>{{ migrationStrategy.migrationFlagTimestamp | timeago: true }}</td>
+                    <td>{{ migrationStrategy.migrationFlagTimestamp | timeago : true }}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <div class="card-footer" *ngIf="showButtonsOnSummary">
+            <div *ngIf="showButtonsOnSummary" class="card-footer">
               <ng-container [ngTemplateOutlet]="buttons"></ng-container>
             </div>
           </div>
@@ -91,16 +89,14 @@
             </div>
 
             <div class="card box-shadow">
-              <div class="card-header">
-                The legacy object will be migrated to the following equipment item
-              </div>
+              <div class="card-header">The legacy object will be migrated to the following equipment item</div>
 
               <div class="card-body">
                 <ng-container *ngIf="equipmentItem; else loading">
                   <astrobin-equipment-item-summary
                     [item]="equipmentItem"
-                    [showMeta]="true"
                     [showEmptyProperties]="true"
+                    [showMeta]="true"
                   ></astrobin-equipment-item-summary>
                 </ng-container>
               </div>
@@ -121,15 +117,15 @@
 </ng-template>
 
 <ng-template #buttons>
-  <button class="btn btn-sm-block btn-success" [class.loading]="loadingService.loading$ | async" (click)="approve()">
+  <button (click)="approve()" [class.loading]="loadingService.loading$ | async" class="btn btn-sm-block btn-success">
     {{ "Approve" | translate }}
   </button>
 
-  <button class="btn btn-sm-block btn-danger" [class.loading]="loadingService.loading$ | async" (click)="reject()">
+  <button (click)="reject()" [class.loading]="loadingService.loading$ | async" class="btn btn-sm-block btn-danger">
     {{ "Reject" | translate }}&hellip;
   </button>
 
-  <button class="btn btn-sm-block btn-secondary" [class.loading]="loadingService.loading$ | async" (click)="exit()">
+  <button (click)="exit()" [class.loading]="loadingService.loading$ | async" class="btn btn-sm-block btn-secondary">
     {{ "Cancel" | translate }}
   </button>
 </ng-template>

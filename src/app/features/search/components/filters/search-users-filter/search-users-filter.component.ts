@@ -1,24 +1,25 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchService } from "@core/services/search.service";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { Actions, ofType } from "@ngrx/effects";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import type { SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import type { LoadUserSuccess } from "@features/account/store/auth.actions";
+import { AuthActionTypes, LoadUser } from "@features/account/store/auth.actions";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
+import type { MatchType } from "@features/search/enums/match-type.enum";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { forkJoin, Observable, of } from "rxjs";
 import { filter, map, take, tap } from "rxjs/operators";
-import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import { MatchType } from "@features/search/enums/match-type.enum";
-import { AuthActionTypes, LoadUser, LoadUserSuccess } from "@features/account/store/auth.actions";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
-import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-users-filter.search-filter-component",
@@ -58,10 +59,14 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
                 tap(userProfiles => {
                   field.props = {
                     ...field.props,
-                    options: of(userProfiles.map(userProfile => ({
-                      value: userProfile.user,
-                      label: userProfile.realName ? `${userProfile.realName} (${userProfile.username})` : userProfile.username
-                    })))
+                    options: of(
+                      userProfiles.map(userProfile => ({
+                        value: userProfile.user,
+                        label: userProfile.realName
+                          ? `${userProfile.realName} (${userProfile.username})`
+                          : userProfile.username
+                      }))
+                    )
                   };
                 })
               );
@@ -72,11 +77,16 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
               const value: { id: UserInterface["id"]; name: string }[] = field.formControl.value;
               if (value) {
                 const arrayValue = UtilsService.isArray(value) ? value : [value];
-                field.props.options = of(arrayValue.map(x => ({
-                  value: x.id,
-                  label: x.name
-                })));
-                field.formControl.setValue(value.map(x => x.id), { emitEvent: false });
+                field.props.options = of(
+                  arrayValue.map(x => ({
+                    value: x.id,
+                    label: x.name
+                  }))
+                );
+                field.formControl.setValue(
+                  value.map(x => x.id),
+                  { emitEvent: false }
+                );
               }
             }
           }
@@ -95,43 +105,40 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
     public readonly actions$: Actions,
     public readonly commonApiService: CommonApiService
   ) {
-    super(
-      store$,
-      translateService,
-      domSanitizer,
-      modalService,
-      searchFilterService
-    );
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   readonly valueTransformer: (value: {
-    value: (UserInterface["id"] | {
-      id: UserInterface["id"];
-      name: string
-    })[],
-    matchType: MatchType
+    value: (
+      | UserInterface["id"]
+      | {
+          id: UserInterface["id"];
+          name: string;
+        }
+    )[];
+    matchType: MatchType;
   }) => Observable<{
     value: {
       id: UserInterface["id"];
-      name: string
-    }[],
-    matchType: MatchType
+      name: string;
+    }[];
+    matchType: MatchType;
   }> = value => {
     const userIds: UserInterface["id"][] = [];
-    value.value.forEach((value: any) => {
-      if (typeof value === "object") {
-        userIds.push(value.id);
+    value.value.forEach((userId: any) => {
+      if (typeof userId === "object") {
+        userIds.push(userId.id);
       } else {
-        userIds.push(value);
+        userIds.push(userId);
       }
     });
 
     return new Observable<{
       value: {
         id: UserInterface["id"];
-        name: string
-      }[],
-      matchType: MatchType
+        name: string;
+      }[];
+      matchType: MatchType;
     }>(observer => {
       const observables$ = userIds.map((id: UserInterface["id"]) =>
         this.actions$.pipe(
@@ -142,17 +149,19 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
         )
       );
 
-      forkJoin(observables$).pipe(take(1)).subscribe((users: UserInterface[]) => {
-        const newValue = {
-          value: users.map(user => ({
-            id: user.id,
-            name: user.displayName === user.username ? user.username : `${user.displayName} (${user.username})`
-          })),
-          matchType: value.matchType
-        };
-        observer.next(newValue);
-        observer.complete();
-      });
+      forkJoin(observables$)
+        .pipe(take(1))
+        .subscribe((users: UserInterface[]) => {
+          const newValue = {
+            value: users.map(user => ({
+              id: user.id,
+              name: user.displayName === user.username ? user.username : `${user.displayName} (${user.username})`
+            })),
+            matchType: value.matchType
+          };
+          observer.next(newValue);
+          observer.complete();
+        });
 
       userIds.forEach((id: UserInterface["id"]) => {
         this.store$.dispatch(new LoadUser({ id }));
@@ -170,14 +179,10 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
     }
 
     if (this.value.value?.length === 1) {
-      return this.domSanitizer.bypassSecurityTrustHtml(
-        this.value?.value[0].name || "..."
-      );
+      return this.domSanitizer.bypassSecurityTrustHtml(this.value?.value[0].name || "...");
     }
 
     const names = this.value.value.map((value: { id: UserInterface["id"]; name: string }) => value.name);
-    return this.domSanitizer.bypassSecurityTrustHtml(
-      names.map((name: string) => name || "...").join(", ")
-    );
+    return this.domSanitizer.bypassSecurityTrustHtml(names.map((name: string) => name || "...").join(", "));
   }
 }

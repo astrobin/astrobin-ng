@@ -1,14 +1,14 @@
 import { ChangeDetectorRef, Component, Inject, PLATFORM_ID } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { Actions } from "@ngrx/effects";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CookieService } from "ngx-cookie";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { MainState } from "@app/store/state";
 import { DeviceService } from "@core/services/device.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { CookieService } from "ngx-cookie";
 
 export enum PendingType {
   PENDING_EDIT = "PENDING_EDIT",
@@ -32,7 +32,7 @@ export class PendingExplorerBaseComponent extends ExplorerBaseComponent {
     public readonly cookieService: CookieService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly changeDetectionRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly deviceService: DeviceService,
     public readonly offcanvasService: NgbOffcanvas
   ) {

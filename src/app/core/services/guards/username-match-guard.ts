@@ -1,29 +1,26 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { Observable } from "rxjs";
-import { select, Store } from "@ngrx/store";
-import { filter, map, switchMap, take } from "rxjs/operators";
-import { selectAuth, selectCurrentUser } from "@features/account/store/auth.selectors";
-import { MainState } from "@app/store/state";
+import type { ActivatedRouteSnapshot, UrlTree } from "@angular/router";
+import { Router } from "@angular/router";
+import type { MainState } from "@app/store/state";
 import { RouterService } from "@core/services/router.service";
+import { selectAuth, selectCurrentUser } from "@features/account/store/auth.selectors";
 import { Actions } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import type { Observable } from "rxjs";
+import { filter, map, switchMap, take } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
 })
-export class UsernameMatchGuard  {
+export class UsernameMatchGuard {
   constructor(
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly router: Router,
     public readonly routerService: RouterService
-  ) {
-  }
+  ) {}
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> {
+  canActivate(route: ActivatedRouteSnapshot): Observable<boolean | UrlTree> {
     const username = route.paramMap.get("username");
 
     return this.store$.pipe(
@@ -44,6 +41,5 @@ export class UsernameMatchGuard  {
         }
       })
     );
-
   }
 }

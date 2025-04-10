@@ -1,7 +1,9 @@
-import { ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
+import type { OnDestroy } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
+import type { FormlyFieldMessage } from "@core/services/formly-field.service";
+import { FormlyFieldService } from "@core/services/formly-field.service";
 import { FieldWrapper } from "@ngx-formly/core";
-import { FormlyFieldMessage, FormlyFieldService } from "@core/services/formly-field.service";
-import { Subscription } from "rxjs";
+import type { Subscription } from "rxjs";
 
 @Component({
   selector: "astrobin-formly-wrapper",

@@ -3,21 +3,21 @@
   height: calc(2.5rem + 2px);
 
   &:not(:last-child) {
-    margin-bottom: .25rem;
+    margin-bottom: 0.25rem;
   }
 
   img {
     width: 2rem;
-    margin: .25rem;
+    margin: 0.25rem;
     float: left;
   }
 
-  .counter{
+  .counter {
     position: absolute;
-    top: calc(50% - .5rem);
-    right: .5rem;
+    top: calc(50% - 0.5rem);
+    right: 0.5rem;
     font-size: 1rem;
     line-height: 1rem;
-    opacity: .5;
+    opacity: 0.5;
   }
 }

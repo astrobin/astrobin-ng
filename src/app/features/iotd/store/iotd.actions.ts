@@ -1,6 +1,8 @@
 /* eslint-disable max-classes-per-file */
 
-import {
+import type { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type {
   DismissedImage,
   HiddenImage,
   IotdInterface,
@@ -9,13 +11,11 @@ import {
   SubmitterSeenImage,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
-import { Action } from "@ngrx/store";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
-import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
-import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
-import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
+import type { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
+import type { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import type { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
+import type { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import type { Action } from "@ngrx/store";
 
 export enum IotdActionTypes {
   // Generic
@@ -117,8 +117,7 @@ export class LoadStaffMemberSettings implements Action {
 export class LoadStaffMemberSettingsSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.LOAD_STAFF_MEMBER_SETTINGS_SUCCESS;
 
-  constructor(public payload: { settings: StaffMemberSettingsInterface }) {
-  }
+  constructor(public payload: { settings: StaffMemberSettingsInterface }) {}
 }
 
 export class LoadHiddenImages implements Action {
@@ -128,36 +127,31 @@ export class LoadHiddenImages implements Action {
 export class LoadHiddenImagesSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.LOAD_HIDDEN_IMAGES_SUCCESS;
 
-  constructor(public payload: { hiddenImages: HiddenImage[] }) {
-  }
+  constructor(public payload: { hiddenImages: HiddenImage[] }) {}
 }
 
 export class HideImage implements PayloadActionInterface {
   readonly type = IotdActionTypes.HIDE_IMAGE;
 
-  constructor(public payload: { id: number }) {
-  }
+  constructor(public payload: { id: number }) {}
 }
 
 export class HideImageSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.HIDE_IMAGE_SUCCESS;
 
-  constructor(public payload: { hiddenImage: HiddenImage }) {
-  }
+  constructor(public payload: { hiddenImage: HiddenImage }) {}
 }
 
 export class ShowImage implements PayloadActionInterface {
   readonly type = IotdActionTypes.SHOW_IMAGE;
 
-  constructor(public payload: { hiddenImage: HiddenImage }) {
-  }
+  constructor(public payload: { hiddenImage: HiddenImage }) {}
 }
 
 export class ShowImageSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.SHOW_IMAGE_SUCCESS;
 
-  constructor(public payload: { id: number }) {
-  }
+  constructor(public payload: { id: number }) {}
 }
 
 export class LoadSubmitterSeenImages implements Action {
@@ -167,23 +161,19 @@ export class LoadSubmitterSeenImages implements Action {
 export class LoadSubmitterSeenImagesSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.LOAD_SUBMITTER_SEEN_IMAGES_SUCCESS;
 
-  constructor(public payload: { submitterSeenImages: SubmitterSeenImage[] }) {
-  }
+  constructor(public payload: { submitterSeenImages: SubmitterSeenImage[] }) {}
 }
 
 export class MarkSubmitterSeenImage implements PayloadActionInterface {
   readonly type = IotdActionTypes.MARK_SUBMITTER_SEEN_IMAGE;
 
-  constructor(public payload: { id: number }) {
-  }
+  constructor(public payload: { id: number }) {}
 }
 
 export class MarkSubmitterSeenImageSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.MARK_SUBMITTER_SEEN_IMAGE_SUCCESS;
 
-  constructor(public payload: { submitterSeenImage: SubmitterSeenImage }) {
-
-  }
+  constructor(public payload: { submitterSeenImage: SubmitterSeenImage }) {}
 }
 
 export class LoadReviewerSeenImages implements Action {
@@ -193,23 +183,19 @@ export class LoadReviewerSeenImages implements Action {
 export class LoadReviewerSeenImagesSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.LOAD_REVIEWER_SEEN_IMAGES_SUCCESS;
 
-  constructor(public payload: { reviewerSeenImages: ReviewerSeenImage[] }) {
-  }
+  constructor(public payload: { reviewerSeenImages: ReviewerSeenImage[] }) {}
 }
 
 export class MarkReviewerSeenImage implements PayloadActionInterface {
   readonly type = IotdActionTypes.MARK_REVIEWER_SEEN_IMAGE;
 
-  constructor(public payload: { id: number }) {
-  }
+  constructor(public payload: { id: number }) {}
 }
 
 export class MarkReviewerSeenImageSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.MARK_REVIEWER_SEEN_IMAGE_SUCCESS;
 
-  constructor(public payload: { reviewerSeenImage: ReviewerSeenImage }) {
-
-  }
+  constructor(public payload: { reviewerSeenImage: ReviewerSeenImage }) {}
 }
 
 export class LoadDismissedImages implements Action {
@@ -219,22 +205,19 @@ export class LoadDismissedImages implements Action {
 export class LoadDismissedImagesSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.LOAD_DISMISSED_IMAGES_SUCCESS;
 
-  constructor(public payload: { dismissedImages: DismissedImage[] }) {
-  }
+  constructor(public payload: { dismissedImages: DismissedImage[] }) {}
 }
 
 export class DismissImage implements PayloadActionInterface {
   readonly type = IotdActionTypes.DISMISS_IMAGE;
 
-  constructor(public payload: { id: number }) {
-  }
+  constructor(public payload: { id: number }) {}
 }
 
 export class DismissImageSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.DISMISS_IMAGE_SUCCESS;
 
-  constructor(public payload: { dismissedImage: DismissedImage }) {
-  }
+  constructor(public payload: { dismissedImage: DismissedImage }) {}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,15 +232,13 @@ export class LoadSubmissionQueue implements PayloadActionInterface {
       page: 1,
       sort: "default"
     }
-  ) {
-  }
+  ) {}
 }
 
 export class LoadSubmissionQueueSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.LOAD_SUBMISSION_QUEUE_SUCCESS;
 
-  constructor(public payload: PaginatedApiResultInterface<SubmissionImageInterface>) {
-  }
+  constructor(public payload: PaginatedApiResultInterface<SubmissionImageInterface>) {}
 }
 
 export class LoadSubmissionQueueFailure implements Action {
@@ -275,8 +256,7 @@ export class LoadSubmissions implements Action {
 export class LoadSubmissionsSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.LOAD_SUBMISSIONS_SUCCESS;
 
-  constructor(public payload: SubmissionInterface[]) {
-  }
+  constructor(public payload: SubmissionInterface[]) {}
 }
 
 export class LoadSubmissionsFailure implements Action {
@@ -286,36 +266,31 @@ export class LoadSubmissionsFailure implements Action {
 export class PostSubmission implements PayloadActionInterface {
   readonly type = IotdActionTypes.POST_SUBMISSION;
 
-  constructor(public payload: { imageId: number }) {
-  }
+  constructor(public payload: { imageId: number }) {}
 }
 
 export class PostSubmissionSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.POST_SUBMISSION_SUCCESS;
 
-  constructor(public payload: SubmissionInterface) {
-  }
+  constructor(public payload: SubmissionInterface) {}
 }
 
 export class PostSubmissionFailure implements PayloadActionInterface {
   readonly type = IotdActionTypes.POST_SUBMISSION_FAILURE;
 
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class DeleteSubmission implements PayloadActionInterface {
   readonly type = IotdActionTypes.DELETE_SUBMISSION;
 
-  constructor(public payload: { id: number }) {
-  }
+  constructor(public payload: { id: number }) {}
 }
 
 export class DeleteSubmissionSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.DELETE_SUBMISSION_SUCCESS;
 
-  constructor(public payload: { id: number }) {
-  }
+  constructor(public payload: { id: number }) {}
 }
 
 export class DeleteSubmissionFailure implements Action {
@@ -334,15 +309,13 @@ export class LoadReviewQueue implements PayloadActionInterface {
       page: 1,
       sort: "default"
     }
-  ) {
-  }
+  ) {}
 }
 
 export class LoadReviewQueueSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.LOAD_REVIEW_QUEUE_SUCCESS;
 
-  constructor(public payload: PaginatedApiResultInterface<ReviewImageInterface>) {
-  }
+  constructor(public payload: PaginatedApiResultInterface<ReviewImageInterface>) {}
 }
 
 export class LoadReviewQueueFailure implements Action {
@@ -360,8 +333,7 @@ export class LoadVotes implements Action {
 export class LoadVotesSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.LOAD_VOTES_SUCCESS;
 
-  constructor(public payload: VoteInterface[]) {
-  }
+  constructor(public payload: VoteInterface[]) {}
 }
 
 export class LoadVotesFailure implements Action {
@@ -371,36 +343,31 @@ export class LoadVotesFailure implements Action {
 export class PostVote implements PayloadActionInterface {
   readonly type = IotdActionTypes.POST_VOTE;
 
-  constructor(public payload: { imageId: number }) {
-  }
+  constructor(public payload: { imageId: number }) {}
 }
 
 export class PostVoteSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.POST_VOTE_SUCCESS;
 
-  constructor(public payload: VoteInterface) {
-  }
+  constructor(public payload: VoteInterface) {}
 }
 
 export class PostVoteFailure implements PayloadActionInterface {
   readonly type = IotdActionTypes.POST_VOTE_FAILURE;
 
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class DeleteVote implements PayloadActionInterface {
   readonly type = IotdActionTypes.DELETE_VOTE;
 
-  constructor(public payload: { id: number }) {
-  }
+  constructor(public payload: { id: number }) {}
 }
 
 export class DeleteVoteSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.DELETE_VOTE_SUCCESS;
 
-  constructor(public payload: { id: number }) {
-  }
+  constructor(public payload: { id: number }) {}
 }
 
 export class DeleteVoteFailure implements Action {
@@ -419,15 +386,13 @@ export class LoadJudgementQueue implements PayloadActionInterface {
       page: 1,
       sort: "default"
     }
-  ) {
-  }
+  ) {}
 }
 
 export class LoadJudgementQueueSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.LOAD_JUDGEMENT_QUEUE_SUCCESS;
 
-  constructor(public payload: PaginatedApiResultInterface<JudgementImageInterface>) {
-  }
+  constructor(public payload: PaginatedApiResultInterface<JudgementImageInterface>) {}
 }
 
 export class LoadJudgementQueueFailure implements Action {
@@ -445,8 +410,7 @@ export class LoadFutureIods implements Action {
 export class LoadFutureIodsSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.LOAD_FUTURE_IOTDS_SUCCESS;
 
-  constructor(public payload: { futureIotds: IotdInterface[] }) {
-  }
+  constructor(public payload: { futureIotds: IotdInterface[] }) {}
 }
 
 export class LoadFutureIodsFailure implements Action {
@@ -456,36 +420,31 @@ export class LoadFutureIodsFailure implements Action {
 export class PostIotd implements PayloadActionInterface {
   readonly type = IotdActionTypes.POST_IOTD;
 
-  constructor(public payload: { imageId: number }) {
-  }
+  constructor(public payload: { imageId: number }) {}
 }
 
 export class PostIotdSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.POST_IOTD_SUCCESS;
 
-  constructor(public payload: IotdInterface) {
-  }
+  constructor(public payload: IotdInterface) {}
 }
 
 export class PostIotdFailure implements PayloadActionInterface {
   readonly type = IotdActionTypes.POST_IOTD_FAILURE;
 
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class DeleteIotd implements PayloadActionInterface {
   readonly type = IotdActionTypes.DELETE_IOTD;
 
-  constructor(public payload: { id: number }) {
-  }
+  constructor(public payload: { id: number }) {}
 }
 
 export class DeleteIotdSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.DELETE_IOTD_SUCCESS;
 
-  constructor(public payload: { id: number }) {
-  }
+  constructor(public payload: { id: number }) {}
 }
 
 export class DeleteIotdFailure implements Action {
@@ -493,7 +452,7 @@ export class DeleteIotdFailure implements Action {
 }
 
 export type IotdActions =
-// Generic
+  // Generic
   | LoadStaffMemberSettings
   | LoadStaffMemberSettingsSuccess
   | LoadHiddenImages

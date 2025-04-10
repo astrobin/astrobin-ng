@@ -1,42 +1,44 @@
-import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import {
-  EditProposalChange,
-  EditProposalInterface,
-  EditProposalReviewStatus
-} from "@features/equipment/types/edit-proposal.interface";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { AfterViewInit, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import type { MainState } from "@app/store/state";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { EquipmentItemService } from "@core/services/equipment-item.service";
-import {
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { LoadUser } from "@features/account/store/auth.actions";
+import { selectUser } from "@features/account/store/auth.selectors";
+import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
+import { RejectEditProposalModalComponent } from "@features/equipment/components/reject-edit-proposal-modal/reject-edit-proposal-modal.component";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentActionTypes, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import type {
   ApproveEquipmentItemEditProposalSuccess,
-  EquipmentActionTypes,
-  LoadEquipmentItem,
   RejectEquipmentItemEditProposalSuccess
 } from "@features/equipment/store/equipment.actions";
 import { selectEditProposalsForItem, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { LoadUser } from "@features/account/store/auth.actions";
-import { filter, map, switchMap, take, tap } from "rxjs/operators";
-import { TranslateService } from "@ngx-translate/core";
-import { forkJoin, Observable } from "rxjs";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { selectUser } from "@features/account/store/auth.selectors";
-import { LoadingService } from "@core/services/loading.service";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { RejectEditProposalModalComponent } from "@features/equipment/components/reject-edit-proposal-modal/reject-edit-proposal-modal.component";
+import { EditProposalInterface, EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
+import type { EditProposalChange } from "@features/equipment/types/edit-proposal.interface";
+import type {
+  EquipmentItemBaseInterface,
+  EquipmentItemType
+} from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { Actions, ofType } from "@ngrx/effects";
-import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
-import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AssignEditProposalModalComponent } from "@shared/components/equipment/summaries/assign-edit-proposal-modal/assign-edit-proposal-modal.component";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { forkJoin } from "rxjs";
+import type { Observable } from "rxjs";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-item-edit-proposal",
@@ -296,7 +298,6 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
           const enumValue = this.equipmentItemService.propertyNameToPropertyEnum(change.propertyName);
           const before$ = this.equipmentItemService.getPrintableProperty$(this.item, enumValue, change.before);
           const after$ = this.equipmentItemService.getPrintableProperty$(this.editProposal, enumValue, change.after);
-
 
           if (before$ && after$) {
             forkJoin([before$, after$]).subscribe(([before, after]) => {

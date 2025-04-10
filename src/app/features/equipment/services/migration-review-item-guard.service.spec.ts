@@ -1,15 +1,16 @@
 import { TestBed } from "@angular/core/testing";
+import type { RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { UserGenerator } from "@shared/generators/user.generator";
+import { MockBuilder, MockReset, MockService } from "ng-mocks";
+import { of } from "rxjs";
 
 import { MigrationReviewItemGuardService } from "./migration-review-item-guard.service";
-import { MockBuilder, MockReset, MockService } from "ng-mocks";
-import { MockStore, provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
-import { AppModule } from "@app/app.module";
-import { of } from "rxjs";
-import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
-import { RouterTestingModule } from "@angular/router/testing";
 
 describe("MigrationReviewItemGuardService", () => {
   let store: MockStore;

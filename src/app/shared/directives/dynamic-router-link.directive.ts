@@ -1,15 +1,12 @@
-import { AfterViewInit, Directive, ElementRef } from "@angular/core";
+import type { AfterViewInit } from "@angular/core";
+import { Directive, ElementRef } from "@angular/core";
 import { Router } from "@angular/router";
 
 @Directive({
   selector: "[dynamicRouterLink]"
 })
 export class DynamicRouterLinkDirective implements AfterViewInit {
-  constructor(
-    private el: ElementRef,
-    private router: Router
-  ) {
-  }
+  constructor(private el: ElementRef, private router: Router) {}
 
   ngAfterViewInit() {
     const links = this.el.nativeElement.getElementsByTagName("a");

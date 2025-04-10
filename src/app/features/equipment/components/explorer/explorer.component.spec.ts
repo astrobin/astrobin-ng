@@ -1,16 +1,17 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { Router } from "@angular/router";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { ItemEditProposalComponent } from "@features/equipment/components/item-edit-proposal/item-edit-proposal.component";
+import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { provideMockStore } from "@ngrx/store/testing";
+import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
+import { MockBuilder } from "ng-mocks";
+import { EMPTY, ReplaySubject } from "rxjs";
 
 import { ExplorerComponent } from "./explorer.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { provideMockActions } from "@ngrx/effects/testing";
-import { EMPTY, ReplaySubject } from "rxjs";
-import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
-import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
-import { ItemEditProposalComponent } from "@features/equipment/components/item-edit-proposal/item-edit-proposal.component";
-import { Router } from "@angular/router";
 
 describe("ExplorerComponent", () => {
   let component: ExplorerComponent;

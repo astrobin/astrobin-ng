@@ -1,22 +1,24 @@
-import { ElementRef, Injectable, Renderer2 } from "@angular/core";
+import type { ElementRef, Renderer2 } from "@angular/core";
+import { Injectable } from "@angular/core";
+
 import { DeviceService } from "./device.service";
-import { UtilsService } from "./utils/utils.service";
 import { PopNotificationsService } from "./pop-notifications.service";
+import { UtilsService } from "./utils/utils.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class SwipeDownService {
+  // the gesture when they release their finger
+  private _swipeCancellationIntended = false;
+
+  // Flag to track if the user has moved upward during a swipe, which should cancel
+
   constructor(
     private readonly deviceService: DeviceService,
     private readonly utilsService: UtilsService,
     private readonly popNotificationsService: PopNotificationsService
-  ) {
-  }
-
-  // Flag to track if the user has moved upward during a swipe, which should cancel
-  // the gesture when they release their finger
-  private _swipeCancellationIntended = false;
+  ) {}
 
   /**
    * Initializes swipe-down tracking on an element
@@ -43,8 +45,10 @@ export class SwipeDownService {
 
     // Check if we're touching an element that should be ignored for swipe-down
     const target = event.target as HTMLElement;
-    if (target && (target.hasAttribute('data-ignore-swipe-down') ||
-        target.closest('[data-ignore-swipe-down="true"]'))) {
+    if (
+      target &&
+      (target.hasAttribute("data-ignore-swipe-down") || target.closest('[data-ignore-swipe-down="true"]'))
+    ) {
       // This element or its parent has the ignore attribute - don't initiate swipe
       touchStartY.value = 0;
       return false;
@@ -97,7 +101,7 @@ export class SwipeDownService {
     elementRef: ElementRef,
     renderer: Renderer2,
     checkZoomFunction?: () => boolean,
-    animationType: 'full' | 'translate-only' = 'full'
+    animationType: "full" | "translate-only" = "full"
   ): boolean {
     if (!this.deviceService.isTouchEnabled() || touchStartY.value === 0) {
       return false;
@@ -112,8 +116,10 @@ export class SwipeDownService {
     const target = event.target as HTMLElement;
 
     // Check if we're touching an element that should be ignored for swipe-down
-    if (target && (target.hasAttribute('data-ignore-swipe-down') ||
-        target.closest('[data-ignore-swipe-down="true"]'))) {
+    if (
+      target &&
+      (target.hasAttribute("data-ignore-swipe-down") || target.closest('[data-ignore-swipe-down="true"]'))
+    ) {
       // This element or its parent has the ignore attribute - cancel any active swipe
       if (isSwiping.value) {
         isSwiping.value = false;
@@ -165,7 +171,8 @@ export class SwipeDownService {
       } else if (this._swipeCancellationIntended) {
         // If moving down again after previously moving up
         const downwardMovement = touchCurrentY.value - touchPreviousY.value;
-        if (downwardMovement > 20) {  // Require slightly more movement to un-cancel
+        if (downwardMovement > 20) {
+          // Require slightly more movement to un-cancel
           this._swipeCancellationIntended = false;
         }
       }
@@ -225,7 +232,7 @@ export class SwipeDownService {
     elementRef: ElementRef,
     renderer: Renderer2,
     closeCallback: () => void,
-    animationType: 'full' | 'translate-only' = 'full'
+    animationType: "full" | "translate-only" = "full"
   ): void {
     // If we're not swiping or have no valid touch, just reset state and return
     if (!isSwiping.value || touchStartY.value === 0) {
@@ -253,41 +260,40 @@ export class SwipeDownService {
     // CRITICAL: Check if the last direction was upward - if so, ABORT the swipe
     // This is the key feature: if user swiped down then up without lifting finger, abort
     if (!swipeDirectionDown.value || this._swipeCancellationIntended || deltaY <= 0 || deltaY < swipeThreshold) {
-
       swipeProgress.value = 0;
 
       // Use CSS animation for smoother return for both offcanvas and image viewer
       if (elementRef && elementRef.nativeElement) {
         // Clear any existing animation classes first
-        renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animate');
-        renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-offcanvas-animate');
+        renderer.removeClass(elementRef.nativeElement, "swipe-to-close-animate");
+        renderer.removeClass(elementRef.nativeElement, "swipe-to-close-offcanvas-animate");
 
         // Mark as animating
-        renderer.addClass(elementRef.nativeElement, 'swipe-to-close-animating');
+        renderer.addClass(elementRef.nativeElement, "swipe-to-close-animating");
 
         // Add appropriate animation class
-        renderer.addClass(elementRef.nativeElement, 'swipe-to-close-return-to-normal');
+        renderer.addClass(elementRef.nativeElement, "swipe-to-close-return-to-normal");
 
         // Listen for animation end
         const onAnimationEnd = (event: any) => {
-          if (event.animationName === 'return-to-normal') {
+          if (event.animationName === "return-to-normal") {
             // Remove all animation-related classes
-            renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-return-to-normal');
-            renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animating');
+            renderer.removeClass(elementRef.nativeElement, "swipe-to-close-return-to-normal");
+            renderer.removeClass(elementRef.nativeElement, "swipe-to-close-animating");
 
             // Also remove any transform styling that might be leftover
-            renderer.removeStyle(elementRef.nativeElement, 'transform');
-            renderer.removeStyle(elementRef.nativeElement, 'opacity');
+            renderer.removeStyle(elementRef.nativeElement, "transform");
+            renderer.removeStyle(elementRef.nativeElement, "opacity");
 
-            elementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
+            elementRef.nativeElement.removeEventListener("animationend", onAnimationEnd);
           }
         };
 
-        elementRef.nativeElement.addEventListener('animationend', onAnimationEnd);
+        elementRef.nativeElement.addEventListener("animationend", onAnimationEnd);
       }
 
       // For image viewer, make sure the image-viewer-open class is restored if we're cancelling
-      if (animationType !== 'translate-only' && typeof document !== "undefined") {
+      if (animationType !== "translate-only" && typeof document !== "undefined") {
         document.body.classList.remove("image-viewer-closing");
         document.body.classList.add("image-viewer-open");
       }
@@ -306,36 +312,34 @@ export class SwipeDownService {
       // Use CSS animation class for better performance for both offcanvas and image viewer
       if (elementRef && elementRef.nativeElement) {
         // Mark as animating
-        renderer.addClass(elementRef.nativeElement, 'swipe-to-close-animating');
+        renderer.addClass(elementRef.nativeElement, "swipe-to-close-animating");
 
         // Add animation class based on type
-        if (animationType === 'translate-only') {
+        if (animationType === "translate-only") {
           // For offcanvas, add a different animation class
-          renderer.addClass(elementRef.nativeElement, 'swipe-to-close-offcanvas-animate');
+          renderer.addClass(elementRef.nativeElement, "swipe-to-close-offcanvas-animate");
         } else {
           // For image viewer
-          renderer.addClass(elementRef.nativeElement, 'swipe-to-close-animate');
+          renderer.addClass(elementRef.nativeElement, "swipe-to-close-animate");
         }
 
         // Listen for animation end
         const onAnimationEnd = (event: any) => {
-          const expectedAnimation = animationType === 'translate-only'
-            ? 'offcanvas-swipe-to-close'
-            : 'swipe-to-close';
+          const expectedAnimation = animationType === "translate-only" ? "offcanvas-swipe-to-close" : "swipe-to-close";
 
           if (event.animationName === expectedAnimation) {
             // Animation complete - clean up event listener and classes
-            renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animating');
-            if (animationType === 'translate-only') {
-              renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-offcanvas-animate');
+            renderer.removeClass(elementRef.nativeElement, "swipe-to-close-animating");
+            if (animationType === "translate-only") {
+              renderer.removeClass(elementRef.nativeElement, "swipe-to-close-offcanvas-animate");
             } else {
-              renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animate');
+              renderer.removeClass(elementRef.nativeElement, "swipe-to-close-animate");
             }
-            elementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
+            elementRef.nativeElement.removeEventListener("animationend", onAnimationEnd);
           }
         };
 
-        elementRef.nativeElement.addEventListener('animationend', onAnimationEnd);
+        elementRef.nativeElement.addEventListener("animationend", onAnimationEnd);
       }
 
       // Close the element after a short delay
@@ -352,7 +356,7 @@ export class SwipeDownService {
       this._resetSwipeAnimation(elementRef, renderer, animationType);
 
       // For image viewer, make sure the image-viewer-open class is restored
-      if (animationType !== 'translate-only' && typeof document !== "undefined") {
+      if (animationType !== "translate-only" && typeof document !== "undefined") {
         document.body.classList.remove("image-viewer-closing");
         document.body.classList.add("image-viewer-open");
       }
@@ -375,7 +379,7 @@ export class SwipeDownService {
     elementRef: ElementRef,
     renderer: Renderer2,
     progress: number,
-    animationType: 'full' | 'translate-only' = 'full'
+    animationType: "full" | "translate-only" = "full"
   ): void {
     if (!elementRef || !elementRef.nativeElement) {
       return;
@@ -389,61 +393,37 @@ export class SwipeDownService {
 
     // When applying swipe animation, always ensure we have no transition
     // so the element follows the finger directly without any smoothing
-    renderer.setStyle(
-      elementRef.nativeElement,
-      "transition",
-      "none"
-    );
+    renderer.setStyle(elementRef.nativeElement, "transition", "none");
 
     // Set will-change to let the browser know we'll be animating these properties
     // This enables hardware acceleration for smoother animations
-    if (animationType === 'translate-only') {
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "will-change",
-        "transform"
-      );
+    if (animationType === "translate-only") {
+      renderer.setStyle(elementRef.nativeElement, "will-change", "transform");
     } else {
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "will-change",
-        "transform, opacity"
-      );
+      renderer.setStyle(elementRef.nativeElement, "will-change", "transform, opacity");
     }
 
     // Force browser to acknowledge the transition removal before setting new styles
     // This fixes issues where animations might get "stuck"
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       // Force a layout reflow
       void elementRef.nativeElement.offsetHeight;
     }
 
-    if (animationType === 'translate-only') {
+    if (animationType === "translate-only") {
       // For offcanvas and similar elements - only translate, no scaling or opacity
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "transform",
-        `translateY(${translateY}px)`
-      );
+      renderer.setStyle(elementRef.nativeElement, "transform", `translateY(${translateY}px)`);
     } else {
       // Full animation with scale and opacity effects (for image viewer)
       // Scale effect is limited to not go below 0.7
-      const scale = Math.max(0.7, 1 - (limitedProgress * 0.1));
+      const scale = Math.max(0.7, 1 - limitedProgress * 0.1);
 
       // Opacity is limited to not go below 0.3
-      const opacity = Math.max(0.3, 1 - (limitedProgress * 0.3));
+      const opacity = Math.max(0.3, 1 - limitedProgress * 0.3);
 
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "transform",
-        `translateY(${translateY}px) scale(${scale})`
-      );
+      renderer.setStyle(elementRef.nativeElement, "transform", `translateY(${translateY}px) scale(${scale})`);
 
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "opacity",
-        `${opacity}`
-      );
+      renderer.setStyle(elementRef.nativeElement, "opacity", `${opacity}`);
     }
   }
 
@@ -456,55 +436,43 @@ export class SwipeDownService {
   private _resetSwipeAnimation(
     elementRef: ElementRef,
     renderer: Renderer2,
-    animationType: 'full' | 'translate-only' = 'full'
+    animationType: "full" | "translate-only" = "full"
   ): void {
     if (!elementRef || !elementRef.nativeElement) {
       return;
     }
 
     // Clean up any existing animation classes
-    renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animate');
-    renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-offcanvas-animate');
-    renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-return-to-normal');
-    renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animating');
+    renderer.removeClass(elementRef.nativeElement, "swipe-to-close-animate");
+    renderer.removeClass(elementRef.nativeElement, "swipe-to-close-offcanvas-animate");
+    renderer.removeClass(elementRef.nativeElement, "swipe-to-close-return-to-normal");
+    renderer.removeClass(elementRef.nativeElement, "swipe-to-close-animating");
 
     // Also remove any inline transform that might be in place
-    renderer.removeStyle(elementRef.nativeElement, 'transform');
-    if (animationType !== 'translate-only') {
-      renderer.removeStyle(elementRef.nativeElement, 'opacity');
+    renderer.removeStyle(elementRef.nativeElement, "transform");
+    if (animationType !== "translate-only") {
+      renderer.removeStyle(elementRef.nativeElement, "opacity");
     }
 
     // Force a reflow to ensure the style removal takes effect
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       void elementRef.nativeElement.offsetHeight;
     }
 
     // Now set the transition to enable smooth animation back
-    if (animationType === 'translate-only') {
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "transition",
-        "transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)"
-      );
+    if (animationType === "translate-only") {
+      renderer.setStyle(elementRef.nativeElement, "transition", "transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)");
 
       // Use hardware acceleration to improve performance
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "will-change",
-        "transform"
-      );
+      renderer.setStyle(elementRef.nativeElement, "will-change", "transform");
 
       // Force a reflow to ensure the browser registers the transition
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         void elementRef.nativeElement.offsetHeight;
       }
 
       // Now apply the transform to animate smoothly back to original position
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "transform",
-        "translateY(0)"
-      );
+      renderer.setStyle(elementRef.nativeElement, "transform", "translateY(0)");
     } else {
       // For image viewer - set both transitions at once
       renderer.setStyle(
@@ -514,36 +482,24 @@ export class SwipeDownService {
       );
 
       // Use hardware acceleration to improve performance
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "will-change",
-        "transform, opacity"
-      );
+      renderer.setStyle(elementRef.nativeElement, "will-change", "transform, opacity");
 
       // Force a reflow to ensure the browser registers the transition
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         void elementRef.nativeElement.offsetHeight;
       }
 
       // Now apply both transform and opacity to animate back
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "transform",
-        "translateY(0) scale(1)"
-      );
+      renderer.setStyle(elementRef.nativeElement, "transform", "translateY(0) scale(1)");
 
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "opacity",
-        "1"
-      );
+      renderer.setStyle(elementRef.nativeElement, "opacity", "1");
     }
 
     // Add a final safety - after transition completes, make sure styles are reset
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setTimeout(() => {
         if (elementRef && elementRef.nativeElement) {
-          if (animationType === 'translate-only') {
+          if (animationType === "translate-only") {
             renderer.setStyle(elementRef.nativeElement, "transform", "translateY(0)");
             // Clean up will-change to free resources when not animating
             renderer.setStyle(elementRef.nativeElement, "will-change", "auto");

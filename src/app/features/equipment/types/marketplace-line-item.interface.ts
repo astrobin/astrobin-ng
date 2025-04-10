@@ -1,17 +1,16 @@
-import { UserInterface } from "@core/interfaces/user.interface";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 
 export enum MarketplaceListingCondition {
   UNOPENED = "UNOPENED",
   NEW = "NEW",
   USED = "USED",
   DAMAGED_OR_DEFECTIVE = "DAMAGED_OR_DEFECTIVE",
-  OTHER = "OTHER",
+  OTHER = "OTHER"
 }
 
 export enum MarketplaceLineItemFindItemMode {
@@ -24,7 +23,7 @@ export enum MarketplaceShippingCostType {
   NO_SHIPPING = "NO_SHIPPING",
   COVERED_BY_SELLER = "COVERED_BY_SELLER",
   FIXED = "FIXED",
-  TO_BE_AGREED = "TO_BE_AGREED",
+  TO_BE_AGREED = "TO_BE_AGREED"
 }
 
 export interface MarketplaceLineItemInterface {
@@ -52,7 +51,7 @@ export interface MarketplaceLineItemInterface {
   itemContentTypeSelector?: EquipmentItemType; // Only needed for the form.
   itemPlainText?: string;
   itemName?: string;
-  images?: MarketplaceImageInterface[] | { file: File, url: string }[];
+  images?: MarketplaceImageInterface[] | { file: File; url: string }[];
   totalImageCount?: number;
   sellerImageCount?: number;
   itemKlass?: EquipmentItemType;

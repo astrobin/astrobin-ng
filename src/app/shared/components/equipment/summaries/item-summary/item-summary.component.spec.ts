@@ -1,14 +1,16 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ItemSummaryComponent } from "./item-summary.component";
-import { MockBuilder } from "ng-mocks";
-import { EquipmentModule } from "@features/equipment/equipment.module";
-import { AppModule } from "@app/app.module";
-import { CameraGenerator } from "@features/equipment/generators/camera.generator";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
 import { SimpleChange } from "@angular/core";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { EquipmentModule } from "@features/equipment/equipment.module";
+import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
+
+import { ItemSummaryComponent } from "./item-summary.component";
 
 describe("EquipmentItemSummaryComponent", () => {
   let component: ItemSummaryComponent;

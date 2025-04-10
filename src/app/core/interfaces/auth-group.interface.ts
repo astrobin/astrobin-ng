@@ -1,4 +1,4 @@
-import { PermissionInterface } from "@core/interfaces/permission.interface";
+import type { PermissionInterface } from "@core/interfaces/permission.interface";
 
 export interface AuthGroupInterface {
   id: number;

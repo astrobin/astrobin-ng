@@ -1,15 +1,16 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ConstellationsService } from "@features/explore/services/constellations.service";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import type { SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { ConstellationsService } from "@features/explore/services/constellations.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-constellation-source-filter.search-filter-component",
@@ -21,7 +22,9 @@ export class SearchConstellationFilterComponent extends SearchBaseFilterComponen
   static minimumSubscription = PayableProductInterface.LITE;
 
   readonly category = SearchFilterCategory.SKY_AND_SUBJECTS;
-  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchConstellationFilterComponent.key as SearchAutoCompleteType);
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
+    SearchConstellationFilterComponent.key as SearchAutoCompleteType
+  );
   readonly constellations = this.constellationService.getConstellations(this.translateService.currentLang);
   readonly editFields = [
     {
@@ -56,7 +59,7 @@ export class SearchConstellationFilterComponent extends SearchBaseFilterComponen
       return this.domSanitizer.bypassSecurityTrustHtml("");
     }
 
-    const constellation = this.constellations.find(constellation => constellation.id === this.value);
-    return this.domSanitizer.bypassSecurityTrustHtml(`${constellation.name} (${constellation.id})`);
+    const selectedConstellation = this.constellations.find(constellation => constellation.id === this.value);
+    return this.domSanitizer.bypassSecurityTrustHtml(`${selectedConstellation.name} (${selectedConstellation.id})`);
   }
 }

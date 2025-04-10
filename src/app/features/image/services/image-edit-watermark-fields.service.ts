@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@core/services/loading.service";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { MainState } from "@app/store/state";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
-import { TranslateService } from "@ngx-translate/core";
+import { LoadingService } from "@core/services/loading.service";
+import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { Subscription } from "rxjs";
-import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import type { Subscription } from "rxjs";
 
 @Injectable({
   providedIn: null
@@ -28,6 +28,7 @@ export class ImageEditWatermarkFieldsService extends ImageEditFieldsBaseService 
   }
 
   onFieldsInitialized(): void {
+    // No initialization needed for watermark fields
   }
 
   getWatermarkCheckboxField(): FormlyFieldConfig {

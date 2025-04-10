@@ -1,4 +1,4 @@
-import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
+import type { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
 import { TestConstants } from "@shared/test-constants";
 
 export class UserSubscriptionGenerator {

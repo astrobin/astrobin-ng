@@ -1,4 +1,4 @@
-@import '../../../../styles/mixins';
+@import "../../../../styles/mixins";
 @import "../../../../styles/breakpoints";
 
 :host {
@@ -10,7 +10,7 @@
     @include darkest-background-texture;
     position: sticky;
     top: 60px;
-    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .5);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
@@ -48,7 +48,7 @@
   }
 
   .nav-tabs-fade {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     right: 0;
@@ -56,9 +56,9 @@
     height: 2.5rem;
     z-index: 3;
     pointer-events: none;
-    background: linear-gradient(to left, rgba(0, 0, 0, .8), transparent);
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent);
     opacity: 0;
-    transition: opacity .5s;
+    transition: opacity 0.5s;
   }
 
   .tab-content {
@@ -73,7 +73,7 @@
   }
 }
 
-::ng-deep astrobin-toggle-button.gallery-settings  {
+::ng-deep astrobin-toggle-button.gallery-settings {
   flex-direction: row-reverse;
   justify-content: space-between;
   @include flex-gap(row, 1rem);
@@ -90,10 +90,10 @@
 
 @media (max-width: $md-max) {
   :host {
-    margin: 0 -.5rem;
+    margin: 0 -0.5rem;
 
     .tab-content {
-      padding: 2rem .5rem 0;
+      padding: 2rem 0.5rem 0;
     }
   }
 }

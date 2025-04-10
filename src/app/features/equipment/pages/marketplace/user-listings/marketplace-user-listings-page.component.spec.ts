@@ -1,20 +1,21 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { MarketplaceUserListingsPageComponent } from "./marketplace-user-listings-page.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
-import { mainStateEffects, mainStateReducers, initialMainState } from "@app/store/state";
-import { StoreModule } from "@ngrx/store";
-import { EffectsModule } from "@ngrx/effects";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { of } from "rxjs";
-import { MarketplaceSidebarComponent } from "@features/equipment/components/marketplace-sidebar/marketplace-sidebar.component";
-import { MarketplaceSearchBarComponent } from "@features/equipment/components/marketplace-search-bar/marketplace-search-bar.component";
-import { MarketplaceListingCardsComponent } from "@shared/components/equipment/marketplace-listing-cards/marketplace-listing-cards.component";
+import { AppModule } from "@app/app.module";
+import { mainStateEffects, mainStateReducers, initialMainState } from "@app/store/state";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { MarketplaceSearchBarComponent } from "@features/equipment/components/marketplace-search-bar/marketplace-search-bar.component";
+import { MarketplaceSidebarComponent } from "@features/equipment/components/marketplace-sidebar/marketplace-sidebar.component";
+import { EffectsModule } from "@ngrx/effects";
+import { StoreModule } from "@ngrx/store";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MarketplaceListingCardsComponent } from "@shared/components/equipment/marketplace-listing-cards/marketplace-listing-cards.component";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
+
+import { MarketplaceUserListingsPageComponent } from "./marketplace-user-listings-page.component";
 
 describe("MarketplaceMyListingsPageComponent", () => {
   let component: MarketplaceUserListingsPageComponent;
@@ -30,7 +31,7 @@ describe("MarketplaceMyListingsPageComponent", () => {
           useValue: {
             queryParams: of({ region: "us" }),
             snapshot: {
-              paramMap: { get: key => "test-username" }
+              paramMap: { get: () => "test-username" }
             }
           }
         },

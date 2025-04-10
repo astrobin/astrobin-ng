@@ -1,27 +1,28 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import type { MainState } from "@app/store/state";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { LoadingService } from "@core/services/loading.service";
-import { map, switchMap, take } from "rxjs/operators";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import type { FindSimilarInBrandSuccess, GetOthersInBrandSuccess } from "@features/equipment/store/equipment.actions";
 import {
   ApproveEquipmentItem,
   EquipmentActionTypes,
   FindSimilarInBrand,
-  FindSimilarInBrandSuccess,
-  GetOthersInBrand,
-  GetOthersInBrandSuccess
+  GetOthersInBrand
 } from "@features/equipment/store/equipment.actions";
+import type { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions, ofType } from "@ngrx/effects";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { Observable } from "rxjs";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import type { Observable } from "rxjs";
+import { map, switchMap, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-approve-item-modal",

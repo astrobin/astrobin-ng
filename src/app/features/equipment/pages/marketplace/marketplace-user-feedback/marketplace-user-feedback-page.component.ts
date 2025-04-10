@@ -1,14 +1,15 @@
-import { Component, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import type { MainState } from "@app/store/state";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import type { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { catchError } from "rxjs/operators";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { EMPTY } from "rxjs";
+import { catchError } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-user-feedback-page",
@@ -32,44 +33,46 @@ export class MarketplaceUserFeedbackPageComponent extends BaseComponentDirective
     super.ngOnInit();
 
     const feedbackId = this.route.snapshot.params.id;
-    this.equipmentApiService.getMarketplaceFeedbackById(feedbackId).pipe(
-      catchError(() => {
+    this.equipmentApiService
+      .getMarketplaceFeedbackById(feedbackId)
+      .pipe(
+        catchError(() => {
           this.router.navigate(["/404"]);
           return EMPTY;
-        }
+        })
       )
-    ).subscribe(response => {
-      this.feedback = response;
+      .subscribe(response => {
+        this.feedback = response;
 
-      this._setTitle();
-      this._setBreadCrumb();
-    });
+        this._setTitle();
+        this._setBreadCrumb();
+      });
   }
 
   private _setTitle() {
-    this.title = this.translateService.instant(
-      `${this.feedback.recipientDisplayName}'s marketplace feedback`
-    );
+    this.title = this.translateService.instant(`${this.feedback.recipientDisplayName}'s marketplace feedback`);
   }
 
   private _setBreadCrumb() {
-    this.store$.dispatch(new SetBreadcrumb({
-      breadcrumb: [
-        {
-          label: this.translateService.instant("Equipment"),
-          link: "/equipment/explorer"
-        },
-        {
-          label: this.translateService.instant("Marketplace"),
-          link: "/equipment/marketplace"
-        },
-        {
-          label: this.feedback.recipientDisplayName
-        },
-        {
-          label: this.translateService.instant("Feedback")
-        }
-      ]
-    }));
+    this.store$.dispatch(
+      new SetBreadcrumb({
+        breadcrumb: [
+          {
+            label: this.translateService.instant("Equipment"),
+            link: "/equipment/explorer"
+          },
+          {
+            label: this.translateService.instant("Marketplace"),
+            link: "/equipment/marketplace"
+          },
+          {
+            label: this.feedback.recipientDisplayName
+          },
+          {
+            label: this.translateService.instant("Feedback")
+          }
+        ]
+      })
+    );
   }
 }

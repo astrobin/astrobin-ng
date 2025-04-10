@@ -4,8 +4,8 @@ import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { Constants } from "@shared/constants";
 import { ImageGenerator } from "@shared/generators/image.generator";
-import { ThumbnailGroupGenerator } from "@shared/generators/thumbnail-group.generator";
 import { MockBuilder } from "ng-mocks";
+
 import { ThumbnailGroupApiService } from "./thumbnail-group-api.service";
 
 describe("ThumbnailGroupApiService", () => {
@@ -29,7 +29,6 @@ describe("ThumbnailGroupApiService", () => {
 
   it("getThumbnailGroup should work", () => {
     const image = ImageGenerator.image();
-    const thumbnailGroup = ThumbnailGroupGenerator.thumbnailGroup();
 
     service.getThumbnailGroup(image.pk, Constants.ORIGINAL_REVISION).subscribe(response => {
       expect(response.image).toEqual(image.pk);

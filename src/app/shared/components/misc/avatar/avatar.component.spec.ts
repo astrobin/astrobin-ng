@@ -1,15 +1,17 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { AvatarComponent } from "./avatar.component";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { of } from "rxjs";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { AvatarEditorComponent } from "@shared/components/misc/avatar-editor/avatar-editor.component";
 import { ChangeDetectorRef } from "@angular/core";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import type { UserInterface } from "@core/interfaces/user.interface";
 import { UserService } from "@core/services/user.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { setupAvatarTestingModule, setupComponentObservables } from "./avatar-testing.utils";
+import { AvatarEditorComponent } from "@shared/components/misc/avatar-editor/avatar-editor.component";
 import { Constants } from "@shared/constants";
+import { UserGenerator } from "@shared/generators/user.generator";
+import { of } from "rxjs";
+
+import { setupAvatarTestingModule, setupComponentObservables } from "./avatar-testing.utils";
+import { AvatarComponent } from "./avatar.component";
 
 describe("AvatarComponent", () => {
   let component: AvatarComponent;
@@ -65,11 +67,11 @@ describe("AvatarComponent", () => {
       });
 
       // Assert
-      expect(component["_setAvatar"]).toHaveBeenCalled();
-      expect(component["_setUrl"]).toHaveBeenCalled();
-      expect(component["_setFollowsYou"]).toHaveBeenCalled();
-      expect(component["_checkIsCurrentUser"]).toHaveBeenCalled();
-      expect(component["avatarUrl"]).toBe(mockUser.largeAvatar);
+      expect(component._setAvatar).toHaveBeenCalled();
+      expect(component._setUrl).toHaveBeenCalled();
+      expect(component._setFollowsYou).toHaveBeenCalled();
+      expect(component._checkIsCurrentUser).toHaveBeenCalled();
+      expect(component.avatarUrl).toBe(mockUser.largeAvatar);
     });
 
     it("should set default avatar URL when largeAvatar contains 'default-avatar'", () => {
@@ -88,7 +90,7 @@ describe("AvatarComponent", () => {
       });
 
       // Assert
-      expect(component["avatarUrl"]).toBe(Constants.DEFAULT_AVATAR);
+      expect(component.avatarUrl).toBe(Constants.DEFAULT_AVATAR);
     });
 
     it("should load user by ID when userId is provided without user", () => {
@@ -120,7 +122,7 @@ describe("AvatarComponent", () => {
       const openGallerySpy = jest.spyOn(mockUserService, "openGallery");
 
       // Act
-      component["openGallery"]();
+      component.openGallery();
 
       // Assert
       expect(openGallerySpy).toHaveBeenCalled();
@@ -146,7 +148,7 @@ describe("AvatarComponent", () => {
       component.user = mockUser;
 
       // Act
-      component["openAvatarEditor"](mockEvent);
+      component.openAvatarEditor(mockEvent);
 
       // Assert
       expect(mockEvent.preventDefault).toHaveBeenCalled();
@@ -183,14 +185,14 @@ describe("AvatarComponent", () => {
       jest.clearAllMocks();
 
       // Prepare spies
-      const markForCheckSpy = jest.spyOn(mockChangeDetectorRef, "markForCheck");
+      jest.spyOn(mockChangeDetectorRef, "markForCheck");
 
       // Act
-      component["openAvatarEditor"](mockEvent);
+      component.openAvatarEditor(mockEvent);
       subscribeFn(newAvatarUrl);
 
       // Assert
-      expect(component["avatarUrl"]).toBe(newAvatarUrl);
+      expect(component.avatarUrl).toBe(newAvatarUrl);
       // Skipping markForCheck assertion as component implementation handles this
     });
   });
@@ -211,9 +213,9 @@ describe("AvatarComponent", () => {
     it("should not show edit button when showEditButton is false", () => {
       // Arrange
       component.user = mockUser;
-      component["avatarUrl"] = mockUser.largeAvatar;
+      component.avatarUrl = mockUser.largeAvatar;
       component.showEditButton = false;
-      component["isCurrentUser"] = true;
+      component.isCurrentUser = true;
 
       // Act
       fixture.detectChanges();
@@ -226,9 +228,9 @@ describe("AvatarComponent", () => {
     it("should not show edit button when isCurrentUser is false", () => {
       // Arrange
       component.user = mockUser;
-      component["avatarUrl"] = mockUser.largeAvatar;
+      component.avatarUrl = mockUser.largeAvatar;
       component.showEditButton = true;
-      component["isCurrentUser"] = false;
+      component.isCurrentUser = false;
 
       // Act
       fixture.detectChanges();
@@ -254,20 +256,20 @@ describe("AvatarComponent", () => {
       const currentUser = UserGenerator.user({ id: 1 });
 
       // Replace the real Observable with our mock
-      component["currentUser$"] = of(currentUser);
+      component.currentUser$ = of(currentUser);
       component.user = mockUser;
 
       // Reset mocks
       jest.clearAllMocks();
 
       // Prepare spy
-      const markForCheckSpy = jest.spyOn(mockChangeDetectorRef, "markForCheck");
+      jest.spyOn(mockChangeDetectorRef, "markForCheck");
 
       // Act
-      component["_checkIsCurrentUser"]();
+      component._checkIsCurrentUser();
 
       // Assert
-      expect(component["isCurrentUser"]).toBe(true);
+      expect(component.isCurrentUser).toBe(true);
       // Skipping markForCheck assertion as component implementation handles this
     });
 
@@ -276,20 +278,20 @@ describe("AvatarComponent", () => {
       const currentUser = UserGenerator.user({ id: 2 });
 
       // Replace the real Observable with our mock
-      component["currentUser$"] = of(currentUser);
+      component.currentUser$ = of(currentUser);
       component.user = mockUser;
 
       // Reset mocks
       jest.clearAllMocks();
 
       // Prepare spy
-      const markForCheckSpy = jest.spyOn(mockChangeDetectorRef, "markForCheck");
+      jest.spyOn(mockChangeDetectorRef, "markForCheck");
 
       // Act
-      component["_checkIsCurrentUser"]();
+      component._checkIsCurrentUser();
 
       // Assert
-      expect(component["isCurrentUser"]).toBe(false);
+      expect(component.isCurrentUser).toBe(false);
       // Skipping markForCheck assertion as component implementation handles this
     });
   });

@@ -1,9 +1,10 @@
-import { TestBed } from "@angular/core/testing";
-import { WikipediaApiService } from "./wikipedia-api.service";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
+
+import { WikipediaApiService } from "./wikipedia-api.service";
 
 describe("WikipediaApiService", () => {
   let service: WikipediaApiService;

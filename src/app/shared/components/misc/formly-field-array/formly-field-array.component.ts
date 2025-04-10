@@ -1,7 +1,8 @@
-import { Component } from "@angular/core";
-import { FieldArrayType, FormlyFieldConfig } from "@ngx-formly/core";
 import { animate, state, style, transition, trigger } from "@angular/animations";
+import { Component } from "@angular/core";
 import { WindowRefService } from "@core/services/window-ref.service";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { FieldArrayType } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-formly-field-array",
@@ -9,14 +10,20 @@ import { WindowRefService } from "@core/services/window-ref.service";
   styleUrls: ["./formly-field-array.component.scss"],
   animations: [
     trigger("collapse", [
-      state("collapsed", style({
-        maxHeight: "0px",
-        padding: "0"
-      })),
-      state("expanded", style({
-        maxHeight: "9999px",
-        padding: "1rem"
-      })),
+      state(
+        "collapsed",
+        style({
+          maxHeight: "0px",
+          padding: "0"
+        })
+      ),
+      state(
+        "expanded",
+        style({
+          maxHeight: "9999px",
+          padding: "1rem"
+        })
+      ),
       transition("expanded => collapsed", [
         style({ padding: "0" }), // Apply styles immediately when collapsing
         style({ maxHeight: "0px" })

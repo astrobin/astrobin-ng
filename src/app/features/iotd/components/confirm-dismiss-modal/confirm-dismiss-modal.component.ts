@@ -1,19 +1,20 @@
-import { Component, OnInit } from "@angular/core";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { Observable } from "rxjs";
-import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { filter, map, takeUntil } from "rxjs/operators";
-import { TranslateService } from "@ngx-translate/core";
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import type { MainState } from "@app/store/state";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { CookieService } from "ngx-cookie";
+import type { Observable } from "rxjs";
+import { filter, map, takeUntil } from "rxjs/operators";
 
 export enum ConfirmDismissResult {
   CANCEL,
-  CONFIRM,
+  CONFIRM
 }
 
 export const DISMISSAL_NOTICE_COOKIE = "astrobin-iotd-do-not-show-dismissal-notice";
@@ -52,8 +53,8 @@ export class ConfirmDismissModalComponent extends BaseComponentDirective impleme
       map(maxDismissals => {
         return this.translateService.instant(
           "When an image is dismissed by {{0}} members of the IOTD/TP staff, it's automatically removed from " +
-          "all queues. Please only perform this action if you want to vote against this image advancing in the " +
-          "process.",
+            "all queues. Please only perform this action if you want to vote against this image advancing in the " +
+            "process.",
           {
             "0": maxDismissals
           }

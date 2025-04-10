@@ -1,21 +1,23 @@
+import { isPlatformServer } from "@angular/common";
+import type { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Observable, throwError, timer } from "rxjs";
-import { catchError, finalize, mergeMap, timeout } from "rxjs/operators";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { isPlatformServer } from "@angular/common";
+import type { Observable } from "rxjs";
+import { throwError, timer } from "rxjs";
+import { catchError, finalize, mergeMap, timeout } from "rxjs/operators";
+
 import { HttpRetryService } from "./http-retry.service";
 
 @Injectable()
 export class TimeoutRetryInterceptor implements HttpInterceptor {
   constructor(
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     private httpRetryService: HttpRetryService
-  ) {
-  }
+  ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (req.method !== "GET") {
@@ -48,20 +50,18 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
         timeout(timeoutMs),
         catchError(error => {
           const isNetworkError = error instanceof HttpErrorResponse && error.status === 0;
-          const isTimeoutError = error.name === 'TimeoutError';
+          const isTimeoutError = error.name === "TimeoutError";
 
           if (isNetworkError || isTimeoutError) {
             if (attempt < maxAttempts - 1) {
               const retryDelay = 1000 * Math.pow(2, attempt); // Exponential backoff for retry
-              const errorType = isTimeoutError ? 'Timeout' : 'Network error';
+              const errorType = isTimeoutError ? "Timeout" : "Network error";
               console.log(
                 `${errorType}. Timeout was ${timeoutMs}ms. Retrying in ${retryDelay}ms, attempt ${attempt + 1} of ` +
-                `${maxAttempts - 1}`
+                  `${maxAttempts - 1}`
               );
 
-              return timer(retryDelay).pipe(
-                mergeMap(() => attemptRequest(attempt + 1))
-              );
+              return timer(retryDelay).pipe(mergeMap(() => attemptRequest(attempt + 1)));
             }
           }
 

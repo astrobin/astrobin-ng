@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Injectable } from "@angular/core";
+import type { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingDialogComponent } from "@shared/components/misc/loading-dialog/loading-dialog.component";
 
 @Injectable({
@@ -10,7 +11,7 @@ export class ModalService {
 
   openLoadingDialog(): NgbModalRef {
     return this.modalService.open(LoadingDialogComponent, {
-      backdrop: 'static',
+      backdrop: "static",
       keyboard: false
     });
   }

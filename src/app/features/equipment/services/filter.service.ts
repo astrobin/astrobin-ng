@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { FilterInterface, FilterSize, FilterType, LegacyFilterType } from "@features/equipment/types/filter.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { Observable, of } from "rxjs";
 import { UtilsService } from "@core/services/utils/utils.service";
+import type { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import type { FilterInterface } from "@features/equipment/types/filter.interface";
+import { FilterSize, FilterType, LegacyFilterType } from "@features/equipment/types/filter.interface";
+import { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
 
 export enum FilterDisplayProperty {
   TYPE = "TYPE",
@@ -253,8 +255,7 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
   getPrintableProperty$(
     item: FilterInterface,
     property: FilterDisplayProperty,
-    propertyValue?: any,
-    shortForm?: boolean
+    propertyValue?: any
   ): Observable<string | null> {
     switch (property) {
       case FilterDisplayProperty.TYPE:

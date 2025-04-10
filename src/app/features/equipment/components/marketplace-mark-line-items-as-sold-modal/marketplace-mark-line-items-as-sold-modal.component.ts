@@ -1,26 +1,24 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
+import type { OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import type { MainState } from "@app/store/state";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { MarkMarketplaceLineItemAsSoldSuccess } from "@features/equipment/store/equipment.actions";
+import { EquipmentActionTypes, MarkMarketplaceLineItemAsSold } from "@features/equipment/store/equipment.actions";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { LoadingService } from "@core/services/loading.service";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { Actions, ofType } from "@ngrx/effects";
-import {
-  EquipmentActionTypes,
-  MarkMarketplaceLineItemAsSold,
-  MarkMarketplaceLineItemAsSoldSuccess
-} from "@features/equipment/store/equipment.actions";
-import { filter, take } from "rxjs/operators";
-import { forkJoin } from "rxjs";
-import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { forkJoin } from "rxjs";
+import { filter, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-feedback-modal",
@@ -38,7 +36,7 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
 
   helpText: string = this.translateService.instant(
     "Select the items that you have sold. AstroBin considers an item as sold when you have received payment and " +
-    "shipped it to the buyer."
+      "shipped it to the buyer."
   );
 
   constructor(
@@ -74,13 +72,11 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
 
     const confirmationModalRef = this.modalService.open(ConfirmationDialogComponent);
     const confirmationModalInstance: ConfirmationDialogComponent = confirmationModalRef.componentInstance;
-    confirmationModalInstance.title = this.translateService.instant(
-      "Did you receive payment and deliver the item(s)?"
-    );
+    confirmationModalInstance.title = this.translateService.instant("Did you receive payment and deliver the item(s)?");
     confirmationModalInstance.message = this.translateService.instant(
       "AstroBin considers an item as sold when you have received payment and delivered it to the buyer. If you " +
-      "have not completed these steps, please hold off on marking the item as sold. Are you sure you want to " +
-      "proceed?"
+        "have not completed these steps, please hold off on marking the item as sold. Are you sure you want to " +
+        "proceed?"
     );
 
     confirmationModalRef.dismissed.subscribe(() => {
@@ -130,10 +126,12 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
       this.loadingService.setLoading(true);
 
       selectedLineItems.forEach(lineItem => {
-        this.store$.dispatch(new MarkMarketplaceLineItemAsSold({
-          lineItem,
-          soldTo: this.form.get(`soldTo-${lineItem.id}`).value
-        }));
+        this.store$.dispatch(
+          new MarkMarketplaceLineItemAsSold({
+            lineItem,
+            soldTo: this.form.get(`soldTo-${lineItem.id}`).value
+          })
+        );
       });
     });
   }
@@ -154,100 +152,101 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
       return new Date(b.created).getTime() - new Date(a.created).getTime();
     }
 
-    this.fields = this.listing.lineItems.filter(
-      lineItem => !lineItem.sold
-    ).map((lineItem, index) => {
-      const usersWithAcceptedOffers: { value: UserInterface["id"]; label: string }[] = lineItem.offers
-        .filter(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)
-        .sort(sortOffers)
-        .map(offer => ({
-          value: offer.user,
-          label: offer.userDisplayName + this.translateService.instant(" (accepted offer)")
-        }));
+    this.fields = this.listing.lineItems
+      .filter(lineItem => !lineItem.sold)
+      .map((lineItem, index) => {
+        const usersWithAcceptedOffers: { value: UserInterface["id"]; label: string }[] = lineItem.offers
+          .filter(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)
+          .sort(sortOffers)
+          .map(offer => ({
+            value: offer.user,
+            label: offer.userDisplayName + this.translateService.instant(" (accepted offer)")
+          }));
 
-      const usersWithPendingOffers: { value: UserInterface["id"]; label: string }[] = lineItem.offers
-        .filter(offer => offer.status === MarketplaceOfferStatus.PENDING)
-        .filter(offer => !usersWithAcceptedOffers.find(acceptedOffer => acceptedOffer.value === offer.user))
-        .sort(sortOffers)
-        .map(offer => ({
-          value: offer.user,
-          label: offer.userDisplayName + this.translateService.instant(" (pending offer)")
-        }));
+        const usersWithPendingOffers: { value: UserInterface["id"]; label: string }[] = lineItem.offers
+          .filter(offer => offer.status === MarketplaceOfferStatus.PENDING)
+          .filter(offer => !usersWithAcceptedOffers.find(acceptedOffer => acceptedOffer.value === offer.user))
+          .sort(sortOffers)
+          .map(offer => ({
+            value: offer.user,
+            label: offer.userDisplayName + this.translateService.instant(" (pending offer)")
+          }));
 
-      return {
-        key: "",
-        fieldGroupClassName: "d-flex align-items-end w-100",
-        fieldGroup: [
-          {
-            key: `checkbox-${lineItem.id}`,
-            type: "toggle",
-            wrappers: ["default-wrapper"],
-            defaultValue: false,
-            expressions: {
-              className: () =>
-                this.listing.lineItems.filter(lineItem => !lineItem.sold).length > 1
-                  ? "w-50 mb-2 toggle"
-                  : "hidden",
-              disabled: () => lineItem.sold
-            },
-            props: {
-              label: "",
-              toggleLabel: lineItem.itemName || lineItem.itemPlainText,
-              hideOptionalMarker: true
-            }
-          },
-          {
-            key: `itemName-${lineItem.id}`,
-            type: "formly-template",
-            wrappers: ["default-wrapper"],
-            template: lineItem.itemName || lineItem.itemPlainText,
-            expressions: {
-              className: () =>
-                this.listing.lineItems.filter(lineItem => !lineItem.sold).length === 1
-                  ? "w-50 mb-0"
-                  : "hidden"
-            },
-            props: {
-              label: this.translateService.instant("Item"),
-              hideOptionalMarker: true,
-              hideLabel: index > 0
-            }
-          },
-          {
-            key: `soldTo-${lineItem.id}`,
-            type: "ng-select",
-            wrappers: ["default-wrapper"],
-            expressions: {
-              className: () => ("w-50 " + (!!lineItem.sold ? "hidden" : "")),
-              "props.required": config => {
-                return this.listing.lineItems.filter(lineItem => !lineItem.sold).length === 1 ||
-                  !!config.model[`checkbox-${lineItem.id}`];
+        return {
+          key: "",
+          fieldGroupClassName: "d-flex align-items-end w-100",
+          fieldGroup: [
+            {
+              key: `checkbox-${lineItem.id}`,
+              type: "toggle",
+              wrappers: ["default-wrapper"],
+              defaultValue: false,
+              expressions: {
+                className: () =>
+                  this.listing.lineItems.filter(item => !item.sold).length > 1 ? "w-50 mb-2 toggle" : "hidden",
+                disabled: () => lineItem.sold
+              },
+              props: {
+                label: "",
+                toggleLabel: lineItem.itemName || lineItem.itemPlainText,
+                hideOptionalMarker: true
               }
             },
-            props: {
-              label: this.translateService.instant("Buyer"),
-              options: [
-                ...usersWithAcceptedOffers,
-                ...usersWithPendingOffers,
-                ...[{
-                  value: -1,
-                  label: usersWithAcceptedOffers.length > 0 || usersWithAcceptedOffers.length > 0
-                    ? this.translateService.instant("Someone else")
-                    : this.translateService.instant("Someone who didn't make an offer on AstroBin")
-                }]
-              ],
-              hideLabel: index > 0
+            {
+              key: `itemName-${lineItem.id}`,
+              type: "formly-template",
+              wrappers: ["default-wrapper"],
+              template: lineItem.itemName || lineItem.itemPlainText,
+              expressions: {
+                className: () =>
+                  this.listing.lineItems.filter(item => !item.sold).length === 1 ? "w-50 mb-0" : "hidden"
+              },
+              props: {
+                label: this.translateService.instant("Item"),
+                hideOptionalMarker: true,
+                hideLabel: index > 0
+              }
             },
-            hooks: {
-              onInit: (field: FormlyFieldConfig) => {
-                field.formControl.valueChanges.subscribe(() => {
-                  this.form.get(`checkbox-${lineItem.id}`).setValue(true);
-                });
+            {
+              key: `soldTo-${lineItem.id}`,
+              type: "ng-select",
+              wrappers: ["default-wrapper"],
+              expressions: {
+                className: () => "w-50 " + (!!lineItem.sold ? "hidden" : ""),
+                "props.required": config => {
+                  return (
+                    this.listing.lineItems.filter(item => !item.sold).length === 1 ||
+                    !!config.model[`checkbox-${lineItem.id}`]
+                  );
+                }
+              },
+              props: {
+                label: this.translateService.instant("Buyer"),
+                options: [
+                  ...usersWithAcceptedOffers,
+                  ...usersWithPendingOffers,
+                  ...[
+                    {
+                      value: -1,
+                      label:
+                        usersWithAcceptedOffers.length > 0 || usersWithAcceptedOffers.length > 0
+                          ? this.translateService.instant("Someone else")
+                          : this.translateService.instant("Someone who didn't make an offer on AstroBin")
+                    }
+                  ]
+                ],
+                hideLabel: index > 0
+              },
+              hooks: {
+                onInit: (field: FormlyFieldConfig) => {
+                  field.formControl.valueChanges.subscribe(() => {
+                    this.form.get(`checkbox-${lineItem.id}`).setValue(true);
+                  });
+                }
               }
             }
-          }
-        ]
-      };
-    });
+          ]
+        };
+      });
   }
 }

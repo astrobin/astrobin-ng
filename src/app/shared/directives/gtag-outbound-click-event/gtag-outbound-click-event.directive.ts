@@ -1,6 +1,6 @@
 import { Directive, HostListener, Input } from "@angular/core";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { LoadingService } from "@core/services/loading.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 declare const gtag: any;
 
@@ -14,11 +14,10 @@ export class GtagOutboundClickEventDirective {
   @Input()
   target: string;
 
-  constructor(public readonly windowRefService: WindowRefService, public readonly loadingService: LoadingService) {
-  }
+  constructor(public readonly windowRefService: WindowRefService, public readonly loadingService: LoadingService) {}
 
   @HostListener("click", ["$event"])
-  public onClick(event: Event): void {
+  public onClick(): void {
     if (typeof gtag !== "undefined") {
       gtag("event", "click", {
         event_category: "Outbound link",

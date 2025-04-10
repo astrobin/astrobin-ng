@@ -1,53 +1,55 @@
 import { Injectable } from "@angular/core";
-import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { merge, Observable, switchMap } from "rxjs";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { Router } from "@angular/router";
 import { LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import { filter, take } from "rxjs/operators";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import {
-  CreateMarketplaceOffer,
+import type { MainState } from "@app/store/state";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import { BaseService } from "@core/services/base.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
+import { LoadUser } from "@features/account/store/auth.actions";
+import { selectCurrentUser, selectUser } from "@features/account/store/auth.selectors";
+import { MarketplaceAcceptRejectRetractOfferModalComponent } from "@features/equipment/components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component";
+import type {
   CreateMarketplaceOfferFailure,
   CreateMarketplaceOfferSuccess,
-  EquipmentActionTypes,
-  LoadEquipmentItem,
-  RejectMarketplaceOffer,
   RejectMarketplaceOfferFailure,
   RejectMarketplaceOfferSuccess,
-  RetractMarketplaceOffer,
   RetractMarketplaceOfferFailure,
   RetractMarketplaceOfferSuccess,
-  UpdateMarketplaceOffer,
   UpdateMarketplaceOfferFailure,
   UpdateMarketplaceOfferSuccess
 } from "@features/equipment/store/equipment.actions";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
 import {
-  MarketplaceListingInterface,
-  MarketplaceListingType
-} from "@features/equipment/types/marketplace-listing.interface";
-import { selectCurrentUser, selectUser } from "@features/account/store/auth.selectors";
-import { LoadUser } from "@features/account/store/auth.actions";
-import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { Actions, ofType } from "@ngrx/effects";
-import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
-import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { Router } from "@angular/router";
+  CreateMarketplaceOffer,
+  EquipmentActionTypes,
+  LoadEquipmentItem,
+  RejectMarketplaceOffer,
+  RetractMarketplaceOffer,
+  UpdateMarketplaceOffer
+} from "@features/equipment/store/equipment.actions";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { MarketplaceFeedbackValue } from "@features/equipment/types/marketplace-feedback.interface";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { MarketplaceAcceptRejectRetractOfferModalComponent } from "@features/equipment/components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component";
+import type { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import type { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
+import type { NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import type { Observable } from "rxjs";
+import { merge, switchMap } from "rxjs";
+import { filter, take } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -181,19 +183,19 @@ export class EquipmentMarketplaceService extends BaseService {
 
     if (currentUserId === lineItem.user) {
       // The current user is the seller, and the user in this component has some accepted or retracted offers
-      return lineItem.offers.some(offer =>
-        offer.user === targetUserId && (
-          offer.status === MarketplaceOfferStatus.ACCEPTED ||
-          offer.status === MarketplaceOfferStatus.RETRACTED
-        ));
+      return lineItem.offers.some(
+        offer =>
+          offer.user === targetUserId &&
+          (offer.status === MarketplaceOfferStatus.ACCEPTED || offer.status === MarketplaceOfferStatus.RETRACTED)
+      );
     }
 
     // The current user is not the seller, so they can leave feedback if they have accepted or rejected offers.
-    return lineItem.offers.some(offer =>
-      offer.user === currentUserId && (
-        offer.status === MarketplaceOfferStatus.ACCEPTED ||
-        offer.status === MarketplaceOfferStatus.REJECTED
-      ));
+    return lineItem.offers.some(
+      offer =>
+        offer.user === currentUserId &&
+        (offer.status === MarketplaceOfferStatus.ACCEPTED || offer.status === MarketplaceOfferStatus.REJECTED)
+    );
   }
 
   allowLeavingFeedbackToListing(
@@ -233,16 +235,16 @@ export class EquipmentMarketplaceService extends BaseService {
   ): [MarketplaceLineItemInterface[], MarketplaceLineItemInterface[], MarketplaceLineItemInterface[]] {
     function getLineItemsMap(listing: MarketplaceListingInterface): Map<number, MarketplaceLineItemInterface> {
       return new Map<number, MarketplaceLineItemInterface>(
-        listing.lineItems?.filter(item => item.id != null).map(item => [item.id!, item]) ?? []
+        listing.lineItems?.filter(item => item.id !== null).map(item => [item.id!, item]) ?? []
       );
     }
 
     const updatedLineItemsMap = getLineItemsMap(updatedListing);
     const previousLineItemsMap = getLineItemsMap(previousListing);
 
-    let preservedLineItems: MarketplaceLineItemInterface[] = [];
-    let addedLineItems: MarketplaceLineItemInterface[] = [];
-    let removedLineItems: MarketplaceLineItemInterface[] = [];
+    const preservedLineItems: MarketplaceLineItemInterface[] = [];
+    const addedLineItems: MarketplaceLineItemInterface[] = [];
+    const removedLineItems: MarketplaceLineItemInterface[] = [];
 
     // Check for changed and added line items
     updatedLineItemsMap.forEach((item, id) => {
@@ -298,8 +300,7 @@ export class EquipmentMarketplaceService extends BaseService {
 
   listingHasPendingOffers(listing: MarketplaceListingInterface): boolean {
     return listing.lineItems.some(
-      lineItem =>
-        lineItem.offers.filter(offer => !!offer && offer.status === MarketplaceOfferStatus.PENDING).length > 0
+      lineItem => lineItem.offers.filter(offer => !!offer && offer.status === MarketplaceOfferStatus.PENDING).length > 0
     );
   }
 
@@ -356,8 +357,8 @@ export class EquipmentMarketplaceService extends BaseService {
       ) {
         componentInstance.message = this.translateService.instant(
           "Careful! If you retract an offer that was accepted by the seller, and have not reached a mutual " +
-          "agreement concerning this, you may risk disciplinary action. Offers are considered binding agreements " +
-          "between buyers and sellers. Are you sure you want to retract your offer?"
+            "agreement concerning this, you may risk disciplinary action. Offers are considered binding agreements " +
+            "between buyers and sellers. Are you sure you want to retract your offer?"
         );
       }
 
@@ -431,7 +432,7 @@ export class EquipmentMarketplaceService extends BaseService {
     this.store$
       .select(selectCurrentUser)
       .pipe(take(1))
-      .subscribe(currentUser => {
+      .subscribe(() => {
         const dispatchSequentially = (index: number) => {
           if (index >= offers.length) {
             this.loadingService.setLoading(false);
@@ -453,12 +454,12 @@ export class EquipmentMarketplaceService extends BaseService {
             ofType(successActionType),
             filter(
               (
-                action:
+                actionResult:
                   | CreateMarketplaceOfferSuccess
                   | UpdateMarketplaceOfferSuccess
                   | RejectMarketplaceOfferSuccess
                   | RetractMarketplaceOfferSuccess
-              ) => action.payload.offer.masterOfferUuid === offer.masterOfferUuid
+              ) => actionResult.payload.offer.masterOfferUuid === offer.masterOfferUuid
             ),
             take(1)
           );
@@ -467,12 +468,12 @@ export class EquipmentMarketplaceService extends BaseService {
             ofType(failureActionType),
             filter(
               (
-                action:
+                actionError:
                   | CreateMarketplaceOfferFailure
                   | UpdateMarketplaceOfferFailure
                   | RejectMarketplaceOfferFailure
                   | RetractMarketplaceOfferFailure
-              ) => action.payload.offer.masterOfferUuid === offer.masterOfferUuid
+              ) => actionError.payload.offer.masterOfferUuid === offer.masterOfferUuid
             ),
             take(1)
           );
@@ -487,9 +488,9 @@ export class EquipmentMarketplaceService extends BaseService {
                       offerModalRef.close(listing); // Only close if last action is successful
                     }
 
-                    let message = this._getMessageForOfferActionType(action);
-                    if (message) {
-                      this.popNotificationsService.success(message);
+                    const successMessage = this._getMessageForOfferActionType(action);
+                    if (successMessage) {
+                      this.popNotificationsService.success(successMessage);
                     }
                   }
                 } else {

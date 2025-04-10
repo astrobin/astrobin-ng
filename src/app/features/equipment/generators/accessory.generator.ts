@@ -1,5 +1,6 @@
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
-import { AccessoryInterface, AccessoryType } from "@features/equipment/types/accessory.interface";
+import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { AccessoryType } from "@features/equipment/types/accessory.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export class AccessoryGenerator {

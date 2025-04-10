@@ -1,12 +1,13 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { ItemBrowserByPropertiesComponent } from "./item-browser-by-properties.component";
-import { MockBuilder } from "ng-mocks";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 import { of, ReplaySubject } from "rxjs";
+
+import { ItemBrowserByPropertiesComponent } from "./item-browser-by-properties.component";
 
 describe("ItemBrowserByPropertiesModalComponent", () => {
   let component: ItemBrowserByPropertiesComponent;

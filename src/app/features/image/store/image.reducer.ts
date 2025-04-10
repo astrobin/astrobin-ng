@@ -1,4 +1,5 @@
-import { ImageActions, ImageActionTypes } from "./image.actions";
+import type { ImageActions } from "./image.actions";
+import { ImageActionTypes } from "./image.actions";
 
 export const imageFeatureKey = "image";
 

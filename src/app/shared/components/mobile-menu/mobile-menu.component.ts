@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
+import type { OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import type { MainState } from "@app/store/state";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import type { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { take } from "rxjs/operators";
-import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
 
 @Component({
   selector: "astrobin-mobile-menu",
@@ -29,10 +30,7 @@ export class MobileMenuComponent extends BaseComponentDirective implements OnIni
 
   private _offcanvasRef: NgbOffcanvasRef;
 
-  constructor(
-    public readonly store$: Store<MainState>,
-    public readonly offcanvasService: NgbOffcanvas
-  ) {
+  constructor(public readonly store$: Store<MainState>, public readonly offcanvasService: NgbOffcanvas) {
     super(store$);
   }
 

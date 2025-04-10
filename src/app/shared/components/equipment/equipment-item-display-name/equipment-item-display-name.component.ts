@@ -1,19 +1,34 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnChanges, TemplateRef, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { EquipmentItemBaseInterface, EquipmentItemReviewerDecision, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { filter, take } from "rxjs/operators";
+import type { OnChanges } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostBinding,
+  Input,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
+import type { MainState } from "@app/store/state";
+import { DeviceService } from "@core/services/device.service";
 import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/item-unapproved-info-modal/item-unapproved-info-modal.component";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import {
+  EquipmentItemReviewerDecision,
+  EquipmentItemType
+} from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { DeviceService } from "@core/services/device.service";
-import { EquipmentItemListingInterface, EquipmentItemListingType } from "@features/equipment/types/equipment-listings.interface";
+import type { EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
+import { EquipmentItemListingType } from "@features/equipment/types/equipment-listings.interface";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import type { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/item-unapproved-info-modal/item-unapproved-info-modal.component";
+import { filter, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-equipment-item-display-name",
@@ -24,7 +39,7 @@ import { EquipmentItemListingInterface, EquipmentItemListingType } from "@featur
 export class EquipmentItemDisplayNameComponent extends BaseComponentDirective implements OnChanges {
   readonly EquipmentItemReviewerDecision = EquipmentItemReviewerDecision;
   readonly EquipmentItemListingType = EquipmentItemListingType;
-  
+
   protected sellsListings: EquipmentItemListingInterface[] = [];
   protected pairsWellListings: EquipmentItemListingInterface[] = [];
 
@@ -102,7 +117,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
       return;
     }
 
-    const _onChanges = (item: EquipmentItem) => {
+    const _onChanges = () => {
       this.brandLink = !!this.item.brand
         ? `/equipment/explorer/brand/${this.item.brand}/${UtilsService.slugify(this.item.brandName)}`
         : undefined;
@@ -147,7 +162,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
         )
         .subscribe((item: EquipmentItem) => {
           this.item = item;
-          
+
           if (!!this.item.listings && !!this.item.listings.itemListings) {
             this.sellsListings = this.item.listings.itemListings.filter(
               listing => listing.listingType === EquipmentItemListingType.SELLS
@@ -156,8 +171,8 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
               listing => listing.listingType === EquipmentItemListingType.PAIRS_WELL
             );
           }
-          
-          _onChanges(item);
+
+          _onChanges();
           this.changeDetectorRef.markForCheck();
         });
     } else {
@@ -169,8 +184,8 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
           listing => listing.listingType === EquipmentItemListingType.PAIRS_WELL
         );
       }
-      
-      _onChanges(this.item);
+
+      _onChanges();
     }
   }
 

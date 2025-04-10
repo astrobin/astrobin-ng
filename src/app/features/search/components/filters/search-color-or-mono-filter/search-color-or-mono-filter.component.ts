@@ -1,15 +1,16 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ColorOrMono } from "@features/equipment/types/sensor.interface";
-import { SensorService } from "@features/equipment/services/sensor.service";
+import type { SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SensorService } from "@features/equipment/services/sensor.service";
+import { ColorOrMono } from "@features/equipment/types/sensor.interface";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-search-color-or-mono-filter.search-filter-component",
@@ -77,9 +78,7 @@ export class SearchColorOrMonoFilterComponent extends SearchBaseFilterComponent 
     if (value.length === 1) {
       renderedValue = this.sensorService.humanizeColorOrMono(value[0]);
     } else {
-      renderedValue = value
-        .map(x => this.sensorService.humanizeColorOrMono(x))
-        .join(", ");
+      renderedValue = value.map(x => this.sensorService.humanizeColorOrMono(x)).join(", ");
     }
 
     return this.domSanitizer.bypassSecurityTrustHtml(renderedValue);

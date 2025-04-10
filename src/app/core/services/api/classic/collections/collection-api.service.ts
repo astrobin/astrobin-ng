@@ -1,14 +1,15 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import type { CollectionInterface } from "@core/interfaces/collection.interface";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@core/services/loading.service";
-import { EMPTY, Observable } from "rxjs";
-import { expand, reduce } from "rxjs/operators";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { ImageInterface } from "@core/interfaces/image.interface";
+import type { Observable } from "rxjs";
+import { EMPTY } from "rxjs";
+import { expand, reduce } from "rxjs/operators";
 
 export interface GetCollectionsParamsInterface {
   user?: UserInterface["id"];
@@ -71,7 +72,10 @@ export class CollectionApiService extends BaseClassicApiService {
     return this.http.post<void>(`${this.configUrl}${collectionId}/remove-image/`, { image: imageId });
   }
 
-  setCoverImage(collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"]): Observable<CollectionInterface> {
+  setCoverImage(
+    collectionId: CollectionInterface["id"],
+    imageId: ImageInterface["pk"]
+  ): Observable<CollectionInterface> {
     return this.http.post<CollectionInterface>(`${this.configUrl}${collectionId}/set-cover-image/`, { image: imageId });
   }
 

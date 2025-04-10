@@ -1,9 +1,10 @@
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { MockBuilder, MockInstance, MockRender, MockReset, MockService } from "ng-mocks";
-import { LoginPageComponent } from "./login-page.component";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder, MockInstance, MockRender, MockReset, MockService } from "ng-mocks";
+
+import { LoginPageComponent } from "./login-page.component";
 
 describe("LoginPageComponent", () => {
   let component: LoginPageComponent;
@@ -23,7 +24,9 @@ describe("LoginPageComponent", () => {
 
   afterEach(MockReset);
 
-  beforeEach(() => MockBuilder(LoginPageComponent, AppModule).provide(provideMockStore({ initialState: initialMainState })));
+  beforeEach(() =>
+    MockBuilder(LoginPageComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }))
+  );
   beforeEach(() => (component = MockRender(LoginPageComponent).point.componentInstance));
 
   it("should create", () => {

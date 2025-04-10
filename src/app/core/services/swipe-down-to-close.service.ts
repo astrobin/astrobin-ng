@@ -1,7 +1,8 @@
-import { Inject, Injectable, PLATFORM_ID, Renderer2, RendererFactory2 } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import type { Renderer2 } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID, RendererFactory2 } from "@angular/core";
 import { SwipeDownService } from "@core/services/swipe-down.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 @Injectable({
   providedIn: "root"
@@ -25,7 +26,7 @@ export class SwipeDownToCloseService {
     private rendererFactory: RendererFactory2,
     private offcanvasService: NgbOffcanvas,
     private swipeDownService: SwipeDownService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: object
   ) {
     this.renderer = this.rendererFactory.createRenderer(null, null);
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -115,8 +116,7 @@ export class SwipeDownToCloseService {
       }
     };
 
-    const handleTouchEnd = (event: TouchEvent) => {
-
+    const handleTouchEnd = (): void => {
       // Let SwipeDownService handle everything, including the callback
       // For offcanvas we use 'translate-only' animation
       this.swipeDownService.handleTouchEnd(
@@ -137,9 +137,7 @@ export class SwipeDownToCloseService {
       );
     };
 
-    // Check for nested elements that might intercept touches
-    const header = offcanvasElement.querySelector(".offcanvas-header");
-    const body = offcanvasElement.querySelector(".offcanvas-body");
+    // Add event listeners to the offcanvas element
 
     // We need to differentiate clicks from swipes, but keep it simple
     const wrappedTouchStart = (event: TouchEvent) => {
@@ -150,7 +148,7 @@ export class SwipeDownToCloseService {
       handleTouchMove(event);
     };
 
-    const wrappedTouchEnd = (event: TouchEvent) => {
+    const wrappedTouchEnd = () => {
       // Only process if we're swiping
       if (!this.isSwiping.value) {
         return;
@@ -160,7 +158,7 @@ export class SwipeDownToCloseService {
       // as the swipeDownService.handleTouchEnd will do that for us
 
       // Handle as normal swipe
-      handleTouchEnd(event);
+      handleTouchEnd();
     };
 
     // Attach event listeners to the offcanvas panel
@@ -176,7 +174,6 @@ export class SwipeDownToCloseService {
       end: wrappedTouchEnd,
       elements: [offcanvasElement]
     };
-
   }
 
   /**
@@ -188,17 +185,9 @@ export class SwipeDownToCloseService {
 
     // But also animate the panel off-screen for a nicer visual effect
     const viewportHeight = window.innerHeight;
-    this.renderer.setStyle(
-      offcanvasElement,
-      "transform",
-      `translateY(${viewportHeight}px)`
-    );
+    this.renderer.setStyle(offcanvasElement, "transform", `translateY(${viewportHeight}px)`);
 
     // Make sure the transition is shorter for a more responsive feel
-    this.renderer.setStyle(
-      offcanvasElement,
-      "transition",
-      "transform 0.2s ease-out"
-    );
+    this.renderer.setStyle(offcanvasElement, "transition", "transform 0.2s ease-out");
   }
 }

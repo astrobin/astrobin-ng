@@ -1,14 +1,13 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import type { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { environment } from "@env/environment";
-import { Observable } from "rxjs";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { environment } from "@env/environment";
+import type { Observable } from "rxjs";
 
 @Injectable()
 export class DebugCountryInterceptor implements HttpInterceptor {
-  constructor(public readonly windowRefService: WindowRefService) {
-  }
+  constructor(public readonly windowRefService: WindowRefService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const debugCountry: string | null = UtilsService.getUrlParam(

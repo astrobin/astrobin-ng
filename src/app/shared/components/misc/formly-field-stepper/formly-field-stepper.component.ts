@@ -1,15 +1,28 @@
-import { AfterContentChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, QueryList, Renderer2, ViewChild, ViewChildren } from "@angular/core";
+import { isPlatformServer } from "@angular/common";
+import type { AfterContentChecked, AfterViewInit, OnDestroy, OnInit } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Inject,
+  PLATFORM_ID,
+  QueryList,
+  Renderer2,
+  ViewChild,
+  ViewChildren
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { FieldType, FormlyFieldConfig } from "@ngx-formly/core";
-import { TranslateService } from "@ngx-translate/core";
+import { DeviceService } from "@core/services/device.service";
 import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { NgWizardComponent, NgWizardService, NgWizardStep, NgWizardStepComponent, STEP_STATE, StepChangedArgs } from "@kronscht/ng-wizard";
-import { isPlatformServer } from "@angular/common";
-import { Subscription } from "rxjs";
-import { DeviceService } from "@core/services/device.service";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import type { NgWizardStep, NgWizardStepComponent, StepChangedArgs } from "@kronscht/ng-wizard";
+import { NgWizardComponent, NgWizardService, STEP_STATE } from "@kronscht/ng-wizard";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { FieldType } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import type { Subscription } from "rxjs";
 
 @Component({
   selector: "astrobin-formly-field-stepper",
@@ -18,7 +31,8 @@ import { UtilsService } from "@core/services/utils/utils.service";
 })
 export class FormlyFieldStepperComponent
   extends FieldType
-  implements OnInit, AfterViewInit, OnDestroy, AfterContentChecked {
+  implements OnInit, AfterViewInit, OnDestroy, AfterContentChecked
+{
   @ViewChild("wizard")
   wizard: NgWizardComponent;
 
@@ -45,7 +59,7 @@ export class FormlyFieldStepperComponent
     public readonly router: Router,
     public readonly route: ActivatedRoute,
     public readonly renderer: Renderer2,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly deviceService: DeviceService,
     public readonly utilsService: UtilsService
@@ -72,7 +86,7 @@ export class FormlyFieldStepperComponent
     const anchors: HTMLAnchorElement[] = this.wizardElement.nativeElement.querySelectorAll("a");
     anchors.forEach(anchor => {
       this._stepClickListeners.push(
-        this.renderer.listen(anchor, "click", (event: Event) => {
+        this.renderer.listen(anchor, "click", () => {
           this._markFieldAsTouched(this.field.fieldGroup[this.currentStepIndex]);
         })
       );
@@ -103,7 +117,7 @@ export class FormlyFieldStepperComponent
       this.setHighestVisitedStep(event.step.index);
       this.utilsService.delay(100).subscribe(() => {
         this._scrollActiveNavItemIntoView();
-      })
+      });
     });
   }
 

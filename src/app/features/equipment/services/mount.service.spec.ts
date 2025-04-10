@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
-import { MountGenerator } from "@features/equipment/generators/mount.generator";
-import { MountType } from "@features/equipment/types/mount.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { MountGenerator } from "@features/equipment/generators/mount.generator";
+import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
+import { MountType } from "@features/equipment/types/mount.interface";
+import { MockBuilder } from "ng-mocks";
 
 describe("MountService", () => {
   let service: MountService;

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ImageInterface } from "@core/interfaces/image.interface";
+import type { ImageInterface } from "@core/interfaces/image.interface";
 import { EquipmentService } from "@core/services/equipment.service";
 import { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -40,7 +40,7 @@ export class ImageInfoService {
     // Cameras
     let camerasLabel: string;
     if (image.imagingCameras2?.length === 1) {
-      camerasLabel = this.equipmentService.humanizeCameraLabel(image.imagingCameras2[0]);
+      camerasLabel = this.equipmentService.humanizeCameraLabel();
     } else if (image.imagingCameras?.length === 1) {
       camerasLabel = this.translateService.instant("Camera");
     } else {
@@ -51,7 +51,7 @@ export class ImageInfoService {
     let mountsLabel: string;
     if ((image.mounts2?.length || 0) + (image.mounts?.length || 0) === 1) {
       if (image.mounts2?.length === 1) {
-        mountsLabel = this.equipmentService.humanizeMountLabel(image.mounts2[0]);
+        mountsLabel = this.equipmentService.humanizeMountLabel();
       } else {
         mountsLabel = this.translateService.instant("Mount");
       }
@@ -63,7 +63,7 @@ export class ImageInfoService {
     let filtersLabel: string;
     if ((image.filters2?.length || 0) + (image.filters?.length || 0) === 1) {
       if (image.filters2?.length === 1) {
-        filtersLabel = this.equipmentService.humanizeFilterLabel(image.filters2[0]);
+        filtersLabel = this.equipmentService.humanizeFilterLabel();
       } else {
         filtersLabel = this.translateService.instant("Filter");
       }
@@ -198,9 +198,10 @@ export class ImageInfoService {
   addFocalReducersEquipment(image: ImageInterface, lines: string[]): void {
     // Focal reducers (legacy)
     if (image.focalReducers?.length > 0) {
-      const focalReducersLabel = image.focalReducers.length > 1 ?
-        this.translateService.instant("Focal reducers") :
-        this.translateService.instant("Focal reducer");
+      const focalReducersLabel =
+        image.focalReducers.length > 1
+          ? this.translateService.instant("Focal reducers")
+          : this.translateService.instant("Focal reducer");
       const focalReducers = image.focalReducers.map(fr => this.formatEquipmentItem(fr));
       lines.push(`- ${focalReducersLabel}: ${focalReducers.join(", ")}`);
     }

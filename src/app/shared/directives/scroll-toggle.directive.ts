@@ -1,18 +1,20 @@
-import { AfterViewChecked, AfterViewInit, Directive, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, Renderer2, SimpleChanges } from "@angular/core";
-import { fromEvent, Subscription } from "rxjs";
-import { throttleTime } from "rxjs/operators";
+import type { AfterViewChecked, AfterViewInit, OnChanges, OnDestroy, SimpleChanges } from "@angular/core";
+import { Directive, ElementRef, EventEmitter, Input, Output, Renderer2 } from "@angular/core";
 import { WindowRefService } from "@core/services/window-ref.service";
+import type { Subscription } from "rxjs";
+import { fromEvent } from "rxjs";
+import { throttleTime } from "rxjs/operators";
 
 @Directive({
   selector: "[astrobinScrollToggle]"
 })
 export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, OnDestroy, OnChanges {
-  @Input() enabled = true;  // Whether the directive is enabled
-  @Input() topElement!: HTMLElement;   // Optional: Top element to show/hide
+  @Input() enabled = true; // Whether the directive is enabled
+  @Input() topElement!: HTMLElement; // Optional: Top element to show/hide
   @Input() bottomElement!: HTMLElement; // Optional: Bottom element to show/hide
-  @Input() throttle = 30;  // Throttle time (default is 30ms)
-  @Input() hideThreshold = 10;  // Scroll distance threshold (default is 10px)
-  @Input() globalScroll = false;  // Whether to listen on window (global) scroll
+  @Input() throttle = 30; // Throttle time (default is 30ms)
+  @Input() hideThreshold = 10; // Scroll distance threshold (default is 10px)
+  @Input() globalScroll = false; // Whether to listen on window (global) scroll
 
   @Output() showTopElement = new EventEmitter<void>();
   @Output() hideTopElement = new EventEmitter<void>();
@@ -29,8 +31,7 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
     private readonly el: ElementRef,
     private readonly renderer: Renderer2,
     private readonly windowRefService: WindowRefService
-  ) {
-  }
+  ) {}
 
   ngAfterViewInit(): void {
     this._init();
@@ -42,13 +43,14 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
     }
 
     // Check if the scrollable space is taller than the viewport
-    const contentHeight = this.el.nativeElement.scrollHeight || this.windowRefService.nativeWindow.document.body.scrollHeight;
+    const contentHeight =
+      this.el.nativeElement.scrollHeight || this.windowRefService.nativeWindow.document.body.scrollHeight;
     const viewportHeight = this.windowRefService.nativeWindow.innerHeight || this.el.nativeElement.clientHeight;
 
     // If content is taller than the viewport, start by hiding the bottom element
     if (contentHeight > viewportHeight) {
       this.renderer.setStyle(this.bottomElement, "transform", `translateY(100%)`);
-      this.bottomElementVisible = false;  // Set the initial state to hidden
+      this.bottomElementVisible = false; // Set the initial state to hidden
       this.hideBottomElement.emit();
     }
 
@@ -78,30 +80,30 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
 
   private _init() {
     if (!this.enabled) {
-      return;  // Exit if the directive is disabled
+      return; // Exit if the directive is disabled
     }
 
     // Determine the scroll source (element or window)
     const scrollTarget = this.globalScroll ? this.windowRefService.nativeWindow : this.el.nativeElement;
 
     // Listen for scroll events on the scrollable element or globally
-    this.scrollSubscription = fromEvent(scrollTarget, "scroll").pipe(
-      throttleTime(this.throttle)
-    ).subscribe(() => {
-      const currentScrollTop = this.globalScroll ? window.scrollY : this.el.nativeElement.scrollTop;
+    this.scrollSubscription = fromEvent(scrollTarget, "scroll")
+      .pipe(throttleTime(this.throttle))
+      .subscribe(() => {
+        const currentScrollTop = this.globalScroll ? window.scrollY : this.el.nativeElement.scrollTop;
 
-      // Handle the top element (e.g., search bar with offset)
-      if (this.topElement) {
-        this._handleTopElementScroll(currentScrollTop);
-      }
+        // Handle the top element (e.g., search bar with offset)
+        if (this.topElement) {
+          this._handleTopElementScroll(currentScrollTop);
+        }
 
-      // Handle the bottom element (e.g., footer)
-      if (this.bottomElement) {
-        this._handleBottomElementScroll(currentScrollTop);
-      }
+        // Handle the bottom element (e.g., footer)
+        if (this.bottomElement) {
+          this._handleBottomElementScroll(currentScrollTop);
+        }
 
-      this.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;  // Avoid negative scroll values
-    });
+        this.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // Avoid negative scroll values
+      });
   }
 
   private _reset() {
@@ -146,9 +148,7 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
   }
 
   private _getClientHeight(): number {
-    return this.globalScroll
-      ? this.windowRefService.nativeWindow.innerHeight
-      : this.el.nativeElement.clientHeight;
+    return this.globalScroll ? this.windowRefService.nativeWindow.innerHeight : this.el.nativeElement.clientHeight;
   }
 
   private _showBottomElement(): void {

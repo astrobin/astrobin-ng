@@ -1,13 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import {
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type {
   MarketplaceFilterModel,
   MarketplaceRefreshOptions
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { takeUntil } from "rxjs/operators";
 import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
+import type { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-my-purchases-page",
@@ -36,12 +37,12 @@ export class MarketplaceUserPurchasesPageComponent extends MarketplaceListingsBa
     });
   }
 
-  protected _setTitle(user: UserInterface) {
+  protected _setTitle() {
     this.title = this.translateService.instant("Purchases");
     this.titleService.setTitle(this.title);
   }
 
-  protected _setBreadcrumbs(user: UserInterface) {
+  protected _setBreadcrumbs() {
     this.store$.dispatch(
       new SetBreadcrumb({
         breadcrumb: [
@@ -67,7 +68,6 @@ export class MarketplaceUserPurchasesPageComponent extends MarketplaceListingsBa
   protected _getListingsFilterPredicate(
     currentUser: UserInterface | null
   ): (listing: MarketplaceListingInterface) => boolean {
-    return listing =>
-      listing.lineItems.some(lineItem => lineItem.soldTo === currentUser?.id);
+    return listing => listing.lineItems.some(lineItem => lineItem.soldTo === currentUser?.id);
   }
 }

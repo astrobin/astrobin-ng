@@ -1,16 +1,53 @@
 import { Injectable } from "@angular/core";
-import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { AcceptCollaboratorRequestFailure, AcceptCollaboratorRequestSuccess, DeleteImageFailure, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, DenyCollaboratorRequestFailure, DenyCollaboratorRequestSuccess, FindImagesFailure, FindImagesSuccess, LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImageFailure, PublishImageSuccess, RemoveCollaboratorFailure, RemoveCollaboratorSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UndeleteImage, UndeleteImageFailure, UndeleteImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
-import { MainState } from "@app/store/state";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
+import type { All } from "@app/store/actions/app.actions";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import type { UndeleteImage } from "@app/store/actions/image.actions";
+import {
+  AcceptCollaboratorRequestFailure,
+  AcceptCollaboratorRequestSuccess,
+  DeleteImageFailure,
+  DeleteImageRevisionFailure,
+  DeleteImageRevisionSuccess,
+  DeleteImageSuccess,
+  DeleteImageUncompressedSourceFileFailure,
+  DeleteImageUncompressedSourceFileSuccess,
+  DeleteOriginalImageFailure,
+  DeleteOriginalImageSuccess,
+  DenyCollaboratorRequestFailure,
+  DenyCollaboratorRequestSuccess,
+  FindImagesFailure,
+  FindImagesSuccess,
+  LoadImageFailure,
+  LoadImagesSuccess,
+  LoadImageSuccess,
+  MarkImageAsFinalFailure,
+  MarkImageAsFinalSuccess,
+  PublishImageFailure,
+  PublishImageSuccess,
+  RemoveCollaboratorFailure,
+  RemoveCollaboratorSuccess,
+  SaveImageFailure,
+  SaveImageRevisionFailure,
+  SaveImageRevisionSuccess,
+  SaveImageSuccess,
+  SubmitImageForIotdTpConsiderationFailure,
+  SubmitImageForIotdTpConsiderationSuccess,
+  UndeleteImageFailure,
+  UndeleteImageSuccess,
+  UnpublishImageFailure,
+  UnpublishImageSuccess
+} from "@app/store/actions/image.actions";
+import { loadResourceEffect } from "@app/store/effects/load-resource.effect";
+import type { MainState } from "@app/store/state";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { EMPTY, Observable, of } from "rxjs";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
+import { EMPTY, of } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
-import { loadResourceEffect } from "@app/store/effects/load-resource.effect";
 
 @Injectable()
 export class ImageEffects {
@@ -24,9 +61,7 @@ export class ImageEffects {
         return null;
       }
 
-      return state.app.images.find(
-        image => image.pk === id || image.hash === id
-      );
+      return state.app.images.find(image => image.pk === id || image.hash === id);
     }, // Selector for the image
     id => this.imageApiService.getImage(id), // API call to load image
     image => new LoadImageSuccess(image), // Success action
@@ -52,8 +87,8 @@ export class ImageEffects {
       ofType(AppActionTypes.FIND_IMAGES),
       mergeMap(action =>
         this.imageApiService.findImages(action.payload.options).pipe(
-          map(response => new FindImagesSuccess({options: action.payload.options, response })),
-          catchError(error => of(new FindImagesFailure({options: action.payload.options, error})))
+          map(response => new FindImagesSuccess({ options: action.payload.options, response })),
+          catchError(error => of(new FindImagesFailure({ options: action.payload.options, error })))
         )
       )
     )
@@ -146,14 +181,12 @@ export class ImageEffects {
       ofType(AppActionTypes.PUBLISH_IMAGE),
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(action =>
-        this.imageApiService.publishImage(
-          action.payload.pk,
-          action.payload.skipNotifications,
-          action.payload.skipActivityStream
-        ).pipe(
-          map(() => new PublishImageSuccess({ pk: action.payload.pk })),
-          catchError(error => of(new PublishImageFailure({ pk: action.payload.pk, error })))
-        )
+        this.imageApiService
+          .publishImage(action.payload.pk, action.payload.skipNotifications, action.payload.skipActivityStream)
+          .pipe(
+            map(() => new PublishImageSuccess({ pk: action.payload.pk })),
+            catchError(error => of(new PublishImageFailure({ pk: action.payload.pk, error })))
+          )
       )
     )
   );
@@ -173,7 +206,7 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.PUBLISH_IMAGE_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
         })
       ),
@@ -210,7 +243,7 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.UNPUBLISH_IMAGE_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
         })
       ),
@@ -238,9 +271,7 @@ export class ImageEffects {
         ofType(AppActionTypes.MARK_IMAGE_AS_FINAL_SUCCESS),
         tap(() => {
           this.loadingService.setLoading(false);
-          this.popNotificationsService.success(
-            this.translateService.instant("The revision has been marked as final.")
-          );
+          this.popNotificationsService.success(this.translateService.instant("The revision has been marked as final."));
         })
       ),
     {
@@ -252,7 +283,7 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.MARK_IMAGE_AS_FINAL_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
         })
       ),
@@ -296,7 +327,7 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.DELETE_ORIGINAL_IMAGE_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
         })
       ),
@@ -324,9 +355,7 @@ export class ImageEffects {
         ofType(AppActionTypes.DELETE_IMAGE_REVISION_SUCCESS),
         tap(() => {
           this.loadingService.setLoading(false);
-          this.popNotificationsService.success(
-            this.translateService.instant("The image revision has been deleted.")
-          );
+          this.popNotificationsService.success(this.translateService.instant("The image revision has been deleted."));
         })
       ),
     {
@@ -338,7 +367,7 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.DELETE_IMAGE_REVISION_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
         })
       ),
@@ -366,9 +395,7 @@ export class ImageEffects {
         ofType(AppActionTypes.DELETE_IMAGE_SUCCESS),
         tap(() => {
           this.loadingService.setLoading(false);
-          this.popNotificationsService.success(
-            this.translateService.instant("The image has been deleted.")
-          );
+          this.popNotificationsService.success(this.translateService.instant("The image has been deleted."));
         })
       ),
     {
@@ -380,11 +407,9 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.DELETE_IMAGE_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
-          this.popNotificationsService.error(
-            this.translateService.instant("There was an error deleting the image.")
-          );
+          this.popNotificationsService.error(this.translateService.instant("There was an error deleting the image."));
         })
       ),
     {
@@ -411,9 +436,7 @@ export class ImageEffects {
         ofType(AppActionTypes.UNDELETE_IMAGE_SUCCESS),
         tap(() => {
           this.loadingService.setLoading(false);
-          this.popNotificationsService.success(
-            this.translateService.instant("The image has been restored.")
-          );
+          this.popNotificationsService.success(this.translateService.instant("The image has been restored."));
         })
       ),
     {
@@ -425,7 +448,7 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.UNDELETE_IMAGE_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
         })
       ),
@@ -434,7 +457,9 @@ export class ImageEffects {
     }
   );
 
-  DeleteImageUncompressedSourceFile: Observable<DeleteImageUncompressedSourceFileSuccess | DeleteImageUncompressedSourceFileFailure> = createEffect(() =>
+  DeleteImageUncompressedSourceFile: Observable<
+    DeleteImageUncompressedSourceFileSuccess | DeleteImageUncompressedSourceFileFailure
+  > = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE),
       tap(() => this.loadingService.setLoading(true)),
@@ -467,7 +492,7 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
         })
       ),
@@ -476,7 +501,9 @@ export class ImageEffects {
     }
   );
 
-  SubmitImageForIotdTpConsideration: Observable<SubmitImageForIotdTpConsiderationSuccess | SubmitImageForIotdTpConsiderationFailure> = createEffect(() =>
+  SubmitImageForIotdTpConsideration: Observable<
+    SubmitImageForIotdTpConsiderationSuccess | SubmitImageForIotdTpConsiderationFailure
+  > = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActionTypes.SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION),
       tap(() => this.loadingService.setLoading(true)),
@@ -509,7 +536,7 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
         })
       ),
@@ -518,22 +545,27 @@ export class ImageEffects {
     }
   );
 
-  AcceptCollaboratorRequest: Observable<AcceptCollaboratorRequestSuccess | AcceptCollaboratorRequestFailure> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AppActionTypes.ACCEPT_COLLABORATOR_REQUEST),
-      tap(() => this.loadingService.setLoading(true)),
-      mergeMap(action =>
-        this.imageApiService.acceptCollaboratorRequest(action.payload.pk, action.payload.userId).pipe(
-          map(image => new AcceptCollaboratorRequestSuccess(image)),
-          catchError(error => of(new AcceptCollaboratorRequestFailure({
-            pk: action.payload.pk,
-            userId: action.payload.userId,
-            error
-          })))
+  AcceptCollaboratorRequest: Observable<AcceptCollaboratorRequestSuccess | AcceptCollaboratorRequestFailure> =
+    createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.ACCEPT_COLLABORATOR_REQUEST),
+        tap(() => this.loadingService.setLoading(true)),
+        mergeMap(action =>
+          this.imageApiService.acceptCollaboratorRequest(action.payload.pk, action.payload.userId).pipe(
+            map(image => new AcceptCollaboratorRequestSuccess(image)),
+            catchError(error =>
+              of(
+                new AcceptCollaboratorRequestFailure({
+                  pk: action.payload.pk,
+                  userId: action.payload.userId,
+                  error
+                })
+              )
+            )
+          )
         )
       )
-    )
-  );
+    );
 
   AcceptCollaboratorRequestSuccess: Observable<AcceptCollaboratorRequestSuccess> = createEffect(
     () =>
@@ -555,7 +587,7 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.ACCEPT_COLLABORATOR_REQUEST_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
         })
       ),
@@ -564,21 +596,26 @@ export class ImageEffects {
     }
   );
 
-  DenyCollaboratorRequest: Observable<DenyCollaboratorRequestSuccess | DenyCollaboratorRequestFailure> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AppActionTypes.DENY_COLLABORATOR_REQUEST),
-      tap(() => this.loadingService.setLoading(true)),
-      mergeMap(action =>
-        this.imageApiService.denyCollaboratorRequest(action.payload.pk, action.payload.userId).pipe(
-          map(image => new DenyCollaboratorRequestSuccess(image)),
-          catchError(error => of(new DenyCollaboratorRequestFailure({
-            pk: action.payload.pk,
-            userId: action.payload.userId,
-            error
-          })))
+  DenyCollaboratorRequest: Observable<DenyCollaboratorRequestSuccess | DenyCollaboratorRequestFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DENY_COLLABORATOR_REQUEST),
+        tap(() => this.loadingService.setLoading(true)),
+        mergeMap(action =>
+          this.imageApiService.denyCollaboratorRequest(action.payload.pk, action.payload.userId).pipe(
+            map(image => new DenyCollaboratorRequestSuccess(image)),
+            catchError(error =>
+              of(
+                new DenyCollaboratorRequestFailure({
+                  pk: action.payload.pk,
+                  userId: action.payload.userId,
+                  error
+                })
+              )
+            )
+          )
         )
       )
-    )
   );
 
   DenyCollaboratorRequestSuccess: Observable<DenyCollaboratorRequestSuccess> = createEffect(
@@ -601,7 +638,7 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.DENY_COLLABORATOR_REQUEST_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
         })
       ),
@@ -617,11 +654,15 @@ export class ImageEffects {
       mergeMap(action =>
         this.imageApiService.removeCollaborator(action.payload.pk, action.payload.userId).pipe(
           map(image => new RemoveCollaboratorSuccess(image)),
-          catchError(error => of(new RemoveCollaboratorFailure({
-            pk: action.payload.pk,
-            userId: action.payload.userId,
-            error
-          })))
+          catchError(error =>
+            of(
+              new RemoveCollaboratorFailure({
+                pk: action.payload.pk,
+                userId: action.payload.userId,
+                error
+              })
+            )
+          )
         )
       )
     )
@@ -633,9 +674,7 @@ export class ImageEffects {
         ofType(AppActionTypes.REMOVE_COLLABORATOR_SUCCESS),
         tap(() => {
           this.loadingService.setLoading(false);
-          this.popNotificationsService.success(
-            this.translateService.instant("The collaborator has been removed.")
-          );
+          this.popNotificationsService.success(this.translateService.instant("The collaborator has been removed."));
         })
       ),
     {
@@ -647,7 +686,7 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.REMOVE_COLLABORATOR_FAILURE),
-        tap(error => {
+        tap(() => {
           this.loadingService.setLoading(false);
         })
       ),
@@ -663,6 +702,5 @@ export class ImageEffects {
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService
-  ) {
-  }
+  ) {}
 }

@@ -1,6 +1,6 @@
-import { Routes } from "@angular/router";
-import { SearchPageComponent } from "@features/search/pages/search/search.page.component";
+import type { Routes } from "@angular/router";
 import { ImageResolver } from "@core/resolvers/image.resolver";
+import { SearchPageComponent } from "@features/search/pages/search/search.page.component";
 
 export const searchRoutes: Routes = [
   {

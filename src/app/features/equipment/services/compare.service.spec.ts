@@ -1,11 +1,13 @@
 import { TestBed } from "@angular/core/testing";
-import { CompareService, CompareServiceError } from "./compare.service";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { MountGenerator } from "@features/equipment/generators/mount.generator";
+import type { MountDisplayProperty } from "@features/equipment/services/mount.service";
+import { MountService } from "@features/equipment/services/mount.service";
+import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
-import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
+
+import { CompareService, CompareServiceError } from "./compare.service";
 
 describe("CompareService", () => {
   let service: CompareService;
@@ -87,7 +89,7 @@ describe("CompareService", () => {
       jest.spyOn(service.equipmentItemService, "getPrintableProperty$").mockReturnValue(of("foo.png"));
       jest.spyOn(mountService, "getSupportedPrintableProperties").mockReturnValue(["WEIGHT" as MountDisplayProperty]);
       jest.spyOn(service.equipmentItemService, "getPrintablePropertyName").mockReturnValue("Weight");
-      jest.spyOn(mountService, "getPrintableProperty$").mockImplementation((mount, property) => of(mount.weight + ""));
+      jest.spyOn(mountService, "getPrintableProperty$").mockImplementation(mount => of(mount.weight + ""));
 
       service.comparison$().subscribe(comparison => {
         expect(Object.keys(comparison).length).toEqual(3);

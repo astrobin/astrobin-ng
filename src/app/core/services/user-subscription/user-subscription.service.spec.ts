@@ -1,13 +1,14 @@
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { MainState } from "@app/store/state";
+import { StateGenerator } from "@app/store/generators/state.generator";
+import type { MainState } from "@app/store/state";
+import { SubscriptionName } from "@core/types/subscription-name.type";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { UserSubscriptionGenerator } from "@shared/generators/user-subscription.generator";
 import { TestConstants } from "@shared/test-constants";
-import { SubscriptionName } from "@core/types/subscription-name.type";
 import { MockBuilder } from "ng-mocks";
+
 import { UserSubscriptionService } from "./user-subscription.service";
-import { StateGenerator } from "@app/store/generators/state.generator";
 
 describe("UserSubscriptionService", () => {
   let service: UserSubscriptionService;

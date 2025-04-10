@@ -1,16 +1,18 @@
-import { Inject, Injectable, PLATFORM_ID, Renderer2, RendererFactory2 } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
-import { Store } from "@ngrx/store";
-import { Observable, of } from "rxjs";
-import { catchError, filter, map, switchMap, take, timeout } from "rxjs/operators";
 import { DOCUMENT, isPlatformBrowser } from "@angular/common";
-import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { environment } from "@env/environment";
-import { MainState } from "@app/store/state";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { Actions, ofType } from "@ngrx/effects";
-import { AuthActionTypes } from "@features/account/store/auth.actions";
+import type { Renderer2 } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID, RendererFactory2 } from "@angular/core";
+import type { ActivatedRouteSnapshot, CanActivate } from "@angular/router";
+import type { MainState } from "@app/store/state";
 import { AuthService } from "@core/services/auth.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { environment } from "@env/environment";
+import { AuthActionTypes } from "@features/account/store/auth.actions";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
+import { catchError, filter, switchMap, take, timeout } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -21,7 +23,7 @@ export class GalleryExperienceGuard implements CanActivate {
 
   constructor(
     private readonly store$: Store<MainState>,
-    @Inject(PLATFORM_ID) private readonly platformId: Object,
+    @Inject(PLATFORM_ID) private readonly platformId: object,
     private rendererFactory: RendererFactory2,
     @Inject(DOCUMENT) private document: Document,
     private readonly utilsService: UtilsService,
@@ -32,14 +34,14 @@ export class GalleryExperienceGuard implements CanActivate {
     this.renderer = this.rendererFactory.createRenderer(null, null);
   }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     if (!this.isBrowser) {
       return of(true); // Let server-side rendering proceed
     }
 
     // Check if the route has data configuration for the guard
     const guardData = route.data?.galleryExperienceGuard;
-    
+
     // For views like IOTD/TP Archive that only redirect with image param
     if (guardData?.redirectOnlyWithImageParam === true && !route.queryParams.i) {
       // If there's no 'i' param, and the route is configured to only redirect with an image param,
@@ -49,7 +51,7 @@ export class GalleryExperienceGuard implements CanActivate {
 
     // First check if user is authenticated at all
     const isAuthenticated = this.authService.getClassicApiToken() !== undefined;
-    
+
     // If not authenticated, we can safely proceed with the new gallery experience
     if (!isAuthenticated) {
       return of(true);
@@ -63,19 +65,21 @@ export class GalleryExperienceGuard implements CanActivate {
         if (userProfile !== null && userProfile !== undefined) {
           return this.handleUserProfile(userProfile, route);
         }
-        
+
         // If we don't have the user profile but the user is authenticated,
         // wait for the INITIALIZE_SUCCESS action which will populate the store
         return this.actions$.pipe(
           ofType(AuthActionTypes.INITIALIZE_SUCCESS),
-          take(1), 
+          take(1),
           // Once initialization is complete, get the profile again
-          switchMap(() => this.store$.select(selectCurrentUserProfile).pipe(
-            filter(profile => profile !== null && profile !== undefined),
-            take(1),
-            // Make the decision with the now-loaded profile
-            switchMap(profile => this.handleUserProfile(profile, route))
-          )),
+          switchMap(() =>
+            this.store$.select(selectCurrentUserProfile).pipe(
+              filter(profile => profile !== null && profile !== undefined),
+              take(1),
+              // Make the decision with the now-loaded profile
+              switchMap(profile => this.handleUserProfile(profile, route))
+            )
+          ),
           // Add a timeout to avoid hanging indefinitely
           timeout(5000),
           // If timeout occurs, default to allowing access

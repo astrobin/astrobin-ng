@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
-import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
-import { ImageInterface } from "@core/interfaces/image.interface";
+import type { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
+import type { ImageInterface } from "@core/interfaces/image.interface";
 import { FilterType, FilterTypePriority, LegacyFilterType } from "@features/equipment/types/filter.interface";
 import { TranslateService } from "@ngx-translate/core";
+
 import { FilterService } from "./filter.service";
 
 // This includes total per filter type
@@ -23,10 +24,7 @@ export interface FilterSummary {
   providedIn: "root"
 })
 export class FilterAcquisitionService {
-  constructor(
-    private readonly translateService: TranslateService,
-    private readonly filterService: FilterService
-  ) {}
+  constructor(private readonly translateService: TranslateService, private readonly filterService: FilterService) {}
 
   /**
    * Determines the filter type from an acquisition
@@ -108,7 +106,10 @@ export class FilterAcquisitionService {
             // Do nothing - we've already determined this filter has mixed durations
           }
           // Only aggregate frames if the durations match or if we haven't set a duration yet
-          else if (filterSummaries[filterType].duration === null || filterExistingDuration === fixedAcquisitionDuration) {
+          else if (
+            filterSummaries[filterType].duration === null ||
+            filterExistingDuration === fixedAcquisitionDuration
+          ) {
             // Set the duration if it's not set yet
             if (filterSummaries[filterType].duration === null) {
               filterSummaries[filterType].duration = fixedAcquisitionDuration;
@@ -140,10 +141,9 @@ export class FilterAcquisitionService {
             .map(acquisition => acquisition.moonIllumination)
             .filter(moonIllumination => moonIllumination !== null);
 
-          filterSummaries[filterType].averageMoonIllumination = moonIlluminations.reduce(
-            (acc, moonIllumination) => acc + moonIllumination,
-            0
-          ) / moonIlluminations.length || null; // handle the case where there are no valid moonIlluminations
+          filterSummaries[filterType].averageMoonIllumination =
+            moonIlluminations.reduce((acc, moonIllumination) => acc + moonIllumination, 0) / moonIlluminations.length ||
+            null; // handle the case where there are no valid moonIlluminations
         }
       }
     }
@@ -154,7 +154,9 @@ export class FilterAcquisitionService {
   /**
    * Returns filter summaries sorted by filter type priority
    */
-  getSortedFilterSummaries(filterSummaries: { [key: string]: FilterSummary }): { filterType: string, summary: FilterSummary }[] {
+  getSortedFilterSummaries(filterSummaries: {
+    [key: string]: FilterSummary;
+  }): { filterType: string; summary: FilterSummary }[] {
     // Convert the object into an array of entries
     const filterSummaryArray = Object.entries(filterSummaries).map(([filterType, summary]) => ({
       filterType,

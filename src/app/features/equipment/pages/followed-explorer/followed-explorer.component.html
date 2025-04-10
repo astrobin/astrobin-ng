@@ -1,9 +1,9 @@
 <astrobin-mobile-menu
   (menuClose)="onMobileMenuClose()"
   (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
   [descriptionTemplate]="descriptionTemplate"
   [template]="navTemplate"
+  [titleTemplate]="titleTemplate"
 ></astrobin-mobile-menu>
 
 <ng-template #titleTemplate>
@@ -11,9 +11,7 @@
 </ng-template>
 
 <ng-template #navTemplate>
-  <astrobin-equipment-item-type-nav
-    #itemTypeNavComponent
-  ></astrobin-equipment-item-type-nav>
+  <astrobin-equipment-item-type-nav #itemTypeNavComponent></astrobin-equipment-item-type-nav>
 </ng-template>
 
 <ng-template #descriptionTemplate>
@@ -28,8 +26,12 @@
 
 <div class="page has-mobile-menu">
   <ng-container *ngIf="breakpointMdMin">
-    <h1><ng-container [ngTemplateOutlet]="titleTemplate"></ng-container></h1>
-    <small><ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container></small>
+    <h1>
+      <ng-container [ngTemplateOutlet]="titleTemplate"></ng-container>
+    </h1>
+    <small>
+      <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
+    </small>
   </ng-container>
 
   <div class="row g-0 g-3">
@@ -41,31 +43,31 @@
       <ng-container *ngIf="items$ | async as items; else loading">
         <table class="table table-striped">
           <thead>
-          <tr>
-            <th>
-              {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true) }}
-            </th>
-            <th>
-              {{ "Users" | translate }}
-            </th>
-            <th>
-              {{ "Images" | translate }}
-            </th>
-          </tr>
+            <tr>
+              <th>
+                {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true) }}
+              </th>
+              <th>
+                {{ "Users" | translate }}
+              </th>
+              <th>
+                {{ "Images" | translate }}
+              </th>
+            </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let item of items.results">
-            <td>
-              <a
-                [queryParams]="{'back-on-close': true}"
-                [routerLink]="['/equipment/explorer', activeType.toLowerCase(), item.id]"
-              >
-                <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
-              </a>
-            </td>
-            <td>{{ item.userCount }}</td>
-            <td>{{ item.imageCount }}</td>
-          </tr>
+            <tr *ngFor="let item of items.results">
+              <td>
+                <a
+                  [queryParams]="{ 'back-on-close': true }"
+                  [routerLink]="['/equipment/explorer', activeType.toLowerCase(), item.id]"
+                >
+                  <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
+                </a>
+              </td>
+              <td>{{ item.userCount }}</td>
+              <td>{{ item.imageCount }}</td>
+            </tr>
           </tbody>
         </table>
 
@@ -86,4 +88,3 @@
 <ng-template #loading>
   <astrobin-loading-indicator></astrobin-loading-indicator>
 </ng-template>
-

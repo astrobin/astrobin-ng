@@ -1,9 +1,10 @@
+import { isPlatformServer } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { ActiveToast, IndividualConfig, ToastrService } from "ngx-toastr";
-import { isPlatformServer } from "@angular/common";
+import { TranslateService } from "@ngx-translate/core";
+import type { ActiveToast, IndividualConfig } from "ngx-toastr";
+import { ToastrService } from "ngx-toastr";
 
 export interface ToastButtonInterface {
   id: string;
@@ -23,7 +24,7 @@ export class PopNotificationsService extends BaseService {
     public loadingService: LoadingService,
     public toastrService: ToastrService,
     public translateService: TranslateService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(loadingService);
   }

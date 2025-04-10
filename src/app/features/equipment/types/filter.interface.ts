@@ -1,4 +1,5 @@
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export enum FilterType {
   H_ALPHA = "H_ALPHA",
@@ -41,7 +42,7 @@ export enum LegacyFilterType {
   BROAD_OIII = "BROAD OIII",
   NARROW_OIII = "NARROW OIII",
   BROAD_NII = "BROAD NII",
-  NARROW_NII = "NARROW NII",
+  NARROW_NII = "NARROW NII"
 }
 
 export const FilterTypePriority: { [key in keyof typeof FilterType]: number } = {
@@ -72,7 +73,7 @@ export const FilterTypePriority: { [key in keyof typeof FilterType]: number } = 
   PHOTOMETRIC_R: 25,
   PHOTOMETRIC_I: 26,
   OTHER: 27
-}
+};
 
 export enum FilterSize {
   ROUND_1_25_IN = "ROUND_1_25_IN",

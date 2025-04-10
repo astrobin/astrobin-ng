@@ -1,20 +1,21 @@
 import { TestBed } from "@angular/core/testing";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
-import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
-import { CameraGenerator } from "@features/equipment/generators/camera.generator";
-import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
-import { of } from "rxjs";
-import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { CameraGenerator } from "@features/equipment/generators/camera.generator";
+import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
+import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
+import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { ColorOrMono } from "@features/equipment/types/sensor.interface";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
 
 describe("SensorService", () => {
   let service: SensorService;
   let sensor: SensorInterface;
   let store: MockStore;
-  let camera1 = CameraGenerator.camera({ id: 1, name: "Camera 1" });
-  let camera2 = CameraGenerator.camera({ id: 2, name: "Camera 2" });
+  const camera1 = CameraGenerator.camera({ id: 1, name: "Camera 1" });
+  const camera2 = CameraGenerator.camera({ id: 2, name: "Camera 2" });
 
   beforeEach(async () => {
     await MockBuilder(SensorService, AppModule).provide(provideMockStore({ initialState: initialMainState }));

@@ -1,4 +1,5 @@
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export enum MountType {
   ALTAZIMUTH = "ALTAZIMUTH",

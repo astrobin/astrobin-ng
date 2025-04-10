@@ -1,11 +1,9 @@
 import { Injectable } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import type { WikipediaPageSummaryInterface } from "@core/services/api/wikipedia/wikipedia-api.service";
+import { WikipediaApiService } from "@core/services/api/wikipedia/wikipedia-api.service";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { Observable } from "rxjs";
-import {
-  WikipediaApiService,
-  WikipediaPageSummaryInterface
-} from "@core/services/api/wikipedia/wikipedia-api.service";
+import { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
 
 export interface ConstellationInterface {
   id: string;
@@ -24,15 +22,14 @@ export class ConstellationsService {
     public readonly translateService: TranslateService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly wikipediaApiService: WikipediaApiService
-  ) {
-  }
+  ) {}
 
   getConstellations(language: string): ConstellationInterface[] {
     if (!this._constellations || !this._constellations[language]) {
       this._buildConstellationData(language);
     }
 
-    return this._constellations[language] ? this._constellations[language] : this._constellations["en"];
+    return this._constellations[language] ? this._constellations[language] : this._constellations.en;
   }
 
   getConstellationFullName(constellation: string, language: string): string {
@@ -517,7 +514,7 @@ export class ConstellationsService {
     };
 
     if (this._availableLanguages.indexOf(this.translateService.currentLang) === -1) {
-      language = "en"
+      language = "en";
     }
 
     return {

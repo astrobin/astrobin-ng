@@ -1,6 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, Output } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { MainState } from "@app/store/state";
+import type { FormGroup } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
+import type { MainState } from "@app/store/state";
 import { AuthActionTypes, Login } from "@features/account/store/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";

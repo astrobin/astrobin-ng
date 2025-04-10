@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-
-import { ApproveEditProposalModalComponent } from "./approve-edit-proposal-modal.component";
-import { MockBuilder } from "ng-mocks";
+import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
+import { MockBuilder } from "ng-mocks";
+
+import { ApproveEditProposalModalComponent } from "./approve-edit-proposal-modal.component";
 
 describe("ApproveItemModalComponent", () => {
   let component: ApproveEditProposalModalComponent;

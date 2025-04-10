@@ -5,13 +5,9 @@
   [disabled]="disabled"
   [switchColor]="switchColor"
   [value]="value"
-  id="toggle-{{uniqueId}}"
   height="22"
+  id="toggle-{{ uniqueId }}"
   width="40"
 ></ng-toggle>
 
-<label
-  *ngIf="label"
-  [for]="'toggle-' + uniqueId"
-  [class]="labelClassName ? labelClassName : null"
->{{ label }}</label>
+<label *ngIf="label" [class]="labelClassName ? labelClassName : null" [for]="'toggle-' + uniqueId">{{ label }}</label>

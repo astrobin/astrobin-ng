@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { MountInterface } from "@core/interfaces/mount.interface";
+import type { MountInterface } from "@core/interfaces/mount.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { MountApiServiceInterface } from "@core/services/api/classic/gear/mount/mount-api.service-interface";
+import type { MountApiServiceInterface } from "@core/services/api/classic/gear/mount/mount-api.service-interface";
 import { LoadingService } from "@core/services/loading.service";
-import { Observable } from "rxjs";
+import type { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

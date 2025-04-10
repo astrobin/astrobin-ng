@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core";
-import { UsernameServiceInterface } from "@shared/components/misc/username/username.service-interface";
-import { UserInterface } from "@core/interfaces/user.interface";
+import type { MainState } from "@app/store/state";
+import type { UserInterface } from "@core/interfaces/user.interface";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { Observable, of } from "rxjs";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
 import { LoadUserProfile } from "@features/account/store/auth.actions";
 import { selectUserProfile } from "@features/account/store/auth.selectors";
+import { Store } from "@ngrx/store";
+import type { UsernameServiceInterface } from "@shared/components/misc/username/username.service-interface";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Injectable()

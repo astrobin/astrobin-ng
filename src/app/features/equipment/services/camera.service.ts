@@ -1,18 +1,20 @@
 import { Injectable } from "@angular/core";
+import type { MainState } from "@app/store/state";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { Observable, of } from "rxjs";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
+import type { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import { CameraType } from "@features/equipment/types/camera.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
-import { SensorInterface } from "@features/equipment/types/sensor.interface";
 
 export enum CameraDisplayProperty {
   NAME = "NAME",
@@ -69,8 +71,7 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
   getPrintableProperty$(
     item: CameraInterface,
     property: CameraDisplayProperty | string,
-    propertyValue?: any,
-    shortForm?: boolean
+    propertyValue?: any
   ): Observable<string | null> {
     switch (property) {
       case "NAME":
@@ -170,8 +171,8 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
         return shortForm
           ? this.translateService.instant("Max. cooling")
           : `${this.translateService.instant("Max. cooling")} (${this.translateService.instant(
-            "Celsius degrees below ambient"
-          )})`;
+              "Celsius degrees below ambient"
+            )})`;
       case CameraDisplayProperty.BACK_FOCUS:
         return shortForm
           ? this.translateService.instant("Back focus")

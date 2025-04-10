@@ -1,34 +1,36 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import type { OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
+import type { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { FormlyFieldService } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { MountType } from "@features/equipment/types/mount.interface";
+import type { MountInterface } from "@features/equipment/types/mount.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { TranslateService } from "@ngx-translate/core";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { MainState } from "@app/store/state";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { FormlyFieldService } from "@core/services/formly-field.service";
-import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
-import { MountInterface, MountType } from "@features/equipment/types/mount.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { switchMap, take, takeUntil } from "rxjs/operators";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { Constants } from "@shared/constants";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-mount-editor",
   templateUrl: "./mount-editor.component.html",
   styleUrls: ["./mount-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class MountEditorComponent extends BaseItemEditorComponent<MountInterface, null> implements OnInit {
+export class MountEditorComponent extends BaseItemEditorComponent<MountInterface> implements OnInit {
   constructor(
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,

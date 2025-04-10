@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { TelescopeGenerator } from "@features/equipment/generators/telescope.generator";
+import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { TelescopeType } from "@features/equipment/types/telescope.interface";
+import { MockBuilder } from "ng-mocks";
 
 describe("TelescopeService", () => {
   let service: TelescopeService;

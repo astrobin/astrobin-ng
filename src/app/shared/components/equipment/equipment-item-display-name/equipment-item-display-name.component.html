@@ -1,5 +1,5 @@
 <ng-container *ngIf="enableKlassIcon">
-  <img class="klass-icon" src="/assets/images/{{ item.klass.toLowerCase() }}-{{ klassIconColor }}.png?v=1" alt="" />
+  <img alt="" class="klass-icon" src="/assets/images/{{ item.klass.toLowerCase() }}-{{ klassIconColor }}.png?v=1" />
 </ng-container>
 
 <div class="brand-name-icons">
@@ -8,15 +8,16 @@
       <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>
 
       <ng-container *ngIf="!enableBrandLink || !brandLink">
-        <span [innerHTML]="brandName | highlight: highlightTerms"></span>
+        <span [innerHTML]="brandName | highlight : highlightTerms"></span>
       </ng-container>
     </span>
   </ng-container>
 
   <span *ngIf="!!itemName; else loading" class="name">
     <ng-template #nameTemplate>
-      <ng-container *ngIf="showBrand && !!brandName">&nbsp;</ng-container> <!-- Add space for copy/pasting -->
-      <span [innerHTML]="itemName | highlight: highlightTerms"></span>
+      <ng-container *ngIf="showBrand && !!brandName">&nbsp;</ng-container>
+      <!-- Add space for copy/pasting -->
+      <span [innerHTML]="itemName | highlight : highlightTerms"></span>
       <a
         (click)="openItemUnapprovedInfoModal(item)"
         *ngIf="showItemUnapprovedInfo && item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED"
@@ -53,12 +54,12 @@
   </span>
 
   <a
-    *ngIf="
-    showRetailers &&
-    item.listings.allowFullRetailerIntegration &&
-    (sellsListings.length || pairsWellListings.length || item.listings.brandListings.length)
-  "
     (click)="openRetailersOffcanvas()"
+    *ngIf="
+      showRetailers &&
+      item.listings.allowFullRetailerIntegration &&
+      (sellsListings.length || pairsWellListings.length || item.listings.brandListings.length)
+    "
     astrobinEventPreventDefault
     astrobinEventStopPropagation
     class="btn-retailers"
@@ -70,11 +71,11 @@
   <button
     *ngIf="enableSummaryPopover"
     [ngbPopover]="itemSummaryPopoverTemplate"
-    astrobinEventStopPropagation
     astrobinEventPreventDefault
+    astrobinEventStopPropagation
     class="btn btn-link btn-info-modal btn-no-block"
-    popoverClass="popover-equipment-item-summary"
     container="body"
+    popoverClass="popover-equipment-item-summary"
     triggers="click"
   >
     <fa-icon icon="info-circle"></fa-icon>
@@ -88,7 +89,7 @@
 <ng-template #retailersTemplate let-offcanvas>
   <div class="offcanvas-header">
     <h4 class="offcanvas-title">{{ "Shop" | translate }}</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+    <button (click)="offcanvas.dismiss()" aria-label="Close" class="btn-close" type="button"></button>
   </div>
   <div class="offcanvas-body offcanvas-retailers">
     <!-- SELLS listings -->
@@ -100,7 +101,7 @@
 
       <div class="mb-4">
         <div *ngFor="let listing of sellsListings" class="retailer">
-          <a [href]="listing.url" target="_blank" class="no-external-link-icon">
+          <a [href]="listing.url" class="no-external-link-icon" target="_blank">
             <img *ngIf="listing.imageUrl" [src]="listing.imageUrl" alt="" />
             <img *ngIf="!listing.imageUrl && listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
             <span *ngIf="!listing.imageUrl && !listing.retailer.logo">{{ listing.retailer.name }}</span>
@@ -118,7 +119,7 @@
 
       <div class="mb-4">
         <div *ngFor="let listing of pairsWellListings" class="retailer">
-          <a [href]="listing.url" target="_blank" class="no-external-link-icon">
+          <a [href]="listing.url" class="no-external-link-icon" target="_blank">
             <img *ngIf="listing.imageUrl" [src]="listing.imageUrl" alt="" />
             <img *ngIf="!listing.imageUrl && listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
             <span *ngIf="!listing.imageUrl && !listing.retailer.logo">{{ listing.retailer.name }}</span>
@@ -136,7 +137,7 @@
 
       <div>
         <div *ngFor="let listing of item.listings.brandListings" class="retailer">
-          <a [href]="listing.url" target="_blank" class="no-external-link-icon">
+          <a [href]="listing.url" class="no-external-link-icon" target="_blank">
             <img *ngIf="listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
             <span *ngIf="!listing.retailer.logo">{{ listing.retailer.name }}</span>
           </a>
@@ -148,25 +149,25 @@
 
 <ng-template #itemSummaryPopoverTemplate let-pop="ngbPopover">
   <div class="popover-header d-flex justify-content-between align-items-center gap-3">
-    <span>{{ (item.brandName || ('DYI' | translate)) + ' ' + item.name }}</span>
-    <button type="button" class="btn btn-link link-secondary" (click)="pop.close()">
+    <span>{{ (item.brandName || ("DYI" | translate)) + " " + item.name }}</span>
+    <button (click)="pop.close()" class="btn btn-link link-secondary" type="button">
       <span aria-hidden="true">
-        <fa-icon icon="times" class="m-0"></fa-icon>
+        <fa-icon class="m-0" icon="times"></fa-icon>
       </span>
     </button>
   </div>
   <div class="popover-content">
     <astrobin-equipment-item-summary
       [item]="item"
-      [showName]="false"
-      [showImage]="false"
-      [showMeta]="false"
       [showClass]="false"
-      [showStats]="false"
       [showEditButtons]="false"
       [showEmptyProperties]="false"
-      [showProperties]="true"
+      [showImage]="false"
+      [showMeta]="false"
       [showMostOftenUsedWith]="false"
+      [showName]="false"
+      [showProperties]="true"
+      [showStats]="false"
       [showSubItem]="false"
       [striped]="false"
     ></astrobin-equipment-item-summary>

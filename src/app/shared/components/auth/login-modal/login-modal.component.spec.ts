@@ -1,10 +1,11 @@
 import { DomSanitizer } from "@angular/platform-browser";
 import { AppModule } from "@app/app.module";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { MockBuilder, MockRender } from "ng-mocks";
-import { LoginModalComponent } from "./login-modal.component";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder, MockRender } from "ng-mocks";
+
+import { LoginModalComponent } from "./login-modal.component";
 
 describe("LoginModalComponent", () => {
   let component: LoginModalComponent;

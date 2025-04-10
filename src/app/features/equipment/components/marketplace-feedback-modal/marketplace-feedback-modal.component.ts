@@ -1,25 +1,26 @@
-import { AfterViewInit, Component, Input, TemplateRef, ViewChild } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateService } from "@ngx-translate/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { LoadingService } from "@core/services/loading.service";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { filter, take, takeUntil } from "rxjs/operators";
+import type { AfterViewInit } from "@angular/core";
+import { Component, Input, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { MainState } from "@app/store/state";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { CreateMarketplaceFeedback, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
 import {
   MarketplaceFeedbackTargetType,
   MarketplaceFeedbackValue
 } from "@features/equipment/types/marketplace-feedback.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions, ofType } from "@ngrx/effects";
-import { CreateMarketplaceFeedback, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { filter, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-feedback-modal",
@@ -50,7 +51,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
 
   rulesText = this.translateService.instant(
     "Please be truthful and honest when providing feedback after a transaction, and make sure you respect the " +
-    "{{0}}terms and conditions{{1}} of the AstroBin marketplace.",
+      "{{0}}terms and conditions{{1}} of the AstroBin marketplace.",
     {
       0: `<a href='${this.classicRoutesService.MARKETPLACE_TERMS}' target='_blank'>`,
       1: "</a>"
@@ -77,11 +78,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
   saveFeedback(): void {
     if (!this.form.valid) {
       this.form.markAllAsTouched();
-      UtilsService.notifyAboutFieldsWithErrors(
-        this.fields,
-        this.popNotificationsService,
-        this.translateService
-      );
+      UtilsService.notifyAboutFieldsWithErrors(this.fields, this.popNotificationsService, this.translateService);
       return;
     }
 
@@ -99,22 +96,16 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
       take(1)
     );
 
-    successObservable$
-      .pipe(take(1))
-      .subscribe(() => {
-        this.loadingService.setLoading(false);
-        this.modal.close();
-        this.popNotificationsService.success(this.translateService.instant("Feedback saved successfully. Thank you!"));
-      });
+    successObservable$.pipe(take(1)).subscribe(() => {
+      this.loadingService.setLoading(false);
+      this.modal.close();
+      this.popNotificationsService.success(this.translateService.instant("Feedback saved successfully. Thank you!"));
+    });
 
-    failureObservable$
-      .pipe(take(1))
-      .subscribe(() => {
-        this.loadingService.setLoading(false);
-        this.popNotificationsService.error(
-          this.translateService.instant("An error occurred while saving the feedback.")
-        );
-      });
+    failureObservable$.pipe(take(1)).subscribe(() => {
+      this.loadingService.setLoading(false);
+      this.popNotificationsService.error(this.translateService.instant("An error occurred while saving the feedback."));
+    });
 
     this.loadingService.setLoading(true);
 
@@ -156,11 +147,11 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
       },
       expressions: {
         "props.description": () => {
-          if (this._feedbackIsTooOld(key)) {
-            return this.translateService.instant("Feedback older than {{0}} days cannot be changed.", { 0: 60 });
+          if (this._feedbackIsTooOld()) {
+            return this.translateService.instant("Feedback older than {{0}} days cannot be changed.", { "0": 60 });
           }
         },
-        "props.disabled": () => this._feedbackIsTooOld(key)
+        "props.disabled": () => this._feedbackIsTooOld()
       }
     });
 
@@ -206,27 +197,29 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
     );
 
     this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => {
-      this.fields = [{
-        key: "",
-        fieldGroupClassName: "row",
-        fieldGroup: [
-          {
-            key: "created",
-            type: "input",
-            className: "hidden"
-          },
-          {
-            key: `recipient`,
-            type: "input",
-            className: "hidden"
-          },
-          {
-            key: `listing`,
-            type: "input",
-            className: "hidden"
-          }
-        ]
-      }];
+      this.fields = [
+        {
+          key: "",
+          fieldGroupClassName: "row",
+          fieldGroup: [
+            {
+              key: "created",
+              type: "input",
+              className: "hidden"
+            },
+            {
+              key: `recipient`,
+              type: "input",
+              className: "hidden"
+            },
+            {
+              key: `listing`,
+              type: "input",
+              className: "hidden"
+            }
+          ]
+        }
+      ];
 
       if (this.targetType === MarketplaceFeedbackTargetType.SELLER) {
         this.fields[0].fieldGroup.push(communication);
@@ -262,10 +255,10 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
       });
 
     this.model = value;
-  };
+  }
 
-  private _feedbackIsTooOld(key: string): boolean {
-    const created = this.model["created"];
+  private _feedbackIsTooOld(): boolean {
+    const created = this.model.created;
     const sixtyDaysAgo = new Date(new Date().setDate(new Date().getDate() - 60));
 
     return created && new Date(created) < sixtyDaysAgo;

@@ -1,11 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { auditTime, fromEvent, Subscription } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
+import type { OnChanges, OnDestroy, OnInit, SimpleChanges } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
 import { fadeInOut } from "@shared/animations";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import type { Subscription } from "rxjs";
+import { auditTime, fromEvent } from "rxjs";
 
 @Component({
   selector: "astrobin-scroll-to-top",
@@ -36,30 +38,10 @@ export class ScrollToTopComponent extends BaseComponentDirective implements OnCh
     public readonly store$: Store<MainState>,
     public windowRefService: WindowRefService,
     private readonly cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
-  }
-
-  private _updateShowState(): void {
-    if (!this._isBrowser) {
-      this.shouldShow = false;
-      return;
-    }
-
-    const element = this._getElement();
-    if (!element) {
-      this.shouldShow = false;
-      return;
-    }
-
-    const newShouldShow = this._offset > this._getClientHeight(element) / 2;
-
-    if (this.shouldShow !== newShouldShow) {
-      this.shouldShow = newShouldShow;
-      this.cdr.markForCheck();
-    }
   }
 
   ngOnInit(): void {
@@ -69,7 +51,7 @@ export class ScrollToTopComponent extends BaseComponentDirective implements OnCh
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this._isBrowser && changes["element"]) {
+    if (this._isBrowser && changes.element) {
       this._initializeScrollListener();
     }
   }
@@ -96,6 +78,26 @@ export class ScrollToTopComponent extends BaseComponentDirective implements OnCh
       this._scrollSubscription.unsubscribe();
     }
     super.ngOnDestroy();
+  }
+
+  private _updateShowState(): void {
+    if (!this._isBrowser) {
+      this.shouldShow = false;
+      return;
+    }
+
+    const element = this._getElement();
+    if (!element) {
+      this.shouldShow = false;
+      return;
+    }
+
+    const newShouldShow = this._offset > this._getClientHeight(element) / 2;
+
+    if (this.shouldShow !== newShouldShow) {
+      this.shouldShow = newShouldShow;
+      this.cdr.markForCheck();
+    }
   }
 
   private _initializeScrollListener(): void {
@@ -126,7 +128,9 @@ export class ScrollToTopComponent extends BaseComponentDirective implements OnCh
 
   private _getScrollTop(element: HTMLElement | Window): number {
     if (element instanceof Window) {
-      return this.windowRefService.nativeWindow.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+      return (
+        this.windowRefService.nativeWindow.scrollY || document.documentElement.scrollTop || document.body.scrollTop
+      );
     } else {
       return element.scrollTop;
     }

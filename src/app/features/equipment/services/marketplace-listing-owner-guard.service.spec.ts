@@ -1,16 +1,18 @@
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import type { RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { MainState } from "@app/store/state";
+import { StateGenerator } from "@app/store/generators/state.generator";
+import type { MainState } from "@app/store/state";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import { provideMockActions } from "@ngrx/effects/testing";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { UserGenerator } from "@shared/generators/user.generator";
 import { MockBuilder, MockReset, MockService } from "ng-mocks";
 import { of, ReplaySubject } from "rxjs";
+
 import { MarketplaceListingOwnerGuardService } from "./marketplace-listing-owner-guard.service";
-import { provideMockActions } from "@ngrx/effects/testing";
-import { StateGenerator } from "@app/store/generators/state.generator";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
-import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 
 describe("MarketplaceListingOwnerGuardService", () => {
   let service: MarketplaceListingOwnerGuardService;
@@ -114,4 +116,3 @@ describe("MarketplaceListingOwnerGuardService", () => {
     });
   });
 });
-

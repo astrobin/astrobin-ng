@@ -1,5 +1,4 @@
-import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
-import { ListResponseInterface } from "@core/interfaces/list-response.interface";
+import type { ListResponseInterface } from "@core/interfaces/list-response.interface";
+import type { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 
-export interface NotificationListResponseInterface extends ListResponseInterface<NotificationInterface> {
-}
+export type NotificationListResponseInterface = ListResponseInterface<NotificationInterface>;

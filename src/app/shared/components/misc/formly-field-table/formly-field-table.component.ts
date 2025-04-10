@@ -1,12 +1,16 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
-import { FieldArrayType, FormlyFieldConfig } from "@ngx-formly/core";
-import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
-import { TranslateService } from "@ngx-translate/core";
+import type { OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, TemplateRef, ViewChild } from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { startWith } from "rxjs/operators";
-import { Subscription } from "rxjs";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import type { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { FieldArrayType } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import type { TableColumn } from "@swimlane/ngx-datatable";
+import { ColumnMode } from "@swimlane/ngx-datatable";
+import type { Subscription } from "rxjs";
+import { startWith } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-formly-field-table",
@@ -92,7 +96,9 @@ export class FormlyFieldTableComponent extends FieldArrayType implements OnInit,
   }
 
   getField(field: FormlyFieldConfig, column: TableColumn, rowIndex: number): any {
-    const f: FormlyFieldConfig = field.fieldGroup[rowIndex].fieldGroup.find(f => f.key === column.prop);
+    const f: FormlyFieldConfig = field.fieldGroup[rowIndex].fieldGroup.find(
+      fieldConfig => fieldConfig.key === column.prop
+    );
 
     f.props.descriptionUnderLabel = true;
     f.props.errorUnderLabel = true;
@@ -112,7 +118,7 @@ export class FormlyFieldTableComponent extends FieldArrayType implements OnInit,
       "You are about to remove all acquisition sessions you have entered thus far."
     );
 
-    modal.closed.subscribe(item => {
+    modal.closed.subscribe(() => {
       for (let i = this.model.length - 1; i >= 0; i--) {
         this.remove(i);
       }

@@ -1,17 +1,17 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchService } from "@core/services/search.service";
-import { TelescopeType } from "@features/equipment/types/telescope.interface";
-import { TelescopeService } from "@features/equipment/services/telescope.service";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import type { SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { TelescopeService } from "@features/equipment/services/telescope.service";
+import { TelescopeType } from "@features/equipment/types/telescope.interface";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-search-telescope-types-filter.search-filter-component",
@@ -22,7 +22,9 @@ export class SearchTelescopeTypesFilterComponent extends SearchBaseFilterCompone
   static key = SearchAutoCompleteType.TELESCOPE_TYPES;
   static minimumSubscription = PayableProductInterface.LITE;
   category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
-  label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchTelescopeTypesFilterComponent.key as SearchAutoCompleteType);
+  label = this.searchFilterService.humanizeSearchAutoCompleteType(
+    SearchTelescopeTypesFilterComponent.key as SearchAutoCompleteType
+  );
   editFields = [
     {
       key: SearchTelescopeTypesFilterComponent.key,
@@ -75,9 +77,7 @@ export class SearchTelescopeTypesFilterComponent extends SearchBaseFilterCompone
     if (telescopeTypes.length === 1) {
       renderedValue = this.telescopeService.humanizeType(telescopeTypes[0]);
     } else {
-      renderedValue = telescopeTypes
-        .map(telescopeType => this.telescopeService.humanizeType(telescopeType))
-        .join(", ");
+      renderedValue = telescopeTypes.map(telescopeType => this.telescopeService.humanizeType(telescopeType)).join(", ");
     }
 
     return this.domSanitizer.bypassSecurityTrustHtml(renderedValue);

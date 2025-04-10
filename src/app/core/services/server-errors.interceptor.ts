@@ -1,14 +1,14 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-
-import { Observable, throwError } from "rxjs";
-import { TranslateService } from "@ngx-translate/core";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { catchError, retry } from "rxjs/operators";
-import { LoadingService } from "@core/services/loading.service";
+import type { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import type { AuthService } from "@core/services/auth.service";
+import type { HttpRetryService } from "@core/services/http-retry.service";
+import type { LoadingService } from "@core/services/loading.service";
+import type { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { AuthService } from "@core/services/auth.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { HttpRetryService } from "@core/services/http-retry.service";
+import type { WindowRefService } from "@core/services/window-ref.service";
+import type { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
+import { throwError } from "rxjs";
+import { catchError, retry } from "rxjs/operators";
 
 export class ServerErrorsInterceptor implements HttpInterceptor {
   constructor(
@@ -19,8 +19,7 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
     public readonly authService: AuthService,
     public readonly utilsService: UtilsService,
     private httpRetryService: HttpRetryService
-  ) {
-  }
+  ) {}
 
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Check if running in a browser environment
@@ -53,15 +52,15 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
     const ignored404Paths = [
       /.*\/api\/v2\/equipment\/\w+\/\d+\/release-reviewer-lock\/$/,
       /.*\/json-api\/common\/ckeditor-upload\/*/,
-      /.*\/api\/v2\/images\/image-search\/\?params=.*/,
+      /.*\/api\/v2\/images\/image-search\/\?params=.*/
     ];
 
     const ignoredAnyErrorPaths = [
       /.*\/json-api\/common\/service-worker-control\/$/,
-      /.*\/json-api\/common\/record-hit\/*/,
+      /.*\/json-api\/common\/record-hit\/*/
     ];
 
-    if (ignoredAnyErrorPaths.some((regex) => regex.test(err.url))) {
+    if (ignoredAnyErrorPaths.some(regex => regex.test(err.url))) {
       return false;
     }
 
@@ -156,7 +155,7 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
         errorTitle = this.translateService.instant("Internal server error");
         errorMessage = this.translateService.instant(
           "This should never happen. AstroBin's staff has been notified automatically and will solve the " +
-          "problem as soon as possible."
+            "problem as soon as possible."
         );
         break;
       case 503:

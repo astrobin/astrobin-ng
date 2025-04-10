@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
+import type { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { TelescopeType } from "@features/equipment/types/telescope.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, of } from "rxjs";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
 
 export enum TelescopeDisplayProperty {
   TYPE = "TYPE",
@@ -101,8 +103,7 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
   getPrintableProperty$(
     item: TelescopeInterface,
     property: TelescopeDisplayProperty,
-    propertyValue?: any,
-    shortForm?: boolean
+    propertyValue?: any
   ): Observable<string | null> {
     switch (property) {
       case TelescopeDisplayProperty.TYPE:

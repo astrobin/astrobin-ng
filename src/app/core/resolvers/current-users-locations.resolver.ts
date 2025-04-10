@@ -1,23 +1,24 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { Observable } from "rxjs";
-import { filter, first, map, switchMap } from "rxjs/operators";
-import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { LocationInterface } from "@core/interfaces/location.interface";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import type { MainState } from "@app/store/state";
+import type { LocationInterface } from "@core/interfaces/location.interface";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { UsersLocationsApiService } from "@core/services/api/classic/users/users-locations-api.service";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { Store } from "@ngrx/store";
+import type { Observable } from "rxjs";
+import { filter, first, map, switchMap } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
 })
-export class CurrentUsersLocationsResolver  {
-  constructor(private readonly store$: Store<MainState>, private readonly locationsApiService: UsersLocationsApiService) {
-  }
+export class CurrentUsersLocationsResolver {
+  constructor(
+    private readonly store$: Store<MainState>,
+    private readonly locationsApiService: UsersLocationsApiService
+  ) {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {
+  resolve(): Observable<any> | Promise<any> | any {
     return this.store$.select(selectCurrentUserProfile).pipe(
       filter((currentUserProfile: UserProfileInterface) => !!currentUserProfile),
       map((currentUserProfile: UserProfileInterface) => currentUserProfile.locations),

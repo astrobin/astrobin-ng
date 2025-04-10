@@ -1,14 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
+import type { MainState } from "@app/store/state";
+import type { NestedCommentSearchInterface } from "@core/interfaces/nestedcomment-search.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@core/services/loading.service";
-import { Observable } from "rxjs";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { NestedCommentSearchInterface } from "@core/interfaces/nestedcomment-search.interface";
+import type { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { Store } from "@ngrx/store";
+import type { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

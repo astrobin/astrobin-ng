@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { SearchCountryFilterComponent } from "./search-country-filter.component";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { MockBuilder } from "ng-mocks";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { CountryService } from "@core/services/country.service";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { SearchCountryFilterComponent } from "./search-country-filter.component";
 
 describe("CountryFilterComponent", () => {
   let component: SearchCountryFilterComponent;
@@ -17,9 +18,7 @@ describe("CountryFilterComponent", () => {
       {
         provide: CountryService,
         useValue: {
-          getCountries: jest.fn().mockReturnValue([
-            { code: "US", name: "United States" }
-          ])
+          getCountries: jest.fn().mockReturnValue([{ code: "US", name: "United States" }])
         }
       }
     ]);

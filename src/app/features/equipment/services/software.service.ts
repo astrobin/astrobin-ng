@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { Observable } from "rxjs";
 import { UtilsService } from "@core/services/utils/utils.service";
+import type { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import type { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
 
 export enum SoftwareDisplayProperty {
   BRAND = "BRAND"
@@ -27,16 +27,11 @@ export class SoftwareService extends BaseService implements EquipmentItemService
     return [SoftwareDisplayProperty.BRAND];
   }
 
-  getPrintableProperty$(
-    item: SoftwareInterface,
-    property: SoftwareDisplayProperty,
-    propertyValue?: any,
-    shortForm?: boolean
-  ): Observable<string | null> {
+  getPrintableProperty$(item: SoftwareInterface, property: SoftwareDisplayProperty): Observable<string | null> {
     throw Error(`Invalid property: ${property}`);
   }
 
-  getPrintablePropertyName(propertyName: SoftwareDisplayProperty, shortForm = false): string {
+  getPrintablePropertyName(propertyName: SoftwareDisplayProperty): string {
     if (propertyName === SoftwareDisplayProperty.BRAND) {
       return (
         `${this.translateService.instant("Brand")} / ` +

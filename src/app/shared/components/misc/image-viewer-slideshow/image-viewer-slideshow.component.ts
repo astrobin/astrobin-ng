@@ -1,26 +1,43 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
-import { SwipeDownService } from "@core/services/swipe-down.service";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@core/services/image-viewer.service";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { ImageService } from "@core/services/image/image.service";
-import { NgbCarousel, NgbSlideEvent } from "@ng-bootstrap/ng-bootstrap";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { switchMap } from "rxjs/operators";
-import { Observable, Subscription } from "rxjs";
-import { ImageAlias } from "@core/enums/image-alias.enum";
-import { Router } from "@angular/router";
-import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { DeviceService } from "@core/services/device.service";
-import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { isPlatformBrowser } from "@angular/common";
+import type { OnDestroy, OnInit } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  Renderer2,
+  ViewChild
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
+import type { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import type { ImageViewerNavigationContextItem } from "@core/services/image-viewer.service";
+import { ImageViewerNavigationContext } from "@core/services/image-viewer.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { SwipeDownService } from "@core/services/swipe-down.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import type { NgbSlideEvent } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCarousel } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageViewerSlideshowContextComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow-context.component";
+import { Observable, Subscription } from "rxjs";
+import { switchMap } from "rxjs/operators";
 
 const SLIDESHOW_BUFFER = 1;
 const SLIDESHOW_WINDOW = 3;
@@ -28,12 +45,12 @@ const SLIDESHOW_WINDOW = 3;
 @Component({
   selector: "astrobin-image-viewer-slideshow",
   template: `
-    <div 
-      #carouselContainer 
+    <div
+      #carouselContainer
       class="carousel-container"
       (touchstart)="onTouchStart($event)"
       (touchmove)="onTouchMove($event)"
-      (touchend)="onTouchEnd($event)"
+      (touchend)="onTouchEnd()"
     >
       <div class="carousel-area">
         <ngb-carousel
@@ -66,7 +83,9 @@ const SLIDESHOW_WINDOW = 3;
               [revisionLabel]="activeImageRevisionLabel"
               [showCloseButton]="true"
               [showPreviousButton]="activeId !== navigationContext[0].imageId && navigationContext.length > 1"
-              [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId && navigationContext.length > 1"
+              [showNextButton]="
+                activeId !== navigationContext[navigationContext.length - 1].imageId && navigationContext.length > 1
+              "
               [standalone]="false"
             ></astrobin-image-viewer>
           </ng-template>
@@ -123,14 +142,11 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   @Output()
   imageChange = new EventEmitter<ImageInterface>();
-
-  @ViewChild("context", { read: ImageViewerSlideshowContextComponent})
-  protected context: ImageViewerSlideshowContextComponent;
-
   activeId: ImageInterface["pk"] | ImageInterface["hash"];
   activeImage: ImageInterface;
   activeImageRevisionLabel: ImageRevisionInterface["label"] = FINAL_REVISION_LABEL;
-
+  @ViewChild("context", { read: ImageViewerSlideshowContextComponent })
+  protected context: ImageViewerSlideshowContextComponent;
   @ViewChild("carousel", { static: false, read: NgbCarousel })
   protected carousel: NgbCarousel;
 
@@ -143,7 +159,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   protected fullscreen = false;
   protected loadingImage = false;
   protected callerComponentId: string;
-  
+
   // Swipe handling properties
   protected touchStartY: { value: number } = { value: 0 };
   protected touchCurrentY: { value: number } = { value: 0 };
@@ -165,7 +181,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     public readonly utilsService: UtilsService,
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly elementRef: ElementRef,
     public readonly deviceService: DeviceService,
     public readonly renderer: Renderer2,
@@ -205,137 +221,26 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     if (this._isBrowser) {
       const _doc = this.windowRefService.nativeWindow.document;
       _doc.removeEventListener("keydown", this._boundOnKeyDown, true);
-      
+
       // Make sure to clean up any transition classes
-      document.body.classList.remove('image-viewer-closing');
-      
+      document.body.classList.remove("image-viewer-closing");
+
       // Clear any safety timer that might be running
       if ((this as any).__safetyTimer) {
         clearTimeout((this as any).__safetyTimer);
         (this as any).__safetyTimer = null;
       }
     }
-    
+
     // Reset any in-progress swipe animation
     if (this.isSwiping.value) {
       this.isSwiping.value = false;
       this.swipeProgress.value = 0;
       this._resetSwipeAnimation();
     }
-    
+
     // Clear any notifications
     this.popNotificationsService.clear();
-  }
-  
-  // Touch event handlers for swipe-down gesture
-  protected onTouchStart(event: TouchEvent): void {
-    if (this.fullscreen) {
-      return;
-    }
-    
-    this.swipeDownService.handleTouchStart(
-      event,
-      this.touchStartY,
-      this.touchCurrentY,
-      this.touchPreviousY,
-      this.swipeDirectionDown
-    );
-  }
-
-  protected onTouchMove(event: TouchEvent): void {
-    if (this.fullscreen) {
-      return;
-    }
-    
-    this.swipeDownService.handleTouchMove(
-      event,
-      this.touchStartY,
-      this.touchCurrentY,
-      this.touchPreviousY,
-      this.swipeDirectionDown,
-      this.isSwiping,
-      this.swipeProgress,
-      this.swipeThreshold,
-      this.elementRef,
-      this.renderer
-    );
-  }
-
-  protected onTouchEnd(event: TouchEvent): void {
-    if (this.fullscreen) {
-      return;
-    }
-    
-    // Only process if we're swiping
-    if (!this.isSwiping.value) {
-      return;
-    }
-    
-    // Add class for background animation - the service will handle cancel detection
-    if (typeof document !== "undefined") {
-      document.body.classList.add("image-viewer-closing");
-    }
-    
-    this.swipeDownService.handleTouchEnd(
-      this.isSwiping,
-      this.touchStartY,
-      this.touchCurrentY,
-      this.touchPreviousY,
-      this.swipeDirectionDown,
-      this.swipeThreshold,
-      this.swipeProgress,
-      this.elementRef,
-      this.renderer,
-      () => {
-        if (typeof document !== "undefined") {
-          document.body.classList.remove("image-viewer-closing");
-        }
-        
-        this.closeSlideshow.emit(true);
-      }
-    );
-  }
-  
-  private _resetSwipeAnimation(): void {
-    if (!this.elementRef || !this.elementRef.nativeElement) {
-      return;
-    }
-    
-    // Use CSS animation classes instead of manual style manipulation
-    // This delegates animation to the GPU and composite layers
-    
-    // Mark as animating for pointer-events optimizations
-    this.renderer.addClass(
-      this.elementRef.nativeElement,
-      'swipe-to-close-animating'
-    );
-    
-    // Add the return-to-normal animation class
-    this.renderer.addClass(
-      this.elementRef.nativeElement,
-      'swipe-to-close-return-to-normal'
-    );
-    
-    // Listen for animation end to clean up classes
-    const onAnimationEnd = (event: AnimationEvent) => {
-      if (event.animationName === 'return-to-normal') {
-        // Remove animation classes
-        this.renderer.removeClass(
-          this.elementRef.nativeElement,
-          'swipe-to-close-return-to-normal'
-        );
-        this.renderer.removeClass(
-          this.elementRef.nativeElement,
-          'swipe-to-close-animating'
-        );
-        
-        // Remove the event listener to avoid memory leaks
-        this.elementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
-      }
-    };
-    
-    // Add the event listener
-    this.elementRef.nativeElement.addEventListener('animationend', onAnimationEnd);
   }
 
   setCallerComponentId(callerComponentId: string) {
@@ -344,7 +249,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   setNavigationContext(newContext: ImageViewerNavigationContext) {
     if (this.navigationContext) {
-      this.navigationContext = newContext.map((item, index) => {
+      this.navigationContext = newContext.map(item => {
         const existingItem = this.navigationContext.find(i => i.imageId === item.imageId);
         if (existingItem) {
           return existingItem;
@@ -428,6 +333,75 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     });
   }
 
+  // Touch event handlers for swipe-down gesture
+  protected onTouchStart(event: TouchEvent): void {
+    if (this.fullscreen) {
+      return;
+    }
+
+    this.swipeDownService.handleTouchStart(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown
+    );
+  }
+
+  protected onTouchMove(event: TouchEvent): void {
+    if (this.fullscreen) {
+      return;
+    }
+
+    this.swipeDownService.handleTouchMove(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.isSwiping,
+      this.swipeProgress,
+      this.swipeThreshold,
+      this.elementRef,
+      this.renderer
+    );
+  }
+
+  protected onTouchEnd(): void {
+    if (this.fullscreen) {
+      return;
+    }
+
+    // Only process if we're swiping
+    if (!this.isSwiping.value) {
+      return;
+    }
+
+    // Add class for background animation - the service will handle cancel detection
+    if (typeof document !== "undefined") {
+      document.body.classList.add("image-viewer-closing");
+    }
+
+    this.swipeDownService.handleTouchEnd(
+      this.isSwiping,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.swipeThreshold,
+      this.swipeProgress,
+      this.elementRef,
+      this.renderer,
+      () => {
+        if (typeof document !== "undefined") {
+          document.body.classList.remove("image-viewer-closing");
+        }
+
+        this.closeSlideshow.emit(true);
+      }
+    );
+  }
+
   protected onEnterFullscreen() {
     this.fullscreen = true;
     this.changeDetectorRef.detectChanges();
@@ -436,10 +410,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   protected onExitFullscreen() {
     if (this._isBrowser) {
       const location_ = this.windowRefService.nativeWindow.location;
-      this.windowRefService.replaceState(
-        {},
-        `${location_.pathname}${location_.search}`
-      );
+      this.windowRefService.replaceState({}, `${location_.pathname}${location_.search}`);
     }
 
     this.utilsService.delay(50).subscribe(() => {
@@ -488,6 +459,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
     this.setImage(event.current, FINAL_REVISION_LABEL).subscribe({
       next: () => {
+        // No action needed on successful next navigation
       },
       error: () => {
         this.closeSlideshow.emit(false);
@@ -507,6 +479,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   protected onNavigationContextItemSelected(imageId: ImageInterface["pk"] | ImageInterface["hash"]) {
     this.setImage(imageId, FINAL_REVISION_LABEL).subscribe({
       next: () => {
+        // No action needed on successful next navigation
       },
       error: () => {
         this.closeSlideshow.emit(false);
@@ -518,10 +491,40 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     return item.imageId;
   }
 
+  private _resetSwipeAnimation(): void {
+    if (!this.elementRef || !this.elementRef.nativeElement) {
+      return;
+    }
+
+    // Use CSS animation classes instead of manual style manipulation
+    // This delegates animation to the GPU and composite layers
+
+    // Mark as animating for pointer-events optimizations
+    this.renderer.addClass(this.elementRef.nativeElement, "swipe-to-close-animating");
+
+    // Add the return-to-normal animation class
+    this.renderer.addClass(this.elementRef.nativeElement, "swipe-to-close-return-to-normal");
+
+    // Listen for animation end to clean up classes
+    const onAnimationEnd = (event: AnimationEvent) => {
+      if (event.animationName === "return-to-normal") {
+        // Remove animation classes
+        this.renderer.removeClass(this.elementRef.nativeElement, "swipe-to-close-return-to-normal");
+        this.renderer.removeClass(this.elementRef.nativeElement, "swipe-to-close-animating");
+
+        // Remove the event listener to avoid memory leaks
+        this.elementRef.nativeElement.removeEventListener("animationend", onAnimationEnd);
+      }
+    };
+
+    // Add the event listener
+    this.elementRef.nativeElement.addEventListener("animationend", onAnimationEnd);
+  }
+
   private _onKeyDown = (event: KeyboardEvent) => {
-    if ((event.key === "ArrowLeft" || event.key === "ArrowRight") &&
-      (
-        event.target instanceof HTMLInputElement ||
+    if (
+      (event.key === "ArrowLeft" || event.key === "ArrowRight") &&
+      (event.target instanceof HTMLInputElement ||
         event.target instanceof HTMLTextAreaElement ||
         (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable")))
     ) {
@@ -593,39 +596,40 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       }
 
       this._delayedLoadSubscription.add(
-        this.utilsService.delay(delay).pipe(
-          switchMap(() => this.imageService.loadImage(imageId))
-        ).subscribe({
-          next: image => {
-            if (!this.navigationContext || !this.navigationContext.length) {
-              this.navigationContext = [
-                {
-                  imageId,
-                  thumbnailUrl: image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,
-                  image
-                }
-              ];
-            } else {
-              this.navigationContext = this.navigationContext.map(item => {
-                if (item.imageId === imageId) {
-                  return {
-                    ...item,
+        this.utilsService
+          .delay(delay)
+          .pipe(switchMap(() => this.imageService.loadImage(imageId)))
+          .subscribe({
+            next: image => {
+              if (!this.navigationContext || !this.navigationContext.length) {
+                this.navigationContext = [
+                  {
+                    imageId,
+                    thumbnailUrl: image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,
                     image
-                  };
-                }
+                  }
+                ];
+              } else {
+                this.navigationContext = this.navigationContext.map(item => {
+                  if (item.imageId === imageId) {
+                    return {
+                      ...item,
+                      image
+                    };
+                  }
 
-                return item;
-              });
+                  return item;
+                });
+              }
+
+              subscriber.next(image);
+              subscriber.complete();
+            },
+            error: error => {
+              subscriber.error(error);
+              subscriber.complete();
             }
-
-            subscriber.next(image);
-            subscriber.complete();
-          },
-          error: error => {
-            subscriber.error(error);
-            subscriber.complete();
-          }
-        })
+          })
       );
     });
   }

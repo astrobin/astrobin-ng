@@ -1,9 +1,9 @@
 <astrobin-mobile-menu
   (menuClose)="onMobileMenuClose()"
   (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
   [descriptionTemplate]="descriptionTemplate"
   [iconsTemplate]="shareButtonsTemplate"
+  [titleTemplate]="titleTemplate"
 ></astrobin-mobile-menu>
 
 <div class="page has-breadcrumb has-mobile-buttons-bar has-mobile-menu">
@@ -16,8 +16,7 @@
         {{ title }}
       </span>
 
-      <ng-container *ngIf="deviceService.mdMin()" [ngTemplateOutlet]="descriptionTemplate">
-      </ng-container>
+      <ng-container *ngIf="deviceService.mdMin()" [ngTemplateOutlet]="descriptionTemplate"> </ng-container>
 
       <a [routerLink]="['/', 'equipment', 'marketplace']" class="d-block d-lg-none mt-3 mb-3 back-to-marketplace">
         <fa-icon icon="arrow-left"></fa-icon>
@@ -69,20 +68,17 @@
               </span>
             </div>
 
-            <astrobin-marketplace-listing
-              [listing]="listing"
-            ></astrobin-marketplace-listing>
+            <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
 
             <astrobin-nested-comments
               [addCommentLabel]="'Ask a question' | translate"
               [allowSelfReply]="false"
               [contentType]="listingContentType"
-              [info]="currentUserWrapper.user?.id !== listing.user
-                ? (
-                  'Questions asked here are publicly visible. If you want to contact the user in a private ' +
-                  'conversation, use the \'Message user privately\' button.' | translate
-                )
-                : null
+              [info]="
+                currentUserWrapper.user?.id !== listing.user
+                  ? ('Questions asked here are publicly visible. If you want to contact the user in a private ' +
+                      'conversation, use the \'Message user privately\' button.' | translate)
+                  : null
               "
               [noCommentsLabel]="'There are no questions or discussions yet.'"
               [objectId]="listing.id"
@@ -98,10 +94,7 @@
           </div>
 
           <div class="col-md-4 col-lg-3 order-1 order-md-2">
-            <astrobin-marketplace-user-card
-              [listing]="listing"
-              class="d-block"
-            ></astrobin-marketplace-user-card>
+            <astrobin-marketplace-user-card [listing]="listing" class="d-block"></astrobin-marketplace-user-card>
 
             <div *ngIf="currentUserWrapper.user | isMarketplaceModerator" class="alert alert-warning mt-4">
               <fa-icon icon="exclamation-triangle"></fa-icon>
@@ -167,7 +160,9 @@
 
     <button
       (click)="markAsSold()"
-      *ngIf="!equipmentMarketplaceService.listingSold(listing) && listing.listingType === MarketplaceListingType.FOR_SALE"
+      *ngIf="
+        !equipmentMarketplaceService.listingSold(listing) && listing.listingType === MarketplaceListingType.FOR_SALE
+      "
       class="btn btn-secondary btn-mark-as-sold d-block w-100 mt-2"
     >
       <fa-icon icon="sack-dollar"></fa-icon>
@@ -278,8 +273,8 @@
       <ng-container
         *ngIf="
           currentUserWrapper.user &&
-          equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
-          !equipmentMarketplaceService.listingSold(listing);
+            equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
+            !equipmentMarketplaceService.listingSold(listing);
           else messageUser
         "
       >
@@ -311,12 +306,12 @@
     <button
       (click)="onMakeAnOfferClicked($event)"
       *ngIf="
-          listing.listingType === MarketplaceListingType.FOR_SALE &&
-          equipmentMarketplaceService.listingHasNonSoldNonReservedItems(listing) &&
-          !equipmentMarketplaceService.listingHasPendingOffers(listing) &&
-          !equipmentMarketplaceService.listingHasAcceptedOffers(listing) &&
-          listing.approved
-        "
+        listing.listingType === MarketplaceListingType.FOR_SALE &&
+        equipmentMarketplaceService.listingHasNonSoldNonReservedItems(listing) &&
+        !equipmentMarketplaceService.listingHasPendingOffers(listing) &&
+        !equipmentMarketplaceService.listingHasAcceptedOffers(listing) &&
+        listing.approved
+      "
       [class.loading]="loadingService.loading$ | async"
       class="btn btn-primary btn-make-offer mt-md-2 w-100"
     >

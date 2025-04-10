@@ -1,30 +1,34 @@
-import { AfterViewInit, Component, HostListener, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import type { AfterViewInit, OnInit } from "@angular/core";
+import { Component, HostListener, Inject, PLATFORM_ID } from "@angular/core";
+import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MainState } from "@app/store/state";
+import type { SaveImageRevisionSuccess } from "@app/store/actions/image.actions";
+import { SaveImageRevision } from "@app/store/actions/image.actions";
+import type { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import type { ImageInterface, ImageRevisionInterface, MouseHoverImageOptions } from "@core/interfaces/image.interface";
+import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
+import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
+import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Observable, of } from "rxjs";
-import { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
-import { isPlatformBrowser } from "@angular/common";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions } from "@core/interfaces/image.interface";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { TitleService } from "@core/services/title/title.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { ImageAlias } from "@core/enums/image-alias.enum";
-import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { SaveImageRevision, SaveImageRevisionSuccess } from "@app/store/actions/image.actions";
-import { Actions, ofType } from "@ngrx/effects";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
 import { filter, take } from "rxjs/operators";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { ImageService } from "@core/services/image/image.service";
 
 @Component({
   selector: "astrobin-image-edit-revision-page",
@@ -33,7 +37,8 @@ import { ImageService } from "@core/services/image/image.service";
 })
 export class ImageEditRevisionPageComponent
   extends BaseComponentDirective
-  implements OnInit, ComponentCanDeactivate, AfterViewInit {
+  implements OnInit, ComponentCanDeactivate, AfterViewInit
+{
   protected pageTitle: string;
   protected isBrowser: boolean;
   protected image: ImageInterface;
@@ -46,13 +51,12 @@ export class ImageEditRevisionPageComponent
   protected fields: FormlyFieldConfig[] = [];
   protected saving = false;
 
-
   constructor(
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly route: ActivatedRoute,
     public readonly translateService: TranslateService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly titleService: TitleService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly loadingService: LoadingService,
@@ -89,20 +93,16 @@ export class ImageEditRevisionPageComponent
       description: this.revision.description,
       mouseHoverImage: this.revision.mouseHoverImage,
       squareCropping: this.revision.squareCropping,
-      loopVideo: this.revision.loopVideo,
+      loopVideo: this.revision.loopVideo
     };
 
     this.imageThumbnail = this.image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url;
 
     if (this.image?.revisions) {
-      const revision = this.image.revisions.find(
-        revision => revision.label === this.revisionLabel
-      );
+      const revision = this.image.revisions.find(rev => rev.label === this.revisionLabel);
 
       if (revision?.thumbnails) {
-        this.thumbnail = revision.thumbnails.find(
-          thumbnail => thumbnail.alias === ImageAlias.HD
-        )?.url;
+        this.thumbnail = revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.HD)?.url;
       }
     }
 
@@ -127,29 +127,30 @@ export class ImageEditRevisionPageComponent
     this.saving = true;
 
     const filterFn = (action: SaveImageRevisionSuccess): boolean =>
-      (
-        action.payload.revision.label === this.revisionLabel ||
-        (action.payload.revision.isFinal && this.revisionLabel === FINAL_REVISION_LABEL)
-      ) &&
+      (action.payload.revision.label === this.revisionLabel ||
+        (action.payload.revision.isFinal && this.revisionLabel === FINAL_REVISION_LABEL)) &&
       action.payload.revision.image === this.image.pk;
 
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.SAVE_IMAGE_REVISION_SUCCESS),
+        filter((action: SaveImageRevisionSuccess) => filterFn(action)),
+        take(1)
+      )
+      .subscribe(() => {
+        this.form.markAsPristine();
+        this._returnToImage();
+      });
 
-    this.actions$.pipe(
-      ofType(AppActionTypes.SAVE_IMAGE_REVISION_SUCCESS),
-      filter((action: SaveImageRevisionSuccess) => filterFn(action)),
-      take(1)
-    ).subscribe(() => {
-      this.form.markAsPristine();
-      this._returnToImage();
-    });
-
-    this.actions$.pipe(
-      ofType(AppActionTypes.SAVE_IMAGE_REVISION_FAILURE),
-      filter((action: SaveImageRevisionSuccess) => filterFn(action)),
-      take(1)
-    ).subscribe(() => {
-      this.saving = false;
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.SAVE_IMAGE_REVISION_FAILURE),
+        filter((action: SaveImageRevisionSuccess) => filterFn(action)),
+        take(1)
+      )
+      .subscribe(() => {
+        this.saving = false;
+      });
 
     this.store$.dispatch(new SaveImageRevision({ revision: this.model }));
   }
@@ -161,8 +162,10 @@ export class ImageEditRevisionPageComponent
 
   private _returnToImage(): void {
     // DEPRECATED: change to new image viewer page when migration is complete.
-    this.windowRefService.nativeWindow.location.href =
-      this.classicRoutesService.IMAGE_REVISION(this.image.hash || this.image.pk, this.revisionLabel);
+    this.windowRefService.nativeWindow.location.href = this.classicRoutesService.IMAGE_REVISION(
+      this.image.hash || this.image.pk,
+      this.revisionLabel
+    );
   }
 
   private _initFields(): void {
@@ -213,9 +216,7 @@ export class ImageEditRevisionPageComponent
         hide: !this.revision.videoFile,
         props: {
           label: this.translateService.instant("Loop video"),
-          description: this.translateService.instant(
-            "If checked, the video will loop."
-          )
+          description: this.translateService.instant("If checked, the video will loop.")
         }
       }
     ];
@@ -223,13 +224,7 @@ export class ImageEditRevisionPageComponent
 
   private _setTitle() {
     this.pageTitle = this.translateService.instant("Edit revision");
-    this.titleService.setTitle(
-      this.image.title +
-      " - " +
-      this.pageTitle +
-      " - " +
-      this.revisionLabel
-    );
+    this.titleService.setTitle(this.image.title + " - " + this.pageTitle + " - " + this.revisionLabel);
   }
 
   private _initBreadcrumb(): void {
@@ -277,9 +272,9 @@ export class ImageEditRevisionPageComponent
     };
 
     const additionalOptions: {
-      value: MouseHoverImageOptions | string,
-      label: string,
-      disabled?: boolean
+      value: MouseHoverImageOptions | string;
+      label: string;
+      disabled?: boolean;
     }[] = this.imageEditSettingsFieldsService.additionalMouseHoverOptions(
       this.revision,
       this.image.revisions.filter(revision => revision.pk !== this.revision.pk)

@@ -1,26 +1,28 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { NgbActiveModal, NgbModal, NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateService } from "@ngx-translate/core";
-import { SearchService } from "@core/services/search.service";
-import { merge, Observable, of, Subject } from "rxjs";
-import { debounceTime, distinctUntilChanged, map } from "rxjs/operators";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import type { OnInit } from "@angular/core";
+import { Component, ViewChild, ViewContainerRef } from "@angular/core";
+import type { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { DeviceService } from "@core/services/device.service";
+import { SearchService } from "@core/services/search.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import type { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import type { Observable } from "rxjs";
+import { merge, of, Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged, map } from "rxjs/operators";
 
-type FilterType = {
+interface FilterType {
   category: SearchFilterCategory;
   label: string;
   key: string;
   minimumSubscription: PayableProductInterface;
   allow$?: Observable<boolean>;
-};
+}
 
 @Component({
   selector: "astrobin-search-filter-selection-modal",
@@ -84,36 +86,32 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
       );
 
       // In order to get the labels of filters that can be used, we need to instantiate them.
-      const componentRefs = possibleFilters.map(filterType => {
-        return this.searchService.instantiateFilterComponent(
-          filterType,
-          null,
-          this.filterContainer
-        );
-      }).sort((a, b) => {
-        return a.instance.label.localeCompare(b.instance.label);
-      });
+      const componentRefs = possibleFilters
+        .map(filterType => {
+          return this.searchService.instantiateFilterComponent(filterType, null, this.filterContainer);
+        })
+        .sort((a, b) => {
+          return a.instance.label.localeCompare(b.instance.label);
+        });
 
       this.filters = componentRefs.map(componentRef => ({
         category: componentRef.instance.category,
         label: componentRef.instance.label,
         minimumSubscription: (componentRef.componentType as any).minimumSubscription as PayableProductInterface,
         key: this.searchService.getKeyByFilterComponentType(componentRef.componentType),
-        allow$: this.searchFilterService.allowFilter$((componentRef.componentType as any).minimumSubscription as PayableProductInterface)
+        allow$: this.searchFilterService.allowFilter$(
+          (componentRef.componentType as any).minimumSubscription as PayableProductInterface
+        )
       }));
 
       // Now that we have the labels, we don't need these anymore.
-      componentRefs.forEach(componentRefs => componentRefs.destroy());
+      componentRefs.forEach(componentRef => componentRef.destroy());
 
       return merge(debouncedText$, this.focus$, this.click$).pipe(
         map(term => {
-          return (
-            !term || term.length < 2
-              ? []
-              : this.filters.filter(
-                filterType => filterType.label.toLowerCase().indexOf(term.toLowerCase()) > -1
-              )
-          );
+          return !term || term.length < 2
+            ? []
+            : this.filters.filter(filterType => filterType.label.toLowerCase().indexOf(term.toLowerCase()) > -1);
         })
       );
     };

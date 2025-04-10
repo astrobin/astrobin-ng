@@ -1,32 +1,30 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
+import type { OnChanges, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { TranslateService } from "@ngx-translate/core";
-import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
-import { map, take, takeUntil } from "rxjs/operators";
-import { DeleteCollection, DeleteCollectionFailure, UpdateCollection, UpdateCollectionFailure } from "@app/store/actions/collection.actions";
-import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import type { DeleteCollectionFailure, UpdateCollectionFailure } from "@app/store/actions/collection.actions";
+import { DeleteCollection, UpdateCollection } from "@app/store/actions/collection.actions";
+import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
+import type { MainState } from "@app/store/state";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { DeviceService } from "@core/services/device.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { map, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-user-gallery-collection-menu",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div
-        ngbDropdown
-        container="body"
-        class="collection-menu"
-      >
+      <div ngbDropdown container="body" class="collection-menu">
         <button
           class="btn btn-sm btn-link btn-no-block no-toggle"
           ngbDropdownToggle
@@ -36,10 +34,7 @@ import { WindowRefService } from "@core/services/window-ref.service";
           <fa-icon icon="ellipsis"></fa-icon>
         </button>
 
-        <div
-          [attr.aria-labelledby]="'collection-menu-dropdown-button-' + collection.id"
-          ngbDropdownMenu
-        >
+        <div [attr.aria-labelledby]="'collection-menu-dropdown-button-' + collection.id" ngbDropdownMenu>
           <a href="#" class="dropdown-item" (click)="editCollection()" astrobinEventPreventDefault>
             {{ "Edit" | translate }}
           </a>
@@ -88,12 +83,7 @@ import { WindowRefService } from "@core/services/window-ref.service";
         ></astrobin-user-gallery-collection-add-remove-images>
 
         <div class="d-flex justify-content-center mt-4">
-          <button
-            class="btn btn-secondary"
-            (click)="offcanvas.dismiss()"
-            translate="Close"
-            type="button"
-          ></button>
+          <button class="btn btn-secondary" (click)="offcanvas.dismiss()" translate="Close" type="button"></button>
         </div>
       </div>
     </ng-template>
@@ -131,8 +121,7 @@ import { WindowRefService } from "@core/services/window-ref.service";
   styleUrls: ["./user-gallery-collection-menu.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserGalleryCollectionMenuComponent
-  extends BaseComponentDirective implements OnInit, OnChanges {
+export class UserGalleryCollectionMenuComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
   @Input() collection: CollectionInterface;
@@ -165,7 +154,7 @@ export class UserGalleryCollectionMenuComponent
     super.ngOnInit();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     this._initEditCollectionFields();
   }
 
@@ -183,44 +172,43 @@ export class UserGalleryCollectionMenuComponent
 
     offcanvas.dismissed.subscribe(() => {
       if (this._imagesChanged && this.windowRefService.getCurrentUrl().href.includes("collection=")) {
-        this.popNotificationsService.info(
-          this.translateService.instant("Please refresh the page to see the changes.")
-        )
+        this.popNotificationsService.info(this.translateService.instant("Please refresh the page to see the changes."));
       }
     });
 
-    this.actions$.pipe(
-      ofType(
-        AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS,
-        AppActionTypes.ADD_IMAGE_TO_COLLECTION_FAILURE,
-        AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS,
-        AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_FAILURE
-      ),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this._imagesChanged = true;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.actions$
+      .pipe(
+        ofType(
+          AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS,
+          AppActionTypes.ADD_IMAGE_TO_COLLECTION_FAILURE,
+          AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS,
+          AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_FAILURE
+        ),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        this._imagesChanged = true;
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   protected submitEditCollection(): void {
-    this.actions$.pipe(
-      ofType(AppActionTypes.UPDATE_COLLECTION_SUCCESS),
-      take(1)
-    ).subscribe(() => {
+    this.actions$.pipe(ofType(AppActionTypes.UPDATE_COLLECTION_SUCCESS), take(1)).subscribe(() => {
       this.offcanvasService.dismiss();
       this.popNotificationsService.success(this.translateService.instant("Collection updated"));
     });
 
-    this.actions$.pipe(
-      ofType(AppActionTypes.UPDATE_COLLECTION_FAILURE),
-      map((action: UpdateCollectionFailure) => action.payload.error),
-      take(1)
-    ).subscribe(error => {
-      this.popNotificationsService.error(
-        this.translateService.instant("Error updating collection") + ": " + JSON.stringify(error)
-      );
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.UPDATE_COLLECTION_FAILURE),
+        map((action: UpdateCollectionFailure) => action.payload.error),
+        take(1)
+      )
+      .subscribe(error => {
+        this.popNotificationsService.error(
+          this.translateService.instant("Error updating collection") + ": " + JSON.stringify(error)
+        );
+      });
 
     this.store$.dispatch(new UpdateCollection({ collection: this.editCollectionModel }));
   }
@@ -238,23 +226,22 @@ export class UserGalleryCollectionMenuComponent
   }
 
   protected submitDeleteCollection(): void {
-    this.actions$.pipe(
-      ofType(AppActionTypes.DELETE_COLLECTION_SUCCESS),
-      take(1)
-    ).subscribe(() => {
+    this.actions$.pipe(ofType(AppActionTypes.DELETE_COLLECTION_SUCCESS), take(1)).subscribe(() => {
       this.offcanvasService.dismiss();
       this.popNotificationsService.success(this.translateService.instant("Collection deleted"));
     });
 
-    this.actions$.pipe(
-      ofType(AppActionTypes.DELETE_COLLECTION_FAILURE),
-      map((action: DeleteCollectionFailure) => action.payload.error),
-      take(1)
-    ).subscribe(error => {
-      this.popNotificationsService.error(
-        this.translateService.instant("Error deleting collection") + ": " + JSON.stringify(error)
-      );
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.DELETE_COLLECTION_FAILURE),
+        map((action: DeleteCollectionFailure) => action.payload.error),
+        take(1)
+      )
+      .subscribe(error => {
+        this.popNotificationsService.error(
+          this.translateService.instant("Error deleting collection") + ": " + JSON.stringify(error)
+        );
+      });
 
     this.store$.dispatch(new DeleteCollection({ collectionId: this.collection.id }));
   }
@@ -290,18 +277,16 @@ export class UserGalleryCollectionMenuComponent
                 .filter(collection => collection.id !== this.collection.id)
                 .sort((a, b) => a.name.localeCompare(b.name))
             ),
-            map(collections =>
-              [
-                {
-                  label: this.translateService.instant("No parent"),
-                  value: null
-                },
-                ...collections.map(collection => ({
-                  label: collection.name,
-                  value: collection.id
-                }))
-              ]
-            )
+            map(collections => [
+              {
+                label: this.translateService.instant("No parent"),
+                value: null
+              },
+              ...collections.map(collection => ({
+                label: collection.name,
+                value: collection.id
+              }))
+            ])
           )
         }
       },
@@ -352,10 +337,10 @@ export class UserGalleryCollectionMenuComponent
           label: this.translateService.instant("Order by image tag"),
           description: this.translateService.instant(
             "If you want to order the images in this collection by a tag, enter the tag here. " +
-            `<a href="https://welcome.astrobin.com/features/image-collections" target="_blank" class="d-inline-block ms-1">` +
-            this.translateService.instant("Learn more") +
-            "</a>."
-          ),
+              `<a href="https://welcome.astrobin.com/features/image-collections" target="_blank" class="d-inline-block ms-1">` +
+              this.translateService.instant("Learn more") +
+              "</a>."
+          )
         }
       },
       {

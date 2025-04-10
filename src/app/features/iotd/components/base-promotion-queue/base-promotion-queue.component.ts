@@ -1,26 +1,33 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
+import type { ElementRef, OnInit } from "@angular/core";
+import { Component, Inject, Input, PLATFORM_ID, QueryList, ViewChildren } from "@angular/core";
+import type { Params } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { MainState } from "@app/store/state";
-import { HiddenImage, IotdInterface, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
-import { LoadHiddenImages } from "@features/iotd/store/iotd.actions";
-import { selectHiddenImages } from "@features/iotd/store/iotd.selectors";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import type { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { Observable } from "rxjs";
-import { map, switchMap, takeUntil } from "rxjs/operators";
-import { ActivatedRoute, Params, Router } from "@angular/router";
-import { CookieService } from "ngx-cookie";
-import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
-import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import type {
+  HiddenImage,
+  IotdInterface,
+  SubmissionInterface,
+  VoteInterface
+} from "@features/iotd/services/iotd-api.service";
+import { LoadHiddenImages } from "@features/iotd/store/iotd.actions";
+import { selectHiddenImages } from "@features/iotd/store/iotd.selectors";
+import type { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import type { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { Actions } from "@ngrx/effects";
-import { ImageInterface } from "@core/interfaces/image.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { CookieService } from "ngx-cookie";
+import type { Observable } from "rxjs";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 
 const FILL_SLOT_REMINDER_COOKIE = "astrobin-iotd-fill-slot-reminder";
 const IOTD_PROMOTION_QUEUE_DISPLAY_HIDDEN_IMAGES_COOKIE = "astrobin-iotd-promotion-queue-display-hidden-images";
@@ -62,7 +69,8 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
-    public readonly platformId: Object) {
+    @Inject(PLATFORM_ID) public readonly platformId: object
+  ) {
     super(store$);
   }
 
@@ -92,24 +100,23 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
       .subscribe(({ promotions, backendConfig }) => {
         const showInfo = this.supportsMaxPromotionsPerDayInfo && !this.cookieService.get(FILL_SLOT_REMINDER_COOKIE);
         if (showInfo && promotions.length === this.maxPromotionsPerDay(backendConfig)) {
-          const notification = this.popNotificationsService
-            .info(
-              this.translateService.instant(
-                "Please note: you don't <strong>have to</strong> use all your slots. It's ok to use fewer if you " +
+          const notification = this.popNotificationsService.info(
+            this.translateService.instant(
+              "Please note: you don't <strong>have to</strong> use all your slots. It's ok to use fewer if you " +
                 "don't think there are that many worthy images today."
-              ),
-              null,
-              {
-                enableHtml: true,
-                buttons: [
-                  {
-                    id: "1",
-                    title: this.translateService.instant("Don't remind me for a month"),
-                    classList: "btn btn-sm btn-secondary"
-                  }
-                ]
-              }
-            );
+            ),
+            null,
+            {
+              enableHtml: true,
+              buttons: [
+                {
+                  id: "1",
+                  title: this.translateService.instant("Don't remind me for a month"),
+                  classList: "btn btn-sm btn-secondary"
+                }
+              ]
+            }
+          );
 
           if (!!notification && !!notification.onAction) {
             notification.onAction.subscribe(() => {

@@ -1,4 +1,13 @@
-import { AcquisitionType, DataSource, ImageInterface, LicenseOptions, MouseHoverImageOptions, SubjectType, WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import {
+  AcquisitionType,
+  DataSource,
+  LicenseOptions,
+  MouseHoverImageOptions,
+  SubjectType,
+  WatermarkPositionOptions,
+  WatermarkSizeOptions
+} from "@core/interfaces/image.interface";
 
 export class ImageGenerator {
   static image(source: Partial<ImageInterface> = {}): ImageInterface {

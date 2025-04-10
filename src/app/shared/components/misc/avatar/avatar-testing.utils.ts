@@ -1,22 +1,23 @@
-import { ChangeDetectorRef, NO_ERRORS_SCHEMA, Pipe, PipeTransform, PLATFORM_ID as ANGULAR_PLATFORM_ID, Type } from "@angular/core";
+import type { PipeTransform, Type } from "@angular/core";
+import { ChangeDetectorRef, NO_ERRORS_SCHEMA, Pipe, PLATFORM_ID as ANGULAR_PLATFORM_ID } from "@angular/core";
+import { TestBed } from "@angular/core/testing";
+import { Router } from "@angular/router";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import type { CustomWindowInterface } from "@core/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { NgbActiveOffcanvas, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { CustomWindowInterface, WindowRefService } from "@core/services/window-ref.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { UserService } from "@core/services/user.service";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { Observable, of } from "rxjs";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { TestBed } from "@angular/core/testing";
-import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import { LoadingService } from "@core/services/loading.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { Router } from "@angular/router";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
 
-
-// @ts-ignore - Used only in tests
 @Pipe({ name: "translate", standalone: true })
 export class MockTranslatePipe implements PipeTransform {
   transform(value: string): string {
@@ -50,7 +51,7 @@ export function createMockOffcanvasService(): Partial<NgbOffcanvas> {
   return {
     open: jest.fn().mockImplementation((component, options) => {
       // Process beforeDismiss option if provided
-      if (options && typeof options.beforeDismiss === 'function') {
+      if (options && typeof options.beforeDismiss === "function") {
         options.beforeDismiss();
       }
       return mockOffcanvasRef;
@@ -100,7 +101,7 @@ export function createMockTranslateService(): Partial<TranslateService> {
 }
 
 class MockImage {
-  onload: Function;
+  onload: () => void;
   src: string;
 }
 
@@ -147,12 +148,8 @@ export function createMockActiveOffcanvas(): Partial<NgbActiveOffcanvas> {
  */
 export function setupAvatarTestingModule<T>(componentType: Type<T>) {
   TestBed.configureTestingModule({
-    declarations: [
-      componentType
-    ],
-    imports: [
-      MockTranslatePipe
-    ],
+    declarations: [componentType],
+    imports: [MockTranslatePipe],
     providers: [
       { provide: Store, useFactory: createMockStore },
       { provide: ChangeDetectorRef, useFactory: createMockChangeDetectorRef },

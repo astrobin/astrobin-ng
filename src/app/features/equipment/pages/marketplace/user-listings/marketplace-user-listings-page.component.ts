@@ -6,5 +6,4 @@ import { MarketplaceUserListingsBasePageComponent } from "@features/equipment/pa
   templateUrl: "../listings-base/marketplace-listings-base-page.component.html",
   styleUrls: ["../listings-base/marketplace-listings-base-page.component.scss"]
 })
-export class MarketplaceUserListingsPageComponent extends MarketplaceUserListingsBasePageComponent {
-}
+export class MarketplaceUserListingsPageComponent extends MarketplaceUserListingsBasePageComponent {}

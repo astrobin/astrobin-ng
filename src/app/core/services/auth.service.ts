@@ -1,16 +1,17 @@
+import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import { AuthServiceInterface } from "@core/services/auth.service-interface";
+import { Router } from "@angular/router";
+import type { MainState } from "@app/store/state";
+import type { AuthServiceInterface } from "@core/services/auth.service-interface";
 import { BaseService } from "@core/services/base.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { LoadingService } from "@core/services/loading.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
 import { CookieService } from "ngx-cookie";
 import { Observable, of } from "rxjs";
+
 import { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { Router } from "@angular/router";
-import { isPlatformBrowser } from "@angular/common";
 
 @Injectable({
   providedIn: "root"
@@ -27,7 +28,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly windowRefService: WindowRefService,
     public readonly router: Router,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(loadingService);
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -37,7 +38,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     return this.cookieService.get(AuthService.CLASSIC_AUTH_TOKEN_COOKIE);
   }
 
-  login(handle: string, password: string, redirectUrl?: string): Observable<string> {
+  login(handle: string, password: string): Observable<string> {
     return this.authClassicApi.login(handle, password);
   }
 

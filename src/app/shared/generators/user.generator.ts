@@ -1,6 +1,6 @@
-import { AuthGroupGenerator } from "@shared/generators/auth-group.generator";
-import { UserInterface } from "@core/interfaces/user.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
 import { AstroBinGroupGenerator } from "@shared/generators/astrobin-group.generator";
+import { AuthGroupGenerator } from "@shared/generators/auth-group.generator";
 
 export class UserGenerator {
   static user(source: Partial<UserInterface> = {}): UserInterface {
@@ -39,7 +39,7 @@ export class UserGenerator {
       marketplaceFeedback: source.marketplaceFeedback || null,
       marketplaceFeedbackCount: source.marketplaceFeedbackCount || 0,
       marketplaceListingCount: source.marketplaceListingCount || 0,
-      validSubscription: source.validSubscription || null,
+      validSubscription: source.validSubscription || null
     };
   }
 }

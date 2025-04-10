@@ -5,5 +5,4 @@ import { Component } from "@angular/core";
   templateUrl: "./migration-guidelines.component.html",
   styleUrls: ["./migration-guidelines.component.scss"]
 })
-export class MigrationGuidelinesComponent {
-}
+export class MigrationGuidelinesComponent {}

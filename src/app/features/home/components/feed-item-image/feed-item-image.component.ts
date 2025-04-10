@@ -1,20 +1,31 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild, ViewContainerRef } from "@angular/core";
-import { MainState } from "@app/store/state";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
-import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
+import type { OnChanges } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+  ViewContainerRef
+} from "@angular/core";
+import type { SafeHtml } from "@angular/platform-browser";
 import { LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import { filter, take } from "rxjs/operators";
-import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { SafeHtml } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
+import type { MainState } from "@app/store/state";
+import type { ImageInterface } from "@core/interfaces/image.interface";
 import { ContentTranslateService } from "@core/services/content-translate.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
+import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
+import { filter, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-feed-item-image",
@@ -29,7 +40,7 @@ import { ContentTranslateService } from "@core/services/content-translate.servic
             width="60"
             height="60"
             loading="lazy"
-          >
+          />
 
           <div class="feed-item-header-text">
             <div class="feed-item-header-text-1">
@@ -57,13 +68,7 @@ import { ContentTranslateService } from "@core/services/content-translate.servic
             astrobinEventStopPropagation
             class="main-image-container"
           >
-            <img
-              #image
-              [alt]="displayName"
-              [src]="feedItem.image"
-              class="main-image"
-              loading="lazy"
-            >
+            <img #image [alt]="displayName" [src]="feedItem.image" class="main-image" loading="lazy" />
           </a>
         </div>
 
@@ -73,20 +78,11 @@ import { ContentTranslateService } from "@core/services/content-translate.servic
           </div>
 
           <ng-container *ngIf="feedItem.data?.commentHtml">
-            <div
-              *ngIf="!translatedHtml"
-              [innerHTML]="feedItem.data.commentHtml"
-              class="comment-body d-md-none"
-            >
-            </div>
+            <div *ngIf="!translatedHtml" [innerHTML]="feedItem.data.commentHtml" class="comment-body d-md-none"></div>
 
-            <div
-              *ngIf="translatedHtml"
-              class="comment-body d-md-none translated-content"
-            >
+            <div *ngIf="translatedHtml" class="comment-body d-md-none translated-content">
               <small class="text-muted fst-italic d-block mb-2">{{ "Translated" | translate }}</small>
               <div [innerHTML]="translatedHtml"></div>
-
             </div>
 
             <div
@@ -130,7 +126,8 @@ import { ContentTranslateService } from "@core/services/content-translate.servic
                 [count]="feedItem.data?.likeCount"
                 [disabled]="
                   currentUserWrapper.user?.username === feedItem.actionObjectUserUsername ||
-                  currentUserWrapper.user?.username === feedItem.targetUserUsername"
+                  currentUserWrapper.user?.username === feedItem.targetUserUsername
+                "
                 [objectId]="+objectId"
                 [showLabel]="false"
                 [showLoadingIndicator]="false"
@@ -144,8 +141,8 @@ import { ContentTranslateService } from "@core/services/content-translate.servic
               <div class="d-flex align-items-center">
                 <fa-icon (click)="openComments()" icon="comment"></fa-icon>
                 <span *ngIf="feedItem.data?.commentCount" class="count">
-                {{ feedItem.data.commentCount }}
-              </span>
+                  {{ feedItem.data.commentCount }}
+                </span>
               </div>
             </div>
           </div>
@@ -153,16 +150,13 @@ import { ContentTranslateService } from "@core/services/content-translate.servic
       </div>
     </ng-container>
   `,
-  styleUrls: [
-    "../feed-item/feed-item.component.scss",
-    "./feed-item-image.component.scss"
-  ],
+  styleUrls: ["../feed-item/feed-item.component.scss", "./feed-item-image.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedItemImageComponent extends BaseComponentDirective implements OnChanges {
   @Input() feedItem: FeedItemInterface;
   @Output() readonly openImage = new EventEmitter<ImageInterface["hash"] | ImageInterface["pk"]>();
-  @ViewChild('image') imageElement: ElementRef<HTMLImageElement>;
+  @ViewChild("image") imageElement: ElementRef<HTMLImageElement>;
 
   protected contentType: number;
   protected objectId: string;
@@ -205,24 +199,28 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
   }
 
   protected openComments(): void {
-    this.store$.pipe(
-      select(selectContentTypeById, {
-        id: this._getContentType()
-      }),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      NestedCommentsModalComponent.open(this.modalService, {
-        contentType: contentType,
-        objectId: +(this._getObjectId()),
-        title: this._getDisplayName(),
-        autoStartTopLevelStrategy: NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS
+    this.store$
+      .pipe(
+        select(selectContentTypeById, {
+          id: this._getContentType()
+        }),
+        filter(contentType => !!contentType),
+        take(1)
+      )
+      .subscribe(contentType => {
+        NestedCommentsModalComponent.open(this.modalService, {
+          contentType: contentType,
+          objectId: +this._getObjectId(),
+          title: this._getDisplayName(),
+          autoStartTopLevelStrategy: NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS
+        });
       });
-    });
 
-    this.store$.dispatch(new LoadContentTypeById({
-      id: this._getContentType()
-    }));
+    this.store$.dispatch(
+      new LoadContentTypeById({
+        id: this._getContentType()
+      })
+    );
   }
 
   protected onTranslateCommentClicked(event: MouseEvent): void {
@@ -254,7 +252,7 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
           this.translating = false;
           this.changeDetectorRef.markForCheck();
         },
-        error => {
+        () => {
           this.translating = false;
           this.translatedHtml = null;
           this.changeDetectorRef.markForCheck();
@@ -290,7 +288,7 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
           this.translating = false;
           this.changeDetectorRef.markForCheck();
         },
-        error => {
+        () => {
           this.translating = false;
           this.translatedHtml = null;
           this.changeDetectorRef.markForCheck();

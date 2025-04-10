@@ -1,33 +1,35 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { DOCUMENT, isPlatformBrowser } from "@angular/common";
+import type { OnDestroy, OnInit } from "@angular/core";
+import { Component, Inject, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { TransferState } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
-import { MainState } from "@app/store/state";
+import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
+import type { MainState } from "@app/store/state";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { CookieConsentService } from "@core/services/cookie-consent/cookie-consent.service";
+import { IdleService } from "@core/services/idle.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { ThemeService } from "@core/services/theme.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { VersionCheckService } from "@core/services/version-check.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { CookieConsentEnum } from "@core/types/cookie-consent.enum";
+import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
+import { GetUnreadCount } from "@features/notifications/store/notifications.actions";
+import { NgbModal, NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ThemeService } from "@core/services/theme.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
-import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
-import { catchError, filter, map, switchMap, take } from "rxjs/operators";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { CookieConsentService } from "@core/services/cookie-consent/cookie-consent.service";
-import { CookieConsentEnum } from "@core/types/cookie-consent.enum";
-import { Observable, of, Subscription, timer } from "rxjs";
-import { DOCUMENT, isPlatformBrowser } from "@angular/common";
-import { NgbModal, NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
-import { TransferState } from "@angular/platform-browser";
-import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
-import { LoadingService } from "@core/services/loading.service";
-import { TitleService } from "@core/services/title/title.service";
-import { VersionCheckService } from "@core/services/version-check.service";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
-import { GetUnreadCount } from "@features/notifications/store/notifications.actions";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { IdleService } from "@core/services/idle.service";
+import type { Observable, Subscription } from "rxjs";
+import { of, timer } from "rxjs";
+import { catchError, filter, map, switchMap, take } from "rxjs/operators";
 
-declare var dataLayer: any;
-declare var gtag: any;
+declare let dataLayer: any;
+declare let gtag: any;
 
 @Component({
   selector: "astrobin-root",
@@ -124,13 +126,16 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
         this.setMetaTags(event.urlAfterRedirects);
 
         if (this._isBrowser) {
-          this.utilsService.delay(500).pipe(
-            switchMap(() => this.currentUser$),
-            filter(currentUser => !!currentUser),
-            take(1)
-          ).subscribe(() => {
-            this.store$.dispatch(new GetUnreadCount());
-          });
+          this.utilsService
+            .delay(500)
+            .pipe(
+              switchMap(() => this.currentUser$),
+              filter(currentUser => !!currentUser),
+              take(1)
+            )
+            .subscribe(() => {
+              this.store$.dispatch(new GetUnreadCount());
+            });
         }
 
         // Update previous URL for next navigation
@@ -174,7 +179,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
       "//" +
       this.windowRefService.nativeWindow.location.host +
       url;
-    let link: HTMLLinkElement = this.document.createElement("link");
+    const link: HTMLLinkElement = this.document.createElement("link");
 
     link.setAttribute("rel", "canonical");
     this.document.head.appendChild(link);
@@ -201,19 +206,21 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
       return;
     }
 
-    this.currentUser$.pipe(
-      filter(currentUser => !!currentUser),
-      take(1)
-    ).subscribe(() => {
-      const url = this.windowRefService.getCurrentUrl();
+    this.currentUser$
+      .pipe(
+        filter(currentUser => !!currentUser),
+        take(1)
+      )
+      .subscribe(() => {
+        const url = this.windowRefService.getCurrentUrl();
 
-      if (!!url && url.searchParams.get("utm_medium") === "email") {
-        const fromUserPk = url.searchParams.get("from_user");
-        this.notificationApiService
-          .markAsReadByPathAndUser(url.pathname, fromUserPk !== "None" ? +fromUserPk : null)
-          .subscribe();
-      }
-    });
+        if (!!url && url.searchParams.get("utm_medium") === "email") {
+          const fromUserPk = url.searchParams.get("from_user");
+          this.notificationApiService
+            .markAsReadByPathAndUser(url.pathname, fromUserPk !== "None" ? +fromUserPk : null)
+            .subscribe();
+        }
+      });
   }
 
   private _getUrlWithoutFragment(url: string): string {
@@ -238,7 +245,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
         filter(() => !this.idleService.isUserIdle()),
         switchMap(() =>
           this.jsonApiService.serviceWorkerEnabled().pipe(
-            catchError((err) => {
+            catchError(err => {
               console.error("Kill switch API error:", err);
               return of(null); // Emit null so we can filter it later.
             })
@@ -263,7 +270,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     }
 
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.getRegistration().then((registration) => {
+      navigator.serviceWorker.getRegistration().then(registration => {
         if (registration) {
           registration.unregister().then(() => {
             console.log("Service Worker unregistered");
@@ -279,7 +286,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     }
 
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.getRegistration().then((registration) => {
+      navigator.serviceWorker.getRegistration().then(registration => {
         if (!registration) {
           navigator.serviceWorker
             .register("/ngsw-worker.js")
@@ -287,7 +294,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
               console.log("Service Worker registered");
               this.versionCheckService.checkForUpdates();
             })
-            .catch((err) => {
+            .catch(err => {
               console.error("Service Worker registration failed:", err);
             });
         } else {
@@ -318,7 +325,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
             this.renderer,
             () => {
               this._initGtag();
-            });
+            }
+          );
         }
       });
     }
@@ -335,10 +343,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
       return;
     }
 
-    // @ts-ignore
     gtag("js", new Date());
 
-    // @ts-ignore
     gtag("config", Constants.GOOGLE_ANALYTICS_ID, {
       linker: {
         domains: [
@@ -355,7 +361,6 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
       }
     });
 
-    // @ts-ignore
     gtag("config", "AW-1062298010");
   }
 }

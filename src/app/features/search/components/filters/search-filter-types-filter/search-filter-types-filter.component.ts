@@ -1,15 +1,16 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { FilterType } from "@features/equipment/types/filter.interface";
-import { FilterService } from "@features/equipment/services/filter.service";
+import type { SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { FilterService } from "@features/equipment/services/filter.service";
+import { FilterType } from "@features/equipment/types/filter.interface";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-search-filter-types-filter.search-filter-component",
@@ -75,9 +76,7 @@ export class SearchFilterTypesFilterComponent extends SearchBaseFilterComponent 
     if (filterTypes.length === 1) {
       renderedValue = this.filterService.humanizeType(filterTypes[0]);
     } else {
-      renderedValue = filterTypes
-        .map(filterType => this.filterService.humanizeType(filterType))
-        .join(", ");
+      renderedValue = filterTypes.map(filterType => this.filterService.humanizeType(filterType)).join(", ");
     }
 
     return this.domSanitizer.bypassSecurityTrustHtml(renderedValue);

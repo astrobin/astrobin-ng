@@ -1,8 +1,9 @@
-import { TestBed } from "@angular/core/testing";
-import { BBCodeService } from "./bbcode.service";
 import { PLATFORM_ID } from "@angular/core";
-import { WindowRefService } from "./window-ref.service";
+import { TestBed } from "@angular/core/testing";
+
+import { BBCodeService } from "./bbcode.service";
 import { CKEditorService } from "./ckeditor.service";
+import { WindowRefService } from "./window-ref.service";
 
 describe("BBCodeService", () => {
   let service: BBCodeService;
@@ -37,9 +38,9 @@ describe("BBCodeService", () => {
 
   describe("stripBBCode", () => {
     it("should handle empty or null input", () => {
-      expect(service.stripBBCode(null)).toBe('');
-      expect(service.stripBBCode('')).toBe('');
-      expect(service.stripBBCode(undefined)).toBe('');
+      expect(service.stripBBCode(null)).toBe("");
+      expect(service.stripBBCode("")).toBe("");
+      expect(service.stripBBCode(undefined)).toBe("");
     });
 
     it("should strip simple BBCode tags", () => {
@@ -92,7 +93,7 @@ With formatting
 - Item 2`;
 
       // Normalize whitespace for comparison
-      const normalize = (str: string) => str.replace(/\s+/g, ' ').trim();
+      const normalize = (str: string) => str.replace(/\s+/g, " ").trim();
       expect(normalize(service.stripBBCode(input))).toBe(normalize(expected));
     });
   });
@@ -100,11 +101,7 @@ With formatting
   describe("transformBBCodeToHtml", () => {
     it("should return original content on server side", async () => {
       // Create a new instance with server platform ID
-      const serverService = new BBCodeService(
-        "server" as any,
-        windowRefServiceMock,
-        ckEditorServiceMock
-      );
+      const serverService = new BBCodeService("server" as any, windowRefServiceMock, ckEditorServiceMock);
 
       const input = "[b]Test[/b]";
       const result = await serverService.transformBBCodeToHtml(input);

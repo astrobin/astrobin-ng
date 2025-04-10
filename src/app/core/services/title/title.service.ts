@@ -1,19 +1,23 @@
+import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import { Meta, MetaDefinition, Title } from "@angular/platform-browser";
+import type { MetaDefinition } from "@angular/platform-browser";
+import { Meta, Title } from "@angular/platform-browser";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { TitleServiceInterface } from "@core/services/title/title.service-interface";
-import { isPlatformBrowser } from "@angular/common";
+import type { TitleServiceInterface } from "@core/services/title/title.service-interface";
 
 @Injectable({
   providedIn: "root"
 })
 export class TitleService extends BaseService implements TitleServiceInterface {
+  // Store references to event handlers so we can properly remove them
+  private _wheelHandler: ((e: WheelEvent) => void) | null = null;
+
   constructor(
     public readonly loadingService: LoadingService,
     public readonly titleService: Title,
     public readonly meta: Meta,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: object
   ) {
     super(loadingService);
   }
@@ -58,27 +62,24 @@ export class TitleService extends BaseService implements TitleServiceInterface {
 
     if (isPlatformBrowser(this.platformId)) {
       // Prevent multi-touch gestures (pinch to zoom)
-      document.addEventListener('touchmove', this._preventDefault, { passive: false });
-      
+      document.addEventListener("touchmove", this._preventDefault, { passive: false });
+
       // Add CSS to html element to disable pinch zoom (Safari and mobile browsers)
-      const htmlElement = document.querySelector('html');
+      const htmlElement = document.querySelector("html");
       if (htmlElement) {
-        htmlElement.style.setProperty('touch-action', 'none');
+        htmlElement.style.setProperty("touch-action", "none");
       }
-      
+
       // Firefox touchpad pinch to zoom can also happen with ctrl+wheel events
       this._wheelHandler = (e: WheelEvent) => {
         if (e.ctrlKey) {
           e.preventDefault();
         }
       };
-      document.addEventListener('wheel', this._wheelHandler, { passive: false });
+      document.addEventListener("wheel", this._wheelHandler, { passive: false });
     }
   }
 
-  // Store references to event handlers so we can properly remove them
-  private _wheelHandler: ((e: WheelEvent) => void) | null = null;
-  
   public enablePageZoom() {
     // Reset viewport meta tag to default
     this.updateMetaTag({
@@ -88,18 +89,18 @@ export class TitleService extends BaseService implements TitleServiceInterface {
 
     if (isPlatformBrowser(this.platformId)) {
       // Remove touch event listener
-      document.removeEventListener('touchmove', this._preventDefault);
-      
+      document.removeEventListener("touchmove", this._preventDefault);
+
       // Remove wheel event listener if it exists
       if (this._wheelHandler) {
-        document.removeEventListener('wheel', this._wheelHandler);
+        document.removeEventListener("wheel", this._wheelHandler);
         this._wheelHandler = null;
       }
-      
+
       // Reset touch-action on html element
-      const htmlElement = document.querySelector('html');
+      const htmlElement = document.querySelector("html");
       if (htmlElement) {
-        htmlElement.style.removeProperty('touch-action');
+        htmlElement.style.removeProperty("touch-action");
       }
     }
   }

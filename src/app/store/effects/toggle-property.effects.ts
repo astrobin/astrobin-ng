@@ -1,27 +1,31 @@
 import { Injectable } from "@angular/core";
-import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { MainState } from "@app/store/state";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { LoadingService } from "@core/services/loading.service";
-import { Observable, of } from "rxjs";
-import { catchError, map, mergeMap, tap } from "rxjs/operators";
-import {
+import type { All } from "@app/store/actions/app.actions";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import type {
   CreateToggleProperty,
+  DeleteToggleProperty,
+  LoadToggleProperties,
+  LoadToggleProperty
+} from "@app/store/actions/toggle-property.actions";
+import {
   CreateTogglePropertyFailure,
   CreateTogglePropertySuccess,
-  DeleteToggleProperty,
   DeleteTogglePropertyFailure,
   DeleteTogglePropertySuccess,
-  LoadToggleProperties,
   LoadTogglePropertiesFailure,
   LoadTogglePropertiesSuccess,
-  LoadToggleProperty,
   LoadTogglePropertyFailure,
   LoadTogglePropertySuccess
 } from "@app/store/actions/toggle-property.actions";
+import type { MainState } from "@app/store/state";
+import type { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
+import { catchError, map, mergeMap, tap } from "rxjs/operators";
 
 @Injectable()
 export class TogglePropertyEffects {
@@ -32,9 +36,10 @@ export class TogglePropertyEffects {
       tap(() => this.loadingService.setLoading(true)),
       mergeMap((toggleProperty: Partial<TogglePropertyInterface>) =>
         this.commonApiService.getToggleProperty(toggleProperty).pipe(
-          map(createdToggleProperty => createdToggleProperty !== null
-            ? new LoadTogglePropertySuccess({ toggleProperty: createdToggleProperty })
-            : new LoadTogglePropertyFailure({ toggleProperty })
+          map(createdToggleProperty =>
+            createdToggleProperty !== null
+              ? new LoadTogglePropertySuccess({ toggleProperty: createdToggleProperty })
+              : new LoadTogglePropertyFailure({ toggleProperty })
           ),
           catchError(() => of(new LoadTogglePropertyFailure({ toggleProperty })))
         )
@@ -59,10 +64,9 @@ export class TogglePropertyEffects {
       this.actions$.pipe(
         ofType(AppActionTypes.LOAD_TOGGLE_PROPERTY_FAILURE),
         map(() => {
-            this.loadingService.setLoading(false);
-            return void 0;
-          }
-        )
+          this.loadingService.setLoading(false);
+          return void 0;
+        })
       ),
     { dispatch: false }
   );
@@ -116,7 +120,7 @@ export class TogglePropertyEffects {
       map((action: CreateToggleProperty) => action.payload.toggleProperty),
       mergeMap((toggleProperty: Partial<TogglePropertyInterface>) =>
         this.commonApiService.createToggleProperty(toggleProperty).pipe(
-          map(toggleProperty => new CreateTogglePropertySuccess({ toggleProperty })),
+          map(tp => new CreateTogglePropertySuccess({ toggleProperty: tp })),
           catchError(() => of(new CreateTogglePropertyFailure({ toggleProperty })))
         )
       )
@@ -124,22 +128,24 @@ export class TogglePropertyEffects {
   );
 
   CreateTogglePropertySuccess: Observable<void> = createEffect(
-    () => this.actions$.pipe(
-      ofType(AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS),
-      map(() => {
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS),
+        map(() => {
           return void 0;
-        }
-      )),
+        })
+      ),
     { dispatch: false }
   );
 
   CreateTogglePropertyFailure: Observable<void> = createEffect(
-    () => this.actions$.pipe(
-      ofType(AppActionTypes.CREATE_TOGGLE_PROPERTY_FAILURE),
-      map(() => {
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.CREATE_TOGGLE_PROPERTY_FAILURE),
+        map(() => {
           return void 0;
-        }
-      )),
+        })
+      ),
     { dispatch: false }
   );
 
@@ -157,22 +163,24 @@ export class TogglePropertyEffects {
   );
 
   DeleteTogglePropertySuccess: Observable<void> = createEffect(
-    () => this.actions$.pipe(
-      ofType(AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS),
-      map(() => {
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS),
+        map(() => {
           return void 0;
-        }
-      )),
+        })
+      ),
     { dispatch: false }
   );
 
   DeleteTogglePropertyFailure: Observable<void> = createEffect(
-    () => this.actions$.pipe(
-      ofType(AppActionTypes.DELETE_TOGGLE_PROPERTY_FAILURE),
-      map(() => {
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_TOGGLE_PROPERTY_FAILURE),
+        map(() => {
           return void 0;
-        }
-      )),
+        })
+      ),
     { dispatch: false }
   );
 
@@ -181,6 +189,5 @@ export class TogglePropertyEffects {
     public readonly actions$: Actions<All>,
     public readonly loadingService: LoadingService,
     public readonly commonApiService: CommonApiService
-  ) {
-  }
+  ) {}
 }

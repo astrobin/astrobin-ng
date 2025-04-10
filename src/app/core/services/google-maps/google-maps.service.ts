@@ -1,29 +1,29 @@
+import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { google } from "@google/maps";
-import { isPlatformBrowser } from "@angular/common";
+import type { google } from "@google/maps";
 
-// @ts-ignore
 type maps = google.maps;
 
 @Injectable({
   providedIn: "root"
 })
 export class GoogleMapsService extends BaseService {
-  private _maps: maps;
   private _loaded = false;
   private readonly _isBrowser: boolean;
 
   public constructor(
     public readonly loadingService: LoadingService,
     public readonly windowRef: WindowRefService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: object
   ) {
     super(loadingService);
     this._isBrowser = isPlatformBrowser(this.platformId);
   }
+
+  private _maps: maps;
 
   get maps(): maps {
     return this._maps;
@@ -41,7 +41,7 @@ export class GoogleMapsService extends BaseService {
         return;
       }
 
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD-yl2h4BvziVebLTTawv9a6DKFky5O2eU`;
       script.onload = () => {
         if ((this.windowRef.nativeWindow as any)?.google !== undefined) {
@@ -52,7 +52,7 @@ export class GoogleMapsService extends BaseService {
           reject("Google Maps API not available");
         }
       };
-      script.onerror = (error) => reject(error);
+      script.onerror = error => reject(error);
       document.body.appendChild(script);
     });
   }
@@ -66,25 +66,25 @@ export class GoogleMapsService extends BaseService {
   }
 
   getCityFromAddressComponent(addressComponents: any): string {
-    for (let component of addressComponents) {
+    for (const component of addressComponents) {
       if (component.types.includes("locality")) {
         return component.long_name;
       }
     }
 
-    for (let component of addressComponents) {
+    for (const component of addressComponents) {
       if (component.types.includes("postal_town")) {
         return component.long_name;
       }
     }
 
-    for (let component of addressComponents) {
+    for (const component of addressComponents) {
       if (component.types.includes("administrative_area_level_2")) {
         return component.long_name;
       }
     }
 
-    for (let component of addressComponents) {
+    for (const component of addressComponents) {
       if (component.types.includes("sublocality")) {
         return component.long_name;
       }
@@ -94,13 +94,13 @@ export class GoogleMapsService extends BaseService {
   }
 
   getRegionFromAddressComponent(addressComponents: any): string {
-    for (let component of addressComponents) {
+    for (const component of addressComponents) {
       if (component.types.includes("administrative_area_level_1")) {
         return component.short_name;
       }
     }
 
-    for (let component of addressComponents) {
+    for (const component of addressComponents) {
       if (component.types.includes("administrative_area_level_2")) {
         return component.short_name;
       }
@@ -110,7 +110,7 @@ export class GoogleMapsService extends BaseService {
   }
 
   getCountryFromAddressComponent(addressComponents: any): string {
-    for (let component of addressComponents) {
+    for (const component of addressComponents) {
       if (component.types.includes("country")) {
         return component.short_name;
       }

@@ -1,25 +1,29 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { TitleService } from "@core/services/title/title.service";
+import type { OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Actions } from "@ngrx/effects";
-import { Observable } from "rxjs";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { tap } from "rxjs/operators";
-import { LoadBrand } from "@features/equipment/store/equipment.actions";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CookieService } from "ngx-cookie";
-import { LoadingService } from "@core/services/loading.service";
-import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import type { MainState } from "@app/store/state";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { DeviceService } from "@core/services/device.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { LoadingService } from "@core/services/loading.service";
+import { TitleService } from "@core/services/title/title.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { LoadBrand } from "@features/equipment/store/equipment.actions";
+import type { BrandInterface } from "@features/equipment/types/brand.interface";
+import type {
+  EquipmentItemBaseInterface,
+  EquipmentItemType
+} from "@features/equipment/types/equipment-item-base.interface";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { CookieService } from "ngx-cookie";
+import type { Observable } from "rxjs";
+import { tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-equipment-pending-review-explorer",
@@ -42,7 +46,7 @@ export class FollowedExplorerComponent extends ExplorerBaseComponent implements 
     public readonly cookieService: CookieService,
     public readonly loadingService: LoadingService,
     public readonly changeDetectionRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly deviceService: DeviceService,
     public readonly offcanvasService: NgbOffcanvas

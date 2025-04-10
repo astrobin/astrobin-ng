@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
+import type { MainState } from "@app/store/state";
 import { ImageInterface } from "@core/interfaces/image.interface";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
@@ -27,12 +27,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
     </div>
 
     <ng-template #iotdInfoLinkTemplate>
-      <a
-        href="https://welcome.astrobin.com/iotd"
-        class="ms-2 no-external-link-icon"
-        rel="noopener"
-        target="_blank"
-      >
+      <a href="https://welcome.astrobin.com/iotd" class="ms-2 no-external-link-icon" rel="noopener" target="_blank">
         <fa-icon icon="info-circle"></fa-icon>
       </a>
     </ng-template>
@@ -43,9 +38,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 export class ImageViewerIotdBannerComponent extends BaseComponentDirective {
   @Input() image: ImageInterface;
 
-  public constructor(
-    public readonly store$: Store<MainState>
-  ) {
+  public constructor(public readonly store$: Store<MainState>) {
     super(store$);
   }
 }

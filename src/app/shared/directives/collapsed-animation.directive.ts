@@ -1,5 +1,6 @@
-import { AfterViewInit, ChangeDetectorRef, Directive, ElementRef, Inject, Input, OnChanges, OnDestroy, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
+import type { AfterViewInit, OnChanges, OnDestroy } from "@angular/core";
+import { ChangeDetectorRef, Directive, ElementRef, Inject, Input, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
 
 const ANIMATION_DURATION = 150;
@@ -24,7 +25,7 @@ export class CollapseAnimationDirective implements AfterViewInit, OnChanges, OnD
     public readonly elementRef: ElementRef,
     public readonly renderer: Renderer2,
     public readonly changeDetectorRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly utilsService: UtilsService
   ) {}
 
@@ -59,7 +60,7 @@ export class CollapseAnimationDirective implements AfterViewInit, OnChanges, OnD
         this.changeDetectorRef.markForCheck();
       });
     } catch (e) {
-      console.error('Failed to initialize ResizeObserver:', e);
+      console.error("Failed to initialize ResizeObserver:", e);
     }
   }
 
@@ -92,11 +93,12 @@ export class CollapseAnimationDirective implements AfterViewInit, OnChanges, OnD
   }
 
   private _updateContentHeight() {
-    if (!this._initialized || this.collapsed) return; // Prevent updates before setup or when collapsed
+    if (!this._initialized || this.collapsed) {
+      return;
+    } // Prevent updates before setup or when collapsed
     this._contentHeight = this.elementRef.nativeElement.scrollHeight;
     this._updateStyles();
   }
-
 
   private _updateStyles() {
     const element = this.elementRef.nativeElement;
@@ -126,5 +128,4 @@ export class CollapseAnimationDirective implements AfterViewInit, OnChanges, OnD
       this.renderer.setStyle(element, "margin-bottom", "0");
     }
   }
-
 }

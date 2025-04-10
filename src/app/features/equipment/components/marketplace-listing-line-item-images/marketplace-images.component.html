@@ -1,7 +1,7 @@
 <div *ngIf="sliderImages.length > 0" class="d-flex flex-wrap flex-row gap-2">
   <img
-    *ngFor="let image of sliderImages; let i = index"
     (click)="openImage(i)"
+    *ngFor="let image of sliderImages; let i = index"
     [alt]="image.caption"
     [src]="image.thumb"
     height="150"

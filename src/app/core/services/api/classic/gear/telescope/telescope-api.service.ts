@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { TelescopeInterface } from "@core/interfaces/telescope.interface";
+import type { TelescopeInterface } from "@core/interfaces/telescope.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { TelescopeApiServiceInterface } from "@core/services/api/classic/gear/telescope/telescope-api.service-interface";
+import type { TelescopeApiServiceInterface } from "@core/services/api/classic/gear/telescope/telescope-api.service-interface";
 import { LoadingService } from "@core/services/loading.service";
-import { Observable } from "rxjs";
+import type { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

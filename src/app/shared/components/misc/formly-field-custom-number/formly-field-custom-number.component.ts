@@ -5,5 +5,4 @@ import { FieldType } from "@ngx-formly/core";
   selector: "astrobin-formly-field-custom-number",
   templateUrl: "./formly-field-custom-number.component.html"
 })
-export class FormlyFieldCustomNumberComponent extends FieldType {
-}
+export class FormlyFieldCustomNumberComponent extends FieldType {}

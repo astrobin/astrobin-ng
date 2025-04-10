@@ -1,1 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" xmlns:v="https://vecta.io/nano"><g stroke-width="3"><circle cx="100" cy="100" r="98" fill="#444" stroke="#fff" opacity=".2"/><circle cx="100" cy="100" r="95" fill="#222" stroke="#000"/></g><path fill="#f9f9f9" d="M116.162 92.587L100 83.968l-16.162 8.62L100 33.327z"/><g stroke="#fff"><path d="M100 10v10m0 160v10m-90-90h10m160 0h10" stroke-width="2"/><g stroke-width="1"><path d="M140 26l-6 12m40 22l-12 6m12 74l-12-6m-22 40l-6-12m-74 12l6-12m-40-22l12-6"/><path d="M26 60l12 6m22-40l6 12"/></g></g><path fill="#f9f9f9" d="M100 166.674l16.162-59.261-16.162 8.62-16.162-8.62z"/><circle cx="100" cy="99.543" r="7.846" fill="#fff" stroke="#aaa" stroke-width="1.308"/><path fill="red" d="M100 82.457l-15 8 15-55 15 55z"/><path d="M100 82.457l-15 8 15-55z" fill="maroon"/><path fill="#b3b3b3" d="M115 109.543l-15 8-15-8 15 55z"/><path d="M100 117.543l-15-8 15 55z" fill="#999"/></svg>
+<svg height="200" width="200" xmlns="http://www.w3.org/2000/svg">
+  <g stroke-width="3">
+    <circle cx="100" cy="100" fill="#444" opacity=".2" r="98" stroke="#fff" />
+    <circle cx="100" cy="100" fill="#222" r="95" stroke="#000" />
+  </g>
+  <path d="M116.162 92.587L100 83.968l-16.162 8.62L100 33.327z" fill="#f9f9f9" />
+  <g stroke="#fff">
+    <path d="M100 10v10m0 160v10m-90-90h10m160 0h10" stroke-width="2" />
+    <g stroke-width="1">
+      <path d="M140 26l-6 12m40 22l-12 6m12 74l-12-6m-22 40l-6-12m-74 12l6-12m-40-22l12-6" />
+      <path d="M26 60l12 6m22-40l6 12" />
+    </g>
+  </g>
+  <path d="M100 166.674l16.162-59.261-16.162 8.62-16.162-8.62z" fill="#f9f9f9" />
+  <circle cx="100" cy="99.543" fill="#fff" r="7.846" stroke="#aaa" stroke-width="1.308" />
+  <path d="M100 82.457l-15 8 15-55 15 55z" fill="red" />
+  <path d="M100 82.457l-15 8 15-55z" fill="maroon" />
+  <path d="M115 109.543l-15 8-15-8 15 55z" fill="#b3b3b3" />
+  <path d="M100 117.543l-15-8 15 55z" fill="#999" />
+</svg>

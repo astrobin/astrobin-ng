@@ -1,11 +1,12 @@
-import { Inject, Injectable, OnDestroy, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import type { OnDestroy } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { LoadToggleProperties } from "@app/store/actions/toggle-property.actions";
+import type { MainState } from "@app/store/state";
+import type { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 import { Store } from "@ngrx/store";
 import { Observable, Subject } from "rxjs";
 import { debounceTime, takeUntil } from "rxjs/operators";
-import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
-import { MainState } from "@app/store/state";
-import { LoadToggleProperties } from "@app/store/actions/toggle-property.actions";
-import { isPlatformBrowser } from "@angular/common";
 
 interface PendingCheck {
   propertyType: TogglePropertyInterface["propertyType"];
@@ -24,10 +25,7 @@ export class TogglePropertyBatchService implements OnDestroy {
   private _batchSubject = new Subject<void>();
   private readonly _BATCH_DELAY = 500; // ms to wait before sending batch
 
-  constructor(
-    private store$: Store<MainState>,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {
+  constructor(private store$: Store<MainState>, @Inject(PLATFORM_ID) private platformId: object) {
     if (isPlatformBrowser(this.platformId)) {
       this._initBatchProcessing();
     }
@@ -65,20 +63,12 @@ export class TogglePropertyBatchService implements OnDestroy {
   }
 
   private _initBatchProcessing(): void {
-    this._batchSubject.pipe(
-      debounceTime(this._BATCH_DELAY),
-      takeUntil(this._destroyed$)
-    ).subscribe(() => {
+    this._batchSubject.pipe(debounceTime(this._BATCH_DELAY), takeUntil(this._destroyed$)).subscribe(() => {
       this._processBatch();
     });
   }
 
-  private _createKey(
-    propertyType: string,
-    userId: number,
-    objectId: number,
-    contentType: string
-  ): string {
+  private _createKey(propertyType: string, userId: number, objectId: number, contentType: string): string {
     return `${propertyType}-${userId}-${objectId}-${contentType}`;
   }
 
@@ -99,15 +89,17 @@ export class TogglePropertyBatchService implements OnDestroy {
     }
 
     // Dispatch actions for each group
-    for (const [_, checks] of groups) {
-      this.store$.dispatch(new LoadToggleProperties({
-        toggleProperties: checks.map(check => ({
-          propertyType: check.propertyType,
-          user: check.userId,
-          objectId: check.objectId,
-          contentType: check.contentType
-        }))
-      }));
+    for (const [, checks] of groups) {
+      this.store$.dispatch(
+        new LoadToggleProperties({
+          toggleProperties: checks.map(check => ({
+            propertyType: check.propertyType,
+            user: check.userId,
+            objectId: check.objectId,
+            contentType: check.contentType
+          }))
+        })
+      );
     }
 
     // Clear pending checks after dispatching

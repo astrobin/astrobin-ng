@@ -6,18 +6,20 @@
     id="c{{ comment.id }}"
   >
     <div class="avatar">
-      <img [src]="avatarUrl" alt="">
+      <img [src]="avatarUrl" alt="" />
     </div>
 
     <div class="nested-comment-content">
       <div class="meta d-flex justify-content-between align-items-center">
         <div>
           <a
+            (click)="
+              userService.openGallery(
+                comment.authorUsername,
+                !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+              )
+            "
             *ngIf="!comment.deleted"
-            (click)="userService.openGallery(
-              comment.authorUsername,
-              !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-           )"
             [href]="userGalleryUrl"
             astrobinEventPreventDefault
             class="username"
@@ -26,47 +28,40 @@
           </a>
 
           <span *ngIf="comment.deleted" class="username">
-          {{ "(deleted)" | translate }}
-        </span>
+            {{ "(deleted)" | translate }}
+          </span>
 
           <span [attr.data-test-value]="comment.created" class="timestamp">
-          {{ comment.created | localDate | timeago: true }}
-        </span>
+            {{ comment.created | localDate | timeago : true }}
+          </span>
 
           <astrobin-toggle-property
-            *ngIf="
-            !comment.pendingModeration &&
-            !comment.deleted &&
-            commentContentType
-          "
+            *ngIf="!comment.pendingModeration && !comment.deleted && commentContentType"
             [contentType]="commentContentType.id"
-            [disabled]="
-            !currentUserWrapper.user?.id ||
-            currentUserWrapper.user.id === comment.author
-          "
-            [objectId]="comment.id"
             [count]="comment.likes.length"
-            [userId]="currentUserWrapper.user?.id"
+            [disabled]="!currentUserWrapper.user?.id || currentUserWrapper.user.id === comment.author"
+            [objectId]="comment.id"
             [showLabel]="false"
             [toggled]="comment.likes.includes(currentUserWrapper.user?.id)"
+            [userId]="currentUserWrapper.user?.id"
             btnClass="btn btn-sm btn-link link-secondary"
             class="btn-no-block"
             propertyType="like"
           ></astrobin-toggle-property>
         </div>
 
-        <div ngbDropdown class="d-inline-block">
+        <div class="d-inline-block" ngbDropdown>
           <button
-            class="btn btn-link btn-sm btn-no-block text-muted no-toggle"
             [attr.id]="'dropdown-comment-' + comment.id"
+            class="btn btn-link btn-sm btn-no-block text-muted no-toggle"
             ngbDropdownToggle
           >
             <fa-icon icon="ellipsis-v"></fa-icon>
           </button>
-          <div ngbDropdownMenu [attr.aria-labelledby]="'dropdown-comment-' + comment.id">
+          <div [attr.aria-labelledby]="'dropdown-comment-' + comment.id" ngbDropdownMenu>
             <button
-              *ngIf="!comment.pendingModeration && !comment.deleted"
               (click)="onShareClicked($event)"
+              *ngIf="!comment.pendingModeration && !comment.deleted"
               class="dropdown-item"
             >
               {{ "Share" | translate }}
@@ -74,10 +69,7 @@
 
             <button
               (click)="onEditClicked($event)"
-              *ngIf="
-            !comment.deleted &&
-            currentUserWrapper.user?.id === comment.author
-          "
+              *ngIf="!comment.deleted && currentUserWrapper.user?.id === comment.author"
               [hidden]="showReplyForm"
               class="dropdown-item"
             >
@@ -87,11 +79,7 @@
         </div>
       </div>
 
-      <div
-        *ngIf="!comment.pendingModeration"
-        class="text"
-        [class.translated-content]="translated"
-      >
+      <div *ngIf="!comment.pendingModeration" [class.translated-content]="translated" class="text">
         <small *ngIf="translated" class="text-muted fst-italic d-block mb-2">{{ "Translated" | translate }}</small>
         <div [innerHTML]="html"></div>
       </div>
@@ -122,12 +110,13 @@
 
       <div class="actions">
         <button
+          (click)="onTranslateClicked($event)"
           *ngIf="
             !translated &&
             !!currentUserWrapper.user &&
-            comment.detectedLanguage && comment.detectedLanguage !== translateService.currentLang
+            comment.detectedLanguage &&
+            comment.detectedLanguage !== translateService.currentLang
           "
-          (click)="onTranslateClicked($event)"
           [class.loading]="translating"
           class="btn btn-link btn-sm btn-no-block text-muted translate"
         >
@@ -136,8 +125,8 @@
         </button>
 
         <button
-          *ngIf="translated"
           (click)="onSeeOriginalClicked($event)"
+          *ngIf="translated"
           class="btn btn-link btn-sm btn-no-block text-muted translated"
         >
           <fa-icon icon="language"></fa-icon>
@@ -149,18 +138,10 @@
           *ngIf="
             !comment.pendingModeration &&
             !comment.deleted &&
-            showReplyButton && (
-              (
-                currentUserWrapper.user?.id !== comment.author &&
-                (
-                  !restrictReplyToUserId ||
-                  (restrictReplyToUserId && restrictReplyToUserId === comment.author)
-                )
-              ) ||
-              (
-                currentUserWrapper.user?.id === comment.author && allowSelfReply
-              )
-            )
+            showReplyButton &&
+            ((currentUserWrapper.user?.id !== comment.author &&
+              (!restrictReplyToUserId || (restrictReplyToUserId && restrictReplyToUserId === comment.author))) ||
+              (currentUserWrapper.user?.id === comment.author && allowSelfReply))
           "
           [hidden]="showReplyForm"
           class="btn btn-sm btn-no-block btn-link reply"

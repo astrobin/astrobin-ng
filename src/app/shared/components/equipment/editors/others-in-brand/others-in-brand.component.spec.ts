@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 
 import { OthersInBrandComponent } from "./others-in-brand.component";
-import { MockBuilder } from "ng-mocks";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { AppModule } from "@app/app.module";
 
 describe("OthersInBrandComponent", () => {
   let component: OthersInBrandComponent;

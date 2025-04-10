@@ -1,24 +1,22 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from "@angular/core";
-import { FieldType } from "@ngx-formly/core";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType,
-  EquipmentItemUsageType
-} from "@features/equipment/types/equipment-item-base.interface";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
+import type { OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, Output } from "@angular/core";
+import type { MainState } from "@app/store/state";
+import { UtilsService } from "@core/services/utils/utils.service";
+import type { FindRecentlyUsedEquipmentItemsSuccess } from "@features/equipment/store/equipment.actions";
 import {
   EquipmentActionTypes,
   FindRecentlyUsedEquipmentItems,
-  FindRecentlyUsedEquipmentItemsSuccess,
   ItemBrowserAdd
 } from "@features/equipment/store/equipment.actions";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { Actions, ofType } from "@ngrx/effects";
-import { filter, map, take } from "rxjs/operators";
+import { Store } from "@ngrx/store";
+import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
+import { filter, map, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-formly-field-equipment-item-browser",
@@ -37,9 +35,7 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
   recentLoaded = false;
   recentUsed = false;
 
-  noRecentMessage: string = this.translateService.instant(
-    "You don't have any recently used items in this class."
-  );
+  noRecentMessage: string = this.translateService.instant("You don't have any recently used items in this class.");
 
   allRecentUsedMessage: string = this.translateService.instant(
     "All your recent items of this equipment class are already used above."
@@ -115,12 +111,14 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
   }
 
   quickAddItem(item: EquipmentItemBaseInterface) {
-    this.store$.dispatch(new ItemBrowserAdd({
-      type: this.props.itemType,
-      usageType: this.props.usageType,
-      item,
-      componentId: this.props.componentId
-    }));
+    this.store$.dispatch(
+      new ItemBrowserAdd({
+        type: this.props.itemType,
+        usageType: this.props.usageType,
+        item,
+        componentId: this.props.componentId
+      })
+    );
     this.recentUsed = true;
   }
 

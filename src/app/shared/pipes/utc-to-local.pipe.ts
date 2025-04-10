@@ -1,10 +1,10 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import type { PipeTransform } from "@angular/core";
+import { Pipe } from "@angular/core";
 
 @Pipe({
   name: "utcToLocal"
 })
 export class UtcToLocalPipe implements PipeTransform {
-
   transform(value: Date | string): Date {
     let utcDate: Date;
 

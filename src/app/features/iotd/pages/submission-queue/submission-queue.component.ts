@@ -1,17 +1,17 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-  QueryList,
-  ViewChildren
-} from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import type { AfterViewInit, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID, QueryList, ViewChildren } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MainState } from "@app/store/state";
+import type { MainState } from "@app/store/state";
+import type { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
-import { SubmissionInterface, SubmitterSeenImage } from "@features/iotd/services/iotd-api.service";
+import { SubmissionEntryComponent } from "@features/iotd/components/submission-entry/submission-entry.component";
+import type { SubmissionInterface, SubmitterSeenImage } from "@features/iotd/services/iotd-api.service";
 import {
   ClearSubmissionQueue,
   LoadDismissedImages,
@@ -25,21 +25,14 @@ import {
   selectSubmissions,
   selectSubmitterSeenImages
 } from "@features/iotd/store/iotd.selectors";
+import type { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TitleService } from "@core/services/title/title.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { fromEvent, Observable, throttleTime } from "rxjs";
-import { ActivatedRoute, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie";
-import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
-import { Actions } from "@ngrx/effects";
+import type { Observable } from "rxjs";
+import { fromEvent, throttleTime } from "rxjs";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
-import { isPlatformBrowser } from "@angular/common";
-import { SubmissionEntryComponent } from "@features/iotd/components/submission-entry/submission-entry.component";
 
 @Component({
   selector: "astrobin-submission-queue",
@@ -75,7 +68,7 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
     public readonly changeDetectorRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(
       store$,
@@ -116,9 +109,9 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
     const viewportHeight = this.windowRefService.nativeWindow.innerHeight;
     const scrollPosition = this.windowRefService.nativeWindow.scrollY;
 
-    this.submissionEntryComponents.forEach((component, index) => {
+    this.submissionEntryComponents.forEach(component => {
       const rect = component.elementRef.nativeElement.getBoundingClientRect();
-      if (rect.top < (viewportHeight + scrollPosition) && rect.bottom > scrollPosition) {
+      if (rect.top < viewportHeight + scrollPosition && rect.bottom > scrollPosition) {
         this.submitterSeenImages$.pipe(take(1)).subscribe(seenImages => {
           if (seenImages.map(seen => seen.image).includes(component.entry.pk)) {
             this.markingAsSeen = this.markingAsSeen.filter(pk => pk !== component.entry.pk);
@@ -127,7 +120,7 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
           const isAlreadySeen = !!seenImages.find(seenImage => seenImage.image === component.entry.pk);
           const isBeingMarkedAsSeen = this.markingAsSeen.includes(component.entry.pk);
 
-            if (!isAlreadySeen && !isBeingMarkedAsSeen) {
+          if (!isAlreadySeen && !isBeingMarkedAsSeen) {
             this.store$.dispatch(new MarkSubmitterSeenImage({ id: component.entry.pk }));
             this.markingAsSeen.push(component.entry.pk);
           }

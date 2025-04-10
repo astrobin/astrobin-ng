@@ -1,30 +1,51 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { select, Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
+import { isPlatformBrowser } from "@angular/common";
+import type { AfterViewInit, OnChanges, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxjs/operators";
-import { UserProfileInterface, UserProfileStatsInterface } from "@core/interfaces/user-profile.interface";
+import type { MainState } from "@app/store/state";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import type { UserProfileStatsInterface } from "@core/interfaces/user-profile.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import type {
+  FollowersInterface,
+  FollowingInterface,
+  MutualFollowersInterface
+} from "@core/services/api/classic/common/common-api.service";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
-import { CommonApiService, FollowersInterface, FollowingInterface, MutualFollowersInterface } from "@core/services/api/classic/common/common-api.service";
-import { SearchService } from "@core/services/search.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { Subject } from "rxjs";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/account/store/auth.actions";
-import { isPlatformBrowser } from "@angular/common";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { select, Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-user-gallery-header",
   template: `
     <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="user-gallery-header">
-      <img *ngIf="userProfile.galleryHeaderImage" [src]="userProfile.galleryHeaderImage" (error)="handleImageError($event)" alt="" />
+      <img
+        *ngIf="userProfile.galleryHeaderImage"
+        [src]="userProfile.galleryHeaderImage"
+        (error)="handleImageError($event)"
+        alt=""
+      />
       <div *ngIf="!userProfile.galleryHeaderImage" class="no-image">
         <div class="star"></div>
         <div class="star"></div>
@@ -46,15 +67,9 @@ import { isPlatformBrowser } from "@angular/common";
           <div class="d-flex flex-column gap-3 gap-md-2">
             <div class="d-flex flex-column flex-sm-row username-and-follows align-items-sm-center">
               <div class="d-flex flex-row align-items-center gap-3">
-                <astrobin-username
-                  [user]="user" [link]="false"
-                  class="d-inline-block"
-                ></astrobin-username>
+                <astrobin-username [user]="user" [link]="false" class="d-inline-block"></astrobin-username>
 
-                <div
-                  *ngIf="user.displayName !== user.username"
-                  class="username d-none d-sm-block"
-                >
+                <div *ngIf="user.displayName !== user.username" class="username d-none d-sm-block">
                   ({{ user.username }})
                 </div>
 
@@ -80,7 +95,10 @@ import { isPlatformBrowser } from "@angular/common";
                       translate="Settings"
                     ></a>
                     <a
-                      *ngIf="currentUserWrapper.user?.id !== user.id && !currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)"
+                      *ngIf="
+                        currentUserWrapper.user?.id !== user.id &&
+                        !currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)
+                      "
                       (click)="shadowBan(userProfile.id)"
                       href="#"
                       astrobinEventPreventDefault
@@ -89,7 +107,10 @@ import { isPlatformBrowser } from "@angular/common";
                       translate="Shadow-ban"
                     ></a>
                     <a
-                      *ngIf="currentUserWrapper.user?.id !== user.id && currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)"
+                      *ngIf="
+                        currentUserWrapper.user?.id !== user.id &&
+                        currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)
+                      "
                       (click)="removeShadowBan(userProfile.id)"
                       href="#"
                       astrobinEventPreventDefault
@@ -121,14 +142,11 @@ import { isPlatformBrowser } from "@angular/common";
               ></astrobin-toggle-property>
             </div>
             <div class="d-flex align-items-center images-and-followers flex-wrap">
-              <span
-                *ngIf="userProfile.imageCount === 1"
-                translate="1 image"
-              ></span>
+              <span *ngIf="userProfile.imageCount === 1" translate="1 image"></span>
               <span
                 *ngIf="userProfile.imageCount !== 1"
                 [translate]="'{{ 0 }} images'"
-                [translateParams]="{'0': userProfile.imageCount}"
+                [translateParams]="{ '0': userProfile.imageCount }"
               ></span>
 
               <span
@@ -139,7 +157,7 @@ import { isPlatformBrowser } from "@angular/common";
               <span
                 *ngIf="userProfile.wipImageCount > 1 && currentUserWrapper.user?.id === user.id"
                 [translate]="'({{ 0 }} in staging)'"
-                [translateParams]="{'0': userProfile.wipImageCount}"
+                [translateParams]="{ '0': userProfile.wipImageCount }"
                 class="d-none d-sm-inline"
               ></span>
 
@@ -152,7 +170,8 @@ import { isPlatformBrowser } from "@angular/common";
               <span
                 *ngIf="userProfile.followersCount !== 1"
                 (click)="userProfile.followersCount ? openFollowersOffcanvas() : null"
-                [translate]="'{{ 0 }} followers'" [translateParams]="{'0': userProfile.followersCount}"
+                [translate]="'{{ 0 }} followers'"
+                [translateParams]="{ '0': userProfile.followersCount }"
                 [attr.data-toggle]="userProfile.followersCount ? 'offcanvas' : ''"
               ></span>
 
@@ -165,7 +184,8 @@ import { isPlatformBrowser } from "@angular/common";
               <span
                 *ngIf="currentUserWrapper.user?.id === user.id && userProfile.followingCount !== 1"
                 (click)="userProfile.followingCount ? openFollowingOffcanvas() : null"
-                [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
+                [translate]="'{{ 0 }} following'"
+                [translateParams]="{ '0': userProfile.followingCount }"
                 [attr.data-toggle]="userProfile.followingCount ? 'offcanvas' : ''"
               ></span>
 
@@ -175,7 +195,8 @@ import { isPlatformBrowser } from "@angular/common";
               ></span>
               <span
                 *ngIf="currentUserWrapper.user?.id !== user.id && userProfile.followingCount !== 1"
-                [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
+                [translate]="'{{ 0 }} following'"
+                [translateParams]="{ '0': userProfile.followingCount }"
               ></span>
 
               <span
@@ -199,18 +220,12 @@ import { isPlatformBrowser } from "@angular/common";
               *ngIf="currentUserWrapper.user?.id === user.id"
               class="d-flex align-items-center images-and-followers flex-wrap my-bookmarks-and-likes"
             >
-              <button
-                (click)="searchBookmarks()"
-                class="btn btn-xs btn-outline-secondary btn-no-block"
-              >
+              <button (click)="searchBookmarks()" class="btn btn-xs btn-outline-secondary btn-no-block">
                 <fa-icon [icon]="['fas', 'bookmark']"></fa-icon>
                 {{ "My bookmarks" | translate }}
               </button>
 
-              <button
-                (click)="searchLikedImages()"
-                class="btn btn-xs btn-outline-secondary btn-no-block"
-              >
+              <button (click)="searchLikedImages()" class="btn btn-xs btn-outline-secondary btn-no-block">
                 <fa-icon [icon]="['fas', 'thumbs-up']"></fa-icon>
                 {{ "My likes" | translate }}
               </button>
@@ -226,8 +241,7 @@ import { isPlatformBrowser } from "@angular/common";
         <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
       </div>
       <div class="offcanvas-body">
-        <ng-container *ngIf="stats === null" [ngTemplateOutlet]="loadingTemplate">
-        </ng-container>
+        <ng-container *ngIf="stats === null" [ngTemplateOutlet]="loadingTemplate"> </ng-container>
 
         <ng-container *ngIf="stats !== null && Object.keys(stats).length === 0">
           <p translate="No additional information available at the moment. Please check again later!"></p>
@@ -235,18 +249,18 @@ import { isPlatformBrowser } from "@angular/common";
 
         <table *ngIf="stats !== null && Object.keys(stats).length > 0" class="table table-striped">
           <tbody>
-          <tr *ngFor="let stat of stats.stats">
-            <td>{{ stat[0] }}</td>
-            <td *ngIf="!stat[2]">{{ stat[1] }}</td>
-            <td *ngIf="stat[2] && stat[2] === 'datetime'">
-              <ng-container *ngIf="!!stat[1]">
-                {{ stat[1] | localDate | timeago }}
-              </ng-container>
-              <ng-container *ngIf="!stat[1]">
-                {{ "n/a" | translate }}
-              </ng-container>
-            </td>
-          </tr>
+            <tr *ngFor="let stat of stats.stats">
+              <td>{{ stat[0] }}</td>
+              <td *ngIf="!stat[2]">{{ stat[1] }}</td>
+              <td *ngIf="stat[2] && stat[2] === 'datetime'">
+                <ng-container *ngIf="!!stat[1]">
+                  {{ stat[1] | localDate | timeago }}
+                </ng-container>
+                <ng-container *ngIf="!stat[1]">
+                  {{ "n/a" | translate }}
+                </ng-container>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -277,7 +291,7 @@ import { isPlatformBrowser } from "@angular/common";
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
-            [ngModelOptions]="{standalone: true}"
+            [ngModelOptions]="{ standalone: true }"
             [(ngModel)]="followersSearch"
             (ngModelChange)="followersSearchSubject.next($event)"
           />
@@ -302,7 +316,7 @@ import { isPlatformBrowser } from "@angular/common";
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
-            [ngModelOptions]="{standalone: true}"
+            [ngModelOptions]="{ standalone: true }"
             [(ngModel)]="followingSearch"
             (ngModelChange)="followingSearchSubject.next($event)"
           />
@@ -330,7 +344,7 @@ import { isPlatformBrowser } from "@angular/common";
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
-            [ngModelOptions]="{standalone: true}"
+            [ngModelOptions]="{ standalone: true }"
             [(ngModel)]="mutualFollowersSearch"
             (ngModelChange)="mutualFollowersSearchSubject.next($event)"
           />
@@ -341,7 +355,10 @@ import { isPlatformBrowser } from "@angular/common";
             </a>
           </ng-container>
 
-          <p *ngIf="!searching && mutualFollowers['mutual-followers']?.length === 0" translate="No mutual followers."></p>
+          <p
+            *ngIf="!searching && mutualFollowers['mutual-followers']?.length === 0"
+            translate="No mutual followers."
+          ></p>
         </div>
       </div>
     </ng-template>
@@ -390,7 +407,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     public readonly activatedRoute: ActivatedRoute,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly changeDetectorRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) platformId: Object
+    @Inject(PLATFORM_ID) platformId: object
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(platformId);
@@ -400,32 +417,26 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   ngOnInit() {
     super.ngOnInit();
 
-    this.followersSearchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroyed$)
-    ).subscribe(searchTerm => {
-      this._searchFollowers(searchTerm);
-      this.changeDetectorRef.markForCheck();
-    });
+    this.followersSearchSubject
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$))
+      .subscribe(searchTerm => {
+        this._searchFollowers(searchTerm);
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.followingSearchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroyed$)
-    ).subscribe(searchTerm => {
-      this._searchFollowing(searchTerm);
-      this.changeDetectorRef.markForCheck();
-    });
+    this.followingSearchSubject
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$))
+      .subscribe(searchTerm => {
+        this._searchFollowing(searchTerm);
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.mutualFollowersSearchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroyed$)
-    ).subscribe(searchTerm => {
-      this._searchMutualFollowers(searchTerm);
-      this.changeDetectorRef.markForCheck();
-    });
+    this.mutualFollowersSearchSubject
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$))
+      .subscribe(searchTerm => {
+        this._searchMutualFollowers(searchTerm);
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   ngAfterViewInit() {
@@ -438,16 +449,14 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     this.stats = null;
   }
 
   protected openStatsOffcanvas() {
-    this.offcanvasService.open(
-      this.statsOffcanvas, {
-        position: this.deviceService.offcanvasPosition()
-      }
-    );
+    this.offcanvasService.open(this.statsOffcanvas, {
+      position: this.deviceService.offcanvasPosition()
+    });
 
     if (!this.stats) {
       this.commonApiService.getUserProfileStats(this.userProfile.id).subscribe(stats => {
@@ -458,12 +467,10 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   }
 
   protected openChangeHeaderImageOffcanvas() {
-    this.offcanvasService.open(
-      this.changeHeaderImageOffcanvas, {
-        panelClass: "change-header-image-offcanvas",
-        position: this.deviceService.offcanvasPosition()
-      }
-    );
+    this.offcanvasService.open(this.changeHeaderImageOffcanvas, {
+      panelClass: "change-header-image-offcanvas",
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 
   protected openFollowersOffcanvas() {
@@ -473,11 +480,9 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
 
     this.followersSearch = "";
     this._searchFollowers();
-    this.offcanvasService.open(
-      this.followersOffcanvas, {
-        position: this.deviceService.offcanvasPosition()
-      }
-    );
+    this.offcanvasService.open(this.followersOffcanvas, {
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 
   protected openFollowingOffcanvas() {
@@ -485,19 +490,19 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
       return;
     }
 
-    this.currentUser$.pipe(
-      take(1),
-      filter(currentUser => currentUser?.id === this.user.id)
-    ).subscribe(() => {
-      this.followingSearch = "";
-      this._searchFollowing();
-      this.offcanvasService.open(
-        this.followingOffcanvas, {
+    this.currentUser$
+      .pipe(
+        take(1),
+        filter(currentUser => currentUser?.id === this.user.id)
+      )
+      .subscribe(() => {
+        this.followingSearch = "";
+        this._searchFollowing();
+        this.offcanvasService.open(this.followingOffcanvas, {
           position: this.deviceService.offcanvasPosition()
-        }
-      );
-      this.changeDetectorRef.markForCheck();
-    });
+        });
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   protected openMutualFollowersOffcanvas() {
@@ -505,40 +510,36 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
       return;
     }
 
-    this.currentUser$.pipe(
-      take(1),
-      filter(currentUser => currentUser?.id === this.user.id)
-    ).subscribe(() => {
-      this.mutualFollowersSearch = "";
-      this._searchMutualFollowers();
-      this.offcanvasService.open(
-        this.mutualFollowersOffcanvas, {
+    this.currentUser$
+      .pipe(
+        take(1),
+        filter(currentUser => currentUser?.id === this.user.id)
+      )
+      .subscribe(() => {
+        this.mutualFollowersSearch = "";
+        this._searchMutualFollowers();
+        this.offcanvasService.open(this.mutualFollowersOffcanvas, {
           position: this.deviceService.offcanvasPosition()
-        }
-      );
-      this.changeDetectorRef.markForCheck();
-    });
+        });
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   protected searchBookmarks() {
-    const params = this.searchService.modelToParams(
-      {
-        "personal_filters": {
-          "value": [ "my_bookmarks" ],
-        }
+    const params = this.searchService.modelToParams({
+      personal_filters: {
+        value: ["my_bookmarks"]
       }
-    );
+    });
     this.router.navigateByUrl(`/search?p=${params}`);
   }
 
   protected searchLikedImages() {
-    const params = this.searchService.modelToParams(
-      {
-        "personal_filters": {
-          "value": [ "my_likes" ],
-        }
+    const params = this.searchService.modelToParams({
+      personal_filters: {
+        value: ["my_likes"]
       }
-    );
+    });
     this.router.navigateByUrl(`/search?p=${params}`);
   }
 
@@ -552,7 +553,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
 
   protected handleImageError(event: Event) {
     const imgElement = event.target as HTMLImageElement;
-    imgElement.style.display = 'none';
+    imgElement.style.display = "none";
     // Clear the galleryHeaderImage so that the no-image div shows
     this.userProfile.galleryHeaderImage = null;
     this.changeDetectorRef.markForCheck();
@@ -586,14 +587,16 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   }
 
   private _setUserContentType() {
-    this.store$.pipe(
-      select(selectContentType, { appLabel: "auth", model: "user" }),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      this.userContentType = contentType;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.store$
+      .pipe(
+        select(selectContentType, { appLabel: "auth", model: "user" }),
+        filter(contentType => !!contentType),
+        take(1)
+      )
+      .subscribe(contentType => {
+        this.userContentType = contentType;
+        this.changeDetectorRef.markForCheck();
+      });
     this.store$.dispatch(new LoadContentType({ appLabel: "auth", model: "user" }));
   }
 

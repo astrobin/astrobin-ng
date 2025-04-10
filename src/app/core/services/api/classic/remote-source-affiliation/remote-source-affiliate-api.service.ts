@@ -1,10 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
+import type { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@core/services/loading.service";
-import { EMPTY, Observable } from "rxjs";
+import type { Observable } from "rxjs";
+import { EMPTY } from "rxjs";
 import { expand, reduce } from "rxjs/operators";
 
 @Injectable({

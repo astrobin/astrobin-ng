@@ -1,29 +1,30 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { Router } from "@angular/router";
+import type { MainState } from "@app/store/state";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/store/equipment.actions";
 import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerRejectionReason,
   EquipmentItemType,
   EquipmentItemUsageType
 } from "@features/equipment/types/equipment-item-base.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoadingService } from "@core/services/loading.service";
-import { catchError, map, switchMap, take, takeUntil } from "rxjs/operators";
-import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
-import { Router } from "@angular/router";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { EMPTY } from "rxjs";
-import { UtilsService } from "@core/services/utils/utils.service";
+import { catchError, map, switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-reject-item-modal",
@@ -110,7 +111,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
               value: EquipmentItemReviewerRejectionReason.WRONG_BRAND,
               label: this.translateService.instant(
                 "The item doesn't seem to have the correct brand, or the brand is misspelled, or it's the " +
-                "duplicate of an existing brand."
+                  "duplicate of an existing brand."
               )
             },
             {

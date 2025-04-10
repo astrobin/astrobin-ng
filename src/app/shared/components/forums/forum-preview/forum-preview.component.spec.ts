@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
 
 import { ForumPreviewComponent } from "./forum-preview.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { of } from "rxjs";
 
 describe("ForumPreviewComponent", () => {
   let component: ForumPreviewComponent;
@@ -19,7 +20,9 @@ describe("ForumPreviewComponent", () => {
     fixture = TestBed.createComponent(ForumPreviewComponent);
     component = fixture.componentInstance;
 
-    jest.spyOn(component.forumApiService, "latestTopics").mockReturnValueOnce(of({ count: 0, next: null, prev: null, results: [] }));
+    jest
+      .spyOn(component.forumApiService, "latestTopics")
+      .mockReturnValueOnce(of({ count: 0, next: null, prev: null, results: [] }));
 
     fixture.detectChanges();
   });

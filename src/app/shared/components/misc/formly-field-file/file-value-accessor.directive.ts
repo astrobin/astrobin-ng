@@ -1,5 +1,6 @@
 import { Directive } from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import type { ControlValueAccessor } from "@angular/forms";
+import { NG_VALUE_ACCESSOR } from "@angular/forms";
 
 @Directive({
   // eslint-disable-next-line
@@ -14,13 +15,16 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 export class FileValueAccessorDirective implements ControlValueAccessor {
   value: any;
 
-  onChange = _ => {
+  onChange = () => {
+    // Called when file input changes
   };
 
   onTouched = () => {
+    // Called on input blur
   };
 
-  writeValue(value) {
+  writeValue() {
+    // Implement as required by ControlValueAccessor
   }
 
   registerOnChange(fn: any) {

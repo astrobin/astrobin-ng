@@ -1,6 +1,6 @@
 <ng-container *ngIf="!!user; else loadingTemplate">
   <ng-container *ngIf="link; else noLinkTemplate">
-    <a [href]="url" (click)="openGallery()" astrobinEventPreventDefault>
+    <a (click)="openGallery()" [href]="url" astrobinEventPreventDefault>
       <ng-container [ngTemplateOutlet]="imageTemplate"></ng-container>
     </a>
   </ng-container>
@@ -19,7 +19,7 @@
         class="edit-button"
         container="body"
       >
-        <button class="btn btn-sm" (click)="openAvatarEditor($event)">
+        <button (click)="openAvatarEditor($event)" class="btn btn-sm">
           <fa-icon icon="pencil"></fa-icon>
         </button>
       </div>
@@ -47,7 +47,6 @@
       </div>
     </div>
   </ng-template>
-
 </ng-container>
 
 <ng-template #loadingTemplate>

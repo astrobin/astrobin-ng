@@ -1,14 +1,15 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import type { AfterViewInit, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
+import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import type { google } from "@google/maps";
 import { FieldType } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { Observable, Subject } from "rxjs";
 import { debounceTime, take } from "rxjs/operators";
-import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
-import { google } from "@google/maps";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-formly-field-image-cropper",
@@ -45,9 +46,7 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, 
 
     this._isBrowser = isPlatformBrowser(this.platformId);
 
-    this.updateSearchSubject.pipe(
-      debounceTime(1000)
-    ).subscribe(() => {
+    this.updateSearchSubject.pipe(debounceTime(1000)).subscribe(() => {
       this.updateSearch();
     });
   }
@@ -57,8 +56,10 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, 
       return;
     }
 
-    this.isCypress = isPlatformBrowser(this.platformId) && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") > -1;
-    this.isLocalhost = isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.location.hostname === "localhost";
+    this.isCypress =
+      isPlatformBrowser(this.platformId) && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") > -1;
+    this.isLocalhost =
+      isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.location.hostname === "localhost";
 
     if (!this.isCypress && !this.isLocalhost) {
       await this.googleMapsService.loadGoogleMaps();
@@ -236,9 +237,9 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, 
     const R = 6371; // Radius of the Earth in km
     const dLat = this.deg2rad(lat2 - lat1);
     const dLng = this.deg2rad(lng2 - lng1);
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     // Distance in km

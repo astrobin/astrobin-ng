@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
 import { FormGroup } from "@angular/forms";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
+import type { MainState } from "@app/store/state";
 import { LoadingService } from "@core/services/loading.service";
-import { CreateBrand, CreateBrandSuccess, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import type { CreateBrandSuccess } from "@features/equipment/store/equipment.actions";
+import { CreateBrand, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import type { BrandInterface } from "@features/equipment/types/brand.interface";
 import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { map, take } from "rxjs/operators";
 
 @Component({
@@ -39,7 +40,7 @@ export class BrandEditorCardComponent extends BaseComponentDirective {
   }
 
   createBrand() {
-    const { id, ...brand } = this.form.value;
+    const { ...brand } = this.form.value;
     this.loadingService.setLoading(true);
     this.store$.dispatch(new CreateBrand({ brand }));
     this.actions$

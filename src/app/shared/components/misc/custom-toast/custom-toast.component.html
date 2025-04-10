@@ -1,41 +1,42 @@
 <button
-  *ngIf="options.closeButton"
   (click)="remove()"
-  type="button"
-  class="toast-close-button"
+  *ngIf="options.closeButton"
   aria-label="{{ 'Close' | translate }}"
+  class="toast-close-button"
+  type="button"
 >
   <span aria-hidden="true">&times;</span>
 </button>
 
-<div *ngIf="title" [class]="options.titleClass" [attr.aria-label]="title">
-  {{ title }} <ng-container *ngIf="duplicatesCount">[{{ duplicatesCount + 1 }}]</ng-container>
+<div *ngIf="title" [attr.aria-label]="title" [class]="options.titleClass">
+  {{ title }}
+  <ng-container *ngIf="duplicatesCount">[{{ duplicatesCount + 1 }}]</ng-container>
 </div>
 
 <div
   *ngIf="message && options.enableHtml"
-  role="alertdialog"
-  aria-live="polite"
   [class]="options.messageClass"
   [innerHTML]="message"
+  aria-live="polite"
+  role="alertdialog"
 ></div>
 
 <div
   *ngIf="message && !options.enableHtml"
-  role="alertdialog"
-  aria-live="polite"
-  [class]="options.messageClass"
   [attr.aria-label]="message"
+  [class]="options.messageClass"
+  aria-live="polite"
+  role="alertdialog"
 >
   {{ message }}
 </div>
 
 <div *ngIf="!!buttons && buttons.length > 0" class="buttons">
-  <button *ngFor="let button of buttons" [classList]="button.classList" (click)="action($event, button)">
+  <button (click)="action($event, button)" *ngFor="let button of buttons" [classList]="button.classList">
     {{ button.title }}
   </button>
 </div>
 
 <div *ngIf="options.progressBar">
-  <div class="toast-progress" [style.width]="width + '%'"></div>
+  <div [style.width]="width + '%'" class="toast-progress"></div>
 </div>

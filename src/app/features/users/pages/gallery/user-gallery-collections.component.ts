@@ -1,17 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { selectCollections, selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
-import { filter, map, takeUntil } from "rxjs/operators";
+import type { OnChanges, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, TemplateRef, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Actions } from "@ngrx/effects";
+import { selectCollections, selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
+import type { MainState } from "@app/store/state";
+import type { CollectionInterface } from "@core/interfaces/collection.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { Subscription } from "rxjs";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { DeviceService } from "@core/services/device.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import type { Subscription } from "rxjs";
+import { filter, map, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-user-gallery-collections",
@@ -41,20 +42,13 @@ import { DeviceService } from "@core/services/device.service";
             [collection]="parentCollection"
           ></astrobin-user-gallery-collection-menu>
         </h2>
-        <p
-          *ngIf="parentCollection.description"
-          [innerHTML]="parentCollection.description"
-          class="m-0 p-0"
-        ></p>
+        <p *ngIf="parentCollection.description" [innerHTML]="parentCollection.description" class="m-0 p-0"></p>
       </div>
 
       <div
         *ngIf="!loading && !parentCollection && collections?.length === 0 && currentUserWrapper.user?.id !== user.id"
       >
-        <astrobin-nothing-here
-          [withAlert]="false"
-          [withInfoSign]="false"
-        ></astrobin-nothing-here>
+        <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
       </div>
 
       <div
@@ -82,10 +76,7 @@ import { DeviceService } from "@core/services/device.service";
           astrobinEventStopPropagation
           class="create-collection-button d-flex flex-column justify-content-center align-items-center text-center"
         >
-          <fa-icon
-            icon="plus"
-            [ngbTooltip]="'Create collection'"
-          ></fa-icon>
+          <fa-icon icon="plus" [ngbTooltip]="'Create collection'"></fa-icon>
         </a>
       </div>
     </ng-container>
@@ -138,53 +129,56 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
     super.ngOnInit();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     this.parentCollection = null;
 
     if (this._collectionsSubscription) {
       this._collectionsSubscription.unsubscribe();
     }
 
-    this._collectionsSubscription = this.store$.pipe(
-      select(selectCollectionsByParams({
-        user: this.user.id,
-        parent: this.activatedRoute.snapshot.queryParams.collection
-          ? parseInt(this.activatedRoute.snapshot.queryParams.collection, 10)
-          : null
-      })),
-      takeUntil(this.destroyed$)
-    ).subscribe(collections => {
-      this.collections = collections;
-      this.loading = false;
-      this.changeDetectorRef.markForCheck();
-    });
+    this._collectionsSubscription = this.store$
+      .pipe(
+        select(
+          selectCollectionsByParams({
+            user: this.user.id,
+            parent: this.activatedRoute.snapshot.queryParams.collection
+              ? parseInt(this.activatedRoute.snapshot.queryParams.collection, 10)
+              : null
+          })
+        ),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(collections => {
+        this.collections = collections;
+        this.loading = false;
+        this.changeDetectorRef.markForCheck();
+      });
 
     if (this.parent) {
       if (this._parentCollectionSubscription) {
         this._parentCollectionSubscription.unsubscribe();
       }
 
-      this._parentCollectionSubscription = this.store$.pipe(
-        select(selectCollections),
-        filter(collections => collections?.length > 0),
-        map(collections => collections.filter(collection => collection.id === this.parent)),
-        takeUntil(this.destroyed$)
-      ).subscribe(collections => {
-        this.parentCollection = collections[0];
-        this.changeDetectorRef.markForCheck();
-      });
+      this._parentCollectionSubscription = this.store$
+        .pipe(
+          select(selectCollections),
+          filter(collections => collections?.length > 0),
+          map(collections => collections.filter(collection => collection.id === this.parent)),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe(collections => {
+          this.parentCollection = collections[0];
+          this.changeDetectorRef.markForCheck();
+        });
     }
   }
 
   protected openCollection(collection: CollectionInterface) {
-    this.router.navigate(
-      [],
-      {
-        fragment: this.userProfile.displayCollectionsOnPublicGallery ? "gallery" : "collections",
-        queryParams: { collection: collection.id },
-        relativeTo: this.activatedRoute
-      }
-    );
+    this.router.navigate([], {
+      fragment: this.userProfile.displayCollectionsOnPublicGallery ? "gallery" : "collections",
+      queryParams: { collection: collection.id },
+      relativeTo: this.activatedRoute
+    });
   }
 
   protected createCollection() {

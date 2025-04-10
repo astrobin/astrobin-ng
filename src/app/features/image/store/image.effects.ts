@@ -2,6 +2,5 @@ import { Injectable } from "@angular/core";
 
 @Injectable()
 export class ImageEffects {
-  constructor() {
-  }
+  // No effects currently implemented, constructor will be expanded when needed
 }

@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
+import type { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ContentTypeGenerator } from "@shared/generators/content-type.generator";
 
 @Component({

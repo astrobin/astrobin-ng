@@ -10,7 +10,7 @@
   </div>
 </ng-template>
 
-<ng-template #instructionTemplate let-message="message" let-icon="icon">
+<ng-template #instructionTemplate let-icon="icon" let-message="message">
   <div class="instruction-container">
     <div class="instructions">
       <fa-icon [icon]="icon"></fa-icon>
@@ -21,79 +21,82 @@
 
 <ng-template #fullSizeLimitationTemplate>
   <ng-container
-    [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
       icon: 'info-circle',
       message: 'Zoom disabled by the image owner.' | translate
     }"
+    [ngTemplateOutlet]="instructionTemplate"
   ></ng-container>
 </ng-template>
 
 <ng-template #imageTooLargeToZoomTemplate>
   <ng-container
-    [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
       icon: 'warning',
-      message: ('Image too large for the interactive zoom.' | translate) + ' ' + ('Click to view full size in a new tab.' | translate)
+      message:
+        ('Image too large for the interactive zoom.' | translate) +
+        ' ' +
+        ('Click to view full size in a new tab.' | translate)
     }"
+    [ngTemplateOutlet]="instructionTemplate"
   ></ng-container>
 </ng-template>
 
 <ng-template #gifNoZoomTemplate>
   <ng-container
-    [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
       icon: 'info-circle',
       message: 'Zooming is not available for GIF animations on touch devices.' | translate
     }"
+    [ngTemplateOutlet]="instructionTemplate"
   ></ng-container>
 </ng-template>
 
 <ng-template #pinchAndZoomInstructionTemplate>
   <ng-container
-    [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
       icon: 'hand-paper',
       message: 'Pinch and zoom!' | translate
     }"
+    [ngTemplateOutlet]="instructionTemplate"
   ></ng-container>
 </ng-template>
 
 <ng-template #clickAndScrollInstructionTemplate>
   <ng-container
-    [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
       icon: 'mouse-pointer',
       message: 'Scroll to magnify.' | translate
     }"
+    [ngTemplateOutlet]="instructionTemplate"
   ></ng-container>
 </ng-template>
 
 <ng-template #clickAgainToCloseLensInstructionTemplate>
   <ng-container
-    [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
-        icon: 'mouse-pointer',
-        message: 'Click again to close lens.' | translate
-      }"
+      icon: 'mouse-pointer',
+      message: 'Click again to close lens.' | translate
+    }"
+    [ngTemplateOutlet]="instructionTemplate"
   ></ng-container>
 </ng-template>
 
 <ng-template #zoomFrozenInstructionTemplate>
   <ng-container
-    [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
-        icon: 'lock',
-        message: 'Zoom is frozen. Press F to unfreeze.' | translate
-      }"
+      icon: 'lock',
+      message: 'Zoom is frozen. Press F to unfreeze.' | translate
+    }"
+    [ngTemplateOutlet]="instructionTemplate"
   ></ng-container>
 </ng-template>
 
 <ng-template #touchDeviceTemplate let-hd="hd" let-real="real">
   <div class="touch-device">
     <div
-      class="loading-indicator-container has-message"
       *ngIf="!isVeryLargeImage && (hdThumbnailLoading || realThumbnailLoading || canvasLoading)"
+      class="loading-indicator-container has-message"
     >
       <astrobin-loading-indicator [progress]="loadingProgress$ | async"></astrobin-loading-indicator>
     </div>
@@ -101,46 +104,37 @@
     <ng-container *ngIf="!isVeryLargeImage">
       <!-- For GIFs, show a simple image without zooming capabilities -->
       <div *ngIf="isGif && real && allowReal" @fadeInOut class="gif-container">
-        <img
-          [src]="realThumbnailUnsafeUrl"
-          alt=""
-          class="gif-image"
-        />
+        <img [src]="realThumbnailUnsafeUrl" alt="" class="gif-image" />
       </div>
 
       <!-- For regular images, use the canvas-based zoom -->
       <div
+        #touchRealContainer
+        (doubletap)="onDoubleTap($event)"
+        (panend)="onPanEnd($event)"
+        (panmove)="onPanMove($event)"
+        (panstart)="onPanStart($event)"
+        (pinchend)="onPinchEnd()"
+        (pinchmove)="onPinchMove($event)"
+        (pinchstart)="onPinchStart($event)"
         *ngIf="!isGif && real && allowReal"
         @fadeInOut
-        #touchRealContainer
         class="touch-real-container"
-        (pinchstart)="onPinchStart($event)"
-        (pinchmove)="onPinchMove($event)"
-        (pinchend)="onPinchEnd()"
-        (panstart)="onPanStart($event)"
-        (panmove)="onPanMove($event)"
-        (panend)="onPanEnd($event)"
-        (doubletap)="onDoubleTap($event)"
       >
         <canvas #touchRealCanvas class="touch-real-canvas"></canvas>
 
         <div
           *ngIf="actualTouchZoom !== null && !canvasLoading"
-          class="touch-zoom-indicator"
           [class.beyond-one]="Math.round(actualTouchZoom * 100) >= 101"
+          class="touch-zoom-indicator"
         >
-          {{ actualTouchZoom | number:'1.2-2' }}x
+          {{ actualTouchZoom | number : "1.2-2" }}x
         </div>
       </div>
     </ng-container>
 
     <ng-container *ngIf="isVeryLargeImage">
-      <img
-        *ngIf="!real"
-        [src]="hd"
-        alt=""
-        class="hd-image"
-      />
+      <img *ngIf="!real" [src]="hd" alt="" class="hd-image" />
 
       <a
         *ngIf="hd && real && realThumbnailUnsafeUrl"
@@ -148,11 +142,7 @@
         class="no-external-link-icon d-flex align-items-center"
         target="_blank"
       >
-        <img
-          [src]="hd"
-          alt=""
-          class="hd-image"
-        />
+        <img [src]="hd" alt="" class="hd-image" />
       </a>
       <ng-container
         *ngIf="hd && real && allowReal && realThumbnailUnsafeUrl"
@@ -161,15 +151,15 @@
     </ng-container>
 
     <!-- Show appropriate messages based on image type -->
-    <ng-container *ngIf="isGif && allowReal && real"
-                  [ngTemplateOutlet]="gifNoZoomTemplate"></ng-container>
-    <ng-container *ngIf="!isGif && !isVeryLargeImage && allowReal && real && !canvasLoading"
-                  [ngTemplateOutlet]="pinchAndZoomInstructionTemplate"></ng-container>
-    <ng-container *ngIf="hd && !allowReal"
-                  [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
+    <ng-container *ngIf="isGif && allowReal && real" [ngTemplateOutlet]="gifNoZoomTemplate"></ng-container>
+    <ng-container
+      *ngIf="!isGif && !isVeryLargeImage && allowReal && real && !canvasLoading"
+      [ngTemplateOutlet]="pinchAndZoomInstructionTemplate"
+    ></ng-container>
+    <ng-container *ngIf="hd && !allowReal" [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
   </div>
 
-  <ng-container [ngTemplateOutlet]="zoomModesTemplate" [ngTemplateOutletContext]="{ real }"></ng-container>
+  <ng-container [ngTemplateOutletContext]="{ real }" [ngTemplateOutlet]="zoomModesTemplate"></ng-container>
 </ng-template>
 
 <ng-template #nonTouchDeviceTemplate let-hd="hd" let-real="real">
@@ -178,49 +168,43 @@
     <ng-container *ngIf="hd && !real && allowReal" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
 
     <ng-container *ngIf="!isVeryLargeImage">
-      <img
-        *ngIf="hd && (!real || !allowReal)"
-        [src]="hd"
-        class="hd-image"
-        alt=""
-        [style.max-width.px]="naturalWidth"
-      />
+      <img *ngIf="hd && (!real || !allowReal)" [src]="hd" [style.max-width.px]="naturalWidth" alt="" class="hd-image" />
 
       <!-- For GIFs on non-touch devices, we can use ngx-image-zoom as it works well there -->
       <lib-ngx-image-zoom
         #ngxImageZoom
-        *ngIf="real && allowReal"
+        (imagesLoaded)="onImagesLoaded($event)"
         (zoomPosition)="setZoomPosition($event)"
         (zoomScroll)="setZoomScroll($event)"
-        (imagesLoaded)="onImagesLoaded($event)"
+        *ngIf="real && allowReal"
         [circularLens]="true"
+        [class.lens-enabled]="enableLens"
+        [class.zoom-frozen]="zoomFrozen"
+        [class.zooming-enabled]="zoomingEnabled"
         [enableLens]="enableLens"
         [enableScrollZoom]="true"
         [fullImage]="real"
         [lensHeight]="zoomLensSize"
         [lensWidth]="zoomLensSize"
         [maxZoomRatio]="maxZoom"
+        [scrollStepSize]="0.05"
         [thumbImage]="hd"
-        [scrollStepSize]=".05"
         [zoomMode]="enableLens ? 'toggle-click' : 'click'"
         class="image-zoom"
-        [class.lens-enabled]="enableLens"
-        [class.zooming-enabled]="zoomingEnabled"
-        [class.zoom-frozen]="zoomFrozen"
       >
       </lib-ngx-image-zoom>
 
       <div
-        class="image-zoom-indicator"
         [class.beyond-one]="Math.round(zoomScroll * 100) >= 101"
         [class.frozen]="zoomFrozen"
+        class="image-zoom-indicator"
       >
-        <a (click)="snapTo1x()" href="#" astrobinEventPreventDefault>
-          {{ zoomScroll | number: "1.2-2" }}x
+        <a (click)="snapTo1x()" astrobinEventPreventDefault href="#">
+          {{ zoomScroll | number : "1.2-2" }}x
           <fa-icon
             *ngIf="zoomFrozen"
-            icon="lock"
             class="ms-1"
+            icon="lock"
             ngbTooltip="{{ 'Zoom is frozen (F)' | translate }}"
           ></fa-icon>
         </a>
@@ -228,13 +212,7 @@
     </ng-container>
 
     <ng-container *ngIf="isVeryLargeImage">
-      <img
-        *ngIf="!real"
-        [src]="hd"
-        alt=""
-        class="hd-image"
-        [style.max-width.px]="naturalWidth"
-      />
+      <img *ngIf="!real" [src]="hd" [style.max-width.px]="naturalWidth" alt="" class="hd-image" />
 
       <a
         *ngIf="hd && real && realThumbnailUnsafeUrl"
@@ -242,12 +220,7 @@
         class="no-external-link-icon d-flex align-items-center"
         target="_blank"
       >
-        <img
-          [src]="hd"
-          alt=""
-          class="hd-image"
-          [style.max-width.px]="naturalWidth"
-        />
+        <img [src]="hd" [style.max-width.px]="naturalWidth" alt="" class="hd-image" />
       </a>
       <ng-container
         *ngIf="hd && real && allowReal && realThumbnailUnsafeUrl"
@@ -255,15 +228,10 @@
       ></ng-container>
     </ng-container>
 
-    <ng-container
-      *ngIf="hd && !allowReal"
-      [ngTemplateOutlet]="fullSizeLimitationTemplate"
-    ></ng-container>
+    <ng-container *ngIf="hd && !allowReal" [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
 
     <ng-container *ngIf="!isVeryLargeImage && real && allowReal">
-      <ng-container *ngIf="zoomFrozen"
-        [ngTemplateOutlet]="zoomFrozenInstructionTemplate">
-      </ng-container>
+      <ng-container *ngIf="zoomFrozen" [ngTemplateOutlet]="zoomFrozenInstructionTemplate"> </ng-container>
 
       <ng-container
         *ngIf="!zoomFrozen && !zoomingEnabled && !showZoomIndicator"
@@ -277,44 +245,43 @@
     </ng-container>
   </div>
 
-  <ng-container [ngTemplateOutlet]="zoomModesTemplate" [ngTemplateOutletContext]="{ real }"></ng-container>
+  <ng-container [ngTemplateOutletContext]="{ real }" [ngTemplateOutlet]="zoomModesTemplate"></ng-container>
 </ng-template>
 
 <ng-template #zoomModesTemplate let-real="real">
   <div
-    *ngIf="(!isVeryLargeImage && allowReal && !!real) &&
-           (isHybridPC || !isTouchDevice || (isHybridPC && !touchMode))"
+    *ngIf="!isVeryLargeImage && allowReal && !!real && (isHybridPC || !isTouchDevice || (isHybridPC && !touchMode))"
     class="zoom-modes"
   >
     <div
-      *ngIf="isHybridPC && !isGif"
       (click)="setTouchMouseMode(!touchMode)"
-      [ngbTooltip]="isTouchDevice ? null : 'Toggle touch/mouse mode.' | translate"
-      triggers="hover"
+      *ngIf="isHybridPC && !isGif"
+      [ngbTooltip]="isTouchDevice ? null : ('Toggle touch/mouse mode.' | translate)"
       container="body"
+      triggers="hover"
     >
       <ng-container *ngIf="touchMode">
-        <fa-icon icon="hand-pointer" class="me-2"></fa-icon>
+        <fa-icon class="me-2" icon="hand-pointer"></fa-icon>
         <span>{{ "Touch mode" | translate }}</span>
       </ng-container>
       <ng-container *ngIf="!touchMode">
-        <fa-icon icon="mouse-pointer" class="me-2"></fa-icon>
+        <fa-icon class="me-2" icon="mouse-pointer"></fa-icon>
         <span>{{ "Mouse mode" | translate }}</span>
       </ng-container>
     </div>
 
     <div
-      *ngIf="!touchMode"
       (click)="toggleEnableLens()"
+      *ngIf="!touchMode"
       [ngbTooltip]="'Toggle magnification mode, then click on the image.' | translate"
       container="body"
     >
       <ng-container *ngIf="!enableLens">
-        <fa-icon icon="expand" class="me-2"></fa-icon>
+        <fa-icon class="me-2" icon="expand"></fa-icon>
         <span>{{ "Zoom mode" | translate }}</span>
       </ng-container>
       <ng-container *ngIf="enableLens">
-        <fa-icon icon="magnifying-glass" class="me-2"></fa-icon>
+        <fa-icon class="me-2" icon="magnifying-glass"></fa-icon>
         <span>{{ "Lens mode" | translate }}</span>
       </ng-container>
     </div>
@@ -322,15 +289,15 @@
 </ng-template>
 
 <div
+  (mousemove)="onGlobalMouseMove($event)"
+  (touchend)="onTouchEnd($event)"
+  (touchmove)="onTouchMove($event)"
+  (touchstart)="onTouchStart($event)"
+  (wheel)="onGlobalWheel($event)"
   *ngIf="show"
   @fadeInOut
   [class.touch]="touchMode"
   class="fullscreen-image-viewer h-100"
-  (touchstart)="onTouchStart($event)"
-  (touchmove)="onTouchMove($event)"
-  (touchend)="onTouchEnd($event)"
-  (wheel)="onGlobalWheel($event)"
-  (mousemove)="onGlobalMouseMove($event)"
 >
   <ng-container
     *ngIf="{
@@ -360,7 +327,7 @@
 
   <div class="astrobin-logo">
     <a routerLink="/">
-      <img src="/assets/images/nav-logo.png?v=3" alt="AstroBin" />
+      <img alt="AstroBin" src="/assets/images/nav-logo.png?v=3" />
     </a>
   </div>
 </div>

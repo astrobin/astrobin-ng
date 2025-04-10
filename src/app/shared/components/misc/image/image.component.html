@@ -4,7 +4,7 @@
       <ng-container *ngIf="!!revision.encodedVideoFile; else stillProcessingTemplate">
         <video
           #videoPlayerElement
-          [attr.data-setup]='videoSetup'
+          [attr.data-setup]="videoSetup"
           [attr.poster]="thumbnailUrl"
           class="video-js vjs-default-skin"
           controls
@@ -19,8 +19,8 @@
 
 <ng-template #imageTemplate>
   <img
-    (load)="onLoad($event)"
     (intentionalClick)="onClick($event)"
+    (load)="onLoad($event)"
     (mouseenter)="imageMouseEnter.emit($event)"
     (mouseleave)="imageMouseLeave.emit($event)"
     [alt]="image.title"
@@ -29,26 +29,24 @@
     astrobinPreventScrollClick
     class="astrobin-image"
     id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revisionLabel }}-{{ alias }}"
-  >
+  />
 </ng-template>
 
 <ng-template #loadingTemplate>
-  <div
-    [style.padding]="!!height ? 0 : '2rem'"
-    class="loading-container"
-  >
+  <div [style.padding]="!!height ? 0 : '2rem'" class="loading-container">
     <astrobin-loading-indicator
+      [message]="
+        revision && revision.imageFile && revision.imageFile.toLowerCase().endsWith('.gif')
+          ? ('Loading GIF animation...' | translate)
+          : ''
+      "
       [progress]="imageLoadingProgress"
-      [message]="revision && revision.imageFile && revision.imageFile.toLowerCase().endsWith('.gif') ? ('Loading GIF animation...' | translate) : ''"
     ></astrobin-loading-indicator>
   </div>
 </ng-template>
 
 <ng-template #simpleLoadingTemplate>
-  <div
-    [style.padding]="!!height ? 0 : '2rem'"
-    class="loading-container"
-  >
+  <div [style.padding]="!!height ? 0 : '2rem'" class="loading-container">
     <astrobin-loading-indicator></astrobin-loading-indicator>
   </div>
 </ng-template>
@@ -56,9 +54,9 @@
 <ng-template #stillProcessingTemplate>
   <div class="loading-container">
     <astrobin-loading-indicator
-      class="video-still-processing py-5"
-      [progress]="videoEncodingProgress"
       [message]="'This video is still processing, please return to this page later.' | translate"
+      [progress]="videoEncodingProgress"
+      class="video-still-processing py-5"
     ></astrobin-loading-indicator>
   </div>
 </ng-template>

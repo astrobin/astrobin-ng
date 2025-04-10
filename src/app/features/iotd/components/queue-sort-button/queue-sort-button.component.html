@@ -1,22 +1,22 @@
 <div class="d-inline-block" ngbDropdown>
   <button
-    ngbDropdownToggle
-    id="sort-dropdown-button"
-    class="btn btn-sm-block btn-text"
     [class.loading]="loadingService.loading$ | async"
+    class="btn btn-sm-block btn-text"
+    id="sort-dropdown-button"
+    ngbDropdownToggle
   >
     <fa-icon icon="sort"></fa-icon>
     {{ "Sort" | translate }}
   </button>
 
   <div [attr.aria-labelledby]="'sort-dropdown-button'" ngbDropdownMenu>
-    <button class="dropdown-item" (click)="queueSortOrderChanged.emit('newest')">
+    <button (click)="queueSortOrderChanged.emit('newest')" class="dropdown-item">
       <fa-icon *ngIf="(newestFirst$ | async) === true" icon="dot-circle"></fa-icon>
       <fa-icon *ngIf="(newestFirst$ | async) === false" icon="circle"></fa-icon>
       {{ "Newest first" | translate }}
     </button>
 
-    <button class="dropdown-item" (click)="queueSortOrderChanged.emit('oldest')">
+    <button (click)="queueSortOrderChanged.emit('oldest')" class="dropdown-item">
       <fa-icon *ngIf="(oldestFirst$ | async) === true" icon="dot-circle"></fa-icon>
       <fa-icon *ngIf="(oldestFirst$ | async) === false" icon="circle"></fa-icon>
       {{ "Oldest first" | translate }}

@@ -1,13 +1,9 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import type { AfterViewInit, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { MainState } from "@app/store/state";
-import { environment } from "@env/environment";
-import { Store } from "@ngrx/store";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { TranslateService } from "@ngx-translate/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import type { MainState } from "@app/store/state";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TitleService } from "@core/services/title/title.service";
@@ -15,10 +11,15 @@ import { UploadDataService } from "@core/services/upload-metadata/upload-data.se
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { SubscriptionName } from "@core/types/subscription-name.type";
-import { UploadState, UploadxService } from "ngx-uploadx";
-import { takeUntil } from "rxjs/operators";
-import { ActivatedRoute, Router } from "@angular/router";
+import { environment } from "@env/environment";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
+import type { UploadState } from "ngx-uploadx";
+import { UploadxService } from "ngx-uploadx";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-uploader-page",
@@ -34,9 +35,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   SubscriptionName: typeof SubscriptionName = SubscriptionName;
   pageTitle = this.translate.instant("Uploader");
   imageRevisionEtiquetteMessage =
-    this.translate.instant(
-      "Different take on existing data? Consider uploading as a revision."
-    ) +
+    this.translate.instant("Different take on existing data? Consider uploading as a revision.") +
     " <a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>" +
     this.translate.instant("Learn more") +
     ".</a>";
@@ -88,17 +87,16 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   }
 
   subscriptionWithTotalSlotsMessage(counter: number, slots: number): string {
-    return this.translate.instant(
-      "You have used <strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots.",
-      {
+    return (
+      this.translate.instant("You have used <strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots.", {
         1: counter,
         2: slots
-      }
-    ) + " " + this.translate.instant(
-      "Learn more about the {{1}}subscription plans{{2}}.", {
+      }) +
+      " " +
+      this.translate.instant("Learn more about the {{1}}subscription plans{{2}}.", {
         1: "<a href='" + this.classicRoutesService.PRICING + "' target='_blank'>",
         2: "</a>"
-      }
+      })
     );
   }
 
@@ -127,7 +125,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
         const hash = response.hash;
-        const forceClassicEditor = this.route.snapshot.queryParams["forceClassicEditor"] !== undefined;
+        const forceClassicEditor = this.route.snapshot.queryParams.forceClassicEditor !== undefined;
 
         if (forceClassicEditor) {
           this.windowRef.nativeWindow.location.assign(
@@ -188,8 +186,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       this.popNotificationsService.warning(
         this.translate.instant(
           "If this file is a different take on the same data as in another image you already published on " +
-          "AstroBin, the common practice would be to upload it as a new revision. For more info, please " +
-          "{{0}}click here{{1}}.",
+            "AstroBin, the common practice would be to upload it as a new revision. For more info, please " +
+            "{{0}}click here{{1}}.",
           {
             0: "<a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>",
             1: "</a>"
@@ -228,7 +226,10 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
         props: {
           required: true,
           endpoint: `${environment.classicApiUrl}/api/v2/images/image-upload/`,
-          allowedTypes: Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(",") + "," + Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS.join(","),
+          allowedTypes:
+            Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(",") +
+            "," +
+            Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS.join(","),
           uploadLabel: this.uploadDataService.getUploadLabel(
             Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.concat(Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS).join(",")
           ),
@@ -240,6 +241,6 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
           validation: [{ name: "file-size", options: { max: 0 } }]
         }
       }
-    ]
+    ];
   }
 }

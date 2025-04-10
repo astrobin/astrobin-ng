@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
+import type { MainState } from "@app/store/state";
 import { LoadingService } from "@core/services/loading.service";
-import { TranslateService } from "@ngx-translate/core";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { Subscription } from "rxjs";
-import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import type { Subscription } from "rxjs";
 
 @Injectable({
   providedIn: null
@@ -28,6 +28,7 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
   }
 
   onFieldsInitialized(): void {
+    // No initialization needed for equipment fields
   }
 
   getImagingTelescopes(componentId: string): FormlyFieldConfig {

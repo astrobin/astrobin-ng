@@ -1,29 +1,27 @@
 <ng-container *ngIf="permissions$ | async as permissions">
-
-  <div class="row g-0" *ngIf="availableFilters.length > 0">
+  <div *ngIf="availableFilters.length > 0" class="row g-0">
     <div class="col">
       <div class="d-flex flex-wrap align-items-center gap-2">
-        <div ngbDropdown class="filters m-0 p-0 w-auto">
-          <button type="button" class="btn btn-outline-primary btn-xs btn-no-block" id="add-filter" ngbDropdownToggle>
+        <div class="filters m-0 p-0 w-auto" ngbDropdown>
+          <button class="btn btn-outline-primary btn-xs btn-no-block" id="add-filter" ngbDropdownToggle type="button">
             {{ "Filter results" | translate }}
           </button>
-          <div ngbDropdownMenu [attr.aria-labelledby]="'add-filter'" class="fullscreen-on-mobile">
-            <button
-              *ngIf="!permissions.mayAccess"
-              ngbDropdownItem
-              (click)="showSubscriptionRequiredModal()"
-            >
+          <div [attr.aria-labelledby]="'add-filter'" class="fullscreen-on-mobile" ngbDropdownMenu>
+            <button (click)="showSubscriptionRequiredModal()" *ngIf="!permissions.mayAccess" ngbDropdownItem>
               <fa-icon icon="lock"></fa-icon>
               <span
-                [innerHTML]="'To use this feature, you need the <strong>{{0}}</strong> subscription or higher.' | translate: {'0': SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020}"
+                [innerHTML]="
+                  'To use this feature, you need the <strong>{{0}}</strong> subscription or higher.'
+                    | translate : { '0': SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020 }
+                "
               >
               </span>
             </button>
             <button
-              *ngFor="let filter of availableFilters"
-              ngbDropdownItem
-              [disabled]="isActive(filter) || !permissions.mayAccess"
               (click)="addFilter(filter)"
+              *ngFor="let filter of availableFilters"
+              [disabled]="isActive(filter) || !permissions.mayAccess"
+              ngbDropdownItem
             >
               <fa-icon [icon]="permissions.mayAccess ? filter.icon : 'lock'"></fa-icon>
               {{ filter.label }}
@@ -33,52 +31,55 @@
 
         <div *ngFor="let filter of activeFilters" class="filter">
           <div class="widget">
-
             <ng-container *ngIf="filter.widget === FilterWidget.SELECT">
-              <div ngbDropdown class="p-0 w-auto">
+              <div class="p-0 w-auto" ngbDropdown>
                 <button
-                  type="button"
-                  class="btn btn-outline-secondbary btn-xs btn-no-block"
                   [id]="'filter-dropdown-' + filter.type"
+                  class="btn btn-outline-secondbary btn-xs btn-no-block"
                   ngbDropdownToggle
+                  type="button"
                 >
                   <fa-icon [icon]="filter.icon"></fa-icon>
-                  {{ filter.label }} = {{ filter.value ? filter.humanizeValueFunction(filter.value) : "Any" | translate }}
+                  {{ filter.label }}
+                  = {{ filter.value ? filter.humanizeValueFunction(filter.value) : ("Any" | translate) }}
 
-                  <div ngbDropdownMenu [attr.aria-labelledby]="'filter-dropdown-' + filter.type">
+                  <div [attr.aria-labelledby]="'filter-dropdown-' + filter.type" ngbDropdownMenu>
                     <div class="widget-content">
-                      <label class="mb-2">
-                        {{ "Select" | translate }}:
-                      </label>
+                      <label class="mb-2"> {{ "Select" | translate }}: </label>
                       <ng-select
-                        bindValue="value"
-                        bindLabel="label"
-                        [attr.id]="'filter-select-' + filter.type"
-                        [items]="filter.items"
-                        [(ngModel)]="filter.value"
-                        [clearable]="false"
                         (change)="setFilterValue(filter, $event.value)"
+                        [(ngModel)]="filter.value"
+                        [attr.id]="'filter-select-' + filter.type"
+                        [clearable]="false"
+                        [items]="filter.items"
+                        bindLabel="label"
+                        bindValue="value"
                       ></ng-select>
                     </div>
                   </div>
                 </button>
-                <button type="button" class="btn btn-outline-secondary btn-xs btn-close btn-no-block" (click)="removeFilter(filter)">
+                <button
+                  (click)="removeFilter(filter)"
+                  class="btn btn-outline-secondary btn-xs btn-close btn-no-block"
+                  type="button"
+                >
                   &times;
                 </button>
               </div>
             </ng-container>
 
             <ng-container *ngIf="filter.widget === FilterWidget.TOGGLE">
-              <div ngbDropdown class="p-0 w-auto">
+              <div class="p-0 w-auto" ngbDropdown>
                 <button
-                  type="button"
-                  class="btn btn-outline-secondary btn-xs btn-no-block"
                   [id]="'filter-dropdown-' + filter.type"
+                  class="btn btn-outline-secondary btn-xs btn-no-block"
                   ngbDropdownToggle
+                  type="button"
                 >
-                  <fa-icon [icon]="filter.icon"></fa-icon> {{ filter.label }} = {{ filter.value | yesNo}}
+                  <fa-icon [icon]="filter.icon"></fa-icon>
+                  {{ filter.label }} = {{ filter.value | yesNo }}
 
-                  <div ngbDropdownMenu [attr.aria-labelledby]="'filter-dropdown-' + filter.type">
+                  <div [attr.aria-labelledby]="'filter-dropdown-' + filter.type" ngbDropdownMenu>
                     <div class="widget-content">
                       <astrobin-toggle-button
                         (toggle)="setFilterValue(filter, $event)"
@@ -88,83 +89,87 @@
                     </div>
                   </div>
                 </button>
-                <button type="button" class="btn btn-outline-secondary btn-xs btn-close btn-no-block" (click)="removeFilter(filter)">
+                <button
+                  (click)="removeFilter(filter)"
+                  class="btn btn-outline-secondary btn-xs btn-close btn-no-block"
+                  type="button"
+                >
                   &times;
                 </button>
               </div>
             </ng-container>
 
             <ng-container *ngIf="filter.widget === FilterWidget.NUMBER_RANGE">
-              <div ngbDropdown class="p-0 w-auto">
+              <div class="p-0 w-auto" ngbDropdown>
                 <button
-                  type="button"
-                  class="btn btn-outline-secondary btn-xs btn-no-block"
                   [id]="'filter-dropdown-' + filter.type"
+                  class="btn btn-outline-secondary btn-xs btn-no-block"
                   ngbDropdownToggle
+                  type="button"
                 >
                   <fa-icon [icon]="filter.icon"></fa-icon>
-                  {{ filter.label }} = {{ filter.value.from || 0}} - {{ filter.value.to || 0 }}
+                  {{ filter.label }} = {{ filter.value.from || 0 }} - {{ filter.value.to || 0 }}
 
-                  <div ngbDropdownMenu [attr.aria-labelledby]="'filter-dropdown-' + filter.type">
+                  <div [attr.aria-labelledby]="'filter-dropdown-' + filter.type" ngbDropdownMenu>
                     <div class="widget-content">
                       <div class="mb-3">
                         <label [for]="'filter-dropdown-' + filter.type + '-from'" class="form-label">
                           {{ "From" | translate }}:
                         </label>
                         <input
-                          type="number"
-                          class="form-control"
-                          [id]="'filter-dropdown-' + filter.type + '-from'"
+                          (change)="setFilterValue(filter, { from: filter.value.from, to: filter.value.to })"
                           [(ngModel)]="filter.value.from"
-                          (change)="setFilterValue(filter, {from: filter.value.from, to: filter.value.to})"
-                        >
+                          [id]="'filter-dropdown-' + filter.type + '-from'"
+                          class="form-control"
+                          type="number"
+                        />
                       </div>
                       <div>
                         <label [for]="'filter-dropdown-' + filter.type + '-to'" class="form-label">
                           {{ "To" | translate }}:
                         </label>
                         <input
-                          type="number"
-                          class="form-control"
-                          [id]="'filter-dropdown-' + filter.type + '-to'"
+                          (change)="setFilterValue(filter, { from: filter.value.from, to: filter.value.to })"
                           [(ngModel)]="filter.value.to"
-                          (change)="setFilterValue(filter, {from: filter.value.from, to: filter.value.to})"
-                        >
+                          [id]="'filter-dropdown-' + filter.type + '-to'"
+                          class="form-control"
+                          type="number"
+                        />
                       </div>
                     </div>
                   </div>
                 </button>
-                <button type="button" class="btn btn-outline-secondary btn-xs btn-close btn-no-block" (click)="removeFilter(filter)">
+                <button
+                  (click)="removeFilter(filter)"
+                  class="btn btn-outline-secondary btn-xs btn-close btn-no-block"
+                  type="button"
+                >
                   &times;
                 </button>
               </div>
             </ng-container>
-
           </div>
         </div>
 
-        <button
-          *ngIf="changed"
-          type="button"
-          class="btn btn-primary btn-xs btn-no-block"
-          (click)="apply()"
-        >
+        <button (click)="apply()" *ngIf="changed" class="btn btn-primary btn-xs btn-no-block" type="button">
           {{ "Apply" | translate }}
         </button>
 
         <a
-          astrobinEventPreventDefault
-          href="#"
-          *ngIf="activeFilters.length > 0"
-          class="clear-filters"
           (click)="clearFilters()"
+          *ngIf="activeFilters.length > 0"
+          astrobinEventPreventDefault
+          class="clear-filters"
+          href="#"
         >
           <span class="d-block btn btn-xs btn-outline-secondary btn-no-block">
             {{ "Clear all filters" | translate }}
           </span>
         </a>
-      </div> <!-- flex -->
-    </div> <!-- col -->
-  </div> <!-- row -->
-
+      </div>
+      <!-- flex -->
+    </div>
+    <!-- col -->
+  </div>
+  <!-- row -->
 </ng-container>

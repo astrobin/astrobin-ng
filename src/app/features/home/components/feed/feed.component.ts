@@ -1,30 +1,47 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { select, Store } from "@ngrx/store";
-import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Inject,
+  PLATFORM_ID,
+  Renderer2,
+  ViewChild
+} from "@angular/core";
+import type { ComponentRef, OnDestroy, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import type { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
+import type { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import { FrontpageSection } from "@core/interfaces/user-profile.interface";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import type {
+  ImageViewerNavigationContext,
+  ImageViewerNavigationContextItem
+} from "@core/services/image-viewer.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { UpdateUserProfile } from "@features/account/store/auth.actions";
+import type { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
 import { FeedApiService } from "@features/home/services/feed-api.service";
 import { FeedService } from "@features/home/services/feed.service";
-import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { FrontpageSection, UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { FINAL_REVISION_LABEL, ImageInterface } from "@core/interfaces/image.interface";
-import { ImageViewerNavigationContext, ImageViewerNavigationContextItem, ImageViewerService } from "@core/services/image-viewer.service";
-import { isPlatformBrowser } from "@angular/common";
-import { auditTime, finalize, fromEvent, Observable, Subscription } from "rxjs";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { select, Store } from "@ngrx/store";
 import { fadeInOut } from "@shared/animations";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { ImageService } from "@core/services/image/image.service";
-import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
-import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
-import { ImageAlias } from "@core/enums/image-alias.enum";
-import { DeviceService } from "@core/services/device.service";
-import { UpdateUserProfile } from "@features/account/store/auth.actions";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import type { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
+import { auditTime, finalize, fromEvent, Observable } from "rxjs";
+import type { Subscription } from "rxjs";
+import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 enum FeedTab {
   FEED = "FEED",
@@ -33,30 +50,19 @@ enum FeedTab {
 
 enum FeedType {
   GLOBAL = "GLOBAL",
-  PERSONAL = "PERSONAL",
+  PERSONAL = "PERSONAL"
 }
 
 @Component({
   selector: "astrobin-feed",
   template: `
     <div class="feed-container d-flex justify-content-between align-items-center mb-3">
-      <ul
-        #nav="ngbNav"
-        (activeIdChange)="onTabChange($event)"
-        [(activeId)]="activeTab"
-        class="nav-tabs"
-        ngbNav
-      >
+      <ul #nav="ngbNav" (activeIdChange)="onTabChange($event)" [(activeId)]="activeTab" class="nav-tabs" ngbNav>
         <li [ngbNavItem]="FeedTab.FEED" class="me-2">
           <a ngbNavLink translate="Activity feed"></a>
           <ng-template ngbNavContent>
-            <div
-              *ngIf="loading && isBrowser"
-              class="d-flex d-md-none flex-column mobile-feed-loading gap-3"
-            >
-              <astrobin-image-loading-indicator
-                *ngFor="let x of Array(50)"
-              ></astrobin-image-loading-indicator>
+            <div *ngIf="loading && isBrowser" class="d-flex d-md-none flex-column mobile-feed-loading gap-3">
+              <astrobin-image-loading-indicator *ngFor="let x of Array(50)"></astrobin-image-loading-indicator>
             </div>
 
             <astrobin-image-gallery-loading
@@ -89,25 +95,14 @@ enum FeedType {
               </astrobin-masonry-layout>
             </div>
 
-            <div
-              *ngIf="!loadingMore && !loading && !!next"
-              class="w-100 d-flex justify-content-center mt-4"
-            >
-              <button
-                (click)="onScroll()"
-                class="btn btn-outline-primary btn-no-block"
-              >
+            <div *ngIf="!loadingMore && !loading && !!next" class="w-100 d-flex justify-content-center mt-4">
+              <button (click)="onScroll()" class="btn btn-outline-primary btn-no-block">
                 {{ "Load more" | translate }}
               </button>
             </div>
 
-            <div
-              *ngIf="!loading && loadingMore"
-              class="d-flex d-md-none flex-column mobile-feed-loading gap-3"
-            >
-              <astrobin-image-loading-indicator
-                *ngFor="let x of Array(50)"
-              ></astrobin-image-loading-indicator>
+            <div *ngIf="!loading && loadingMore" class="d-flex d-md-none flex-column mobile-feed-loading gap-3">
+              <astrobin-image-loading-indicator *ngFor="let x of Array(50)"></astrobin-image-loading-indicator>
             </div>
 
             <astrobin-image-gallery-loading
@@ -131,11 +126,7 @@ enum FeedType {
             ></astrobin-image-gallery-loading>
 
             <div [style.min-height.px]="lastKnownHeight">
-              <astrobin-masonry-layout
-                [idProperty]="'pk'"
-                [items]="images"
-                [layout]="'medium'"
-              >
+              <astrobin-masonry-layout [idProperty]="'pk'" [items]="images" [layout]="'medium'">
                 <ng-template let-item>
                   <div class="image-container">
                     <a
@@ -151,7 +142,7 @@ enum FeedType {
                           [useHighResolution]="fit.scale > 3"
                           [ngStyle]="{
                             'background-position': fit.position.x + '% ' + fit.position.y + '%',
-                            'background-size': fit.scale > 1.5 ? (fit.scale * 100) + '%' : 'cover',
+                            'background-size': fit.scale > 1.5 ? fit.scale * 100 + '%' : 'cover',
                             'background-repeat': 'no-repeat'
                           }"
                           [attr.aria-label]="item.title"
@@ -179,14 +170,8 @@ enum FeedType {
               </astrobin-masonry-layout>
             </div>
 
-            <div
-              *ngIf="!loadingMore && !loading && !!next"
-              class="w-100 d-flex justify-content-center mt-4"
-            >
-              <button
-                (click)="onScroll()"
-                class="btn btn-outline-primary btn-no-block"
-              >
+            <div *ngIf="!loadingMore && !loading && !!next" class="w-100 d-flex justify-content-center mt-4">
+              <button (click)="onScroll()" class="btn btn-outline-primary btn-no-block">
                 {{ "Load more" | translate }}
               </button>
             </div>
@@ -203,10 +188,7 @@ enum FeedType {
         </li>
       </ul>
 
-      <div
-        *ngIf="!!currentUserProfile"
-        class="global-personal-switcher"
-      >
+      <div *ngIf="!!currentUserProfile" class="global-personal-switcher">
         <fa-icon
           (click)="onFeedTypeChange(FeedType.GLOBAL)"
           [class.active]="activeFeedType === FeedType.GLOBAL"
@@ -269,7 +251,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     public readonly feedApiService: FeedApiService,
     public readonly feedService: FeedService,
     public readonly imageViewerService: ImageViewerService,
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId: object,
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     public readonly utilsService: UtilsService,
@@ -326,13 +308,12 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     this.onTabChange(this.activeTab);
 
     if (this.isBrowser) {
-      fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
-        auditTime(100),
-        takeUntil(this.destroyed$)
-      ).subscribe(() => {
-        this.onScroll();
-        this.changeDetectorRef.markForCheck();
-      });
+      fromEvent(this.windowRefService.nativeWindow, "scroll")
+        .pipe(auditTime(100), takeUntil(this.destroyed$))
+        .subscribe(() => {
+          this.onScroll();
+          this.changeDetectorRef.markForCheck();
+        });
     }
   }
 
@@ -378,39 +359,36 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     }
 
     if (newDefaultFrontpageSection && newDefaultFrontpageSection !== this.currentUserProfile.defaultFrontpageSection) {
-      this.store$.dispatch(new UpdateUserProfile({
-        id: this.currentUserProfile.id,
-        defaultFrontpageSection: newDefaultFrontpageSection
-      }));
+      this.store$.dispatch(
+        new UpdateUserProfile({
+          id: this.currentUserProfile.id,
+          defaultFrontpageSection: newDefaultFrontpageSection
+        })
+      );
     }
   }
 
   openImageById(feedItemId: FeedItemInterface["id"], imageId: ImageInterface["hash"] | ImageInterface["pk"]): void {
     const navigationContext = this._imageContentType
-      ? this._filterFeedItemsByContentType(this.feedItems, this._imageContentType).map(
-        item => this._navigationContextItemFromFeedItem(item)
-      )
+      ? this._filterFeedItemsByContentType(this.feedItems, this._imageContentType).map(item =>
+          this._navigationContextItemFromFeedItem(item)
+        )
       : [];
 
     const paginationMapper = (results: any) => {
       if (this.activeTab === FeedTab.FEED) {
-        return this._filterFeedItemsByContentType(results.results as FeedItemInterface[], this._imageContentType)
-          .map(item => this._navigationContextItemFromFeedItem(item));
+        return this._filterFeedItemsByContentType(results.results as FeedItemInterface[], this._imageContentType).map(
+          item => this._navigationContextItemFromFeedItem(item)
+        );
       } else {
-        return (results.results as ImageInterface[])
-          .map(item => ({
-            imageId: item.hash || item.pk.toString(),
-            thumbnailUrl: this.imageService.getGalleryThumbnail(item)
-          }));
+        return (results.results as ImageInterface[]).map(item => ({
+          imageId: item.hash || item.pk.toString(),
+          thumbnailUrl: this.imageService.getGalleryThumbnail(item)
+        }));
       }
     };
 
-    this._openImageInSlideshow(
-      feedItemId.toString(),
-      imageId,
-      navigationContext,
-      paginationMapper
-    );
+    this._openImageInSlideshow(feedItemId.toString(), imageId, navigationContext, paginationMapper);
   }
 
   openImage(image: ImageInterface): void {
@@ -426,12 +404,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
         thumbnailUrl: this.imageService.getGalleryThumbnail(i)
       }));
 
-    this._openImageInSlideshow(
-      imageId.toString(),
-      imageId,
-      navigationContext,
-      paginationMapper
-    );
+    this._openImageInSlideshow(imageId.toString(), imageId, navigationContext, paginationMapper);
   }
 
   protected onScroll(): void {
@@ -440,7 +413,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       this.loadingMore ||
       this.next === null ||
       // If the element is not visible, don't load more.
-      this.elementRef.nativeElement.querySelector('.tab-pane.active').offsetHeight === 0 ||
+      this.elementRef.nativeElement.querySelector(".tab-pane.active").offsetHeight === 0 ||
       !this.utilsService.isNearBottom(this.windowRefService, this.elementRef)
     ) {
       return;
@@ -458,37 +431,44 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   ): void {
     this.loadingItemId = loadingId;
 
-    this.imageService.loadImage(imageId).pipe(
-      switchMap(dbImage => {
-        const alias: ImageAlias = this.deviceService.lgMax() ? ImageAlias.HD : ImageAlias.QHD;
-        const thumbnailUrl = this.imageService.getThumbnail(dbImage, alias);
-        return this.imageService.loadImageFile(thumbnailUrl, () => {
-        });
-      }),
-      switchMap(() =>
-        this.imageViewerService.openSlideshow(
-          this.componentId,
-          imageId,
-          FINAL_REVISION_LABEL,
-          navigationContext,
-          true
-        )
-      ),
-      tap(slideshow => {
-        this._setupSlideshowPagination(slideshow, paginationMapper);
-      }),
-      finalize(() => {
-        this.loadingItemId = null;
-        this.changeDetectorRef.markForCheck();
-      })
-    ).subscribe({
-      error: (error) => {
-        console.error("Failed to load image:", error);
-      }
-    });
+    this.imageService
+      .loadImage(imageId)
+      .pipe(
+        switchMap(dbImage => {
+          const alias: ImageAlias = this.deviceService.lgMax() ? ImageAlias.HD : ImageAlias.QHD;
+          const thumbnailUrl = this.imageService.getThumbnail(dbImage, alias);
+          return this.imageService.loadImageFile(thumbnailUrl, () => {
+            return undefined;
+          });
+        }),
+        switchMap(() =>
+          this.imageViewerService.openSlideshow(
+            this.componentId,
+            imageId,
+            FINAL_REVISION_LABEL,
+            navigationContext,
+            true
+          )
+        ),
+        tap(slideshow => {
+          this._setupSlideshowPagination(slideshow, paginationMapper);
+        }),
+        finalize(() => {
+          this.loadingItemId = null;
+          this.changeDetectorRef.markForCheck();
+        })
+      )
+      .subscribe({
+        error: error => {
+          console.error("Failed to load image:", error);
+        }
+      });
   }
 
-  private _filterFeedItemsByContentType(items: FeedItemInterface[], contentType: ContentTypeInterface): FeedItemInterface[] {
+  private _filterFeedItemsByContentType(
+    items: FeedItemInterface[],
+    contentType: ContentTypeInterface
+  ): FeedItemInterface[] {
     return items.filter(item => {
       return item.targetContentType === contentType.id || item.actionObjectContentType === contentType.id;
     });
@@ -496,22 +476,23 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
 
   private _navigationContextItemFromFeedItem(item: FeedItemInterface): ImageViewerNavigationContextItem {
     if (item.targetContentType === this._imageContentType.id) {
-      return ({
+      return {
         imageId: item.targetObjectId,
         thumbnailUrl: item.thumbnail
-      });
+      };
     } else {
-      return ({
+      return {
         imageId: item.actionObjectObjectId,
         thumbnailUrl: item.thumbnail
-      });
+      };
     }
   }
 
   private _setupSlideshowPagination(
     slideshow: ComponentRef<ImageViewerSlideshowComponent>,
-    getNewNavigationContext:
-      (results: PaginatedApiResultInterface<FeedItemInterface | ImageInterface>) => ImageViewerNavigationContext
+    getNewNavigationContext: (
+      results: PaginatedApiResultInterface<FeedItemInterface | ImageInterface>
+    ) => ImageViewerNavigationContext
   ): void {
     if (this._nearEndOfContextSubscription) {
       this._nearEndOfContextSubscription.unsubscribe();
@@ -523,11 +504,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
         takeUntil(this.destroyed$)
       )
       .subscribe(() => {
-        if (
-          this.loading ||
-          this.loadingMore ||
-          this.next === null
-        ) {
+        if (this.loading || this.loadingMore || this.next === null) {
           return;
         }
 
@@ -538,10 +515,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
           const currentNavigationContext = slideshow.instance.navigationContext;
           const newItems = getNewNavigationContext(results);
 
-          const newNavigationContext = [
-            ...currentNavigationContext,
-            ...newItems
-          ];
+          const newNavigationContext = [...currentNavigationContext, ...newItems];
 
           slideshow.instance.setNavigationContext(newNavigationContext);
           this.changeDetectorRef.markForCheck();
@@ -590,10 +564,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     const _loadRecent = (section: FrontpageSection): Observable<PaginatedApiResultInterface<ImageInterface>> => {
       return new Observable(observer => {
         this._currentDataSubscription = this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
-          this.images = [
-            ...this.images || [],
-            ...feedItems.results as ImageInterface[]
-          ];
+          this.images = [...(this.images || []), ...(feedItems.results as ImageInterface[])];
 
           this.next = feedItems.next;
           _cleanUp();
@@ -620,19 +591,23 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   }
 
   private _initContentTypes() {
-    this.store$.pipe(
-      select(selectContentType, { appLabel: "astrobin", model: "image" }),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      this._imageContentType = contentType;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.store$
+      .pipe(
+        select(selectContentType, { appLabel: "astrobin", model: "image" }),
+        filter(contentType => !!contentType),
+        take(1)
+      )
+      .subscribe(contentType => {
+        this._imageContentType = contentType;
+        this.changeDetectorRef.markForCheck();
+      });
 
-    this.store$.dispatch(new LoadContentType({
-      appLabel: "astrobin",
-      model: "image"
-    }));
+    this.store$.dispatch(
+      new LoadContentType({
+        appLabel: "astrobin",
+        model: "image"
+      })
+    );
   }
 
   protected readonly ImageAlias = ImageAlias;

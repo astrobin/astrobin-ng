@@ -1,41 +1,77 @@
-import { Component, EventEmitter, HostListener, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { Action, Store } from "@ngrx/store";
-import { EquipmentItemBaseInterface, EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
-import { forkJoin, Observable, of, Subscription } from "rxjs";
-import { TranslateService } from "@ngx-translate/core";
-import { CreateAccessory, CreateCamera, CreateFilter, CreateMount, CreateSensor, CreateSoftware, CreateTelescope, EquipmentActionTypes, EquipmentItemCreationSuccessPayloadInterface, FindAllEquipmentItems, FindAllEquipmentItemsSuccess, FindRecentlyUsedEquipmentItems, FindRecentlyUsedEquipmentItemsSuccess, ItemBrowserAdd, ItemBrowserExitFullscreen, ItemBrowserSet, LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { filter, first, map, switchMap, take, takeUntil } from "rxjs/operators";
-import { Actions, ofType } from "@ngrx/effects";
-import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { LoadingService } from "@core/services/loading.service";
-import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
-import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import { MountInterface } from "@features/equipment/types/mount.interface";
-import { FilterInterface } from "@features/equipment/types/filter.interface";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { isPlatformBrowser } from "@angular/common";
+import type { OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import type { MainState } from "@app/store/state";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import type {
+  EquipmentItemCreationSuccessPayloadInterface,
+  FindAllEquipmentItemsSuccess,
+  FindRecentlyUsedEquipmentItemsSuccess,
+  ItemBrowserSet
+} from "@features/equipment/store/equipment.actions";
+import {
+  CreateAccessory,
+  CreateCamera,
+  CreateFilter,
+  CreateMount,
+  CreateSensor,
+  CreateSoftware,
+  CreateTelescope,
+  EquipmentActionTypes,
+  FindAllEquipmentItems,
+  FindRecentlyUsedEquipmentItems,
+  ItemBrowserAdd,
+  ItemBrowserExitFullscreen,
+  LoadBrand,
+  LoadEquipmentItem
+} from "@features/equipment/store/equipment.actions";
+import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import type { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import type { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { FilterInterface } from "@features/equipment/types/filter.interface";
+import type { MountInterface } from "@features/equipment/types/mount.interface";
+import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import type { SoftwareInterface } from "@features/equipment/types/software.interface";
+import type { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import type { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import type { Action } from "@ngrx/store";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
+import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
+import type { Subscription } from "rxjs";
+import { forkJoin, Observable, of } from "rxjs";
+import { filter, first, map, switchMap, take, takeUntil } from "rxjs/operators";
 
 type Type = EquipmentItem["id"];
 type TypeUnion = EquipmentItem["id"] | EquipmentItem["id"][];
 
 export enum ItemBrowserLayout {
   HORIZONTAL,
-  VERTICAL,
+  VERTICAL
 }
 
 @Component({
@@ -135,7 +171,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   itemBrowserSetSubscription: Subscription;
 
   @ViewChild("editor")
-  editor: BaseItemEditorComponent<EquipmentItemBaseInterface, null>;
+  editor: BaseItemEditorComponent<EquipmentItemBaseInterface>;
 
   @ViewChild("equipmentItemLabelTemplate")
   equipmentItemLabelTemplate: TemplateRef<any>;
@@ -177,7 +213,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     public readonly equipmentItemService: EquipmentItemService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(store$);
   }
@@ -185,8 +221,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   @HostListener("window:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === "Escape" && this.enableFullscreen) {
-      const fullscreenModal = isPlatformBrowser(this.platformId) &&
-        this.windowRefService.nativeWindow.document.querySelector('.equipment-item-browser-fullscreen-modal');
+      const fullscreenModal =
+        isPlatformBrowser(this.platformId) &&
+        this.windowRefService.nativeWindow.document.querySelector(".equipment-item-browser-fullscreen-modal");
 
       if (fullscreenModal) {
         this.store$.dispatch(new ItemBrowserExitFullscreen());
@@ -292,9 +329,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       const options =
         items.length > 0
           ? UtilsService.arrayUniqueObjects(
-            items.map(item => this._getNgOptionValue(item)),
-            "value"
-          )
+              items.map(item => this._getNgOptionValue(item)),
+              "value"
+            )
           : [];
       const ids = items.map(item => item.id);
 
@@ -458,7 +495,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
             filter(brand => !!brand),
             take(1)
           )
-          .subscribe(brand => {
+          .subscribe(() => {
             _doSetValue(itemToAdd);
           });
       } else {
@@ -488,7 +525,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     this.popNotificationsService.success(
       this.translateService.instant(
         "Because of your contribution in adding this equipment item, the next person who wants to associate it " +
-        "with their images won't have to repeat the same process."
+          "with their images won't have to repeat the same process."
       ),
       this.translateService.instant("Thank you so much for contributing to the AstroBin equipment database! 🙌")
     );
@@ -581,12 +618,14 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   onItemSetByBrowsingByProperties(item: EquipmentItem): void {
     if (this.multiple) {
-      this.store$.dispatch(new ItemBrowserAdd({
-        type: this.type,
-        usageType: this.usageType,
-        item,
-        componentId: this.parentComponentId
-      }));
+      this.store$.dispatch(
+        new ItemBrowserAdd({
+          type: this.type,
+          usageType: this.usageType,
+          item,
+          componentId: this.parentComponentId
+        })
+      );
     } else {
       this.addItem(item);
     }
@@ -674,14 +713,16 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                               map(payload => payload.items)
                             )
                             .subscribe(items => {
-                              const field = this.fields[0].fieldGroup.find(f => f.key === "value");
-                              field.props = {
-                                ...field.props,
-                                options: of(items.map(item => ({
-                                  value: item.id,
-                                  label: item.name,
-                                  item
-                                })))
+                              const valueField = this.fields[0].fieldGroup.find(f => f.key === "value");
+                              valueField.props = {
+                                ...valueField.props,
+                                options: of(
+                                  items.map(item => ({
+                                    value: item.id,
+                                    label: item.name,
+                                    item
+                                  }))
+                                )
                               };
                             });
                         }
@@ -701,7 +742,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                   id: `${this.id}`,
                   wrappers: ["default-wrapper"],
                   expressions: {
-                    "props.disabled": config => {
+                    "props.disabled": () => {
                       return this.options.formState.creationMode || !this.model.klass;
                     },
                     "props.required": () => this.required
@@ -791,6 +832,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         })
       )
       .subscribe(() => {
+        // Subscription setup complete
       });
 
     // The clearing, adding and setting here are only happening from the image editor.
@@ -804,11 +846,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         takeUntil(this.destroyed$),
         ofType(EquipmentActionTypes.ITEM_BROWSER_CLEAR),
         map((action: ItemBrowserSet) => action.payload),
-        filter(payload =>
-          payload.componentId === this.parentComponentId &&
-          payload.type === this.type &&
-          payload.usageType === this.usageType
-        ),
+        filter(
+          payload =>
+            payload.componentId === this.parentComponentId &&
+            payload.type === this.type &&
+            payload.usageType === this.usageType
+        )
       )
       .subscribe(() => {
         this.setValue(null);
@@ -823,10 +866,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         takeUntil(this.destroyed$),
         ofType(EquipmentActionTypes.ITEM_BROWSER_ADD),
         map((action: ItemBrowserAdd) => action.payload),
-        filter(payload =>
-          payload.componentId === this.parentComponentId &&
-          payload.type === this.type &&
-          payload.usageType === this.usageType
+        filter(
+          payload =>
+            payload.componentId === this.parentComponentId &&
+            payload.type === this.type &&
+            payload.usageType === this.usageType
         ),
         map(payload => payload.item)
       )
@@ -843,10 +887,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         takeUntil(this.destroyed$),
         ofType(EquipmentActionTypes.ITEM_BROWSER_SET),
         map((action: ItemBrowserSet) => action.payload),
-        filter(payload =>
-          payload.componentId === this.parentComponentId &&
-          payload.type === this.type &&
-          payload.usageType === this.usageType
+        filter(
+          payload =>
+            payload.componentId === this.parentComponentId &&
+            payload.type === this.type &&
+            payload.usageType === this.usageType
         ),
         map(payload => payload.items)
       )

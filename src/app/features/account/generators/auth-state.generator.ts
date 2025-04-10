@@ -1,4 +1,5 @@
-import { AuthState, initialAuthState } from "@features/account/store/auth.reducers";
+import type { AuthState } from "@features/account/store/auth.reducers";
+import { initialAuthState } from "@features/account/store/auth.reducers";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { UserSubscriptionGenerator } from "@shared/generators/user-subscription.generator";
 import { UserGenerator } from "@shared/generators/user.generator";

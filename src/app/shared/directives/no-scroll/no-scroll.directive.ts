@@ -4,8 +4,7 @@ import { Directive, ElementRef, HostListener } from "@angular/core";
   selector: "[astrobinNoScroll]"
 })
 export class NoScrollDirective {
-  constructor(public readonly el: ElementRef) {
-  }
+  constructor(public readonly el: ElementRef) {}
 
   @HostListener("wheel", ["$event"])
   @HostListener("scroll", ["$event"])

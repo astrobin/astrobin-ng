@@ -1,37 +1,40 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { isPlatformBrowser } from "@angular/common";
+import type { OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import type { FormlyFieldMessage } from "@core/services/formly-field.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { FilterInterface } from "@features/equipment/types/filter.interface";
+import { FilterSize, FilterType } from "@features/equipment/types/filter.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { DomSanitizer } from "@angular/platform-browser";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { MainState } from "@app/store/state";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { FormlyFieldMessage, FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
-import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
-import { FilterInterface, FilterSize, FilterType } from "@features/equipment/types/filter.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { switchMap, take, takeUntil } from "rxjs/operators";
-import { interval } from "rxjs";
-import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { Constants } from "@shared/constants";
-import { isPlatformBrowser } from "@angular/common";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { interval } from "rxjs";
+import { switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-filter-editor",
   templateUrl: "./filter-editor.component.html",
   styleUrls: ["./filter-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterface, null> implements OnInit {
+export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterface> implements OnInit {
   constructor(
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
@@ -45,7 +48,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService,
     public readonly changeDetectorRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly sanitizer: DomSanitizer
   ) {
@@ -323,8 +326,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
         label: this.translateService.instant("Override generated name above"),
         description: this.translateService.instant(
           "AstroBin automatically sets the name of a filter from its properties, to keep a consistent " +
-          "naming convention strategy. If your filter has a specific product name that's more recognizable, " +
-          "please check this box and change its name."
+            "naming convention strategy. If your filter has a specific product name that's more recognizable, " +
+            "please check this box and change its name."
         ),
         required: true,
         hideRequiredMarker: true

@@ -1,6 +1,5 @@
 <div class="page has-breadcrumb">
-  <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else editTemplate">
-  </astrobin-read-only-mode>
+  <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else editTemplate"> </astrobin-read-only-mode>
 </div>
 
 <ng-template #editTemplate>
@@ -14,9 +13,9 @@
     </form>
 
     <div
+      (click)="promptToExitEquipmentItemCreationMode($event)"
       *ngIf="imageEditEquipmentFieldsService.creationMode"
       class="equipment-item-creation-mode-overlay"
-      (click)="promptToExitEquipmentItemCreationMode($event)"
     ></div>
   </ng-container>
 </ng-template>
@@ -34,7 +33,9 @@
 <ng-template #equipmentStepPreambleTemplate>
   <ng-container *ngIf="presets$ | async as presets">
     <div *ngIf="presets.length > 0" class="alert alert-dark mb-5">
-      <p class="mb-3 text-muted">{{ "Apply one of your saved setups, or fill in the form below manually." | translate }}</p>
+      <p class="mb-3 text-muted">
+        {{ "Apply one of your saved setups, or fill in the form below manually." | translate }}
+      </p>
       <div class="d-flex flex-row flex-wrap gap-3 align-items-center">
         <div *ngFor="let preset of presets">
           <astrobin-equipment-preset
@@ -44,10 +45,7 @@
           ></astrobin-equipment-preset>
         </div>
 
-        <div
-          (click)="onPresetCreateClicked()"
-          class="create-preset"
-        >
+        <div (click)="onPresetCreateClicked()" class="create-preset">
           <fa-icon icon="plus"></fa-icon>
           <span translate="Add setup"></span>
         </div>
@@ -87,7 +85,6 @@
   >
     {{ "Copy from another image" | translate }}&hellip;
   </button>
-
 
   <button
     (click)="onImportFromCsvClicked($event)"
@@ -132,12 +129,7 @@
 <ng-template #presetCreateOffcanvas let-offcanvas>
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">{{ "Add setup" | translate }}</h5>
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Close"
-      (click)="offcanvas.close()"
-    ></button>
+    <button (click)="offcanvas.close()" aria-label="Close" class="btn-close" type="button"></button>
   </div>
 
   <div class="offcanvas-body">
@@ -146,8 +138,8 @@
     </div>
 
     <astrobin-equipment-preset-editor
-      [preset]="null"
       (presetSaved)="offcanvas.close()"
+      [preset]="null"
     ></astrobin-equipment-preset-editor>
   </div>
 </ng-template>

@@ -1,13 +1,15 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
-import { Inject, Injectable, PLATFORM_ID, makeStateKey, StateKey, TransferState } from "@angular/core";
-import { Observable, of } from "rxjs";
 import { isPlatformServer } from "@angular/common";
+import type { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { HttpResponse } from "@angular/common/http";
+import type { StateKey } from "@angular/core";
+import { Inject, Injectable, makeStateKey, PLATFORM_ID, TransferState } from "@angular/core";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
 import { tap } from "rxjs/operators";
 
 @Injectable()
 export class TransferStateInterceptor implements HttpInterceptor {
-  constructor(@Inject(PLATFORM_ID) public readonly platformId, public readonly transferState: TransferState) {
-  }
+  constructor(@Inject(PLATFORM_ID) public readonly platformId, public readonly transferState: TransferState) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (request.method !== "GET") {

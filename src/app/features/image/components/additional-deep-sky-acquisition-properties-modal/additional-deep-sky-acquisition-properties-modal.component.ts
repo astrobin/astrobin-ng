@@ -1,17 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import type { MainState } from "@app/store/state";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { AdditionalAcquisitionPropertiesBase } from "@features/image/components/additional-acquisition-properties-base/additional-acquisition-properties-base";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-additional-deep-sky-acquisition-properties-modal",
   templateUrl: "./additional-deep-sky-acquisition-properties-modal.component.html",
   styleUrls: ["./additional-deep-sky-acquisition-properties-modal.component.scss"]
 })
-export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends AdditionalAcquisitionPropertiesBase implements OnInit {
+export class AdditionalDeepSkyAcquisitionPropertiesModalComponent
+  extends AdditionalAcquisitionPropertiesBase
+  implements OnInit
+{
   constructor(
     public readonly store$: Store<MainState>,
     public readonly modal: NgbActiveModal,

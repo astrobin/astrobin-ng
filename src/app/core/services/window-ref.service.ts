@@ -1,16 +1,14 @@
+import { DOCUMENT, isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Router } from "@angular/router";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { DOCUMENT, isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { Router } from "@angular/router";
 import { BehaviorSubject, fromEvent } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 
-// @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface CustomWindowInterface extends Window {
-}
+export interface CustomWindowInterface extends Window {}
 
 @Injectable({
   providedIn: "root"
@@ -24,15 +22,13 @@ export class WindowRefService extends BaseService {
     public readonly utilsService: UtilsService,
     public readonly router: Router,
     private readonly location: Location,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(loadingService);
 
     if (isPlatformBrowser(this.platformId)) {
       fromEvent(this.nativeWindow, "resize")
-        .pipe(
-          debounceTime(300)
-        )
+        .pipe(debounceTime(300))
         .subscribe(() => {
           this.checkDevice(window.innerWidth);
         });
@@ -54,7 +50,7 @@ export class WindowRefService extends BaseService {
   }
 
   scroll(options: any) {
-    if (!isPlatformBrowser(this.platformId) || typeof (this.nativeWindow?.scroll) === "undefined") {
+    if (!isPlatformBrowser(this.platformId) || typeof this.nativeWindow?.scroll === "undefined") {
       return;
     }
 
@@ -194,7 +190,7 @@ export class WindowRefService extends BaseService {
       await navigator.clipboard.writeText(text);
       return true;
     } catch (err) {
-      console.warn('Copy failed:', err);
+      console.warn("Copy failed:", err);
       return false;
     }
   }
@@ -207,11 +203,7 @@ export class WindowRefService extends BaseService {
     const _history = this.nativeWindow.history;
     const currentState = JSON.parse(JSON.stringify(_history.state));
 
-    if (
-      currentState &&
-      currentState.url === url &&
-      JSON.stringify(currentState.data) === JSON.stringify(data)
-    ) {
+    if (currentState && currentState.url === url && JSON.stringify(currentState.data) === JSON.stringify(data)) {
       return;
     }
 

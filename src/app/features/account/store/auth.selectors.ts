@@ -1,8 +1,8 @@
-import { MainState } from "@app/store/state";
-import { AuthState } from "@features/account/store/auth.reducers";
+import type { MainState } from "@app/store/state";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
+import type { AuthState } from "@features/account/store/auth.reducers";
 import { createSelector } from "@ngrx/store";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 
 export const selectAuth = (state: MainState): AuthState => state.auth;
 

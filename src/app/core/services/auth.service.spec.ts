@@ -5,6 +5,7 @@ import { AuthClassicApiService } from "@core/services/api/classic/auth/auth-clas
 import { MockBuilder, MockInstance, MockReset } from "ng-mocks";
 import { CookieService } from "ngx-cookie";
 import { of } from "rxjs";
+
 import { AuthService } from "./auth.service";
 
 describe("AuthService", () => {
@@ -54,6 +55,7 @@ describe("AuthService", () => {
         jest.spyOn(service.router, "navigate").mockReturnValue(Promise.resolve(true));
         jest.spyOn(service.windowRefService, "getCurrentUrl").mockReturnValue(new URL("http://localhost:4200"));
         jest.spyOn(service.windowRefService, "locationAssign").mockImplementation(() => {
+          return;
         });
 
         service.logout().subscribe(() => {

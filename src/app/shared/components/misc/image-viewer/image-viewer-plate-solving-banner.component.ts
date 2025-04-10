@@ -1,38 +1,50 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostBinding, Inject, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageService } from "@core/services/image/image.service";
-import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@core/services/search.service";
-import { Router } from "@angular/router";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { SolutionInterface, SolutionStatus } from "@core/interfaces/solution.interface";
-import { SolutionService } from "@core/services/solution/solution.service";
-import { LoadSolution, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { forkJoin, Subscription } from "rxjs";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { isPlatformBrowser } from "@angular/common";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import { CookieService } from "ngx-cookie";
-import { CollapseSyncService } from "@core/services/collapse-sync.service";
-import { Actions, ofType } from "@ngrx/effects";
+import type { OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  HostBinding,
+  Inject,
+  Output,
+  PLATFORM_ID,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
+import { Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
+import type { LoadSolutionSuccess } from "@app/store/actions/solution.actions";
+import { LoadSolution } from "@app/store/actions/solution.actions";
+import type { MainState } from "@app/store/state";
+import type { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import type { SolutionInterface } from "@core/interfaces/solution.interface";
+import { SolutionStatus } from "@core/interfaces/solution.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { SearchService } from "@core/services/search.service";
+import { SolutionService } from "@core/services/solution/solution.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
+import { CookieService } from "ngx-cookie";
+import type { Subscription } from "rxjs";
+import { forkJoin } from "rxjs";
 import { filter, map, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-viewer-plate-solving-banner",
   template: `
-    <div
-      *ngIf="performSolve"
-      class="image-viewer-banner alert alert-dark d-flex align-items-center gap-2"
-    >
+    <div *ngIf="performSolve" class="image-viewer-banner alert alert-dark d-flex align-items-center gap-2">
       <div class="flex-grow-1">
         <fa-icon icon="spinner" animation="spin" class="me-2"></fa-icon>
 
@@ -44,13 +56,13 @@ import { filter, map, takeUntil } from "rxjs/operators";
           {{ "AstroBin is plate-solving this image with Astrometry.net..." | translate }}
         </span>
 
-        <span *ngIf="
-          !!solution &&
-          (
-            solution.status === SolutionStatus.ADVANCED_PENDING ||
-            (solution.status === SolutionStatus.SUCCESS && performAdvancedSolve)
-          )
-        ">
+        <span
+          *ngIf="
+            !!solution &&
+            (solution.status === SolutionStatus.ADVANCED_PENDING ||
+              (solution.status === SolutionStatus.SUCCESS && performAdvancedSolve))
+          "
+        >
           {{ "AstroBin is plate-solving this image with PixInsight..." | translate }}
         </span>
       </div>
@@ -72,7 +84,8 @@ import { filter, map, takeUntil } from "rxjs/operators";
         <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
       </div>
       <div class="offcanvas-body">
-        <p>Astrometry.net job ID:
+        <p>
+          Astrometry.net job ID:
           <a
             *ngIf="solution.submissionId; else naTemplate"
             [href]="'https://nova.astrometry.net/status/' + solution.submissionId"
@@ -85,20 +98,16 @@ import { filter, map, takeUntil } from "rxjs/operators";
 
         <p>
           PixInsight job ID:
-          <span
-            *ngIf="solution.pixinsightSerialNumber; else naTemplate"
-          >
-            {{ solution.pixinsightSerialNumber}}
+          <span *ngIf="solution.pixinsightSerialNumber; else naTemplate">
+            {{ solution.pixinsightSerialNumber }}
           </span>
         </p>
 
         <p *ngIf="solution.pixinsightQueueSize !== null && solution.pixinsightQueueSize !== undefined">
-          {{ "PixInsight queue size" | translate }}: {{ +solution.pixinsightQueueSize + 1}}
+          {{ "PixInsight queue size" | translate }}: {{ +solution.pixinsightQueueSize + 1 }}
         </p>
 
-        <p *ngIf="solution.pixinsightStage">
-          {{ "PixInsight stage" | translate }}: {{ solution.pixinsightStage}}
-        </p>
+        <p *ngIf="solution.pixinsightStage">{{ "PixInsight stage" | translate }}: {{ solution.pixinsightStage }}</p>
       </div>
     </ng-template>
 
@@ -109,16 +118,16 @@ import { filter, map, takeUntil } from "rxjs/operators";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerPlateSolvingBannerComponent
-  extends ImageViewerSectionBaseComponent implements OnInit, OnChanges {
+  extends ImageViewerSectionBaseComponent
+  implements OnInit, OnChanges
+{
+  @Output()
+  solutionChange = new EventEmitter<SolutionInterface>();
   protected solution: SolutionInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
   protected performSolve = false;
   protected performAdvancedSolve = false;
   protected readonly SolutionStatus = SolutionStatus;
-
-  @Output()
-  solutionChange = new EventEmitter<SolutionInterface>();
-
   @ViewChild("informationOffcanvasTemplate")
   private _informationOffcanvasTemplate: TemplateRef<any>;
 
@@ -150,7 +159,7 @@ export class ImageViewerPlateSolvingBannerComponent
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly userSubscriptionService: UserSubscriptionService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly imageApiService: ImageApiService,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly cookieService: CookieService,
@@ -189,72 +198,13 @@ export class ImageViewerPlateSolvingBannerComponent
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
+    if (
+      (changes.image && changes.image.currentValue) ||
+      (changes.revisionLabel && changes.revisionLabel.currentValue)
+    ) {
       this._initImage(this.image);
       this._listenForSolutionChanges();
     }
-  }
-
-  private _listenForSolutionChanges() {
-    this.actions$.pipe(
-      ofType(AppActionTypes.LOAD_SOLUTION_SUCCESS),
-      map((action: LoadSolutionSuccess) => action.payload),
-      filter(solution =>
-        solution.objectId === this.solution.objectId &&
-        solution.contentType === this.solution.contentType
-      ),
-      takeUntil(this.destroyed$)
-    ).subscribe(solution => {
-      this.solution = solution;
-      this._onSolutionChange();
-    });
-  }
-
-  private _initImage(image: ImageInterface) {
-    this.revision = this.imageService.getRevision(image, this.revisionLabel);
-    if (this.revision) {
-      this.solution = this.revision.solution;
-      this._onSolutionChange();
-    }
-  }
-
-  private _onSolutionChange() {
-    this._isSolving = (
-      this.solutionService.isSolving(this.solution) ||
-      !this.solution ||
-      !this.solution.status ||
-      (
-        this.solution.status === SolutionStatus.SUCCESS && this.performAdvancedSolve
-      )
-    );
-    this._hostClass = this._isSolving ? "" : "d-none";
-
-    if (this._isSolving) {
-      this._previouslySolving = true;
-    }
-
-    if (this._solutionSucceeded()) {
-      if (this.solution.status !== SolutionStatus.ADVANCED_SUCCESS && !this.performAdvancedSolve) {
-        this.popNotificationsService.success(this._successMessage);
-        this._cancelPolling();
-      }
-    } else if (this._solutionFailed()) {
-      this.popNotificationsService.error(this._failureMessage);
-      this._cancelPolling();
-    } else if (this._solutionAdvancedFailed()) {
-      this.popNotificationsService.error(this._advancedFailureMessage);
-      this._cancelPolling();
-    }
-
-    this.solutionChange.emit(this.solution);
-  }
-
-  protected openInformationOffcanvas() {
-    this.offcanvasService.open(this._informationOffcanvasTemplate, {
-      panelClass: "image-viewer-offcanvas",
-      backdropClass: "image-viewer-offcanvas-backdrop",
-      position: this.deviceService.offcanvasPosition()
-    });
   }
 
   _solutionSucceeded(): boolean {
@@ -262,10 +212,7 @@ export class ImageViewerPlateSolvingBannerComponent
       return false;
     }
 
-    return this._previouslySolving &&
-      (
-        this.solution.status === SolutionStatus.SUCCESS
-      );
+    return this._previouslySolving && this.solution.status === SolutionStatus.SUCCESS;
   }
 
   _solutionFailed(): boolean {
@@ -273,10 +220,7 @@ export class ImageViewerPlateSolvingBannerComponent
       return false;
     }
 
-    return this._previouslySolving &&
-      (
-        this.solution.status === SolutionStatus.FAILED
-      );
+    return this._previouslySolving && this.solution.status === SolutionStatus.FAILED;
   }
 
   _solutionAdvancedFailed(): boolean {
@@ -284,10 +228,7 @@ export class ImageViewerPlateSolvingBannerComponent
       return false;
     }
 
-    return this._previouslySolving &&
-      (
-        this.solution.status === SolutionStatus.ADVANCED_FAILED
-      );
+    return this._previouslySolving && this.solution.status === SolutionStatus.ADVANCED_FAILED;
   }
 
   _cancelPolling() {
@@ -326,5 +267,65 @@ export class ImageViewerPlateSolvingBannerComponent
         this.changeDetectorRef.markForCheck();
       });
     }
+  }
+
+  protected openInformationOffcanvas() {
+    this.offcanvasService.open(this._informationOffcanvasTemplate, {
+      panelClass: "image-viewer-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
+      position: this.deviceService.offcanvasPosition()
+    });
+  }
+
+  private _listenForSolutionChanges() {
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.LOAD_SOLUTION_SUCCESS),
+        map((action: LoadSolutionSuccess) => action.payload),
+        filter(
+          solution => solution.objectId === this.solution.objectId && solution.contentType === this.solution.contentType
+        ),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(solution => {
+        this.solution = solution;
+        this._onSolutionChange();
+      });
+  }
+
+  private _initImage(image: ImageInterface) {
+    this.revision = this.imageService.getRevision(image, this.revisionLabel);
+    if (this.revision) {
+      this.solution = this.revision.solution;
+      this._onSolutionChange();
+    }
+  }
+
+  private _onSolutionChange() {
+    this._isSolving =
+      this.solutionService.isSolving(this.solution) ||
+      !this.solution ||
+      !this.solution.status ||
+      (this.solution.status === SolutionStatus.SUCCESS && this.performAdvancedSolve);
+    this._hostClass = this._isSolving ? "" : "d-none";
+
+    if (this._isSolving) {
+      this._previouslySolving = true;
+    }
+
+    if (this._solutionSucceeded()) {
+      if (this.solution.status !== SolutionStatus.ADVANCED_SUCCESS && !this.performAdvancedSolve) {
+        this.popNotificationsService.success(this._successMessage);
+        this._cancelPolling();
+      }
+    } else if (this._solutionFailed()) {
+      this.popNotificationsService.error(this._failureMessage);
+      this._cancelPolling();
+    } else if (this._solutionAdvancedFailed()) {
+      this.popNotificationsService.error(this._advancedFailureMessage);
+      this._cancelPolling();
+    }
+
+    this.solutionChange.emit(this.solution);
   }
 }

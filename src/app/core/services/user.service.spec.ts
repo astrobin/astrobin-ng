@@ -1,21 +1,18 @@
 import { TestBed } from "@angular/core/testing";
+import { initialMainState } from "@app/store/state";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { provideMockStore } from "@ngrx/store/testing";
 import { AuthGroupGenerator } from "@shared/generators/auth-group.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
 import { MockBuilder } from "ng-mocks";
 
 import { UserService } from "./user.service";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { WindowRefService } from "@core/services/window-ref.service";
 
 describe("UserService", () => {
   let service: UserService;
 
   beforeEach(async () => {
-    await MockBuilder(UserService).provide([
-      WindowRefService,
-      provideMockStore({ initialState: initialMainState })
-    ]);
+    await MockBuilder(UserService).provide([WindowRefService, provideMockStore({ initialState: initialMainState })]);
     service = TestBed.inject(UserService);
   });
 

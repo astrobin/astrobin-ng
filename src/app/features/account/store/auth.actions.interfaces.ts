@@ -1,6 +1,6 @@
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import type { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
+import type { UserInterface } from "@core/interfaces/user.interface";
 
 export interface InitializeAuthSuccessInterface {
   user: UserInterface;

@@ -1,9 +1,7 @@
 <div class="page has-breadcrumb">
   <h1>{{ pageTitle | translate }}</h1>
 
-  <astrobin-read-only-mode
-    *ngIf="(readOnlyMode$ | async) === true; else formTemplate"
-  ></astrobin-read-only-mode>
+  <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else formTemplate"></astrobin-read-only-mode>
 
   <ng-template #formTemplate>
     <div *ngIf="settingCategories$ | async as categories; else loading" class="notification-settings">
@@ -14,8 +12,10 @@
           </ng-template>
 
           <ng-template ngbPanelContent>
-            <form *ngFor="let item of category.items | keyvalue"
-                  class="notification-form d-flex flex-row align-items-center flex-wrap">
+            <form
+              *ngFor="let item of category.items | keyvalue"
+              class="notification-form d-flex flex-row align-items-center flex-wrap"
+            >
               <div class="form-group">
                 <label>{{ getNotificationTypeById(item.key).display }}</label>
               </div>
@@ -25,8 +25,8 @@
                   <astrobin-toggle-button
                     (toggle)="notificationSettingChanged(item.value['EMAIL'], $event)"
                     [attr.id]="'notification-' + item.key + '-email'"
-                    [label]="'E-mail' | translate"
                     [labelClassName]="'form-check-label'"
+                    [label]="'E-mail' | translate"
                     [value]="item.value['EMAIL'].send"
                     class="me-2"
                   ></astrobin-toggle-button>
@@ -36,8 +36,8 @@
                   <astrobin-toggle-button
                     (toggle)="notificationSettingChanged(item.value['ON_SITE'], $event)"
                     [attr.id]="'notification-' + item.key + '-onsite'"
-                    [label]="'On-site' | translate"
                     [labelClassName]="'form-check-label'"
+                    [label]="'On-site' | translate"
                     [value]="item.value['ON_SITE'].send"
                     class="me-2"
                   ></astrobin-toggle-button>

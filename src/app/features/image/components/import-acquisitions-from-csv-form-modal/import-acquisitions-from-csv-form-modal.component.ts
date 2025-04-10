@@ -1,16 +1,17 @@
-import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import type { OnInit } from "@angular/core";
+import { Component, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { Actions } from "@ngrx/effects";
+import type { MainState } from "@app/store/state";
 import { LoadingService } from "@core/services/loading.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { ImageEditService } from "@features/image/services/image-edit.service";
 import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
+import { ImageEditService } from "@features/image/services/image-edit.service";
+import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-import-acquisitions-from-csv-form-modal",
@@ -69,16 +70,19 @@ export class ImportAcquisitionsFromCsvFormModalComponent extends BaseComponentDi
         props: {
           required: true,
           label: this.translateService.instant("Comma-separated values (CSV) of acquisition sessions"),
-          description: this.translateService.instant("Invalid values will be ignored. Documentation is available here: {{link}}", {
-            link: `<a href="https://welcome.astrobin.com/importing-acquisitions-from-csv/" target="_blank">
+          description: this.translateService.instant(
+            "Invalid values will be ignored. Documentation is available here: {{link}}",
+            {
+              link: `<a href="https://welcome.astrobin.com/importing-acquisitions-from-csv/" target="_blank">
               ${this.translateService.instant("Importing acquisitions from CSV")}</a>`
-          }),
+            }
+          ),
           rows: 10
         },
         modelOptions: {
           updateOn: "blur"
         },
-        parsers: [value => value ? value.trim() : value],
+        parsers: [value => (value ? value.trim() : value)],
         validators: {
           validation: [
             {
@@ -109,7 +113,7 @@ export class ImportAcquisitionsFromCsvFormModalComponent extends BaseComponentDi
   private _allowedHeaders() {
     const longExposureValue = this._allDeepSkyFields()
       .map(field => field.key)
-      .map(key => key === "filter2" ? "filter" : key);
+      .map(key => (key === "filter2" ? "filter" : key));
     const videoBasedValue = this._allSolarSystemFields().map(field => field.key);
 
     return this.imageEditService.isLongExposure() ? longExposureValue : videoBasedValue;
@@ -127,7 +131,11 @@ export class ImportAcquisitionsFromCsvFormModalComponent extends BaseComponentDi
     fieldConfig.forEach(field => {
       if (field.fieldGroup && field.fieldGroup.length > 0) {
         this._findLeafFields(field.fieldGroup, fields);
-      } else if (field.fieldArray && (field.fieldArray as any).fieldGroup && (field.fieldArray as any).fieldGroup.length > 0) {
+      } else if (
+        field.fieldArray &&
+        (field.fieldArray as any).fieldGroup &&
+        (field.fieldArray as any).fieldGroup.length > 0
+      ) {
         this._findLeafFields((field.fieldArray as any).fieldGroup, fields);
       } else if (field.key) {
         fields.push(field);

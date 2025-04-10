@@ -1,12 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { ListResponseInterface } from "@core/interfaces/list-response.interface";
-import { ThumbnailGroupInterface } from "@core/interfaces/thumbnail-group.interface";
+import type { ListResponseInterface } from "@core/interfaces/list-response.interface";
+import type { ThumbnailGroupInterface } from "@core/interfaces/thumbnail-group.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
 import { LoadingService } from "@core/services/loading.service";
-import { Observable } from "rxjs";
+import type { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { ThumbnailGroupApiServiceInterface } from "./thumbnail-group-api.service-interface";
+
+import type { ThumbnailGroupApiServiceInterface } from "./thumbnail-group-api.service-interface";
 
 @Injectable({
   providedIn: "root"

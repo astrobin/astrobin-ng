@@ -2,10 +2,10 @@
 
 :host {
   display: block;
-  margin-bottom:  1rem;
+  margin-bottom: 1rem;
 
   @media (max-width: $sm-max) {
-    margin-bottom: .75rem;
+    margin-bottom: 0.75rem;
   }
 
   .ng-fa-icon {
@@ -13,7 +13,7 @@
       color: var(--accentColor);
       pointer-events: none;
     }
-    
+
     &.disabled {
       opacity: 0.5;
       cursor: default;
@@ -27,7 +27,7 @@
     &:not(.offcanvas-bottom) {
       width: 40vw;
     }
-    
+
     textarea {
       font-family: monospace;
       font-size: 0.85rem;

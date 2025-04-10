@@ -1,8 +1,8 @@
 <astrobin-toggle-button
   (toggle)="onToggle($event)"
   [disabled]="props.disabled === true"
-  [label]="props.toggleLabel || ''"
   [labelClassName]="props.labelClassName || ''"
-  [value]="formControl.value"
+  [label]="props.toggleLabel || ''"
   [style]="{ lineHeight: props.lineHeight || 'unset' }"
+  [value]="formControl.value"
 ></astrobin-toggle-button>

@@ -1,10 +1,11 @@
-import { Injectable } from "@angular/core";
-import { LoadingService } from "@core/services/loading.service";
 import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { EMPTY, Observable } from "rxjs";
-import { RejectMigrationReason } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import type { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
+import type { RejectMigrationReason } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
+import type { Observable } from "rxjs";
+import { EMPTY } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 @Injectable({
@@ -36,7 +37,7 @@ export class GearMigrationStrategyApiService extends BaseClassicApiService {
   releaseLockForMigrationReview(gearMigrationStrategyId: number): Observable<void> {
     return this.http
       .put<void>(`${this.configUrl}/${gearMigrationStrategyId}/release-lock-for-migration-review/`, {})
-      .pipe(catchError(err => EMPTY));
+      .pipe(catchError(() => EMPTY));
   }
 
   approve(migrationStrategyId: number): Observable<any> {

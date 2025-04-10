@@ -1,15 +1,16 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { CountryService } from "@core/services/country.service";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import type { SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
+import type { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { CountryService } from "@core/services/country.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-country-filter.search-filter-component",
@@ -21,7 +22,9 @@ export class SearchCountryFilterComponent extends SearchBaseFilterComponent {
   static minimumSubscription = PayableProductInterface.LITE;
 
   readonly category = SearchFilterCategory.GENERAL;
-  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchCountryFilterComponent.key as SearchAutoCompleteType);
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
+    SearchCountryFilterComponent.key as SearchAutoCompleteType
+  );
   readonly editFields = [
     {
       key: SearchCountryFilterComponent.key,

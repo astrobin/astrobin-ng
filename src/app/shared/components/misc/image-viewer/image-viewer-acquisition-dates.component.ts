@@ -1,16 +1,12 @@
-import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
+import type { OnChanges, SimpleChanges } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { DateService } from "@core/services/date.service";
 
 @Component({
   selector: "astrobin-image-viewer-acquisition-dates",
   template: `
     <ng-container *ngIf="contiguousRanges?.length > 1 && dates?.length > 2; else singleRangeTemplate">
-      <span
-        [ngbTooltip]="fullDatesTemplate"
-        container="body"
-        data-toggle="tooltip"
-        triggers="hover click"
-      >
+      <span [ngbTooltip]="fullDatesTemplate" container="body" data-toggle="tooltip" triggers="hover click">
         {{ dateRange }}
       </span>
     </ng-container>
@@ -23,7 +19,7 @@ import { DateService } from "@core/services/date.service";
 
     <ng-template #fullDatesTemplate>
       <span *ngFor="let date_ of distinctDates">
-        {{ date_ ? (date_ | date: "mediumDate") : "n/a" | translate }}
+        {{ date_ ? (date_ | date : "mediumDate") : ("n/a" | translate) }}
       </span>
     </ng-template>
   `
@@ -36,10 +32,7 @@ export class ImageViewerAcquisitionDatesComponent implements OnChanges {
   contiguousRanges: number[][];
   distinctDates: string[];
 
-  constructor(
-    public readonly dateService: DateService
-  ) {
-  }
+  constructor(public readonly dateService: DateService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.dates && changes.dates.currentValue) {

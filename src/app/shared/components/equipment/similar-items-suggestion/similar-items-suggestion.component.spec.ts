@@ -1,17 +1,20 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 
 import { SimilarItemsSuggestionComponent } from "./similar-items-suggestion.component";
-import { MockBuilder } from "ng-mocks";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { AppModule } from "@app/app.module";
 
 describe("SimilarItemsSuggestionComponent", () => {
   let component: SimilarItemsSuggestionComponent;
   let fixture: ComponentFixture<SimilarItemsSuggestionComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(SimilarItemsSuggestionComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
+    await MockBuilder(SimilarItemsSuggestionComponent, AppModule).provide(
+      provideMockStore({ initialState: initialMainState })
+    );
   });
 
   beforeEach(() => {

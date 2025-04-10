@@ -1,50 +1,49 @@
+import { isPlatformBrowser } from "@angular/common";
+import type { AfterViewInit, OnInit } from "@angular/core";
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
   Inject,
   Input,
-  OnInit,
   Output,
   PLATFORM_ID,
   QueryList,
   ViewChildren
 } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { LoadingService } from "@core/services/loading.service";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import {
-  EquipmentItemDisplayProperty,
-  EquipmentItemService
-} from "@core/services/equipment-item.service";
-import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap } from "rxjs/operators";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { fromEvent, Observable } from "rxjs";
-import { Actions, ofType } from "@ngrx/effects";
-import { EquipmentActionTypes, LoadSensor, LoadSensorSuccess } from "@features/equipment/store/equipment.actions";
-import { MainState } from "@app/store/state";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { MainState } from "@app/store/state";
+import { EquipmentItemDisplayProperty, EquipmentItemService } from "@core/services/equipment-item.service";
+import { LoadingService } from "@core/services/loading.service";
 import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
-import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
-import { TelescopeType } from "@features/equipment/types/telescope.interface";
-import { ExplorerFilterType } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
-import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
-import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
-import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
-import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
-import { MountType } from "@features/equipment/types/mount.interface";
-import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
-import { FilterType } from "@features/equipment/types/filter.interface";
+import type { ExplorerFilterType } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
+import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
+import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
+import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
+import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
+import { EquipmentActionTypes, LoadSensor } from "@features/equipment/store/equipment.actions";
+import type { LoadSensorSuccess } from "@features/equipment/store/equipment.actions";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { AccessoryType } from "@features/equipment/types/accessory.interface";
-import { isPlatformBrowser } from "@angular/common";
+import { CameraType } from "@features/equipment/types/camera.interface";
+import type { CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { FilterType } from "@features/equipment/types/filter.interface";
+import { MountType } from "@features/equipment/types/mount.interface";
+import type { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { TelescopeType } from "@features/equipment/types/telescope.interface";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { fromEvent } from "rxjs";
+import type { Observable } from "rxjs";
+import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-item-browser-by-properties",
@@ -100,7 +99,7 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
     public readonly mountService: MountService,
     public readonly filterService: FilterService,
     public readonly accessoryService: AccessoryService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(store$);
   }
@@ -163,7 +162,7 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
 
     this.options.formState.loadingPage = true;
 
-    const { type, brand, ...filters } = this.form.value;
+    const { ...filters } = this.form.value;
     this.page = page;
 
     if (page === 1) {
@@ -175,13 +174,13 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
         brand: this.model.brand,
         filters: filters
           ? Object.keys(filters).map(key => ({
-            type: key as ExplorerFilterType,
-            value: filters[key],
-            label: null,
-            icon: null,
-            widget: null,
-            valueType: null
-          }))
+              type: key as ExplorerFilterType,
+              value: filters[key],
+              label: null,
+              icon: null,
+              widget: null,
+              valueType: null
+            }))
           : [],
         page: this.page
       })

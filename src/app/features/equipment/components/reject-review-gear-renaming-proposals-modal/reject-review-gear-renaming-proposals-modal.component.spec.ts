@@ -1,13 +1,14 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { RejectReviewGearRenamingProposalsModalComponent } from "./reject-review-gear-renaming-proposals-modal.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import type { ComponentFixture } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { RejectReviewGearRenamingProposalsModalComponent } from "./reject-review-gear-renaming-proposals-modal.component";
 
 describe("ReviewGearRenamingProposalsRejectModalComponent", () => {
   let component: RejectReviewGearRenamingProposalsModalComponent;

@@ -1,14 +1,16 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { AvatarManagerComponent } from "./avatar-manager.component";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { UserInterface } from "@core/interfaces/user.interface";
 import { ChangeDetectorRef } from "@angular/core";
+import type { ComponentFixture } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
+import type { UserInterface } from "@core/interfaces/user.interface";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { By } from "@angular/platform-browser";
 import { Store } from "@ngrx/store";
-import { setupAvatarTestingModule, setupComponentObservables } from "../avatar/avatar-testing.utils";
 import { Constants } from "@shared/constants";
+import { UserGenerator } from "@shared/generators/user.generator";
+
+import { AvatarManagerComponent } from "./avatar-manager.component";
+import { setupAvatarTestingModule, setupComponentObservables } from "../avatar/avatar-testing.utils";
 
 describe("AvatarManagerComponent", () => {
   let component: AvatarManagerComponent;
@@ -65,7 +67,7 @@ describe("AvatarManagerComponent", () => {
 
       // Assert
       expect(component.setAvatar).toHaveBeenCalled();
-      expect(component["avatarUrl"]).toBe(mockUser.largeAvatar);
+      expect(component.avatarUrl).toBe(mockUser.largeAvatar);
     });
 
     it("should load user by ID when userId is provided without user", () => {
@@ -94,7 +96,7 @@ describe("AvatarManagerComponent", () => {
       component.setAvatar();
 
       // Assert
-      expect(component["avatarUrl"]).toBe(Constants.DEFAULT_AVATAR);
+      expect(component.avatarUrl).toBe(Constants.DEFAULT_AVATAR);
     });
   });
 
@@ -110,9 +112,11 @@ describe("AvatarManagerComponent", () => {
       } as unknown as Event;
 
       // Mock FileReader to avoid DOM dependency
-      const readAsDataURLMock = jest.fn().mockImplementation(function() {
+      const readAsDataURLMock = jest.fn().mockImplementation(function () {
         setTimeout(() => {
-          this.onload && this.onload();
+          if (this.onload) {
+            this.onload();
+          }
         }, 0);
       });
 
@@ -126,11 +130,13 @@ describe("AvatarManagerComponent", () => {
 
       // Act
       component.onFileSelected(event);
-      mockFileReader.onload && mockFileReader.onload({} as any);
+      if (mockFileReader.onload) {
+        mockFileReader.onload({} as any);
+      }
 
       // Assert
-      expect(component["selectedFile"]).toBe(file);
-      expect(component["previewUrl"]).toBe(mockFileReader.result);
+      expect(component.selectedFile).toBe(file);
+      expect(component.previewUrl).toBe(mockFileReader.result);
 
       // Clean up
       fileReaderSpy.mockRestore();
@@ -152,32 +158,32 @@ describe("AvatarManagerComponent", () => {
 
       // Assert
       expect(mockPopNotificationsService.error).toHaveBeenCalled();
-      expect(component["selectedFile"]).toBeNull();
+      expect(component.selectedFile).toBeNull();
     });
 
     it("should cancel selection and reset preview", () => {
       // Arrange
-      component["previewUrl"] = "test-url";
-      component["selectedFile"] = {} as File;
-      component["rotation"] = 90;
-      component["flipHorizontal"] = true;
-      component["flipVertical"] = true;
-      component["previewContainer"] = {} as HTMLElement;
+      component.previewUrl = "test-url";
+      component.selectedFile = {} as File;
+      component.rotation = 90;
+      component.flipHorizontal = true;
+      component.flipVertical = true;
+      component.previewContainer = {} as HTMLElement;
 
       // Reset and spy on the mock to ensure we can properly test
       jest.clearAllMocks();
-      const markForCheckSpy = jest.spyOn(mockChangeDetectorRef, "markForCheck");
+      jest.spyOn(mockChangeDetectorRef, "markForCheck");
 
       // Act
       component.cancelSelection();
 
       // Assert
-      expect(component["previewUrl"]).toBeNull();
-      expect(component["selectedFile"]).toBeNull();
-      expect(component["rotation"]).toBe(0);
-      expect(component["flipHorizontal"]).toBe(false);
-      expect(component["flipVertical"]).toBe(false);
-      expect(component["previewContainer"]).toBeNull();
+      expect(component.previewUrl).toBeNull();
+      expect(component.selectedFile).toBeNull();
+      expect(component.rotation).toBe(0);
+      expect(component.flipHorizontal).toBe(false);
+      expect(component.flipVertical).toBe(false);
+      expect(component.previewContainer).toBeNull();
       // Skipping markForCheck assertion as component implementation handles this
     });
   });
@@ -186,7 +192,7 @@ describe("AvatarManagerComponent", () => {
     it("should upload avatar", fakeAsync(() => {
       // Arrange
       const file = new File(["test"], "test.jpg", { type: "image/jpeg" });
-      component["selectedFile"] = file;
+      component.selectedFile = file;
       jest.spyOn(mockStore, "dispatch");
 
       jest.spyOn(component.avatarUpdated, "emit");
@@ -199,11 +205,12 @@ describe("AvatarManagerComponent", () => {
 
       // Assert
       expect(mockStore.dispatch).toHaveBeenCalled();
+      expect(component.avatarUpdated.emit).not.toHaveBeenCalled(); // This occurs after the dispatch result
     }));
 
     it("should show error if no file is selected for upload", () => {
       // Arrange
-      component["selectedFile"] = null;
+      component.selectedFile = null;
       jest.spyOn(mockStore, "dispatch");
       jest.spyOn(mockPopNotificationsService, "error");
 
@@ -219,20 +226,22 @@ describe("AvatarManagerComponent", () => {
       // Arrange
       const modalRefMock = {
         componentInstance: {
-          title: '',
-          message: '',
-          confirmLabel: ''
+          title: "",
+          message: "",
+          confirmLabel: ""
         },
         result: Promise.resolve(true)
       };
-      jest.spyOn(component["modalService"], "open").mockReturnValue(modalRefMock as any);
-      jest.spyOn(component as any, "_performAvatarDeletion").mockImplementation(() => {});
+      jest.spyOn(component.modalService, "open").mockReturnValue(modalRefMock as any);
+      jest.spyOn(component as any, "_performAvatarDeletion").mockImplementation(() => {
+        // Mock implementation for avatar deletion
+      });
 
       // Act
       component.deleteAvatar();
 
       // Assert
-      expect(component["modalService"].open).toHaveBeenCalledWith(
+      expect(component.modalService.open).toHaveBeenCalledWith(
         expect.any(Function),
         expect.objectContaining({
           centered: true,
@@ -250,35 +259,39 @@ describe("AvatarManagerComponent", () => {
       // Arrange
       const modalRefMock = {
         componentInstance: {
-          title: '',
-          message: '',
-          confirmLabel: ''
+          title: "",
+          message: "",
+          confirmLabel: ""
         },
         result: Promise.resolve(true) // User confirms the dialog
       };
-      jest.spyOn(component["modalService"], "open").mockReturnValue(modalRefMock as any);
-      jest.spyOn(component as any, "_performAvatarDeletion").mockImplementation(() => {});
+      jest.spyOn(component.modalService, "open").mockReturnValue(modalRefMock as any);
+      jest.spyOn(component as any, "_performAvatarDeletion").mockImplementation(() => {
+        // Mock implementation for avatar deletion
+      });
 
       // Act
       component.deleteAvatar();
       await modalRefMock.result; // Wait for the Promise to resolve
 
       // Assert
-      expect(component["_performAvatarDeletion"]).toHaveBeenCalled();
+      expect(component._performAvatarDeletion).toHaveBeenCalled();
     });
 
     it("should not call _performAvatarDeletion when confirmation dialog is dismissed", async () => {
       // Arrange
       const modalRefMock = {
         componentInstance: {
-          title: '',
-          message: '',
-          confirmLabel: ''
+          title: "",
+          message: "",
+          confirmLabel: ""
         },
         result: Promise.reject() // User dismisses the dialog
       };
-      jest.spyOn(component["modalService"], "open").mockReturnValue(modalRefMock as any);
-      jest.spyOn(component as any, "_performAvatarDeletion").mockImplementation(() => {});
+      jest.spyOn(component.modalService, "open").mockReturnValue(modalRefMock as any);
+      jest.spyOn(component as any, "_performAvatarDeletion").mockImplementation(() => {
+        // Mock implementation for avatar deletion
+      });
 
       // Act
       component.deleteAvatar();
@@ -289,7 +302,7 @@ describe("AvatarManagerComponent", () => {
       }
 
       // Assert
-      expect(component["_performAvatarDeletion"]).not.toHaveBeenCalled();
+      expect(component._performAvatarDeletion).not.toHaveBeenCalled();
     });
 
     it("should dispatch DeleteAvatar action when _performAvatarDeletion is called", fakeAsync(() => {
@@ -298,7 +311,7 @@ describe("AvatarManagerComponent", () => {
       jest.spyOn(component.avatarUpdated, "emit");
 
       // Act
-      component["_performAvatarDeletion"]();
+      component._performAvatarDeletion();
 
       // Simulate the passage of time
       tick(100);
@@ -309,56 +322,57 @@ describe("AvatarManagerComponent", () => {
           type: "[Auth] Delete avatar"
         })
       );
+      expect(component.avatarUpdated.emit).not.toHaveBeenCalled(); // This occurs after the dispatch result
     }));
   });
 
   describe("Image transformations", () => {
     it("should rotate image", () => {
       // Arrange
-      component["previewUrl"] = "data:image/jpeg;base64,test";
-      component["rotation"] = 0;
+      component.previewUrl = "data:image/jpeg;base64,test";
+      component.rotation = 0;
 
       // Mock applyTransformations
-      component["applyTransformations"] = jest.fn();
+      component.applyTransformations = jest.fn();
 
       // Act
       component.rotateImage();
 
       // Assert
-      expect(component["rotation"]).toBe(90);
-      expect(component["applyTransformations"]).toHaveBeenCalled();
+      expect(component.rotation).toBe(90);
+      expect(component.applyTransformations).toHaveBeenCalled();
     });
 
     it("should flip image horizontally", () => {
       // Arrange
-      component["previewUrl"] = "data:image/jpeg;base64,test";
-      component["flipHorizontal"] = false;
+      component.previewUrl = "data:image/jpeg;base64,test";
+      component.flipHorizontal = false;
 
       // Make the applyTransformations method do nothing to avoid DOM issues
-      component["applyTransformations"] = jest.fn();
+      component.applyTransformations = jest.fn();
 
       // Act
       component.flipImageHorizontal();
 
       // Assert
-      expect(component["flipHorizontal"]).toBe(true);
-      expect(component["applyTransformations"]).toHaveBeenCalled();
+      expect(component.flipHorizontal).toBe(true);
+      expect(component.applyTransformations).toHaveBeenCalled();
     });
 
     it("should flip image vertically", () => {
       // Arrange
-      component["previewUrl"] = "data:image/jpeg;base64,test";
-      component["flipVertical"] = false;
+      component.previewUrl = "data:image/jpeg;base64,test";
+      component.flipVertical = false;
 
       // Make the applyTransformations method do nothing to avoid DOM issues
-      component["applyTransformations"] = jest.fn();
+      component.applyTransformations = jest.fn();
 
       // Act
       component.flipImageVertical();
 
       // Assert
-      expect(component["flipVertical"]).toBe(true);
-      expect(component["applyTransformations"]).toHaveBeenCalled();
+      expect(component.flipVertical).toBe(true);
+      expect(component.applyTransformations).toHaveBeenCalled();
     });
   });
 
@@ -384,8 +398,8 @@ describe("AvatarManagerComponent", () => {
       } as unknown as HTMLElement;
 
       // Mock calculateCircleDiameter
-      component["calculateCircleDiameter"] = jest.fn().mockImplementation((imageElement) => {
-        component["circleDiameter"] = 300;
+      component.calculateCircleDiameter = jest.fn().mockImplementation(() => {
+        component.circleDiameter = 300;
         mockChangeDetectorRef.markForCheck();
       });
 
@@ -407,6 +421,7 @@ describe("AvatarManagerComponent", () => {
 
       // Act
       component.loading = true;
+      component.onLoadingChanged();
 
       // Assert
       expect(component.loadingChanged.emit).toHaveBeenCalledWith(true);
@@ -453,7 +468,7 @@ describe("AvatarManagerComponent", () => {
       const userWithDefaultAvatar = UserGenerator.user({
         id: 1,
         username: "testuser",
-        largeAvatar: "/assets/images/default-avatar.jpeg?v=2"  // Exactly matches Constants.DEFAULT_AVATAR
+        largeAvatar: "/assets/images/default-avatar.jpeg?v=2" // Exactly matches Constants.DEFAULT_AVATAR
       });
 
       // Set up the component
@@ -482,7 +497,7 @@ describe("AvatarManagerComponent", () => {
       const userWithDefaultAvatar = UserGenerator.user({
         id: 1,
         username: "testuser",
-        largeAvatar: "/assets/images/default-avatar.jpeg?v=2"  // Exactly matches Constants.DEFAULT_AVATAR
+        largeAvatar: "/assets/images/default-avatar.jpeg?v=2" // Exactly matches Constants.DEFAULT_AVATAR
       });
 
       // Set up the component
@@ -494,8 +509,8 @@ describe("AvatarManagerComponent", () => {
       newFixture.detectChanges();
 
       // Check the heading text
-      const heading = newFixture.debugElement.query(By.css('.upload-dropzone h5'));
-      expect(heading.nativeElement.textContent).toContain('Upload avatar');
+      const heading = newFixture.debugElement.query(By.css(".upload-dropzone h5"));
+      expect(heading.nativeElement.textContent).toContain("Upload avatar");
     });
 
     it("should show 'New avatar' text when user has a custom avatar", () => {
@@ -503,17 +518,17 @@ describe("AvatarManagerComponent", () => {
       fixture.detectChanges();
 
       // Check the heading text
-      const heading = fixture.debugElement.query(By.css('.avatar-info .btn-primary'));
-      expect(heading.nativeElement.textContent).toContain('Upload new');
+      const heading = fixture.debugElement.query(By.css(".avatar-info .btn-primary"));
+      expect(heading.nativeElement.textContent).toContain("Upload new");
     });
 
     it("should hide upload panel when deleting avatar", () => {
       // Set the isDeletingAvatar flag
-      component["isDeletingAvatar"] = true;
+      component.isDeletingAvatar = true;
       fixture.detectChanges();
 
       // Check that the upload panel is not in the DOM
-      const uploadPanel = fixture.debugElement.query(By.css('.upload-panel'));
+      const uploadPanel = fixture.debugElement.query(By.css(".upload-panel"));
       expect(uploadPanel).toBeFalsy();
     });
   });

@@ -1,14 +1,16 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import type { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { Router } from "@angular/router";
 import { BaseService } from "@core/services/base.service";
 import { PremiumSubscriptionGuardService } from "@core/services/guards/premium-subscription-guard.service";
 import { UltimateSubscriptionGuardService } from "@core/services/guards/ultimate-subscription-guard.service";
 import { LoadingService } from "@core/services/loading.service";
-import { concat, Observable } from "rxjs";
+import type { Observable } from "rxjs";
+import { concat } from "rxjs";
 import { reduce, tap } from "rxjs/operators";
 
 @Injectable()
-export class UploaderGuardService extends BaseService  {
+export class UploaderGuardService extends BaseService {
   constructor(
     public loadingService: LoadingService,
     public premiumGuard: PremiumSubscriptionGuardService,

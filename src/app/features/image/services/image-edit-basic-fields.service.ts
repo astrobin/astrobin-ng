@@ -1,17 +1,18 @@
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@core/services/loading.service";
-import { TranslateService } from "@ngx-translate/core";
-import { ImageEditService } from "@features/image/services/image-edit.service";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { forkJoin, Observable, of } from "rxjs";
+import type { FormControl } from "@angular/forms";
+import type { MainState } from "@app/store/state";
+import type { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { filter, map, take, tap } from "rxjs/operators";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { FormControl } from "@angular/forms";
+import { LoadingService } from "@core/services/loading.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
+import { ImageEditService } from "@features/image/services/image-edit.service";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import type { Observable } from "rxjs";
+import { forkJoin, of } from "rxjs";
+import { filter, map, take, tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: null
@@ -28,6 +29,7 @@ export class ImageEditBasicFieldsService extends ImageEditFieldsBaseService {
   }
 
   onFieldsInitialized(): void {
+    // No initialization needed for basic fields
   }
 
   getTitleField(): FormlyFieldConfig {
@@ -109,12 +111,12 @@ export class ImageEditBasicFieldsService extends ImageEditFieldsBaseService {
         striped: true,
         options: this.imageEditService.model.pendingCollaborators
           ? forkJoin(
-            this.imageEditService.model.pendingCollaborators.map(pending_collaborator => {
-              return this.commonApiService
-                .getUserProfileByUserId(pending_collaborator)
-                .pipe(map(userProfile => ngSelectData(userProfile)));
-            })
-          )
+              this.imageEditService.model.pendingCollaborators.map(pending_collaborator => {
+                return this.commonApiService
+                  .getUserProfileByUserId(pending_collaborator)
+                  .pipe(map(userProfile => ngSelectData(userProfile)));
+              })
+            )
           : of([]),
         onSearch: (term: string): Observable<UserProfileInterface[]> => {
           const field = _getField();
@@ -173,8 +175,8 @@ export class ImageEditBasicFieldsService extends ImageEditFieldsBaseService {
         label: this.translateService.instant("Link to TIFF/FITS"),
         description: this.translateService.instant(
           "If you want to share the TIFF or FITS file of your image, put a link to the file here. " +
-          "Unfortunately, AstroBin cannot offer to store these files at the moment, so you will have to " +
-          "host them on your personal space."
+            "Unfortunately, AstroBin cannot offer to store these files at the moment, so you will have to " +
+            "host them on your personal space."
         ),
         placeholder: this.translateService.instant("e.g.") + " https://www.example.com/my-page.html",
         required: false

@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
+import type { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { ImageAlias } from "@core/enums/image-alias.enum";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { ImageService } from "@core/services/image/image.service";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-user-gallery-collection-thumbnail",
@@ -22,10 +22,10 @@ import { ImageService } from "@core/services/image/image.service";
                   [highResolutionUrl]="collection.coverThumbnailHd"
                   [useHighResolution]="fit.scale > 3"
                   [ngStyle]="{
-                          'background-position': fit.position.x + '% ' + fit.position.y + '%',
-                          'background-size': fit.scale > 1.5 ? (fit.scale * 100) + '%' : 'cover',
-                          'background-repeat': 'no-repeat'
-                        }"
+                    'background-position': fit.position.x + '% ' + fit.position.y + '%',
+                    'background-size': fit.scale > 1.5 ? fit.scale * 100 + '%' : 'cover',
+                    'background-repeat': 'no-repeat'
+                  }"
                   [attr.aria-label]="collection.name"
                   role="img"
                 ></div>
@@ -103,10 +103,7 @@ export class UserGalleryCollectionThumbnailComponent extends BaseComponentDirect
   @Input() userProfile: UserProfileInterface;
   @Input() collection: CollectionInterface;
 
-  constructor(
-    public readonly store$: Store<MainState>,
-    public readonly imageService: ImageService
-  ) {
+  constructor(public readonly store$: Store<MainState>, public readonly imageService: ImageService) {
     super(store$);
   }
 

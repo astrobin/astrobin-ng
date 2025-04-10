@@ -1,4 +1,4 @@
-<div class="card" id="create-new-brand" [class.disabled-with-backdrop]="disabled">
+<div [class.disabled-with-backdrop]="disabled" class="card" id="create-new-brand">
   <div class="backdrop"></div>
 
   <div class="card-header">
@@ -7,27 +7,27 @@
 
   <div class="card-body">
     <astrobin-brand-editor-form
-      [form]="form"
-      [name]="name"
-      [model]="model"
       (suggestionSelected)="brand.emit($event)"
+      [form]="form"
+      [model]="model"
+      [name]="name"
     ></astrobin-brand-editor-form>
   </div>
 
   <div class="card-footer">
     <button
-      class="btn btn-sm-block btn-secondary"
-      [class.loading]="loadingService.loading$ | async"
       (click)="brand.emit(null)"
+      [class.loading]="loadingService.loading$ | async"
+      class="btn btn-sm-block btn-secondary"
     >
       {{ "Cancel" | translate }}
     </button>
 
     <button
-      class="btn btn-sm-block btn-primary"
-      [disabled]="form.invalid"
-      [class.loading]="(loadingService.loading$ | async) || form.pending"
       (click)="createBrand()"
+      [class.loading]="(loadingService.loading$ | async) || form.pending"
+      [disabled]="form.invalid"
+      class="btn btn-sm-block btn-primary"
     >
       {{ "Create" | translate }}
     </button>

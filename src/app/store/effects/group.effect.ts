@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import type { LoadGroups } from "@app/store/actions/group.actions";
+import { LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
+import { selectGroupsByParams } from "@app/store/selectors/app/group.selectors";
+import type { MainState } from "@app/store/state";
+import { GroupApiService } from "@core/services/api/classic/groups/group-api.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { select, Store } from "@ngrx/store";
 import { of } from "rxjs";
 import { catchError, map, switchMap, take } from "rxjs/operators";
-import { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import { selectGroupsByParams } from "@app/store/selectors/app/group.selectors";
-import { MainState } from "@app/store/state";
-import { GroupApiService } from "@core/services/api/classic/groups/group-api.service";
 
 @Injectable()
 export class GroupEffects {
@@ -22,19 +23,14 @@ export class GroupEffects {
             storedGroups && storedGroups.length > 0
               ? of(new LoadGroupsSuccess({ params: action.payload.params, groups: storedGroups }))
               : this.groupApiService.fetchGroups(action.payload.params).pipe(
-                map(groups => new LoadGroupsSuccess({ params: action.payload.params, groups })),
-                catchError(error => of(new LoadGroupsFailure({ params: action.payload.params, error })))
-              )
+                  map(groups => new LoadGroupsSuccess({ params: action.payload.params, groups })),
+                  catchError(error => of(new LoadGroupsFailure({ params: action.payload.params, error })))
+                )
           )
         )
       )
     )
   );
 
-  constructor(
-    private actions$: Actions,
-    private store: Store<MainState>,
-    private groupApiService: GroupApiService
-  ) {
-  }
+  constructor(private actions$: Actions, private store: Store<MainState>, private groupApiService: GroupApiService) {}
 }

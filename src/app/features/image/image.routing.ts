@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { ImageEditPageComponent } from "@features/image/pages/edit/image-edit-page.component";
-import { ImageResolver } from "@core/resolvers/image.resolver";
-import { AuthGuardService } from "@core/services/guards/auth-guard.service";
-import { ImageOwnerGuardService } from "@core/services/guards/image-owner-guard.service";
-import { ImageUserGroupsResolver } from "@core/resolvers/image-user-groups.resolver";
+import type { Routes } from "@angular/router";
 import { CurrentUsersLocationsResolver } from "@core/resolvers/current-users-locations.resolver";
-import { PendingChangesGuard } from "@core/services/guards/pending-changes-guard.service";
 import { ImageUserCollectionsResolver } from "@core/resolvers/image-user-collections-resolver.service";
-import { ImagePageComponent } from "@features/image/pages/image/image-page.component";
-import { ImageEditRevisionPageComponent } from "@features/image/pages/edit-revision/image-edit-revision-page.component";
-import { ImagePlateSolvingSettingsPageComponent } from "@features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component";
-import { PlateSolvingSettingsResolver } from "@core/resolvers/plate-solving-settings.resolver";
+import { ImageUserGroupsResolver } from "@core/resolvers/image-user-groups.resolver";
+import { ImageResolver } from "@core/resolvers/image.resolver";
 import { PlateSolvingAdvancedSettingsResolver } from "@core/resolvers/plate-solving-advanced-settings.resolver";
+import { PlateSolvingSettingsResolver } from "@core/resolvers/plate-solving-settings.resolver";
+import { AuthGuardService } from "@core/services/guards/auth-guard.service";
 import { GalleryExperienceGuard } from "@core/services/guards/gallery-experience-guard.service";
+import { ImageOwnerGuardService } from "@core/services/guards/image-owner-guard.service";
+import { PendingChangesGuard } from "@core/services/guards/pending-changes-guard.service";
+import { ImageEditPageComponent } from "@features/image/pages/edit/image-edit-page.component";
+import { ImageEditRevisionPageComponent } from "@features/image/pages/edit-revision/image-edit-revision-page.component";
+import { ImagePageComponent } from "@features/image/pages/image/image-page.component";
+import { ImagePlateSolvingSettingsPageComponent } from "@features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component";
 
 export const imageRoutes: Routes = [
   {
@@ -21,7 +21,7 @@ export const imageRoutes: Routes = [
     canActivate: [AuthGuardService, ImageOwnerGuardService],
     canDeactivate: [PendingChangesGuard],
     resolve: {
-      image: ImageResolver,
+      image: ImageResolver
     },
     data: {
       skipThumbnails: false
@@ -61,7 +61,7 @@ export const imageRoutes: Routes = [
     component: ImagePageComponent,
     canActivate: [GalleryExperienceGuard],
     resolve: {
-      image: ImageResolver,
+      image: ImageResolver
     },
     data: {
       fluid: true

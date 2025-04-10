@@ -19,16 +19,16 @@
     }}
   </div>
 
-  <table class="table" *ngIf="proposals.length > 0">
+  <table *ngIf="proposals.length > 0" class="table">
     <caption>
       {{
         "Gear renaming proposals" | translate
       }}
     </caption>
     <colgroup>
-      <col span="2" class="old" />
+      <col class="old" span="2" />
       <col />
-      <col span="3" class="new" />
+      <col class="new" span="3" />
     </colgroup>
     <thead>
       <tr>
@@ -52,27 +52,27 @@
         <td>{{ proposal.newMake }}</td>
         <td>
           {{ proposal.newName }}
-          <span class="modified" *ngIf="proposal.modified">
+          <span *ngIf="proposal.modified" class="modified">
             {{ "(modified)" | translate }}
           </span>
         </td>
         <td>
           <button
-            class="btn btn-xs btn-success mb-2 mb-md-0 me-lg-2"
+            (click)="approve($event, proposal)"
             [class.loading]="this.loadingService.loading$ | async"
             [disabled]="proposal.status !== GearRenamingProposalStatus.PENDING"
-            (click)="approve($event, proposal)"
+            class="btn btn-xs btn-success mb-2 mb-md-0 me-lg-2"
           >
-            <fa-icon icon="check" class="d-none d-lg-inline"></fa-icon>
+            <fa-icon class="d-none d-lg-inline" icon="check"></fa-icon>
             {{ "Approve" | translate }}
           </button>
           <button
-            class="btn btn-xs btn-danger"
+            (click)="reject($event, proposal)"
             [class.loading]="this.loadingService.loading$ | async"
             [disabled]="proposal.status !== GearRenamingProposalStatus.PENDING"
-            (click)="reject($event, proposal)"
+            class="btn btn-xs btn-danger"
           >
-            <fa-icon icon="times" class="d-none d-lg-inline"></fa-icon>
+            <fa-icon class="d-none d-lg-inline" icon="times"></fa-icon>
             {{ "Reject" | translate }}
           </button>
         </td>

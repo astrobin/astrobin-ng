@@ -1,15 +1,17 @@
 import { Injectable } from "@angular/core";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { MainState } from "@app/store/state";
+import type { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@core/services/loading.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { of } from "rxjs";
 import { catchError, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
+
+import type { IotdActions, MarkReviewerSeenImage } from "./iotd.actions";
 import {
   DeleteIotdFailure,
   DeleteIotdSuccess,
@@ -19,7 +21,6 @@ import {
   DeleteVoteSuccess,
   DismissImageSuccess,
   HideImageSuccess,
-  IotdActions,
   IotdActionTypes,
   LoadDismissedImagesSuccess,
   LoadFutureIodsFailure,
@@ -39,7 +40,6 @@ import {
   LoadSubmitterSeenImagesSuccess,
   LoadVotesFailure,
   LoadVotesSuccess,
-  MarkReviewerSeenImage,
   MarkReviewerSeenImageSuccess,
   MarkSubmitterSeenImageSuccess,
   PostIotdFailure,
@@ -60,7 +60,7 @@ export class IotdEffects {
   loadStaffMemberSettings$ = createEffect(() =>
     this.actions$.pipe(
       ofType(IotdActionTypes.LOAD_STAFF_MEMBER_SETTINGS),
-      mergeMap(action =>
+      mergeMap(() =>
         this.iotdApiService
           .getStaffMemberSettings()
           .pipe(map(settings => new LoadStaffMemberSettingsSuccess({ settings })))
@@ -73,9 +73,7 @@ export class IotdEffects {
       ofType(IotdActionTypes.LOAD_HIDDEN_IMAGES),
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(() =>
-        this.iotdApiService
-          .loadHiddenImages()
-          .pipe(map(hiddenImages => new LoadHiddenImagesSuccess({ hiddenImages })))
+        this.iotdApiService.loadHiddenImages().pipe(map(hiddenImages => new LoadHiddenImagesSuccess({ hiddenImages })))
       )
     )
   );
@@ -255,11 +253,8 @@ export class IotdEffects {
           }))
         )
       ),
-      mergeMap(({ entries, contentTypeId }) => [
-        new LoadStaffMemberSettings(),
-        new LoadSubmissionQueueSuccess(entries)
-      ]),
-      catchError(error => of(new LoadSubmissionQueueFailure()))
+      mergeMap(({ entries }) => [new LoadStaffMemberSettings(), new LoadSubmissionQueueSuccess(entries)]),
+      catchError(() => of(new LoadSubmissionQueueFailure()))
     )
   );
 
@@ -285,10 +280,10 @@ export class IotdEffects {
     this.actions$.pipe(
       ofType(IotdActionTypes.LOAD_SUBMISSIONS),
       tap(() => this.loadingService.setLoading(true)),
-      mergeMap(action =>
+      mergeMap(() =>
         this.iotdApiService.getSubmissions().pipe(
           map(submissions => new LoadSubmissionsSuccess(submissions)),
-          catchError(error => of(new LoadSubmissionsFailure()))
+          catchError(() => of(new LoadSubmissionsFailure()))
         )
       )
     )
@@ -356,7 +351,7 @@ export class IotdEffects {
       mergeMap(payload =>
         this.iotdApiService.retractSubmission(payload.id).pipe(
           map(() => new DeleteSubmissionSuccess({ id: payload.id })),
-          catchError(error => of(new DeleteSubmissionFailure()))
+          catchError(() => of(new DeleteSubmissionFailure()))
         )
       )
     )
@@ -397,7 +392,7 @@ export class IotdEffects {
           }))
         )
       ),
-      mergeMap(({ entries, contentTypeId }) => [new LoadStaffMemberSettings(), new LoadReviewQueueSuccess(entries)]),
+      mergeMap(({ entries }) => [new LoadStaffMemberSettings(), new LoadReviewQueueSuccess(entries)]),
       catchError(() => of(new LoadReviewQueueFailure()))
     )
   );
@@ -424,10 +419,10 @@ export class IotdEffects {
     this.actions$.pipe(
       ofType(IotdActionTypes.LOAD_VOTES),
       tap(() => this.loadingService.setLoading(true)),
-      mergeMap(action =>
+      mergeMap(() =>
         this.iotdApiService.getVotes().pipe(
           map(reviews => new LoadVotesSuccess(reviews)),
-          catchError(error => of(new LoadVotesFailure()))
+          catchError(() => of(new LoadVotesFailure()))
         )
       )
     )
@@ -537,7 +532,7 @@ export class IotdEffects {
           }))
         )
       ),
-      mergeMap(({ entries, contentTypeId }) => [new LoadStaffMemberSettings(), new LoadJudgementQueueSuccess(entries)]),
+      mergeMap(({ entries }) => [new LoadStaffMemberSettings(), new LoadJudgementQueueSuccess(entries)]),
       catchError(() => of(new LoadJudgementQueueFailure()))
     )
   );
@@ -564,10 +559,10 @@ export class IotdEffects {
     this.actions$.pipe(
       ofType(IotdActionTypes.LOAD_FUTURE_IOTDS),
       tap(() => this.loadingService.setLoading(true)),
-      mergeMap(action =>
+      mergeMap(() =>
         this.iotdApiService.getFutureIotds().pipe(
           map(futureIotds => new LoadFutureIodsSuccess({ futureIotds })),
-          catchError(error => of(new LoadFutureIodsFailure()))
+          catchError(() => of(new LoadFutureIodsFailure()))
         )
       )
     )
@@ -667,6 +662,5 @@ export class IotdEffects {
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly windowRef: WindowRefService
-  ) {
-  }
+  ) {}
 }

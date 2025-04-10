@@ -1,19 +1,21 @@
 import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
+import type { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
+import { Router } from "@angular/router";
+import type { All } from "@app/store/actions/app.actions";
+import type { MainState } from "@app/store/state";
+import { AuthService } from "@core/services/auth.service";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { combineLatest, Observable, Observer } from "rxjs";
-import { filter, map } from "rxjs/operators";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import { Actions, ofType } from "@ngrx/effects";
-import { All } from "@app/store/actions/app.actions";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentActionTypes, LoadMarketplaceListing } from "@features/equipment/store/equipment.actions";
 import { selectMarketplaceListingByHash } from "@features/equipment/store/equipment.selectors";
-import { AuthService } from "@core/services/auth.service";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import type { Observer } from "rxjs";
+import { combineLatest, Observable } from "rxjs";
+import { filter, map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -53,7 +55,7 @@ export class MarketplaceListingOwnerGuardService extends BaseService implements 
           return;
         }
 
-        const hash = route.params["hash"];
+        const hash = route.params.hash;
 
         this.store$.dispatch(new LoadMarketplaceListing({ hash }));
 
@@ -73,7 +75,7 @@ export class MarketplaceListingOwnerGuardService extends BaseService implements 
             }
           });
 
-        this.actions$.pipe(ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_FAILURE)).subscribe(error => {
+        this.actions$.pipe(ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_FAILURE)).subscribe(() => {
           onError(observer, "/404");
         });
       });

@@ -5,7 +5,7 @@ export interface ForumPostSearchInterface {
   updated: string;
   topicId: number;
   topicName: string;
-  user:string;
+  user: string;
   userDisplayName: string;
   userAvatar: string;
   bodyHtml: string;

@@ -1,16 +1,18 @@
 import { TestBed } from "@angular/core/testing";
-
-import { ImageEditWatermarkFieldsService } from "./image-edit-watermark-fields.service";
-import { MockBuilder } from "ng-mocks";
+import { initialMainState } from "@app/store/state";
 import { ImageModule } from "@features/image/image.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
+import { MockBuilder } from "ng-mocks";
+
+import { ImageEditWatermarkFieldsService } from "./image-edit-watermark-fields.service";
 
 describe("ImageEditWatermarkFieldsService", () => {
   let service: ImageEditWatermarkFieldsService;
 
   beforeEach(async () => {
-    await MockBuilder(ImageEditWatermarkFieldsService, ImageModule).provide(provideMockStore({ initialState: initialMainState }));
+    await MockBuilder(ImageEditWatermarkFieldsService, ImageModule).provide(
+      provideMockStore({ initialState: initialMainState })
+    );
     service = TestBed.inject(ImageEditWatermarkFieldsService);
   });
 

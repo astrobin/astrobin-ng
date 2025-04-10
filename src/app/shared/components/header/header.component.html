@@ -1,7 +1,4 @@
-<nav
-  [class.active]="!menubarIsCollapsed"
-  class="navbar navbar-expand-lg navbar-dark fixed-top"
->
+<nav [class.active]="!menubarIsCollapsed" class="navbar navbar-expand-lg navbar-dark fixed-top">
   <div class="container justify-content-lg-start">
     <div [class.active]="!menubarIsCollapsed" class="main-navigation order-0 order-lg-1">
       <ng-container [ngTemplateOutlet]="menubarTemplate"></ng-container>
@@ -11,19 +8,17 @@
       <ng-container [ngTemplateOutlet]="astrobinLogoTemplate"></ng-container>
     </div>
 
-    <ul [class.active]="!userMenubarIsCollapsed"
-        class="nav user-navigation order-2 d-flex d-lg-none align-items-center">
+    <ul
+      [class.active]="!userMenubarIsCollapsed"
+      class="nav user-navigation order-2 d-flex d-lg-none align-items-center"
+    >
       <ng-container [ngTemplateOutlet]="userMenubarTemplate"></ng-container>
     </ul>
   </div>
 </nav>
 
 <ng-template #astrobinLogoTemplate>
-  <a
-    *ngIf="!showMobileSearch"
-    routerLink="/"
-    class="navbar-brand p-0 ps-3 pe-2 w-100 d-inline-block me-0 me-lg-3"
-  >
+  <a *ngIf="!showMobileSearch" class="navbar-brand p-0 ps-3 pe-2 w-100 d-inline-block me-0 me-lg-3" routerLink="/">
     <img alt="AstroBin" class="d-block d-sm-none d-lg-block" src="assets/images/nav-logo.png?v=3" />
     <h4 class="d-none d-sm-inline-block d-lg-none m-0 fw-bold">AstroBin</h4>
   </a>
@@ -34,13 +29,7 @@
 
 <ng-template #quickSearchTemplate>
   <!-- Quick search form -->
-  <form
-    *ngIf="!isSearchPage"
-    (submit)="onQuickSearchSubmit($event)"
-    class="ps-3 pe-2 px-lg-4"
-    method="get"
-    ngNoForm
-  >
+  <form (submit)="onQuickSearchSubmit($event)" *ngIf="!isSearchPage" class="ps-3 pe-2 px-lg-4" method="get" ngNoForm>
     <label class="w-100 mb-0">
       <input
         #quickSearchInput
@@ -95,10 +84,7 @@
         data-target="#userNavbarSupportedContent"
         data-toggle="collapse"
       >
-        <astrobin-avatar
-          [link]="false"
-          [user]="user"
-        ></astrobin-avatar>
+        <astrobin-avatar [link]="false" [user]="user"></astrobin-avatar>
       </a>
     </li>
 
@@ -134,21 +120,14 @@
 </ng-template>
 
 <ng-template #mobileSearchToggleTemplate>
-  <a
-    *ngIf="!isSearchPage"
-    (click)="onShowMobileSearchClick($event)"
-    class="nav-link toggle-mobile-search d-lg-none"
-  >
+  <a (click)="onShowMobileSearchClick($event)" *ngIf="!isSearchPage" class="nav-link toggle-mobile-search d-lg-none">
     <fa-icon icon="search"></fa-icon>
   </a>
 </ng-template>
 
 <ng-template #notificationsButtonTemplate>
   <!-- Notifications -->
-  <a
-    class="btn btn-link nav-link position-relative"
-    (click)="openNotificationsOffcanvas()"
-  >
+  <a (click)="openNotificationsOffcanvas()" class="btn btn-link nav-link position-relative">
     <fa-icon icon="bell"></fa-icon>
     <ng-container *ngIf="unreadNotificationsCount$ | async as unreadCount">
       <span *ngIf="!!unreadCount" class="badge bg-danger badge-pill rounded-pill m-0">
@@ -168,17 +147,13 @@
         <ng-container [ngTemplateOutlet]="astrobinIndexTemplate"></ng-container>
       </button>
 
-      <button class="btn btn-primary mt-2 d-none d-xl-inline-block" id="user-dropdown" ngbDropdownToggle>
-      </button>
+      <button class="btn btn-primary mt-2 d-none d-xl-inline-block" id="user-dropdown" ngbDropdownToggle></button>
 
       <ul [class.active]="!userMenubarIsCollapsed" class="nav user-navigation d-block d-xl-none">
         <ng-container [ngTemplateOutlet]="userMenubarTemplate"></ng-container>
       </ul>
 
-      <div
-        [attr.aria-labelledby]="'user-dropdown'"
-        ngbDropdownMenu
-      >
+      <div [attr.aria-labelledby]="'user-dropdown'" ngbDropdownMenu>
         <a class="dropdown-item" routerLink="/subscriptions/options">
           <fa-icon icon="asterisk"></fa-icon>
           {{ "Subscription plans" | translate }}
@@ -192,11 +167,7 @@
         <div class="dropdown-divider"></div>
         <h6 class="dropdown-header">{{ "My places" | translate }}</h6>
 
-        <a
-          *ngIf="user | isProducer"
-          [href]="classicRoutesService.COMMERCIAL_PRODUCTS(user)"
-          class="dropdown-item"
-        >
+        <a *ngIf="user | isProducer" [href]="classicRoutesService.COMMERCIAL_PRODUCTS(user)" class="dropdown-item">
           <fa-icon icon="barcode"></fa-icon>
           {{ "Commercial products" | translate }}
         </a>
@@ -212,8 +183,8 @@
         </a>
 
         <a
-          *ngIf="!userProfile.displayWipImagesOnPublicGallery"
           (click)="userService.openStaging(user.username, userProfile.enableNewGalleryExperience)"
+          *ngIf="!userProfile.displayWipImagesOnPublicGallery"
           [href]="userService.getStagingUrl(user.username, userProfile.enableNewGalleryExperience)"
           astrobinEventPreventDefault
           class="dropdown-item"
@@ -283,15 +254,14 @@
   </li>
 </ng-template>
 
-
 <ng-template #indexesPopoverContentTemplate>
   <ng-container *ngIf="userProfile">
-    <h4>{{ "Image Index" | translate }}: {{ userProfile.astroBinIndex | number: "1.2-2" }}</h4>
+    <h4>{{ "Image Index" | translate }}: {{ userProfile.astroBinIndex | number : "1.2-2" }}</h4>
     <div [innerHTML]="imageIndexPopoverInfo"></div>
 
     <hr />
 
-    <h4>{{ "Contribution Index" | translate }} (beta): {{ userProfile.contributionIndex | number: "1.2-2" }}</h4>
+    <h4>{{ "Contribution Index" | translate }} (beta): {{ userProfile.contributionIndex | number : "1.2-2" }}</h4>
     <div [innerHTML]="contributionIndexPopoverInfo"></div>
   </ng-container>
 </ng-template>
@@ -299,26 +269,11 @@
 <ng-template #sidebarTemplate>
   <div
     #sidebar
-    class="
-            order-lg-2
-            w-100
-            d-flex
-            flex-row
-            flex-wrap
-            flex-lg-nowrap
-            align-items-center
-            align-content-between
-            sidebar
-            p-3
-            p-lg-0
-          "
+    class="order-lg-2 w-100 d-flex flex-row flex-wrap flex-lg-nowrap align-items-center align-content-between sidebar p-3 p-lg-0"
   >
-
-    <ul
-      class="navbar-nav mr-lg-auto mb-0 order-1 order-lg-0 justify-content-center"
-    >
+    <ul class="navbar-nav mr-lg-auto mb-0 order-1 order-lg-0 justify-content-center">
       <li class="nav-item">
-        <a routerLink="/" class="nav-link d-lg-none">
+        <a class="nav-link d-lg-none" routerLink="/">
           {{ "Home" | translate }}
         </a>
       </li>
@@ -326,9 +281,7 @@
       <!-- Moderate menu -->
       <li *ngIf="user | isContentModerator" class="nav-item">
         <div ngbDropdown>
-          <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>
-            Moderate
-          </button>
+          <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>Moderate</button>
           <div [attr.aria-labelledby]="'moderateDropdown'" ngbDropdownMenu>
             <h6 class="dropdown-header" translate>Images</h6>
 
@@ -350,32 +303,17 @@
               <div class="dropdown-divider"></div>
               <h6 class="dropdown-header" translate>Image of the day</h6>
 
-              <a
-
-                *ngIf="user | isIotdSubmitter"
-                class="dropdown-item"
-                routerLink="/iotd/submission-queue"
-              >
+              <a *ngIf="user | isIotdSubmitter" class="dropdown-item" routerLink="/iotd/submission-queue">
                 <fa-icon icon="upload"></fa-icon>
                 {{ "Submission queue" | translate }}
               </a>
 
-              <a
-
-                *ngIf="user | isIotdReviewer"
-                class="dropdown-item"
-                routerLink="/iotd/review-queue"
-              >
+              <a *ngIf="user | isIotdReviewer" class="dropdown-item" routerLink="/iotd/review-queue">
                 <fa-icon icon="star"></fa-icon>
                 {{ "Review queue" | translate }}
               </a>
 
-              <a
-
-                *ngIf="user | isIotdJudge"
-                class="dropdown-item"
-                routerLink="/iotd/judgement-queue"
-              >
+              <a *ngIf="user | isIotdJudge" class="dropdown-item" routerLink="/iotd/judgement-queue">
                 <fa-icon icon="hammer"></fa-icon>
                 {{ "Judgement queue" | translate }}
               </a>
@@ -383,9 +321,7 @@
 
             <ng-container *ngIf="user | isEquipmentModerator">
               <div class="dropdown-divider"></div>
-              <h6 class="dropdown-header">
-                Equipment
-              </h6>
+              <h6 class="dropdown-header">Equipment</h6>
 
               <a class="dropdown-item" routerLink="/equipment/migration-tool">
                 <fa-icon icon="arrow-right"></fa-icon>
@@ -400,9 +336,7 @@
       <!-- Forum menu -->
       <li class="nav-item">
         <div ngbDropdown>
-          <button class="btn btn-link" id="forumDropdown" ngbDropdownToggle translate>
-            Forum
-          </button>
+          <button class="btn btn-link" id="forumDropdown" ngbDropdownToggle translate>Forum</button>
           <div [attr.aria-labelledby]="'forumDropdown'" ngbDropdownMenu>
             <a [href]="classicRoutesService.FORUM_HOME" class="dropdown-item">
               <fa-icon icon="comments"></fa-icon>
@@ -426,14 +360,9 @@
       <!-- Marketplace menu -->
       <li class="nav-item">
         <div ngbDropdown>
-          <button class="btn btn-link" id="marketplaceDropdown" ngbDropdownToggle translate>
-            Marketplace
-          </button>
+          <button class="btn btn-link" id="marketplaceDropdown" ngbDropdownToggle translate>Marketplace</button>
           <div [attr.aria-labelledby]="'marketplaceDropdown'" ngbDropdownMenu>
-            <a
-              [routerLink]="['equipment', 'marketplace']"
-              class="dropdown-item"
-            >
+            <a [routerLink]="['equipment', 'marketplace']" class="dropdown-item">
               <fa-icon icon="shopping-cart"></fa-icon>
               {{ "Browse Marketplace" | translate }}
             </a>
@@ -445,10 +374,7 @@
               {{ "Post listing" | translate }}
             </h6>
 
-            <a
-              [routerLink]="['equipment', 'marketplace', 'create']"
-              class="dropdown-item"
-            >
+            <a [routerLink]="['equipment', 'marketplace', 'create']" class="dropdown-item">
               <fa-icon icon="money-bill"></fa-icon>
               {{ "Sell" | translate }}
             </a>
@@ -469,22 +395,14 @@
       <!-- Explore menu -->
       <li class="nav-item">
         <div ngbDropdown>
-          <button class="btn btn-link" id="exploreDropdown" ngbDropdownToggle translate>
-            Explore
-          </button>
+          <button class="btn btn-link" id="exploreDropdown" ngbDropdownToggle translate>Explore</button>
           <div [attr.aria-labelledby]="'exploreDropdown'" ngbDropdownMenu>
-            <a
-              [routerLink]="['/', 'search']"
-              class="dropdown-item"
-            >
+            <a [routerLink]="['/', 'search']" class="dropdown-item">
               <fa-icon icon="search"></fa-icon>
               {{ "Advanced search" | translate }}
             </a>
 
-            <a
-              [routerLink]="['equipment', 'explorer']"
-              class="dropdown-item"
-            >
+            <a [routerLink]="['equipment', 'explorer']" class="dropdown-item">
               <fa-icon icon="camera-retro"></fa-icon>
               {{ "Equipment" | translate }}
             </a>
@@ -523,9 +441,7 @@
       <!-- Help menu -->
       <li class="nav-item">
         <div ngbDropdown>
-          <button class="btn btn-link" id="helpDropdown" ngbDropdownToggle translate>
-            Help
-          </button>
+          <button class="btn btn-link" id="helpDropdown" ngbDropdownToggle translate>Help</button>
           <div [attr.aria-labelledby]="'helpDropdown'" ngbDropdownMenu>
             <a [href]="classicRoutesService.ABOUT" class="dropdown-item">
               <fa-icon icon="info"></fa-icon>
@@ -591,20 +507,8 @@
 </ng-template>
 
 <ng-template #userSidebarTemplate>
-  <div
-    #userSidebar
-    class="
-            order-lg-2
-            w-100
-            user-sidebar
-            p-3
-            p-lg-0
-          "
-  >
-
-    <ul
-      class="navbar-nav mr-lg-auto mb-0 order-1 order-lg-0 d-flex flex-column justify-content-center p-4 text-center"
-    >
+  <div #userSidebar class="order-lg-2 w-100 user-sidebar p-3 p-lg-0">
+    <ul class="navbar-nav mr-lg-auto mb-0 order-1 order-lg-0 d-flex flex-column justify-content-center p-4 text-center">
       <li class="nav-item mb-3">
         <h5 class="pb-0">{{ user.displayName }}</h5>
         <ng-container [ngTemplateOutlet]="astrobinIndexTemplate"></ng-container>
@@ -625,11 +529,7 @@
       <li class="nav-item divider"></li>
 
       <li class="nav-item">
-        <a
-          *ngIf="user | isProducer"
-          [href]="classicRoutesService.COMMERCIAL_PRODUCTS(user)"
-          class="nav-link"
-        >
+        <a *ngIf="user | isProducer" [href]="classicRoutesService.COMMERCIAL_PRODUCTS(user)" class="nav-link">
           {{ "Commercial products" | translate }}
         </a>
       </li>
@@ -718,11 +618,11 @@
     triggers="mouseenter:click"
   >
     <span class="image-index index">
-      {{ userProfile?.astroBinIndex | number: "1.2-2" }}
+      {{ userProfile?.astroBinIndex | number : "1.2-2" }}
       &middot;
     </span>
     <span class="contribution-index index">
-      {{ userProfile?.contributionIndex | number: "1.2-2" }}
+      {{ userProfile?.contributionIndex | number : "1.2-2" }}
     </span>
   </span>
 </ng-template>
@@ -737,9 +637,7 @@
     <button (click)="offcanvas.close()" class="btn-close text-reset"></button>
   </div>
   <div class="offcanvas-body">
-    <astrobin-notifications-list
-      [standalone]="true"
-      (allNotificationsMarkedAsRead)="offcanvas.close()">
+    <astrobin-notifications-list (allNotificationsMarkedAsRead)="offcanvas.close()" [standalone]="true">
     </astrobin-notifications-list>
   </div>
 </ng-template>

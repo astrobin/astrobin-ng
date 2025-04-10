@@ -1,25 +1,22 @@
 <div
-  astrobinScrollVisibility
-  [viewportOptions]="{
-       verticalTolerance: 200,
-       horizontalTolerance: 10,
-       shouldCheckHorizontal: false
-     }"
   (visibilityChange)="onVisibilityChange($event)"
+  [viewportOptions]="{
+    verticalTolerance: 200,
+    horizontalTolerance: 10,
+    shouldCheckHorizontal: false
+  }"
+  astrobinScrollVisibility
   class="search-results"
 >
   <ng-container *ngIf="!initialLoading; else loadingTemplate">
     <ng-container *ngIf="results !== null; else loadingTemplate">
       <ng-container *ngIf="results.length > 0; else noResultsTemplate">
-        <div
-          (click)="openComment(comment)"
-          *ngFor="let comment of results" class="card"
-        >
+        <div (click)="openComment(comment)" *ngFor="let comment of results" class="card">
           <div class="card-header d-flex justify-content-between align-items-center">
             <img
               *ngIf="comment.imageThumbnail"
-              [src]="comment.imageThumbnail"
               [alt]="comment.contentObjectTitle"
+              [src]="comment.imageThumbnail"
               class="image-thumbnail"
             />
             <div class="flex-grow-1">
@@ -27,25 +24,28 @@
               <small>
                 <span class="username">{{ comment.userDisplayName }}</span>
                 &middot;
-                <span class="created">{{ comment.created | localDate | timeago: true }}</span>
+                <span class="created">{{ comment.created | localDate | timeago : true }}</span>
               </small>
             </div>
             <img
               *ngIf="comment.userAvatar"
-              [src]="comment.userAvatar"
               [alt]="comment.userDisplayName"
+              [src]="comment.userAvatar"
               class="user-avatar"
             />
           </div>
 
-          <div *ngIf="(comment.text | BBCodeToHtml) | async as html; else commentTextLoading"
-            [innerHTML]="html | removeBr | highlight:model.text?.value"
+          <div
+            *ngIf="comment.text | BBCodeToHtml | async as html; else commentTextLoading"
+            [innerHTML]="html | removeBr | highlight : model.text?.value"
             class="card-body"
-          >
-          </div>
+          ></div>
           <ng-template #commentTextLoading>
             <div class="card-body">
-              <small><fa-icon icon="spinner" animation="spin"></fa-icon> {{ 'Loading content...' | translate }}</small>
+              <small>
+                <fa-icon animation="spin" icon="spinner"></fa-icon>
+                {{ "Loading content..." | translate }}</small
+              >
             </div>
           </ng-template>
         </div>

@@ -1,55 +1,69 @@
-import { AfterViewInit, Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import type { AfterViewInit, OnDestroy, OnInit } from "@angular/core";
+import { Component, HostListener, Inject, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { SaveImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
-import { MainState } from "@app/store/state";
+import type { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import type { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
+import type { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-acquisition.interface";
+import { RemoteSourceAffiliateApiService } from "@core/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import type { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { LoadUser } from "@features/account/store/auth.actions";
+import { selectUser } from "@features/account/store/auth.selectors";
+import type { LoadEquipmentItemFailure } from "@features/equipment/store/equipment.actions";
+import {
+  EquipmentActionTypes,
+  FindEquipmentPresets,
+  ItemBrowserSet,
+  LoadEquipmentItem,
+  LoadEquipmentItemSuccess
+} from "@features/equipment/store/equipment.actions";
+import { selectEquipmentItem, selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import type { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import type { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import type { FilterInterface } from "@features/equipment/types/filter.interface";
+import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features/image/components/copy-acquisition-sessions-from-another-image-modal/copy-acquisition-sessions-from-another-image-modal.component";
+import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
+import {
+  AcquisitionForm,
+  OverrideAcquisitionFormModalComponent
+} from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
+import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
+import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
+import { ImageEditBasicFieldsService } from "@features/image/services/image-edit-basic-fields.service";
+import { ImageEditContentFieldsService } from "@features/image/services/image-edit-content-fields.service";
+import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
+import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
+import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
+import { ImageEditWatermarkFieldsService } from "@features/image/services/image-edit-watermark-fields.service";
+import type { ImageEditModelInterface } from "@features/image/services/image-edit.service";
+import { ImageEditService } from "@features/image/services/image-edit.service";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
+import type { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ImageAlias } from "@core/enums/image-alias.enum";
-import { RemoteSourceAffiliateApiService } from "@core/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { LoadingService } from "@core/services/loading.service";
-import { TitleService } from "@core/services/title/title.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { ImageEditBasicFieldsService } from "@features/image/services/image-edit-basic-fields.service";
-import { ImageEditModelInterface, ImageEditService } from "@features/image/services/image-edit.service";
-import { ImageEditContentFieldsService } from "@features/image/services/image-edit-content-fields.service";
-import { ImageEditWatermarkFieldsService } from "@features/image/services/image-edit-watermark-fields.service";
-import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
-import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
-import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
-import { forkJoin, Observable, of, switchMap } from "rxjs";
-import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { selectEquipmentItem, selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
-import { filter, map, take, takeUntil } from "rxjs/operators";
-import { EquipmentActionTypes, FindEquipmentPresets, ItemBrowserSet, LoadEquipmentItem, LoadEquipmentItemFailure, LoadEquipmentItemSuccess } from "@features/equipment/store/equipment.actions";
-import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
-import { UserService } from "@core/services/user.service";
-import { CookieService } from "ngx-cookie";
-import { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
-import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
 import { Constants } from "@shared/constants";
-import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features/image/components/copy-acquisition-sessions-from-another-image-modal/copy-acquisition-sessions-from-another-image-modal.component";
-import { isPlatformBrowser } from "@angular/common";
-import { AcquisitionForm, OverrideAcquisitionFormModalComponent } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
-import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
-import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
-import { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-acquisition.interface";
-import { FilterInterface } from "@features/equipment/types/filter.interface";
-import { LoadUser } from "@features/account/store/auth.actions";
-import { selectUser } from "@features/account/store/auth.selectors";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { DeviceService } from "@core/services/device.service";
+import { CookieService } from "ngx-cookie";
+import type { Observable } from "rxjs";
+import { forkJoin, of, switchMap } from "rxjs";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -58,7 +72,8 @@ import { DeviceService } from "@core/services/device.service";
 })
 export class ImageEditPageComponent
   extends BaseComponentDirective
-  implements OnInit, ComponentCanDeactivate, AfterViewInit, OnDestroy {
+  implements OnInit, ComponentCanDeactivate, AfterViewInit, OnDestroy
+{
   readonly Constants = Constants;
 
   readonly isBrowser: boolean;
@@ -111,7 +126,7 @@ export class ImageEditPageComponent
     public readonly userService: UserService,
     public readonly cookieService: CookieService,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService
   ) {
@@ -119,15 +134,17 @@ export class ImageEditPageComponent
 
     this.isBrowser = isPlatformBrowser(this.platformId);
 
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      take(1)
-    ).subscribe(() => {
-      const state = this.router.getCurrentNavigation()?.extras?.state;
-      if (state) {
-        this._returnUrl = state["returnUrl"];
-      }
-    });
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        take(1)
+      )
+      .subscribe(() => {
+        const state = this.router.getCurrentNavigation()?.extras?.state;
+        if (state) {
+          this._returnUrl = state.returnUrl;
+        }
+      });
   }
 
   @ViewChild("remoteSourceLabelTemplate")
@@ -152,8 +169,9 @@ export class ImageEditPageComponent
   @HostListener("window:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === "Escape" && this.imageEditEquipmentFieldsService.creationMode) {
-      const fullscreenModal = isPlatformBrowser(this.platformId) &&
-        this.windowRefService.nativeWindow.document.querySelector('.equipment-item-browser-fullscreen-modal');
+      const fullscreenModal =
+        isPlatformBrowser(this.platformId) &&
+        this.windowRefService.nativeWindow.document.querySelector(".equipment-item-browser-fullscreen-modal");
 
       // Don't handle Escape if we're in fullscreen mode (let the ItemBrowserComponent handle it)
       if (!fullscreenModal) {
@@ -202,9 +220,7 @@ export class ImageEditPageComponent
 
     this._initBreadcrumb();
 
-    this.store$.dispatch(
-      new LoadUser({ id: this.imageEditService.model.user })
-    );
+    this.store$.dispatch(new LoadUser({ id: this.imageEditService.model.user }));
 
     this.store$.dispatch(
       new LoadThumbnail({
@@ -408,7 +424,7 @@ export class ImageEditPageComponent
     const _fixFilters = (acquisitions: any[]): void => {
       acquisitions.forEach(acquisition => {
         if (acquisition.filter !== undefined) {
-          acquisition["filter2"] = acquisition.filter;
+          acquisition.filter2 = acquisition.filter;
           delete acquisition.filter;
         }
       });
@@ -416,8 +432,8 @@ export class ImageEditPageComponent
 
     const _loadFilters$ = (acquisitions: any[]): Observable<FilterInterface[]> => {
       const filterIds: FilterInterface["id"][] = acquisitions
-        .filter(acquisition => acquisition["filter2"] !== undefined)
-        .map(acquisition => acquisition["filter2"]);
+        .filter(acquisition => acquisition.filter2 !== undefined)
+        .map(acquisition => acquisition.filter2);
 
       if (filterIds.length === 0) {
         return of([]);
@@ -436,7 +452,9 @@ export class ImageEditPageComponent
                 return null;
               }
             }),
-            filter(filter => filter === null || (filter.id === payload.id && filter.klass === payload.type)),
+            filter(
+              filterItem => filterItem === null || (filterItem.id === payload.id && filterItem.klass === payload.type)
+            ),
             take(1)
           );
         });
@@ -464,10 +482,10 @@ export class ImageEditPageComponent
 
         _fixNumbers(validAcquisitions);
         _fixFilters(validAcquisitions);
-        _loadFilters$(validAcquisitions).subscribe(filters => {
-          filters.forEach(filter => {
-            if (filter !== null) {
-              this.imageEditService.model.filters2.push(filter.id);
+        _loadFilters$(validAcquisitions).subscribe(loadedFilters => {
+          loadedFilters.forEach(filterItem => {
+            if (filterItem !== null) {
+              this.imageEditService.model.filters2.push(filterItem.id);
               this.imageEditService.form.patchValue({ filters2: this.imageEditService.model.filters2 });
             }
           });
@@ -508,9 +526,7 @@ export class ImageEditPageComponent
 
     if (!componentInstance.model.acquisitionForm) {
       componentInstance.model = {
-        acquisitionForm: this.imageEditService.isDeepSky()
-          ? AcquisitionForm.LONG_EXPOSURE
-          : AcquisitionForm.VIDEO_BASED
+        acquisitionForm: this.imageEditService.isDeepSky() ? AcquisitionForm.LONG_EXPOSURE : AcquisitionForm.VIDEO_BASED
       };
     }
 
@@ -552,9 +568,7 @@ export class ImageEditPageComponent
     const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
     componentInstance.title = this.translateService.instant("Exit equipment creation?");
-    componentInstance.message = this.translateService.instant(
-      "All unsaved changes will be lost."
-    );
+    componentInstance.message = this.translateService.instant("All unsaved changes will be lost.");
 
     modalRef.closed.pipe(take(1)).subscribe(() => {
       if (isPlatformBrowser(this.platformId)) {
@@ -586,7 +600,7 @@ export class ImageEditPageComponent
       this.popNotificationsService.error(
         this.translateService.instant(
           "It looks like you are in the process of creating an equipment item, please complete or cancel that " +
-          "operation before saving the entire form."
+            "operation before saving the entire form."
         ),
         null,
         {
@@ -620,9 +634,11 @@ export class ImageEditPageComponent
         if (!this._returnUrl) {
           this.currentUserProfile$.pipe(take(1)).subscribe(userProfile => {
             if (userProfile.enableNewGalleryExperience) {
-              this.router.navigate(["i", this.imageEditService.model.hash || this.imageEditService.model.pk]).then(() => {
-                this.popNotificationsService.success(this.translateService.instant("Image saved."));
-              });
+              this.router
+                .navigate(["i", this.imageEditService.model.hash || this.imageEditService.model.pk])
+                .then(() => {
+                  this.popNotificationsService.success(this.translateService.instant("Image saved."));
+                });
             } else {
               this.loadingService.setLoading(true);
               UtilsService.openLink(
@@ -639,97 +655,133 @@ export class ImageEditPageComponent
       });
     };
 
-    this.imageEditService.currentEquipmentPreset$().pipe(take(1)).subscribe(preset => {
-      if (!preset) {
-        const imagingTelescopes = this.imageEditService.model.imagingTelescopes2;
-        const imagingCameras = this.imageEditService.model.imagingCameras2;
-        const mounts = this.imageEditService.model.mounts2;
-        const filters = this.imageEditService.model.filters2;
-        const accessories = this.imageEditService.model.accessories2;
-        const software = this.imageEditService.model.software2;
+    this.imageEditService
+      .currentEquipmentPreset$()
+      .pipe(take(1))
+      .subscribe(preset => {
+        if (!preset) {
+          const imagingTelescopes = this.imageEditService.model.imagingTelescopes2;
+          const imagingCameras = this.imageEditService.model.imagingCameras2;
+          const mounts = this.imageEditService.model.mounts2;
+          const filters = this.imageEditService.model.filters2;
+          const accessories = this.imageEditService.model.accessories2;
+          const software = this.imageEditService.model.software2;
 
-        if (
-          !imagingTelescopes.length &&
-          !imagingCameras.length &&
-          !mounts.length &&
-          !filters.length &&
-          !accessories.length &&
-          !software.length
-        ) {
-          _doSave();
-          return;
-        }
+          if (
+            !imagingTelescopes.length &&
+            !imagingCameras.length &&
+            !mounts.length &&
+            !filters.length &&
+            !accessories.length &&
+            !software.length
+          ) {
+            _doSave();
+            return;
+          }
 
-        forkJoin([
-          ...imagingTelescopes.map(id => this.store$.select(selectEquipmentItem, {
-            id,
-            type: EquipmentItemType.TELESCOPE
-          }).pipe(take(1))),
-          ...imagingCameras.map(id => this.store$.select(selectEquipmentItem, {
-            id,
-            type: EquipmentItemType.CAMERA
-          }).pipe(take(1))),
-          ...mounts.map(id => this.store$.select(selectEquipmentItem, {
-            id,
-            type: EquipmentItemType.MOUNT
-          }).pipe(take(1))),
-          ...filters.map(id => this.store$.select(selectEquipmentItem, {
-            id,
-            type: EquipmentItemType.FILTER
-          }).pipe(take(1))),
-          ...accessories.map(id => this.store$.select(selectEquipmentItem, {
-            id,
-            type: EquipmentItemType.ACCESSORY
-          }).pipe(take(1))),
-          ...software.map(id => this.store$.select(selectEquipmentItem, {
-            id,
-            type: EquipmentItemType.SOFTWARE
-          }).pipe(take(1)))
-        ]).subscribe((equipment: EquipmentItem[]) => {
-          const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
-          const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
-          componentInstance.title = this.translateService.instant(
-            "Would you like to save this equipment configuration as a setup?"
-          );
-          componentInstance.message = `
+          forkJoin([
+            ...imagingTelescopes.map(id =>
+              this.store$
+                .select(selectEquipmentItem, {
+                  id,
+                  type: EquipmentItemType.TELESCOPE
+                })
+                .pipe(take(1))
+            ),
+            ...imagingCameras.map(id =>
+              this.store$
+                .select(selectEquipmentItem, {
+                  id,
+                  type: EquipmentItemType.CAMERA
+                })
+                .pipe(take(1))
+            ),
+            ...mounts.map(id =>
+              this.store$
+                .select(selectEquipmentItem, {
+                  id,
+                  type: EquipmentItemType.MOUNT
+                })
+                .pipe(take(1))
+            ),
+            ...filters.map(id =>
+              this.store$
+                .select(selectEquipmentItem, {
+                  id,
+                  type: EquipmentItemType.FILTER
+                })
+                .pipe(take(1))
+            ),
+            ...accessories.map(id =>
+              this.store$
+                .select(selectEquipmentItem, {
+                  id,
+                  type: EquipmentItemType.ACCESSORY
+                })
+                .pipe(take(1))
+            ),
+            ...software.map(id =>
+              this.store$
+                .select(selectEquipmentItem, {
+                  id,
+                  type: EquipmentItemType.SOFTWARE
+                })
+                .pipe(take(1))
+            )
+          ]).subscribe((equipment: EquipmentItem[]) => {
+            const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+            const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
+            componentInstance.title = this.translateService.instant(
+              "Would you like to save this equipment configuration as a setup?"
+            );
+            componentInstance.message = `
             <p>
               ${this.translateService.instant(
-            "AstroBin noticed that you have not saved this equipment configuration as a setup. " +
-            "Would you like to save it now, so you can easily load it in the future?"
-          )}
+                "AstroBin noticed that you have not saved this equipment configuration as a setup. " +
+                  "Would you like to save it now, so you can easily load it in the future?"
+              )}
             </p>
             <p>
-              ${equipment.map(equipmentItem =>
-            (equipmentItem.brandName || this.translateService.instant("DIY")) + " " + equipmentItem.name).join(" &middot; ")
-          }
+              ${equipment
+                .map(
+                  equipmentItem =>
+                    (equipmentItem.brandName || this.translateService.instant("DIY")) + " " + equipmentItem.name
+                )
+                .join(" &middot; ")}
             </p>
           `;
-          componentInstance.showAreYouSure = false;
-          componentInstance.cancelLabel = this.translateService.instant("No, just save the image");
-          componentInstance.confirmLabel = this.translateService.instant("Yes, save the setup");
+            componentInstance.showAreYouSure = false;
+            componentInstance.cancelLabel = this.translateService.instant("No, just save the image");
+            componentInstance.confirmLabel = this.translateService.instant("Yes, save the setup");
 
-          modalRef.closed.subscribe(result => {
-            this.onSaveEquipmentPresetClicked(() => {
+            modalRef.closed.subscribe(() => {
+              this.onSaveEquipmentPresetClicked(() => {
+                _doSave();
+              });
+            });
+
+            modalRef.dismissed.subscribe(() => {
               _doSave();
             });
           });
-
-          modalRef.dismissed.subscribe(() => {
-            _doSave();
-          });
-        });
-      } else {
-        _doSave();
-      }
-    });
+        } else {
+          _doSave();
+        }
+      });
   }
 
   private _initFields(): void {
-    this.store$.select(selectUser, this.imageEditService.model.user)
+    this.store$
+      .select(selectUser, this.imageEditService.model.user)
       .pipe(
         filter(user => !!user),
         take(1),
-        switchMap(user => this.currentUser$.pipe(take(1), map(currentUser => ({ user, currentUser }))))
+        switchMap(user =>
+          this.currentUser$.pipe(
+            take(1),
+            map(currentUser => ({ user, currentUser }))
+          )
+        )
       )
       .subscribe(({ user, currentUser }) => {
         const basic = {

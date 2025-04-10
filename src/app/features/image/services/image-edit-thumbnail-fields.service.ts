@@ -1,16 +1,16 @@
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@core/services/loading.service";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
-import { catchError, map, retry } from "rxjs/operators";
-import { EMPTY } from "rxjs";
+import type { MainState } from "@app/store/state";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { TranslateService } from "@ngx-translate/core";
-import { ImageEditService } from "@features/image/services/image-edit.service";
+import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
+import { ImageEditService } from "@features/image/services/image-edit.service";
+import { Store } from "@ngrx/store";
+import type { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { EMPTY } from "rxjs";
+import { catchError, map, retry } from "rxjs/operators";
 
 @Injectable({
   providedIn: null
@@ -27,6 +27,7 @@ export class ImageEditThumbnailFieldsService extends ImageEditFieldsBaseService 
   }
 
   onFieldsInitialized(): void {
+    // No initialization needed for thumbnail fields
   }
 
   getThumbnailField(): FormlyFieldConfig {
@@ -74,7 +75,7 @@ export class ImageEditThumbnailFieldsService extends ImageEditFieldsBaseService 
         label: this.translateService.instant("Sharpen thumbnails"),
         description: this.translateService.instant(
           "If selected, AstroBin will use a resizing algorithm that slightly sharpens the image's thumbnails. " +
-          "This setting applies to all revisions."
+            "This setting applies to all revisions."
         )
       }
     };

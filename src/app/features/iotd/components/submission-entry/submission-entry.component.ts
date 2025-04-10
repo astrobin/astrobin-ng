@@ -1,5 +1,11 @@
 import { Component, ElementRef, Inject, PLATFORM_ID } from "@angular/core";
-import { MainState } from "@app/store/state";
+import { selectBackendConfig, selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
+import type { MainState } from "@app/store/state";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteSubmission, PostSubmission } from "@features/iotd/store/iotd.actions";
 import {
@@ -7,20 +13,15 @@ import {
   selectSubmissionQueueEntry,
   selectSubmissions
 } from "@features/iotd/store/iotd.selectors";
+import type { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Store } from "@ngrx/store";
-import { LoadingService } from "@core/services/loading.service";
-import { Observable, of } from "rxjs";
-import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
-import { selectBackendConfig, selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { CookieService } from "ngx-cookie";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { TranslateService } from "@ngx-translate/core";
-import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { Actions } from "@ngrx/effects";
-import { UtilsService } from "@core/services/utils/utils.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { CookieService } from "ngx-cookie";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
+import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-submission-entry",
@@ -39,7 +40,7 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly translateService: TranslateService,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(
       store$,
@@ -72,10 +73,10 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
         return isPromoted
           ? of(false)
           : max$.pipe(
-            take(1),
-            switchMap(max => count$.pipe(map(count => ({ max, count })))),
-            map(({ max, count }) => count < max)
-          );
+              take(1),
+              switchMap(max => count$.pipe(map(count => ({ max, count })))),
+              map(({ max, count }) => count < max)
+            );
       })
     );
   }

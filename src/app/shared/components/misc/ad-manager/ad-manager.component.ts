@@ -1,9 +1,22 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
+import type { OnChanges } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
 import { AdManagerService } from "@core/services/ad-manager.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@core/services/device.service";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { fadeInOut } from "@shared/animations";
 
 @Component({
@@ -15,8 +28,7 @@ import { fadeInOut } from "@shared/animations";
       [style.height.px]="loading || rendered ? height : 0"
       class="ad-container"
       [class.ad-rendered]="rendered"
-    >
-    </div>
+    ></div>
 
     <astrobin-loading-indicator *ngIf="loading && !rendered"></astrobin-loading-indicator>
 
@@ -28,11 +40,7 @@ import { fadeInOut } from "@shared/animations";
       class="default-ad"
     />
 
-    <button
-      *ngIf="rendered"
-      (click)="removeAds()"
-      class="btn btn-link btn-no-block remove-ads"
-    >
+    <button *ngIf="rendered" (click)="removeAds()" class="btn btn-link btn-no-block remove-ads">
       {{ "Remove ads" | translate }}
     </button>
 
@@ -53,7 +61,8 @@ import { fadeInOut } from "@shared/animations";
         ></p>
 
         <p
-          translate="If you are on AstroBin Premium or AstroBin Ultimate, you can remove ads in your settings. If you are not, please consider supporting AstroBin by subscribing!"></p>
+          translate="If you are on AstroBin Premium or AstroBin Ultimate, you can remove ads in your settings. If you are not, please consider supporting AstroBin by subscribing!"
+        ></p>
 
         <p translate="Thank you!"></p>
       </div>
@@ -82,7 +91,7 @@ export class AdManagerComponent implements OnChanges {
     public readonly adManagerService: AdManagerService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
-    @Inject(PLATFORM_ID) platformId: Object,
+    @Inject(PLATFORM_ID) platformId: object,
     public readonly elementRef: ElementRef,
     public readonly utilsService: UtilsService,
     public readonly changeDetectorRef: ChangeDetectorRef
@@ -90,7 +99,7 @@ export class AdManagerComponent implements OnChanges {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  async ngOnChanges(changes: SimpleChanges) {
+  async ngOnChanges() {
     if (this.isBrowser) {
       const config = this.adManagerService.getAdConfig(this.configName);
       if (config) {
@@ -126,30 +135,6 @@ export class AdManagerComponent implements OnChanges {
     }
   }
 
-  private _defineAndDisplayAd(): void {
-    if (!this.unitPath || !this.divId || !this.size) {
-      console.debug(`_defineAndDisplayAd: params are null`);
-      return;
-    }
-
-    if (this.adManagerService.hasAdSlot(this.divId)) {
-      this.adManagerService.refreshAd(this.divId).then((displayed) => {
-        this._onAdResult(displayed);
-        this.changeDetectorRef.markForCheck();
-      });
-    } else {
-      this.adManagerService.defineAdSlot(this.configName, this.unitPath, this.size, this.divId).then(() => {
-        this.loading = true;
-        this.changeDetectorRef.markForCheck();
-
-        this.adManagerService.displayAd(this.divId).then((displayed) => {
-          this._onAdResult(displayed);
-          this.changeDetectorRef.markForCheck();
-        });
-      });
-    }
-  }
-
   refreshAd(): void {
     if (this.loading) {
       console.debug(`Ad is already loading, skipping refresh.`);
@@ -170,6 +155,30 @@ export class AdManagerComponent implements OnChanges {
   destroyAd(): Promise<void> {
     console.debug(`Destroying ad slot ${this.divId}`);
     return this.adManagerService.destroyAdSlot(this.divId);
+  }
+
+  private _defineAndDisplayAd(): void {
+    if (!this.unitPath || !this.divId || !this.size) {
+      console.debug(`_defineAndDisplayAd: params are null`);
+      return;
+    }
+
+    if (this.adManagerService.hasAdSlot(this.divId)) {
+      this.adManagerService.refreshAd(this.divId).then(displayed => {
+        this._onAdResult(displayed);
+        this.changeDetectorRef.markForCheck();
+      });
+    } else {
+      this.adManagerService.defineAdSlot(this.configName, this.unitPath, this.size, this.divId).then(() => {
+        this.loading = true;
+        this.changeDetectorRef.markForCheck();
+
+        this.adManagerService.displayAd(this.divId).then(displayed => {
+          this._onAdResult(displayed);
+          this.changeDetectorRef.markForCheck();
+        });
+      });
+    }
   }
 
   private _onAdResult(displayed: boolean): void {

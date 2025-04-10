@@ -1,15 +1,16 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, OnChanges, PLATFORM_ID } from "@angular/core";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
-import { ImageService } from "@core/services/image/image.service";
+import { isPlatformBrowser } from "@angular/common";
+import type { OnChanges } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
+import type { ImageSearchInterface } from "@core/interfaces/image-search.interface";
+import type { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageService } from "@core/services/image/image.service";
 import { SearchService } from "@core/services/search.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
-  selector: 'astrobin-image-hover',
+  selector: "astrobin-image-hover",
   template: `
     <div class="static-overlay" *ngIf="staticOverlay">
       <ng-container *ngTemplateOutlet="staticOverlayTemplate"></ng-container>
@@ -22,12 +23,10 @@ import { WindowRefService } from "@core/services/window-ref.service";
       [class.large]="activeLayout === ActiveLayout.LARGE"
     >
       <div class="flex-grow-1">
-        <div class="title" [innerHTML]="image.title | highlight: searchTerms"></div>
-        <div *ngIf="showAuthor" class="author" [innerHTML]="image.userDisplayName | highlight: searchTerms"></div>
+        <div class="title" [innerHTML]="image.title | highlight : searchTerms"></div>
+        <div *ngIf="showAuthor" class="author" [innerHTML]="image.userDisplayName | highlight : searchTerms"></div>
         <div *ngIf="published" class="published">{{ published | localDate | timeago }}</div>
-        <div *ngIf="!published && uploaded"
-             class="uploaded">{{ uploaded | localDate | timeago }}
-        </div>
+        <div *ngIf="!published && uploaded" class="uploaded">{{ uploaded | localDate | timeago }}</div>
       </div>
 
       <div class="counters d-flex flex-column">
@@ -68,26 +67,21 @@ import { WindowRefService } from "@core/services/window-ref.service";
           <fa-icon icon="eye"></fa-icon> {{ views | numberSuffix }}
         </span>
 
-        <span *ngIf="staticOverlay?.includes('integration') && !!integration" [innerHTML]="integration">
-        </span>
+        <span *ngIf="staticOverlay?.includes('integration') && !!integration" [innerHTML]="integration"> </span>
 
-        <span *ngIf="staticOverlay?.includes('field_radius')">
-          {{ image.fieldRadius | number:"1.2-2" }}&deg;
-        </span>
+        <span *ngIf="staticOverlay?.includes('field_radius')"> {{ image.fieldRadius | number : "1.2-2" }}&deg; </span>
 
         <span *ngIf="staticOverlay?.includes('pixel_scale')">
-          {{ image.pixelScale | number:"1.2-2" }}&Prime;/px
+          {{ image.pixelScale | number : "1.2-2" }}&Prime;/px
         </span>
 
-        <span *ngIf="staticOverlay?.includes('coord_ra_min') && !!ra" [innerHTML]="ra">
-        </span>
+        <span *ngIf="staticOverlay?.includes('coord_ra_min') && !!ra" [innerHTML]="ra"> </span>
 
-        <span *ngIf="staticOverlay?.includes('coord_dec_min') && !!dec" [innerHTML]="dec">
-        </span>
+        <span *ngIf="staticOverlay?.includes('coord_dec_min') && !!dec" [innerHTML]="dec"> </span>
       </div>
     </ng-template>
   `,
-  styleUrls: ['./image-hover.component.scss'],
+  styleUrls: ["./image-hover.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageHoverComponent implements OnChanges {
@@ -113,14 +107,14 @@ export class ImageHoverComponent implements OnChanges {
   constructor(
     public readonly imageService: ImageService,
     public readonly searchService: SearchService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly windowRefService: WindowRefService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   ngOnChanges(): void {
-    if (this.image.hasOwnProperty('likeCount')) {
+    if (this.image.hasOwnProperty("likeCount")) {
       this.published = (this.image as ImageInterface).published;
       this.uploaded = (this.image as ImageInterface).uploaded;
       this.likes = (this.image as ImageInterface).likeCount;

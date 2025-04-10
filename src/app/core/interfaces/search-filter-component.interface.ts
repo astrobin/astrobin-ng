@@ -1,4 +1,4 @@
-import { EventEmitter } from "@angular/core";
+import type { EventEmitter } from "@angular/core";
 
 export enum SearchFilterCategory {
   GENERAL,
@@ -7,7 +7,7 @@ export enum SearchFilterCategory {
   EQUIPMENT,
   EQUIPMENT_ATTRIBUTES,
   ACQUISITION_ATTRIBUTES,
-  FILE_ATTRIBUTES,
+  FILE_ATTRIBUTES
 }
 
 export interface SearchFilterComponentInterface {

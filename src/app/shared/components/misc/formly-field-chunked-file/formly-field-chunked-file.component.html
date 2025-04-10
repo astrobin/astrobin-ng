@@ -1,11 +1,11 @@
 <astrobin-drag-drop-area
+  (filesDrop)="handleFilesDrop($event)"
   [attr.id]="field.id"
   [multipleFiles]="uploadOptions?.multiple"
-  (filesDrop)="handleFilesDrop($event)"
 >
   <div class="chunked-file">
     <label [class.active]="isActive()" class="upload-btn">
-      <div [style.width.%]="uploadState.progress" class="progress-area" *ngIf="uploadState?.progress">
+      <div *ngIf="uploadState?.progress" [style.width.%]="uploadState.progress" class="progress-area">
         <span class="background"></span>
       </div>
 
@@ -14,17 +14,16 @@
           {{ upload.name }} ({{ uploadSize | filesize }})
 
           <ng-container
-            *ngIf="field.props.additionalInfoTemplate && (uploadState.status === 'added' || uploadState.status === 'queue')"
+            *ngIf="
+              field.props.additionalInfoTemplate && (uploadState.status === 'added' || uploadState.status === 'queue')
+            "
           >
             <div class="additional-info">
               <ng-container *ngTemplateOutlet="field.props.additionalInfoTemplate"></ng-container>
             </div>
           </ng-container>
 
-          <span
-            *ngIf="uploadState.status !== 'added' && uploadState.status !== 'queue'"
-            class="status"
-          >
+          <span *ngIf="uploadState.status !== 'added' && uploadState.status !== 'queue'" class="status">
             {{ status$ | async }}
           </span>
         </ng-container>
