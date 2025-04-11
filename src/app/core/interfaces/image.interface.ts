@@ -1,25 +1,24 @@
-import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
-import { TelescopeInterface } from "@core/interfaces/telescope.interface";
-import { CameraInterface } from "@core/interfaces/camera.interface";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { FocalReducerInterface } from "@core/interfaces/focal-reducer.interface";
-import { MountInterface } from "@core/interfaces/mount.interface";
 import { AccessoryInterface } from "@core/interfaces/accessory.interface";
-import { SoftwareInterface } from "@core/interfaces/software.interface";
-
-import { TelescopeInterface as TelescopeInterface2 } from "@features/equipment/types/telescope.interface";
-import { CameraInterface as CameraInterface2 } from "@features/equipment/types/camera.interface";
-import { MountInterface as MountInterface2 } from "@features/equipment/types/mount.interface";
-import { FilterInterface as FilterInterface2 } from "@features/equipment/types/filter.interface";
-import { AccessoryInterface as AccessoryInterface2 } from "@features/equipment/types/accessory.interface";
-import { SoftwareInterface as SoftwareInterface2 } from "@features/equipment/types/software.interface";
-import { GroupInterface } from "@core/interfaces/group.interface";
+import { CameraInterface } from "@core/interfaces/camera.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
+import { FilterInterface } from "@core/interfaces/filter.interface";
+import { FocalReducerInterface } from "@core/interfaces/focal-reducer.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
+import { LocationInterface } from "@core/interfaces/location.interface";
+import { MountInterface } from "@core/interfaces/mount.interface";
+import { SoftwareInterface } from "@core/interfaces/software.interface";
 import { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-acquisition.interface";
 import { SolutionInterface } from "@core/interfaces/solution.interface";
-import { LocationInterface } from "@core/interfaces/location.interface";
-import { FilterInterface } from "@core/interfaces/filter.interface";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { TelescopeInterface } from "@core/interfaces/telescope.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { AccessoryInterface as AccessoryInterface2 } from "@features/equipment/types/accessory.interface";
+import { CameraInterface as CameraInterface2 } from "@features/equipment/types/camera.interface";
+import { FilterInterface as FilterInterface2 } from "@features/equipment/types/filter.interface";
+import { MountInterface as MountInterface2 } from "@features/equipment/types/mount.interface";
+import { SoftwareInterface as SoftwareInterface2 } from "@features/equipment/types/software.interface";
+import { TelescopeInterface as TelescopeInterface2 } from "@features/equipment/types/telescope.interface";
 
 export enum AcquisitionType {
   REGULAR = "REGULAR",
@@ -281,7 +280,7 @@ export interface ImageInterface {
   averageMoonIllumination?: number;
   uncompressedSourceFile?: string;
   finalGalleryThumbnail?: string;
-  isPlayable?: boolean;  // Only set by the gallery serializer.
+  isPlayable?: boolean; // Only set by the gallery serializer.
   detectedLanguage?: string;
 
   // Ephemeral form fields

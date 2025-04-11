@@ -1,16 +1,16 @@
-import { Component, OnInit } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
+import { OnInit, Component } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { GroupApiService } from "@core/services/api/classic/groups/group-api.service";
-import { takeUntil, tap } from "rxjs/operators";
+import { MainState } from "@app/store/state";
 import { GroupInterface } from "@core/interfaces/group.interface";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { GroupApiService } from "@core/services/api/classic/groups/group-api.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-search-groups-filter.search-filter-component",
@@ -70,17 +70,20 @@ export class SearchGroupsFilterComponent extends SearchBaseFilterComponent imple
 
     this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(user => {
       if (user) {
-        this.groupApiService.getAll(user.id).pipe(
-          tap(groups => {
-            this.groups = groups;
-          })
-        ).subscribe(groups => {
-          const field = this.editFields[0].fieldGroup[0];
-          field.props.options = groups.map(group => ({
-            value: group.id,
-            label: group.name
-          }));
-        });
+        this.groupApiService
+          .getAll(user.id)
+          .pipe(
+            tap(groups => {
+              this.groups = groups;
+            })
+          )
+          .subscribe(groups => {
+            const field = this.editFields[0].fieldGroup[0];
+            field.props.options = groups.map(group => ({
+              value: group.id,
+              label: group.name
+            }));
+          });
       }
     });
   }

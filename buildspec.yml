@@ -16,7 +16,13 @@ phases:
 
   build:
     commands:
-      - npm run lint
+      - git fetch origin master # Needed for git diff to work
+      - git diff origin/master...HEAD --name-only
+      - npx tsc --noEmit
+      - npx prettier --check src/
+      - npm run lint:changed
+      - npm run format:changed
+      - npm run prune
       - npm run build:prod
       - npm run build:ssr:prod
 

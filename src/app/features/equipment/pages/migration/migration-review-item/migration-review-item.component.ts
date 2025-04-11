@@ -1,32 +1,32 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { TitleService } from "@core/services/title/title.service";
-import { TranslateService } from "@ngx-translate/core";
+import { OnDestroy, OnInit, Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
-import { map, switchMap, take } from "rxjs/operators";
+import { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
+import { AccessoryApiService } from "@core/services/api/classic/gear/accessory/accessory-api.service";
+import { CameraApiService } from "@core/services/api/classic/gear/camera/camera-api.service";
+import { FilterApiService } from "@core/services/api/classic/gear/filter/filter-api.service";
+import { MountApiService } from "@core/services/api/classic/gear/mount/mount-api.service";
+import { SoftwareApiService } from "@core/services/api/classic/gear/software/software-api.service";
+import { TelescopeApiService } from "@core/services/api/classic/gear/telescope/telescope-api.service";
 import { GearService } from "@core/services/gear/gear.service";
+import { LoadingService } from "@core/services/loading.service";
+import { TitleService } from "@core/services/title/title.service";
 import { UserService } from "@core/services/user.service";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
-import { LoadingService } from "@core/services/loading.service";
+import { RejectMigrationModalComponent } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { ApproveEquipmentItem, EquipmentActionTypes, LoadBrand } from "@features/equipment/store/equipment.actions";
-import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { Observable, of } from "rxjs";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { RejectMigrationModalComponent } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { CameraApiService } from "@core/services/api/classic/gear/camera/camera-api.service";
-import { TelescopeApiService } from "@core/services/api/classic/gear/telescope/telescope-api.service";
-import { MountApiService } from "@core/services/api/classic/gear/mount/mount-api.service";
-import { FilterApiService } from "@core/services/api/classic/gear/filter/filter-api.service";
-import { AccessoryApiService } from "@core/services/api/classic/gear/accessory/accessory-api.service";
-import { SoftwareApiService } from "@core/services/api/classic/gear/software/software-api.service";
-import { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { of, Observable } from "rxjs";
+import { map, switchMap, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-migration-review-item",
@@ -214,6 +214,6 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
   }
 
   exit() {
-    this.router.navigateByUrl("/equipment/migration-review");
+    void this.router.navigateByUrl("/equipment/migration-review");
   }
 }

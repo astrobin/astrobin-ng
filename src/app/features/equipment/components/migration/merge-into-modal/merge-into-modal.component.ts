@@ -1,30 +1,30 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoadingService } from "@core/services/loading.service";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { OnInit, Component, Input } from "@angular/core";
+import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { AccessoryApiService } from "@core/services/api/classic/astrobin/accessory/accessory-api.service";
 import { CameraApiService } from "@core/services/api/classic/astrobin/camera/camera-api.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { filter, map, switchMap } from "rxjs/operators";
-import { concat, forkJoin, of } from "rxjs";
+import { FilterApiService } from "@core/services/api/classic/astrobin/filter/filter-api.service";
 import { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
+import { MountApiService } from "@core/services/api/classic/astrobin/mount/mount-api.service";
+import { SoftwareApiService } from "@core/services/api/classic/astrobin/software/software-api.service";
+import { TelescopeApiService } from "@core/services/api/classic/astrobin/telescope/telescope-api.service";
 import { GearService } from "@core/services/gear/gear.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
-import { FormGroup } from "@angular/forms";
-import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
-import { TelescopeApiService } from "@core/services/api/classic/astrobin/telescope/telescope-api.service";
-import { MountApiService } from "@core/services/api/classic/astrobin/mount/mount-api.service";
-import { FilterApiService } from "@core/services/api/classic/astrobin/filter/filter-api.service";
-import { AccessoryApiService } from "@core/services/api/classic/astrobin/accessory/accessory-api.service";
-import { SoftwareApiService } from "@core/services/api/classic/astrobin/software/software-api.service";
-import { ActiveToast } from "ngx-toastr";
+import { EquipmentItemType, EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
+import { ActiveToast } from "ngx-toastr";
+import { concat, forkJoin, of } from "rxjs";
+import { filter, map, switchMap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-merge-into-modal",
@@ -48,8 +48,8 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
 
   message = this.translateService.instant(
     "We found these items in the legacy database that are similar to this one. Please check the ones that you " +
-    "want to migrate into it. <strong>Please be careful!</strong> Not all items that AstroBin thinks are " +
-    "similar, are necessarily the same product. Only check the ones that you are sure of."
+      "want to migrate into it. <strong>Please be careful!</strong> Not all items that AstroBin thinks are " +
+      "similar, are necessarily the same product. Only check the ones that you are sure of."
   );
 
   constructor(
@@ -127,9 +127,9 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
               return of(legacyItems);
             }
 
-            return forkJoin(
-              ...([legacyItems.map(item => this.legacyGearApi.lockForMigration(item.pk))] as const)
-            ).pipe(map(() => legacyItems));
+            return forkJoin(...([legacyItems.map(item => this.legacyGearApi.lockForMigration(item.pk))] as const)).pipe(
+              map(() => legacyItems)
+            );
           })
         )
         .subscribe(legacyItems => {

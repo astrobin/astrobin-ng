@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
-import { CameraInterface as LegacyCameraInterface } from "@core/interfaces/camera.interface";
-import { MountInterface as LegacyMountInterface } from "@core/interfaces/mount.interface";
-import { FilterInterface as LegacyFilterInterface } from "@core/interfaces/filter.interface";
 import { AccessoryInterface as LegacyAccessoryInterface } from "@core/interfaces/accessory.interface";
+import { CameraInterface as LegacyCameraInterface } from "@core/interfaces/camera.interface";
+import { FilterInterface as LegacyFilterInterface } from "@core/interfaces/filter.interface";
+import { MountInterface as LegacyMountInterface } from "@core/interfaces/mount.interface";
 import { SoftwareInterface as LegacySoftwareInterface } from "@core/interfaces/software.interface";
+import { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 export type LegacyEquipmentItem =
   | LegacyTelescopeInterface
@@ -19,37 +19,42 @@ export type LegacyEquipmentItem =
   selector: "astrobin-image-viewer-equipment-items",
   template: `
     <ng-container *ngIf="!isLegacy(); else legacyTemplate">
-      <a *ngFor="let item of items"
-         [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
-         (click)="onEquipmentItemClicked($event, item)"
-         class="value flex-wrap"
+      <a
+        *ngFor="let item of items"
+        [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
+        (click)="onEquipmentItemClicked($event, item)"
+        class="value flex-wrap"
       >
         <astrobin-equipment-item-display-name
-          [highlightTerms]="highlightedItems?.includes(item.id) ? null : highlightTerms"
-          [item]="item"
-          [enableKlassIcon]="enableKlassIcon"
+          [class.highlighted]="highlightedItems?.includes(item.id)"
           [enableBrandLink]="false"
+          [enableKlassIcon]="enableKlassIcon"
           [enableNameLink]="false"
           [enableSummaryPopover]="true"
+          [highlightTerms]="highlightedItems?.includes(item.id) ? null : highlightTerms"
+          [item]="item"
           [showFrozenAsAmbiguous]="false"
           [showItemUnapprovedInfo]="false"
           [showRetailers]="true"
-          [class.highlighted]="highlightedItems?.includes(item.id)"
         >
         </astrobin-equipment-item-display-name>
       </a>
     </ng-container>
 
     <ng-template #legacyTemplate>
-      <a *ngFor="let item of items"
-         [href]="legacyEquipmentUrl(item)"
-         (click)="onLegacyEquipmentItemClicked($event, item)"
-         class="value legacy-equipment">
-        <img *ngIf="enableKlassIcon"
-             class="klass-icon"
-             [src]="'/assets/images/' + attrToIcon[attr] + '-white.png?v=1'"
-             alt="" />
-        <span [innerHTML]="(item.make + ' ' + item.name) | highlight: highlightTerms"></span>&nbsp;
+      <a
+        *ngFor="let item of items"
+        [href]="legacyEquipmentUrl(item)"
+        (click)="onLegacyEquipmentItemClicked($event, item)"
+        class="value legacy-equipment"
+      >
+        <img
+          *ngIf="enableKlassIcon"
+          [src]="'/assets/images/' + attrToIcon[attr] + '-white.png?v=1'"
+          class="klass-icon"
+          alt=""
+        />
+        <span [innerHTML]="item.make + ' ' + item.name | highlight: highlightTerms"></span>&nbsp;
       </a>
     </ng-template>
   `,

@@ -9,8 +9,7 @@ export enum ImageActionTypes {
 export class ImageEditorSetCropperShown implements PayloadActionInterface {
   readonly type = ImageActionTypes.SET_CROPPER_SHOWN;
 
-  constructor(public payload: boolean) {
-  }
+  constructor(public payload: boolean) {}
 }
 
 export type ImageActions = ImageEditorSetCropperShown;

@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { LoadingService } from "@core/services/loading.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+
 import { AuthApiService } from "../../interfaces/auth-api.service-interface";
 import { BaseClassicApiService } from "../base-classic-api.service";
 
@@ -12,7 +13,10 @@ import { BaseClassicApiService } from "../base-classic-api.service";
 export class AuthClassicApiService extends BaseClassicApiService implements AuthApiService {
   public configUrl = this.baseUrl;
 
-  public constructor(public loadingService: LoadingService, public http: HttpClient) {
+  public constructor(
+    public loadingService: LoadingService,
+    public http: HttpClient
+  ) {
     super(loadingService);
   }
 

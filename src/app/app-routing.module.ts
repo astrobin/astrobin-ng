@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { Routes, RouterModule } from "@angular/router";
 import { CustomPreloadStrategy } from "@app/app.preload-strategy";
 
 const routes: Routes = [
@@ -72,11 +72,10 @@ const routes: Routes = [
       scrollPositionRestoration: "enabled",
       anchorScrolling: "enabled",
       scrollOffset: [0, 64],
-      preloadingStrategy: CustomPreloadStrategy,
+      preloadingStrategy: CustomPreloadStrategy
     })
   ],
   exports: [RouterModule],
   providers: [CustomPreloadStrategy]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

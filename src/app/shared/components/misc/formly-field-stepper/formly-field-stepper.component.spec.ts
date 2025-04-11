@@ -1,11 +1,12 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { MockBuilder } from "ng-mocks";
-import { NgWizardStep, STEP_STATE, StepChangedArgs } from "@kronscht/ng-wizard";
-import { of } from "rxjs";
-import { FormlyFieldStepperComponent } from "./formly-field-stepper.component";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { NgWizardStep, StepChangedArgs, STEP_STATE } from "@kronscht/ng-wizard";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
+
+import { FormlyFieldStepperComponent } from "./formly-field-stepper.component";
 
 describe("FormlyFieldStepperComponent", () => {
   let component: FormlyFieldStepperComponent;

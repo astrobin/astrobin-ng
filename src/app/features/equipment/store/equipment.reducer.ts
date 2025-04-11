@@ -1,18 +1,19 @@
-import { EquipmentActionTypes } from "./equipment.actions";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import { arrayUniqueEquipmentItems, getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
-import { ContributorInterface } from "@features/equipment/types/contributor.interface";
-import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { AppActionTypes } from "@app/store/actions/app.actions";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { arrayUniqueEquipmentItems, getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { ContributorInterface } from "@features/equipment/types/contributor.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
-import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+
+import { EquipmentActionTypes } from "./equipment.actions";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -150,9 +151,7 @@ export function equipmentReducer(state = initialEquipmentState, action: PayloadA
 
       return {
         ...state,
-        equipmentItems: equipmentItems.filter(
-          item => item.klass !== rejectedItem.klass && item.id !== rejectedItem.id
-        )
+        equipmentItems: equipmentItems.filter(item => item.klass !== rejectedItem.klass && item.id !== rejectedItem.id)
       };
     }
 
@@ -259,15 +258,13 @@ export function equipmentReducer(state = initialEquipmentState, action: PayloadA
       const objectId = action.payload.toggleProperty.objectId;
       const propertyType = action.payload.toggleProperty.propertyType;
 
-      const item = state.equipmentItems.find(
-        item => item.id == objectId && item.contentType === contentType
-      );
+      const item = state.equipmentItems.find(item => item.id === objectId && item.contentType === contentType);
 
       if (propertyType === "follow" && !!item) {
         return {
           ...state,
           equipmentItems: state.equipmentItems.map(item => {
-            if (item.id == objectId && item.contentType === contentType) {
+            if (item.id === objectId && item.contentType === contentType) {
               item.followed = true;
             }
             return item;
@@ -283,13 +280,13 @@ export function equipmentReducer(state = initialEquipmentState, action: PayloadA
       const objectId = action.payload.toggleProperty.objectId;
       const propertyType = action.payload.toggleProperty.propertyType;
 
-      const item = state.equipmentItems.find(item => item.id == objectId && item.contentType === contentType);
+      const item = state.equipmentItems.find(item => item.id === objectId && item.contentType === contentType);
 
       if (propertyType === "follow" && !!item) {
         return {
           ...state,
           equipmentItems: state.equipmentItems.map(item => {
-            if (item.id == objectId && item.contentType === contentType) {
+            if (item.id === objectId && item.contentType === contentType) {
               item.followed = false;
             }
             return item;
@@ -317,10 +314,10 @@ export function equipmentReducer(state = initialEquipmentState, action: PayloadA
         marketplace: {
           ...state.marketplace,
           lastPaginatedRequestCount: action.payload.listings.count,
-          listings: UtilsService.arrayUniqueObjects([
-            ...state.marketplace.listings || [],
-            ...action.payload.listings.results
-          ], "id").sort(sortMarketplaceListings)
+          listings: UtilsService.arrayUniqueObjects(
+            [...(state.marketplace.listings || []), ...action.payload.listings.results],
+            "id"
+          ).sort(sortMarketplaceListings)
         }
       };
     }
@@ -526,7 +523,6 @@ export function equipmentReducer(state = initialEquipmentState, action: PayloadA
       };
     }
 
-
     case EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_SUCCESS:
     case EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_SUCCESS: {
       const updatedOffer = action.payload.offer;
@@ -682,7 +678,7 @@ export function equipmentReducer(state = initialEquipmentState, action: PayloadA
         equipmentItems: arrayUniqueEquipmentItems([
           ...state.equipmentItems,
           ...action.payload.imagingTelescopes2,
-          ...action.payload.imagingCameras2,
+          ...action.payload.imagingCameras2
         ])
       };
     }

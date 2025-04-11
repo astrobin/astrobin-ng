@@ -12,11 +12,7 @@ $xl-factor: 1.8;
 @mixin random-width-for-ratio($min, $max) {
   $random-addition: random($max - $min);
 
-  $scale-factor: clamp(
-    #{$min-clamp},
-    var(--container-width) / #{$base-container-width-factor},
-    #{$max-clamp}
-  );
+  $scale-factor: clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp});
 
   // Optional modifiers
   &.small {
@@ -64,33 +60,49 @@ $xl-factor: 1.8;
   }
 
   &.small {
-    @include flex-gap(row, calc(
-      var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) * #{$small-factor}
-    ));
+    @include flex-gap(
+      row,
+      calc(
+        var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) *
+          #{$small-factor}
+      )
+    );
   }
 
   &.medium {
-    @include flex-gap(row, calc(
-      var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp})
-    ));
+    @include flex-gap(
+      row,
+      calc(
+        var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp})
+      )
+    );
   }
 
   &.large {
-    @include flex-gap(row, calc(
-      var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) * #{$large-factor}
-    ));
+    @include flex-gap(
+      row,
+      calc(
+        var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) *
+          #{$large-factor}
+      )
+    );
   }
 
   &.xl {
-    @include flex-gap(row, calc(
-      var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) * #{$large-factor}
-    ));
+    @include flex-gap(
+      row,
+      calc(
+        var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) *
+          #{$large-factor}
+      )
+    );
   }
 
   // Default (same as medium)
-  @include flex-gap(row, calc(
-    var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp})
-  ));
+  @include flex-gap(
+    row,
+    calc(var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}))
+  );
 }
 
 .masonry-item {

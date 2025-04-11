@@ -1,18 +1,21 @@
 import { Injectable } from "@angular/core";
-import { UsernameServiceInterface } from "@shared/components/misc/username/username.service-interface";
+import { MainState } from "@app/store/state";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { Observable, of } from "rxjs";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
 import { LoadUserProfile } from "@features/account/store/auth.actions";
 import { selectUserProfile } from "@features/account/store/auth.selectors";
+import { Store } from "@ngrx/store";
+import { UsernameServiceInterface } from "@shared/components/misc/username/username.service-interface";
+import { of, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Injectable()
 export class UsernameService extends BaseService implements UsernameServiceInterface {
-  constructor(public readonly store$: Store<MainState>, public readonly loadingService: LoadingService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly loadingService: LoadingService
+  ) {
     super(loadingService);
   }
 

@@ -1,9 +1,9 @@
 import { Component, Input } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-condition",

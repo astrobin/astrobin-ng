@@ -1,44 +1,38 @@
 import { HttpClient, HttpHeaders, HttpRequest, HttpEvent, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { PaymentInterface } from "@core/interfaces/payment.interface";
 import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 import { UserProfileInterface, UserProfileStatsInterface } from "@core/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
-import { BackendTogglePropertyInterface, BackendUserInterface, BackendUserProfileInterface, CommonApiAdaptorService } from "@core/services/api/classic/common/common-api-adaptor.service";
+import {
+  BackendTogglePropertyInterface,
+  BackendUserInterface,
+  BackendUserProfileInterface,
+  CommonApiAdaptorService
+} from "@core/services/api/classic/common/common-api-adaptor.service";
 import { CommonApiServiceInterface } from "@core/services/api/classic/common/common-api.service-interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@core/services/loading.service";
+import { environment } from "@env/environment";
 import { Observable, of } from "rxjs";
 import { catchError, map, filter } from "rxjs/operators";
+
 import { BaseClassicApiService } from "../base-classic-api.service";
-import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { environment } from "@env/environment";
 
 export interface FollowersInterface {
-  followers: [
-    UserInterface["id"],
-    UserInterface["username"],
-    UserProfileInterface["realName"]
-  ][];
+  followers: [UserInterface["id"], UserInterface["username"], UserProfileInterface["realName"]][];
 }
 
 export interface FollowingInterface {
-  following: [
-    UserInterface["id"],
-    UserInterface["username"],
-    UserProfileInterface["realName"]
-  ][];
+  following: [UserInterface["id"], UserInterface["username"], UserProfileInterface["realName"]][];
 }
 
 export interface MutualFollowersInterface {
-  "mutual-followers": [
-    UserInterface["id"],
-    UserInterface["username"],
-    UserProfileInterface["realName"]
-  ][];
+  "mutual-followers": [UserInterface["id"], UserInterface["username"], UserProfileInterface["realName"]][];
 }
 
 @Injectable({
@@ -78,17 +72,15 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
 
   getUser(id?: UserInterface["id"], username?: UserInterface["username"]): Observable<UserInterface> {
     if (id) {
-      return this.http.get<BackendUserInterface>(`${this.configUrl}/users/${id}/`).pipe(
-        map((user: BackendUserInterface) => this.commonApiAdaptorService.userFromBackend(user))
-      );
+      return this.http
+        .get<BackendUserInterface>(`${this.configUrl}/users/${id}/`)
+        .pipe(map((user: BackendUserInterface) => this.commonApiAdaptorService.userFromBackend(user)));
     }
 
     if (username) {
       const encodedUsername = encodeURIComponent(username);
       return this.http.get<BackendUserInterface[]>(`${this.configUrl}/users/?username=${encodedUsername}`).pipe(
-        map((users: BackendUserInterface[]) =>
-          users.map(user => this.commonApiAdaptorService.userFromBackend(user))
-        ),
+        map((users: BackendUserInterface[]) => users.map(user => this.commonApiAdaptorService.userFromBackend(user))),
         map(users => (!!users && users.length > 0 ? users[0] : null))
       );
     }
@@ -105,8 +97,7 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
   }
 
   getUserProfileStats(id: UserProfileInterface["id"]): Observable<UserProfileStatsInterface> {
-    return this.http
-      .get<UserProfileStatsInterface>(`${this.configUrl}/userprofiles/${id}/stats/`);
+    return this.http.get<UserProfileStatsInterface>(`${this.configUrl}/userprofiles/${id}/stats/`);
   }
 
   getUserProfileFollowers(id: UserProfileInterface["id"], q?: string): Observable<FollowersInterface> {
@@ -177,34 +168,36 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     userProfileId: UserProfileInterface["id"],
     data: Partial<UserProfileInterface>
   ): Observable<UserProfileInterface> {
-    return this.http.put<BackendUserProfileInterface>(
-      this.configUrl + `/userprofiles/${userProfileId}/partial/`, data
-    ).pipe(
-      map(response => this.commonApiAdaptorService.userProfileFromBackend(response))
-    );
+    return this.http
+      .put<BackendUserProfileInterface>(this.configUrl + `/userprofiles/${userProfileId}/partial/`, data)
+      .pipe(map(response => this.commonApiAdaptorService.userProfileFromBackend(response)));
   }
 
   changeUserProfileGalleryHeaderImage(
     userProfileId: UserProfileInterface["id"],
     imageId: ImageInterface["hash"] | ImageInterface["pk"]
   ): Observable<UserProfileInterface> {
-    return this.http.put<BackendUserProfileInterface>(
-      this.configUrl + `/userprofiles/${userProfileId}/change-gallery-header-image/${imageId}/`,
-      {}
-    ).pipe(
-      map(response => this.commonApiAdaptorService.userProfileFromBackend(response))
-    );
+    return this.http
+      .put<BackendUserProfileInterface>(
+        this.configUrl + `/userprofiles/${userProfileId}/change-gallery-header-image/${imageId}/`,
+        {}
+      )
+      .pipe(map(response => this.commonApiAdaptorService.userProfileFromBackend(response)));
   }
 
   shadowBanUserProfile(userProfileId: UserProfileInterface["id"]): Observable<{ message?: string; detail?: string }> {
     return this.http.post<{ message?: string; detail?: string }>(
-      this.configUrl + `/userprofiles/${userProfileId}/shadow-ban/`, {}
+      this.configUrl + `/userprofiles/${userProfileId}/shadow-ban/`,
+      {}
     );
   }
 
-  removeShadowBanUserProfile(userProfileId: UserProfileInterface["id"]): Observable<{ message?: string; detail?: string }> {
+  removeShadowBanUserProfile(
+    userProfileId: UserProfileInterface["id"]
+  ): Observable<{ message?: string; detail?: string }> {
     return this.http.post<{ message?: string; detail?: string }>(
-      this.configUrl + `/userprofiles/${userProfileId}/remove-shadow-ban/`, {}
+      this.configUrl + `/userprofiles/${userProfileId}/remove-shadow-ban/`,
+      {}
     );
   }
 
@@ -227,11 +220,9 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
 
   getToggleProperty(params: Partial<TogglePropertyInterface>): Observable<TogglePropertyInterface | null> {
     return this.http
-      .get<PaginatedApiResultInterface<BackendTogglePropertyInterface>>(
-        `${this.configUrl}/toggleproperties/?` +
-        `property_type=${params.propertyType}&user_id=${params.user}&` +
-        `content_type=${params.contentType}&object_id=${params.objectId}`
-      )
+      .get<
+        PaginatedApiResultInterface<BackendTogglePropertyInterface>
+      >(`${this.configUrl}/toggleproperties/?` + `property_type=${params.propertyType}&user_id=${params.user}&` + `content_type=${params.contentType}&object_id=${params.objectId}`)
       .pipe(
         map(response => {
           if (response.results.length > 0) {
@@ -251,23 +242,17 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     // All params in a group will have the same content type and property type
     const contentType = params[0].contentType;
     const propertyType = params[0].propertyType;
-    const userIds = Array.from(new Set(params.map(item => item.user))).join(',');
-    const objectIds = params.map(item => item.objectId).join(',');
+    const userIds = Array.from(new Set(params.map(item => item.user))).join(",");
+    const objectIds = params.map(item => item.objectId).join(",");
 
     return this.http
-      .get<PaginatedApiResultInterface<BackendTogglePropertyInterface>>(
-        `${this.configUrl}/toggleproperties/?` +
-        `property_type=${propertyType}&` +
-        `user_id__in=${userIds}&` +
-        `content_type=${contentType}&` +
-        `object_id__in=${objectIds}`
-      )
+      .get<
+        PaginatedApiResultInterface<BackendTogglePropertyInterface>
+      >(`${this.configUrl}/toggleproperties/?` + `property_type=${propertyType}&` + `user_id__in=${userIds}&` + `content_type=${contentType}&` + `object_id__in=${objectIds}`)
       .pipe(
         map(response => {
           if (response.results.length > 0) {
-            return response.results.map(result =>
-              this.commonApiAdaptorService.togglePropertyFromBackend(result)
-            );
+            return response.results.map(result => this.commonApiAdaptorService.togglePropertyFromBackend(result));
           }
           return null;
         })
@@ -275,11 +260,12 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
   }
 
   createToggleProperty(params: Partial<TogglePropertyInterface>): Observable<TogglePropertyInterface> {
-    return this.http.post<BackendTogglePropertyInterface>(
-      `${this.configUrl}/toggleproperties/`, this.commonApiAdaptorService.togglePropertyToBackend(params)
-    ).pipe(
-      map(response => this.commonApiAdaptorService.togglePropertyFromBackend(response))
-    );
+    return this.http
+      .post<BackendTogglePropertyInterface>(
+        `${this.configUrl}/toggleproperties/`,
+        this.commonApiAdaptorService.togglePropertyToBackend(params)
+      )
+      .pipe(map(response => this.commonApiAdaptorService.togglePropertyFromBackend(response)));
   }
 
   deleteToggleProperty(id: TogglePropertyInterface["id"]): Observable<void> {
@@ -295,10 +281,10 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     success: boolean;
     avatar_id: UserInterface["avatarId"];
     avatar_url: string;
-    errors?: any
+    errors?: any;
   }> {
     const formData = new FormData();
-    formData.append('file', avatarFile);
+    formData.append("file", avatarFile);
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -312,12 +298,8 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
       success: boolean;
       avatar_id: UserInterface["avatarId"];
       avatar_url: string;
-      errors?: any
-    }>(
-      `${this.configUrl}/users/avatar/add/`,
-      formData,
-      httpOptions
-    );
+      errors?: any;
+    }>(`${this.configUrl}/users/avatar/add/`, formData, httpOptions);
   }
 
   /**
@@ -326,15 +308,13 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
    */
   deleteAvatar(avatarId: UserInterface["avatarId"]): Observable<{
     success: boolean;
-    message?: string,
-    avatar_url?: string
+    message?: string;
+    avatar_url?: string;
   }> {
     return this.http.delete<{
       success: boolean;
-      message?: string,
-      avatar_url?: string
-    }>(
-      `${environment.classicApiUrl}/api/v2/common/users/avatar/${avatarId}/delete/`
-    );
+      message?: string;
+      avatar_url?: string;
+    }>(`${environment.classicApiUrl}/api/v2/common/users/avatar/${avatarId}/delete/`);
   }
 }

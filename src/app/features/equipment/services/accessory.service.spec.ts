@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
 import { AccessoryGenerator } from "@features/equipment/generators/accessory.generator";
+import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
 import { AccessoryType } from "@features/equipment/types/accessory.interface";
+import { MockBuilder } from "ng-mocks";
 
 describe("AccessoryService", () => {
   let service: AccessoryService;

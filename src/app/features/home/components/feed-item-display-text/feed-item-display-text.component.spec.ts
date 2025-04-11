@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
 
 import { FeedItemDisplayTextComponent } from "./feed-item-display-text.component";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
 
 describe("FeedItemDisplayTextComponent", () => {
   let component: FeedItemDisplayTextComponent;

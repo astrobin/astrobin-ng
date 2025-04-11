@@ -1,19 +1,19 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { MainState } from "@app/store/state";
 import { AuthService } from "@core/services/auth.service";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { Observable, of } from "rxjs";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import { filter, switchMap } from "rxjs/operators";
 import { RouterService } from "@core/services/router.service";
+import { selectCurrentUser } from "@features/account/store/auth.selectors";
+import { Store } from "@ngrx/store";
+import { Observable, of } from "rxjs";
+import { filter, switchMap } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
 })
-export class AuthGuardService extends BaseService  {
+export class AuthGuardService extends BaseService {
   constructor(
     public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
@@ -43,7 +43,7 @@ export class AuthGuardService extends BaseService  {
             return;
           }
 
-          this.routerService.redirectToLogin().then(() => {
+          void this.routerService.redirectToLogin().then(() => {
             observer.next(false);
             observer.complete();
           });

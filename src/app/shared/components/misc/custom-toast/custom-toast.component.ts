@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
-
-import { Toast, ToastPackage, ToastrService } from "ngx-toastr";
 import { ExtendedIndividualConfig, ToastButtonInterface } from "@core/services/pop-notifications.service";
+import { ToastPackage, ToastrService, Toast } from "ngx-toastr";
 
 @Component({
   selector: "astrobin-custom-toast-component",
@@ -10,7 +9,10 @@ import { ExtendedIndividualConfig, ToastButtonInterface } from "@core/services/p
   preserveWhitespaces: false
 })
 export class CustomToastComponent extends Toast {
-  constructor(public readonly toastrService: ToastrService, public readonly toastPackage: ToastPackage) {
+  constructor(
+    public readonly toastrService: ToastrService,
+    public readonly toastPackage: ToastPackage
+  ) {
     super(toastrService, toastPackage);
   }
 

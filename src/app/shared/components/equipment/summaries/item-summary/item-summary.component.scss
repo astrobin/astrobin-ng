@@ -18,7 +18,7 @@
       position: absolute;
       top: calc(50% - 1.5rem);
       left: calc(50% - 1.5rem);
-      background: rgba(0, 0, 0, .5);
+      background: rgba(0, 0, 0, 0.5);
       width: 3rem;
       height: 3rem;
       z-index: 2;
@@ -50,12 +50,12 @@
   astrobin-equipment-item-display-name {
     display: inline-block;
 
-    +.edit {
+    + .edit {
       opacity: 0;
-      font-size: .75rem;
+      font-size: 0.75rem;
       color: var(--lighterGrey);
       cursor: pointer;
-      padding: .5rem 1rem;
+      padding: 0.5rem 1rem;
       vertical-align: middle;
 
       &:hover {
@@ -65,14 +65,15 @@
     }
 
     &:hover {
-      +.edit {
+      + .edit {
         opacity: 1;
       }
     }
   }
 
   .related-items {
-    a, button {
+    a,
+    button {
       text-decoration: none;
       padding: 0;
       border: none;
@@ -81,7 +82,8 @@
     button {
       background: transparent;
 
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         text-decoration: none;
       }
     }
@@ -99,10 +101,11 @@
   }
 
   .properties {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
     margin-bottom: 0;
 
-    td, th {
+    td,
+    th {
       vertical-align: middle;
     }
 
@@ -129,7 +132,7 @@
           color: var(--white);
           width: 1.75rem;
           height: calc(2rem + 1px);
-          font-size: .66rem;
+          font-size: 0.66rem;
           line-height: calc(2rem + 1px);
           vertical-align: middle;
           text-align: center;
@@ -172,7 +175,7 @@
 
     .name {
       font-weight: lighter;
-      margin-left: -.25rem;
+      margin-left: -0.25rem;
     }
   }
 
@@ -186,7 +189,7 @@
 
     h5 {
       margin-bottom: 1rem;
-      padding-bottom: .5rem;
+      padding-bottom: 0.5rem;
       border-bottom: 1px solid var(--lightGrey);
     }
 
@@ -219,27 +222,27 @@
   }
 
   .meta {
-    padding: .75rem 1.5rem;
+    padding: 0.75rem 1.5rem;
     margin: -1.5rem;
     margin-top: 1rem;
     color: var(--lighterGrey);
     background: var(--grey);
     font-style: italic;
-    font-size: .85rem;
+    font-size: 0.85rem;
 
     @media screen and (max-width: $md-max) {
-      margin: 1.5rem -.5rem -.5rem -.5rem;
+      margin: 1.5rem -0.5rem -0.5rem -0.5rem;
     }
 
     strong {
       color: var(--white);
       font-weight: normal;
       display: inline-block;
-      margin-right: .5rem;
+      margin-right: 0.5rem;
     }
 
     p {
-      margin-bottom: .15rem;
+      margin-bottom: 0.15rem;
 
       &:last-child {
         margin-bottom: 0;
@@ -247,10 +250,10 @@
     }
 
     .assign {
-      padding: .5rem;
+      padding: 0.5rem;
 
       fa-icon {
-        font-size: .66rem;
+        font-size: 0.66rem;
       }
     }
   }
@@ -260,7 +263,7 @@
   .offcanvas-body {
     display: flex;
     flex-direction: column;
-    @include flex-gap(column, .5rem);
+    @include flex-gap(column, 0.5rem);
 
     .related-item-wrapper {
       .equipment-pill {

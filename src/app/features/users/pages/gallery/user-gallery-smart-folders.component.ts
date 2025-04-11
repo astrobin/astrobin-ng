@@ -1,38 +1,43 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import {
+  ChangeDetectorRef,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { ActivatedRoute } from "@angular/router";
-import { takeUntil } from "rxjs/operators";
-import { fadeInOut } from "@shared/animations";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { fadeInOut } from "@shared/animations";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { takeUntil } from "rxjs/operators";
 
 export enum SmartFolderType {
   YEAR = "year",
   GEAR = "gear",
   SUBJECT = "subject",
   CONSTELLATION = "constellation",
-  NO_DATA = 'nodata'
+  NO_DATA = "nodata"
 }
 
 @Component({
   selector: "astrobin-user-gallery-smart-folders",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div
-        *ngIf="!activeFolderType"
-        class="d-flex flex-wrap gap-4 justify-content-center"
-      >
+      <div *ngIf="!activeFolderType" class="d-flex flex-wrap gap-4 justify-content-center">
         <ng-container *ngFor="let smartFolder of smartFolders">
           <a
             *ngIf="!smartFolder.onlyOwner || currentUserWrapper.user?.id === user.id"
-            [routerLink]="['/u', user.username]"
             [queryParams]="{ 'folder-type': smartFolder.type }"
-            fragment="smart-folders"
+            [routerLink]="['/u', user.username]"
             class="smart-folder-category"
+            fragment="smart-folders"
           >
             <div class="smart-folder-background"></div>
             <div class="smart-folder-stars"></div>
@@ -58,10 +63,10 @@ export enum SmartFolderType {
 
       <astrobin-user-gallery-smart-folder
         *ngIf="activeFolderType"
-        (activeChange)="activeChange.emit($event)"
+        [folderType]="activeFolderType"
         [user]="user"
         [userProfile]="userProfile"
-        [folderType]="activeFolderType"
+        (activeChange)="activeChange.emit($event)"
       ></astrobin-user-gallery-smart-folder>
     </ng-container>
   `,
@@ -74,8 +79,8 @@ export class UserGallerySmartFoldersComponent extends BaseComponentDirective imp
   @Input() userProfile: UserProfileInterface;
 
   @Output() readonly activeChange = new EventEmitter<{
-    active: string,
-    menu: FindImagesResponseInterface["menu"]
+    active: string;
+    menu: FindImagesResponseInterface["menu"];
   }>();
 
   public readonly smartFolders = [

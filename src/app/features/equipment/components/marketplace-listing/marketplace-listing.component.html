@@ -5,8 +5,8 @@
 >
   <astrobin-marketplace-listing-line-item
     [collapsed]="listing.lineItems.length > 1 || !!lineItem.sold"
-    [lineItemIndex]="listing.lineItems.length > 1 ? lineItemIndex : undefined"
     [lineItem]="lineItem"
+    [lineItemIndex]="listing.lineItems.length > 1 ? lineItemIndex : undefined"
     [listing]="listing"
     [previewMode]="previewMode"
   ></astrobin-marketplace-listing-line-item>
@@ -17,7 +17,10 @@
   class="alert alert-dark mt-4"
   role="alert"
 >
-  {{ "This listing is only available as a bundle sale. The seller does not wish to sell individual items separately." | translate }}
+  {{
+    "This listing is only available as a bundle sale. The seller does not wish to sell individual items separately."
+      | translate
+  }}
 </div>
 
 <div class="row mt-4">
@@ -54,18 +57,18 @@
       <div class="card-body p-0">
         <table class="table table-striped mb-0">
           <tbody>
-          <tr>
-            <th>{{ "Country" | translate }}</th>
-            <td>{{ countryService.getCountryName(listing.country) }}</td>
-          </tr>
-          <tr>
-            <th>{{ "State/Region" | translate }}</th>
-            <td>{{ listing.areaLevel1 }}</td>
-          </tr>
-          <tr>
-            <th>{{ "City" | translate }}</th>
-            <td>{{ listing.city }}</td>
-          </tr>
+            <tr>
+              <th>{{ "Country" | translate }}</th>
+              <td>{{ countryService.getCountryName(listing.country) }}</td>
+            </tr>
+            <tr>
+              <th>{{ "State/Region" | translate }}</th>
+              <td>{{ listing.areaLevel1 }}</td>
+            </tr>
+            <tr>
+              <th>{{ "City" | translate }}</th>
+              <td>{{ listing.city }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -78,28 +81,28 @@
       <div class="card-body">
         <table class="table table-striped mb-0">
           <tbody>
-          <tr>
-            <th>{{ "Buyer picks up" | translate }}</th>
-            <td [class]="!!listing.deliveryByBuyerPickUp | json">
-              <fa-icon [icon]="!!listing.deliveryByBuyerPickUp | yesNoIcon"></fa-icon>
-            </td>
-          </tr>
-          <tr>
-            <th>{{ "Seller delivers in person" | translate }}</th>
-            <td [class]="!!listing.deliveryBySellerDelivery | json">
-              <fa-icon [icon]="!!listing.deliveryBySellerDelivery | yesNoIcon"></fa-icon>
-            </td>
-          </tr>
-          <tr>
-            <th>{{ "Seller ships" | translate }}</th>
-            <td [class]="!!listing.deliveryByShipping | json">
-              <fa-icon [icon]="!!listing.deliveryByShipping | yesNoIcon"></fa-icon>
-            </td>
-          </tr>
-          <tr>
-            <th>{{ "Shipping method" | translate }}</th>
-            <td>{{ equipmentItemService.humanizeShippingMethod(listing.shippingMethod) }}</td>
-          </tr>
+            <tr>
+              <th>{{ "Buyer picks up" | translate }}</th>
+              <td [class]="!!listing.deliveryByBuyerPickUp | json">
+                <fa-icon [icon]="!!listing.deliveryByBuyerPickUp | yesNoIcon"></fa-icon>
+              </td>
+            </tr>
+            <tr>
+              <th>{{ "Seller delivers in person" | translate }}</th>
+              <td [class]="!!listing.deliveryBySellerDelivery | json">
+                <fa-icon [icon]="!!listing.deliveryBySellerDelivery | yesNoIcon"></fa-icon>
+              </td>
+            </tr>
+            <tr>
+              <th>{{ "Seller ships" | translate }}</th>
+              <td [class]="!!listing.deliveryByShipping | json">
+                <fa-icon [icon]="!!listing.deliveryByShipping | yesNoIcon"></fa-icon>
+              </td>
+            </tr>
+            <tr>
+              <th>{{ "Shipping method" | translate }}</th>
+              <td>{{ equipmentItemService.humanizeShippingMethod(listing.shippingMethod) }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -107,10 +110,7 @@
   </div>
 </div>
 
-<div
-  *ngIf="listing.lineItems.length > 0 && !!listing.description"
-  class="card description"
->
+<div *ngIf="listing.lineItems.length > 0 && !!listing.description" class="card description">
   <div class="card-header">{{ "Description" | translate }}</div>
 
   <div class="card-body">

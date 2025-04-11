@@ -3,37 +3,32 @@
 </div>
 
 <div
-  *ngIf="!!image" [hidden]="!imageObjectLoaded"
+  *ngIf="!!image"
+  [hidden]="!imageObjectLoaded"
   class="main-area-container overflow-hidden d-flex flex-column w-100 h-100"
 >
   <astrobin-mobile-menu
-    (menuClose)="onMobileMenuClose()"
-    (menuOpen)="onMobileMenuOpen()"
-    [titleTemplate]="mobileMenuTitleTemplate"
     [iconsTemplate]="mobileMenuIconsTemplate"
+    [offcanvasBackdropClass]="'image-viewer-offcanvas-backdrop'"
+    [offcanvasClass]="'image-viewer-offcanvas'"
     [template]="navTemplate"
     [templateContext]="{ $implicit: image }"
-    [offcanvasClass]="'image-viewer-offcanvas'"
-    [offcanvasBackdropClass]="'image-viewer-offcanvas-backdrop'"
+    [titleTemplate]="mobileMenuTitleTemplate"
+    (menuClose)="onMobileMenuClose()"
+    (menuOpen)="onMobileMenuOpen()"
   ></astrobin-mobile-menu>
 
-  <div
-    #mainArea
-    class="main-area"
-  >
+  <div #mainArea class="main-area">
     <ng-container [ngTemplateOutlet]="imageAreaTemplate"></ng-container>
 
     <div class="data-area-container">
       <ng-container [ngTemplateOutlet]="dataAreaTemplate"></ng-container>
       <div class="data-area-bottom-gradient"></div>
-    </div> <!-- data-area-container -->
+    </div>
+    <!-- data-area-container -->
   </div>
 
-  <astrobin-scroll-to-top
-    #scrollToTopMdMax
-    *ngIf="deviceService.mdMax()"
-    [element]="mainArea"
-  ></astrobin-scroll-to-top>
+  <astrobin-scroll-to-top #scrollToTopMdMax *ngIf="deviceService.mdMax()" [element]="mainArea"></astrobin-scroll-to-top>
 
   <astrobin-scroll-to-top
     #scrollToTopLgMin
@@ -64,21 +59,21 @@
   <astrobin-image-viewer-menu
     [image]="image"
     [revisionLabel]="revisionLabel"
-    itemClass="menu-item"
     dividerClass="menu-divider"
+    itemClass="menu-item"
   ></astrobin-image-viewer-menu>
 </ng-template>
 
 <ng-template #imageAreaTemplate>
   <div
     #imageArea
-    class="image-area"
-    [class.force-view-mousehover]="forceViewMouseHover"
-    [class.force-view-annotations-mousehover]="forceViewAnnotationsMouseHover"
     [class.adjustment-editor-visible]="adjustmentEditorVisible"
+    [class.force-view-annotations-mousehover]="forceViewAnnotationsMouseHover"
+    [class.force-view-mousehover]="forceViewMouseHover"
     [class.has-top-banner]="image && image.isIotd"
     (mouseenter)="revision?.solution && !adjustmentEditorVisible && (showNorthArrow = true)"
     (mouseleave)="showNorthArrow = false"
+    class="image-area"
   >
     <div class="image-area-header">
       <astrobin-image-viewer-iotd-banner
@@ -91,50 +86,55 @@
       <!-- Moon scale overlay -->
       <div
         *ngIf="showMoonOverlay && moonScaleDiameter > 0"
-        class="moon-scale-overlay"
+        @fadeInOut
+        [class.dragging]="isDraggingMoon"
         [style.left]="moonPosition.x + '%'"
         [style.top]="moonPosition.y + '%'"
-        [class.dragging]="isDraggingMoon"
-        @fadeInOut
         (pointerdown)="onMoonDragStart($event)"
+        class="moon-scale-overlay"
         data-ignore-swipe-down="true"
       >
         <!-- Placeholder circle shown while image is loading -->
         <div
           *ngIf="!isMoonImageLoaded"
-          class="moon-placeholder"
-          [style.width.px]="moonScaleDiameter"
           [style.height.px]="moonScaleDiameter"
+          [style.width.px]="moonScaleDiameter"
+          class="moon-placeholder"
         ></div>
 
         <!-- Actual moon image -->
         <img
-          class="moon-image"
           [class.hidden]="!isMoonImageLoaded"
-          [width]="moonScaleDiameter"
           [height]="moonScaleDiameter"
           [src]="moonImageSrc"
-          alt="Moon scale"
-          (load)="onMoonImageLoaded()"
+          [width]="moonScaleDiameter"
           (error)="isMoonImageLoaded = false"
+          (load)="onMoonImageLoaded()"
+          class="moon-image"
+          alt="Moon scale"
           draggable="false"
         />
 
         <div class="moon-label-container">
-          <span class="moon-label">{{ 'Moon scale' | translate }}</span>
+          <span class="moon-label">{{ "Moon scale" | translate }}</span>
           <div class="divider"></div>
           <div class="moon-controls">
             <span
-              class="icon-btn info-icon"
               [ngbPopover]="moonInfoPopover"
-              popoverClass="moon-info-popover"
+              class="icon-btn info-icon"
               container="body"
-              triggers="click hover"
               placement="bottom"
-              title="{{ 'About moon scale' | translate }}">
+              popoverClass="moon-info-popover"
+              title="{{ 'About moon scale' | translate }}"
+              triggers="click hover"
+            >
               <fa-icon icon="info-circle"></fa-icon>
             </span>
-            <button class="icon-btn close-moon-btn" (click)="$event.stopPropagation(); resetMoonOverlay()" title="{{ 'Close' | translate }}">
+            <button
+              (click)="$event.stopPropagation(); resetMoonOverlay()"
+              class="icon-btn close-moon-btn"
+              title="{{ 'Close' | translate }}"
+            >
               <fa-icon icon="times"></fa-icon>
             </button>
           </div>
@@ -142,7 +142,10 @@
 
         <ng-template #moonInfoPopover>
           <div class="moon-info-content">
-            {{ 'This scale represents the apparent size of the full moon (0.52° diameter) based on the plate-solved pixel scale of the image. The actual apparent size of the moon varies slightly throughout the year due to its elliptical orbit.' | translate }}
+            {{
+              "This scale represents the apparent size of the full moon (0.52° diameter) based on the plate-solved pixel scale of the image. The actual apparent size of the moon varies slightly throughout the year due to its elliptical orbit."
+                | translate
+            }}
           </div>
         </ng-template>
       </div>
@@ -150,8 +153,8 @@
       <ng-container *ngIf="adjustmentEditorVisible && isBrowser">
         <astrobin-image-viewer-adjustment-editor
           [image]="image"
-          [revisionLabel]="revisionLabel"
           [imageComponent]="imageComponent"
+          [revisionLabel]="revisionLabel"
           (closeClick)="adjustmentEditorVisible = false"
           class="adjustment-editor"
         ></astrobin-image-viewer-adjustment-editor>
@@ -161,22 +164,24 @@
         <!-- North arrow -->
         <div
           *ngIf="showNorthArrow && revision?.solution?.orientation !== null"
-          class="north-arrow-container"
-          [ngStyle]="{
-            'transform': 'translateX(-50%) rotate(' + (northArrowRotation * -1) + 'deg)'
-          }"
           @fadeInOut
+          [ngStyle]="{
+            transform: 'translateX(-50%) rotate(' + northArrowRotation * -1 + 'deg)'
+          }"
+          class="north-arrow-container"
         >
           <div class="north-arrow-wrapper">
-            <img class="north-arrow" src="assets/images/compass.svg?v=1" alt="Compass" />
+            <img class="north-arrow" alt="Compass" src="assets/images/compass.svg?v=1" />
             <div
-              class="north-arrow-label"
               [ngbTooltip]="'Celestial North' | translate"
               [ngStyle]="{
-                'transform': 'rotate(' + northArrowRotation + 'deg)'
+                transform: 'rotate(' + northArrowRotation + 'deg)'
               }"
+              class="north-arrow-label"
               container="body"
-            >N</div>
+            >
+              N
+            </div>
           </div>
         </div>
 
@@ -188,39 +193,35 @@
 
         <astrobin-image-viewer-additional-buttons
           *ngIf="image && imageFileLoaded"
-          (toggleAnnotationsOnMouseHover)="imageViewerService.toggleShowAnnotationsOnMouseHover()"
-          (onToggleAnnotationsOnMouseHoverEnter)="onToggleAnnotationsOnMouseHoverEnter()"
-          (onToggleAnnotationsOnMouseHoverLeave)="onToggleAnnotationsOnMouseHoverLeave()"
-          (toggleViewMouseHover)="toggleViewMouseHover()"
-          (showAdjustmentsEditor)="adjustmentEditorVisible = true"
-          (toggleMoonOverlay)="toggleMoonOverlay()"
-          [image]="image"
-          [revisionLabel]="revisionLabel"
+          [allowTogglingAnnotationsOnMouseHover]="revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION"
+          [forceViewMouseHover]="forceViewMouseHover"
           [hasMouseHover]="
             revision.mouseHoverImage !== MouseHoverImageOptions.NOTHING &&
             (!!nonSolutionMouseHoverImage || !!solutionMouseHoverImage || !!inlineSvg)
           "
-          [showAnnotationsOnMouseHover]="imageViewerService.showAnnotationsOnMouseHover"
-          [allowTogglingAnnotationsOnMouseHover]="revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION"
-          [forceViewMouseHover]="forceViewMouseHover"
+          [image]="image"
           [moonOverlayActive]="showMoonOverlay"
+          [revisionLabel]="revisionLabel"
+          [showAnnotationsOnMouseHover]="imageViewerService.showAnnotationsOnMouseHover"
+          (onToggleAnnotationsOnMouseHoverEnter)="onToggleAnnotationsOnMouseHoverEnter()"
+          (onToggleAnnotationsOnMouseHoverLeave)="onToggleAnnotationsOnMouseHoverLeave()"
+          (showAdjustmentsEditor)="adjustmentEditorVisible = true"
+          (toggleAnnotationsOnMouseHover)="imageViewerService.toggleShowAnnotationsOnMouseHover()"
+          (toggleMoonOverlay)="toggleMoonOverlay()"
+          (toggleViewMouseHover)="toggleViewMouseHover()"
           class="additional-buttons"
         >
         </astrobin-image-viewer-additional-buttons>
       </ng-container>
 
-      <button
-        *ngIf="showPreviousButton"
-        (click)="onArrowLeft($event)"
-        class="previous-button"
-      >
+      <button *ngIf="showPreviousButton" (click)="onArrowLeft($event)" class="previous-button">
         <fa-icon icon="chevron-left"></fa-icon>
       </button>
 
       <astrobin-fullscreen-image-viewer
         *ngIf="standalone && supportsFullscreen"
-        [id]="image.pk"
         [eagerLoading]="true"
+        [id]="image.pk"
         [revisionLabel]="revisionLabel"
         [standalone]="standalone"
         (exitFullscreen)="exitFullscreen()"
@@ -229,17 +230,17 @@
       <astrobin-image
         #imageComponent
         @fadeInOut
-        (imageClick)="enterFullscreen($event)"
-        (imageTouchstart)="enterFullscreen($event)"
-        (loaded)="onImageLoaded()"
-        (imageMouseEnter)="onImageMouseEnter($event)"
-        (imageMouseLeave)="onImageMouseLeave($event)"
         [alias]="alias"
         [autoHeight]="true"
         [class.supports-fullscreen]="supportsFullscreen"
         [forceLoad]="true"
         [image]="image"
         [revisionLabel]="revisionLabel"
+        (imageClick)="enterFullscreen($event)"
+        (imageMouseEnter)="onImageMouseEnter($event)"
+        (imageMouseLeave)="onImageMouseLeave($event)"
+        (imageTouchstart)="enterFullscreen($event)"
+        (loaded)="onImageLoaded()"
       ></astrobin-image>
 
       <!--
@@ -254,16 +255,16 @@
           !forceViewAnnotationsMouseHover
         "
         (intentionalClick)="enterFullscreen($event)"
-        astrobinPreventScrollClick
         class="mouse-hover-container"
+        astrobinPreventScrollClick
       >
         <img
+          [style.max-width.px]="revision.w"
           (mouseenter)="onImageMouseEnter($event)"
           (mouseleave)="onImageMouseLeave($event)"
-          alt=""
           class="mouse-hover ready"
+          alt=""
           src="{{ nonSolutionMouseHoverImage }}"
-          [style.max-width.px]="revision.w"
         />
       </div>
 
@@ -279,16 +280,16 @@
           !inlineSvg
         "
         (intentionalClick)="enterFullscreen($event)"
-        astrobinPreventScrollClick
         class="mouse-hover-container"
+        astrobinPreventScrollClick
       >
         <img
+          [style.max-width.px]="revision.w"
           (mouseenter)="onImageMouseEnter($event)"
           (mouseleave)="onImageMouseLeave($event)"
-          alt=""
           class="mouse-hover ready"
+          alt=""
           src="{{ solutionMouseHoverImage }}"
-          [style.max-width.px]="revision.w"
         />
       </div>
 
@@ -299,15 +300,15 @@
           inlineSvg
         "
         (intentionalClick)="enterFullscreen($event)"
-        astrobinPreventScrollClick
         class="mouse-hover-svg-container"
+        astrobinPreventScrollClick
       >
         <div
+          [id]="'mouse-hover-svg-' + image.pk + '-' + revision.pk"
+          [innerHTML]="inlineSvg"
           (mouseenter)="onImageMouseEnter($event)"
           (mouseleave)="onImageMouseLeave($event)"
           (mousemove)="onSvgMouseMove($event)"
-          [innerHTML]="inlineSvg"
-          [id]="'mouse-hover-svg-' + image.pk + '-' + revision.pk"
           class="mouse-hover w-100 position-relative"
         ></div>
 
@@ -317,59 +318,39 @@
           ></astrobin-loading-indicator>
 
           <div *ngIf="!!advancedSolutionMatrix" class="mouse-hover-svg-overlay-coordinates">
-            <div
-              class="ra-dec d-flex gap-2"
-              ngbTooltip="RA/Dec"
-            >
+            <div class="ra-dec d-flex gap-2" ngbTooltip="RA/Dec">
               <span [innerHTML]="mouseHoverRa"></span>
               <span [innerHTML]="mouseHoverDec"></span>
             </div>
 
-            <div
-              class="galactic d-flex gap-2"
-              [ngbTooltip]="'Galactic coordinates' | translate"
-            >
+            <div [ngbTooltip]="'Galactic coordinates' | translate" class="galactic d-flex gap-2">
               <span [innerHTML]="mouseHoverGalacticRa"></span>
               <span [innerHTML]="mouseHoverGalacticDec"></span>
             </div>
           </div>
 
           <span>
-            Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
+            Powered by <a astrobinEventStopPropagation href="https://pixinsight.com/" target="_blank">PixInsight</a>
           </span>
         </div>
 
-        <div
-          class="x-ruler"
-          [style.top.px]="mouseHoverY"
-        ></div>
+        <div [style.top.px]="mouseHoverY" class="x-ruler"></div>
 
-        <div
-          class="y-ruler"
-          [style.left.px]="mouseHoverX"
-        ></div>
+        <div [style.left.px]="mouseHoverX" class="y-ruler"></div>
       </div>
 
-      <button
-        *ngIf="showNextButton"
-        (click)="onArrowRight($event)"
-        class="next-button"
-      >
+      <button *ngIf="showNextButton" (click)="onArrowRight($event)" class="next-button">
         <fa-icon icon="chevron-right"></fa-icon>
       </button>
 
       <astrobin-image-viewer-revisions
-        [image]="image"
         [activeLabel]="revisionLabel"
-        (revisionSelected)="onRevisionSelected($event, true)"
         [class.show]="showRevisions"
+        [image]="image"
+        (revisionSelected)="onRevisionSelected($event, true)"
       ></astrobin-image-viewer-revisions>
 
-      <button
-        *ngIf="image?.revisions?.length"
-        (click)="showRevisions = !showRevisions"
-        class="revisions-mobile-button"
-      >
+      <button *ngIf="image?.revisions?.length" (click)="showRevisions = !showRevisions" class="revisions-mobile-button">
         <fa-icon *ngIf="!showRevisions" icon="ellipsis"></fa-icon>
         <fa-icon *ngIf="showRevisions" icon="angle-down"></fa-icon>
       </button>
@@ -389,20 +370,21 @@
     </div>
 
     <div *ngIf="!translatedDescription && image?.descriptionBbcode" class="metadata-section flex-wrap">
-      <div *ngIf="(image.descriptionBbcode | BBCodeToHtml) | async as html; else descriptionLoading"
-        (click)="onDescriptionClicked($event)"
+      <div
+        *ngIf="image.descriptionBbcode | BBCodeToHtml | async as html; else descriptionLoading"
         [innerHTML]="html | highlight: searchModel?.text?.value"
+        (click)="onDescriptionClicked($event)"
         class="metadata-item description"
       ></div>
       <ng-template #descriptionLoading>
         <div class="metadata-item description">
-          <small><fa-icon icon="spinner" animation="spin"></fa-icon> {{ 'Loading content...' | translate }}</small>
+          <small><fa-icon animation="spin" icon="spinner"></fa-icon> {{ "Loading content..." | translate }}</small>
         </div>
       </ng-template>
     </div>
 
     <div *ngIf="!translatedDescription && !image.descriptionBbcode && image?.description" class="metadata-section">
-      <div class="metadata-item description" [innerHTML]="image.description"></div>
+      <div [innerHTML]="image.description" class="metadata-item description"></div>
     </div>
 
     <button
@@ -420,13 +402,7 @@
       <fa-icon icon="language"></fa-icon>
       {{ "Translate" | translate }}
 
-      <fa-icon
-        *ngIf="translatingDescription"
-        @fadeInOut
-        class="ms-2"
-        icon="circle-notch"
-        animation="spin"
-      ></fa-icon>
+      <fa-icon *ngIf="translatingDescription" @fadeInOut class="ms-2" animation="spin" icon="circle-notch"></fa-icon>
     </button>
 
     <button
@@ -443,10 +419,10 @@
 <ng-template #moreFromThisUserTemplate>
   <div class="metadata-header mb-3">{{ "More from this user" | translate }}</div>
   <astrobin-image-search
-    [model]="{ userId: image.user, ordering: '-likes', pageSize: 25 }"
     [loadMoreOnScroll]="false"
-    [showRetailers]="false"
+    [model]="{ userId: image.user, ordering: '-likes', pageSize: 25 }"
     [showMarketplaceItems]="false"
+    [showRetailers]="false"
     [showStaticOverlay]="false"
     class="more-from-this-photographer mb-5"
   ></astrobin-image-search>
@@ -464,10 +440,10 @@
     </ng-template>
   </div>
   <astrobin-image-search
-    [model]="{ similarToImageId: this.image.hash || this.image.pk, ordering: '-likes', pageSize: 50 }"
     [loadMoreOnScroll]="true"
-    [showRetailers]="false"
+    [model]="{ similarToImageId: this.image.hash || this.image.pk, ordering: '-likes', pageSize: 50 }"
     [showMarketplaceItems]="false"
+    [showRetailers]="false"
     [showStaticOverlay]="false"
     class="similar-to-this"
   ></astrobin-image-search>
@@ -475,27 +451,22 @@
 
 <ng-template #upgradeToPlateSolveBannerMessageTemplate>
   <div class="flex-grow-1">
-    <fa-icon icon="exclamation-triangle" class="me-2"></fa-icon>
+    <fa-icon class="me-2" icon="exclamation-triangle"></fa-icon>
     <span>{{ "Upgrade your account to enable plate-solving." | translate }}</span>
   </div>
-  <a href="https://welcome.astrobin.com/pricing" target="_blank" rel="noopener">
+  <a href="https://welcome.astrobin.com/pricing" rel="noopener" target="_blank">
     {{ "Learn more" | translate }}
   </a>
 </ng-template>
 
 <ng-template #dataAreaTemplate>
-  <div
-    #dataArea
-    *ngIf="currentUserWrapper$ | async as currentUserWrapper"
-    class="data-area"
-    [class.d-none]="!adConfig"
-  >
+  <div #dataArea *ngIf="currentUserWrapper$ | async as currentUserWrapper" [class.d-none]="!adConfig" class="data-area">
     <astrobin-ad-manager
       #ad
       *ngIf="active && adConfig"
       [class.d-none]="!showAd"
-      (adDisplayed)="adDisplayed = true"
       [configName]="adConfig"
+      (adDisplayed)="adDisplayed = true"
     ></astrobin-ad-manager>
 
     <astrobin-image-viewer-wip-banner
@@ -505,18 +476,22 @@
     ></astrobin-image-viewer-wip-banner>
 
     <astrobin-image-viewer-plate-solving-banner
-      *ngIf="image && showPlateSolvingBanner && (currentUserWrapper.user?.id === image.user || currentUserWrapper.user?.isSuperUser)"
-      (solutionChange)="onSolutionChange($event)"
+      *ngIf="
+        image &&
+        showPlateSolvingBanner &&
+        (currentUserWrapper.user?.id === image.user || currentUserWrapper.user?.isSuperUser)
+      "
       [image]="image"
       [revisionLabel]="revisionLabel"
+      (solutionChange)="onSolutionChange($event)"
       class="image-viewer-banner-component"
     ></astrobin-image-viewer-plate-solving-banner>
 
     <astrobin-image-viewer-custom-message-banner
       *ngIf="(showUpgradeToPlateSolveBanner$ | async) === true"
       [messageTemplate]="upgradeToPlateSolveBannerMessageTemplate"
-      alertClass="info"
       class="image-viewer-banner-component"
+      alertClass="info"
     ></astrobin-image-viewer-custom-message-banner>
 
     <astrobin-image-viewer-title
@@ -525,10 +500,7 @@
       [searchModel]="searchModel"
     ></astrobin-image-viewer-title>
 
-    <astrobin-image-viewer-floating-title
-      #floatingTitle
-      [image]="image"
-    ></astrobin-image-viewer-floating-title>
+    <astrobin-image-viewer-floating-title #floatingTitle [image]="image"></astrobin-image-viewer-floating-title>
 
     <astrobin-image-viewer-photographers
       *ngIf="userContentType"
@@ -580,9 +552,12 @@
       [searchModel]="searchModel"
     ></astrobin-image-viewer-objects>
 
-    <ng-container [ngTemplateOutlet]="descriptionTemplate" [ngTemplateOutletContext]="{
-      currentUser: currentUserWrapper.user
-    }"></ng-container>
+    <ng-container
+      [ngTemplateOutlet]="descriptionTemplate"
+      [ngTemplateOutletContext]="{
+        currentUser: currentUserWrapper.user
+      }"
+    ></ng-container>
 
     <astrobin-image-viewer-revision-summary
       *ngIf="image?.revisions?.length > 0"
@@ -594,7 +569,8 @@
     <ng-container [ngTemplateOutlet]="moreFromThisUserTemplate"></ng-container>
 
     <ng-container [ngTemplateOutlet]="similarToThisTemplate"></ng-container>
-  </div> <!-- data-area -->
+  </div>
+  <!-- data-area -->
 </ng-template>
 
 <ng-template #nestedCommentsTemplate>

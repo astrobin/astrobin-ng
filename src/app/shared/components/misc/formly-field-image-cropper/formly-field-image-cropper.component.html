@@ -1,18 +1,18 @@
 <ng-container *ngIf="props.thumbnailURL$ | async as thumbnailURL; else loadingThumbnail">
   <image-cropper
-    (cropperReady)="onCropperReady($event)"
-    (imageCropped)="onImageCropped($event)"
-    (imageLoaded)="onImageLoaded($event)"
     *ngIf="(showCropper$ | async) === true; else loading"
     [alignImage]="'left'"
     [aspectRatio]="1"
     [attr.id]="field.id"
-    [cropperMinWidth]="130"
     [cropper]="cropper"
+    [cropperMinWidth]="130"
     [imageURL]="thumbnailURL"
     [maintainAspectRatio]="true"
     [roundCropper]="false"
     [style.display]="cropperReady ? 'block' : 'none'"
+    (cropperReady)="onCropperReady($event)"
+    (imageCropped)="onImageCropped($event)"
+    (imageLoaded)="onImageLoaded($event)"
   ></image-cropper>
 
   <ng-container *ngIf="!cropperReady" [ngTemplateOutlet]="loading"></ng-container>

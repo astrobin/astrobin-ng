@@ -1,4 +1,5 @@
 import { Observable } from "rxjs";
+
 import { UserProfileInterface } from "../../interfaces/user-profile.interface";
 import { SubscriptionName } from "../../types/subscription-name.type";
 

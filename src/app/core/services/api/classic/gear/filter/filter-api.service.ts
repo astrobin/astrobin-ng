@@ -12,7 +12,10 @@ import { Observable } from "rxjs";
 export class FilterApiService extends BaseClassicApiService implements FilterApiServiceInterface {
   configUrl = this.baseUrl + "/astrobin/filter";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

@@ -5,22 +5,22 @@
     <div class="col-md-3">
       <astrobin-migration-nav></astrobin-migration-nav>
       <astrobin-equipment-item-type-nav
-        routingBasePath="/equipment/migration-explorer"
         [showBrands]="false"
         [showContributors]="false"
         [showSubNavigation]="false"
+        routingBasePath="/equipment/migration-explorer"
       ></astrobin-equipment-item-type-nav>
     </div>
 
     <div class="col-md-7">
       <astrobin-equipment-explorer
-        routingBasePath="/equipment/migration-explorer"
-        [activeType]="activeType"
-        [activeId]="activeId"
         [activeEditProposalId]="activeEditProposalId"
-        [showMostOftenUsedWith]="false"
-        [showImagesUsing]="false"
+        [activeId]="activeId"
+        [activeType]="activeType"
         [showForum]="false"
+        [showImagesUsing]="false"
+        [showMostOftenUsedWith]="false"
+        routingBasePath="/equipment/migration-explorer"
       ></astrobin-equipment-explorer>
     </div>
     <!-- main col -->

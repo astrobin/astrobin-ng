@@ -1,16 +1,16 @@
 import { Component, Input } from "@angular/core";
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoadingService } from "@core/services/loading.service";
-import { map, switchMap, take } from "rxjs/operators";
-import { EquipmentActionTypes, UnapproveEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { LoadingService } from "@core/services/loading.service";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentActionTypes, UnapproveEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { map, switchMap, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-approve-item-modal",

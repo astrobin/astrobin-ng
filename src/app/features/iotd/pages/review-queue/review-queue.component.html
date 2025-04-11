@@ -11,11 +11,11 @@
       </button>
 
       <astrobin-toggle-button
-        (toggle)="toggleDisplayHiddenImages()"
         [label]="'Display hidden images' | translate"
         [value]="displayHiddenImages"
-        class="me-1"
+        (toggle)="toggleDisplayHiddenImages()"
         id="display-hidden-images"
+        class="me-1"
       ></astrobin-toggle-button>
     </span>
   </h1>
@@ -24,14 +24,10 @@
     <ng-container *ngIf="hiddenImages$ | async as hiddenImages">
       <ng-container *ngIf="promotions$ | async as promotions">
         <ng-container *ngIf="queue?.count > 0; else noEntries">
-          <astrobin-review-slots
-            (slotClick)="scrollToEntry($event)"
-            [availableEntries]="queue.results"
-            astrobinSticky
-          >
+          <astrobin-review-slots [availableEntries]="queue.results" (slotClick)="scrollToEntry($event)" astrobinSticky>
           </astrobin-review-slots>
 
-          <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
+          <ng-container [ngTemplateOutlet]="pagination" [ngTemplateOutletContext]="{ queue: queue }"></ng-container>
 
           <ng-container *ngFor="let entry of queue.results">
             <astrobin-review-entry
@@ -43,7 +39,7 @@
             </astrobin-review-entry>
           </ng-container>
 
-          <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
+          <ng-container [ngTemplateOutlet]="pagination" [ngTemplateOutletContext]="{ queue: queue }"></ng-container>
 
           <astrobin-scroll-to-top></astrobin-scroll-to-top>
         </ng-container>
@@ -60,11 +56,11 @@
 
 <ng-template #pagination let-queue="queue">
   <ngb-pagination
-    (pageChange)="pageChange($event)"
     *ngIf="queue.count > queue.results.length"
-    [(page)]="page"
     [collectionSize]="queue.count"
     [pageSize]="pageSize$ | async"
+    (pageChange)="pageChange($event)"
+    [(page)]="page"
   >
   </ngb-pagination>
 </ng-template>

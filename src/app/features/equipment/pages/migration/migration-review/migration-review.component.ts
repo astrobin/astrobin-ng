@@ -1,19 +1,19 @@
-import { Component, OnInit } from "@angular/core";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { Store } from "@ngrx/store";
-import { TitleService } from "@core/services/title/title.service";
-import { TranslateService } from "@ngx-translate/core";
-import { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
-import { combineLatest, forkJoin, Observable, of } from "rxjs";
-import { map, switchMap, tap } from "rxjs/operators";
-import { UsernameService } from "@shared/components/misc/username/username.service";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { UserService } from "@core/services/user.service";
-import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
+import { OnInit, Component } from "@angular/core";
 import { Router } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { MainState } from "@app/store/state";
+import { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
 import { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { TitleService } from "@core/services/title/title.service";
+import { UserService } from "@core/services/user.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { UsernameService } from "@shared/components/misc/username/username.service";
+import { Observable, combineLatest, forkJoin, of } from "rxjs";
+import { map, switchMap, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-migration-review",
@@ -99,7 +99,7 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
 
   reviewItem($event, itemId) {
     $event.target.classList.add("loading");
-    this.router.navigate(["equipment", "migration-review", itemId]);
+    void this.router.navigate(["equipment", "migration-review", itemId]);
   }
 
   // The legacy item was moderated by the same user, so they cannot review it too.

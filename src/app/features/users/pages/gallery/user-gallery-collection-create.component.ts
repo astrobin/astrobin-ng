@@ -1,27 +1,27 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, Output } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { FormGroup } from "@angular/forms";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import { CreateCollectionSuccess, CreateCollection } from "@app/store/actions/collection.actions";
+import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
+import { MainState } from "@app/store/state";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import { Actions, ofType } from "@ngrx/effects";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { LoadingService } from "@core/services/loading.service";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { map, take, takeUntil } from "rxjs/operators";
-import { CreateCollection, CreateCollectionSuccess } from "@app/store/actions/collection.actions";
-import { AppActionTypes } from "@app/store/actions/app.actions";
 
 @Component({
   selector: "astrobin-user-gallery-collection-create",
   template: `
     <form *ngIf="!createdCollection" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+      <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
       <div class="d-flex justify-content-end mt-4">
         <button
           (click)="cancelClick.emit(null)"
@@ -41,18 +41,13 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 
     <ng-container *ngIf="createdCollection">
       <astrobin-user-gallery-collection-add-remove-images
+        [collection]="createdCollection"
         [user]="user"
         [userProfile]="userProfile"
-        [collection]="createdCollection"
       ></astrobin-user-gallery-collection-add-remove-images>
 
       <div class="d-flex justify-content-center mt-4">
-        <button
-          class="btn btn-secondary"
-          (click)="cancelClick.emit(null)"
-          translate="Close"
-          type="button"
-        ></button>
+        <button (click)="cancelClick.emit(null)" class="btn btn-secondary" translate="Close" type="button"></button>
       </div>
     </ng-container>
   `,
@@ -92,22 +87,26 @@ export class UserGalleryCollectionCreateComponent extends BaseComponentDirective
       return;
     }
 
-    this.action$.pipe(
-      ofType(AppActionTypes.CREATE_COLLECTION_SUCCESS),
-      map((action: CreateCollectionSuccess) => action.payload.collection),
-      take(1)
-    ).subscribe(collection => {
-      this.createdCollection = collection
-      this.changeDetectorRef.detectChanges();
-      this.collectionCreate.emit(collection);
-    });
+    this.action$
+      .pipe(
+        ofType(AppActionTypes.CREATE_COLLECTION_SUCCESS),
+        map((action: CreateCollectionSuccess) => action.payload.collection),
+        take(1)
+      )
+      .subscribe(collection => {
+        this.createdCollection = collection;
+        this.changeDetectorRef.detectChanges();
+        this.collectionCreate.emit(collection);
+      });
 
-    this.store$.dispatch(new CreateCollection({
-      parent: this.model.parent,
-      name: this.model.name,
-      description: this.model.description,
-      orderByTag: this.model.orderByTag
-    }));
+    this.store$.dispatch(
+      new CreateCollection({
+        parent: this.model.parent,
+        name: this.model.name,
+        description: this.model.description,
+        orderByTag: this.model.orderByTag
+      })
+    );
   }
 
   private _initFields() {
@@ -128,12 +127,10 @@ export class UserGalleryCollectionCreateComponent extends BaseComponentDirective
           description: this.translateService.instant(
             "If you want to create a nested collection, select the parent collection here."
           ),
-          options: this.store$
-            .select(selectCollectionsByParams({ user: this.user.id }))
-            .pipe(
-              map(collections => collections.map(collection => ({ label: collection.name, value: collection.id }))),
-              takeUntil(this.destroyed$)
-            ),
+          options: this.store$.select(selectCollectionsByParams({ user: this.user.id })).pipe(
+            map(collections => collections.map(collection => ({ label: collection.name, value: collection.id }))),
+            takeUntil(this.destroyed$)
+          ),
           searchable: true,
           clearable: true
         }
@@ -154,7 +151,7 @@ export class UserGalleryCollectionCreateComponent extends BaseComponentDirective
         wrappers: ["default-wrapper"],
         props: {
           label: this.translateService.instant("Description"),
-          rows: 5,
+          rows: 5
         }
       },
       {
@@ -165,10 +162,10 @@ export class UserGalleryCollectionCreateComponent extends BaseComponentDirective
           label: this.translateService.instant("Order by image tag"),
           description: this.translateService.instant(
             "If you want to order the images in this collection by a tag, enter the tag here. " +
-            `<a href="https://welcome.astrobin.com/features/image-collections" target="_blank" class="d-inline-block ms-1">` +
-            this.translateService.instant("Learn more") +
-            "</a>."
-          ),
+              `<a href="https://welcome.astrobin.com/features/image-collections" target="_blank" class="d-inline-block ms-1">` +
+              this.translateService.instant("Learn more") +
+              "</a>."
+          )
         }
       }
     ];

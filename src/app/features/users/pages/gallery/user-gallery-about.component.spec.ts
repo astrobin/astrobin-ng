@@ -1,20 +1,21 @@
+import { CommonModule } from "@angular/common";
+import { Component, Input } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { UserGalleryAboutComponent } from "./user-gallery-about.component";
-import { MockStore, provideMockStore } from "@ngrx/store/testing";
-import { MockModule, MockProvider } from "ng-mocks";
-import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { UserService } from "@core/services/user.service";
-import { Actions } from "@ngrx/effects";
-import { of } from "rxjs";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { AuthActionTypes, UpdateUserProfile } from "@features/account/store/auth.actions";
+import { MainState } from "@app/store/state";
 import { UserInterface } from "@core/interfaces/user.interface";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { AuthActionTypes, UpdateUserProfile } from "@features/account/store/auth.actions";
+import { Actions } from "@ngrx/effects";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { MainState } from "@app/store/state";
-import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { UtilsService } from "@core/services/utils/utils.service";
+import { MockModule, MockProvider } from "ng-mocks";
+import { of } from "rxjs";
+
+import { UserGalleryAboutComponent } from "./user-gallery-about.component";
 
 // Create a real component for mocking
 @Component({
@@ -47,24 +48,17 @@ describe("UserGalleryAboutComponent", () => {
 
   beforeEach(() => {
     actionsSource = {
-      pipe: jest.fn().mockReturnValue(of({
-        type: AuthActionTypes.UPDATE_USER_PROFILE_SUCCESS,
-        payload: { id: 1 }
-      }))
+      pipe: jest.fn().mockReturnValue(
+        of({
+          type: AuthActionTypes.UPDATE_USER_PROFILE_SUCCESS,
+          payload: { id: 1 }
+        })
+      )
     };
 
-    TestBed.configureTestingModule({
-      declarations: [
-        UserGalleryAboutComponent,
-        MockNothingHereComponent,
-        MockFormlyFormComponent
-      ],
-      imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MockModule(TranslateModule)
-      ],
+    void TestBed.configureTestingModule({
+      declarations: [UserGalleryAboutComponent, MockNothingHereComponent, MockFormlyFormComponent],
+      imports: [CommonModule, FormsModule, ReactiveFormsModule, MockModule(TranslateModule)],
       providers: [
         provideMockStore(),
         MockProvider(UserService),
@@ -120,8 +114,8 @@ describe("UserGalleryAboutComponent", () => {
 
       // Set up the actions observable to immediately call the subscriber
       actionsSource.pipe.mockImplementation(() => ({
-        subscribe: (callback) => {
-          callback({ 
+        subscribe: callback => {
+          callback({
             type: AuthActionTypes.UPDATE_USER_PROFILE_SUCCESS,
             payload: { id: 1 }
           });
@@ -141,18 +135,18 @@ describe("UserGalleryAboutComponent", () => {
       expect(store.dispatch).toHaveBeenCalled();
       expect(component.isLoading).toBe(false); // Should be false after the success callback
     });
-    
+
     it("should ensure website URL has a protocol before saving", () => {
       // Set up a website without protocol
       const websiteWithoutProtocol = "example.com";
-      
+
       // Mock the form with a website value missing protocol
       component.form.markAsDirty();
       const getterMock = jest.fn();
-      
+
       // Create different mock returns for different keys
-      getterMock.mockImplementation((key) => {
-        if (key === 'website') {
+      getterMock.mockImplementation(key => {
+        if (key === "website") {
           return {
             dirty: true,
             value: websiteWithoutProtocol
@@ -163,35 +157,35 @@ describe("UserGalleryAboutComponent", () => {
           value: null
         };
       });
-      
+
       jest.spyOn(component.form, "get").mockImplementation(getterMock);
-      
+
       // Mock UtilsService.ensureUrlProtocol
-      const ensureUrlProtocolSpy = jest.spyOn(UtilsService, 'ensureUrlProtocol');
-      
+      const ensureUrlProtocolSpy = jest.spyOn(UtilsService, "ensureUrlProtocol");
+
       // Call saveChanges
       component.saveChanges();
-      
+
       // Verify ensureUrlProtocol was called
       expect(ensureUrlProtocolSpy).toHaveBeenCalledWith(websiteWithoutProtocol);
-      
+
       // Verify store.dispatch was called with a payload that includes the website with protocol
       expect(store.dispatch).toHaveBeenCalledWith(
         expect.objectContaining({
           payload: expect.objectContaining({
-            website: expect.stringContaining('http://')
+            website: expect.stringContaining("http://")
           })
         })
       );
     });
-    
+
     it("should validate website URL", () => {
       // Get a reference to the website field config
-      const websiteField = component.fields.find(field => field.key === 'website');
-      
+      const websiteField = component.fields.find(field => field.key === "website");
+
       // Verify the URL validator is being used
       expect(websiteField.validators).toBeDefined();
-      expect(websiteField.validators.validation).toContain('url');
+      expect(websiteField.validators.validation).toContain("url");
     });
 
     it("should not save if form is invalid", () => {
@@ -215,7 +209,7 @@ describe("UserGalleryAboutComponent", () => {
   describe("current user detection", () => {
     it("should check if user is current user on init", () => {
       // Mock the Observable that currentUser$ returns
-      jest.spyOn(component["currentUser$"], "pipe").mockReturnValue(of({ id: 1 } as UserInterface));
+      jest.spyOn(component.currentUser$, "pipe").mockReturnValue(of({ id: 1 } as UserInterface));
 
       // Call ngOnInit to trigger the check
       component.ngOnInit();

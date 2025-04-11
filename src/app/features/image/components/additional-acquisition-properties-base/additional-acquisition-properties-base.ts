@@ -1,12 +1,12 @@
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { ImageEditService } from "@features/image/services/image-edit.service";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 export class AdditionalAcquisitionPropertiesBase extends BaseComponentDirective {
   imageEditService: ImageEditService;

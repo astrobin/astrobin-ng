@@ -1,28 +1,24 @@
 <ng-container *ngIf="{ unread: unreadCount$ | async, totalNotifications: totalNotifications$ | async } as counts">
-
   <div class="notifications-menu mb-4">
     <!-- Desktop view -->
     <div class="d-none d-lg-flex gap-3 align-items-center justify-content-end">
       <form class="context-form">
-        <formly-form
-          [form]="contextForm"
-          [fields]="contextFields"
-          [model]="contextModel"
-        ></formly-form>
+        <formly-form [fields]="contextFields" [form]="contextForm" [model]="contextModel"></formly-form>
       </form>
 
       <astrobin-toggle-button
+        [label]="'Only unread' | translate"
         [value]="onlyUnread"
         (toggle)="toggleShowRead($event)"
-        [label]="'Only unread' | translate"
       ></astrobin-toggle-button>
 
       <button
-        (click)="markAllAsRead()"
         [class.loading]="loadingService.loading$ | async"
         [disabled]="!!contextModel.message || !!contextModel.context || (unreadCount$ | async) === 0"
+        (click)="markAllAsRead()"
+        id="mark-all-as-read"
         class="btn btn-primary"
-        id="mark-all-as-read">
+      >
         {{ "Mark all as read" | translate }}
       </button>
 
@@ -31,40 +27,28 @@
         <span class="sr-only">{{ "Settings" | translate }}</span>
       </a>
 
-      <astrobin-refresh-button
-        (click)="refreshNotifications()"
-        [loading]="refreshing"
-      ></astrobin-refresh-button>
+      <astrobin-refresh-button [loading]="refreshing" (click)="refreshNotifications()"></astrobin-refresh-button>
     </div>
 
     <!-- Mobile view - Top controls -->
     <div class="d-flex d-lg-none align-items-center justify-content-between mb-3">
       <!-- Kebab menu for options -->
       <div ngbDropdown>
-        <fa-icon
-          icon="ellipsis-v"
-          ngbDropdownToggle
-          class="dropdown-toggle no-toggle p-3 ms-2"
-        ></fa-icon>
+        <fa-icon class="dropdown-toggle no-toggle p-3 ms-2" icon="ellipsis-v" ngbDropdownToggle></fa-icon>
 
         <div ngbDropdownMenu>
           <astrobin-toggle-button
-            ngbDropdownItem
+            [label]="'Only unread' | translate"
             [value]="onlyUnread"
             (toggle)="toggleShowRead($event)"
-            [label]="'Only unread' | translate"
+            ngbDropdownItem
           ></astrobin-toggle-button>
 
-          <button
-            ngbDropdownItem
-            routerLink="/notifications/settings">
-            {{ "Settings"| translate }}
+          <button ngbDropdownItem routerLink="/notifications/settings">
+            {{ "Settings" | translate }}
           </button>
 
-          <button
-            ngbDropdownItem
-            (click)="refreshNotifications()"
-          >
+          <button (click)="refreshNotifications()" ngbDropdownItem>
             {{ "Refresh" | translate }}
           </button>
         </div>
@@ -76,61 +60,54 @@
     <ng-container *ngIf="notifications.length > 0; else noNotifications">
       <!-- Mark all as read button at the top -->
       <button
-        (click)="markAllAsRead()"
         [class.loading]="loadingService.loading$ | async"
         [disabled]="!!contextModel.message || !!contextModel.context || (unreadCount$ | async) === 0"
+        (click)="markAllAsRead()"
+        id="mark-all-as-read-mobile"
         class="btn btn-primary d-lg-none mb-3"
-        id="mark-all-as-read-mobile">
+      >
         {{ "Mark all as read" | translate }}
       </button>
 
-      <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="counts.totalNotifications">
+      <ngb-pagination [collectionSize]="counts.totalNotifications" (pageChange)="pageChange($event)" [(page)]="page">
       </ngb-pagination>
 
       <table class="table table-striped notifications">
         <tbody>
-        <tr
-          *ngFor="let notification of notifications"
-          class="notification"
-          id="notification-{{notification.id}}"
-        >
-          <td
-            [class.read]="notification.read"
-            [class.unread]="!notification.read"
-            class="read-indicator"
-          >
-            <fa-icon (click)="toggleRead(notification)" class="read-icon" icon="eye"></fa-icon>
-          </td>
+          <tr *ngFor="let notification of notifications" id="notification-{{ notification.id }}" class="notification">
+            <td [class.read]="notification.read" [class.unread]="!notification.read" class="read-indicator">
+              <fa-icon (click)="toggleRead(notification)" class="read-icon" icon="eye"></fa-icon>
+            </td>
 
-          <td class="notification-context">
-            <fa-icon class="context-icon" [icon]="notification | notificationContextIcon"></fa-icon>
-          </td>
+            <td class="notification-context">
+              <fa-icon [icon]="notification | notificationContextIcon" class="context-icon"></fa-icon>
+            </td>
 
-          <td class="message">
-            <div
-              (click)="notificationClicked(notification)"
-              [innerHTML]="notification.message | normalizeNotificationLink"
-            ></div>
-            <div class="d-lg-none">
+            <td class="message">
+              <div
+                [innerHTML]="notification.message | normalizeNotificationLink"
+                (click)="notificationClicked(notification)"
+              ></div>
+              <div class="d-lg-none">
+                <ng-container *ngTemplateOutlet="createdTemplate; context: { $implicit: notification }"></ng-container>
+              </div>
+            </td>
+
+            <td class="created text-end d-none d-lg-table-cell">
               <ng-container *ngTemplateOutlet="createdTemplate; context: { $implicit: notification }"></ng-container>
-            </div>
-          </td>
-
-          <td class="created text-end d-none d-lg-table-cell">
-            <ng-container *ngTemplateOutlet="createdTemplate; context: { $implicit: notification }"></ng-container>
-          </td>
-        </tr>
+            </td>
+          </tr>
         </tbody>
       </table>
 
-      <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="counts.totalNotifications">
+      <ngb-pagination [collectionSize]="counts.totalNotifications" (pageChange)="pageChange($event)" [(page)]="page">
       </ngb-pagination>
     </ng-container>
   </ng-container>
 
   <ng-template #createdTemplate let-notification>
     <abbr [attr.title]="notification.created | localDate" class="no-wrap">
-      {{ notification.created | localDate | timeago:true }}
+      {{ notification.created | localDate | timeago: true }}
     </abbr>
   </ng-template>
 

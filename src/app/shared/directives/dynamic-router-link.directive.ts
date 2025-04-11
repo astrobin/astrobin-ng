@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, ElementRef } from "@angular/core";
+import { AfterViewInit, ElementRef, Directive } from "@angular/core";
 import { Router } from "@angular/router";
 
 @Directive({
@@ -8,8 +8,7 @@ export class DynamicRouterLinkDirective implements AfterViewInit {
   constructor(
     private el: ElementRef,
     private router: Router
-  ) {
-  }
+  ) {}
 
   ngAfterViewInit() {
     const links = this.el.nativeElement.getElementsByTagName("a");
@@ -18,7 +17,7 @@ export class DynamicRouterLinkDirective implements AfterViewInit {
       if (routerLink) {
         link.addEventListener("click", (e: Event) => {
           e.preventDefault();
-          this.router.navigateByUrl(routerLink);
+          void this.router.navigateByUrl(routerLink);
         });
       }
     });

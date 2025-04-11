@@ -1,6 +1,5 @@
 <div class="page has-breadcrumb">
-  <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else editTemplate">
-  </astrobin-read-only-mode>
+  <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else editTemplate"> </astrobin-read-only-mode>
 </div>
 
 <ng-template #editTemplate>
@@ -15,8 +14,8 @@
 
     <div
       *ngIf="imageEditEquipmentFieldsService.creationMode"
-      class="equipment-item-creation-mode-overlay"
       (click)="promptToExitEquipmentItemCreationMode($event)"
+      class="equipment-item-creation-mode-overlay"
     ></div>
   </ng-container>
 </ng-template>
@@ -34,20 +33,19 @@
 <ng-template #equipmentStepPreambleTemplate>
   <ng-container *ngIf="presets$ | async as presets">
     <div *ngIf="presets.length > 0" class="alert alert-dark mb-5">
-      <p class="mb-3 text-muted">{{ "Apply one of your saved setups, or fill in the form below manually." | translate }}</p>
+      <p class="mb-3 text-muted">
+        {{ "Apply one of your saved setups, or fill in the form below manually." | translate }}
+      </p>
       <div class="d-flex flex-row flex-wrap gap-3 align-items-center">
         <div *ngFor="let preset of presets">
           <astrobin-equipment-preset
-            (presetClicked)="onPresetClicked($event)"
             [buttonOverlayLabel]="'Apply' | translate"
             [preset]="preset"
+            (presetClicked)="onPresetClicked($event)"
           ></astrobin-equipment-preset>
         </div>
 
-        <div
-          (click)="onPresetCreateClicked()"
-          class="create-preset"
-        >
+        <div (click)="onPresetCreateClicked()" class="create-preset">
           <fa-icon icon="plus"></fa-icon>
           <span translate="Add setup"></span>
         </div>
@@ -58,21 +56,21 @@
 
 <ng-template #equipmentStepButtonsTemplate>
   <button
-    (click)="onClearEquipmentClicked()"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="!imageEditService.hasEquipmentItems()"
-    class="btn btn-outline-danger me-2"
+    (click)="onClearEquipmentClicked()"
     id="clear-equipment-btn"
+    class="btn btn-outline-danger me-2"
   >
     {{ "Clear" | translate }}
   </button>
 
   <button
-    (click)="onSaveEquipmentPresetClicked()"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="!imageEditService.hasEquipmentItems()"
-    class="btn btn-outline-secondary"
+    (click)="onSaveEquipmentPresetClicked()"
     id="save-preset-btn"
+    class="btn btn-outline-secondary"
   >
     {{ "Save setup" | translate }}
   </button>
@@ -80,29 +78,28 @@
 
 <ng-template #acquisitionAdditionalButtonsTemplate>
   <button
-    (click)="onCopyAcquisitionSessionsFromAnotherImageClicked($event)"
     [class.loading]="loadingService.loading$ | async"
-    class="btn btn-outline-secondary"
+    (click)="onCopyAcquisitionSessionsFromAnotherImageClicked($event)"
     id="copy-acquisition-sessions-from-another-image-btn"
+    class="btn btn-outline-secondary"
   >
     {{ "Copy from another image" | translate }}&hellip;
   </button>
 
-
   <button
-    (click)="onImportFromCsvClicked($event)"
     [class.loading]="loadingService.loading$ | async"
-    class="btn btn-outline-secondary"
+    (click)="onImportFromCsvClicked($event)"
     id="import-from-csv-btn"
+    class="btn btn-outline-secondary"
   >
     {{ "Import from CSV" | translate }}&hellip;
   </button>
 
   <button
-    (click)="onOverrideAcquisitionFormClicked($event)"
     [class.loading]="loadingService.loading$ | async"
-    class="btn btn-outline-secondary"
+    (click)="onOverrideAcquisitionFormClicked($event)"
     id="override-acquisition-form-btn"
+    class="btn btn-outline-secondary"
   >
     {{ "Override acquisition form" | translate }}&hellip;
   </button>
@@ -110,10 +107,10 @@
 
 <ng-template #stepperButtonsTemplate>
   <button
-    (click)="onSave($event)"
     [class.loading]="loadingService.loading$ | async"
-    class="btn btn-primary"
+    (click)="onSave($event)"
     id="save-button"
+    class="btn btn-primary"
   >
     {{ "Save" | translate }}
   </button>
@@ -132,12 +129,7 @@
 <ng-template #presetCreateOffcanvas let-offcanvas>
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">{{ "Add setup" | translate }}</h5>
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Close"
-      (click)="offcanvas.close()"
-    ></button>
+    <button (click)="offcanvas.close()" class="btn-close" aria-label="Close" type="button"></button>
   </div>
 
   <div class="offcanvas-body">

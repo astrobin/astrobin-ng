@@ -8,12 +8,14 @@
 
   <!-- Active Listings -->
   <li [ngbNavItem]="MarketplaceNavPage.ACTIVE_LISTINGS" class="subnav">
-    <a *ngIf="(getLink$(MarketplaceNavPage.ACTIVE_LISTINGS) | async) as link"
-       [queryParams]="link.queryParams"
-       [routerLinkActiveOptions]="routerLinkActiveOptions"
-       [routerLink]="link.path"
-       ngbNavLink
-       routerLinkActive="active">
+    <a
+      *ngIf="getLink$(MarketplaceNavPage.ACTIVE_LISTINGS) | async as link"
+      [queryParams]="link.queryParams"
+      [routerLink]="link.path"
+      [routerLinkActiveOptions]="routerLinkActiveOptions"
+      ngbNavLink
+      routerLinkActive="active"
+    >
       <fa-icon icon="grip"></fa-icon> &nbsp;
       {{ "Active listings" | translate }}
     </a>
@@ -21,16 +23,18 @@
 
   <!-- Pending moderation -->
   <li
-    *ngIf="(currentUser$ | async) | isMarketplaceModerator"
+    *ngIf="currentUser$ | async | isMarketplaceModerator"
     [ngbNavItem]="MarketplaceNavPage.PENDING_MODERATION"
     class="subnav"
   >
-    <a *ngIf="(getLink$(MarketplaceNavPage.PENDING_MODERATION) | async) as link"
-       [queryParams]="link.queryParams"
-       [routerLinkActiveOptions]="routerLinkActiveOptions"
-       [routerLink]="link.path"
-       ngbNavLink
-       routerLinkActive="active">
+    <a
+      *ngIf="getLink$(MarketplaceNavPage.PENDING_MODERATION) | async as link"
+      [queryParams]="link.queryParams"
+      [routerLink]="link.path"
+      [routerLinkActiveOptions]="routerLinkActiveOptions"
+      ngbNavLink
+      routerLinkActive="active"
+    >
       <fa-icon icon="gavel"></fa-icon> &nbsp;
       {{ "Pending moderation" | translate }}
     </a>
@@ -38,12 +42,14 @@
 
   <!-- Sold Listings -->
   <li [ngbNavItem]="MarketplaceNavPage.SOLD_LISTINGS" class="subnav">
-    <a *ngIf="(getLink$(MarketplaceNavPage.SOLD_LISTINGS) | async) as link"
-       [queryParams]="link.queryParams"
-       [routerLinkActiveOptions]="routerLinkActiveOptions"
-       [routerLink]="link.path"
-       ngbNavLink
-       routerLinkActive="active">
+    <a
+      *ngIf="getLink$(MarketplaceNavPage.SOLD_LISTINGS) | async as link"
+      [queryParams]="link.queryParams"
+      [routerLink]="link.path"
+      [routerLinkActiveOptions]="routerLinkActiveOptions"
+      ngbNavLink
+      routerLinkActive="active"
+    >
       <fa-icon icon="handshake"></fa-icon> &nbsp;
       {{ "Sold archive" | translate }}
     </a>
@@ -59,36 +65,42 @@
 
     <!-- User Listings -->
     <li [ngbNavItem]="MarketplaceNavPage.USER_LISTINGS" class="subnav">
-      <a *ngIf="(getLink$(MarketplaceNavPage.USER_LISTINGS) | async) as link"
-         [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="routerLinkActiveOptions"
-         [routerLink]="link.path"
-         ngbNavLink
-         routerLinkActive="active">
+      <a
+        *ngIf="getLink$(MarketplaceNavPage.USER_LISTINGS) | async as link"
+        [queryParams]="link.queryParams"
+        [routerLink]="link.path"
+        [routerLinkActiveOptions]="routerLinkActiveOptions"
+        ngbNavLink
+        routerLinkActive="active"
+      >
         <fa-icon icon="store"></fa-icon> &nbsp;
         {{ "Active listings" | translate }}
       </a>
     </li>
 
     <li [ngbNavItem]="MarketplaceNavPage.USER_SOLD_LISTINGS" class="subnav">
-      <a *ngIf="(getLink$(MarketplaceNavPage.USER_SOLD_LISTINGS) | async) as link"
-         [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="routerLinkActiveOptions"
-         [routerLink]="link.path"
-         ngbNavLink
-         routerLinkActive="active">
+      <a
+        *ngIf="getLink$(MarketplaceNavPage.USER_SOLD_LISTINGS) | async as link"
+        [queryParams]="link.queryParams"
+        [routerLink]="link.path"
+        [routerLinkActiveOptions]="routerLinkActiveOptions"
+        ngbNavLink
+        routerLinkActive="active"
+      >
         <fa-icon icon="sack-dollar"></fa-icon> &nbsp;
         {{ "Sold" | translate }}
       </a>
     </li>
 
     <li [ngbNavItem]="MarketplaceNavPage.USER_EXPIRED_LISTINGS" class="subnav">
-      <a *ngIf="(getLink$(MarketplaceNavPage.USER_EXPIRED_LISTINGS) | async) as link"
-         [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="routerLinkActiveOptions"
-         [routerLink]="link.path"
-         ngbNavLink
-         routerLinkActive="active">
+      <a
+        *ngIf="getLink$(MarketplaceNavPage.USER_EXPIRED_LISTINGS) | async as link"
+        [queryParams]="link.queryParams"
+        [routerLink]="link.path"
+        [routerLinkActiveOptions]="routerLinkActiveOptions"
+        ngbNavLink
+        routerLinkActive="active"
+      >
         <fa-icon icon="calendar-xmark"></fa-icon> &nbsp;
         {{ "Expired" | translate }}
       </a>
@@ -103,12 +115,14 @@
 
     <!-- User Offers -->
     <li [ngbNavItem]="MarketplaceNavPage.USER_OFFERS" class="subnav">
-      <a *ngIf="(getLink$(MarketplaceNavPage.USER_OFFERS) | async) as link"
-         [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="routerLinkActiveOptions"
-         [routerLink]="link.path"
-         ngbNavLink
-         routerLinkActive="active">
+      <a
+        *ngIf="getLink$(MarketplaceNavPage.USER_OFFERS) | async as link"
+        [queryParams]="link.queryParams"
+        [routerLink]="link.path"
+        [routerLinkActiveOptions]="routerLinkActiveOptions"
+        ngbNavLink
+        routerLinkActive="active"
+      >
         <fa-icon icon="comment-dollar"></fa-icon> &nbsp;
         {{ "Offers" | translate }}
       </a>
@@ -116,12 +130,14 @@
 
     <!-- User Purchases -->
     <li [ngbNavItem]="MarketplaceNavPage.USER_PURCHASES" class="subnav">
-      <a *ngIf="(getLink$(MarketplaceNavPage.USER_PURCHASES) | async) as link"
-         [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="routerLinkActiveOptions"
-         [routerLink]="link.path"
-         ngbNavLink
-         routerLinkActive="active">
+      <a
+        *ngIf="getLink$(MarketplaceNavPage.USER_PURCHASES) | async as link"
+        [queryParams]="link.queryParams"
+        [routerLink]="link.path"
+        [routerLinkActiveOptions]="routerLinkActiveOptions"
+        ngbNavLink
+        routerLinkActive="active"
+      >
         <fa-icon icon="receipt"></fa-icon> &nbsp;
         {{ "Purchases" | translate }}
       </a>
@@ -129,12 +145,14 @@
 
     <!-- User Followed -->
     <li [ngbNavItem]="MarketplaceNavPage.USER_FOLLOWED" class="subnav">
-      <a *ngIf="(getLink$(MarketplaceNavPage.USER_FOLLOWED) | async) as link"
-         [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="routerLinkActiveOptions"
-         [routerLink]="link.path"
-         ngbNavLink
-         routerLinkActive="active">
+      <a
+        *ngIf="getLink$(MarketplaceNavPage.USER_FOLLOWED) | async as link"
+        [queryParams]="link.queryParams"
+        [routerLink]="link.path"
+        [routerLinkActiveOptions]="routerLinkActiveOptions"
+        ngbNavLink
+        routerLinkActive="active"
+      >
         <fa-icon icon="bell"></fa-icon> &nbsp;
         {{ "Followed" | translate }}
       </a>
@@ -142,12 +160,14 @@
 
     <!-- User feedback -->
     <li [ngbNavItem]="MarketplaceNavPage.USER_FEEDBACK" class="subnav">
-      <a *ngIf="(getLink$(MarketplaceNavPage.USER_FEEDBACK) | async) as link"
-         [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="routerLinkActiveOptions"
-         [routerLink]="link.path"
-         ngbNavLink
-         routerLinkActive="active">
+      <a
+        *ngIf="getLink$(MarketplaceNavPage.USER_FEEDBACK) | async as link"
+        [queryParams]="link.queryParams"
+        [routerLink]="link.path"
+        [routerLinkActiveOptions]="routerLinkActiveOptions"
+        ngbNavLink
+        routerLinkActive="active"
+      >
         <fa-icon icon="star"></fa-icon> &nbsp;
         {{ "Feedback" | translate }}
       </a>

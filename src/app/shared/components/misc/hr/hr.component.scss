@@ -16,7 +16,7 @@ div {
     overflow: hidden;
     width: 50%;
     height: 1px;
-    content: '\a0';
+    content: "\a0";
     background-color: var(--lightGrey);
   }
 
@@ -26,6 +26,6 @@ div {
   }
 
   > span {
-    padding: 0 .75rem;
+    padding: 0 0.75rem;
   }
 }

@@ -1,18 +1,18 @@
-import { Directive, ElementRef, Inject, Input, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
-import { auditTime, fromEvent, merge, Subscription } from "rxjs";
+import { ElementRef, OnDestroy, OnInit, Renderer2, Directive, Inject, Input, PLATFORM_ID } from "@angular/core";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { Subscription, auditTime, fromEvent, merge } from "rxjs";
 
 @Directive({
   selector: "[astrobinSticky]"
 })
 export class StickyDirective implements OnInit, OnDestroy {
-  @Input() stickyClass: string = "sticky-active"; // Default class to add when sticky
-  @Input() throttleTime: number = 500; // Default throttle time
+  @Input() stickyClass = "sticky-active"; // Default class to add when sticky
+  @Input() throttleTime = 500; // Default throttle time
 
   private readonly _isBrowser: boolean;
   private _scrollSubscription: Subscription | undefined;
-  private _topOffset: number = 0; // Store top offset value
+  private _topOffset = 0; // Store top offset value
 
   constructor(
     private el: ElementRef,
@@ -34,14 +34,11 @@ export class StickyDirective implements OnInit, OnDestroy {
       this._topOffset = parseInt(topValue, 10) || 0;
 
       // Set up scroll listener with throttling
-      this._scrollSubscription = merge(
-        fromEvent(_win, "scroll"),
-        fromEvent(_win, "resize")
-      ).pipe(
-        auditTime(this.throttleTime)
-      ).subscribe(() => {
-        this._checkStickyPosition();
-      });
+      this._scrollSubscription = merge(fromEvent(_win, "scroll"), fromEvent(_win, "resize"))
+        .pipe(auditTime(this.throttleTime))
+        .subscribe(() => {
+          this._checkStickyPosition();
+        });
     }
   }
 

@@ -45,8 +45,11 @@
 
 <ng-template #footerTemplateExtra>
   <div class="text-muted">
-    {{ "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!" | translate }}
-    <a href="https://welcome.astrobin.com/features/equipment-database" target="_blank">{{"Learn more"}}.</a>
+    {{
+      "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!"
+        | translate
+    }}
+    <a href="https://welcome.astrobin.com/features/equipment-database" target="_blank">{{ "Learn more" }}.</a>
   </div>
 </ng-template>
 
@@ -56,7 +59,7 @@
   </div>
 
   <div class="mt-4 mb-4">
-    <div [class.disabled-with-backdrop]="options.formState.subCreationMode" class="card" id="create-new-item">
+    <div [class.disabled-with-backdrop]="options.formState.subCreationMode" id="create-new-item" class="card">
       <div class="backdrop"></div>
 
       <div class="card-header">
@@ -64,96 +67,94 @@
       </div>
 
       <div class="card-body">
-        <astrobin-read-only-mode
-          *ngIf="(readOnlyMode$ | async) === true; else formTemplate"
-        ></astrobin-read-only-mode>
+        <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else formTemplate"></astrobin-read-only-mode>
 
         <ng-template #formTemplate>
           <astrobin-camera-editor
             #editor
-            (subCreationInProgress)="onSubCreationInProgress($event)"
-            (suggestionSelected)="itemCreated($event)"
             *ngIf="type === EquipmentItemType.CAMERA"
             [form]="creationForm"
             [model]="creationModel"
             [name]="q"
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
           ></astrobin-camera-editor>
 
           <astrobin-sensor-editor
             #editor
-            (subCreationInProgress)="onSubCreationInProgress($event)"
-            (suggestionSelected)="itemCreated($event)"
             *ngIf="type === EquipmentItemType.SENSOR"
             [form]="creationForm"
             [model]="creationModel"
             [name]="q"
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
           ></astrobin-sensor-editor>
 
           <astrobin-telescope-editor
             #editor
-            (subCreationInProgress)="onSubCreationInProgress($event)"
-            (suggestionSelected)="itemCreated($event)"
             *ngIf="type === EquipmentItemType.TELESCOPE"
             [form]="creationForm"
             [model]="creationModel"
             [name]="q"
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
           ></astrobin-telescope-editor>
 
           <astrobin-mount-editor
             #editor
-            (subCreationInProgress)="onSubCreationInProgress($event)"
-            (suggestionSelected)="itemCreated($event)"
             *ngIf="type === EquipmentItemType.MOUNT"
             [form]="creationForm"
             [model]="creationModel"
             [name]="q"
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
           ></astrobin-mount-editor>
 
           <astrobin-filter-editor
             #editor
-            (subCreationInProgress)="onSubCreationInProgress($event)"
-            (suggestionSelected)="itemCreated($event)"
             *ngIf="type === EquipmentItemType.FILTER"
             [form]="creationForm"
             [model]="creationModel"
             [name]="q"
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
           ></astrobin-filter-editor>
 
           <astrobin-accessory-editor
             #editor
-            (subCreationInProgress)="onSubCreationInProgress($event)"
-            (suggestionSelected)="itemCreated($event)"
             *ngIf="type === EquipmentItemType.ACCESSORY"
             [form]="creationForm"
             [model]="creationModel"
             [name]="q"
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
           ></astrobin-accessory-editor>
 
           <astrobin-software-editor
             #editor
-            (subCreationInProgress)="onSubCreationInProgress($event)"
-            (suggestionSelected)="itemCreated($event)"
             *ngIf="type === EquipmentItemType.SOFTWARE"
             [form]="creationForm"
             [model]="creationModel"
             [name]="q"
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
           ></astrobin-software-editor>
         </ng-template>
       </div>
 
       <div class="card-footer">
         <button
-          (click)="onCancel()"
           [class.loading]="loadingService.loading$ | async"
+          (click)="onCancel()"
           class="btn btn-sm-block btn-secondary"
         >
           {{ "Cancel" | translate }}
         </button>
 
         <button
-          (click)="createItem()"
           [class.loading]="(loadingService.loading$ | async) || creationForm.pending"
           [disabled]="(readOnlyMode$ | async) === true"
+          (click)="createItem()"
           class="btn btn-sm-block btn-primary"
         >
           {{ "Create item" | translate }}
@@ -168,9 +169,9 @@
 
   <div class="full-screen-body-template-content">
     <astrobin-item-browser-by-properties
+      [type]="type"
       (createClicked)="onCreateClickedBrowsingByProperties()"
       (itemSelected)="onItemSetByBrowsingByProperties($event)"
-      [type]="type"
     ></astrobin-item-browser-by-properties>
   </div>
 </ng-template>

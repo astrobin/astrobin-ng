@@ -1,16 +1,17 @@
 import { TestBed } from "@angular/core/testing";
-import { EquipmentService } from "./equipment.service";
-import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { Actions } from "@ngrx/effects";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { TelescopeType, TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { of } from "rxjs";
+
+import { EquipmentService } from "./equipment.service";
 import { LoadingService } from "./loading.service";
 import { PopNotificationsService } from "./pop-notifications.service";
-import { of } from "rxjs";
 
 describe("EquipmentService", () => {
   let service: EquipmentService;
@@ -101,7 +102,6 @@ describe("EquipmentService", () => {
     });
   });
 
-
   describe("humanizeCameraLabel", () => {
     it("should return 'Camera'", () => {
       const camera: CameraInterface = {} as CameraInterface;
@@ -131,16 +131,16 @@ describe("EquipmentService", () => {
 
   describe("humanizeEquipmentItemType", () => {
     it("should call the appropriate type-specific method for each item type", () => {
-      jest.spyOn(service, 'humanizeTelescopeLabel');
-      jest.spyOn(service, 'humanizeCameraLabel');
-      jest.spyOn(service, 'humanizeMountLabel');
-      jest.spyOn(service, 'humanizeFilterLabel');
+      jest.spyOn(service, "humanizeTelescopeLabel");
+      jest.spyOn(service, "humanizeCameraLabel");
+      jest.spyOn(service, "humanizeMountLabel");
+      jest.spyOn(service, "humanizeFilterLabel");
 
-      const telescope = { klass: 'TELESCOPE' } as any;
-      const camera = { klass: 'CAMERA' } as any;
-      const mount = { klass: 'MOUNT' } as any;
-      const filter = { klass: 'FILTER' } as any;
-      const other = { klass: 'OTHER' } as any;
+      const telescope = { klass: "TELESCOPE" } as any;
+      const camera = { klass: "CAMERA" } as any;
+      const mount = { klass: "MOUNT" } as any;
+      const filter = { klass: "FILTER" } as any;
+      const other = { klass: "OTHER" } as any;
 
       service.humanizeEquipmentItemLabel(telescope);
       service.humanizeEquipmentItemLabel(camera);

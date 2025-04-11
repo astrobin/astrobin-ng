@@ -6,5 +6,4 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
   templateUrl: "./empty-list.component.html",
   styleUrls: ["./empty-list.component.scss"]
 })
-export class EmptyListComponent extends BaseComponentDirective {
-}
+export class EmptyListComponent extends BaseComponentDirective {}

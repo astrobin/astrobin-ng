@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { ImageAlias } from "@core/enums/image-alias.enum";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { ImageService } from "@core/services/image/image.service";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-user-gallery-collection-thumbnail",
@@ -19,14 +19,14 @@ import { ImageService } from "@core/services/image/image.service";
               <ng-container *ngIf="imageService.getObjectFit(collection) as fit">
                 <div
                   [astrobinLazyBackground]="collection.coverThumbnail"
-                  [highResolutionUrl]="collection.coverThumbnailHd"
-                  [useHighResolution]="fit.scale > 3"
-                  [ngStyle]="{
-                          'background-position': fit.position.x + '% ' + fit.position.y + '%',
-                          'background-size': fit.scale > 1.5 ? (fit.scale * 100) + '%' : 'cover',
-                          'background-repeat': 'no-repeat'
-                        }"
                   [attr.aria-label]="collection.name"
+                  [highResolutionUrl]="collection.coverThumbnailHd"
+                  [ngStyle]="{
+                    'background-position': fit.position.x + '% ' + fit.position.y + '%',
+                    'background-size': fit.scale > 1.5 ? fit.scale * 100 + '%' : 'cover',
+                    'background-repeat': 'no-repeat'
+                  }"
+                  [useHighResolution]="fit.scale > 3"
                   role="img"
                 ></div>
               </ng-container>
@@ -35,8 +35,8 @@ import { ImageService } from "@core/services/image/image.service";
             <img
               *ngIf="!collection.coverThumbnail"
               [ngSrc]="'/assets/images/stars.jpg?v=20241008'"
-              alt=""
               class="empty-collection-thumbnail"
+              alt=""
               fill
             />
           </div>
@@ -44,9 +44,9 @@ import { ImageService } from "@core/services/image/image.service";
 
         <astrobin-user-gallery-collection-menu
           *ngIf="currentUserWrapper.user?.id === collection.user"
+          [collection]="collection"
           [user]="user"
           [userProfile]="userProfile"
-          [collection]="collection"
         ></astrobin-user-gallery-collection-menu>
 
         <div class="collection-name">

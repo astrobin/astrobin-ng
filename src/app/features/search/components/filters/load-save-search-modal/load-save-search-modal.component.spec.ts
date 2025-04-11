@@ -1,14 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { LoadSaveSearchModalComponent } from './load-save-search-modal.component';
-import { MockBuilder } from "ng-mocks";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
 
-describe('LoadSaveSearchModalComponent', () => {
+import { LoadSaveSearchModalComponent } from "./load-save-search-modal.component";
+
+describe("LoadSaveSearchModalComponent", () => {
   let component: LoadSaveSearchModalComponent;
   let fixture: ComponentFixture<LoadSaveSearchModalComponent>;
 
@@ -21,12 +21,12 @@ describe('LoadSaveSearchModalComponent', () => {
     fixture = TestBed.createComponent(LoadSaveSearchModalComponent);
     component = fixture.componentInstance;
 
-    jest.spyOn(component.savedSearchApiService, 'load').mockReturnValue(of([]));
+    jest.spyOn(component.savedSearchApiService, "load").mockReturnValue(of([]));
 
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

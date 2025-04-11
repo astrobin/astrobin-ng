@@ -1,7 +1,8 @@
 import { TestBed } from "@angular/core/testing";
-import { ConstellationsService } from "./constellations.service";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
+
+import { ConstellationsService } from "./constellations.service";
 
 describe("ConstellationsService", () => {
   let service: ConstellationsService;

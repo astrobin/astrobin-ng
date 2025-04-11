@@ -6,8 +6,7 @@
 >
   <span *ngIf="lineItem.sold" class="badge rounded-pill bg-danger border border-light sold-badge">
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <ng-container *ngIf="lineItem.soldTo === null; else soldToSomeone" [ngTemplateOutlet]="sold">
-      </ng-container>
+      <ng-container *ngIf="lineItem.soldTo === null; else soldToSomeone" [ngTemplateOutlet]="sold"> </ng-container>
 
       <ng-template #soldToSomeone>
         <ng-container *ngIf="currentUserWrapper.user; else sold">
@@ -55,7 +54,7 @@
   </span>
 
   <div class="price">
-    {{ lineItem.price | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
+    {{ lineItem.price | currency: lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
   </div>
 
   <div class="shipping-cost">
@@ -70,7 +69,7 @@
     <ng-container *ngIf="lineItem.shippingCostType === MarketplaceShippingCostType.FIXED">
       <ng-container *ngIf="!!lineItem.shippingCost; else freeShippingTemplate">
         {{ "+ shipping" | translate }}:
-        {{ lineItem.shippingCost | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
+        {{ lineItem.shippingCost | currency: lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
       </ng-container>
       <ng-template #freeShippingTemplate>
         {{ "Free Shipping" | translate }}

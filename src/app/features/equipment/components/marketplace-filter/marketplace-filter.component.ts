@@ -1,31 +1,31 @@
-import { Component, EventEmitter, Inject, OnInit, Output, PLATFORM_ID } from "@angular/core";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { isPlatformBrowser } from "@angular/common";
+import { OnInit, Component, EventEmitter, Inject, Output, PLATFORM_ID } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ActivatedRoute, Params, Router } from "@angular/router";
+import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
+import { MainState } from "@app/store/state";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { GeolocationService } from "@core/services/geolocation.service";
 import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { Constants } from "@shared/constants";
-import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { isPlatformBrowser } from "@angular/common";
-import { UserInterface } from "@core/interfaces/user.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
 import {
   MarketplaceListingInterface,
   MarketplaceListingType
 } from "@features/equipment/types/marketplace-listing.interface";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Constants } from "@shared/constants";
 import { take } from "rxjs/operators";
-import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 
 export const marketplaceFilterModelKeys: string[] = [
   "listingType",
@@ -122,23 +122,25 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
 
   applyFilters() {
     const _doApplyFilters = () => {
-      this.router.navigate([], {
-        relativeTo: this.activatedRoute,
-        queryParams: this.filterForm.value,
-        queryParamsHandling: "merge"
-      }).then(() => {
-        this.filterChange.emit(this.filterForm.value);
+      void this.router
+        .navigate([], {
+          relativeTo: this.activatedRoute,
+          queryParams: this.filterForm.value,
+          queryParamsHandling: "merge"
+        })
+        .then(() => {
+          this.filterChange.emit(this.filterForm.value);
 
-        this.loadingService.setLoading(false);
+          this.loadingService.setLoading(false);
 
-        if (isPlatformBrowser(this.platformId)) {
-          this.windowRefService.nativeWindow.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth"
-          });
-        }
-      });
+          if (isPlatformBrowser(this.platformId)) {
+            this.windowRefService.nativeWindow.scrollTo({
+              top: 0,
+              left: 0,
+              behavior: "smooth"
+            });
+          }
+        });
     };
 
     if (!this.filterForm.valid) {
@@ -150,20 +152,23 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
     this.loadingService.setLoading(true);
 
     if (this.filterForm.value.maxDistance !== null) {
-      this.geolocationService.getCurrentPosition().then(position => {
-        this.filterForm.patchValue({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
+      this.geolocationService
+        .getCurrentPosition()
+        .then(position => {
+          this.filterForm.patchValue({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
+          _doApplyFilters();
+        })
+        .catch(() => {
+          this.popNotificationsService.error(
+            this.translateService.instant(
+              "AstroBin could not determine your location because you didn't grant the require permission."
+            )
+          );
+          _doApplyFilters();
         });
-        _doApplyFilters();
-      }).catch(() => {
-        this.popNotificationsService.error(
-          this.translateService.instant(
-            "AstroBin could not determine your location because you didn't grant the require permission."
-          )
-        );
-        _doApplyFilters();
-      });
     } else {
       _doApplyFilters();
     }
@@ -184,224 +189,222 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
   }
 
   private _initFilterFields(params: Params) {
-    this.store$.select(selectRequestCountry).pipe(take(1)).subscribe(requestCountry => {
-      // Countries that default to imperial units.
-      const imperialCountries = ["US", "LR", "MM"];
-      let defaultDistanceUnit = "km";
+    this.store$
+      .select(selectRequestCountry)
+      .pipe(take(1))
+      .subscribe(requestCountry => {
+        // Countries that default to imperial units.
+        const imperialCountries = ["US", "LR", "MM"];
+        let defaultDistanceUnit = "km";
 
-      if (imperialCountries.indexOf(requestCountry.toUpperCase()) !== -1) {
-        defaultDistanceUnit = "mi";
-      }
+        if (imperialCountries.indexOf(requestCountry.toUpperCase()) !== -1) {
+          defaultDistanceUnit = "mi";
+        }
 
-      this.filterFields = [
-        {
-          key: "listingType",
-          type: "ng-select",
-          wrappers: ["card-wrapper"],
-          defaultValue: params["listingType"],
-          props: {
-            collapsible: true,
-            label: this.translateService.instant("Listing type"),
-            options: [
-              MarketplaceListingType.FOR_SALE,
-              MarketplaceListingType.WANTED
-            ].map(listingType => ({
-              label: this.equipmentMarketplaceService.humanizeListingType(listingType),
-              value: listingType
-            })),
-            clearable: true,
-            searchable: false
-          },
-          expressions: {
-            "props.collapsed": config => {
-              return config.formControl.value === undefined || config.formControl.value === null;
+        this.filterFields = [
+          {
+            key: "listingType",
+            type: "ng-select",
+            wrappers: ["card-wrapper"],
+            defaultValue: params["listingType"],
+            props: {
+              collapsible: true,
+              label: this.translateService.instant("Listing type"),
+              options: [MarketplaceListingType.FOR_SALE, MarketplaceListingType.WANTED].map(listingType => ({
+                label: this.equipmentMarketplaceService.humanizeListingType(listingType),
+                value: listingType
+              })),
+              clearable: true,
+              searchable: false
             },
-            className: config => config.props.collapsed ? "mb-1" : "mb-4"
-          }
-        },
-        {
-          key: "itemType",
-          type: "ng-select",
-          wrappers: ["card-wrapper"],
-          defaultValue: params["itemType"],
-          props: {
-            collapsible: true,
-            label: this.translateService.instant("Item type"),
-            options: [
-              EquipmentItemType.CAMERA,
-              EquipmentItemType.TELESCOPE,
-              EquipmentItemType.MOUNT,
-              EquipmentItemType.FILTER,
-              EquipmentItemType.ACCESSORY,
-              EquipmentItemType.SOFTWARE
-            ].map(itemType => ({
-              label: this.equipmentItemService.humanizeType(itemType),
-              value: itemType
-            })),
-            clearable: true,
-            searchable: false
-          },
-          expressions: {
-            "props.collapsed": config => {
-              return config.formControl.value === undefined || config.formControl.value === null;
-            },
-            className: config => config.props.collapsed ? "mb-1" : "mb-4"
-          }
-        },
-        {
-          key: "latitude",
-          type: "input",
-          className: "hidden"
-        },
-        {
-          key: "longitude",
-          type: "input",
-          className: "hidden"
-        },
-        {
-          key: "",
-          wrappers: ["card-wrapper"],
-          props: {
-            collapsible: true,
-            label: this.translateService.instant("Location")
-          },
-          expressions: {
-            "props.collapsed": config => {
-              return (
-                config.form.get("maxDistance")?.value === null || config.form.get("maxDistance")?.value === undefined
-              );
-            },
-            className: config => config.props.collapsed ? "mb-1" : "mb-4"
-          },
-          fieldGroup: [
-            {
-              key: "maxDistance",
-              type: "custom-number",
-              wrappers: ["default-wrapper"],
-              defaultValue: params["maxDistance"],
-              props: {
-                label: this.translateService.instant("Max. distance"),
-                description: this.translateService.instant("Max. distance from your location."),
-                min: 0
-              }
-            },
-            {
-              key: "distanceUnit",
-              type: "ng-select",
-              wrappers: ["default-wrapper"],
-              defaultValue: params["distanceUnit"] || defaultDistanceUnit,
-              props: {
-                label: this.translateService.instant("Distance unit"),
-                searchable: false,
-                clearable: true,
-                options: [
-                  {
-                    label: "km",
-                    value: "km"
-                  },
-                  {
-                    label: "mi",
-                    value: "mi"
-                  }
-                ]
+            expressions: {
+              "props.collapsed": config => {
+                return config.formControl.value === undefined || config.formControl.value === null;
               },
-              expressionProperties: {
-                "props.required": "model.maxDistance && model.maxDistance > 0"
-              }
+              className: config => (config.props.collapsed ? "mb-1" : "mb-4")
             }
-          ]
-        },
-        {
-          key: "",
-          wrappers: ["card-wrapper"],
-          props: {
-            collapsible: true,
-            label: this.translateService.instant("Price")
           },
-          expressions: {
-            "props.collapsed": config => {
-              return (
-                (config.form.get("minPrice")?.value === null || config.form.get("minPrice")?.value === undefined) &&
-                (config.form.get("maxPrice")?.value === null || config.form.get("maxPrice")?.value === undefined) &&
-                (config.form.get("currency")?.value === null || config.form.get("currency")?.value === undefined)
-              );
+          {
+            key: "itemType",
+            type: "ng-select",
+            wrappers: ["card-wrapper"],
+            defaultValue: params["itemType"],
+            props: {
+              collapsible: true,
+              label: this.translateService.instant("Item type"),
+              options: [
+                EquipmentItemType.CAMERA,
+                EquipmentItemType.TELESCOPE,
+                EquipmentItemType.MOUNT,
+                EquipmentItemType.FILTER,
+                EquipmentItemType.ACCESSORY,
+                EquipmentItemType.SOFTWARE
+              ].map(itemType => ({
+                label: this.equipmentItemService.humanizeType(itemType),
+                value: itemType
+              })),
+              clearable: true,
+              searchable: false
             },
-            className: config => config.props.collapsed ? "mb-1" : "mb-4"
+            expressions: {
+              "props.collapsed": config => {
+                return config.formControl.value === undefined || config.formControl.value === null;
+              },
+              className: config => (config.props.collapsed ? "mb-1" : "mb-4")
+            }
           },
-          fieldGroup: [
-            {
-              key: "minPrice",
-              type: "custom-number",
-              wrappers: ["default-wrapper"],
-              defaultValue: params["minPrice"],
-              props: {
-                label: this.translateService.instant("Min. price"),
-                description: this.translateService.instant("Min. price of the item."),
-                min: 0
-              }
+          {
+            key: "latitude",
+            type: "input",
+            className: "hidden"
+          },
+          {
+            key: "longitude",
+            type: "input",
+            className: "hidden"
+          },
+          {
+            key: "",
+            wrappers: ["card-wrapper"],
+            props: {
+              collapsible: true,
+              label: this.translateService.instant("Location")
             },
-            {
-              key: "maxPrice",
-              type: "custom-number",
-              wrappers: ["default-wrapper"],
-              defaultValue: params["maxPrice"],
-              props: {
-                label: this.translateService.instant("Max. price"),
-                description: this.translateService.instant("Max. price of the item."),
-                min: 0
-              }
+            expressions: {
+              "props.collapsed": config => {
+                return (
+                  config.form.get("maxDistance")?.value === null || config.form.get("maxDistance")?.value === undefined
+                );
+              },
+              className: config => (config.props.collapsed ? "mb-1" : "mb-4")
             },
-            {
-              key: "currency",
-              type: "ng-select",
-              wrappers: ["default-wrapper"],
-              defaultValue: params["currency"],
-              props: {
-                label: this.translateService.instant("Currency"),
-                searchable: false,
-                clearable: true,
-                options: Constants.SUPPORTED_CURRENCIES.map(
-                  currency => ({
+            fieldGroup: [
+              {
+                key: "maxDistance",
+                type: "custom-number",
+                wrappers: ["default-wrapper"],
+                defaultValue: params["maxDistance"],
+                props: {
+                  label: this.translateService.instant("Max. distance"),
+                  description: this.translateService.instant("Max. distance from your location."),
+                  min: 0
+                }
+              },
+              {
+                key: "distanceUnit",
+                type: "ng-select",
+                wrappers: ["default-wrapper"],
+                defaultValue: params["distanceUnit"] || defaultDistanceUnit,
+                props: {
+                  label: this.translateService.instant("Distance unit"),
+                  searchable: false,
+                  clearable: true,
+                  options: [
+                    {
+                      label: "km",
+                      value: "km"
+                    },
+                    {
+                      label: "mi",
+                      value: "mi"
+                    }
+                  ]
+                },
+                expressionProperties: {
+                  "props.required": "model.maxDistance && model.maxDistance > 0"
+                }
+              }
+            ]
+          },
+          {
+            key: "",
+            wrappers: ["card-wrapper"],
+            props: {
+              collapsible: true,
+              label: this.translateService.instant("Price")
+            },
+            expressions: {
+              "props.collapsed": config => {
+                return (
+                  (config.form.get("minPrice")?.value === null || config.form.get("minPrice")?.value === undefined) &&
+                  (config.form.get("maxPrice")?.value === null || config.form.get("maxPrice")?.value === undefined) &&
+                  (config.form.get("currency")?.value === null || config.form.get("currency")?.value === undefined)
+                );
+              },
+              className: config => (config.props.collapsed ? "mb-1" : "mb-4")
+            },
+            fieldGroup: [
+              {
+                key: "minPrice",
+                type: "custom-number",
+                wrappers: ["default-wrapper"],
+                defaultValue: params["minPrice"],
+                props: {
+                  label: this.translateService.instant("Min. price"),
+                  description: this.translateService.instant("Min. price of the item."),
+                  min: 0
+                }
+              },
+              {
+                key: "maxPrice",
+                type: "custom-number",
+                wrappers: ["default-wrapper"],
+                defaultValue: params["maxPrice"],
+                props: {
+                  label: this.translateService.instant("Max. price"),
+                  description: this.translateService.instant("Max. price of the item."),
+                  min: 0
+                }
+              },
+              {
+                key: "currency",
+                type: "ng-select",
+                wrappers: ["default-wrapper"],
+                defaultValue: params["currency"],
+                props: {
+                  label: this.translateService.instant("Currency"),
+                  searchable: false,
+                  clearable: true,
+                  options: Constants.SUPPORTED_CURRENCIES.map(currency => ({
                     label: currency,
                     value: currency
-                  })
-                )
-              },
-              expressionProperties: {
-                "props.required": "model.minPrice || model.maxPrice"
+                  }))
+                },
+                expressionProperties: {
+                  "props.required": "model.minPrice || model.maxPrice"
+                }
+              }
+            ]
+          },
+          {
+            key: "condition",
+            type: "ng-select",
+            wrappers: ["card-wrapper"],
+            className: "mb-2",
+            defaultValue: params["condition"],
+            props: {
+              collapsible: true,
+              label: this.translateService.instant("Condition"),
+              clearable: true,
+              searchable: false,
+              options: Object.values(MarketplaceListingCondition).map(condition => ({
+                label: this.equipmentItemService.humanizeCondition(condition),
+                value: condition
+              }))
+            },
+            expressions: {
+              "props.collapsed": config => {
+                return config.formControl.value === undefined || config.formControl.value === null;
               }
             }
-          ]
-        },
-        {
-          key: "condition",
-          type: "ng-select",
-          wrappers: ["card-wrapper"],
-          className: "mb-2",
-          defaultValue: params["condition"],
-          props: {
-            collapsible: true,
-            label: this.translateService.instant("Condition"),
-            clearable: true,
-            searchable: false,
-            options: Object.values(MarketplaceListingCondition).map(condition => ({
-              label: this.equipmentItemService.humanizeCondition(condition),
-              value: condition
-            }))
           },
-          expressions: {
-            "props.collapsed": config => {
-              return config.formControl.value === undefined || config.formControl.value === null;
-            }
+          {
+            key: "region",
+            type: "input",
+            defaultValue: params["region"],
+            className: "hidden"
           }
-        },
-        {
-          key: "region",
-          type: "input",
-          defaultValue: params["region"],
-          className: "hidden"
-        }
-      ];
-    });
+        ];
+      });
   }
 }

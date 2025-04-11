@@ -1,48 +1,43 @@
 <div
-  astrobinScrollVisibility
   [viewportOptions]="{
-       verticalTolerance: 200,
-       horizontalTolerance: 10,
-       shouldCheckHorizontal: false
-     }"
+    verticalTolerance: 200,
+    horizontalTolerance: 10,
+    shouldCheckHorizontal: false
+  }"
   (visibilityChange)="onVisibilityChange($event)"
   class="search-results flex-wrap"
+  astrobinScrollVisibility
 >
   <ng-container *ngIf="!initialLoading; else loadingTemplate">
     <ng-container *ngIf="results !== null; else loadingTemplate">
       <ng-container *ngIf="results.length > 0; else noResultsTemplate">
-        <div
-          (click)="openUser(user)"
-          *ngFor="let user of results" class="card"
-        >
+        <div *ngFor="let user of results" (click)="openUser(user)" class="card">
           <div class="card-header">
-              <h4 [innerHTML]="(user.displayName || user.username) | highlight:model.text?.value"></h4>
-              <small>
-                <span
-                  *ngIf="user.displayName && user.displayName !== user.username"
-                  [innerHTML]="user.username | highlight:model.text?.value"
-                ></span>
-                <span *ngIf="!user.displayName || user.displayName === user.username">
-                  &nbsp;
-                </span>
-              </small>
+            <h4 [innerHTML]="user.displayName || user.username | highlight: model.text?.value"></h4>
+            <small>
+              <span
+                *ngIf="user.displayName && user.displayName !== user.username"
+                [innerHTML]="user.username | highlight: model.text?.value"
+              ></span>
+              <span *ngIf="!user.displayName || user.displayName === user.username"> &nbsp; </span>
+            </small>
           </div>
           <div class="card-body">
-            <img [src]="avatarUrl(user)" [alt]="user.displayName" class="avatar" />
+            <img [alt]="user.displayName" [src]="avatarUrl(user)" class="avatar" />
 
             <div class="info">
               <span class="images">
-                <fa-icon icon="image" [ngbTooltip]="'Images' | translate" container="body"></fa-icon>
+                <fa-icon [ngbTooltip]="'Images' | translate" container="body" icon="image"></fa-icon>
                 <span>{{ user.images | numberSuffix }}</span>
               </span>
 
               <span class="likes">
-                <fa-icon icon="thumbs-up" [ngbTooltip]="'Likes' | translate" container="body"></fa-icon>
+                <fa-icon [ngbTooltip]="'Likes' | translate" container="body" icon="thumbs-up"></fa-icon>
                 <span>{{ user.totalLikesReceived | numberSuffix }}</span>
               </span>
 
               <span class="followers">
-                <fa-icon icon="user-group" [ngbTooltip]="'Followers' | translate" container="body"></fa-icon>
+                <fa-icon [ngbTooltip]="'Followers' | translate" container="body" icon="user-group"></fa-icon>
                 <span>{{ user.followers | numberSuffix }}</span>
               </span>
             </div>

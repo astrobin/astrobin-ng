@@ -31,14 +31,16 @@ $largeViewPortBreakpoint: 2561px;
     max-width: 300px;
 
     .moon-info-content {
-      font-size: .85rem;
+      font-size: 0.85rem;
       line-height: 1.4;
     }
   }
 
   will-change: transform, opacity;
   transform: translateY(0) scale(1);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 
   ::ng-deep .highlight {
     @include highlight;
@@ -46,7 +48,7 @@ $largeViewPortBreakpoint: 2561px;
 
   ::ng-deep {
     .metadata-striped {
-      padding: .75rem 0;
+      padding: 0.75rem 0;
       margin-bottom: 2rem;
 
       & > * {
@@ -55,35 +57,35 @@ $largeViewPortBreakpoint: 2561px;
         @media (min-width: $lg-min) {
           &:first-child {
             .metadata-section {
-              border-top-left-radius: .25rem;
-              border-top-right-radius: .25rem;
+              border-top-left-radius: 0.25rem;
+              border-top-right-radius: 0.25rem;
             }
           }
 
           &:last-child {
             .metadata-section {
-              border-bottom-left-radius: .25rem;
-              border-bottom-right-radius: .25rem;
+              border-bottom-left-radius: 0.25rem;
+              border-bottom-right-radius: 0.25rem;
             }
           }
         }
 
         &:nth-child(odd) {
           .metadata-section {
-            background: rgba(0, 0, 0, .075);
+            background: rgba(0, 0, 0, 0.075);
           }
         }
 
         &:nth-child(even) {
           .metadata-section {
-            background: rgba(255, 255, 255, .025);
+            background: rgba(255, 255, 255, 0.025);
           }
         }
 
         &:only-child {
           @media (min-width: $lg-min) {
             .metadata-section {
-              border-radius: .25rem;
+              border-radius: 0.25rem;
             }
           }
 
@@ -102,29 +104,29 @@ $largeViewPortBreakpoint: 2561px;
     .metadata-header {
       @include darkest-background-texture;
       margin: 0 0 0.25rem;
-      padding: .5rem .75rem;
+      padding: 0.5rem 0.75rem;
       color: var(--lightestGrey);
       border-radius: var(--bs-border-radius);
 
       + .metadata-section {
-        padding-top: .5rem;
+        padding-top: 0.5rem;
         margin-bottom: 2rem;
       }
     }
 
     .metadata-section {
       display: flex;
-      @include flex-gap(row, .75rem);
+      @include flex-gap(row, 0.75rem);
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       width: 100%;
-      padding: .75rem 0;
+      padding: 0.75rem 0;
 
       .metadata-item {
         display: flex;
         align-items: center;
-        @include flex-gap(row, .5rem);
+        @include flex-gap(row, 0.5rem);
         position: relative;
         max-width: 100%;
 
@@ -143,15 +145,15 @@ $largeViewPortBreakpoint: 2561px;
           }
 
           .ng-fa-icon {
-            opacity: .75;
-            font-size: .85rem;
+            opacity: 0.75;
+            font-size: 0.85rem;
             line-height: 1rem;
           }
 
           img {
             // Matches accent color closely without needing to generate new icons.
             filter: invert(60%) sepia(100%) saturate(1000%) hue-rotate(5deg) brightness(75%) contrast(100%);
-            height: .85rem;
+            height: 0.85rem;
             vertical-align: middle;
           }
 
@@ -196,7 +198,9 @@ $largeViewPortBreakpoint: 2561px;
           @include clickableMetadata;
 
           &.search {
-            cursor: url("/assets/images/search-white.png") 16 16, pointer;
+            cursor:
+              url("/assets/images/search-white.png") 16 16,
+              pointer;
           }
 
           &.metadata-link-sponsor {
@@ -224,13 +228,13 @@ $largeViewPortBreakpoint: 2561px;
         border-bottom: 0.25rem solid transparent;
         border-left: 0.25rem solid transparent;
         transform: translateY(-50%) rotate(180deg);
-        transform-origin: 50% calc(50% - .25rem / 4);
+        transform-origin: 50% calc(50% - 0.25rem / 4);
         transition: transform 0.3s ease-in-out;
       }
 
       &.collapsed {
         &:after {
-          transform: translateY(calc(-50% + .25rem / 2));
+          transform: translateY(calc(-50% + 0.25rem / 2));
         }
       }
     }
@@ -249,7 +253,7 @@ $largeViewPortBreakpoint: 2561px;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, .75);
+    background: rgba(0, 0, 0, 0.75);
     z-index: 1040;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -338,7 +342,7 @@ $largeViewPortBreakpoint: 2561px;
           /* Enhancement for touch devices */
           @media (pointer: coarse) {
             &::before {
-              content: '';
+              content: "";
               position: absolute;
               top: -20px;
               left: -20px;
@@ -360,7 +364,7 @@ $largeViewPortBreakpoint: 2561px;
           /* Enhancement for touch devices */
           @media (pointer: coarse) {
             &::before {
-              content: '';
+              content: "";
               position: absolute;
               top: -20px;
               left: -20px;
@@ -380,24 +384,22 @@ $largeViewPortBreakpoint: 2561px;
 
             /* Add subtle gradient to give a hint of moon details */
             &::after {
-              content: '';
+              content: "";
               position: absolute;
               top: 0;
               left: 0;
               right: 0;
               bottom: 0;
               border-radius: 50%;
-              background: radial-gradient(
-                  circle at 40% 40%,
-                  rgba(255, 255, 255, 0.7) 0%,
-                  rgba(255, 255, 255, 0) 70%
-              );
+              background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
             }
           }
 
           .moon-image {
             filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.7));
-            transition: filter 0.2s ease, opacity 0.2s ease;
+            transition:
+              filter 0.2s ease,
+              opacity 0.2s ease;
             pointer-events: none; /* Let the parent handle all events */
             border-radius: 50%; /* Ensure perfect circle */
             background-size: contain;
@@ -418,48 +420,50 @@ $largeViewPortBreakpoint: 2561px;
             left: 50%;
             transform: translateX(-50%);
             pointer-events: auto;
-            margin-top: .5rem;
+            margin-top: 0.5rem;
             background-color: var(--lightestGrey);
-            padding: .125rem .5rem;
-            border-radius: .625rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.625rem;
             display: flex;
             flex-direction: row;
             align-items: center;
             white-space: nowrap;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            opacity: .9;
+            opacity: 0.9;
 
             .moon-label {
               color: var(--grey);
-              font-size: .85rem;
+              font-size: 0.85rem;
               font-weight: 500;
               cursor: default;
-              margin-right: .5rem;
+              margin-right: 0.5rem;
             }
 
             .divider {
               width: 1px;
               height: 1rem;
               background-color: var(--lighterGrey);
-              margin: 0 .5rem 0 0;
+              margin: 0 0.5rem 0 0;
             }
 
             .moon-controls {
               display: flex;
               align-items: center;
-              @include flex-gap(row, .375rem);
+              @include flex-gap(row, 0.375rem);
             }
 
             .icon-btn {
               color: var(--darkGrey);
               cursor: pointer;
-              font-size: .75rem;
+              font-size: 0.75rem;
               display: flex;
               align-items: center;
               justify-content: center;
               width: 1.25rem;
               height: 1.25rem;
-              transition: color 0.2s ease, transform 0.2s ease;
+              transition:
+                color 0.2s ease,
+                transform 0.2s ease;
 
               &:hover {
                 color: var(--black);
@@ -487,7 +491,7 @@ $largeViewPortBreakpoint: 2561px;
         left: 0;
         right: 0;
         width: 100%;
-        padding: .5rem .5rem .5rem 1rem;
+        padding: 0.5rem 0.5rem 0.5rem 1rem;
         z-index: 1;
       }
 
@@ -501,9 +505,9 @@ $largeViewPortBreakpoint: 2561px;
 
       .north-arrow-container {
         left: 50%;
-        top: .5rem;
+        top: 0.5rem;
         z-index: 10;
-        font-size: .75rem;
+        font-size: 0.75rem;
         transform-origin: 20px 38px;
 
         .north-arrow-wrapper {
@@ -519,7 +523,7 @@ $largeViewPortBreakpoint: 2561px;
         .north-arrow {
           width: 2.5rem;
           height: 2.5rem;
-          filter: drop-shadow(0 0 .5rem rgba(255, 255, 255, .5));
+          filter: drop-shadow(0 0 0.5rem rgba(255, 255, 255, 0.5));
         }
 
         .north-arrow-label {
@@ -530,7 +534,7 @@ $largeViewPortBreakpoint: 2561px;
           pointer-events: none;
           user-select: none;
           color: red;
-          text-shadow: 0 0 .375rem rgba(255, 255, 255, .5);
+          text-shadow: 0 0 0.375rem rgba(255, 255, 255, 0.5);
         }
       }
 
@@ -539,8 +543,8 @@ $largeViewPortBreakpoint: 2561px;
       .previous-button,
       ::ng-deep .additional-buttons .btn,
       .revisions-mobile-button {
-        background: rgba(0, 0, 0, .5);
-        border-radius: .25rem;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 0.25rem;
         border: none;
         color: var(--white);
         font-size: 1.5rem;
@@ -548,8 +552,10 @@ $largeViewPortBreakpoint: 2561px;
         z-index: 1031;
         opacity: 1;
         pointer-events: all;
-        padding: .5rem;
-        transition: opacity 0.3s, transform 0.3s ease-in-out;
+        padding: 0.5rem;
+        transition:
+          opacity 0.3s,
+          transform 0.3s ease-in-out;
 
         &:focus-visible {
           outline: none !important;
@@ -572,8 +578,8 @@ $largeViewPortBreakpoint: 2561px;
 
       .next-button,
       .previous-button {
-        padding: 1rem .75rem;
-        border-radius: .75rem;
+        padding: 1rem 0.75rem;
+        border-radius: 0.75rem;
         z-index: 1030;
         display: flex;
         justify-content: center;
@@ -581,14 +587,14 @@ $largeViewPortBreakpoint: 2561px;
 
         @include portrait-layout {
           position: fixed;
-          opacity: .8 !important;
+          opacity: 0.8 !important;
           font-size: 1.25rem !important;
           border-radius: 50%;
           height: 2rem;
           width: 2rem;
-          background: rgba(0, 0, 0, .75);
+          background: rgba(0, 0, 0, 0.75);
           padding: 1.5rem;
-          filter: drop-shadow(0 0 .25rem var(--black));
+          filter: drop-shadow(0 0 0.25rem var(--black));
         }
 
         &:focus-visible {
@@ -597,16 +603,16 @@ $largeViewPortBreakpoint: 2561px;
       }
 
       .close-button {
-        top: .75rem;
-        left: .75rem;
+        top: 0.75rem;
+        left: 0.75rem;
         opacity: 1;
       }
 
       .additional-buttons {
-        top: .75rem;
-        right: .75rem;
+        top: 0.75rem;
+        right: 0.75rem;
         display: flex;
-        @include flex-gap(row, .5rem);
+        @include flex-gap(row, 0.5rem);
         flex-wrap: nowrap;
       }
 
@@ -617,7 +623,7 @@ $largeViewPortBreakpoint: 2561px;
       }
 
       .next-button {
-        right: .25rem;
+        right: 0.25rem;
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {
@@ -627,7 +633,7 @@ $largeViewPortBreakpoint: 2561px;
       }
 
       .previous-button {
-        left: .25rem;
+        left: 0.25rem;
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {
@@ -637,7 +643,7 @@ $largeViewPortBreakpoint: 2561px;
       }
 
       .revisions-mobile-button {
-        bottom: .75rem;
+        bottom: 0.75rem;
         left: 0;
         right: 0;
         margin: 0 auto;
@@ -759,18 +765,18 @@ $largeViewPortBreakpoint: 2561px;
 
         .mouse-hover-svg-overlay {
           position: absolute;
-          bottom: .5rem;
-          right: .5rem;
-          background: rgba(0, 0, 0, .75);
+          bottom: 0.5rem;
+          right: 0.5rem;
+          background: rgba(0, 0, 0, 0.75);
           opacity: 0;
           transition: opacity 0.3s;
-          padding: .5rem .75rem;
-          font-size: .9rem;
+          padding: 0.5rem 0.75rem;
+          font-size: 0.9rem;
           z-index: 1;
 
           @media (max-width: $sm-max) {
-            font-size: .65rem;
-            padding: .25rem;
+            font-size: 0.65rem;
+            padding: 0.25rem;
           }
 
           .mouse-hover-svg-overlay-coordinates {
@@ -785,7 +791,7 @@ $largeViewPortBreakpoint: 2561px;
               }
 
               .unit {
-                font-size: .75rem;
+                font-size: 0.75rem;
                 color: var(--lighterGrey);
                 vertical-align: super;
               }
@@ -806,7 +812,7 @@ $largeViewPortBreakpoint: 2561px;
           .next-button,
           .previous-button,
           ::ng-deep .additional-buttons .btn {
-            opacity: .75;
+            opacity: 0.75;
             pointer-events: auto;
           }
         }
@@ -825,7 +831,7 @@ $largeViewPortBreakpoint: 2561px;
 
         .x-ruler,
         .y-ruler {
-          opacity: .75 !important;
+          opacity: 0.75 !important;
         }
       }
 
@@ -852,14 +858,14 @@ $largeViewPortBreakpoint: 2561px;
 
         .close-button,
         .additional-buttons {
-          top: .25rem;
+          top: 0.25rem;
         }
 
         .close-button,
         .next-button,
         .previous-button,
         ::ng-deep .additional-buttons .btn {
-          opacity: .75;
+          opacity: 0.75;
           pointer-events: auto;
           font-size: 1rem;
         }
@@ -872,7 +878,7 @@ $largeViewPortBreakpoint: 2561px;
 
       @media (pointer: fine) {
         &.hover astrobin-image-viewer-revisions ::ng-deep .revisions {
-          background: rgba(0, 0, 0, .5);
+          background: rgba(0, 0, 0, 0.5);
         }
       }
     }
@@ -892,12 +898,13 @@ $largeViewPortBreakpoint: 2561px;
         right: 0;
         height: 5rem;
         background: linear-gradient(
-            180deg,
-            transparent 0, rgba(0, 0, 0, .03) 4%,
-            rgba(0, 0, 0, .11) 21%,
-            rgba(0, 0, 0, .8) 78%,
-            rgba(0, 0, 0, .9) 95%,
-            rgba(0, 0, 0, .95)
+          180deg,
+          transparent 0,
+          rgba(0, 0, 0, 0.03) 4%,
+          rgba(0, 0, 0, 0.11) 21%,
+          rgba(0, 0, 0, 0.8) 78%,
+          rgba(0, 0, 0, 0.9) 95%,
+          rgba(0, 0, 0, 0.95)
         );
         pointer-events: none;
 
@@ -923,7 +930,7 @@ $largeViewPortBreakpoint: 2561px;
         display: flex;
         flex-direction: column;
         overflow-x: hidden;
-        font-size: .9rem;
+        font-size: 0.9rem;
 
         astrobin-ad-manager {
           z-index: 1;
@@ -952,7 +959,7 @@ $largeViewPortBreakpoint: 2561px;
             }
 
             .image-viewer-banner {
-              padding: .5rem 2rem;
+              padding: 0.5rem 2rem;
               border-radius: 0;
               box-shadow: none;
 
@@ -978,7 +985,7 @@ $largeViewPortBreakpoint: 2561px;
           display: block;
           word-break: break-word;
           overflow: hidden;
-          padding: 0 .5rem;
+          padding: 0 0.5rem;
 
           img {
             max-width: 100%;
@@ -1023,7 +1030,7 @@ $largeViewPortBreakpoint: 2561px;
         }
 
         @media (max-width: $md-max) {
-          padding: 1rem .75rem;
+          padding: 1rem 0.75rem;
         }
 
         @media (min-width: $lg-min) {
@@ -1115,7 +1122,7 @@ $largeViewPortBreakpoint: 2561px;
         z-index: 1031;
 
         .btn {
-          padding: 1rem .5rem !important;
+          padding: 1rem 0.5rem !important;
           font-size: 1.15rem !important;
 
           .ng-fa-icon {

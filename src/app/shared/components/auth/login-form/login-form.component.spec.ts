@@ -1,12 +1,13 @@
+import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { AppModule } from "@app/app.module";
 import { mainStateEffects, mainStateReducers, initialMainState } from "@app/store/state";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder, MockRender } from "ng-mocks";
+
 import { LoginFormComponent } from "./login-form.component";
-import { HttpClientModule } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("LoginFormComponent", () => {
   let component: LoginFormComponent;

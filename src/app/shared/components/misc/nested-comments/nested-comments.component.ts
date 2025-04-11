@@ -1,25 +1,38 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { Observable } from "rxjs";
-import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
-import { CreateNestedComment, LoadNestedComments, LoadNestedCommentsSuccess } from "@app/store/actions/nested-comments.actions";
-import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
-import { filter, map, take, takeUntil, tap } from "rxjs/operators";
-import { LoadingService } from "@core/services/loading.service";
-import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
+import {
+  LoadNestedCommentsSuccess,
+  CreateNestedComment,
+  LoadNestedComments
+} from "@app/store/actions/nested-comments.actions";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { RouterService } from "@core/services/router.service";
+import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { Actions, ofType } from "@ngrx/effects";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import { RouterService } from "@core/services/router.service";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { fadeInOut } from "@shared/animations";
-import { ActivatedRoute } from "@angular/router";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Observable } from "rxjs";
+import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 
 export enum NestedCommentsAutoStartTopLevelStrategy {
   ALWAYS = "ALWAYS",
@@ -33,7 +46,7 @@ export type NestedCommentsTopLevelFormPlacement = "TOP" | "BOTTOM";
   templateUrl: "./nested-comments.component.html",
   styleUrls: ["./nested-comments.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [fadeInOut],
+  animations: [fadeInOut]
 })
 export class NestedCommentsComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input()
@@ -85,9 +98,8 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   topLevelFormHeight: number;
 
   @Output()
-  // eslint-disable-next-line @angular-eslint/no-output-native
   close = new EventEmitter<void>();
-  
+
   @Output()
   formDirtyChange = new EventEmitter<boolean>();
 
@@ -140,26 +152,30 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
       this.refresh();
     }
   }
-  
+
   isDirty(): boolean {
     // Check if top-level form is dirty and has content
-    const topLevelValue = this.form.get('topLevelComment')?.value;
-    
-    const hasTopLevelContent = this.showTopLevelForm && this.form.dirty && 
-      !!topLevelValue && typeof topLevelValue === 'string' && !!(topLevelValue as string).trim();
-      
+    const topLevelValue = this.form.get("topLevelComment")?.value;
+
+    const hasTopLevelContent =
+      this.showTopLevelForm &&
+      this.form.dirty &&
+      !!topLevelValue &&
+      typeof topLevelValue === "string" &&
+      !!(topLevelValue as string).trim();
+
     if (hasTopLevelContent) {
       return true;
     }
-    
+
     // Check if any nested comment form is dirty
     if (this.hasNestedDirtyForm) {
       return true;
     }
-    
+
     return false;
   }
-  
+
   onNestedCommentFormDirtyChange(isDirty: boolean): void {
     this.hasNestedDirtyForm = isDirty;
     this.formDirtyChange.emit(this.isDirty());
@@ -169,9 +185,9 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     this.actions$
       .pipe(
         ofType(AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS),
-        filter((action: LoadNestedCommentsSuccess) =>
-          action.payload.contentTypeId === this.contentType.id &&
-          action.payload.objectId === this.objectId
+        filter(
+          (action: LoadNestedCommentsSuccess) =>
+            action.payload.contentTypeId === this.contentType.id && action.payload.objectId === this.objectId
         ),
         take(1)
       )
@@ -192,7 +208,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   submitTopLevelComment() {
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
-        this.routerService.redirectToLogin();
+        void this.routerService.redirectToLogin();
         return;
       }
 
@@ -224,7 +240,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
 
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
-        this.routerService.redirectToLogin();
+        void this.routerService.redirectToLogin();
         return;
       }
       this.showTopLevelForm = true;
@@ -238,11 +254,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
 
   private _initComments() {
     this.comments$ = this.store$
-      .select(selectNestedCommentsByContentTypeIdAndObjectId(
-          this.contentType.id,
-          this.objectId
-        )
-      )
+      .select(selectNestedCommentsByContentTypeIdAndObjectId(this.contentType.id, this.objectId))
       .pipe(
         filter(comments => comments !== null),
         distinctUntilChangedObj(),
@@ -278,13 +290,10 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     const comments = this._lastFetchedComments;
 
     if (
-      !this.showTopLevelForm &&
-      this.autoStartTopLevelStrategy === NestedCommentsAutoStartTopLevelStrategy.ALWAYS ||
-      (
-        this.autoStartTopLevelStrategy === NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS &&
+      (!this.showTopLevelForm && this.autoStartTopLevelStrategy === NestedCommentsAutoStartTopLevelStrategy.ALWAYS) ||
+      (this.autoStartTopLevelStrategy === NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS &&
         comments &&
-        comments.length === 0
-      )
+        comments.length === 0)
     ) {
       this.onAddCommentClicked(null);
     }
@@ -307,22 +316,22 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
 
   private _initCommentContentType() {
     const payload = { appLabel: "nested_comments", model: "nestedcomment" };
-    this.store$.pipe(
-      select(selectContentType, payload),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      this.commentContentType = contentType;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.store$
+      .pipe(
+        select(selectContentType, payload),
+        filter(contentType => !!contentType),
+        take(1)
+      )
+      .subscribe(contentType => {
+        this.commentContentType = contentType;
+        this.changeDetectorRef.markForCheck();
+      });
     this.store$.dispatch(new LoadContentType(payload));
   }
-  
+
   private _setupFormListeners(): void {
     // Listen to changes in the top-level form
-    this.form.valueChanges.pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
+    this.form.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
       this.formDirtyChange.emit(this.isDirty());
     });
   }

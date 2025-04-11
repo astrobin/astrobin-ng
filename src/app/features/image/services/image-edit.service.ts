@@ -1,53 +1,61 @@
-import { Injectable, TemplateRef } from "@angular/core";
+import { TemplateRef, Injectable } from "@angular/core";
+import { FormControl, ValidationErrors, FormGroup } from "@angular/forms";
+import { MainState } from "@app/store/state";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { ImageInterface, SolarSystemSubjectType, SubjectType } from "@core/interfaces/image.interface";
+import { LocationInterface } from "@core/interfaces/location.interface";
+import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { FormControl, FormGroup, ValidationErrors } from "@angular/forms";
-import { ImageInterface, SolarSystemSubjectType, SubjectType } from "@core/interfaces/image.interface";
-import { GroupInterface } from "@core/interfaces/group.interface";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
-import { LocationInterface } from "@core/interfaces/location.interface";
-import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { forkJoin, Observable } from "rxjs";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { selectEquipmentItem, selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
-import { filter, first, map, take } from "rxjs/operators";
-import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { MountInterface } from "@features/equipment/types/mount.interface";
-import { FilterInterface } from "@features/equipment/types/filter.interface";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { EquipmentItemBaseInterface, EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { ItemBrowserClear, ItemBrowserSet, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { Actions } from "@ngrx/effects";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { ItemBrowserClear, ItemBrowserSet, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { selectEquipmentItem, selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemType,
+  EquipmentItemUsageType
+} from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { forkJoin, Observable } from "rxjs";
+import { filter, first, map, take } from "rxjs/operators";
 
-export type ImageEditModelInterface = Partial<Omit<ImageInterface,
-  | "imagingTelescopes2"
-  | "imagingCameras2"
-  | "mounts2"
-  | "filters2"
-  | "accessories2"
-  | "software2"
-  | "guidingTelescopes2"
-  | "guidingCameras2"> & {
-  imagingTelescopes2: TelescopeInterface["id"][];
-  imagingCameras2: CameraInterface["id"][];
-  mounts2: MountInterface["id"][];
-  filters2: FilterInterface["id"][];
-  accessories2: AccessoryInterface["id"][];
-  software2: SoftwareInterface["id"][];
-  guidingTelescopes2: TelescopeInterface["id"][];
-  guidingCameras2: CameraInterface["id"][];
-  overrideAcquisitionForm: AcquisitionForm | null;
-}>;
+export type ImageEditModelInterface = Partial<
+  Omit<
+    ImageInterface,
+    | "imagingTelescopes2"
+    | "imagingCameras2"
+    | "mounts2"
+    | "filters2"
+    | "accessories2"
+    | "software2"
+    | "guidingTelescopes2"
+    | "guidingCameras2"
+  > & {
+    imagingTelescopes2: TelescopeInterface["id"][];
+    imagingCameras2: CameraInterface["id"][];
+    mounts2: MountInterface["id"][];
+    filters2: FilterInterface["id"][];
+    accessories2: AccessoryInterface["id"][];
+    software2: SoftwareInterface["id"][];
+    guidingTelescopes2: TelescopeInterface["id"][];
+    guidingCameras2: CameraInterface["id"][];
+    overrideAcquisitionForm: AcquisitionForm | null;
+  }
+>;
 
 export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
   if (!control.value) {
@@ -179,13 +187,13 @@ export class ImageEditService extends BaseService {
         for (const preset of presets) {
           if (
             JSON.stringify([...preset.imagingTelescopes].sort()) ===
-            JSON.stringify([...this.model.imagingTelescopes2].sort()) &&
+              JSON.stringify([...this.model.imagingTelescopes2].sort()) &&
             JSON.stringify([...preset.guidingTelescopes].sort()) ===
-            JSON.stringify([...this.model.guidingTelescopes2].sort()) &&
+              JSON.stringify([...this.model.guidingTelescopes2].sort()) &&
             JSON.stringify([...preset.imagingCameras].sort()) ===
-            JSON.stringify([...this.model.imagingCameras2].sort()) &&
+              JSON.stringify([...this.model.imagingCameras2].sort()) &&
             JSON.stringify([...preset.guidingCameras].sort()) ===
-            JSON.stringify([...this.model.guidingCameras2].sort()) &&
+              JSON.stringify([...this.model.guidingCameras2].sort()) &&
             JSON.stringify([...preset.mounts].sort()) === JSON.stringify([...this.model.mounts2].sort()) &&
             JSON.stringify([...preset.filters].sort()) === JSON.stringify([...this.model.filters2].sort()) &&
             JSON.stringify([...preset.accessories].sort()) === JSON.stringify([...this.model.accessories2].sort()) &&
@@ -265,9 +273,7 @@ export class ImageEditService extends BaseService {
               })
             );
 
-            this.popNotificationsService.success(
-              this.translateService.instant("Equipment setup loaded.")
-            );
+            this.popNotificationsService.success(this.translateService.instant("Equipment setup loaded."));
 
             observer.next();
             observer.complete();

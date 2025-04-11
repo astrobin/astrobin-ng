@@ -1,32 +1,41 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnInit,
+  QueryList,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild,
+  ViewChildren
+} from "@angular/core";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { Router, NavigationEnd } from "@angular/router";
 import { MainState } from "@app/store/state";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { AuthService } from "@core/services/auth.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { LoadingService } from "@core/services/loading.service";
+import { SearchService } from "@core/services/search.service";
+import { ThemeService, Theme } from "@core/services/theme.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { Logout } from "@features/account/store/auth.actions";
+import { selectCurrentUser } from "@features/account/store/auth.selectors";
+import { selectUnreadNotificationsCount } from "@features/notifications/store/notifications.selectors";
+import { MatchType } from "@features/search/enums/match-type.enum";
 import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { AuthService } from "@core/services/auth.service";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { Observable } from "rxjs";
-import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import { filter, map, take, takeUntil } from "rxjs/operators";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { CookieService } from "ngx-cookie";
-import { Theme, ThemeService } from "@core/services/theme.service";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
-import { NavigationEnd, Router } from "@angular/router";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { UserService } from "@core/services/user.service";
-import { SearchService } from "@core/services/search.service";
-import { MatchType } from "@features/search/enums/match-type.enum";
-import { selectUnreadNotificationsCount } from "@features/notifications/store/notifications.selectors";
-import { DeviceService } from "@core/services/device.service";
 import { AvailableLanguageInterface, Constants } from "@shared/constants";
-
+import { CookieService } from "ngx-cookie";
+import { Observable } from "rxjs";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-header",
@@ -70,9 +79,9 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   @ViewChildren("quickSearchInput") quickSearchInputs: QueryList<ElementRef>;
   @ViewChild("notificationsOffcanvas") notificationsOffcanvas: TemplateRef<any>;
 
-  protected unreadNotificationsCount$: Observable<number> = this.store$.select(selectUnreadNotificationsCount).pipe(
-    takeUntil(this.destroyed$)
-  );
+  protected unreadNotificationsCount$: Observable<number> = this.store$
+    .select(selectUnreadNotificationsCount)
+    .pipe(takeUntil(this.destroyed$));
 
   protected helpWithTranslationsUrl$: Observable<string> = this.store$.select(selectCurrentUser).pipe(
     map((user: UserInterface) => {
@@ -89,7 +98,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   protected imageIndexPopoverInfo: SafeHtml = this.domSanitizer.bypassSecurityTrustHtml(
     this.translateService.instant(
       "The <strong>Image Index</strong> is a system based on likes received on images, that incentivizes the " +
-      "most active and liked members of the community. {{_0}}Learn more.{{_1}}",
+        "most active and liked members of the community. {{_0}}Learn more.{{_1}}",
       {
         _0: `<a href="https://welcome.astrobin.com/features/image-index" target="_blank">`,
         _1: "</a>"
@@ -100,7 +109,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   protected contributionIndexPopoverInfo: SafeHtml = this.domSanitizer.bypassSecurityTrustHtml(
     this.translateService.instant(
       "The <strong>Contribution Index (beta)</strong> is system to reward informative, constructive, and " +
-      "valuable commentary on AstroBin. {{_0}}Learn more.{{_1}}",
+        "valuable commentary on AstroBin. {{_0}}Learn more.{{_1}}",
       {
         _0: `<a href="https://welcome.astrobin.com/features/contribution-index" target="_blank">`,
         _1: "</a>"
@@ -175,28 +184,31 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   onQuickSearchSubmit(event: Event) {
     event.preventDefault();
 
-    this.searchService.magicAutocomplete$(this.quickSearchQuery).pipe(take(1)).subscribe((result) => {
-      let params: string;
+    this.searchService
+      .magicAutocomplete$(this.quickSearchQuery)
+      .pipe(take(1))
+      .subscribe(result => {
+        let params: string;
 
-      if (result) {
-        params = this.searchService.modelToParams({
-          [result.type]: result.value
-        });
-      } else {
-        params = this.searchService.modelToParams({
-          text: {
-            value: this.quickSearchQuery,
-            matchType: MatchType.ALL,
-            onlySearchInTitlesAndDescriptions: this.searchService.isSimpleMode()
-          }
-        });
-      }
+        if (result) {
+          params = this.searchService.modelToParams({
+            [result.type]: result.value
+          });
+        } else {
+          params = this.searchService.modelToParams({
+            text: {
+              value: this.quickSearchQuery,
+              matchType: MatchType.ALL,
+              onlySearchInTitlesAndDescriptions: this.searchService.isSimpleMode()
+            }
+          });
+        }
 
-      this.router.navigateByUrl(`/search?p=${params}`).then(() => {
-        this.quickSearchQuery = "";
-        this.changeDetectorRef.markForCheck();
+        void this.router.navigateByUrl(`/search?p=${params}`).then(() => {
+          this.quickSearchQuery = "";
+          this.changeDetectorRef.markForCheck();
+        });
       });
-    });
   }
 
   onShowMobileSearchClick(event: Event) {
@@ -261,9 +273,9 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   }
 
   openNotificationsOffcanvas(): void {
-    this.offcanvasService.open(this.notificationsOffcanvas,{
+    this.offcanvasService.open(this.notificationsOffcanvas, {
       panelClass: "notifications-offcanvas",
-      position: this.deviceService.offcanvasPosition(),
+      position: this.deviceService.offcanvasPosition()
     });
   }
 }

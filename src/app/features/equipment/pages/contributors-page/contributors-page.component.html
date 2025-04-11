@@ -1,9 +1,9 @@
 <astrobin-mobile-menu
-  (menuClose)="onMobileMenuClose()"
-  (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
   [descriptionTemplate]="descriptionTemplate"
   [template]="navTemplate"
+  [titleTemplate]="titleTemplate"
+  (menuClose)="onMobileMenuClose()"
+  (menuOpen)="onMobileMenuOpen()"
 ></astrobin-mobile-menu>
 
 <ng-template #titleTemplate>
@@ -21,9 +21,7 @@
 </ng-template>
 
 <ng-template #navTemplate>
-  <astrobin-equipment-item-type-nav
-    #itemTypeNavComponent
-  ></astrobin-equipment-item-type-nav>
+  <astrobin-equipment-item-type-nav #itemTypeNavComponent></astrobin-equipment-item-type-nav>
 </ng-template>
 
 <div class="page has-mobile-menu">
@@ -41,10 +39,12 @@
       <div *ngIf="contributors$ | async as contributors; else loading" class="row">
         <div *ngFor="let contributor of contributors" class="col-6 col-sm-4 col-lg-3">
           <div class="contributor">
-            <img [src]="contributor[4]" class="avatar" [alt]="contributor[3]" />
+            <img [alt]="contributor[3]" [src]="contributor[4]" class="avatar" />
             <div class="username">{{ contributor[3] }}</div>
-            <div [ngbTooltip]="'Total number of edit proposals created or reviewed' | translate"
-                 class="badge badge-success">
+            <div
+              [ngbTooltip]="'Total number of edit proposals created or reviewed' | translate"
+              class="badge badge-success"
+            >
               {{ contributor[1] }}
             </div>
           </div>

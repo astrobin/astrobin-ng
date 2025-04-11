@@ -3,7 +3,7 @@
 
 :host {
   background-color: var(--almostBlack);
-  box-shadow: 0 .25rem .5rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
   z-index: 1;
   position: fixed;
   top: 60px;
@@ -12,7 +12,7 @@
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-  padding: .25rem 1rem;
+  padding: 0.25rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -26,7 +26,7 @@
 
     .ng-fa-icon[data-toggle="offcanvas"] {
       cursor: pointer;
-      padding: .5rem;
+      padding: 0.5rem;
     }
 
     .title {
@@ -41,11 +41,11 @@
   .icon-area {
     display: flex;
     align-items: center;
-    @include flex-gap(row, .25rem);
+    @include flex-gap(row, 0.25rem);
 
     .ng-fa-icon {
       cursor: pointer;
-      padding: .5rem;
+      padding: 0.5rem;
     }
   }
 

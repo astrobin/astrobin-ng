@@ -1,17 +1,20 @@
-import { Component, OnInit } from "@angular/core";
-import { Store } from "@ngrx/store";
+import { OnInit, Component } from "@angular/core";
 import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { AdditionalAcquisitionPropertiesBase } from "@features/image/components/additional-acquisition-properties-base/additional-acquisition-properties-base";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { AdditionalAcquisitionPropertiesBase } from "@features/image/components/additional-acquisition-properties-base/additional-acquisition-properties-base";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-additional-solar-system-acquisition-properties-modal",
   templateUrl: "./additional-solar-system-acquisition-properties-modal.component.html",
   styleUrls: ["./additional-solar-system-acquisition-properties-modal.component.scss"]
 })
-export class AdditionalSolarSystemAcquisitionPropertiesModalComponent extends AdditionalAcquisitionPropertiesBase implements OnInit {
+export class AdditionalSolarSystemAcquisitionPropertiesModalComponent
+  extends AdditionalAcquisitionPropertiesBase
+  implements OnInit
+{
   constructor(
     public readonly store$: Store<MainState>,
     public readonly modal: NgbActiveModal,

@@ -10,22 +10,22 @@
   }
 
   col.new {
-    background-color: rgba(255, 255, 255, .05);
+    background-color: rgba(255, 255, 255, 0.05);
   }
 
   .rejected {
     text-decoration: line-through;
-    background-color: rgba(255, 0, 0, .15);
+    background-color: rgba(255, 0, 0, 0.15);
   }
 
   .approved {
     font-weight: bold;
-    background-color: rgba(0, 255, 0, .15);
+    background-color: rgba(0, 255, 0, 0.15);
   }
 
   .modified {
     font-style: italic;
-    opacity: .5;
+    opacity: 0.5;
   }
 }
 

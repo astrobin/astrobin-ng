@@ -1,17 +1,29 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
-import { ImageComponent } from "@shared/components/misc/image/image.component";
-import { Options } from "@angular-slider/ngx-slider";
-import { DeviceService } from "@core/services/device.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { FormGroup } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { ImageService } from "@core/services/image/image.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { ActivatedRoute } from "@angular/router";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { isPlatformBrowser } from "@angular/common";
+import {
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
+import { Options } from "@angular-slider/ngx-slider";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateService } from "@ngx-translate/core";
+import { ImageComponent } from "@shared/components/misc/image/image.component";
 
 const DEFAULT_BRIGHTNESS = 100;
 const DEFAULT_CONTRAST = 100;
@@ -23,75 +35,42 @@ const DEFAULT_INVERT = 0;
   template: `
     <div class="d-flex justify-content-center align-items-baseline flex-nowrap gap-3">
       <div class="adjuster flex-grow-1">
-        <fa-icon
-          [ngbTooltip]="'Brightness' | translate"
-          container="body"
-          icon="sun"
-        ></fa-icon>
+        <fa-icon [ngbTooltip]="'Brightness' | translate" container="body" icon="sun"></fa-icon>
         <ngx-slider
           [options]="brightnessSliderOptions"
+          (valueChange)="applyFilters()"
           [(value)]="brightness"
-          (valueChange)="applyFilters()"
         ></ngx-slider>
       </div>
 
       <div class="adjuster flex-grow-1">
-        <fa-icon
-          [ngbTooltip]="'Contrast' | translate"
-          container="body"
-          icon="circle-half-stroke"
-        ></fa-icon>
-        <ngx-slider
-          [options]="contrastSliderOptions"
-          [(value)]="contrast"
-          (valueChange)="applyFilters()"
-        ></ngx-slider>
+        <fa-icon [ngbTooltip]="'Contrast' | translate" container="body" icon="circle-half-stroke"></fa-icon>
+        <ngx-slider [options]="contrastSliderOptions" (valueChange)="applyFilters()" [(value)]="contrast"></ngx-slider>
       </div>
 
       <div class="adjuster flex-grow-1">
-        <fa-icon
-          [ngbTooltip]="'Saturation' | translate"
-          container="body"
-          icon="droplet"
-        ></fa-icon>
+        <fa-icon [ngbTooltip]="'Saturation' | translate" container="body" icon="droplet"></fa-icon>
         <ngx-slider
           [options]="saturationSliderOptions"
-          [(value)]="saturation"
           (valueChange)="applyFilters()"
+          [(value)]="saturation"
         ></ngx-slider>
       </div>
 
       <div class="adjuster">
-        <fa-icon
-          (click)="invertImage()"
-          [class.active]="invert === 1"
-          class="invert"
-          icon="repeat"
-        ></fa-icon>
+        <fa-icon [class.active]="invert === 1" (click)="invertImage()" class="invert" icon="repeat"></fa-icon>
       </div>
 
       <div class="d-flex flex-nowrap">
-        <button
-          class="btn btn-link text-light m-0"
-          (click)="reset()"
-          astrobinEventPreventDefault
-        >
+        <button (click)="reset()" class="btn btn-link text-light m-0" astrobinEventPreventDefault>
           <fa-icon icon="undo"></fa-icon>
         </button>
 
-        <button
-          class="btn btn-link text-light m-0"
-          (click)="share()"
-          astrobinEventPreventDefault
-        >
+        <button (click)="share()" class="btn btn-link text-light m-0" astrobinEventPreventDefault>
           <fa-icon icon="share"></fa-icon>
         </button>
 
-        <button
-          class="btn btn-link text-light m-0"
-          (click)="close()"
-          astrobinEventPreventDefault
-        >
+        <button (click)="close()" class="btn btn-link text-light m-0" astrobinEventPreventDefault>
           <fa-icon icon="times-circle"></fa-icon>
         </button>
       </div>
@@ -100,24 +79,19 @@ const DEFAULT_INVERT = 0;
     <ng-template #shareOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Share" | translate }}</h5>
-        <button
-          type="button"
-          class="btn-close text-reset"
-          (click)="offcanvas.close()"
-          aria-label="Close"
-        ></button>
+        <button (click)="offcanvas.close()" class="btn-close text-reset" aria-label="Close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <p class="alert alert-dark mb-5">
           <fa-icon icon="info-circle"></fa-icon>
           {{
             "These settings do not really alter the image, but only the way it is displayed in your browser. You " +
-            "can share a link to this page with these settings applied." | translate
+              "can share a link to this page with these settings applied." | translate
           }}
         </p>
 
         <form [formGroup]="shareForm">
-          <formly-form [form]="shareForm" [fields]="shareFields" [model]="shareModel"></formly-form>
+          <formly-form [fields]="shareFields" [form]="shareForm" [model]="shareModel"></formly-form>
         </form>
       </div>
     </ng-template>
@@ -182,7 +156,6 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
     public readonly popNotificationService: PopNotificationsService,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
-
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
@@ -308,6 +281,6 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
     });
 
     // Replace the current URL without triggering navigation
-    this.windowRefService.nativeWindow.history.replaceState({}, '', url);
+    this.windowRefService.nativeWindow.history.replaceState({}, "", url);
   }
 }

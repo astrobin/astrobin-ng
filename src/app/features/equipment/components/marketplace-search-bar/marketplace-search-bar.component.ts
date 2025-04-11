@@ -1,9 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { OnInit, Component, EventEmitter, Output } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { MainState } from "@app/store/state";
 import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { ActivatedRoute } from "@angular/router";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-marketplace-search-bar",

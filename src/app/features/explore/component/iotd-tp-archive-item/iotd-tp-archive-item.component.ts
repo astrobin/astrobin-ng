@@ -1,43 +1,39 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
-import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
-import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
-import { ImageAlias } from "@core/enums/image-alias.enum";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { take } from "rxjs/operators";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { OnInit, Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
+import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
+import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-iotd-tp-archive-item",
   template: `
     <div class="iotd-tp-archive-item">
-      <img
-        [alt]="item.image.title"
-        [src]="thumbnailUrl"
-      />
+      <img [alt]="item.image.title" [src]="thumbnailUrl" />
 
       <div class="info">
         <div class="title">
           {{ item.image.title }},
-          <span
-            *ngFor="let photographer of photographers; let last = last"
-          >
+          <span *ngFor="let photographer of photographers; let last = last">
             <a
-              (click)="openGallery(photographer.username)"
               [href]="photographer.link"
-              astrobinEventStopPropagation
-              astrobinEventPreventDefault
+              (click)="openGallery(photographer.username)"
               class="user-display-name"
-            >{{ photographer.displayName }}</a><span *ngIf="!last" class="separator">&middot;</span>
+              astrobinEventPreventDefault
+              astrobinEventStopPropagation
+              >{{ photographer.displayName }}</a
+            ><span *ngIf="!last" class="separator">&middot;</span>
           </span>
         </div>
 
         <div class="date">
-          {{ date | localDate | date: 'shortDate' }}
+          {{ date | localDate | date: "shortDate" }}
         </div>
       </div>
     </div>
@@ -97,7 +93,7 @@ export class IotdTpArchiveItemComponent extends BaseComponentDirective implement
 
   openGallery(username: string): void {
     if (this._newGalleryExperience) {
-      this.router.navigate(["/u", username]);
+      void this.router.navigate(["/u", username]);
     } else {
       this.windowRefService.nativeWindow.open(this.classicRoutesService.GALLERY(username), "_self");
     }

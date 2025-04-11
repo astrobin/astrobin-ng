@@ -1,45 +1,45 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/core";
+import { OnChanges, ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
 import { ImageInterface } from "@core/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
 
 @Component({
-  selector: 'astrobin-image-icons',
+  selector: "astrobin-image-icons",
   template: `
     <fa-icon *ngIf="isPlayable" icon="play"></fa-icon>
 
     <fa-icon
       *ngIf="isWip"
       [ngbTooltip]="'This image is in your staging area' | translate"
-      container="body"
-      triggers="hover click"
-      icon="lock"
       class="wip-icon"
+      container="body"
+      icon="lock"
+      triggers="hover click"
     ></fa-icon>
 
     <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="badges">
       <fa-icon
         *ngIf="image.isIotd"
-        class="iotd"
-        icon="trophy"
         [ngbTooltip]="'Image of the Day' | translate"
+        class="iotd"
         container="body"
+        icon="trophy"
       ></fa-icon>
 
       <fa-icon
         *ngIf="!image.isIotd && image.isTopPick"
-        class="top-pick"
-        icon="star"
         [ngbTooltip]="'Top Pick' | translate"
+        class="top-pick"
         container="body"
+        icon="star"
       ></fa-icon>
 
       <fa-icon
         *ngIf="!image.isIotd && !image.isTopPick && image.isTopPickNomination"
-        class="top-pick-nomination"
-        icon="arrow-up"
         [ngbTooltip]="'Top Pick Nomination' | translate"
+        class="top-pick-nomination"
         container="body"
+        icon="arrow-up"
       ></fa-icon>
 
       <fa-icon
@@ -50,20 +50,16 @@ import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
           !image.isTopPickNomination &&
           isInIotdQueue
         "
-        class="in-iotd-queue"
-        icon="gavel"
         [ngbTooltip]="'Currently in the IOTD/TP queues' | translate"
+        class="in-iotd-queue"
         container="body"
+        icon="gavel"
       ></fa-icon>
 
-      <fa-icon
-        *ngIf="isCollaboration"
-        class="collaborators"
-        icon="users"
-      ></fa-icon>
+      <fa-icon *ngIf="isCollaboration" class="collaborators" icon="users"></fa-icon>
     </div>
   `,
-  styleUrls: ['./image-icons.component.scss'],
+  styleUrls: ["./image-icons.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageIconsComponent extends BaseComponentDirective implements OnChanges {
@@ -82,22 +78,22 @@ export class ImageIconsComponent extends BaseComponentDirective implements OnCha
   }
 
   private _setIsCollaboration(): void {
-    if (this.image.hasOwnProperty('collaborators')) {
+    if (this.image.hasOwnProperty("collaborators")) {
       this.isCollaboration = (this.image as ImageInterface).collaborators?.length > 0;
-    } else if (this.image.hasOwnProperty('collaboratorIds')) {
+    } else if (this.image.hasOwnProperty("collaboratorIds")) {
       this.isCollaboration = (this.image as ImageSearchInterface).collaboratorIds?.length > 0;
     }
   }
 
   private _setIsWip(): void {
-    this.isWip = this.image.hasOwnProperty('isWip') && (this.image as ImageInterface).isWip;
+    this.isWip = this.image.hasOwnProperty("isWip") && (this.image as ImageInterface).isWip;
   }
 
   private _setIsPlayable(): void {
-    this.isPlayable = this.image.hasOwnProperty('isPlayable') && (this.image as ImageInterface).isPlayable;
+    this.isPlayable = this.image.hasOwnProperty("isPlayable") && (this.image as ImageInterface).isPlayable;
   }
 
   private _setIsInIotdQueue(): void {
-    this.isInIotdQueue = this.image.hasOwnProperty('isInIotdQueue') && (this.image as ImageInterface).isInIotdQueue;
+    this.isInIotdQueue = this.image.hasOwnProperty("isInIotdQueue") && (this.image as ImageInterface).isInIotdQueue;
   }
 }

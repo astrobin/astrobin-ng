@@ -1,17 +1,19 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { QueueSortButtonComponent } from "./queue-sort-button.component";
-import { MockBuilder } from "ng-mocks";
+import { initialMainState } from "@app/store/state";
 import { IotdModule } from "@features/iotd/iotd.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
+import { MockBuilder } from "ng-mocks";
+
+import { QueueSortButtonComponent } from "./queue-sort-button.component";
 
 describe("QueueSortButtonComponent", () => {
   let component: QueueSortButtonComponent;
   let fixture: ComponentFixture<QueueSortButtonComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(QueueSortButtonComponent, IotdModule).provide(provideMockStore({ initialState: initialMainState }));
+    await MockBuilder(QueueSortButtonComponent, IotdModule).provide(
+      provideMockStore({ initialState: initialMainState })
+    );
   });
 
   beforeEach(() => {

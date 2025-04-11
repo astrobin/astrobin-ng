@@ -12,7 +12,10 @@ import { Observable } from "rxjs";
 export class MountApiService extends BaseClassicApiService implements MountApiServiceInterface {
   configUrl = this.baseUrl + "/astrobin/mount";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

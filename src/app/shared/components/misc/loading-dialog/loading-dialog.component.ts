@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { NgbActiveModal, NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalOptions, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
@@ -18,14 +18,14 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
       useFactory: (store$: Store<MainState>) => {
         const modalRef = new NgbActiveModal();
         const defaultOptions: NgbModalOptions = {
-          backdrop: 'static',
-          keyboard: false,
+          backdrop: "static",
+          keyboard: false
         };
         Object.assign(modalRef, defaultOptions);
         return modalRef;
       },
-      deps: [Store],
-    },
+      deps: [Store]
+    }
   ]
 })
 export class LoadingDialogComponent extends BaseComponentDirective {

@@ -2,11 +2,11 @@ import { Subject, throttleTime } from "rxjs";
 
 const subjectsMap = new WeakMap<any, Map<string, Subject<any>>>();
 
-export function Throttle(delay: number = 100) {
-  return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+export function Throttle(delay = 100) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const original = descriptor.value;
 
-    descriptor.value = function(...args: any[]) {
+    descriptor.value = function (...args: any[]) {
       // Get or create the subject map for this component instance
       let subjectsByMethod = subjectsMap.get(this);
       if (!subjectsByMethod) {
@@ -18,10 +18,9 @@ export function Throttle(delay: number = 100) {
       let subject = subjectsByMethod.get(propertyKey);
       if (!subject) {
         subject = new Subject<any>();
-        subject.pipe(throttleTime(delay))
-          .subscribe((args) => {
-            original.apply(this, args);
-          });
+        subject.pipe(throttleTime(delay)).subscribe(args => {
+          original.apply(this, args);
+        });
         subjectsByMethod.set(propertyKey, subject);
       }
 

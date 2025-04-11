@@ -1,17 +1,23 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { OnInit, Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { LoadingService } from "@core/services/loading.service";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
 import { UserInterface } from "@core/interfaces/user.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { CreateEquipmentPreset, CreateEquipmentPresetSuccess, EquipmentActionTypes, UpdateEquipmentPreset, UpdateEquipmentPresetSuccess } from "@features/equipment/store/equipment.actions";
+import {
+  UpdateEquipmentPresetSuccess,
+  CreateEquipmentPreset,
+  CreateEquipmentPresetSuccess,
+  EquipmentActionTypes,
+  UpdateEquipmentPreset
+} from "@features/equipment/store/equipment.actions";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { filter, take } from "rxjs/operators";
 
 @Component({
@@ -54,7 +60,7 @@ export class EquipmentPresetEditorComponent extends BaseComponentDirective imple
         software: [],
         guidingTelescopes: [],
         guidingCameras: []
-      }
+      };
     }
 
     this._initFields();
@@ -63,7 +69,9 @@ export class EquipmentPresetEditorComponent extends BaseComponentDirective imple
   onSaveClicked() {
     if (!this.form.valid) {
       this.form.markAllAsTouched();
-      this.popNotificationsService.error(this.translateService.instant("Please check the form for errors and try again."));
+      this.popNotificationsService.error(
+        this.translateService.instant("Please check the form for errors and try again.")
+      );
       return;
     }
 
@@ -82,32 +90,26 @@ export class EquipmentPresetEditorComponent extends BaseComponentDirective imple
           this.presetSaved.emit(this.form.value);
         });
 
-      this.actions$.pipe(
-        ofType(EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET_FAILURE),
-        filter((action: UpdateEquipmentPresetSuccess) => action.payload.preset.id === this.model.id),
-        take(1)
-      ).subscribe(() => {
-        this.loadingService.setLoading(false);
-        this.popNotificationsService.error(this.translateService.instant("Failed to update equipment setup."));
-      });
-
-      this.store$.dispatch(new UpdateEquipmentPreset({ preset: this.model }));
-    } else {
       this.actions$
         .pipe(
-          ofType(EquipmentActionTypes.CREATE_EQUIPMENT_PRESET_SUCCESS),
+          ofType(EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET_FAILURE),
+          filter((action: UpdateEquipmentPresetSuccess) => action.payload.preset.id === this.model.id),
           take(1)
         )
         .subscribe(() => {
           this.loadingService.setLoading(false);
-          this.popNotificationsService.success(this.translateService.instant("Equipment setup created."));
-          this.presetSaved.emit(this.form.value);
+          this.popNotificationsService.error(this.translateService.instant("Failed to update equipment setup."));
         });
 
-      this.actions$.pipe(
-        ofType(EquipmentActionTypes.CREATE_EQUIPMENT_PRESET_FAILURE),
-        take(1)
-      ).subscribe(() => {
+      this.store$.dispatch(new UpdateEquipmentPreset({ preset: this.model }));
+    } else {
+      this.actions$.pipe(ofType(EquipmentActionTypes.CREATE_EQUIPMENT_PRESET_SUCCESS), take(1)).subscribe(() => {
+        this.loadingService.setLoading(false);
+        this.popNotificationsService.success(this.translateService.instant("Equipment setup created."));
+        this.presetSaved.emit(this.form.value);
+      });
+
+      this.actions$.pipe(ofType(EquipmentActionTypes.CREATE_EQUIPMENT_PRESET_FAILURE), take(1)).subscribe(() => {
         this.loadingService.setLoading(false);
         this.popNotificationsService.error(this.translateService.instant("Failed to create equipment setup."));
       });
@@ -117,7 +119,11 @@ export class EquipmentPresetEditorComponent extends BaseComponentDirective imple
   }
 
   private _equipmentField(
-    user: UserInterface, key: string, label: string, itemType: EquipmentItemType, usageType?: EquipmentItemUsageType
+    user: UserInterface,
+    key: string,
+    label: string,
+    itemType: EquipmentItemType,
+    usageType?: EquipmentItemUsageType
   ): FormlyFieldConfig {
     return {
       key,
@@ -184,30 +190,15 @@ export class EquipmentPresetEditorComponent extends BaseComponentDirective imple
           EquipmentItemType.CAMERA,
           EquipmentItemUsageType.IMAGING
         ),
-        this._equipmentField(
-          user,
-          "mounts",
-          this.translateService.instant("Mounts"),
-          EquipmentItemType.MOUNT
-        ),
-        this._equipmentField(
-          user,
-          "filters",
-          this.translateService.instant("Filters"),
-          EquipmentItemType.FILTER
-        ),
+        this._equipmentField(user, "mounts", this.translateService.instant("Mounts"), EquipmentItemType.MOUNT),
+        this._equipmentField(user, "filters", this.translateService.instant("Filters"), EquipmentItemType.FILTER),
         this._equipmentField(
           user,
           "accessories",
           this.translateService.instant("Accessories"),
           EquipmentItemType.ACCESSORY
         ),
-        this._equipmentField(
-          user,
-          "software",
-          this.translateService.instant("Software"),
-          EquipmentItemType.SOFTWARE
-        ),
+        this._equipmentField(user, "software", this.translateService.instant("Software"), EquipmentItemType.SOFTWARE),
         this._equipmentField(
           user,
           "guidingTelescopes",

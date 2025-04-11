@@ -1,5 +1,5 @@
-import { AuthGroupGenerator } from "@shared/generators/auth-group.generator";
 import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
+import { AuthGroupGenerator } from "@shared/generators/auth-group.generator";
 
 export class SubscriptionGenerator {
   static subscription(id?: number, name?: string): SubscriptionInterface {

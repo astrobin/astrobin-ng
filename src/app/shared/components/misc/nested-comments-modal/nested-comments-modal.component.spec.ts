@@ -1,13 +1,14 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { provideMockStore } from "@ngrx/store/testing";
-import { TranslateService } from "@ngx-translate/core";
-import { NestedCommentsModalComponent } from "./nested-comments-modal.component";
-import { of } from "rxjs";
-import { ConfirmationDialogComponent } from "../confirmation-dialog/confirmation-dialog.component";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { NgbModalRef, NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockStore } from "@ngrx/store/testing";
+import { TranslateService } from "@ngx-translate/core";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
+
+import { NestedCommentsModalComponent } from "./nested-comments-modal.component";
+import { ConfirmationDialogComponent } from "../confirmation-dialog/confirmation-dialog.component";
 
 describe("NestedCommentsModalComponent", () => {
   let component: NestedCommentsModalComponent;
@@ -18,10 +19,10 @@ describe("NestedCommentsModalComponent", () => {
   let translateService: jest.Mocked<Partial<TranslateService>>;
 
   // Create a mock ContentTypeInterface
-  const mockContentType: ContentTypeInterface = { 
-    id: 1, 
-    appLabel: "test_app", 
-    model: "test_model" 
+  const mockContentType: ContentTypeInterface = {
+    id: 1,
+    appLabel: "test_app",
+    model: "test_model"
   };
 
   beforeEach(async () => {

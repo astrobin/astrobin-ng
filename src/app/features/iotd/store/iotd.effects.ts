@@ -1,16 +1,19 @@
 import { Injectable } from "@angular/core";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { MainState } from "@app/store/state";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@core/services/loading.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { of } from "rxjs";
 import { catchError, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
+
 import {
+  IotdActions,
+  MarkReviewerSeenImage,
   DeleteIotdFailure,
   DeleteIotdSuccess,
   DeleteSubmissionFailure,
@@ -19,7 +22,6 @@ import {
   DeleteVoteSuccess,
   DismissImageSuccess,
   HideImageSuccess,
-  IotdActions,
   IotdActionTypes,
   LoadDismissedImagesSuccess,
   LoadFutureIodsFailure,
@@ -39,7 +41,6 @@ import {
   LoadSubmitterSeenImagesSuccess,
   LoadVotesFailure,
   LoadVotesSuccess,
-  MarkReviewerSeenImage,
   MarkReviewerSeenImageSuccess,
   MarkSubmitterSeenImageSuccess,
   PostIotdFailure,
@@ -73,9 +74,7 @@ export class IotdEffects {
       ofType(IotdActionTypes.LOAD_HIDDEN_IMAGES),
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(() =>
-        this.iotdApiService
-          .loadHiddenImages()
-          .pipe(map(hiddenImages => new LoadHiddenImagesSuccess({ hiddenImages })))
+        this.iotdApiService.loadHiddenImages().pipe(map(hiddenImages => new LoadHiddenImagesSuccess({ hiddenImages })))
       )
     )
   );
@@ -667,6 +666,5 @@ export class IotdEffects {
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly windowRef: WindowRefService
-  ) {
-  }
+  ) {}
 }

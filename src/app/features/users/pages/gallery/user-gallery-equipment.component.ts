@@ -1,20 +1,38 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { UserInterface } from "@core/interfaces/user.interface";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { EquipmentActionTypes, FindEquipmentPresets, FindEquipmentPresetsFailure, FindEquipmentPresetsSuccess } from "@features/equipment/store/equipment.actions";
-import { Subscription } from "rxjs";
-import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
-import { filter, map, take } from "rxjs/operators";
-import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
-import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { Actions, ofType } from "@ngrx/effects";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { DeviceService } from "@core/services/device.service";
+import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
+import {
+  FindEquipmentPresetsFailure,
+  FindEquipmentPresetsSuccess,
+  EquipmentActionTypes,
+  FindEquipmentPresets
+} from "@features/equipment/store/equipment.actions";
+import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Subscription } from "rxjs";
+import { filter, map, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-user-gallery-equipment",
@@ -35,11 +53,7 @@ import { FindImagesResponseInterface } from "@core/services/api/classic/images/i
             {{ "This user doesn't have any equipment setups." | translate }}
           </span>
 
-          <div
-            *ngIf="currentUserWrapper.user?.id === user.id"
-            (click)="onPresetCreateClicked()"
-            class="create-preset"
-          >
+          <div *ngIf="currentUserWrapper.user?.id === user.id" (click)="onPresetCreateClicked()" class="create-preset">
             <fa-icon icon="plus"></fa-icon>
             <span translate="Add setup"></span>
           </div>
@@ -49,8 +63,8 @@ import { FindImagesResponseInterface } from "@core/services/api/classic/images/i
           <div class="d-flex flex-wrap gap-3">
             <astrobin-equipment-preset
               *ngFor="let preset of presets"
-              (presetClicked)="onPresetClicked(preset)"
               [preset]="preset"
+              (presetClicked)="onPresetClicked(preset)"
             ></astrobin-equipment-preset>
 
             <div
@@ -66,10 +80,10 @@ import { FindImagesResponseInterface } from "@core/services/api/classic/images/i
       </div>
 
       <astrobin-user-gallery-smart-folder
-        (activeChange)="activeEquipmentItemChange.emit($event)"
+        [folderType]="SmartFolderType.GEAR"
         [user]="user"
         [userProfile]="userProfile"
-        [folderType]="SmartFolderType.GEAR"
+        (activeChange)="activeEquipmentItemChange.emit($event)"
         galleryFragment="equipment"
       ></astrobin-user-gallery-smart-folder>
     </ng-container>
@@ -77,24 +91,17 @@ import { FindImagesResponseInterface } from "@core/services/api/classic/images/i
     <ng-template #presetSummaryOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ activePreset.name }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
-        <astrobin-equipment-preset-summary
-          [preset]="activePreset"
-        ></astrobin-equipment-preset-summary>
+        <astrobin-equipment-preset-summary [preset]="activePreset"></astrobin-equipment-preset-summary>
       </div>
     </ng-template>
 
     <ng-template #presetCreateOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Add setup" | translate }}</h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label="Close"
-          (click)="offcanvas.close()"
-        ></button>
+        <button (click)="offcanvas.close()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
 
       <div class="offcanvas-body">
@@ -112,7 +119,10 @@ export class UserGalleryEquipmentComponent extends BaseComponentDirective implem
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
-  @Output() activeEquipmentItemChange = new EventEmitter<{ active: string, menu: FindImagesResponseInterface["menu"] }>();
+  @Output() activeEquipmentItemChange = new EventEmitter<{
+    active: string;
+    menu: FindImagesResponseInterface["menu"];
+  }>();
 
   @ViewChild("presetSummaryOffcanvas") presetSummaryOffcanvas: TemplateRef<any>;
   @ViewChild("presetCreateOffcanvas") presetCreateOffcanvas: TemplateRef<any>;
@@ -146,19 +156,25 @@ export class UserGalleryEquipmentComponent extends BaseComponentDirective implem
         this._presetsSubscription.unsubscribe();
       }
 
-      this.actions$.pipe(
-        ofType(
-          EquipmentActionTypes.FIND_EQUIPMENT_PRESETS_SUCCESS,
-          EquipmentActionTypes.FIND_EQUIPMENT_PRESETS_FAILURE
-        ),
-        filter((action: FindEquipmentPresetsSuccess | FindEquipmentPresetsFailure) => action.payload.userId === this.user.id),
-        take(1)
-      ).subscribe(() => {
-        this.loadingPresets = false;
-        this.changeDetectorRef.markForCheck();
-      });
+      this.actions$
+        .pipe(
+          ofType(
+            EquipmentActionTypes.FIND_EQUIPMENT_PRESETS_SUCCESS,
+            EquipmentActionTypes.FIND_EQUIPMENT_PRESETS_FAILURE
+          ),
+          filter(
+            (action: FindEquipmentPresetsSuccess | FindEquipmentPresetsFailure) =>
+              action.payload.userId === this.user.id
+          ),
+          take(1)
+        )
+        .subscribe(() => {
+          this.loadingPresets = false;
+          this.changeDetectorRef.markForCheck();
+        });
 
-      this._presetsSubscription = this.store$.select(selectEquipmentPresets)
+      this._presetsSubscription = this.store$
+        .select(selectEquipmentPresets)
         .pipe(
           map(presets => presets.filter(preset => preset.user === this.user.id)),
           distinctUntilChangedObj()

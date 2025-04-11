@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">{{ "Log in" | translate }}</h4>
-  <button (click)="activeModal.dismiss('Cross click')" aria-label="Close" class="close" type="button">
+  <button (click)="activeModal.dismiss('Cross click')" class="close" aria-label="Close" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -11,9 +11,12 @@
 
 <div class="modal-footer">
   <ng-container *ngIf="(currentUser$ | async) === null">
-    <button [class.loading]="loadingService.loading$ | async"
-            [disabled]="!loginForm.form.valid || (loadingService.loading$ | async)"
-            (click)="loginForm.login()" class="btn btn-primary">
+    <button
+      [class.loading]="loadingService.loading$ | async"
+      [disabled]="!loginForm.form.valid || (loadingService.loading$ | async)"
+      (click)="loginForm.login()"
+      class="btn btn-primary"
+    >
       {{ "Log in" | translate }}
     </button>
 

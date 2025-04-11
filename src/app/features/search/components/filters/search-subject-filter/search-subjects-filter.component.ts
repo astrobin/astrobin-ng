@@ -1,15 +1,15 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { MainState } from "@app/store/state";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-search-subjects-filter.search-filter-component",
@@ -54,9 +54,7 @@ export class SearchSubjectsFilterComponent extends SearchBaseFilterComponent {
           hooks: {
             onInit: (field: FormlyFieldConfig) => {
               field.formControl.valueChanges.subscribe(value => {
-                const arrayValue = UtilsService.isString(value)
-                  ? value.split(",").filter(tag => !!tag)
-                  : [];
+                const arrayValue = UtilsService.isString(value) ? value.split(",").filter(tag => !!tag) : [];
                 field.parent?.formControl?.get("value")?.setValue(arrayValue);
               });
             }

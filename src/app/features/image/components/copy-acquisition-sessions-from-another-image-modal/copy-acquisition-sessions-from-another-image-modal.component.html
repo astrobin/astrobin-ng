@@ -1,9 +1,9 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="copy-acquisition-sessions-from-another-image-modal">
+  <h4 id="copy-acquisition-sessions-from-another-image-modal" class="modal-title">
     {{ "Copy from another image" | translate }}
   </h4>
 
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -20,9 +20,9 @@
   </button>
 
   <button
-    (click)="onCopyClicked()"
     [class.loading]="(loadingService.loading$ | async) || form.pending"
     [disabled]="form.invalid"
+    (click)="onCopyClicked()"
     class="btn btn-primary"
     type="button"
   >
@@ -37,9 +37,9 @@
         <img [alt]="item.value.title" [src]="getGalleryThumbnail(item.value)" class="w-100" />
       </div>
       <div class="col ps-2">
-        <h5 class="title">{{item.value.title}}</h5>
+        <h5 class="title">{{ item.value.title }}</h5>
         <div class="uploaded">
-          {{ "Published" | translate}}:
+          {{ "Published" | translate }}:
           <abbr *ngIf="!!item.value.published; else unpublishedTemplate" [title]="item.value.published | localDate">
             {{ item.value.published | localDate | timeago: true }}
           </abbr>

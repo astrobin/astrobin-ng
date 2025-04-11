@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { environment } from "@env/environment";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { environment } from "@env/environment";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-footer",

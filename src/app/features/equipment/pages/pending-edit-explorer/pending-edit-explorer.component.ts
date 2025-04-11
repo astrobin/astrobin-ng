@@ -1,23 +1,23 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { TitleService } from "@core/services/title/title.service";
+import { ChangeDetectorRef, OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Actions } from "@ngrx/effects";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { tap } from "rxjs/operators";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { MainState } from "@app/store/state";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { TitleService } from "@core/services/title/title.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import {
   PendingExplorerBaseComponent,
   PendingType
 } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
-import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { CookieService } from "ngx-cookie";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { DeviceService } from "@core/services/device.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { CookieService } from "ngx-cookie";
+import { tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-equipment-pending-edit-explorer",

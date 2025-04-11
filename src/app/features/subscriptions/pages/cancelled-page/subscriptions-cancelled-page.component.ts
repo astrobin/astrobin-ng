@@ -1,9 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { OnInit, Component } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MainState } from "@app/store/state";
+import { TitleService } from "@core/services/title/title.service";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

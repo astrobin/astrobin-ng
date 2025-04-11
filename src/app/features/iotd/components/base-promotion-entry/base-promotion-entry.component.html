@@ -6,9 +6,9 @@
   </div>
 
   <button
-    (click)="show(entry.pk)"
     [class.loading]="loadingService.loading$ | async"
     [hidden]="!hidden"
+    (click)="show(entry.pk)"
     class="btn btn-outline-primary mt-2 mt-sm-0 ms-0 ms-sm-2"
   >
     <fa-icon icon="eye"></fa-icon>
@@ -18,27 +18,26 @@
 
 <div [hidden]="hidden" class="card-body">
   <div [class.promoted]="isPromoted" class="promotion-queue-entry">
-
     <div class="col-image">
       <astrobin-image
         #image
-        (intentionalClick)="viewFullscreen($event, entry.pk)"
         [alias]="imageAlias"
         [autoHeight]="imageAutoHeight"
         [id]="entry.pk"
-        astrobinPreventScrollClick
+        (intentionalClick)="viewFullscreen($event, entry.pk)"
         class="promotion-image"
+        astrobinPreventScrollClick
       >
       </astrobin-image>
 
       <astrobin-image
-        (intentionalClick)="viewFullscreen($event, entry.pk)"
         *ngIf="!entry.videoFile"
         [alias]="ImageAlias.HD_ANONYMIZED_CROP"
         [autoHeight]="imageAutoHeight"
         [id]="entry.pk"
-        astrobinPreventScrollClick
+        (intentionalClick)="viewFullscreen($event, entry.pk)"
         class="promotion-image-hover"
+        astrobinPreventScrollClick
       >
       </astrobin-image>
 
@@ -48,9 +47,7 @@
         [respectFullSizeDisplayLimitation]="false"
       ></astrobin-fullscreen-image-viewer>
 
-      <div class="promotion-image-hover-label">
-        100%
-      </div>
+      <div class="promotion-image-hover-label">100%</div>
     </div>
 
     <div *ngIf="showMetadata" class="col-metadata">
@@ -92,9 +89,9 @@
 
 <div [hidden]="hidden" class="card-footer">
   <button
-    (click)="viewPage(entry.pk)"
     *ngIf="showViewButton"
     [class.loading]="loadingService.loading$ | async"
+    (click)="viewPage(entry.pk)"
     class="btn btn-outline-secondary"
   >
     <fa-icon icon="link"></fa-icon>
@@ -102,9 +99,9 @@
   </button>
 
   <button
-    (click)="hide(entry.pk)"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="isPromoted"
+    (click)="hide(entry.pk)"
     class="btn btn-outline-secondary"
   >
     <fa-icon icon="eye-slash"></fa-icon>
@@ -112,10 +109,10 @@
   </button>
 
   <button
-    (click)="dismiss(entry.pk)"
     *ngIf="showDismissButton"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="isPromoted"
+    (click)="dismiss(entry.pk)"
     class="btn btn-danger"
   >
     <fa-icon icon="ban"></fa-icon>
@@ -123,10 +120,10 @@
   </button>
 
   <button
-    (click)="promote(entry.pk)"
     *ngIf="!isPromoted; else retract"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="!mayPromote"
+    (click)="promote(entry.pk)"
     class="btn btn-success"
   >
     <fa-icon [icon]="promoteButtonIcon"></fa-icon>
@@ -134,8 +131,11 @@
   </button>
 
   <ng-template #retract>
-    <button (click)="retractPromotion(entry.pk)" [class.loading]="loadingService.loading$ | async"
-            class="btn btn-danger">
+    <button
+      [class.loading]="loadingService.loading$ | async"
+      (click)="retractPromotion(entry.pk)"
+      class="btn btn-danger"
+    >
       <fa-icon icon="undo"></fa-icon>
       {{ retractPromotionButtonLabel }}
     </button>

@@ -1,3 +1,4 @@
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import {
   DismissedImage,
   HiddenImage,
@@ -7,14 +8,14 @@ import {
   SubmitterSeenImage,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
-import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import * as fromIotd from "./iotd.reducer";
-import { IotdState } from "./iotd.reducer";
-import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
-import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { createFeatureSelector, createSelector } from "@ngrx/store";
+
+import * as fromIotd from "./iotd.reducer";
+import { IotdState } from "./iotd.reducer";
 
 export const selectIotdState = createFeatureSelector<fromIotd.IotdState>(fromIotd.iotdFeatureKey);
 
@@ -174,18 +175,6 @@ export const selectJudgementQueueEntry = createSelector(
 export const selectFutureIotds = createSelector(
   selectIotdState,
   (state: IotdState): IotdInterface[] => state.futureIotds
-);
-
-export const selectFutureIotd = createSelector(
-  selectFutureIotds,
-  (futureIotds: IotdInterface[], id: number): IotdInterface => {
-    const matching = futureIotds.filter(iotd => iotd.id === id);
-    if (matching.length === 1) {
-      return matching[0];
-    }
-
-    return null;
-  }
 );
 
 export const selectFutureIotdForImage = createSelector(

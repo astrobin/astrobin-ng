@@ -7,14 +7,15 @@
 
   tr {
     &.loading {
-      opacity: .5;
+      opacity: 0.5;
       pointer-events: none;
     }
   }
 
-  td, th {
+  td,
+  th {
     vertical-align: middle;
-    padding: .5rem .75rem;
+    padding: 0.5rem 0.75rem;
 
     &.title {
       width: 100%;

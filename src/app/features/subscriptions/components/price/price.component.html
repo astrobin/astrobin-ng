@@ -1,11 +1,11 @@
 <ng-container *ngIf="!!recurringUnit; else noRecurringUnitTemplate">
   <ng-container *ngIf="!!pricing && !!pricing[recurringUnit]; else loadingTemplate">
     <ng-container
+      [ngTemplateOutlet]="priceTemplate"
       [ngTemplateOutletContext]="{
         priceObject: pricing[recurringUnit],
         recurringUnitLabel: recurringUnitLabel
       }"
-      [ngTemplateOutlet]="priceTemplate"
     >
     </ng-container>
   </ng-container>
@@ -15,8 +15,8 @@
   <ng-container *ngIf="!!pricing && !!pricing.monthly && !!pricing.yearly; else loadingTemplate">
     <span class="monthly">
       <ng-container
-        [ngTemplateOutletContext]="{ priceObject: pricing.monthly, recurringUnitLabel: 'month' | translate }"
         [ngTemplateOutlet]="priceTemplate"
+        [ngTemplateOutletContext]="{ priceObject: pricing.monthly, recurringUnitLabel: 'month' | translate }"
       ></ng-container>
     </span>
 
@@ -26,8 +26,8 @@
 
     <span class="yearly">
       <ng-container
-        [ngTemplateOutletContext]="{ priceObject: pricing.yearly, recurringUnitLabel: 'year' | translate }"
         [ngTemplateOutlet]="priceTemplate"
+        [ngTemplateOutletContext]="{ priceObject: pricing.yearly, recurringUnitLabel: 'year' | translate }"
       ></ng-container>
     </span>
   </ng-container>
@@ -36,10 +36,10 @@
 <ng-template #priceTemplate let-priceObject="priceObject" let-recurringUnitLabel="recurringUnitLabel">
   <ng-container *ngIf="priceObject.price > 0; else negativePriceTemplate">
     <span *ngIf="priceObject.discount > 0 || priceObject.prorateAmount > 0" class="full-price">
-      {{ priceObject.fullPrice | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
+      {{ priceObject.fullPrice | currency: currency : "symbol" : "1.2-2" : translateService.currentLang }}
     </span>
 
-    {{ priceObject.price | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
+    {{ priceObject.price | currency: currency : "symbol" : "1.2-2" : translateService.currentLang }}
     <ng-container [ngTemplateOutlet]="recurringUnitTemplate"></ng-container>
 
     <sup *ngIf="priceObject.prorateAmount > 0">
@@ -50,7 +50,7 @@
   </ng-container>
 
   <ng-template #negativePriceTemplate>
-    {{ 0 | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
+    {{ 0 | currency: currency : "symbol" : "1.2-2" : translateService.currentLang }}
     <sup>
       <a (click)="negativePriceInfo()" astrobinEventPreventDefault astrobinEventStopPropagation href="">
         <fa-icon icon="info-circle"></fa-icon>

@@ -1,8 +1,17 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import {
+  ElementRef,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
 import { MainState } from "@app/store/state";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
 import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-feed-item-marketplace-listing",
@@ -10,12 +19,12 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
     <div class="feed-item-component feed-item-marketplace-listing">
       <div class="feed-item-header">
         <img
-          class="feed-item-avatar"
           [alt]="feedItem.actionObjectDisplayName"
           [ngSrc]="feedItem.actorAvatar"
-          width="60"
+          class="feed-item-avatar"
           height="60"
-        >
+          width="60"
+        />
 
         <div class="feed-item-header-text">
           <div class="feed-item-header-text-1">
@@ -38,9 +47,9 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
             #image
             [alt]="feedItem.actionObjectDisplayName"
             [src]="feedItem.image"
-            loading="lazy"
             class="main-image"
-          >
+            loading="lazy"
+          />
         </a>
       </div>
 
@@ -57,19 +66,14 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
       </div>
     </div>
   `,
-  styleUrls: [
-    "../feed-item/feed-item.component.scss",
-    "./feed-item-marketplace-listing.component.scss"
-  ],
+  styleUrls: ["../feed-item/feed-item.component.scss", "./feed-item-marketplace-listing.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FeedItemMarketplaceListingComponent extends BaseComponentDirective   {
+export class FeedItemMarketplaceListingComponent extends BaseComponentDirective {
   @Input() feedItem: FeedItemInterface;
-  @ViewChild('image') imageElement: ElementRef<HTMLImageElement>;
+  @ViewChild("image") imageElement: ElementRef<HTMLImageElement>;
 
-  constructor(
-    public readonly store$: Store<MainState>,
-  ) {
+  constructor(public readonly store$: Store<MainState>) {
     super(store$);
   }
 }

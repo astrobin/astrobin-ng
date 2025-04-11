@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { initialMainState } from "@app/store/state";
+import { EquipmentModule } from "@features/equipment/equipment.module";
+import { CameraGenerator } from "@features/equipment/generators/camera.generator";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+import { ReplaySubject } from "rxjs";
 
 import { ConfirmItemCreationModalComponent } from "./confirm-item-creation-modal.component";
-import { MockBuilder } from "ng-mocks";
-import { EquipmentModule } from "@features/equipment/equipment.module";
-import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
-import { provideMockActions } from "@ngrx/effects/testing";
-import { ReplaySubject } from "rxjs";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 
 describe("ConfirmItemCreationModalComponent", () => {
   let component: ConfirmItemCreationModalComponent;

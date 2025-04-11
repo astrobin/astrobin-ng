@@ -3,17 +3,14 @@
 <div class="row g-0">
   <div class="col-10">
     <input
-      [(ngModel)]="search"
       [placeholder]="'Search for a location' | translate"
       class="form-control mb-3"
+      [(ngModel)]="search"
       type="text"
-    >
+    />
   </div>
   <div class="col-2">
-    <button
-      (click)="searchChanged($event)"
-      class="btn btn-primary btn-block w-100"
-    >
+    <button (click)="searchChanged($event)" class="btn btn-primary btn-block w-100">
       <fa-icon icon="search"></fa-icon>
     </button>
   </div>

@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { LocationInterface } from "@core/interfaces/location.interface";
 import { CurrentUsersLocationsResolver } from "@core/resolvers/current-users-locations.resolver";
 import { LocationGenerator } from "@shared/generators/location.generator";
-import { LocationInterface } from "@core/interfaces/location.interface";
+import { MockBuilder } from "ng-mocks";
 
 describe("CurrentUsersLocationsResolver", () => {
   let service: CurrentUsersLocationsResolver;

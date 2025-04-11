@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
 
 import { FormlyFieldService } from "./formly-field.service";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
 
 describe("FormlyFieldService", () => {
   let service: FormlyFieldService;

@@ -1,14 +1,15 @@
+import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ActivatedRoute } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { mainStateEffects, mainStateReducers, MainState } from "@app/store/state";
+import { StateGenerator } from "@app/store/generators/state.generator";
+import { MainState, mainStateEffects, mainStateReducers } from "@app/store/state";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder, MockProvider, MockRender } from "ng-mocks";
+
 import { SubscriptionsSuccessPageComponent } from "./subscriptions-success-page.component";
-import { StateGenerator } from "@app/store/generators/state.generator";
-import { HttpClientModule } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("SuccessPageComponent", () => {
   let component: SubscriptionsSuccessPageComponent;

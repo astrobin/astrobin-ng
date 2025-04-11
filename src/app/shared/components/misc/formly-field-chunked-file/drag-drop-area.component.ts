@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, NgZone, OnInit, Output, Renderer2, ViewChild } from "@angular/core";
+import {
+  ElementRef,
+  NgZone,
+  OnInit,
+  Renderer2,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
 
 @Component({
   selector: "astrobin-drag-drop-area",
@@ -16,8 +27,7 @@ export class DragDropAreaComponent implements OnInit {
   constructor(
     private ngZone: NgZone,
     private renderer: Renderer2
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     // Attach listeners inside Angular's zone to ensure change detection works properly

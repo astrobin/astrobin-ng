@@ -1,22 +1,31 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { GroupInterface } from "@core/interfaces/group.interface";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { MainState } from "@app/store/state";
-import { select, Store } from "@ngrx/store";
-import { LoadGroups } from "@app/store/actions/group.actions";
-import { selectGroupsByParams } from "@app/store/selectors/app/group.selectors";
-import { filter, take, takeUntil } from "rxjs/operators";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild
+} from "@angular/core";
 import { LoadCollections } from "@app/store/actions/collection.actions";
+import { LoadGroups } from "@app/store/actions/group.actions";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
+import { selectGroupsByParams } from "@app/store/selectors/app/group.selectors";
+import { MainState } from "@app/store/state";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@core/services/device.service";
 import { UserService } from "@core/services/user.service";
 import { LoadUser, LoadUserProfile } from "@features/account/store/auth.actions";
-import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { select, Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { filter, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-viewer-groups-and-collections",
@@ -24,17 +33,10 @@ import { selectUser, selectUserProfile } from "@features/account/store/auth.sele
     <div class="metadata-section">
       <div *ngIf="image.partOfGroupSet.length > 0" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon
-            [ngbTooltip]="'Groups' | translate"
-            triggers="hover click"
-            container="body"
-            icon="users"
-          ></fa-icon>
+          <fa-icon [ngbTooltip]="'Groups' | translate" container="body" icon="users" triggers="hover click"></fa-icon>
         </div>
-        <div class="metadata-link" (click)="openGroupsOffcanvas()">
-          <ng-container
-            *ngIf="image.partOfGroupSet.length === 1; else pluralGroupsTemplate"
-          >
+        <div (click)="openGroupsOffcanvas()" class="metadata-link">
+          <ng-container *ngIf="image.partOfGroupSet.length === 1; else pluralGroupsTemplate">
             {{ "In 1 group" | translate }}
           </ng-container>
           <ng-template #pluralGroupsTemplate>
@@ -47,15 +49,13 @@ import { selectUser, selectUserProfile } from "@features/account/store/auth.sele
         <div class="metadata-icon">
           <fa-icon
             [ngbTooltip]="'Collections' | translate"
-            triggers="hover click"
             container="body"
             icon="folder"
+            triggers="hover click"
           ></fa-icon>
         </div>
-        <div class="metadata-link" (click)="openCollectionsOffcanvas()">
-          <ng-container
-            *ngIf="image.collections.length === 1; else pluralCollectionsTemplate"
-          >
+        <div (click)="openCollectionsOffcanvas()" class="metadata-link">
+          <ng-container *ngIf="image.collections.length === 1; else pluralCollectionsTemplate">
             {{ "In 1 collection" | translate }}
           </ng-container>
           <ng-template #pluralCollectionsTemplate>
@@ -68,7 +68,7 @@ import { selectUser, selectUserProfile } from "@features/account/store/auth.sele
     <ng-template #groupsOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h4 class="offcanvas-title">{{ "Groups" | translate }}</h4>
-        <button type="button" class="close" aria-label="Close" (click)="offcanvas.close()">
+        <button (click)="offcanvas.close()" class="close" aria-label="Close" type="button">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -86,7 +86,7 @@ import { selectUser, selectUserProfile } from "@features/account/store/auth.sele
     <ng-template #collectionsOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h4 class="offcanvas-title">{{ "Collections" | translate }}</h4>
-        <button type="button" class="close" aria-label="Close" (click)="offcanvas.close()">
+        <button (click)="offcanvas.close()" class="close" aria-label="Close" type="button">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -96,24 +96,28 @@ import { selectUser, selectUserProfile } from "@features/account/store/auth.sele
             <div *ngFor="let collection of collections" class="d-flex justify-content-between align-items-center w-100">
               <div class="d-flex flex-column gap-1">
                 <a
-                  (click)="userService.openCollection(
-                    collection.username,
-                    collection.id,
-                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
-                    collection.displayCollectionsOnPublicGallery
-                  )"
-                  [href]="userService.getCollectionUrl(
-                    collection.username,
-                    collection.id,
-                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
-                    collection.displayCollectionsOnPublicGallery
-                  )"
+                  [href]="
+                    userService.getCollectionUrl(
+                      collection.username,
+                      collection.id,
+                      !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
+                      collection.displayCollectionsOnPublicGallery
+                    )
+                  "
+                  (click)="
+                    userService.openCollection(
+                      collection.username,
+                      collection.id,
+                      !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
+                      collection.displayCollectionsOnPublicGallery
+                    )
+                  "
                   astrobinEventPreventDefault
                 >
                   {{ collection.name }}
                 </a>
 
-                <span class="text-muted collection-user" *ngIf="collection.user !== image.user">
+                <span *ngIf="collection.user !== image.user" class="text-muted collection-user">
                   {{ collection.userDisplayName }}
                 </span>
               </div>
@@ -150,7 +154,7 @@ import { selectUser, selectUserProfile } from "@features/account/store/auth.sele
   styles: [
     `
       .collection-user {
-        font-size: .85rem;
+        font-size: 0.85rem;
       }
     `
   ],
@@ -179,19 +183,25 @@ export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirec
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue) {
-      this.store$.select(selectUser, this.image.user).pipe(
-        filter(user => !!user),
-        take(1),
-      ).subscribe(user => {
-        this.store$.select(selectUserProfile, user.userProfile).pipe(
-          filter(userProfile => !!userProfile),
+      this.store$
+        .select(selectUser, this.image.user)
+        .pipe(
+          filter(user => !!user),
           take(1)
-        ).subscribe(userProfile => {
-          this.userProfile = userProfile
-          this.changeDetectorRef.markForCheck();
+        )
+        .subscribe(user => {
+          this.store$
+            .select(selectUserProfile, user.userProfile)
+            .pipe(
+              filter(userProfile => !!userProfile),
+              take(1)
+            )
+            .subscribe(userProfile => {
+              this.userProfile = userProfile;
+              this.changeDetectorRef.markForCheck();
+            });
+          this.store$.dispatch(new LoadUserProfile({ id: user.userProfile }));
         });
-        this.store$.dispatch(new LoadUserProfile({ id: user.userProfile }));
-      });
       this.store$.dispatch(new LoadUser({ id: this.image.user }));
     }
   }
@@ -215,27 +225,31 @@ export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirec
   }
 
   private _loadGroups() {
-    this.store$.pipe(
-      select(selectGroupsByParams({ ids: this.image.partOfGroupSet })),
-      filter(groups => !!groups),
-      takeUntil(this.destroyed$)
-    ).subscribe(groups => {
-      this.groups = groups;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.store$
+      .pipe(
+        select(selectGroupsByParams({ ids: this.image.partOfGroupSet })),
+        filter(groups => !!groups),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(groups => {
+        this.groups = groups;
+        this.changeDetectorRef.markForCheck();
+      });
 
     this.store$.dispatch(new LoadGroups({ params: { ids: this.image.partOfGroupSet } }));
   }
 
   private _loadCollections() {
-    this.store$.pipe(
-      select(selectCollectionsByParams({ ids: this.image.collections })),
-      filter(collections => !!collections),
-      takeUntil(this.destroyed$)
-    ).subscribe(collections => {
-      this.collections = collections;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.store$
+      .pipe(
+        select(selectCollectionsByParams({ ids: this.image.collections })),
+        filter(collections => !!collections),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(collections => {
+        this.collections = collections;
+        this.changeDetectorRef.markForCheck();
+      });
 
     this.store$.dispatch(new LoadCollections({ params: { ids: this.image.collections } }));
   }

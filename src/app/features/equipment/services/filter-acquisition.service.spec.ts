@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing";
-import { FilterAcquisitionService } from "./filter-acquisition.service";
 import { TranslateService } from "@ngx-translate/core";
+
+import { FilterAcquisitionService } from "./filter-acquisition.service";
 import { FilterService } from "./filter.service";
 import { FilterType, LegacyFilterType } from "../types/filter.interface";
 
@@ -11,7 +12,7 @@ describe("FilterAcquisitionService", () => {
 
   beforeEach(() => {
     translateService = {
-      instant: jest.fn(key => key === "No filter" ? "No filter" : key)
+      instant: jest.fn(key => (key === "No filter" ? "No filter" : key))
     };
 
     filterService = {
@@ -197,7 +198,7 @@ describe("FilterAcquisitionService", () => {
     });
 
     it("should remove trailing zeros in decimal", () => {
-      expect(service.normalizeDuration(60.00)).toBe("60");
+      expect(service.normalizeDuration(60.0)).toBe("60");
     });
 
     it("should handle string input", () => {
@@ -456,265 +457,265 @@ describe("FilterAcquisitionService", () => {
       const mockImage: any = {
         deepSkyAcquisitions: [
           {
-            "id": 2516237,
-            "filter2Brand": "Optolong",
-            "filter2Name": "L-eNhance 2\"",
-            "filter2Type": "MULTIBAND",
-            "moonIllumination": 0.08073333478285477,
-            "date": "2024-10-29",
-            "isSynthetic": false,
-            "binning": 1,
-            "number": 24,
-            "duration": "300.0000",
-            "iso": null,
-            "gain": "100.00",
-            "fNumber": "2.80",
-            "sensorCooling": -10,
-            "darks": null,
-            "flats": null,
-            "flatDarks": null,
-            "bias": null,
-            "bortle": 7.0,
-            "meanSqm": null,
-            "meanFwhm": null,
-            "temperature": null,
-            "advanced": false,
-            "savedOn": "2025-03-24T18:59:42.254091",
-            "image": 1022575,
-            "filter": null,
-            "filter2": 2621
+            id: 2516237,
+            filter2Brand: "Optolong",
+            filter2Name: 'L-eNhance 2"',
+            filter2Type: "MULTIBAND",
+            moonIllumination: 0.08073333478285477,
+            date: "2024-10-29",
+            isSynthetic: false,
+            binning: 1,
+            number: 24,
+            duration: "300.0000",
+            iso: null,
+            gain: "100.00",
+            fNumber: "2.80",
+            sensorCooling: -10,
+            darks: null,
+            flats: null,
+            flatDarks: null,
+            bias: null,
+            bortle: 7.0,
+            meanSqm: null,
+            meanFwhm: null,
+            temperature: null,
+            advanced: false,
+            savedOn: "2025-03-24T18:59:42.254091",
+            image: 1022575,
+            filter: null,
+            filter2: 2621
           },
           {
-            "id": 2516238,
-            "filter2Brand": "Optolong",
-            "filter2Name": "L-eNhance 2\"",
-            "filter2Type": "MULTIBAND",
-            "moonIllumination": 0.811051427195987,
-            "date": "2024-12-19",
-            "isSynthetic": false,
-            "binning": 1,
-            "number": 36,
-            "duration": "180.0000",
-            "iso": null,
-            "gain": "100.00",
-            "fNumber": "2.80",
-            "sensorCooling": -10,
-            "darks": null,
-            "flats": null,
-            "flatDarks": null,
-            "bias": null,
-            "bortle": 7.0,
-            "meanSqm": null,
-            "meanFwhm": null,
-            "temperature": null,
-            "advanced": false,
-            "savedOn": "2025-03-24T18:59:42.265553",
-            "image": 1022575,
-            "filter": null,
-            "filter2": 2621
+            id: 2516238,
+            filter2Brand: "Optolong",
+            filter2Name: 'L-eNhance 2"',
+            filter2Type: "MULTIBAND",
+            moonIllumination: 0.811051427195987,
+            date: "2024-12-19",
+            isSynthetic: false,
+            binning: 1,
+            number: 36,
+            duration: "180.0000",
+            iso: null,
+            gain: "100.00",
+            fNumber: "2.80",
+            sensorCooling: -10,
+            darks: null,
+            flats: null,
+            flatDarks: null,
+            bias: null,
+            bortle: 7.0,
+            meanSqm: null,
+            meanFwhm: null,
+            temperature: null,
+            advanced: false,
+            savedOn: "2025-03-24T18:59:42.265553",
+            image: 1022575,
+            filter: null,
+            filter2: 2621
           },
           {
-            "id": 2516239,
-            "filter2Brand": "Optolong",
-            "filter2Name": "L-eNhance 2\"",
-            "filter2Type": "MULTIBAND",
-            "moonIllumination": 0.2945653090227105,
-            "date": "2024-10-26",
-            "isSynthetic": false,
-            "binning": 1,
-            "number": 42,
-            "duration": "300.0000",
-            "iso": null,
-            "gain": "100.00",
-            "fNumber": "2.80",
-            "sensorCooling": -10,
-            "darks": null,
-            "flats": null,
-            "flatDarks": null,
-            "bias": null,
-            "bortle": 7.0,
-            "meanSqm": null,
-            "meanFwhm": null,
-            "temperature": null,
-            "advanced": false,
-            "savedOn": "2025-03-24T18:59:42.276825",
-            "image": 1022575,
-            "filter": null,
-            "filter2": 2621
+            id: 2516239,
+            filter2Brand: "Optolong",
+            filter2Name: 'L-eNhance 2"',
+            filter2Type: "MULTIBAND",
+            moonIllumination: 0.2945653090227105,
+            date: "2024-10-26",
+            isSynthetic: false,
+            binning: 1,
+            number: 42,
+            duration: "300.0000",
+            iso: null,
+            gain: "100.00",
+            fNumber: "2.80",
+            sensorCooling: -10,
+            darks: null,
+            flats: null,
+            flatDarks: null,
+            bias: null,
+            bortle: 7.0,
+            meanSqm: null,
+            meanFwhm: null,
+            temperature: null,
+            advanced: false,
+            savedOn: "2025-03-24T18:59:42.276825",
+            image: 1022575,
+            filter: null,
+            filter2: 2621
           },
           {
-            "id": 2516240,
-            "filter2Brand": "Optolong",
-            "filter2Name": "L-eNhance 2\"",
-            "filter2Type": "MULTIBAND",
-            "moonIllumination": 0.748393486833909,
-            "date": "2024-11-20",
-            "isSynthetic": false,
-            "binning": 1,
-            "number": 45,
-            "duration": "300.0000",
-            "iso": null,
-            "gain": "100.00",
-            "fNumber": "2.80",
-            "sensorCooling": -10,
-            "darks": null,
-            "flats": null,
-            "flatDarks": null,
-            "bias": null,
-            "bortle": 7.0,
-            "meanSqm": null,
-            "meanFwhm": null,
-            "temperature": null,
-            "advanced": false,
-            "savedOn": "2025-03-24T18:59:42.287405",
-            "image": 1022575,
-            "filter": null,
-            "filter2": 2621
+            id: 2516240,
+            filter2Brand: "Optolong",
+            filter2Name: 'L-eNhance 2"',
+            filter2Type: "MULTIBAND",
+            moonIllumination: 0.748393486833909,
+            date: "2024-11-20",
+            isSynthetic: false,
+            binning: 1,
+            number: 45,
+            duration: "300.0000",
+            iso: null,
+            gain: "100.00",
+            fNumber: "2.80",
+            sensorCooling: -10,
+            darks: null,
+            flats: null,
+            flatDarks: null,
+            bias: null,
+            bortle: 7.0,
+            meanSqm: null,
+            meanFwhm: null,
+            temperature: null,
+            advanced: false,
+            savedOn: "2025-03-24T18:59:42.287405",
+            image: 1022575,
+            filter: null,
+            filter2: 2621
           },
           {
-            "id": 2516241,
-            "filter2Brand": "Optolong",
-            "filter2Name": "L-eNhance 2\"",
-            "filter2Type": "MULTIBAND",
-            "moonIllumination": 0.2775335599984967,
-            "date": "2024-11-25",
-            "isSynthetic": false,
-            "binning": 1,
-            "number": 55,
-            "duration": "300.0000",
-            "iso": null,
-            "gain": "100.00",
-            "fNumber": "2.80",
-            "sensorCooling": -10,
-            "darks": null,
-            "flats": null,
-            "flatDarks": null,
-            "bias": null,
-            "bortle": 7.0,
-            "meanSqm": null,
-            "meanFwhm": null,
-            "temperature": null,
-            "advanced": false,
-            "savedOn": "2025-03-24T18:59:42.297405",
-            "image": 1022575,
-            "filter": null,
-            "filter2": 2621
+            id: 2516241,
+            filter2Brand: "Optolong",
+            filter2Name: 'L-eNhance 2"',
+            filter2Type: "MULTIBAND",
+            moonIllumination: 0.2775335599984967,
+            date: "2024-11-25",
+            isSynthetic: false,
+            binning: 1,
+            number: 55,
+            duration: "300.0000",
+            iso: null,
+            gain: "100.00",
+            fNumber: "2.80",
+            sensorCooling: -10,
+            darks: null,
+            flats: null,
+            flatDarks: null,
+            bias: null,
+            bortle: 7.0,
+            meanSqm: null,
+            meanFwhm: null,
+            temperature: null,
+            advanced: false,
+            savedOn: "2025-03-24T18:59:42.297405",
+            image: 1022575,
+            filter: null,
+            filter2: 2621
           },
           {
-            "id": 2516242,
-            "filter2Brand": "Optolong",
-            "filter2Name": "L-eNhance 2\"",
-            "filter2Type": "MULTIBAND",
-            "moonIllumination": 0.1975043072774696,
-            "date": "2024-11-26",
-            "isSynthetic": false,
-            "binning": 1,
-            "number": 66,
-            "duration": "180.0000",
-            "iso": null,
-            "gain": "100.00",
-            "fNumber": "2.80",
-            "sensorCooling": -10,
-            "darks": null,
-            "flats": null,
-            "flatDarks": null,
-            "bias": null,
-            "bortle": 7.0,
-            "meanSqm": null,
-            "meanFwhm": null,
-            "temperature": null,
-            "advanced": false,
-            "savedOn": "2025-03-24T18:59:42.308593",
-            "image": 1022575,
-            "filter": null,
-            "filter2": 2621
+            id: 2516242,
+            filter2Brand: "Optolong",
+            filter2Name: 'L-eNhance 2"',
+            filter2Type: "MULTIBAND",
+            moonIllumination: 0.1975043072774696,
+            date: "2024-11-26",
+            isSynthetic: false,
+            binning: 1,
+            number: 66,
+            duration: "180.0000",
+            iso: null,
+            gain: "100.00",
+            fNumber: "2.80",
+            sensorCooling: -10,
+            darks: null,
+            flats: null,
+            flatDarks: null,
+            bias: null,
+            bortle: 7.0,
+            meanSqm: null,
+            meanFwhm: null,
+            temperature: null,
+            advanced: false,
+            savedOn: "2025-03-24T18:59:42.308593",
+            image: 1022575,
+            filter: null,
+            filter2: 2621
           },
           {
-            "id": 2516243,
-            "filter2Brand": "Optolong",
-            "filter2Name": "L-eNhance 2\"",
-            "filter2Type": "MULTIBAND",
-            "moonIllumination": 0.23697971702511106,
-            "date": "2024-09-27",
-            "isSynthetic": false,
-            "binning": 1,
-            "number": 73,
-            "duration": "180.0000",
-            "iso": null,
-            "gain": "100.00",
-            "fNumber": "2.80",
-            "sensorCooling": -10,
-            "darks": null,
-            "flats": null,
-            "flatDarks": null,
-            "bias": null,
-            "bortle": 7.0,
-            "meanSqm": null,
-            "meanFwhm": null,
-            "temperature": null,
-            "advanced": false,
-            "savedOn": "2025-03-24T18:59:42.319730",
-            "image": 1022575,
-            "filter": null,
-            "filter2": 2621
+            id: 2516243,
+            filter2Brand: "Optolong",
+            filter2Name: 'L-eNhance 2"',
+            filter2Type: "MULTIBAND",
+            moonIllumination: 0.23697971702511106,
+            date: "2024-09-27",
+            isSynthetic: false,
+            binning: 1,
+            number: 73,
+            duration: "180.0000",
+            iso: null,
+            gain: "100.00",
+            fNumber: "2.80",
+            sensorCooling: -10,
+            darks: null,
+            flats: null,
+            flatDarks: null,
+            bias: null,
+            bortle: 7.0,
+            meanSqm: null,
+            meanFwhm: null,
+            temperature: null,
+            advanced: false,
+            savedOn: "2025-03-24T18:59:42.319730",
+            image: 1022575,
+            filter: null,
+            filter2: 2621
           },
           {
-            "id": 2516244,
-            "filter2Brand": "Optolong",
-            "filter2Name": "L-eNhance 2\"",
-            "filter2Type": "MULTIBAND",
-            "moonIllumination": 0.004598811307457984,
-            "date": "2024-10-03",
-            "isSynthetic": false,
-            "binning": 1,
-            "number": 80,
-            "duration": "180.0000",
-            "iso": null,
-            "gain": "100.00",
-            "fNumber": "2.80",
-            "sensorCooling": -10,
-            "darks": null,
-            "flats": null,
-            "flatDarks": null,
-            "bias": null,
-            "bortle": 7.0,
-            "meanSqm": null,
-            "meanFwhm": null,
-            "temperature": null,
-            "advanced": false,
-            "savedOn": "2025-03-24T18:59:42.331060",
-            "image": 1022575,
-            "filter": null,
-            "filter2": 2621
+            id: 2516244,
+            filter2Brand: "Optolong",
+            filter2Name: 'L-eNhance 2"',
+            filter2Type: "MULTIBAND",
+            moonIllumination: 0.004598811307457984,
+            date: "2024-10-03",
+            isSynthetic: false,
+            binning: 1,
+            number: 80,
+            duration: "180.0000",
+            iso: null,
+            gain: "100.00",
+            fNumber: "2.80",
+            sensorCooling: -10,
+            darks: null,
+            flats: null,
+            flatDarks: null,
+            bias: null,
+            bortle: 7.0,
+            meanSqm: null,
+            meanFwhm: null,
+            temperature: null,
+            advanced: false,
+            savedOn: "2025-03-24T18:59:42.331060",
+            image: 1022575,
+            filter: null,
+            filter2: 2621
           },
           {
-            "id": 2516245,
-            "filter2Brand": "Optolong",
-            "filter2Name": "L-eNhance 2\"",
-            "filter2Type": "MULTIBAND",
-            "moonIllumination": 0.470051888627291,
-            "date": "2024-10-10",
-            "isSynthetic": false,
-            "binning": 1,
-            "number": 89,
-            "duration": "180.0000",
-            "iso": null,
-            "gain": "100.00",
-            "fNumber": "2.80",
-            "sensorCooling": -10,
-            "darks": null,
-            "flats": null,
-            "flatDarks": null,
-            "bias": null,
-            "bortle": 7.0,
-            "meanSqm": null,
-            "meanFwhm": null,
-            "temperature": null,
-            "advanced": false,
-            "savedOn": "2025-03-24T18:59:42.343000",
-            "image": 1022575,
-            "filter": null,
-            "filter2": 2621
+            id: 2516245,
+            filter2Brand: "Optolong",
+            filter2Name: 'L-eNhance 2"',
+            filter2Type: "MULTIBAND",
+            moonIllumination: 0.470051888627291,
+            date: "2024-10-10",
+            isSynthetic: false,
+            binning: 1,
+            number: 89,
+            duration: "180.0000",
+            iso: null,
+            gain: "100.00",
+            fNumber: "2.80",
+            sensorCooling: -10,
+            darks: null,
+            flats: null,
+            flatDarks: null,
+            bias: null,
+            bortle: 7.0,
+            meanSqm: null,
+            meanFwhm: null,
+            temperature: null,
+            advanced: false,
+            savedOn: "2025-03-24T18:59:42.343000",
+            image: 1022575,
+            filter: null,
+            filter2: 2621
           }
         ]
       };
@@ -725,41 +726,48 @@ describe("FilterAcquisitionService", () => {
       expect(summaries[FilterType.MULTIBAND].number).toBe(null);
       expect(summaries[FilterType.MULTIBAND].duration).toBe(null);
       expect(summaries[FilterType.MULTIBAND]._mix).toBe(true);
-      
+
       // Verify dates are collected correctly
       expect(summaries[FilterType.MULTIBAND].dates.length).toBe(9);
-      expect(summaries[FilterType.MULTIBAND].dates).toEqual(
-        ["2024-10-29", "2024-12-19", "2024-10-26", "2024-11-20", "2024-11-25", "2024-11-26", "2024-09-27",
-          "2024-10-03", "2024-10-10"]
-      );
-      
+      expect(summaries[FilterType.MULTIBAND].dates).toEqual([
+        "2024-10-29",
+        "2024-12-19",
+        "2024-10-26",
+        "2024-11-20",
+        "2024-11-25",
+        "2024-11-26",
+        "2024-09-27",
+        "2024-10-03",
+        "2024-10-10"
+      ]);
+
       // Calculate expected total integration time
       // 24*300 + 36*180 + 42*300 + 45*300 + 55*300 + 66*180 + 73*180 + 80*180 + 89*180
-      const expectedIntegration = 
-        24*300 + 36*180 + 42*300 + 45*300 + 55*300 + 66*180 + 73*180 + 80*180 + 89*180;
+      const expectedIntegration =
+        24 * 300 + 36 * 180 + 42 * 300 + 45 * 300 + 55 * 300 + 66 * 180 + 73 * 180 + 80 * 180 + 89 * 180;
       expect(summaries[FilterType.MULTIBAND].totalIntegration).toBe(expectedIntegration);
     });
-    
+
     it("should correctly handle a sequence of three acquisitions with mixed durations", () => {
       const mockImage: any = {
         deepSkyAcquisitions: [
           {
-            "filter2Type": "MULTIBAND",
-            "number": 10,
-            "duration": "300.0000",
-            "date": "2024-10-29"
+            filter2Type: "MULTIBAND",
+            number: 10,
+            duration: "300.0000",
+            date: "2024-10-29"
           },
           {
-            "filter2Type": "MULTIBAND",
-            "number": 15,
-            "duration": "180.0000", // Different duration here
-            "date": "2024-12-19"
+            filter2Type: "MULTIBAND",
+            number: 15,
+            duration: "180.0000", // Different duration here
+            date: "2024-12-19"
           },
           {
-            "filter2Type": "MULTIBAND",
-            "number": 20,
-            "duration": "300.0000", // Same as first, but should remain as "mixed" since second was different
-            "date": "2024-10-26"
+            filter2Type: "MULTIBAND",
+            number: 20,
+            duration: "300.0000", // Same as first, but should remain as "mixed" since second was different
+            date: "2024-10-26"
           }
         ]
       };
@@ -770,32 +778,32 @@ describe("FilterAcquisitionService", () => {
       expect(summaries[FilterType.MULTIBAND]._mix).toBe(true);
       expect(summaries[FilterType.MULTIBAND].number).toBe(null);
       expect(summaries[FilterType.MULTIBAND].duration).toBe(null);
-      
+
       // Total integration should still be calculated correctly
-      const expectedIntegration = 10*300 + 15*180 + 20*300;
+      const expectedIntegration = 10 * 300 + 15 * 180 + 20 * 300;
       expect(summaries[FilterType.MULTIBAND].totalIntegration).toBe(expectedIntegration);
     });
-    
+
     it("should maintain consistent duration across multiple acquisitions with the same duration", () => {
       const mockImage: any = {
         deepSkyAcquisitions: [
           {
-            "filter2Type": "MULTIBAND",
-            "number": 10,
-            "duration": "300.0000",
-            "date": "2024-10-29"
+            filter2Type: "MULTIBAND",
+            number: 10,
+            duration: "300.0000",
+            date: "2024-10-29"
           },
           {
-            "filter2Type": "MULTIBAND",
-            "number": 15,
-            "duration": "300.0000", // Same duration
-            "date": "2024-12-19"
+            filter2Type: "MULTIBAND",
+            number: 15,
+            duration: "300.0000", // Same duration
+            date: "2024-12-19"
           },
           {
-            "filter2Type": "MULTIBAND",
-            "number": 20,
-            "duration": "300.0000", // Same duration
-            "date": "2024-10-26"
+            filter2Type: "MULTIBAND",
+            number: 20,
+            duration: "300.0000", // Same duration
+            date: "2024-10-26"
           }
         ]
       };
@@ -806,34 +814,34 @@ describe("FilterAcquisitionService", () => {
       expect(summaries[FilterType.MULTIBAND]._mix).toBe(false);
       expect(summaries[FilterType.MULTIBAND].number).toBe(45); // 10 + 15 + 20
       expect(summaries[FilterType.MULTIBAND].duration).toBe("300");
-      
+
       // Total integration should be calculated correctly
       const expectedIntegration = (10 + 15 + 20) * 300;
       expect(summaries[FilterType.MULTIBAND].totalIntegration).toBe(expectedIntegration);
     });
-    
+
     it("should handle the mix flag correctly when alternating between same and different durations", () => {
       const mockImage: any = {
         deepSkyAcquisitions: [
           {
-            "filter2Type": "MULTIBAND",
-            "number": 10,
-            "duration": "300.0000",
+            filter2Type: "MULTIBAND",
+            number: 10,
+            duration: "300.0000"
           },
           {
-            "filter2Type": "MULTIBAND",
-            "number": 15,
-            "duration": "180.0000", // Different duration from first
+            filter2Type: "MULTIBAND",
+            number: 15,
+            duration: "180.0000" // Different duration from first
           },
           {
-            "filter2Type": "MULTIBAND",
-            "number": 20,
-            "duration": "180.0000", // Same as second
+            filter2Type: "MULTIBAND",
+            number: 20,
+            duration: "180.0000" // Same as second
           },
           {
-            "filter2Type": "MULTIBAND",
-            "number": 25,
-            "duration": "300.0000", // Same as first
+            filter2Type: "MULTIBAND",
+            number: 25,
+            duration: "300.0000" // Same as first
           }
         ]
       };
@@ -844,9 +852,9 @@ describe("FilterAcquisitionService", () => {
       expect(summaries[FilterType.MULTIBAND]._mix).toBe(true);
       expect(summaries[FilterType.MULTIBAND].number).toBe(null);
       expect(summaries[FilterType.MULTIBAND].duration).toBe(null);
-      
+
       // Total integration should still be calculated correctly
-      const expectedIntegration = 10*300 + 15*180 + 20*180 + 25*300;
+      const expectedIntegration = 10 * 300 + 15 * 180 + 20 * 180 + 25 * 300;
       expect(summaries[FilterType.MULTIBAND].totalIntegration).toBe(expectedIntegration);
     });
   });
@@ -887,7 +895,7 @@ describe("FilterAcquisitionService", () => {
       const filterSummaries = {
         "Custom Filter": { totalIntegration: 1000, number: 5, duration: "200" },
         [FilterType.L]: { totalIntegration: 2000, number: 10, duration: "200" },
-        "UNKNOWN": { totalIntegration: 500, number: 2, duration: "250" }
+        UNKNOWN: { totalIntegration: 500, number: 2, duration: "250" }
       };
 
       const sortedArray = service.getSortedFilterSummaries(filterSummaries);

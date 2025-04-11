@@ -2,20 +2,9 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "types": [
-      "googlemaps",
-      "hammerjs"
-    ],
-    "resolveJsonModule": true,
+    "types": ["googlemaps", "hammerjs"],
+    "resolveJsonModule": true
   },
-  "files": [
-    "main.ts",
-    "polyfills.ts",
-    "types/coordinate-utils.d.ts"
-  ],
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*.generator.ts",
-    "**/*.service-mock.ts"
-  ]
+  "files": ["main.ts", "polyfills.ts", "types/coordinate-utils.d.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.generator.ts", "**/*.service-mock.ts"]
 }

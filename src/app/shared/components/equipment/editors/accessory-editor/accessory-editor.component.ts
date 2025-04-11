@@ -1,28 +1,28 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, OnInit, Component } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { FormlyFieldService } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { AccessoryService, AccessoryDisplayProperty } from "@features/equipment/services/accessory.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { AccessoryInterface, AccessoryType } from "@features/equipment/types/accessory.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { MainState } from "@app/store/state";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { FormlyFieldService } from "@core/services/formly-field.service";
-import { AccessoryInterface, AccessoryType } from "@features/equipment/types/accessory.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { switchMap, take } from "rxjs/operators";
-import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { Constants } from "@shared/constants";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { switchMap, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-accessory-editor",

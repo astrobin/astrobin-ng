@@ -1,16 +1,16 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { SearchService } from "@core/services/search.service";
+import { ChangeDetectorRef, OnDestroy, OnInit, Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { MainState } from "@app/store/state";
+import { ImageInterface, ImageRevisionInterface, FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
 import { Subscription } from "rxjs";
-import { CollapseSyncService } from "@core/services/collapse-sync.service";
 import { filter } from "rxjs/operators";
 
 const COLLAPSE_COOKIE_PREFIX = "astrobin-collapse-";
@@ -50,13 +50,13 @@ export abstract class ImageViewerSectionBaseComponent extends BaseComponentDirec
     super.ngOnInit();
     this.collapsed = this.cookieService.get(`${COLLAPSE_COOKIE_PREFIX}${this.constructor.name}`) === "true";
 
-    this.collapseSubscription = this.collapseSyncService.collapseState$.pipe(
-      filter(state => state.componentType === this.constructor.name)
-    ).subscribe(state => {
-      this.collapsed = state.isCollapsed;
-      this.changeDetectorRef.markForCheck();
-      this._updateCollapseCookie();
-    });
+    this.collapseSubscription = this.collapseSyncService.collapseState$
+      .pipe(filter(state => state.componentType === this.constructor.name))
+      .subscribe(state => {
+        this.collapsed = state.isCollapsed;
+        this.changeDetectorRef.markForCheck();
+        this._updateCollapseCookie();
+      });
   }
 
   ngOnDestroy() {
@@ -69,7 +69,7 @@ export abstract class ImageViewerSectionBaseComponent extends BaseComponentDirec
   protected search(model: SearchModelInterface): void {
     const params = this.searchService.modelToParams(model);
     this.imageViewerService.closeSlideShow(false);
-    this.router.navigateByUrl(`/search?p=${params}`);
+    void this.router.navigateByUrl(`/search?p=${params}`);
   }
 
   protected toggleCollapse(): void {

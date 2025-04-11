@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
 import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
@@ -8,12 +7,13 @@ import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
 import { UserSubscriptionServiceInterface } from "@core/services/user-subscription/user-subscription.service-interface";
 import { SubscriptionName } from "@core/types/subscription-name.type";
-import { combineLatest, forkJoin, Observable, zip } from "rxjs";
-import { map, switchMap, take } from "rxjs/operators";
 import { selectAuth, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
-import { TranslateService } from "@ngx-translate/core";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { combineLatest, forkJoin, zip, Observable } from "rxjs";
+import { map, switchMap, take } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -67,10 +67,10 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
           ) {
             return this.translateService.instant(
               "AstroBin doesn't support pro-rated subscription upgrades for customers with a non-recurring " +
-              "subscription or a subscription purchased via PayPal, but we're happy to make it happen manually. If " +
-              "you're on a lower subscription tier and would like to upgrade to <strong>{{0}}</strong>, please just " +
-              "subscribe using the button below, and then contact us at {{1}} to get a credit for the unused time on " +
-              "your old subscription. Thanks!",
+                "subscription or a subscription purchased via PayPal, but we're happy to make it happen manually. If " +
+                "you're on a lower subscription tier and would like to upgrade to <strong>{{0}}</strong>, please just " +
+                "subscribe using the button below, and then contact us at {{1}} to get a credit for the unused time on " +
+                "your old subscription. Thanks!",
               {
                 0: this.subscriptionsService.getName(product),
                 1: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
@@ -79,7 +79,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
           } else {
             return this.translateService.instant(
               "AstroBin couldn't recognize your subscription and this shouldn't happen. Please contact us at " +
-              "{{0}} so we can investigate, thanks!",
+                "{{0}} so we can investigate, thanks!",
               {
                 0: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
               }
@@ -121,7 +121,9 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
             state.auth.userSubscriptions.filter(userSubscription => {
               const expiration = new Date(userSubscription.expires);
               expiration.setUTCHours(23, 59, 59, 999);
-              return userSubscription.subscription === subscription.id && userSubscription.active && expiration >= new Date();
+              return (
+                userSubscription.subscription === subscription.id && userSubscription.active && expiration >= new Date()
+              );
             }).length > 0
           ) {
             return true;
@@ -140,9 +142,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     return this.store$.pipe(
       take(1),
       map(state => {
-        const subscription: SubscriptionInterface = state.app.subscriptions.filter(
-          s => s.name === subscriptionName
-        )[0];
+        const subscription: SubscriptionInterface = state.app.subscriptions.filter(s => s.name === subscriptionName)[0];
 
         if (!subscription) {
           return null;
@@ -218,37 +218,41 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     return this.store$.select(selectAuth).pipe(
       take(1),
       map(auth => auth.userProfile),
-      switchMap(userProfile => this.hasValidSubscription$(userProfile, [
-        SubscriptionName.ASTROBIN_ULTIMATE_2020,
-        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
-        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY
-      ]))
+      switchMap(userProfile =>
+        this.hasValidSubscription$(userProfile, [
+          SubscriptionName.ASTROBIN_ULTIMATE_2020,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY
+        ])
+      )
     );
   }
 
   isDonor$(): Observable<boolean> {
     return this.store$.select(selectCurrentUserProfile).pipe(
       take(1),
-      switchMap(userProfile => this.hasValidSubscription$(userProfile, [
-        SubscriptionName.ASTROBIN_DONOR_COFFEE_MONTHLY,
-        SubscriptionName.ASTROBIN_DONOR_SNACK_MONTHLY,
-        SubscriptionName.ASTROBIN_DONOR_PIZZA_MONTHLY,
-        SubscriptionName.ASTROBIN_DONOR_MOVIE_MONTHLY,
-        SubscriptionName.ASTROBIN_DONOR_DINNER_MONTHLY,
-        SubscriptionName.ASTROBIN_DONOR_BRONZE_MONTHLY,
-        SubscriptionName.ASTROBIN_DONOR_SILVER_MONTHLY,
-        SubscriptionName.ASTROBIN_DONOR_GOLD_MONTHLY,
-        SubscriptionName.ASTROBIN_DONOR_PLATINUM_MONTHLY,
-        SubscriptionName.ASTROBIN_DONOR_COFFEE_YEARLY,
-        SubscriptionName.ASTROBIN_DONOR_SNACK_YEARLY,
-        SubscriptionName.ASTROBIN_DONOR_PIZZA_YEARLY,
-        SubscriptionName.ASTROBIN_DONOR_MOVIE_YEARLY,
-        SubscriptionName.ASTROBIN_DONOR_DINNER_YEARLY,
-        SubscriptionName.ASTROBIN_DONOR_BRONZE_YEARLY,
-        SubscriptionName.ASTROBIN_DONOR_SILVER_YEARLY,
-        SubscriptionName.ASTROBIN_DONOR_GOLD_YEARLY,
-        SubscriptionName.ASTROBIN_DONOR_PLATINUM_YEARLY
-      ]))
+      switchMap(userProfile =>
+        this.hasValidSubscription$(userProfile, [
+          SubscriptionName.ASTROBIN_DONOR_COFFEE_MONTHLY,
+          SubscriptionName.ASTROBIN_DONOR_SNACK_MONTHLY,
+          SubscriptionName.ASTROBIN_DONOR_PIZZA_MONTHLY,
+          SubscriptionName.ASTROBIN_DONOR_MOVIE_MONTHLY,
+          SubscriptionName.ASTROBIN_DONOR_DINNER_MONTHLY,
+          SubscriptionName.ASTROBIN_DONOR_BRONZE_MONTHLY,
+          SubscriptionName.ASTROBIN_DONOR_SILVER_MONTHLY,
+          SubscriptionName.ASTROBIN_DONOR_GOLD_MONTHLY,
+          SubscriptionName.ASTROBIN_DONOR_PLATINUM_MONTHLY,
+          SubscriptionName.ASTROBIN_DONOR_COFFEE_YEARLY,
+          SubscriptionName.ASTROBIN_DONOR_SNACK_YEARLY,
+          SubscriptionName.ASTROBIN_DONOR_PIZZA_YEARLY,
+          SubscriptionName.ASTROBIN_DONOR_MOVIE_YEARLY,
+          SubscriptionName.ASTROBIN_DONOR_DINNER_YEARLY,
+          SubscriptionName.ASTROBIN_DONOR_BRONZE_YEARLY,
+          SubscriptionName.ASTROBIN_DONOR_SILVER_YEARLY,
+          SubscriptionName.ASTROBIN_DONOR_GOLD_YEARLY,
+          SubscriptionName.ASTROBIN_DONOR_PLATINUM_YEARLY
+        ])
+      )
     );
   }
 
@@ -258,11 +262,18 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     const isClassicPremium$ = this.isClassicPremium$();
     const isPremium$ = this.isPremium$();
     const isUltimate$ = this.isUltimate$();
-    const allowAstronomyAds$ = this.store$.select(selectCurrentUserProfile).pipe(
-      map(userProfile => userProfile && userProfile.allowAstronomyAds)
-    );
+    const allowAstronomyAds$ = this.store$
+      .select(selectCurrentUserProfile)
+      .pipe(map(userProfile => userProfile && userProfile.allowAstronomyAds));
 
-    return combineLatest([isDonor$, isClassicLite$, isClassicPremium$, isPremium$, isUltimate$, allowAstronomyAds$]).pipe(
+    return combineLatest([
+      isDonor$,
+      isClassicLite$,
+      isClassicPremium$,
+      isPremium$,
+      isUltimate$,
+      allowAstronomyAds$
+    ]).pipe(
       map(([isDonor, isClassicLite, isClassicPremium, isPremium, isUltimate, allowAstronomyAds]) => {
         if (isDonor || isClassicLite || isClassicPremium) {
           // Donors, Classic Lite, and Classic Premium users never see ads
@@ -328,9 +339,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
   }
 
   canPlateSolve$(): Observable<boolean> {
-    return this.isFree$().pipe(
-      map(isFree => !isFree)
-    );
+    return this.isFree$().pipe(map(isFree => !isFree));
   }
 
   canPlateSolveAdvanced$(): Observable<boolean> {
@@ -417,10 +426,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
 
   // Old Lite via PayPal.
   isClassicLite$(): Observable<boolean> {
-    return this.hasValidSubscription$(null, [
-      SubscriptionName.ASTROBIN_LITE,
-      SubscriptionName.ASTROBIN_LITE_AUTORENEW
-    ]);
+    return this.hasValidSubscription$(null, [SubscriptionName.ASTROBIN_LITE, SubscriptionName.ASTROBIN_LITE_AUTORENEW]);
   }
 
   // Any Lite.
@@ -462,11 +468,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
   }
 
   isFree$(): Observable<boolean> {
-    return forkJoin([
-      this.isLite$(),
-      this.isPremium$(),
-      this.isUltimate$()
-    ]).pipe(
+    return forkJoin([this.isLite$(), this.isPremium$(), this.isUltimate$()]).pipe(
       map(([isLite, isPremium, isUltimate]) => !isLite && !isPremium && !isUltimate)
     );
   }

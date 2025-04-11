@@ -1,11 +1,11 @@
 import { Component, Input } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
 import { MainState } from "@app/store/state";
+import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 
 @Component({
@@ -57,7 +57,7 @@ export class PriceComponent extends BaseComponentDirective {
     const componentInstance: InformationDialogComponent = modal.componentInstance;
     componentInstance.message = this.translateService.instant(
       "This price is prorated for the remaining days of your current subscription. This means that you will pay " +
-      "the reduced amount on your next billing date, and the full amount on the following billing dates."
+        "the reduced amount on your next billing date, and the full amount on the following billing dates."
     );
   }
 }

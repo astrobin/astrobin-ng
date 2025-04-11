@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SafeHtml } from "@angular/platform-browser";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { LabelType, Options } from "@angular-slider/ngx-slider";
+import { Options, LabelType } from "@angular-slider/ngx-slider";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-base-slider-size-filter.search-filter-component",

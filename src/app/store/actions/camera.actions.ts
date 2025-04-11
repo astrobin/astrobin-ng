@@ -7,13 +7,11 @@ import { CameraInterface } from "@core/interfaces/camera.interface";
 export class LoadCamera implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_CAMERA;
 
-  constructor(public payload: number) {
-  }
+  constructor(public payload: number) {}
 }
 
 export class LoadCameraSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_CAMERA_SUCCESS;
 
-  constructor(public payload: CameraInterface) {
-  }
+  constructor(public payload: CameraInterface) {}
 }

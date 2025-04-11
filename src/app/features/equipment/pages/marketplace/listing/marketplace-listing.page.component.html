@@ -1,9 +1,9 @@
 <astrobin-mobile-menu
-  (menuClose)="onMobileMenuClose()"
-  (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
   [descriptionTemplate]="descriptionTemplate"
   [iconsTemplate]="shareButtonsTemplate"
+  [titleTemplate]="titleTemplate"
+  (menuClose)="onMobileMenuClose()"
+  (menuOpen)="onMobileMenuOpen()"
 ></astrobin-mobile-menu>
 
 <div class="page has-breadcrumb has-mobile-buttons-bar has-mobile-menu">
@@ -16,8 +16,7 @@
         {{ title }}
       </span>
 
-      <ng-container *ngIf="deviceService.mdMin()" [ngTemplateOutlet]="descriptionTemplate">
-      </ng-container>
+      <ng-container *ngIf="deviceService.mdMin()" [ngTemplateOutlet]="descriptionTemplate"> </ng-container>
 
       <a [routerLink]="['/', 'equipment', 'marketplace']" class="d-block d-lg-none mt-3 mb-3 back-to-marketplace">
         <fa-icon icon="arrow-left"></fa-icon>
@@ -42,8 +41,8 @@
                 class="mt-2 mt-md-0 ms-md-2 d-block d-md-inline-block float-md-end"
               >
                 <button
-                  (click)="approve()"
                   [class.loading]="loadingService.loading$ | async"
+                  (click)="approve()"
                   class="btn btn-link btn-no-block"
                 >
                   <fa-icon icon="check"></fa-icon>
@@ -59,9 +58,9 @@
                 </a>
 
                 <button
-                  (click)="delete()"
                   *ngIf="!equipmentMarketplaceService.listingSold(listing)"
                   [class.loading]="loadingService.loading$ | async"
+                  (click)="delete()"
                   class="btn btn-link btn-no-block ms-md-2"
                 >
                   <fa-icon icon="trash-alt"></fa-icon>
@@ -69,20 +68,17 @@
               </span>
             </div>
 
-            <astrobin-marketplace-listing
-              [listing]="listing"
-            ></astrobin-marketplace-listing>
+            <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
 
             <astrobin-nested-comments
               [addCommentLabel]="'Ask a question' | translate"
               [allowSelfReply]="false"
               [contentType]="listingContentType"
-              [info]="currentUserWrapper.user?.id !== listing.user
-                ? (
-                  'Questions asked here are publicly visible. If you want to contact the user in a private ' +
-                  'conversation, use the \'Message user privately\' button.' | translate
-                )
-                : null
+              [info]="
+                currentUserWrapper.user?.id !== listing.user
+                  ? ('Questions asked here are publicly visible. If you want to contact the user in a private ' +
+                      'conversation, use the \'Message user privately\' button.' | translate)
+                  : null
               "
               [noCommentsLabel]="'There are no questions or discussions yet.'"
               [objectId]="listing.id"
@@ -98,10 +94,7 @@
           </div>
 
           <div class="col-md-4 col-lg-3 order-1 order-md-2">
-            <astrobin-marketplace-user-card
-              [listing]="listing"
-              class="d-block"
-            ></astrobin-marketplace-user-card>
+            <astrobin-marketplace-user-card [listing]="listing" class="d-block"></astrobin-marketplace-user-card>
 
             <div *ngIf="currentUserWrapper.user | isMarketplaceModerator" class="alert alert-warning mt-4">
               <fa-icon icon="exclamation-triangle"></fa-icon>
@@ -114,15 +107,15 @@
               "
             >
               <ng-container
-                [ngTemplateOutletContext]="{ currentUserWrapper }"
                 [ngTemplateOutlet]="sidebarOwnerTemplate"
+                [ngTemplateOutletContext]="{ currentUserWrapper }"
               ></ng-container>
             </ng-container>
 
             <ng-container *ngIf="listingUser.id !== currentUserWrapper.user?.id">
               <ng-container
-                [ngTemplateOutletContext]="{ currentUserWrapper, listingContentType }"
                 [ngTemplateOutlet]="sidebarNonOwnerTemplate"
+                [ngTemplateOutletContext]="{ currentUserWrapper, listingContentType }"
               ></ng-container>
             </ng-container>
           </div>
@@ -145,10 +138,10 @@
 </ng-template>
 
 <ng-template #offers>
-  <div class="mt-4" id="offers">
+  <div id="offers" class="mt-4">
     <astrobin-marketplace-offer-summary
-      (startPrivateConversation)="startPrivateConversation($event)"
       [listing]="listing"
+      (startPrivateConversation)="startPrivateConversation($event)"
     ></astrobin-marketplace-offer-summary>
   </div>
   <!-- offers -->
@@ -166,8 +159,10 @@
     </a>
 
     <button
+      *ngIf="
+        !equipmentMarketplaceService.listingSold(listing) && listing.listingType === MarketplaceListingType.FOR_SALE
+      "
       (click)="markAsSold()"
-      *ngIf="!equipmentMarketplaceService.listingSold(listing) && listing.listingType === MarketplaceListingType.FOR_SALE"
       class="btn btn-secondary btn-mark-as-sold d-block w-100 mt-2"
     >
       <fa-icon icon="sack-dollar"></fa-icon>
@@ -175,8 +170,8 @@
     </button>
 
     <button
-      (click)="delete()"
       *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)"
+      (click)="delete()"
       class="btn btn-danger btn-delete d-block w-100 mt-2"
     >
       <fa-icon icon="trash"></fa-icon>
@@ -184,8 +179,8 @@
     </button>
 
     <button
-      (click)="renew()"
       *ngIf="!equipmentMarketplaceService.listingSold(listing) && equipmentMarketplaceService.listingExpired(listing)"
+      (click)="renew()"
       class="btn btn-secondary btn-renew d-block w-100 mt-2"
     >
       <fa-icon icon="redo"></fa-icon>
@@ -207,15 +202,15 @@
             class="avatar-wrapper text-center d-flex flex-column align-items-center"
           >
             <astrobin-avatar
-              (click)="startPrivateConversation(privateConversation, $event)"
               [link]="false"
               [userId]="privateConversation.user"
+              (click)="startPrivateConversation(privateConversation, $event)"
             ></astrobin-avatar>
 
             <astrobin-username
-              (click)="startPrivateConversation(privateConversation, $event)"
               [link]="false"
               [userId]="privateConversation.user"
+              (click)="startPrivateConversation(privateConversation, $event)"
               class="mt-2 d-inline-block"
             ></astrobin-username>
 
@@ -251,14 +246,13 @@
         [contentType]="listingContentType.id"
         [objectId]="listing.id"
         [userId]="currentUserWrapper.user?.id"
-        btnClass="btn btn-secondary w-100"
         class="btn-follow p-0 mt-md-4 w-100"
+        btnClass="btn btn-secondary w-100"
         propertyType="follow"
       ></astrobin-toggle-property>
     </ng-container>
 
     <button
-      (click)="onMessageUserClicked($event)"
       *ngIf="listing.approved"
       [class.btn-primary]="
         currentUserWrapper.user &&
@@ -271,6 +265,7 @@
         equipmentMarketplaceService.listingSold(listing)
       "
       [class.loading]="loadingService.loading$ | async"
+      (click)="onMessageUserClicked($event)"
       class="btn btn-message mt-md-2 w-100"
     >
       <fa-icon icon="envelope"></fa-icon>
@@ -278,8 +273,8 @@
       <ng-container
         *ngIf="
           currentUserWrapper.user &&
-          equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
-          !equipmentMarketplaceService.listingSold(listing);
+            equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
+            !equipmentMarketplaceService.listingSold(listing);
           else messageUser
         "
       >
@@ -309,15 +304,15 @@
     </button>
 
     <button
-      (click)="onMakeAnOfferClicked($event)"
       *ngIf="
-          listing.listingType === MarketplaceListingType.FOR_SALE &&
-          equipmentMarketplaceService.listingHasNonSoldNonReservedItems(listing) &&
-          !equipmentMarketplaceService.listingHasPendingOffers(listing) &&
-          !equipmentMarketplaceService.listingHasAcceptedOffers(listing) &&
-          listing.approved
-        "
+        listing.listingType === MarketplaceListingType.FOR_SALE &&
+        equipmentMarketplaceService.listingHasNonSoldNonReservedItems(listing) &&
+        !equipmentMarketplaceService.listingHasPendingOffers(listing) &&
+        !equipmentMarketplaceService.listingHasAcceptedOffers(listing) &&
+        listing.approved
+      "
       [class.loading]="loadingService.loading$ | async"
+      (click)="onMakeAnOfferClicked($event)"
       class="btn btn-primary btn-make-offer mt-md-2 w-100"
     >
       <fa-icon icon="dollar"></fa-icon>
@@ -325,9 +320,9 @@
     </button>
 
     <button
-      (click)="onReportListingClicked($event)"
       *ngIf="listing.approved"
       [class.loading]="loadingService.loading$ | async"
+      (click)="onReportListingClicked($event)"
       class="btn btn-link btn-report link-secondary mt-md-3 px-4 px-lg-2"
     >
       <fa-icon icon="flag"></fa-icon>
@@ -345,11 +340,11 @@
     <span class="listing-info-section">
       <fa-icon icon="calendar"></fa-icon>
       <ng-container *ngIf="listing.approved">
-        {{ "Published" | translate }}: {{ listing.approved | localDate | timeago : true }}
+        {{ "Published" | translate }}: {{ listing.approved | localDate | timeago: true }}
       </ng-container>
 
       <ng-container *ngIf="!listing.approved">
-        {{ "Created" | translate }}: {{ listing.created | localDate | timeago : true }}
+        {{ "Created" | translate }}: {{ listing.created | localDate | timeago: true }}
       </ng-container>
     </span>
 
@@ -361,10 +356,10 @@
       <span *ngIf="listing.followerCount === 1" [translate]="'One follower'"></span>
       <span
         *ngIf="listing.followerCount > 1"
+        [translate]="'{{0}} followers'"
         [translateParams]="{
           '0': listing.followerCount
         }"
-        [translate]="'{{0}} followers'"
       ></span>
     </span>
 
@@ -376,10 +371,10 @@
       <span *ngIf="listing.viewCount === 1" [translate]="'One view'"></span>
       <span
         *ngIf="listing.viewCount > 1"
+        [translate]="'{{0}} views'"
         [translateParams]="{
           '0': listing.viewCount
         }"
-        [translate]="'{{0}} views'"
       ></span>
     </span>
 
@@ -387,7 +382,7 @@
 
     <span class="listing-info-section">
       <fa-icon icon="clock"></fa-icon>
-      {{ "Expiration" }}: {{ listing.expiration | localDate | timeago : true }}
+      {{ "Expiration" }}: {{ listing.expiration | localDate | timeago: true }}
     </span>
   </span>
 </ng-template>

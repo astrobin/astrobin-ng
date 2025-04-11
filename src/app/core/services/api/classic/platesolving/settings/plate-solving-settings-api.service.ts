@@ -1,15 +1,15 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { PlateSolvingAdvancedSettingsInterface } from "@core/interfaces/plate-solving-advanced-settings.interface";
+import { PlateSolvingSettingsInterface } from "@core/interfaces/plate-solving-settings.interface";
 import { SolutionInterface } from "@core/interfaces/solution.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { PlateSolvingSettingsInterface } from "@core/interfaces/plate-solving-settings.interface";
-import { PlateSolvingAdvancedSettingsInterface } from "@core/interfaces/plate-solving-advanced-settings.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 
 @Injectable({
   providedIn: "root"
@@ -29,20 +29,18 @@ export class PlateSolvingSettingsApiService extends BaseClassicApiService {
 
     url = UtilsService.addOrUpdateUrlParam(url, "solution", solutionId.toString());
 
-    return this.http
-      .get<PaginatedApiResultInterface<PlateSolvingSettingsInterface>>(url)
-      .pipe(
-        map(response => {
-          if (response.count === 0) {
-            return null;
-          }
-          return response.results[0];
-        })
-      );
+    return this.http.get<PaginatedApiResultInterface<PlateSolvingSettingsInterface>>(url).pipe(
+      map(response => {
+        if (response.count === 0) {
+          return null;
+        }
+        return response.results[0];
+      })
+    );
   }
 
   updateSettings(settings: PlateSolvingSettingsInterface): Observable<PlateSolvingSettingsInterface> {
-    let url = this.configUrl + `/settings/${settings.id}/`;
+    const url = this.configUrl + `/settings/${settings.id}/`;
     return this.http.put<PlateSolvingSettingsInterface>(url, settings);
   }
 
@@ -51,24 +49,27 @@ export class PlateSolvingSettingsApiService extends BaseClassicApiService {
 
     url = UtilsService.addOrUpdateUrlParam(url, "solution", solutionId.toString());
 
-    return this.http
-      .get<PaginatedApiResultInterface<PlateSolvingAdvancedSettingsInterface>>(url)
-      .pipe(
-        map(response => {
-          if (response.count === 0) {
-            return null;
-          }
-          return response.results[0];
-        })
-      );
+    return this.http.get<PaginatedApiResultInterface<PlateSolvingAdvancedSettingsInterface>>(url).pipe(
+      map(response => {
+        if (response.count === 0) {
+          return null;
+        }
+        return response.results[0];
+      })
+    );
   }
 
-  updateAdvancedSettings(settings: PlateSolvingAdvancedSettingsInterface): Observable<PlateSolvingAdvancedSettingsInterface> {
-    let url = this.configUrl + `/advanced-settings/${settings.id}/`;
+  updateAdvancedSettings(
+    settings: PlateSolvingAdvancedSettingsInterface
+  ): Observable<PlateSolvingAdvancedSettingsInterface> {
+    const url = this.configUrl + `/advanced-settings/${settings.id}/`;
     return this.http.put<PlateSolvingAdvancedSettingsInterface>(url, settings);
   }
 
-  uploadSampleRawFrameFile(settingsId: PlateSolvingAdvancedSettingsInterface["id"], file: File): Observable<PlateSolvingAdvancedSettingsInterface> {
+  uploadSampleRawFrameFile(
+    settingsId: PlateSolvingAdvancedSettingsInterface["id"],
+    file: File
+  ): Observable<PlateSolvingAdvancedSettingsInterface> {
     const url = this.configUrl + `/advanced-settings/${settingsId}/sample-raw-frame-file/`;
     const formData = new FormData();
     formData.append("sample_raw_frame_file", file);

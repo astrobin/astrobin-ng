@@ -1,15 +1,15 @@
-import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges, Component, ViewChild } from "@angular/core";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgSelectComponent } from "@ng-select/ng-select";
+import { Actions, ofType } from "@ngrx/effects";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { isObservable, Subject, Subscription } from "rxjs";
-import { debounceTime, distinctUntilChanged, map, take, tap } from "rxjs/operators";
-import { NgSelectComponent } from "@ng-select/ng-select";
-import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { Actions, ofType } from "@ngrx/effects";
-import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { Subscription, isObservable, Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged, map, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-formly-field-ng-select",
@@ -140,7 +140,8 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     if (
       !!this.props.changeConfirmationCondition &&
       UtilsService.isFunction(this.props.changeConfirmationCondition) &&
-      this.props.changeConfirmationCondition(this._previousModelValue, event.value)) {
+      this.props.changeConfirmationCondition(this._previousModelValue, event.value)
+    ) {
       const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
       const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
@@ -174,9 +175,9 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
 
     if (this.props.enableFullscreen && !this.fullscreen) {
       this.fullscreen = true;
-      this._ngSelectModalRef = this.modalService.open(this._ngSelectModal, { 
+      this._ngSelectModalRef = this.modalService.open(this._ngSelectModal, {
         size: "xxl",
-        windowClass: "equipment-item-browser-fullscreen-modal" 
+        windowClass: "equipment-item-browser-fullscreen-modal"
       });
       this._ngSelectModalRef.shown.pipe(take(1)).subscribe(() => {
         const elementSelector = ".modal .ng-select input";

@@ -1,10 +1,10 @@
 <div
   #dropListContainer
   [class.has-files]="selectedFiles?.length > 0"
-  [class.multiple]="props.multiple"
   [class.image]="!!props.image"
-  cdkDropListGroup
+  [class.multiple]="props.multiple"
   class="upload-container flex-wrap"
+  cdkDropListGroup
 >
   <astrobin-loading-indicator *ngIf="(loadingService.loading$ | async) === true"></astrobin-loading-indicator>
 
@@ -13,19 +13,14 @@
       <ng-container *ngTemplateOutlet="fileChooserTemplate"></ng-container>
     </div>
 
-    <div
-      *ngFor="let selectedFile of selectedFiles; let i = index"
-      [cdkDropListData]="i"
-      cdkDropList
-      class="files"
-    >
+    <div *ngFor="let selectedFile of selectedFiles; let i = index" [cdkDropListData]="i" class="files" cdkDropList>
       <div
+        [cdkDragData]="i"
         (cdkDragDropped)="dragDropped($event)"
         (cdkDragEntered)="dragEntered($event)"
         (cdkDragMoved)="dragMoved($event)"
-        [cdkDragData]="i"
-        cdkDrag
         class="file"
+        cdkDrag
       >
         <img *ngIf="!!props.image; else notImageTemplate" [src]="selectedFile.url" alt="" />
         <ng-template #notImageTemplate>
@@ -45,8 +40,8 @@
 
 <ng-template #fileChooserTemplate>
   <div
-    (click)="openFileInput()"
     [class.has-files]="selectedFiles?.length > 0"
+    (click)="openFileInput()"
     class="file-chooser d-flex flex-column text-center"
   >
     <div class="file-icon">
@@ -87,10 +82,10 @@
 
     <input
       #fileInput
-      (change)="onChange($event)"
       [accept]="props.accept || '*'"
       [formlyAttributes]="field"
       [multiple]="props.multiple || false"
+      (change)="onChange($event)"
       id="file-input"
       style="display: none"
       type="file"
@@ -100,6 +95,6 @@
 
 <ng-template #maxFilesTemplate>
   <ng-container *ngIf="props.maxFiles">
-    <div class="text-muted">({{selectedFiles.length}}/{{ props.maxFiles }})</div>
+    <div class="text-muted">({{ selectedFiles.length }}/{{ props.maxFiles }})</div>
   </ng-container>
 </ng-template>

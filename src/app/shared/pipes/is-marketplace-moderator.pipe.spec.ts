@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { MockBuilder } from "ng-mocks";
 import { IsMarketplaceModeratorPipe } from "@shared/pipes/is-marketplace-moderator.pipe";
+import { MockBuilder } from "ng-mocks";
 
 describe("IsMarketplaceModeratorPipe", () => {
   let pipe: IsMarketplaceModeratorPipe;

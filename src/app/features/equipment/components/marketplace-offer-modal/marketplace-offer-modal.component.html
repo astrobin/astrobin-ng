@@ -1,7 +1,7 @@
-<div class="modal-header" id="marketplace-offer-modal">
+<div id="marketplace-offer-modal" class="modal-header">
   <h4 class="modal-title">{{ title }}</h4>
 
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -19,8 +19,8 @@
 
 <div class="modal-footer">
   <button
-    (click)="modal.dismiss()"
     [class.loading]="loadingService.loading$ | async"
+    (click)="modal.dismiss()"
     class="btn btn-outline-secondary"
     type="button"
   >
@@ -28,9 +28,9 @@
   </button>
 
   <button
-    (click)="onMakeOrModifyOfferButtonClick($event)"
     *ngIf="!equipmentMarketplaceService.listingSold(listing)"
     [class.loading]="loadingService.loading$ | async"
+    (click)="onMakeOrModifyOfferButtonClick($event)"
     class="btn btn-primary"
     type="button"
   >

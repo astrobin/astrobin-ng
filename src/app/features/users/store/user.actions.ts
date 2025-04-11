@@ -1,15 +1,15 @@
 /* eslint-disable max-classes-per-file */
 
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { ImageInterface } from "@core/interfaces/image.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 
 export enum UserActionTypes {
   LOAD_GALLERY = "[User] Load Gallery",
   LOAD_GALLERY_SUCCESS = "[User] Load Gallery Success",
-  LOAD_GALLERY_FAILURE = "[User] Load Gallery Failure",
+  LOAD_GALLERY_FAILURE = "[User] Load Gallery Failure"
 }
 
 export class LOAD_GALLERY implements PayloadActionInterface {
@@ -21,16 +21,13 @@ export class LOAD_GALLERY implements PayloadActionInterface {
 export class LOAD_GALLERY_SUCCESS implements PayloadActionInterface {
   readonly type = UserActionTypes.LOAD_GALLERY_SUCCESS;
 
-  constructor(public payload: { userId: UserInterface["id"], gallery: FindImagesResponseInterface }) {}
+  constructor(public payload: { userId: UserInterface["id"]; gallery: FindImagesResponseInterface }) {}
 }
 
 export class LOAD_GALLERY_FAILURE implements PayloadActionInterface {
   readonly type = UserActionTypes.LOAD_GALLERY_FAILURE;
 
-  constructor(public payload: { userId: UserInterface["id"], error: any }) {}
+  constructor(public payload: { userId: UserInterface["id"]; error: any }) {}
 }
 
-export type UserActions =
-  | LOAD_GALLERY
-  | LOAD_GALLERY_SUCCESS
-  | LOAD_GALLERY_FAILURE;
+export type UserActions = LOAD_GALLERY | LOAD_GALLERY_SUCCESS | LOAD_GALLERY_FAILURE;

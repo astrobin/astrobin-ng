@@ -132,11 +132,11 @@
 .navbar {
   @include darkest-background-texture;
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
-  top: .3rem;
+  top: 0.3rem;
   padding: 0;
 
   @media (max-width: $md-max) {
-    padding: .75rem 0;
+    padding: 0.75rem 0;
     text-align: center;
   }
 
@@ -188,10 +188,10 @@
 
 .nav-item {
   &.divider {
-    margin-top: .75rem;
-    margin-bottom: .75rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
     height: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .dropdown-toggle:not(#user-dropdown)::after {
@@ -218,7 +218,7 @@
     height: 2rem;
 
     astrobin-username {
-      margin-right: .25rem;
+      margin-right: 0.25rem;
 
       ::ng-deep {
         a {
@@ -259,7 +259,7 @@
 
     .dropdown-toggle {
       margin-top: 0 !important;
-      padding: .5rem;
+      padding: 0.5rem;
 
       &::after {
         margin-left: 4px;
@@ -321,7 +321,7 @@
     @media (max-width: $md-max) {
       font-size: 1.25rem;
       line-height: 2rem;
-      margin-right: .5rem;
+      margin-right: 0.5rem;
       color: var(--lightestGrey);
     }
   }
@@ -347,11 +347,11 @@
     padding: 4px;
     background-color: red !important;
     line-height: var(--bs-badge-font-size);
-    box-shadow: 0 2px 2px rgba(0, 0, 0, .5);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
 
     @media (max-width: $md-max) {
-      top: -.5rem;
-      right: .5rem;
+      top: -0.5rem;
+      right: 0.5rem;
       left: unset;
     }
   }
@@ -382,6 +382,6 @@ astrobin-avatar {
   @media (min-width: $lg-min) {
     width: 80vw !important;
     max-width: $lg-max !important;
-    font-size: .9rem;
+    font-size: 0.9rem;
   }
 }

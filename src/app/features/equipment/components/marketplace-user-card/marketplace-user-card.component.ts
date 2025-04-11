@@ -1,16 +1,16 @@
-import { Component, Input, OnChanges } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { OnChanges, Component, Input } from "@angular/core";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
 import { UserInterface } from "@core/interfaces/user.interface";
-import { LoadUser } from "@features/account/store/auth.actions";
-import { Observable } from "rxjs";
-import { selectUser } from "@features/account/store/auth.selectors";
-import { filter, takeUntil } from "rxjs/operators";
-import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { CountryService } from "@core/services/country.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { LoadUser } from "@features/account/store/auth.actions";
+import { selectUser } from "@features/account/store/auth.selectors";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Observable } from "rxjs";
+import { filter, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-user-card",

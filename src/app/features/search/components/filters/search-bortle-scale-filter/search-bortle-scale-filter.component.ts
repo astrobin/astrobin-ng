@@ -1,18 +1,18 @@
 import { Component } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { MainState } from "@app/store/state";
 import { BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
-import { ImageService } from "@core/services/image/image.service";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { takeUntil } from "rxjs/operators";
-import { UtilsService } from "@core/services/utils/utils.service";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { ImageService } from "@core/services/image/image.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-search-bortle-scale-filter.search-filter-component",
@@ -28,11 +28,13 @@ export class SearchBortleScaleFilterComponent extends SearchBaseFilterComponent 
   );
   readonly minLabel = this.translateService.instant("Minimum Bortle scale");
   readonly maxLabel = this.translateService.instant("Maximum Bortle scale");
-  readonly options = Object.values(BortleScale).filter(v => isNaN(Number(v))).map(value => ({
-    value: BortleScale[value],
-    label: this.imageService.humanizeBortleScale(BortleScale[value])
-  })).sort(
-    (a, b) => {
+  readonly options = Object.values(BortleScale)
+    .filter(v => isNaN(Number(v)))
+    .map(value => ({
+      value: BortleScale[value],
+      label: this.imageService.humanizeBortleScale(BortleScale[value])
+    }))
+    .sort((a, b) => {
       if (a.value < b.value) {
         return -1;
       } else if (a.value > b.value) {
@@ -40,8 +42,7 @@ export class SearchBortleScaleFilterComponent extends SearchBaseFilterComponent 
       } else {
         return 0;
       }
-    }
-  );
+    });
   editFields = [
     {
       key: SearchBortleScaleFilterComponent.key,

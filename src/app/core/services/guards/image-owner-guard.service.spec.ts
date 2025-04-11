@@ -1,16 +1,17 @@
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { RouterStateSnapshot, ActivatedRouteSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { MainState } from "@app/store/state";
-import { MockStore, provideMockStore } from "@ngrx/store/testing";
-import { MockBuilder, MockReset, MockService } from "ng-mocks";
-import { of, ReplaySubject } from "rxjs";
-import { ImageGenerator } from "@shared/generators/image.generator";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { ImageOwnerGuardService } from "./image-owner-guard.service";
-import { provideMockActions } from "@ngrx/effects/testing";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { StateGenerator } from "@app/store/generators/state.generator";
+import { MainState } from "@app/store/state";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { ImageGenerator } from "@shared/generators/image.generator";
+import { UserGenerator } from "@shared/generators/user.generator";
+import { MockBuilder, MockReset, MockService } from "ng-mocks";
+import { of, ReplaySubject } from "rxjs";
+
+import { ImageOwnerGuardService } from "./image-owner-guard.service";
 
 describe("ImageOwnerGuardService", () => {
   let service: ImageOwnerGuardService;
@@ -169,10 +170,7 @@ describe("ImageOwnerGuardService", () => {
           ...initialState.app,
           ...{
             images: [image],
-            users: [
-              user,
-              superUser
-            ]
+            users: [user, superUser]
           }
         }
       }

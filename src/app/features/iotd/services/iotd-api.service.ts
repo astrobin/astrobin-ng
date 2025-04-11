@@ -1,19 +1,19 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@core/services/loading.service";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
+import { IotdStatsInterface } from "@features/iotd/types/iotd-stats.interface";
+import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
-import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
-import { ImageInterface } from "@core/interfaces/image.interface";
-import { IotdStatsInterface } from "@features/iotd/types/iotd-stats.interface";
-import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
 import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 export interface SubmissionInterface {
   id: number;
@@ -71,7 +71,10 @@ export interface DismissedImage {
   providedIn: "root"
 })
 export class IotdApiService extends BaseClassicApiService {
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 
@@ -110,8 +113,7 @@ export class IotdApiService extends BaseClassicApiService {
   }
 
   markSubmitterSeenImage(id: ImageInterface["pk"]): Observable<SubmitterSeenImage> {
-    return this.http
-      .post<SubmitterSeenImage>(`${this.baseUrl}/iotd/submitter-seen-image/`, { image: id });
+    return this.http.post<SubmitterSeenImage>(`${this.baseUrl}/iotd/submitter-seen-image/`, { image: id });
   }
 
   loadReviewerSeenImages(): Observable<ReviewerSeenImage[]> {
@@ -119,8 +121,7 @@ export class IotdApiService extends BaseClassicApiService {
   }
 
   markReviewerSeenImage(id: ImageInterface["pk"]): Observable<ReviewerSeenImage> {
-    return this.http
-      .post<ReviewerSeenImage>(`${this.baseUrl}/iotd/reviewer-seen-image/`, { image: id });
+    return this.http.post<ReviewerSeenImage>(`${this.baseUrl}/iotd/reviewer-seen-image/`, { image: id });
   }
 
   loadDismissedImages(): Observable<DismissedImage[]> {
@@ -214,9 +215,9 @@ export class IotdApiService extends BaseClassicApiService {
 
   getNextAvailableSelectionTime(): Observable<string | null> {
     return this.http
-      .get<{ nextAvailableSelectionTime: string | null }>(
-        `${this.baseUrl}/iotd/judgement-queue/next-available-selection-time/`
-      )
+      .get<{
+        nextAvailableSelectionTime: string | null;
+      }>(`${this.baseUrl}/iotd/judgement-queue/next-available-selection-time/`)
       .pipe(map(response => response.nextAvailableSelectionTime));
   }
 

@@ -1,13 +1,13 @@
-import { inject } from "@angular/core";
-import { ActivatedRouteSnapshot, ResolveFn, Router, RouterStateSnapshot } from "@angular/router";
-import { Store } from "@ngrx/store";
 import { Location } from "@angular/common";
-import { EMPTY, Observable, of } from "rxjs";
-import { catchError, tap } from "rxjs/operators";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
-import { ImageInterface } from "@core/interfaces/image.interface";
+import { inject } from "@angular/core";
+import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot, Router } from "@angular/router";
 import { SetImage } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { Store } from "@ngrx/store";
+import { Observable, EMPTY, of } from "rxjs";
+import { catchError, tap } from "rxjs/operators";
 
 export const ImageResolver: ResolveFn<ImageInterface | null> = (
   route: ActivatedRouteSnapshot,
@@ -34,7 +34,7 @@ export const ImageResolver: ResolveFn<ImageInterface | null> = (
       store$.dispatch(new SetImage(image));
     }),
     catchError(() => {
-      router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
+      void router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
         location.replaceState(state.url);
       });
       return EMPTY;

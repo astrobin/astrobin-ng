@@ -1,9 +1,5 @@
 <astrobin-equipment-item-browser
   #itemBrowser
-  (creationModeEnded)="onCreationModeEnded()"
-  (creationModeStarted)="onCreationModeStarted()"
-  (itemTypeChanged)="itemTypeChanged.emit($event)"
-  (valueChanged)="onValueChanged($event)"
   [allowedTypes]="props.allowedTypes"
   [description]="props.description"
   [enableCreation]="props.enableCreation"
@@ -24,6 +20,10 @@
   [type]="props.itemType"
   [usageType]="props.usageType"
   [value]="value"
+  (creationModeEnded)="onCreationModeEnded()"
+  (creationModeStarted)="onCreationModeStarted()"
+  (itemTypeChanged)="itemTypeChanged.emit($event)"
+  (valueChanged)="onValueChanged($event)"
 ></astrobin-equipment-item-browser>
 
 <ng-container *ngIf="props.quickAddRecentFromUserId">
@@ -38,7 +38,7 @@
     <ng-template #recentLoadedTemplate>
       <ng-container *ngIf="recent.length > 0; else noRecentTemplate">
         <ng-container *ngFor="let item of recent; let last = last">
-          <a (click)="quickAddItem(item)" astrobinEventPreventDefault class="quick-add-item" href="#">
+          <a (click)="quickAddItem(item)" class="quick-add-item" astrobinEventPreventDefault href="#">
             <astrobin-equipment-item-display-name
               [enableSummaryPopover]="false"
               [item]="item"

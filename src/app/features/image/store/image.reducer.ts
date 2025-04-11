@@ -2,7 +2,6 @@ import { ImageActions, ImageActionTypes } from "./image.actions";
 
 export const imageFeatureKey = "image";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ImageState {
   editor: {
     cropperShown: boolean;

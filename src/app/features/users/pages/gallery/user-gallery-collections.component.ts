@@ -1,17 +1,27 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { UserInterface } from "@core/interfaces/user.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { selectCollections, selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
 import { MainState } from "@app/store/state";
 import { CollectionInterface } from "@core/interfaces/collection.interface";
-import { selectCollections, selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
-import { filter, map, takeUntil } from "rxjs/operators";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Actions } from "@ngrx/effects";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
-import { Subscription } from "rxjs";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { DeviceService } from "@core/services/device.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Subscription } from "rxjs";
+import { filter, map, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-user-gallery-collections",
@@ -24,9 +34,9 @@ import { DeviceService } from "@core/services/device.service";
       <div *ngIf="!loading && parentCollection" class="collection-header">
         <h2>
           <a
-            [routerLink]="['/u', user.username]"
-            [queryParams]="{ collection: parentCollection.parent }"
             [fragment]="userProfile.displayCollectionsOnPublicGallery ? 'gallery' : 'collections'"
+            [queryParams]="{ collection: parentCollection.parent }"
+            [routerLink]="['/u', user.username]"
             class="up"
           >
             <fa-icon icon="arrow-turn-up"></fa-icon>
@@ -36,25 +46,18 @@ import { DeviceService } from "@core/services/device.service";
 
           <astrobin-user-gallery-collection-menu
             *ngIf="currentUserWrapper.user?.id === user.id"
+            [collection]="parentCollection"
             [user]="user"
             [userProfile]="userProfile"
-            [collection]="parentCollection"
           ></astrobin-user-gallery-collection-menu>
         </h2>
-        <p
-          *ngIf="parentCollection.description"
-          [innerHTML]="parentCollection.description"
-          class="m-0 p-0"
-        ></p>
+        <p *ngIf="parentCollection.description" [innerHTML]="parentCollection.description" class="m-0 p-0"></p>
       </div>
 
       <div
         *ngIf="!loading && !parentCollection && collections?.length === 0 && currentUserWrapper.user?.id !== user.id"
       >
-        <astrobin-nothing-here
-          [withAlert]="false"
-          [withInfoSign]="false"
-        ></astrobin-nothing-here>
+        <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
       </div>
 
       <div
@@ -64,28 +67,25 @@ import { DeviceService } from "@core/services/device.service";
         <a
           *ngFor="let collection of collections; trackBy: collectionTrackByFn"
           (click)="openCollection(collection)"
+          class="d-block"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="d-block"
         >
           <astrobin-user-gallery-collection-thumbnail
+            [collection]="collection"
             [user]="user"
             [userProfile]="userProfile"
-            [collection]="collection"
           ></astrobin-user-gallery-collection-thumbnail>
         </a>
 
         <a
           *ngIf="currentUserWrapper.user?.id === user.id && !parentCollection"
           (click)="createCollection()"
+          class="create-collection-button d-flex flex-column justify-content-center align-items-center text-center"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="create-collection-button d-flex flex-column justify-content-center align-items-center text-center"
         >
-          <fa-icon
-            icon="plus"
-            [ngbTooltip]="'Create collection'"
-          ></fa-icon>
+          <fa-icon [ngbTooltip]="'Create collection'" icon="plus"></fa-icon>
         </a>
       </div>
     </ng-container>
@@ -93,13 +93,13 @@ import { DeviceService } from "@core/services/device.service";
     <ng-template #createCollectionOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Create collection" | translate }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <astrobin-user-gallery-collection-create
+          [parent]="parentCollection"
           [user]="user"
           [userProfile]="userProfile"
-          [parent]="parentCollection"
           (cancelClick)="offcanvas.close()"
         ></astrobin-user-gallery-collection-create>
       </div>
@@ -145,46 +145,49 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
       this._collectionsSubscription.unsubscribe();
     }
 
-    this._collectionsSubscription = this.store$.pipe(
-      select(selectCollectionsByParams({
-        user: this.user.id,
-        parent: this.activatedRoute.snapshot.queryParams.collection
-          ? parseInt(this.activatedRoute.snapshot.queryParams.collection, 10)
-          : null
-      })),
-      takeUntil(this.destroyed$)
-    ).subscribe(collections => {
-      this.collections = collections;
-      this.loading = false;
-      this.changeDetectorRef.markForCheck();
-    });
+    this._collectionsSubscription = this.store$
+      .pipe(
+        select(
+          selectCollectionsByParams({
+            user: this.user.id,
+            parent: this.activatedRoute.snapshot.queryParams.collection
+              ? parseInt(this.activatedRoute.snapshot.queryParams.collection, 10)
+              : null
+          })
+        ),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(collections => {
+        this.collections = collections;
+        this.loading = false;
+        this.changeDetectorRef.markForCheck();
+      });
 
     if (this.parent) {
       if (this._parentCollectionSubscription) {
         this._parentCollectionSubscription.unsubscribe();
       }
 
-      this._parentCollectionSubscription = this.store$.pipe(
-        select(selectCollections),
-        filter(collections => collections?.length > 0),
-        map(collections => collections.filter(collection => collection.id === this.parent)),
-        takeUntil(this.destroyed$)
-      ).subscribe(collections => {
-        this.parentCollection = collections[0];
-        this.changeDetectorRef.markForCheck();
-      });
+      this._parentCollectionSubscription = this.store$
+        .pipe(
+          select(selectCollections),
+          filter(collections => collections?.length > 0),
+          map(collections => collections.filter(collection => collection.id === this.parent)),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe(collections => {
+          this.parentCollection = collections[0];
+          this.changeDetectorRef.markForCheck();
+        });
     }
   }
 
   protected openCollection(collection: CollectionInterface) {
-    this.router.navigate(
-      [],
-      {
-        fragment: this.userProfile.displayCollectionsOnPublicGallery ? "gallery" : "collections",
-        queryParams: { collection: collection.id },
-        relativeTo: this.activatedRoute
-      }
-    );
+    void this.router.navigate([], {
+      fragment: this.userProfile.displayCollectionsOnPublicGallery ? "gallery" : "collections",
+      queryParams: { collection: collection.id },
+      relativeTo: this.activatedRoute
+    });
   }
 
   protected createCollection() {

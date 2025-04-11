@@ -1,8 +1,18 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  ElementRef,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from "@angular/core";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@core/services/image-viewer.service";
-import { fromEvent, Subscription, throttleTime } from "rxjs";
 import { fadeInOut } from "@shared/animations";
-
+import { Subscription, fromEvent, throttleTime } from "rxjs";
 
 @Component({
   selector: "astrobin-image-viewer-slideshow-context",
@@ -10,9 +20,9 @@ import { fadeInOut } from "@shared/animations";
     <div class="navigation-context-wrapper">
       <button
         (click)="scrollNavigationContextLeft()"
+        class="scroll-left"
         astrobinEventPreventDefault
         astrobinEventStopPropagation
-        class="scroll-left"
       >
         <fa-icon icon="chevron-circle-left"></fa-icon>
       </button>
@@ -20,15 +30,11 @@ import { fadeInOut } from "@shared/animations";
       <div #navigationContextElement class="navigation-context">
         <div
           *ngFor="let item of navigationContext; trackBy: trackByFn"
+          [class.active]="item.imageId === activeId"
           (click)="onItemClicked(item.imageId)"
           class="navigation-context-item"
-          [class.active]="item.imageId === activeId"
         >
-          <img
-            [id]="'image-viewer-context-' + item.imageId"
-            [src]="item.thumbnailUrl"
-            alt=""
-          />
+          <img [id]="'image-viewer-context-' + item.imageId" [src]="item.thumbnailUrl" alt="" />
 
           <astrobin-loading-indicator
             *ngIf="loadingImageId?.toString() === item.imageId.toString()"
@@ -39,9 +45,9 @@ import { fadeInOut } from "@shared/animations";
 
       <button
         (click)="scrollNavigationContextRight()"
+        class="scroll-right"
         astrobinEventPreventDefault
         astrobinEventStopPropagation
-        class="scroll-right"
       >
         <fa-icon icon="chevron-circle-right"></fa-icon>
       </button>
@@ -92,15 +98,14 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
         }
       });
 
-    this._wheelEventSubscription = fromEvent<WheelEvent>(el, "wheel")
-      .subscribe((event: WheelEvent) => {
-        event.preventDefault();
-        const scrollAmount = event.deltaY;
+    this._wheelEventSubscription = fromEvent<WheelEvent>(el, "wheel").subscribe((event: WheelEvent) => {
+      event.preventDefault();
+      const scrollAmount = event.deltaY;
 
-        if (scrollAmount) {
-          el.scrollLeft += scrollAmount;
-        }
-      });
+      if (scrollAmount) {
+        el.scrollLeft += scrollAmount;
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -160,7 +165,7 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
       // Use the smooth scrolling behavior
       el.scrollTo({
         left: targetScrollPosition,
-        behavior: 'smooth'
+        behavior: "smooth"
       });
     }
   }

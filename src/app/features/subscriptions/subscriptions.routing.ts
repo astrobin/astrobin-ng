@@ -1,4 +1,5 @@
 import { Routes } from "@angular/router";
+import { AuthGuardService } from "@core/services/guards/auth-guard.service";
 import { SubscriptionsBuyPageComponent } from "@features/subscriptions/pages/buy/subscriptions-buy-page.component";
 import { SubscriptionsCancelledPageComponent } from "@features/subscriptions/pages/cancelled-page/subscriptions-cancelled-page.component";
 import { SubscriptionsOptionsPageComponent } from "@features/subscriptions/pages/subscriptions-options-page/subscriptions-options-page.component";
@@ -6,7 +7,6 @@ import { SubscriptionsRouterPageComponent } from "@features/subscriptions/pages/
 import { SubscriptionsViewPaymentsPageComponent } from "@features/subscriptions/pages/subscriptions-view-payments-page/subscriptions-view-payments-page.component";
 import { SubscriptionsViewSubscriptionsPageComponent } from "@features/subscriptions/pages/subscriptions-view-subscriptions-page/subscriptions-view-subscriptions-page.component";
 import { SubscriptionsSuccessPageComponent } from "@features/subscriptions/pages/success-page/subscriptions-success-page.component";
-import { AuthGuardService } from "@core/services/guards/auth-guard.service";
 
 export const subscriptionRoutes: Routes = [
   {

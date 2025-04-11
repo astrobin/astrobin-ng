@@ -3,7 +3,7 @@ import { SolutionInterface } from "@core/interfaces/solution.interface";
 export interface PlateSolvingAdvancedSettingsInterface {
   id: number;
   solution: SolutionInterface["id"];
-  sampleRawFrameFile: { file: File, url: string }[] | string | null;
+  sampleRawFrameFile: { file: File; url: string }[] | string | null;
   scaledFontSize: "S" | "M" | "L";
   showGrid: boolean;
   showEcliptic: boolean;
@@ -11,7 +11,7 @@ export interface PlateSolvingAdvancedSettingsInterface {
   showConstellationBorders: boolean;
   showConstellationLines: boolean;
   showNamedStars: boolean;
-  showHd: boolean
+  showHd: boolean;
   hdMaxMagnitude: string | null;
   showMessier: boolean;
   showNgcIc: boolean;

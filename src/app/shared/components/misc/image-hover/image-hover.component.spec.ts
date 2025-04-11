@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { ImageHoverComponent } from "./image-hover.component";
+import { AppModule } from "@app/app.module";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
+
+import { ImageHoverComponent } from "./image-hover.component";
 
 describe("ImageHoverComponent", () => {
   let component: ImageHoverComponent;

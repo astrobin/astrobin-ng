@@ -1,10 +1,10 @@
-import { Component, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { isPlatformBrowser } from "@angular/common";
+import { OnInit, Component, Inject, Input, PLATFORM_ID } from "@angular/core";
 import { MainState } from "@app/store/state";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { interval } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-count-down",
@@ -31,7 +31,10 @@ export class CountDownComponent extends BaseComponentDirective implements OnInit
   hoursToTargetDate;
   daysToTargetDate;
 
-  constructor(public readonly store$: Store<MainState>, @Inject(PLATFORM_ID) public readonly platformId) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    @Inject(PLATFORM_ID) public readonly platformId
+  ) {
     super(store$);
   }
 
@@ -63,11 +66,11 @@ export class CountDownComponent extends BaseComponentDirective implements OnInit
     );
     this.hoursToTargetDate = Math.floor(
       (timeDifference / (this.MILLISECONDS_IN_A_SECOND * this.MINUTES_IN_AN_HOUR * this.SECONDS_IN_A_MINUTE)) %
-      this.HOURS_IN_A_DAY
+        this.HOURS_IN_A_DAY
     );
     this.daysToTargetDate = Math.floor(
       timeDifference /
-      (this.MILLISECONDS_IN_A_SECOND * this.MINUTES_IN_AN_HOUR * this.SECONDS_IN_A_MINUTE * this.HOURS_IN_A_DAY)
+        (this.MILLISECONDS_IN_A_SECOND * this.MINUTES_IN_AN_HOUR * this.SECONDS_IN_A_MINUTE * this.HOURS_IN_A_DAY)
     );
   }
 }

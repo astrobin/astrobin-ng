@@ -1,4 +1,5 @@
 import { UserGenerator } from "@shared/generators/user.generator";
+
 import { IsSuperUserPipe } from "./is-superuser.pipe";
 
 describe("IsSuperuserPipe", () => {

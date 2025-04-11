@@ -1,8 +1,8 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="country-selection-modal">
+  <h4 id="country-selection-modal" class="modal-title">
     {{ "Select a country" | translate }}
   </h4>
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -15,8 +15,8 @@
 
 <div class="modal-footer">
   <button
-    (click)="modal.dismiss()"
     [class.loading]="loadingService.loading$ | async"
+    (click)="modal.dismiss()"
     class="btn btn-outline-secondary"
     type="button"
   >
@@ -24,9 +24,9 @@
   </button>
 
   <button
-    (click)="modal.close(form.get('country').value)"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="!form.valid"
+    (click)="modal.close(form.get('country').value)"
     class="btn btn-primary"
     type="button"
   >

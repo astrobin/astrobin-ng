@@ -1,50 +1,59 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnChanges, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
 import { SafeHtml } from "@angular/platform-browser";
-import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { ImageService } from "@core/services/image/image.service";
-import { TranslateService } from "@ngx-translate/core";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-image-viewer-additional-buttons",
   template: `
     <button
       *ngIf="isTouchOnly && hasMouseHover"
-      (click)="toggleViewMouseHover.emit()"
-      astrobinEventPreventDefault
-      class="force-view-mousehover-button btn btn-link text-light"
       [class.active]="forceViewMouseHover"
+      (click)="toggleViewMouseHover.emit()"
+      class="force-view-mousehover-button btn btn-link text-light"
+      astrobinEventPreventDefault
     >
       <fa-icon icon="computer-mouse"></fa-icon>
     </button>
 
     <button
       *ngIf="!isTouchOnly && hasMouseHover"
+      [class.active]="allowTogglingAnnotationsOnMouseHover && showAnnotationsOnMouseHover"
+      [class.disabled]="!allowTogglingAnnotationsOnMouseHover"
       (click)="allowTogglingAnnotationsOnMouseHover && toggleAnnotationsOnMouseHover.emit()"
       (mouseenter)="onToggleAnnotationsOnMouseHoverEnter.emit()"
       (mouseleave)="onToggleAnnotationsOnMouseHoverLeave.emit()"
-      astrobinEventPreventDefault
       class="force-toggle-annotations-on-mousehover-button btn btn-link text-light"
-      [class.active]="allowTogglingAnnotationsOnMouseHover && showAnnotationsOnMouseHover"
-      [class.disabled]="!allowTogglingAnnotationsOnMouseHover"
+      astrobinEventPreventDefault
     >
-      <fa-icon
-        [ngbTooltip]="toggleAnnotationsOnMouseHoverTooltip"
-        container="body"
-        icon="crosshairs"
-      ></fa-icon>
+      <fa-icon [ngbTooltip]="toggleAnnotationsOnMouseHoverTooltip" container="body" icon="crosshairs"></fa-icon>
     </button>
 
     <button
       *ngIf="revision?.solution?.pixscale"
-      (click)="toggleMoonOverlay.emit()"
-      astrobinEventPreventDefault
-      class="moon-scale-button btn btn-link"
       [class.active-moon]="moonOverlayActive"
       [class.text-light]="!moonOverlayActive"
+      (click)="toggleMoonOverlay.emit()"
+      class="moon-scale-button btn btn-link"
+      astrobinEventPreventDefault
     >
       <fa-icon
         [ngbTooltip]="moonOverlayActive ? hideMoonScaleTooltip : showMoonScaleTooltip"
@@ -56,51 +65,34 @@ import { DeviceService } from "@core/services/device.service";
     <button
       *ngIf="revision?.solution && (revision?.solution.skyplotZoom1 || revision?.solution.pixinsightFindingChart)"
       (click)="openSkyplot()"
-      astrobinEventPreventDefault
       class="skyplot-button btn btn-link text-light"
+      astrobinEventPreventDefault
     >
-      <fa-icon
-        [ngbTooltip]="'View sky map' | translate"
-        container="body"
-        icon="map"
-      ></fa-icon>
+      <fa-icon [ngbTooltip]="'View sky map' | translate" container="body" icon="map"></fa-icon>
     </button>
 
-    <button
-      *ngIf="!revision?.videoFile"
-      class="histogram-button btn btn-link text-light"
-      (click)="openHistogram()"
-    >
-      <fa-icon
-        [ngbTooltip]="'View histogram' | translate"
-        container="body"
-        icon="chart-simple"
-      ></fa-icon>
+    <button *ngIf="!revision?.videoFile" (click)="openHistogram()" class="histogram-button btn btn-link text-light">
+      <fa-icon [ngbTooltip]="'View histogram' | translate" container="body" icon="chart-simple"></fa-icon>
     </button>
 
     <button
       *ngIf="
-        image.allowImageAdjustmentsWidget === true || (
-          image.allowImageAdjustmentsWidget === null &&
-          image.defaultAllowImageAdjustmentsWidget
-        )"
+        image.allowImageAdjustmentsWidget === true ||
+        (image.allowImageAdjustmentsWidget === null && image.defaultAllowImageAdjustmentsWidget)
+      "
       (click)="showAdjustmentsEditor.emit()"
+      class="adjustments-editor-button btn btn-link text-light d-none d-md-block"
       astrobinEventPreventDefault
       astrobinEventStopPropagation
-      class="adjustments-editor-button btn btn-link text-light d-none d-md-block"
     >
-      <fa-icon
-        [ngbTooltip]="'Image adjustments' | translate"
-        container="body"
-        icon="sliders"
-      ></fa-icon>
+      <fa-icon [ngbTooltip]="'Image adjustments' | translate" container="body" icon="sliders"></fa-icon>
     </button>
 
     <ng-template #skyplotModalTemplate>
       <div class="modal-body">
         <img
+          [ngStyle]="{ filter: revision.solution.pixinsightFindingChart ? 'none' : 'grayscale(100%)' }"
           [src]="revision?.solution?.pixinsightFindingChart || revision?.solution?.skyplotZoom1"
-          [ngStyle]="{'filter': revision.solution.pixinsightFindingChart ? 'none' : 'grayscale(100%)'}"
           class="w-100"
           alt=""
         />
@@ -164,10 +156,10 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
     public readonly imageService: ImageService,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly translateService: TranslateService,
-    public readonly deviceService: DeviceService,
+    public readonly deviceService: DeviceService
   ) {
     this.isTouchOnly = this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC();
-    
+
     // Initialize tooltip texts for i18n extraction
     this.showMoonScaleTooltip = this.translateService.instant("Show Moon scale (M)");
     this.hideMoonScaleTooltip = this.translateService.instant("Hide Moon scale (M)");
@@ -176,7 +168,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.image || changes.revisionLabel) {
       this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-      
+
       // Reset moon overlay active state when image changes
       if (changes.image && changes.image.previousValue !== changes.image.currentValue) {
         this.moonOverlayActive = false;
@@ -200,24 +192,20 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
     this.modalService.open(this.histogramModalTemplate, { size: "sm" });
     this.loadingHistogram = true;
 
-    this.imageApiService.getThumbnail(
-      this.image.hash || this.image.pk, this.revisionLabel, ImageAlias.HISTOGRAM
-    ).subscribe(thumbnail => {
-      this.loadingHistogram = false;
-      this.histogram = thumbnail.url;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.imageApiService
+      .getThumbnail(this.image.hash || this.image.pk, this.revisionLabel, ImageAlias.HISTOGRAM)
+      .subscribe(thumbnail => {
+        this.loadingHistogram = false;
+        this.histogram = thumbnail.url;
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   private _updateToggleAnnotationsOnMouseHoverTooltip(): void {
     if (this.allowTogglingAnnotationsOnMouseHover) {
       this.toggleAnnotationsOnMouseHoverTooltip = this.showAnnotationsOnMouseHover
-        ? this.translateService.instant(
-          "Click to show annotations on button hover only (or hold A)"
-        )
-        : this.translateService.instant(
-          "Click to show annotations on image hover (or hold A)"
-        );
+        ? this.translateService.instant("Click to show annotations on button hover only (or hold A)")
+        : this.translateService.instant("Click to show annotations on image hover (or hold A)");
     } else {
       this.toggleAnnotationsOnMouseHoverTooltip = null;
     }

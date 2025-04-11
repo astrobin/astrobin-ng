@@ -1,12 +1,12 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@core/services/loading.service";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { Observable } from "rxjs";
 import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
-import { HttpClient } from "@angular/common/http";
-import { map } from "rxjs/operators";
+import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -14,7 +14,10 @@ import { UtilsService } from "@core/services/utils/utils.service";
 export class NestedCommentsApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/nestedcomments";
 
-  constructor(public loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 
@@ -41,7 +44,10 @@ export class NestedCommentsApiService extends BaseClassicApiService {
 
   update(nestedComment: NestedCommentInterface): Observable<NestedCommentInterface> {
     return this.http
-      .put<NestedCommentInterface>(`${this.configUrl}/nestedcomments/${nestedComment.id}/`, UtilsService.objectToSnakeCase(nestedComment))
+      .put<NestedCommentInterface>(
+        `${this.configUrl}/nestedcomments/${nestedComment.id}/`,
+        UtilsService.objectToSnakeCase(nestedComment)
+      )
       .pipe(map(updatedNestedComment => UtilsService.objectToCamelCase(updatedNestedComment)));
   }
 

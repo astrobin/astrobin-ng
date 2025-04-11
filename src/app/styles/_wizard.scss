@@ -1,6 +1,5 @@
 @import "breakpoints";
 
-
 @mixin defaultNavLink() {
   color: var(--lighterGrey) !important;
   font-weight: normal;
@@ -50,7 +49,7 @@
 
       small {
         font-weight: normal;
-        opacity: .75;
+        opacity: 0.75;
       }
     }
 

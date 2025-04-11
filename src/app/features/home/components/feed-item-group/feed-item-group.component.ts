@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from "@angular/core";
+import { ElementRef, ChangeDetectionStrategy, Component, Input, ViewChild } from "@angular/core";
 import { MainState } from "@app/store/state";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-feed-item-group",
@@ -18,17 +18,8 @@ import { ClassicRoutesService } from "@core/services/classic-routes.service";
       </div>
 
       <div class="feed-item-body">
-        <a
-          [href]="classicRoutesService.GROUP(+feedItem.actionObjectObjectId)"
-          class="main-image-container"
-        >
-          <img
-            #image
-            src="/assets/images/actstream-group-action.jpg"
-            alt=""
-            class="main-image"
-            loading="lazy"
-          />
+        <a [href]="classicRoutesService.GROUP(+feedItem.actionObjectObjectId)" class="main-image-container">
+          <img #image class="main-image" alt="" loading="lazy" src="/assets/images/actstream-group-action.jpg" />
         </a>
       </div>
 
@@ -45,10 +36,7 @@ import { ClassicRoutesService } from "@core/services/classic-routes.service";
       </div>
     </div>
   `,
-  styleUrls: [
-    "../feed-item/feed-item.component.scss",
-    "./feed-item-group.component.scss"
-  ],
+  styleUrls: ["../feed-item/feed-item.component.scss", "./feed-item-group.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedItemGroupComponent extends BaseComponentDirective {

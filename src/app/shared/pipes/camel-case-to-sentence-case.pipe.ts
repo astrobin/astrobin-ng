@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { PipeTransform, Pipe } from "@angular/core";
 import { UtilsService } from "@core/services/utils/utils.service";
 
 @Pipe({

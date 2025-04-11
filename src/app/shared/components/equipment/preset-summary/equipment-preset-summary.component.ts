@@ -1,21 +1,21 @@
-import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
-import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { MountInterface } from "@features/equipment/types/mount.interface";
-import { FilterInterface } from "@features/equipment/types/filter.interface";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { Subscription } from "rxjs";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { OnChanges, SimpleChanges, Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Subscription } from "rxjs";
 
 interface EquipmentTypeConfig {
   property: keyof EquipmentPresetInterface;
@@ -151,12 +151,12 @@ export class EquipmentPresetSummaryComponent extends BaseComponentDirective impl
   }
 
   protected onEquipmentItemClicked(item: EquipmentItem) {
-    this.router.navigate([`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`]);
+    void this.router.navigate([`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`]);
   }
 
   private _updateSearchModel(): void {
-    const hasEquipment = this.equipmentConfigs.some(config =>
-      (this.preset[config.property] as EquipmentItem["id"][])?.length > 0 && config.searchModelKey
+    const hasEquipment = this.equipmentConfigs.some(
+      config => (this.preset[config.property] as EquipmentItem["id"][])?.length > 0 && config.searchModelKey
     );
 
     if (!hasEquipment) {
@@ -198,10 +198,12 @@ export class EquipmentPresetSummaryComponent extends BaseComponentDirective impl
       if (Array.isArray(itemIds)) {
         itemIds.forEach(itemId => {
           // Dispatch LoadEquipmentItem action first
-          this.store$.dispatch(new LoadEquipmentItem({
-            id: itemId,
-            type: config.itemType
-          }));
+          this.store$.dispatch(
+            new LoadEquipmentItem({
+              id: itemId,
+              type: config.itemType
+            })
+          );
 
           const subscription = this.store$
             .select(selectEquipmentItem, {

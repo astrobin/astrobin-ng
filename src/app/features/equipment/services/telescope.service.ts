@@ -19,7 +19,10 @@ export enum TelescopeDisplayProperty {
   providedIn: "root"
 })
 export class TelescopeService extends BaseService implements EquipmentItemServiceInterface {
-  constructor(public readonly loadingService: LoadingService, public readonly translateService: TranslateService) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly translateService: TranslateService
+  ) {
     super(loadingService);
   }
 

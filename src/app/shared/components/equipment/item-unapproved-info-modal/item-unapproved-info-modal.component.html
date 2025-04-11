@@ -1,22 +1,28 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="item-unapproved-info-modal">
+  <h4 id="item-unapproved-info-modal" class="modal-title">
     <fa-icon icon="info-circle"></fa-icon>
     {{ "This item has not been approved" | translate }}
   </h4>
 
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 
 <div class="modal-body">
   <p>
-    <strong>{{ "Please note" | translate }}</strong>:
-    {{ "This item as not been approved by a moderator, and could be removed from the database if rejected." | translate }}
+    <strong>{{ "Please note" | translate }}</strong
+    >:
+    {{
+      "This item as not been approved by a moderator, and could be removed from the database if rejected." | translate
+    }}
   </p>
 
   <p>
-    {{ "Should that happen, and you're using this equipment item on one or more of your images, you will be notified." | translate }}
+    {{
+      "Should that happen, and you're using this equipment item on one or more of your images, you will be notified."
+        | translate
+    }}
   </p>
 </div>
 

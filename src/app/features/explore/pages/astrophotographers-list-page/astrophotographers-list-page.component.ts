@@ -1,27 +1,35 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { Store } from "@ngrx/store";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  Inject,
+  PLATFORM_ID,
+  ChangeDetectorRef,
+  OnInit
+} from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MainState } from "@app/store/state";
 import { UserSearchInterface } from "@core/interfaces/user-search.interface";
-import { debounceTime, distinctUntilChanged, filter, finalize, map, skip, take, takeUntil } from "rxjs/operators";
-import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@core/services/loading.service";
-import { SearchService } from "@core/services/search.service";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { UserSearchApiService } from "@core/services/api/classic/users/user-search-api.service";
-import { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
-import { TitleService } from "@core/services/title/title.service";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { fadeInOut } from "@shared/animations";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { RouterService } from "@core/services/router.service";
+import { SearchService } from "@core/services/search.service";
+import { TitleService } from "@core/services/title/title.service";
 import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { MatchType } from "@features/search/enums/match-type.enum";
+import { SearchType } from "@features/search/interfaces/search-model.interface";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { fadeInOut } from "@shared/animations";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
-import { SearchType } from "@features/search/interfaces/search-model.interface";
-import { MatchType } from "@features/search/enums/match-type.enum";
-import { UtilsService } from "@core/services/utils/utils.service";
+import { debounceTime, distinctUntilChanged, filter, finalize, map, skip, take, takeUntil } from "rxjs/operators";
 
 enum StatType {
   IMAGE_DATA = "image-data",
@@ -40,7 +48,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
   readonly StatType = StatType;
 
   activeTab: StatType = StatType.IMAGE_DATA;
-  sortColumn: string = "normalizedLikes"; // Default sort by image index
+  sortColumn = "normalizedLikes"; // Default sort by image index
   sortDirection: "asc" | "desc" = "desc"; // Default to descending order
   pageSize = 100;
 
@@ -52,7 +60,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
   hasMore = true;
 
   // Search functionality
-  searchQuery: string = "";
+  searchQuery = "";
 
   // User loading state
   loadingUsernames: string[] = [];
@@ -77,15 +85,17 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
     super(store$);
     this.isBrowser = isPlatformBrowser(this.platformId);
 
-    this.router.events.pipe(
-      filter(event =>
-        event instanceof NavigationEnd && router.url.startsWith("/" + RouterService.getCurrentPath(route))
-      ),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this._initTitleAndBreadcrumb();
-      this.changeDetectorRef.markForCheck();
-    });
+    this.router.events
+      .pipe(
+        filter(
+          event => event instanceof NavigationEnd && router.url.startsWith("/" + RouterService.getCurrentPath(route))
+        ),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        this._initTitleAndBreadcrumb();
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   ngOnInit() {
@@ -126,7 +136,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
         map(params => {
           // When sort param is not present, use the default based on active tab
           let defaultSort: string;
-          let defaultDirection: string = "desc";
+          const defaultDirection = "desc";
 
           if (this.activeTab === StatType.CONTRIBUTION_DATA) {
             defaultSort = "contributionIndex";
@@ -141,10 +151,8 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
           };
         }),
         // Only trigger when sort parameters or search query actually change
-        distinctUntilChanged((prev, curr) =>
-          prev.sort === curr.sort &&
-          prev.direction === curr.direction &&
-          prev.q === curr.q
+        distinctUntilChanged(
+          (prev, curr) => prev.sort === curr.sort && prev.direction === curr.direction && prev.q === curr.q
         ),
         // Add debounce to handle rapid changes
         debounceTime(10)
@@ -214,7 +222,8 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
       };
     }
 
-    this.userSearchApiService.search(searchOptions)
+    this.userSearchApiService
+      .search(searchOptions)
       .pipe(
         take(1),
         // Force Angular to run change detection in the next cycle
@@ -240,8 +249,8 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
           // Force change detection to update the view
           this.changeDetectorRef.detectChanges();
         },
-        error: (err) => {
-          console.error('Error loading search results:', err);
+        error: err => {
+          console.error("Error loading search results:", err);
           this.loading = false;
           this.initialLoading = false;
           // Force change detection to update the view
@@ -274,7 +283,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
       return;
     }
 
-    this.router.navigate([], {
+    void this.router.navigate([], {
       relativeTo: this.route,
       fragment: event.nextId.toString(),
       queryParamsHandling: "preserve" // Preserve existing query params when changing tabs
@@ -318,7 +327,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
     // This allows the defaults to take over when tabs are switched
     const queryParams = isDefaultSort
       ? { sort: null, direction: null } // Remove sort params for default sort
-      : { sort: column, direction };    // Set explicit sort params otherwise
+      : { sort: column, direction }; // Set explicit sort params otherwise
 
     // Even if this is the default sort, we still need to set the sort values locally
     // to ensure correct sorting when query params are removed
@@ -330,7 +339,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
 
     // Update the URL - the parameters will be reflected in the URL but won't trigger another reload
     // since we're already loading the data
-    this.router.navigate([], {
+    void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: queryParams,
       queryParamsHandling: "merge", // Merge with other query params
@@ -383,7 +392,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
     this.changeDetectorRef.markForCheck();
 
     // Update URL and trigger a reload
-    this.router.navigate([], {
+    void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
         q: this.searchQuery || null // Use null to remove param when empty
@@ -406,7 +415,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
     this.changeDetectorRef.markForCheck();
 
     // Update URL to remove the search parameter
-    this.router.navigate([], {
+    void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
         q: null // Explicitly set to null to remove from URL
@@ -434,14 +443,12 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
     this.changeDetectorRef.markForCheck();
 
     // Get the current user's profile to determine gallery experience preference
-    this.currentUserProfile$
-      .pipe(take(1))
-      .subscribe(profile => {
-        const enableNewGalleryExperience = !profile || profile.enableNewGalleryExperience;
+    this.currentUserProfile$.pipe(take(1)).subscribe(profile => {
+      const enableNewGalleryExperience = !profile || profile.enableNewGalleryExperience;
 
-        // Navigate to the user's gallery
-        this.userService.openGallery(username, enableNewGalleryExperience);
-      });
+      // Navigate to the user's gallery
+      this.userService.openGallery(username, enableNewGalleryExperience);
+    });
   }
 
   getAvatarUrl(originalUrl: string): string {
@@ -451,19 +458,20 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
     return originalUrl;
   }
 
-
   private _initTitleAndBreadcrumb() {
     this.titleService.setTitle(this.title);
-    this.store$.dispatch(new SetBreadcrumb({
-      breadcrumb: [
-        {
-          label: this.translateService.instant("Explore")
-        },
-        {
-          label: this.title
-        }
-      ]
-    }));
+    this.store$.dispatch(
+      new SetBreadcrumb({
+        breadcrumb: [
+          {
+            label: this.translateService.instant("Explore")
+          },
+          {
+            label: this.title
+          }
+        ]
+      })
+    );
   }
 
   private _initTab() {
@@ -474,7 +482,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
         this.activeTab = fragment as StatType;
       } else {
         this.activeTab = StatType.IMAGE_DATA;
-        this.router.navigate([], {
+        void this.router.navigate([], {
           relativeTo: this.route,
           fragment: this.activeTab,
           queryParamsHandling: "preserve" // Preserve existing query params when setting default fragment
@@ -482,13 +490,15 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
       }
     };
 
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      doInit();
-      this.changeDetectorRef.markForCheck();
-    });
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        doInit();
+        this.changeDetectorRef.markForCheck();
+      });
 
     doInit();
   }

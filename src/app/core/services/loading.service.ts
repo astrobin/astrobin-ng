@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { OnDestroy, Injectable } from "@angular/core";
 import { LoadingServiceInterface } from "@core/services/loading.service-interface";
 import { Observable, ReplaySubject } from "rxjs";
 import { debounceTime, takeUntil } from "rxjs/operators";

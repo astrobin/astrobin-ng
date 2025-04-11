@@ -1,10 +1,5 @@
 <div class="main-area">
-  <fa-icon
-    *ngIf="template"
-    icon="ellipsis-v"
-    (click)="openOffcanvas($event)"
-    data-toggle="offcanvas"
-  ></fa-icon>
+  <fa-icon *ngIf="template" (click)="openOffcanvas($event)" data-toggle="offcanvas" icon="ellipsis-v"></fa-icon>
 
   <div class="title">
     <ng-container [ngTemplateOutlet]="titleTemplate"></ng-container>
@@ -17,7 +12,7 @@
   </ng-container>
 
   <ng-container *ngIf="descriptionTemplate">
-    <fa-icon icon="info-circle" (click)="openOffcanvasDescription($event)"></fa-icon>
+    <fa-icon (click)="openOffcanvasDescription($event)" icon="info-circle"></fa-icon>
   </ng-container>
 </div>
 
@@ -26,7 +21,7 @@
     <h5 class="offcanvas-title">
       <ng-container [ngTemplateOutlet]="titleTemplate"></ng-container>
     </h5>
-    <button type="button" class="btn-close text-reset" (click)="closeOffcanvas($event)"></button>
+    <button (click)="closeOffcanvas($event)" class="btn-close text-reset" type="button"></button>
   </div>
   <div class="offcanvas-body">
     <ng-container *ngTemplateOutlet="descriptionTemplate"></ng-container>
@@ -38,11 +33,9 @@
     <h5 class="offcanvas-title">
       <ng-container [ngTemplateOutlet]="titleTemplate"></ng-container>
     </h5>
-    <button type="button" class="btn-close text-reset" (click)="closeOffcanvas($event)"></button>
+    <button (click)="closeOffcanvas($event)" class="btn-close text-reset" type="button"></button>
   </div>
   <div class="offcanvas-body">
-    <ng-container
-      *ngTemplateOutlet="template; context: templateContext"
-    ></ng-container>
+    <ng-container *ngTemplateOutlet="template; context: templateContext"></ng-container>
   </div>
 </ng-template>

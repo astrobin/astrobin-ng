@@ -1,17 +1,17 @@
-import { Component, OnInit } from "@angular/core";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from "@angular/forms";
-import { Store } from "@ngrx/store";
+import { OnInit, Component } from "@angular/core";
+import { AbstractControl, ValidationErrors, ValidatorFn, FormGroup } from "@angular/forms";
 import { MainState } from "@app/store/state";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@core/services/loading.service";
-import { SavedSearchInterface } from "@features/search/interfaces/saved-search.interface";
 import { SavedSearchApiService } from "@core/services/api/classic/saved-search/saved-search-api.service";
+import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { Observable, of } from "rxjs";
+import { SavedSearchInterface } from "@features/search/interfaces/saved-search.interface";
+import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { of, Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-load-save-search-modal",
@@ -111,15 +111,11 @@ export class LoadSaveSearchModalComponent extends BaseComponentDirective impleme
       complete: () => {
         this.loadingService.setLoading(false);
         this.modal.close();
-        this.popNotificationsService.success(
-          this.translateService.instant("Search saved successfully.")
-        );
+        this.popNotificationsService.success(this.translateService.instant("Search saved successfully."));
       },
       error: () => {
         this.loadingService.setLoading(false);
-        this.popNotificationsService.error(
-          this.translateService.instant("An error occurred while saving the search.")
-        );
+        this.popNotificationsService.error(this.translateService.instant("An error occurred while saving the search."));
       }
     });
   }
@@ -134,9 +130,7 @@ export class LoadSaveSearchModalComponent extends BaseComponentDirective impleme
       this.savedSearchApiService.delete(id).subscribe({
         complete: () => {
           this.savedSearches = this.savedSearches.filter(search => search.id !== id);
-          this.popNotificationsService.success(
-            this.translateService.instant("Search deleted successfully.")
-          );
+          this.popNotificationsService.success(this.translateService.instant("Search deleted successfully."));
         },
         error: () => {
           this.popNotificationsService.error(

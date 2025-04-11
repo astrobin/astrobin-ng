@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { RouterStateSnapshot, ActivatedRouteSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
-import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { GroupGuardService } from "@core/services/guards/group-guard.service";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { UserGenerator } from "@shared/generators/user.generator";
 import { MockBuilder, MockReset, MockService } from "ng-mocks";
 import { of } from "rxjs";
-import { UserGenerator } from "@shared/generators/user.generator";
 
 describe("GroupGuardService", () => {
   let service: GroupGuardService;

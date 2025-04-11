@@ -1,25 +1,25 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { Store } from "@ngrx/store";
+import { OnInit, Component, Input } from "@angular/core";
+import { FormGroup } from "@angular/forms";
 import { MainState } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
 import {
-  EquipmentActionTypes,
   FindAllEquipmentItemsSuccess,
+  EquipmentActionTypes,
   FindSimilarInBrand
 } from "@features/equipment/store/equipment.actions";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions, ofType } from "@ngrx/effects";
-import { map } from "rxjs/operators";
-import { Observable } from "rxjs";
-import { FormGroup } from "@angular/forms";
+import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 export enum ConfirmItemCreationResult {
-  CANCEL,
+  CANCEL
 }
 
 @Component({
@@ -122,8 +122,8 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
           ),
           description: this.translateService.instant(
             "You want to be precise enough that this product's name distinguishes it from similar products that " +
-            "people might want to search for on AstroBin, but not so precise as to create too many variants of " +
-            "what is essentially the same product."
+              "people might want to search for on AstroBin, but not so precise as to create too many variants of " +
+              "what is essentially the same product."
           )
         }
       },
@@ -136,7 +136,7 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
           label: this.translateService.instant("The name of this product is in English (if applicable)"),
           description: this.translateService.instant(
             "AstroBin does not translate product names into other languages, so if the name of this product has" +
-            "words that are not in English, please fix it."
+              "words that are not in English, please fix it."
           )
         }
       }
@@ -151,7 +151,7 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
         props: {
           label: this.translateService.instant(
             "I have not included information that pertains to my personal item " +
-            "(e.g. sold/broken/refurbished...) and this is the general description of a product"
+              "(e.g. sold/broken/refurbished...) and this is the general description of a product"
           )
         }
       });

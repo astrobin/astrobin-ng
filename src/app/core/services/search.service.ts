@@ -1,77 +1,87 @@
-import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { ComponentRef, Injectable, Type, ViewContainerRef } from "@angular/core";
-import { forkJoin, Observable, of, Subject } from "rxjs";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
-import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { map, tap } from "rxjs/operators";
-import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
-import { SearchFilterCategory, SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
-import { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
-import { TelescopeService } from "@features/equipment/services/telescope.service";
-import { CameraService } from "@features/equipment/services/camera.service";
-import { DateService } from "@core/services/date.service";
+import { ComponentRef, Type, ViewContainerRef, Injectable } from "@angular/core";
 import { Month } from "@core/enums/month.enum";
-import { MatchType } from "@features/search/enums/match-type.enum";
-import { AcquisitionType, DataSource, LicenseOptions, RemoteSource, SolarSystemSubjectType, SubjectType } from "@core/interfaces/image.interface";
-import { ImageService } from "@core/services/image/image.service";
-import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
-import { SensorService } from "@features/equipment/services/sensor.service";
-import { CountryService } from "@core/services/country.service";
-import { SearchMinimumDataFilterValue } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.value";
-import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
-import { ConstellationsService } from "@features/explore/services/constellations.service";
 import { BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
-import { FilterInterface, FilterType } from "@features/equipment/types/filter.interface";
-import { FilterService } from "@features/equipment/services/filter.service";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
-import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { MountInterface } from "@features/equipment/types/mount.interface";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import {
+  AcquisitionType,
+  DataSource,
+  LicenseOptions,
+  RemoteSource,
+  SolarSystemSubjectType,
+  SubjectType
+} from "@core/interfaces/image.interface";
+import {
+  SearchFilterCategory,
+  SearchFilterComponentInterface
+} from "@core/interfaces/search-filter-component.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
+import { BaseService } from "@core/services/base.service";
+import { CountryService } from "@core/services/country.service";
+import { DateService } from "@core/services/date.service";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
 import { COMMON_OBJECTS } from "@core/services/solution/solution.service";
-import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
-import { SearchSensorFilterComponent } from "@features/search/components/filters/search-sensor-filter/search-sensor-filter.component";
-import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
-import { SearchMountFilterComponent } from "@features/search/components/filters/search-mount-filter/search-mount-filter.component";
-import { SearchFilterFilterComponent } from "@features/search/components/filters/search-filter-filter/search-filter-filter.component";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { CameraService } from "@features/equipment/services/camera.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { FilterService } from "@features/equipment/services/filter.service";
+import { SensorService } from "@features/equipment/services/sensor.service";
+import { TelescopeService } from "@features/equipment/services/telescope.service";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { CameraType, CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import { FilterType, FilterInterface } from "@features/equipment/types/filter.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TelescopeType, TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { ConstellationsService } from "@features/explore/services/constellations.service";
 import { SearchAccessoryFilterComponent } from "@features/search/components/filters/search-accessory-filter/search-accessory-filter.component";
-import { SearchSoftwareFilterComponent } from "@features/search/components/filters/search-software-filter/search-software-filter.component";
-import { SearchSubjectsFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subjects-filter.component";
-import { SearchTelescopeTypesFilterComponent } from "@features/search/components/filters/search-telescope-types-filter/search-telescope-types-filter.component";
-import { SearchCameraTypesFilterComponent } from "@features/search/components/filters/search-camera-types-filter/search-camera-types-filter.component";
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
-import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
-import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
-import { SearchColorOrMonoFilterComponent } from "@features/search/components/filters/search-color-or-mono-filter/search-color-or-mono-filter.component";
-import { SearchModifiedCameraFilterComponent } from "@features/search/components/filters/search-modified-camera-filter/search-modified-camera-filter.component";
+import { SearchAcquisitionTypeFilterComponent } from "@features/search/components/filters/search-acquisition-type-filter/search-acquisition-type-filter.component";
 import { SearchAnimatedFilterComponent } from "@features/search/components/filters/search-animated-filter/search-animated-filter.component";
-import { SearchVideoFilterComponent } from "@features/search/components/filters/search-video-filter/search-video-filter.component";
 import { SearchAwardFilterComponent } from "@features/search/components/filters/search-award-filter/search-award-filter.component";
+import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
+import { SearchBortleScaleFilterComponent } from "@features/search/components/filters/search-bortle-scale-filter/search-bortle-scale-filter.component";
+import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
+import { SearchCameraTypesFilterComponent } from "@features/search/components/filters/search-camera-types-filter/search-camera-types-filter.component";
+import { SearchColorOrMonoFilterComponent } from "@features/search/components/filters/search-color-or-mono-filter/search-color-or-mono-filter.component";
+import { SearchConstellationFilterComponent } from "@features/search/components/filters/search-constellation-filter/search-constellation-filter.component";
 import { SearchCountryFilterComponent } from "@features/search/components/filters/search-country-filter/search-country-filter.component";
 import { SearchDataSourceFilterComponent } from "@features/search/components/filters/search-data-source-filter/search-data-source-filter.component";
-import { SearchMinimumDataFilterComponent } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.component";
-import { SearchConstellationFilterComponent } from "@features/search/components/filters/search-constellation-filter/search-constellation-filter.component";
-import { SearchBortleScaleFilterComponent } from "@features/search/components/filters/search-bortle-scale-filter/search-bortle-scale-filter.component";
-import { SearchLicenseFilterComponent } from "@features/search/components/filters/search-license-filter/search-license-filter.component";
+import { SearchFilterFilterComponent } from "@features/search/components/filters/search-filter-filter/search-filter-filter.component";
 import { SearchFilterTypesFilterComponent } from "@features/search/components/filters/search-filter-types-filter/search-filter-types-filter.component";
-import { SearchAcquisitionTypeFilterComponent } from "@features/search/components/filters/search-acquisition-type-filter/search-acquisition-type-filter.component";
+import { SearchLicenseFilterComponent } from "@features/search/components/filters/search-license-filter/search-license-filter.component";
+import { SearchMinimumDataFilterComponent } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.component";
+import { SearchMinimumDataFilterValue } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.value";
+import { SearchModifiedCameraFilterComponent } from "@features/search/components/filters/search-modified-camera-filter/search-modified-camera-filter.component";
+import { SearchMountFilterComponent } from "@features/search/components/filters/search-mount-filter/search-mount-filter.component";
 import { SearchPersonalFiltersFilterComponent } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.component";
+import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
+import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
+import { SearchSensorFilterComponent } from "@features/search/components/filters/search-sensor-filter/search-sensor-filter.component";
+import { SearchSoftwareFilterComponent } from "@features/search/components/filters/search-software-filter/search-software-filter.component";
+import { SearchSubjectsFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subjects-filter.component";
+import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
+import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
+import { SearchTelescopeTypesFilterComponent } from "@features/search/components/filters/search-telescope-types-filter/search-telescope-types-filter.component";
 import { SearchUsersFilterComponent } from "@features/search/components/filters/search-users-filter/search-users-filter.component";
-import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchVideoFilterComponent } from "@features/search/components/filters/search-video-filter/search-video-filter.component";
+import { MatchType } from "@features/search/enums/match-type.enum";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 import { SearchAutoCompleteItem } from "@features/search/interfaces/search-auto-complete-item.interface";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateService } from "@ngx-translate/core";
 import { CookieService } from "ngx-cookie";
+import { forkJoin, Observable, of, Subject } from "rxjs";
+import { map, tap } from "rxjs/operators";
 
 export const SEARCH_SETTINGS_SIMPLE_MODE_COOKIE = "astrobin-search-settings-simple-mode";
 
@@ -81,8 +91,9 @@ export const SEARCH_SETTINGS_SIMPLE_MODE_COOKIE = "astrobin-search-settings-simp
 export class SearchService extends BaseService {
   static readonly DEFAULT_PAGE_SIZE = 100;
 
-  searchCompleteSubject: Subject<SearchPaginatedApiResultInterface<any>> =
-    new Subject<SearchPaginatedApiResultInterface<any>>();
+  searchCompleteSubject: Subject<SearchPaginatedApiResultInterface<any>> = new Subject<
+    SearchPaginatedApiResultInterface<any>
+  >();
   searchComplete$: Observable<SearchPaginatedApiResultInterface<any>>;
 
   simpleModeChanges$: Observable<boolean>;
@@ -238,10 +249,7 @@ export class SearchService extends BaseService {
               const normalizedLabel = normalizeLabel(item.label);
               if (
                 normalizedLabel === normalizedQuery ||
-                (
-                  item.aliases &&
-                  item.aliases.some(alias => normalizeLabel(alias) === normalizedQuery)
-                )
+                (item.aliases && item.aliases.some(alias => normalizeLabel(alias) === normalizedQuery))
               ) {
                 foundItem = item;
               }
@@ -254,7 +262,7 @@ export class SearchService extends BaseService {
     );
   }
 
-  autoCompleteMethods(query: string): { key: SearchAutoCompleteType, method: Observable<SearchAutoCompleteItem[]> }[] {
+  autoCompleteMethods(query: string): { key: SearchAutoCompleteType; method: Observable<SearchAutoCompleteItem[]> }[] {
     return [
       {
         key: SearchAutoCompleteType.SEARCH_FILTER,
@@ -405,7 +413,8 @@ export class SearchService extends BaseService {
       this.allFiltersTypes
         .filter(filterType => !this.autoCompleteOnlyFiltersTypes.includes(filterType))
         .filter(filterType =>
-          this.searchFilterService.humanizeSearchAutoCompleteType((filterType as any).key)
+          this.searchFilterService
+            .humanizeSearchAutoCompleteType((filterType as any).key)
             .toLowerCase()
             .includes(query.toLowerCase())
         )
@@ -476,15 +485,13 @@ export class SearchService extends BaseService {
       const normalizedQuery = query.replace(/\s+/g, "").toLowerCase();
       const filteredSubjects = subjects
         .filter(subject => subject.label.replace(/\s+/g, "").toLowerCase().includes(normalizedQuery))
-        .map(subjects => (
-          {
-            ...subjects,
-            value: {
-              value: [subjects.label],
-              matchType: null
-            }
+        .map(subjects => ({
+          ...subjects,
+          value: {
+            value: [subjects.label],
+            matchType: null
           }
-        ))
+        }))
         .slice(0, this._autoCompleteItemsLimit);
       subscriber.next(filteredSubjects);
       subscriber.complete();
@@ -529,10 +536,11 @@ export class SearchService extends BaseService {
           tap(items => {
             this._autoCompleteTelescopeCache[query] = items;
           })
-        ).subscribe(items => {
-        observer.next(items);
-        observer.complete();
-      });
+        )
+        .subscribe(items => {
+          observer.next(items);
+          observer.complete();
+        });
     });
   }
 
@@ -574,10 +582,11 @@ export class SearchService extends BaseService {
           tap(items => {
             this._autoCompleteSensorCache[query] = items;
           })
-        ).subscribe(items => {
-        observer.next(items);
-        observer.complete();
-      });
+        )
+        .subscribe(items => {
+          observer.next(items);
+          observer.complete();
+        });
     });
   }
 
@@ -619,10 +628,11 @@ export class SearchService extends BaseService {
           tap(items => {
             this._autoCompleteCameraCache[query] = items;
           })
-        ).subscribe(items => {
-        observer.next(items);
-        observer.complete();
-      });
+        )
+        .subscribe(items => {
+          observer.next(items);
+          observer.complete();
+        });
     });
   }
 
@@ -663,10 +673,11 @@ export class SearchService extends BaseService {
           tap(items => {
             this._autoCompleteMountCache[query] = items;
           })
-        ).subscribe(items => {
-        observer.next(items);
-        observer.complete();
-      });
+        )
+        .subscribe(items => {
+          observer.next(items);
+          observer.complete();
+        });
     });
   }
 
@@ -707,10 +718,11 @@ export class SearchService extends BaseService {
           tap(items => {
             this._autoCompleteFilterCache[query] = items;
           })
-        ).subscribe(items => {
-        observer.next(items);
-        observer.complete();
-      });
+        )
+        .subscribe(items => {
+          observer.next(items);
+          observer.complete();
+        });
     });
   }
 
@@ -751,10 +763,11 @@ export class SearchService extends BaseService {
           tap(items => {
             this._autoCompleteFilterCache[query] = items;
           })
-        ).subscribe(items => {
-        observer.next(items);
-        observer.complete();
-      });
+        )
+        .subscribe(items => {
+          observer.next(items);
+          observer.complete();
+        });
     });
   }
 
@@ -795,10 +808,11 @@ export class SearchService extends BaseService {
           tap(items => {
             this._autoCompleteFilterCache[query] = items;
           })
-        ).subscribe(items => {
-        observer.next(items);
-        observer.complete();
-      });
+        )
+        .subscribe(items => {
+          observer.next(items);
+          observer.complete();
+        });
     });
   }
 
@@ -943,35 +957,35 @@ export class SearchService extends BaseService {
 
   autoCompleteModifiedCamera$(query: string): Observable<SearchAutoCompleteItem[]> {
     return this._autoCompleteYesNo$(query, SearchAutoCompleteType.MODIFIED_CAMERA).pipe(
-      map(value => (
+      map(value =>
         value.map(item => ({
-            ...item,
-            minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.MODIFIED_CAMERA)
-          })
-        )
-      ))) as Observable<SearchAutoCompleteItem[]>;
+          ...item,
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.MODIFIED_CAMERA)
+        }))
+      )
+    ) as Observable<SearchAutoCompleteItem[]>;
   }
 
   autoCompleteAnimated$(query: string): Observable<SearchAutoCompleteItem[]> {
     return this._autoCompleteYesNo$(query, SearchAutoCompleteType.ANIMATED).pipe(
-      map(value => (
+      map(value =>
         value.map(item => ({
-            ...item,
-            minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.ANIMATED)
-          })
-        )
-      ))) as Observable<SearchAutoCompleteItem[]>;
+          ...item,
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.ANIMATED)
+        }))
+      )
+    ) as Observable<SearchAutoCompleteItem[]>;
   }
 
   autoCompleteVideos$(query: string): Observable<SearchAutoCompleteItem[]> {
     return this._autoCompleteYesNo$(query, SearchAutoCompleteType.VIDEO).pipe(
-      map(value => (
+      map(value =>
         value.map(item => ({
-            ...item,
-            minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.VIDEO)
-          })
-        )
-      ))) as Observable<SearchAutoCompleteItem[]>;
+          ...item,
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.VIDEO)
+        }))
+      )
+    ) as Observable<SearchAutoCompleteItem[]>;
   }
 
   autoCompleteAward$(query: string): Observable<SearchAutoCompleteItem[]> {
@@ -1048,9 +1062,7 @@ export class SearchService extends BaseService {
     return of(
       this.constellationService
         .getConstellations(this.translateService.currentLang)
-        .filter(constellation =>
-          this._autoCompleteMatch(query, `${constellation.name} (${constellation.id})`)
-        )
+        .filter(constellation => this._autoCompleteMatch(query, `${constellation.name} (${constellation.id})`))
         .map(constellation => ({
           type: SearchAutoCompleteType.CONSTELLATION,
           label: `${constellation.name} (${constellation.id})`,
@@ -1162,18 +1174,22 @@ export class SearchService extends BaseService {
       map((userProfiles: UserProfileInterface[]) =>
         userProfiles
           .map(userProfile => {
-            const name = userProfile.realName ? `${userProfile.realName} (${userProfile.username})` : userProfile.username;
-            return ({
+            const name = userProfile.realName
+              ? `${userProfile.realName} (${userProfile.username})`
+              : userProfile.username;
+            return {
               type: SearchAutoCompleteType.USERS,
               label: name,
               value: {
-                value: [{
-                  id: userProfile.user,
-                  name
-                }],
+                value: [
+                  {
+                    id: userProfile.user,
+                    name
+                  }
+                ],
                 matchType: null
               }
-            });
+            };
           })
           .slice(0, this._autoCompleteItemsLimit)
       )
@@ -1182,13 +1198,13 @@ export class SearchService extends BaseService {
 
   autoCompleteCollaboration$(query: string): Observable<SearchAutoCompleteItem[]> {
     return this._autoCompleteYesNo$(query, SearchAutoCompleteType.COLLABORATION).pipe(
-      map(value => (
+      map(value =>
         value.map(item => ({
-            ...item,
-            minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.COLLABORATION)
-          })
-        )
-      ))) as Observable<SearchAutoCompleteItem[]>;
+          ...item,
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.COLLABORATION)
+        }))
+      )
+    ) as Observable<SearchAutoCompleteItem[]>;
   }
 
   isSimpleMode(): boolean {
@@ -1229,8 +1245,6 @@ export class SearchService extends BaseService {
   }
 
   private _getMinimumSubscription(key: SearchAutoCompleteType): PayableProductInterface {
-    return (
-      this.allFiltersTypes.find(filterType => (filterType as any).key === key) as any
-    ).minimumSubscription;
+    return (this.allFiltersTypes.find(filterType => (filterType as any).key === key) as any).minimumSubscription;
   }
 }

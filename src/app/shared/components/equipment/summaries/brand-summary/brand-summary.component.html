@@ -6,6 +6,6 @@
   {{ brand.name }}
 </div>
 
-<div class="website" *ngIf="!!brand.website">
+<div *ngIf="!!brand.website" class="website">
   {{ brand.website | ensureUrlProtocol }}
 </div>

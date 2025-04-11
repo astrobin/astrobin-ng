@@ -3,10 +3,10 @@
     <div class="d-flex align-items-center justify-content-center">
       <div *ngFor="let item of compareService.getAll(); trackBy: equipmentItemService.trackBy" class="comparison-item">
         <div class="d-flex justify-content-center align-items-center flex-column">
-          <img class="image" [src]="image(item)" />
-          <hr/>
+          <img [src]="image(item)" class="image" />
+          <hr />
           <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
-          <span class="remove" (click)="compareService.remove(item)">&times;</span>
+          <span (click)="compareService.remove(item)" class="remove">&times;</span>
         </div>
       </div>
     </div>
@@ -14,14 +14,14 @@
   <div class="col-2">
     <div class="buttons d-flex justify-content-center align-items-center flex-column me-5">
       <button
-        class="btn btn-primary btn-block btn-lg mb-2"
         [disabled]="compareService.amount() === 1"
         (click)="compare()"
+        class="btn btn-primary btn-block btn-lg mb-2"
       >
         {{ "Compare" | translate }}
       </button>
 
-      <button class="btn btn-secondary btn-block btn-lg" (click)="compareService.clear()">
+      <button (click)="compareService.clear()" class="btn btn-secondary btn-block btn-lg">
         {{ "Close" | translate }}
       </button>
     </div>

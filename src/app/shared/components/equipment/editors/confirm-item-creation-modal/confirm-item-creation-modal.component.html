@@ -1,9 +1,9 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="confirm-item-creation-modal">{{ "Confirm item creation" | translate }}</h4>
+  <h4 id="confirm-item-creation-modal" class="modal-title">{{ "Confirm item creation" | translate }}</h4>
   <button
     (click)="modal.dismiss(ConfirmItemCreationResult.CANCEL)"
-    aria-describedby="modal-title"
     class="close"
+    aria-describedby="modal-title"
     type="button"
   >
     <span aria-hidden="true">&times;</span>
@@ -18,8 +18,8 @@
     </strong>
 
     {{
-    "This item will be part of AstroBin's equipment database, and it's very important that the information is accurate and this item is not the duplicate of another."
-      | translate
+      "This item will be part of AstroBin's equipment database, and it's very important that the information is accurate and this item is not the duplicate of another."
+        | translate
     }}
   </p>
 
@@ -28,18 +28,17 @@
       {{ "Item summary" | translate }}
     </div>
     <div class="card-body">
-      <astrobin-equipment-item-summary
-        [item]="item"
-        [showImage]="false"
-        [showStats]="false"
-      >
+      <astrobin-equipment-item-summary [item]="item" [showImage]="false" [showStats]="false">
       </astrobin-equipment-item-summary>
       <div *ngIf="showModifiedCameraCreationNotice" class="alert alert-info mt-3 mb-0">
         <strong>
           <fa-icon icon="info-circle"></fa-icon>
-          {{ "Please note" | translate }}
-        </strong>:
-        {{ "AstroBin will automatically create variants of this camera marked as \"modified for astrophotography\" and \"custom-cooled\"." | translate }}
+          {{ "Please note" | translate }} </strong
+        >:
+        {{
+          'AstroBin will automatically create variants of this camera marked as "modified for astrophotography" and "custom-cooled".'
+            | translate
+        }}
       </div>
     </div>
   </div>
@@ -50,8 +49,8 @@
         <strong>{{ "Warning!" | translate }} {{ "We found similar items from the same brand." | translate }}</strong>
       </p>
       <astrobin-similar-items-suggestion
-        (itemSelected)="useSuggestion($event)"
         [items]="similarItems"
+        (itemSelected)="useSuggestion($event)"
       ></astrobin-similar-items-suggestion>
     </div>
   </ng-container>
@@ -68,7 +67,7 @@
     {{ "Cancel" | translate }}
   </button>
 
-  <button (click)="modal.close(item)" [disabled]="!formIsValid()" class="btn btn-danger" type="button">
+  <button [disabled]="!formIsValid()" (click)="modal.close(item)" class="btn btn-danger" type="button">
     {{ "Confirm" | translate }}
   </button>
 </div>

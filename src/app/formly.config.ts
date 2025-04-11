@@ -1,25 +1,25 @@
 import { FormControl, ValidationErrors } from "@angular/forms";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
-import { FormlyFieldImageCropperComponent } from "@shared/components/misc/formly-field-image-cropper/formly-field-image-cropper.component";
-import { FormlyFieldNgSelectComponent } from "@shared/components/misc/formly-field-ng-select/formly-field-ng-select.component";
-import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-field-stepper/formly-field-stepper.component";
-import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-field-google-map/formly-field-google-map.component";
-import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
-import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
-import { debounceTime, distinctUntilChanged, first, startWith, switchMap } from "rxjs/operators";
-import { of } from "rxjs";
-import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
-import { FormlyFieldTableComponent } from "@shared/components/misc/formly-field-table/formly-field-table.component";
-import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
-import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
 import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
+import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
+import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
+import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
 import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
 import { FormlyFieldCustomRadioComponent } from "@shared/components/misc/formly-field-custom-radio/formly-field-custom-radio.component";
+import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
+import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
+import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-field-google-map/formly-field-google-map.component";
+import { FormlyFieldImageCropperComponent } from "@shared/components/misc/formly-field-image-cropper/formly-field-image-cropper.component";
+import { FormlyFieldNgSelectComponent } from "@shared/components/misc/formly-field-ng-select/formly-field-ng-select.component";
 import { FormlyFieldSliderComponent } from "@shared/components/misc/formly-field-slider/formly-field-slider.component";
+import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-field-stepper/formly-field-stepper.component";
+import { FormlyFieldTableComponent } from "@shared/components/misc/formly-field-table/formly-field-table.component";
+import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
+import { of } from "rxjs";
+import { debounceTime, distinctUntilChanged, first, startWith, switchMap } from "rxjs/operators";
 
 function getNestedValue(obj: any, path: string): any {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);
@@ -117,16 +117,15 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       },
       {
         name: "file-size",
-        message: (error: { max: number, files?: string[] }) =>
+        message: (error: { max: number; files?: string[] }) =>
           error.files && error.files.length > 1
             ? translateService.instant(
-              "The following file(s) are too large: {{fileNames}}. The maximum allowed size is {{maxSize}}.",
-              { fileNames: error.files.join(", "), maxSize: UtilsService.humanFileSize(error.max) }
-            )
-            : translateService.instant(
-              "This file is too large. The maximum allowed size is {{0}}.",
-              { 0: UtilsService.humanFileSize(error.max) }
-            )
+                "The following file(s) are too large: {{fileNames}}. The maximum allowed size is {{maxSize}}.",
+                { fileNames: error.files.join(", "), maxSize: UtilsService.humanFileSize(error.max) }
+              )
+            : translateService.instant("This file is too large. The maximum allowed size is {{0}}.", {
+                0: UtilsService.humanFileSize(error.max)
+              })
       },
       {
         name: "image-or-video-file",
@@ -235,8 +234,8 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         message(): string {
           return translateService.instant(
             "This camera already exists in AstroBin's database. Certain Canon cameras have multiple names for " +
-            "multiple markets (e.g. EOS / Rebel / Kiss) and they are grouped as a single item on AstroBin for " +
-            "simplicity."
+              "multiple markets (e.g. EOS / Rebel / Kiss) and they are grouped as a single item on AstroBin for " +
+              "simplicity."
           );
         }
       },
@@ -251,7 +250,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         message(): string {
           return translateService.instant(
             "The name of the filter must end with its size in parentheses, as found from the Size selection " +
-            "dropdown, e.g.: (Round 50mm)."
+              "dropdown, e.g.: (Round 50mm)."
           );
         }
       },
@@ -284,7 +283,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         message(): string {
           return translateService.instant(
             "Focal reducers/modifiers/correctors/field flatteners are found among Accessories. " +
-            "Please find your item in that category, thanks!"
+              "Please find your item in that category, thanks!"
           );
         }
       },
@@ -307,7 +306,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         message(): string {
           return translateService.instant(
             "Filter sets should be added one filter at a time, individually, so that they may be added to " +
-            "acquisition sessions."
+              "acquisition sessions."
           );
         }
       },
@@ -332,23 +331,17 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       {
         name: "invalid-csv-unexpected-header",
         message(options: { unexpectedHeaders: string[] } = { unexpectedHeaders: [] }): string {
-          return translateService.instant(
-            "The CSV header contains unexpected values: {{0}}.",
-            {
-              0: options.unexpectedHeaders.join(", ")
-            }
-          );
+          return translateService.instant("The CSV header contains unexpected values: {{0}}.", {
+            0: options.unexpectedHeaders.join(", ")
+          });
         }
       },
       {
         name: "invalid-csv-missing-required-header",
         message(options: { requiredHeaders: string[] } = { requiredHeaders: [] }): string {
-          return translateService.instant(
-            "The CSV header does not contain the following mandatory values: {{0}}.",
-            {
-              0: options.requiredHeaders.join(", ")
-            }
-          );
+          return translateService.instant("The CSV header does not contain the following mandatory values: {{0}}.", {
+            0: options.requiredHeaders.join(", ")
+          });
         }
       },
       {
@@ -371,9 +364,10 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             return null; // Skip validation on the server
           }
 
-          const files = Array.isArray(control.value) || control.value instanceof FileList
-            ? Array.from(control.value)
-            : [control.value];
+          const files =
+            Array.isArray(control.value) || control.value instanceof FileList
+              ? Array.from(control.value)
+              : [control.value];
 
           if (files.length === 1) {
             let file = files[0];
@@ -388,7 +382,8 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             if (tooLargeFiles.length > 0) {
               return {
                 "file-size": {
-                  max: options.max, files: tooLargeFiles.map(f => f.file.name)
+                  max: options.max,
+                  files: tooLargeFiles.map(f => f.file.name)
                 }
               };
             }
@@ -418,9 +413,9 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           }
 
           return !value ||
-          UtilsService.isString(value) ||
-          UtilsService.isImage(value.name) ||
-          UtilsService.isVideo(value.name)
+            UtilsService.isString(value) ||
+            UtilsService.isImage(value.name) ||
+            UtilsService.isVideo(value.name)
             ? null
             : { "image-or-video-file": true };
         }
@@ -460,14 +455,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             model: any;
             maxValueKey: string;
             minLabel: string;
-            maxLabel: string,
-            compareFunction?: (value: any, maxValue: any) => boolean
+            maxLabel: string;
+            compareFunction?: (value: any, maxValue: any) => boolean;
           }
         ): ValidationErrors => {
-          if (
-            !options.model ||
-            !options.maxValueKey
-          ) {
+          if (!options.model || !options.maxValueKey) {
             return null;
           }
 
@@ -478,9 +470,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             return null;
           }
 
-          const isInvalid = options.compareFunction
-            ? options.compareFunction(minValue, maxValue)
-            : minValue > maxValue;
+          const isInvalid = options.compareFunction ? options.compareFunction(minValue, maxValue) : minValue > maxValue;
 
           if (isInvalid) {
             return {
@@ -500,14 +490,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             model: any;
             minValueKey: string;
             minLabel: string;
-            maxLabel: string,
-            compareFunction?: (value: any, minValue: any) => boolean
+            maxLabel: string;
+            compareFunction?: (value: any, minValue: any) => boolean;
           }
         ): ValidationErrors => {
-          if (
-            !options.model ||
-            !options.minValueKey
-          ) {
+          if (!options.model || !options.minValueKey) {
             return null;
           }
 
@@ -518,9 +505,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             return null;
           }
 
-          const isInvalid = options.compareFunction
-            ? options.compareFunction(maxValue, minValue)
-            : maxValue < minValue;
+          const isInvalid = options.compareFunction ? options.compareFunction(maxValue, minValue) : maxValue < minValue;
 
           if (isInvalid) {
             return {
@@ -653,7 +638,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       },
       {
         name: "csv",
-        validation: (control: FormControl, field: FormlyFieldConfig, options: { requiredHeaders: string[], allowedHeaders: string[] }) => {
+        validation: (
+          control: FormControl,
+          field: FormlyFieldConfig,
+          options: { requiredHeaders: string[]; allowedHeaders: string[] }
+        ) => {
           const hasRequiredHeaders = (header: string[], requiredHeaders: string[]): boolean => {
             return requiredHeaders.every(h => header.includes(h));
           };
@@ -713,10 +702,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             latitude === undefined ||
             longitude === null ||
             longitude === undefined ||
-            (
-              latitude === 0 &&
-              longitude === 0
-            )
+            (latitude === 0 && longitude === 0)
           ) {
             return { "valid-coordinates": true };
           }

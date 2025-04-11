@@ -8,7 +8,7 @@ export interface BrandInterface {
   lastAddedOrRemovedFromImage: string;
   name: string;
   website?: string;
-  logo?: string | { file: File, url: string }[];
+  logo?: string | { file: File; url: string }[];
   createdBy?: UserInterface["id"];
   imageCount: number;
   userCount: number;

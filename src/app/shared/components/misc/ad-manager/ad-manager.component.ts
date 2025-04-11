@@ -1,9 +1,23 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  ElementRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
 import { AdManagerService } from "@core/services/ad-manager.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@core/services/device.service";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { fadeInOut } from "@shared/animations";
 
 @Component({
@@ -11,28 +25,23 @@ import { fadeInOut } from "@shared/animations";
   template: `
     <div
       *ngIf="isBrowser && unitPath && divId && size"
+      [class.ad-rendered]="rendered"
       [id]="divId"
       [style.height.px]="loading || rendered ? height : 0"
       class="ad-container"
-      [class.ad-rendered]="rendered"
-    >
-    </div>
+    ></div>
 
     <astrobin-loading-indicator *ngIf="loading && !rendered"></astrobin-loading-indicator>
 
     <img
       *ngIf="!loading && !rendered && !!configName"
       @fadeInOut
-      [src]="'/assets/images/ads/' + configName + '/thank-you-for-not-blocking-ads.jpeg?v=1'"
       [alt]="'Thank you for not blocking ads!' | translate"
+      [src]="'/assets/images/ads/' + configName + '/thank-you-for-not-blocking-ads.jpeg?v=1'"
       class="default-ad"
     />
 
-    <button
-      *ngIf="rendered"
-      (click)="removeAds()"
-      class="btn btn-link btn-no-block remove-ads"
-    >
+    <button *ngIf="rendered" (click)="removeAds()" class="btn btn-link btn-no-block remove-ads">
       {{ "Remove ads" | translate }}
     </button>
 
@@ -41,7 +50,7 @@ import { fadeInOut } from "@shared/animations";
         <h5 class="offcanvas-title">
           {{ "Remove ads" | translate }}
         </h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
 
       <div class="offcanvas-body">
@@ -53,7 +62,8 @@ import { fadeInOut } from "@shared/animations";
         ></p>
 
         <p
-          translate="If you are on AstroBin Premium or AstroBin Ultimate, you can remove ads in your settings. If you are not, please consider supporting AstroBin by subscribing!"></p>
+          translate="If you are on AstroBin Premium or AstroBin Ultimate, you can remove ads in your settings. If you are not, please consider supporting AstroBin by subscribing!"
+        ></p>
 
         <p translate="Thank you!"></p>
       </div>
@@ -133,16 +143,16 @@ export class AdManagerComponent implements OnChanges {
     }
 
     if (this.adManagerService.hasAdSlot(this.divId)) {
-      this.adManagerService.refreshAd(this.divId).then((displayed) => {
+      void this.adManagerService.refreshAd(this.divId).then(displayed => {
         this._onAdResult(displayed);
         this.changeDetectorRef.markForCheck();
       });
     } else {
-      this.adManagerService.defineAdSlot(this.configName, this.unitPath, this.size, this.divId).then(() => {
+      void this.adManagerService.defineAdSlot(this.configName, this.unitPath, this.size, this.divId).then(() => {
         this.loading = true;
         this.changeDetectorRef.markForCheck();
 
-        this.adManagerService.displayAd(this.divId).then((displayed) => {
+        void this.adManagerService.displayAd(this.divId).then(displayed => {
           this._onAdResult(displayed);
           this.changeDetectorRef.markForCheck();
         });
@@ -162,7 +172,7 @@ export class AdManagerComponent implements OnChanges {
   }
 
   removeAds(): void {
-    this.offcanvasService.open(this.removeAdsOffcanvasTemplate, {
+    void this.offcanvasService.open(this.removeAdsOffcanvasTemplate, {
       position: this.deviceService.offcanvasPosition()
     });
   }

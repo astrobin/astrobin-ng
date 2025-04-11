@@ -1,9 +1,9 @@
 <astrobin-mobile-menu
-  (menuClose)="onMobileMenuClose()"
-  (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
   [descriptionTemplate]="descriptionTemplate"
   [template]="navTemplate"
+  [titleTemplate]="titleTemplate"
+  (menuClose)="onMobileMenuClose()"
+  (menuOpen)="onMobileMenuOpen()"
 ></astrobin-mobile-menu>
 
 <div class="page has-breadcrumb has-mobile-menu has-infinite-scroll">
@@ -51,17 +51,11 @@
 
 <ng-template #sellSeekButtons>
   <div class="fixed-mobile-buttons">
-    <a
-      (click)="equipmentMarketplaceService.onCreateListingClicked($event)"
-      class="btn btn-primary btn-lg w-100 mb-2"
-    >
+    <a (click)="equipmentMarketplaceService.onCreateListingClicked($event)" class="btn btn-primary btn-lg w-100 mb-2">
       {{ "Sell" | translate }}
     </a>
 
-    <a
-      (click)="equipmentMarketplaceService.onPostWantedClicked($event)"
-      class="btn btn-secondary btn-lg w-100 mb-3"
-    >
+    <a (click)="equipmentMarketplaceService.onPostWantedClicked($event)" class="btn btn-secondary btn-lg w-100 mb-3">
       {{ "Seek" | translate }}
     </a>
   </div>
@@ -89,9 +83,9 @@
       #selectRegionTooltip="ngbTooltip"
       [class.loading]="loadingService.loading$ | async"
       [ngbTooltip]="selectRegionTooltipText"
+      id="region-selector"
       class="btn btn-outline-primary mb-0"
       container="body"
-      id="region-selector"
       ngbDropdownToggle
       placement="start"
       tooltipClass="tooltip-warning"
@@ -114,21 +108,21 @@
         {{ "Worldwide" | translate }}
       </button>
 
-      <button (click)="setRegion($event, requestContinent)" *ngIf="!!requestContinent" ngbDropdownItem>
+      <button *ngIf="!!requestContinent" (click)="setRegion($event, requestContinent)" ngbDropdownItem>
         <ng-container *ngTemplateOutlet="continentFlagTemplate"></ng-container>
         {{ requestContinent }}
       </button>
 
       <button
-        (click)="setRegion($event, 'EU')"
         *ngIf="!!requestCountryCode && UtilsService.isEUCountry(requestCountryCode)"
+        (click)="setRegion($event, 'EU')"
         ngbDropdownItem
       >
         <fa-icon icon="euro-sign"></fa-icon>
         {{ "European Union" | translate }}
       </button>
 
-      <button (click)="setRegion($event, requestCountryCode)" *ngIf="!!requestCountryLabel" ngbDropdownItem>
+      <button *ngIf="!!requestCountryLabel" (click)="setRegion($event, requestCountryCode)" ngbDropdownItem>
         <ng-container *ngTemplateOutlet="countryFlagTemplate"></ng-container>
         {{ requestCountryLabel }}
       </button>
@@ -159,11 +153,7 @@
     "AstroBin is the best place to buy and sell astrophotography equipment. You can find telescopes, cameras, mounts, filters, and much more."
       | translate
   }}
-  <a
-    class="learn-more"
-    href="https://welcome.astrobin.com/features/marketplace"
-    target="_blank"
-  >
+  <a class="learn-more" href="https://welcome.astrobin.com/features/marketplace" target="_blank">
     {{ "Learn more" }}.
   </a>
 </ng-template>

@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing";
 import { RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
+import { StateGenerator } from "@app/store/generators/state.generator";
 import { MainState } from "@app/store/state";
-import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { PremiumSubscriptionGuardService } from "@core/services/guards/premium-subscription-guard.service";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { TestConstants } from "@shared/test-constants";
 import { MockBuilder, NG_MOCKS_GUARDS } from "ng-mocks";
-import { StateGenerator } from "@app/store/generators/state.generator";
 
 describe("PremiumSubscriptionGuardService", () => {
   let service: PremiumSubscriptionGuardService;
@@ -25,9 +25,9 @@ describe("PremiumSubscriptionGuardService", () => {
     store = TestBed.inject(MockStore);
     service = TestBed.inject(PremiumSubscriptionGuardService);
 
-    jest.spyOn(service.router, "navigateByUrl").mockImplementation(
-      () => new Promise<boolean>(resolve => resolve(true))
-    );
+    jest
+      .spyOn(service.router, "navigateByUrl")
+      .mockImplementation(() => new Promise<boolean>(resolve => resolve(true)));
   });
 
   it("should be created", () => {

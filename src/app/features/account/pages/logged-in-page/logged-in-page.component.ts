@@ -1,16 +1,16 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import { OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { TitleService } from "@core/services/title/title.service";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { interval } from "rxjs";
 import { take, tap } from "rxjs/operators";
-import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-logged-in-page",
@@ -48,9 +48,9 @@ export class LoggedInPageComponent extends BaseComponentDirective implements OnI
 
     const _doRedirect = () => {
       if (this.redirectUrl) {
-        this.router.navigateByUrl(this.redirectUrl);
+        void this.router.navigateByUrl(this.redirectUrl);
       } else {
-        this.router.navigateByUrl("/");
+        void this.router.navigateByUrl("/");
       }
     };
 

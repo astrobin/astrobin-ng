@@ -5,25 +5,21 @@
     <div class="buttons d-flex align-items-center">
       <div
         *ngIf="
-          showUsageButton && (
-            model.itemType === EquipmentItemType.TELESCOPE ||
+          showUsageButton &&
+          (model.itemType === EquipmentItemType.TELESCOPE ||
             model.itemType === EquipmentItemType.CAMERA ||
-            model.itemType === EquipmentItemType.SENSOR
-          )
+            model.itemType === EquipmentItemType.SENSOR)
         "
         class="usage-menu me-2 mb-0"
         ngbDropdown
       >
-        <button class="btn btn-xs btn-outline-secondary mb-0" id="usage-menu" ngbDropdownToggle type="button">
+        <button id="usage-menu" class="btn btn-xs btn-outline-secondary mb-0" ngbDropdownToggle type="button">
           {{ "Usage" | translate }}
         </button>
 
         <div [attr.aria-labelledby]="'sort-search-results'" ngbDropdownMenu>
           <button (click)="setUsageType(null)" ngbDropdownItem>
-            <fa-icon
-              *ngIf="!model.usageType; else notSelected"
-              icon="check"
-            ></fa-icon>
+            <fa-icon *ngIf="!model.usageType; else notSelected" icon="check"></fa-icon>
             {{ "Any" | translate }}
           </button>
 
@@ -45,11 +41,8 @@
         </div>
       </div>
 
-      <div
-        *ngIf="showSortButton"
-        class="sort-menu me-2 mb-0" ngbDropdown
-      >
-        <button class="btn btn-xs btn-outline-secondary mb-0" id="sort-search-results" ngbDropdownToggle type="button">
+      <div *ngIf="showSortButton" class="sort-menu me-2 mb-0" ngbDropdown>
+        <button id="sort-search-results" class="btn btn-xs btn-outline-secondary mb-0" ngbDropdownToggle type="button">
           {{ "Sort" | translate }}
         </button>
 
@@ -70,9 +63,9 @@
         *ngIf="showMoreButton"
         [href]="searchUrl"
         (click)="onMoreClicked($event)"
-        astrobinEventStopPropagation
-        astrobinEventPreventDefault
         class="btn btn-xs btn-outline-primary float-end"
+        astrobinEventPreventDefault
+        astrobinEventStopPropagation
       >
         {{ "More" | translate }}
       </a>
@@ -84,8 +77,8 @@
       #imageSearchComponent
       [loadMoreOnScroll]="loadMoreOnScroll"
       [model]="model"
-      [showRetailers]="showRetailers"
       [showMarketplaceItems]="showMarketplaceItems"
+      [showRetailers]="showRetailers"
       [showStaticOverlay]="showStaticOverlay"
     ></astrobin-image-search>
   </div>
@@ -94,4 +87,3 @@
 <ng-template #notSelected>
   <span class="not-selected"></span>
 </ng-template>
-

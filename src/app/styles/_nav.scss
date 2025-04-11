@@ -1,18 +1,18 @@
 @import "mixins";
 
 .nav {
-  &[orientation=vertical] {
+  &[orientation="vertical"] {
     @include darkest-background-texture;
     box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.75);
-    padding: .5rem;
-    border-radius: .25rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
     text-align: left;
 
     .nav-item-separator {
-      margin-top: .75rem;
-      margin-bottom: .75rem;
+      margin-top: 0.75rem;
+      margin-bottom: 0.75rem;
       height: 0;
-      border-bottom: 1px solid rgba(255, 255, 255, .1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
   }
 
@@ -22,7 +22,7 @@
 
       .nav-link {
         color: var(--lighterGrey);
-        font-size: .9rem;
+        font-size: 0.9rem;
 
         &.active {
           color: var(--accentColor);
@@ -54,7 +54,7 @@
 
     // Nested pills.
     .nav-pills {
-      font-size: .85rem;
+      font-size: 0.85rem;
       min-height: initial;
 
       .nav-item {
@@ -62,9 +62,9 @@
       }
 
       .nav-link {
-        padding: .5rem 1rem;
+        padding: 0.5rem 1rem;
         color: var(--lighterGrey);
-        border-radius: .5rem;
+        border-radius: 0.5rem;
         border-left: 1px transparent;
 
         &.active {
@@ -78,7 +78,7 @@
   }
 
   .nav {
-    &[orientation=vertical] {
+    &[orientation="vertical"] {
       background: transparent;
       box-shadow: none;
     }

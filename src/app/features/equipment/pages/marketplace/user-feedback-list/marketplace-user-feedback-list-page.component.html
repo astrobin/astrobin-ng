@@ -1,27 +1,24 @@
 <div class="page has-breadcrumb">
   <h1>{{ title }}</h1>
   <small>
-    {{ "Feedback received by this user in the marketplace. Please be kind and respectful in your comments." | translate }}
+    {{
+      "Feedback received by this user in the marketplace. Please be kind and respectful in your comments." | translate
+    }}
   </small>
 
-  <div *ngIf="feedback !== undefined; else loadingTemplate"
-       class="feedback-list">
+  <div *ngIf="feedback !== undefined; else loadingTemplate" class="feedback-list">
     <p *ngIf="feedback.count === 0">
       {{ "This user has no marketplace feedback yet." | translate }}
     </p>
 
     <ng-container *ngIf="feedback.count > 0">
-      <div
-        *ngFor="let feedbackItem of feedback.results"
-        class="feedback-container"
-      >
+      <div *ngFor="let feedbackItem of feedback.results" class="feedback-container">
         <astrobin-marketplace-feedback [feedback]="feedbackItem"></astrobin-marketplace-feedback>
       </div>
     </ng-container>
   </div>
 
   <ngb-pagination
-    (pageChange)="loadFeedback($event)"
     *ngIf="feedback && feedback.count > feedback.results.length"
     [boundaryLinks]="true"
     [collectionSize]="feedback.count"
@@ -30,6 +27,7 @@
     [maxSize]="5"
     [page]="page"
     [rotate]="true"
+    (pageChange)="loadFeedback($event)"
   ></ngb-pagination>
 </div>
 

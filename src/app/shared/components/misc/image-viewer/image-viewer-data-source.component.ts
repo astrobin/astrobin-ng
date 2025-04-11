@@ -1,22 +1,30 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { DataSource, ImageInterface, RemoteSource } from "@core/interfaces/image.interface";
-import { ImageService } from "@core/services/image/image.service";
-import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@core/services/search.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild
+} from "@angular/core";
 import { Router } from "@angular/router";
-import { MainState } from "@app/store/state";
-import { select, Store } from "@ngrx/store";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { LoadRemoteSourceAffiliates } from "@app/store/actions/remote-source-affiliates.actions";
 import { selectRemoteSourceAffiliates } from "@app/store/selectors/app/remote-source-affiliates.selectors";
-import { filter, takeUntil } from "rxjs/operators";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
+import { MainState } from "@app/store/state";
+import { DataSource, RemoteSource, ImageInterface } from "@core/interfaces/image.interface";
 import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
-import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { select, Store } from "@ngrx/store";
+import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
+import { CookieService } from "ngx-cookie";
+import { filter, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-viewer-data-source",
@@ -26,10 +34,10 @@ import { SearchAutoCompleteType } from "@features/search/enums/search-auto-compl
         <div class="metadata-icon">
           <img
             [ngbTooltip]="'Data source' | translate"
-            triggers="hover click"
-            container="body"
             [src]="'/assets/images/' + dataSourceIcon"
             alt=""
+            container="body"
+            triggers="hover click"
           />
         </div>
         <div (click)="dataSourceClicked($event)" class="metadata-link search">
@@ -41,15 +49,15 @@ import { SearchAutoCompleteType } from "@features/search/enums/search-auto-compl
         <div class="metadata-icon">
           <img
             [ngbTooltip]="'Remote hosting' | translate"
-            triggers="hover click"
+            alt=""
             container="body"
             src="/assets/images/data-sources/observatory-white.png?v=1"
-            alt=""
+            triggers="hover click"
           />
         </div>
         <div
-          (click)="remoteDataSourceClicked($event)"
           [ngClass]="remoteDataSourceIsSponsor ? 'metadata-link metadata-link-sponsor' : 'metadata-label'"
+          (click)="remoteDataSourceClicked($event)"
         >
           <span [class.highlight]="remoteDataSourceIsSearchTerm">{{ remoteDataSource }}</span>
         </div>
@@ -59,21 +67,21 @@ import { SearchAutoCompleteType } from "@features/search/enums/search-auto-compl
         <div class="metadata-icon">
           <fa-icon
             [ngbTooltip]="'Location' | translate"
-            triggers="hover click"
             container="body"
             icon="map-marker-alt"
+            triggers="hover click"
           ></fa-icon>
         </div>
-        <div class="metadata-label" [innerHTML]="location | highlight: highlightTerms"></div>
+        <div [innerHTML]="location | highlight: highlightTerms" class="metadata-label"></div>
       </div>
 
       <div *ngIf="bortle" class="metadata-item">
         <div class="metadata-icon w-auto">
           <span
-            class="bortle"
             [ngbTooltip]="'Weighted average Bortle scale' | translate"
-            triggers="hover click"
+            class="bortle"
             container="body"
+            triggers="hover click"
           >
             Bortle
           </span>
@@ -87,7 +95,7 @@ import { SearchAutoCompleteType } from "@features/search/enums/search-auto-compl
     <ng-template #remoteSourceAffiliateSponsorOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ remoteDataSource }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <div class="sponsor-info d-flex flex-column gap-3 align-items-center p-4">
@@ -97,18 +105,14 @@ import { SearchAutoCompleteType } from "@features/search/enums/search-auto-compl
             class="no-external-link-icon w-100"
             target="_blank"
           >
-            <img
-              [alt]="remoteDataSourceAffiliate.name"
-              [src]="remoteDataSourceAffiliate.imageFile"
-              class="img-fluid"
-            />
+            <img [alt]="remoteDataSourceAffiliate.name" [src]="remoteDataSourceAffiliate.imageFile" class="img-fluid" />
           </a>
 
           <a [href]="remoteDataSourceAffiliate.url" target="_blank">
             {{ "Visit website" | translate }}
           </a>
 
-          <button class="btn btn-primary" (click)="search({ remote_source: this.image.remoteSource })">
+          <button (click)="search({ remote_source: this.image.remoteSource })" class="btn btn-primary">
             {{ "Browse images" | translate }}
           </button>
         </div>
@@ -178,11 +182,7 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
   }
 
   setDataSource(image: ImageInterface) {
-    if (
-      image.dataSource !== DataSource.OTHER &&
-      image.dataSource !== DataSource.UNKNOWN &&
-      image.dataSource !== null
-    ) {
+    if (image.dataSource !== DataSource.OTHER && image.dataSource !== DataSource.UNKNOWN && image.dataSource !== null) {
       this.dataSourceIcon = this.imageService.getDataSourceIcon(this.image.dataSource, "white");
       this.dataSource = this.imageService.humanizeDataSource(this.image.dataSource);
 
@@ -201,18 +201,20 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
   }
 
   setRemoteDataSourceAffiliate(image: ImageInterface) {
-    this.store$.pipe(
-      select(selectRemoteSourceAffiliates),
-      filter(affiliates => !!affiliates),
-      takeUntil(this.destroyed$)
-    ).subscribe(affiliates => {
-      const remoteSourceAffiliate = affiliates.find(affiliate => affiliate.code === image.remoteSource);
-      if (remoteSourceAffiliate) {
-        this.remoteDataSourceAffiliate = remoteSourceAffiliate;
-        this.remoteDataSourceIsSponsor = new Date(remoteSourceAffiliate.affiliationExpiration) >= new Date();
-        this.changeDetectorRef.markForCheck();
-      }
-    });
+    this.store$
+      .pipe(
+        select(selectRemoteSourceAffiliates),
+        filter(affiliates => !!affiliates),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(affiliates => {
+        const remoteSourceAffiliate = affiliates.find(affiliate => affiliate.code === image.remoteSource);
+        if (remoteSourceAffiliate) {
+          this.remoteDataSourceAffiliate = remoteSourceAffiliate;
+          this.remoteDataSourceIsSponsor = new Date(remoteSourceAffiliate.affiliationExpiration) >= new Date();
+          this.changeDetectorRef.markForCheck();
+        }
+      });
 
     this.store$.dispatch(new LoadRemoteSourceAffiliates());
   }
@@ -253,7 +255,7 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
       return;
     }
 
-    this.offcanvasService.open(this.remoteSourceAffiliateSponsorOffcanvasTemplate,{
+    this.offcanvasService.open(this.remoteSourceAffiliateSponsorOffcanvasTemplate, {
       panelClass: "image-viewer-offcanvas",
       backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()

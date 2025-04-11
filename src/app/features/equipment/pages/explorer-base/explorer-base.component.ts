@@ -1,22 +1,22 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { ChangeDetectorRef, OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { ActivatedRoute, Params, Router, NavigationEnd } from "@angular/router";
 import { MainState } from "@app/store/state";
-import { Actions } from "@ngrx/effects";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { ActivatedRoute, NavigationEnd, Params, Router } from "@angular/router";
-import { takeUntil } from "rxjs/operators";
-import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import { Observable } from "rxjs";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentItemDisplayProperty } from "@core/services/equipment-item.service";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { CookieService } from "ngx-cookie";
 import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { GetContributors } from "@features/equipment/store/equipment.actions";
-import { EquipmentItemDisplayProperty } from "@core/services/equipment-item.service";
-import { DeviceService } from "@core/services/device.service";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { EquipmentItemType, EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { CookieService } from "ngx-cookie";
+import { Observable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 export const EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE = "astrobin-equipment-explorer-page-sorting";
 
@@ -94,7 +94,7 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
 
     const queryParams: Params = { page };
 
-    this.router
+    void this.router
       .navigate([], {
         relativeTo: this.activatedRoute,
         queryParams
@@ -149,6 +149,5 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     this.getItems();
   }
 
-  getItems() {
-  }
+  getItems() {}
 }

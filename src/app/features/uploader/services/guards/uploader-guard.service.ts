@@ -4,11 +4,11 @@ import { BaseService } from "@core/services/base.service";
 import { PremiumSubscriptionGuardService } from "@core/services/guards/premium-subscription-guard.service";
 import { UltimateSubscriptionGuardService } from "@core/services/guards/ultimate-subscription-guard.service";
 import { LoadingService } from "@core/services/loading.service";
-import { concat, Observable } from "rxjs";
+import { Observable, concat } from "rxjs";
 import { reduce, tap } from "rxjs/operators";
 
 @Injectable()
-export class UploaderGuardService extends BaseService  {
+export class UploaderGuardService extends BaseService {
   constructor(
     public loadingService: LoadingService,
     public premiumGuard: PremiumSubscriptionGuardService,
@@ -26,7 +26,7 @@ export class UploaderGuardService extends BaseService  {
       reduce((acc, val) => acc || val),
       tap(result => {
         if (!result) {
-          this.router.navigateByUrl(this.router.createUrlTree(["/permission-denied"]));
+          void this.router.navigateByUrl(this.router.createUrlTree(["/permission-denied"]));
           return false;
         }
       })

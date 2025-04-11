@@ -1,12 +1,8 @@
-<div [class.has-error]="showError && !!formControl.errors" class="form-group {{props.fieldGroupClassName}}">
-  <label
-    *ngIf="props.label && props.hideLabel !== true"
-    [className]="props.labelClassName"
-    [for]="id"
-  >
+<div [class.has-error]="showError && !!formControl.errors" class="form-group {{ props.fieldGroupClassName }}">
+  <label *ngIf="props.label && props.hideLabel !== true" [className]="props.labelClassName" [for]="id">
     <span [innerHTML]="props.label"></span>
     <span *ngIf="props.required && !props.hideRequiredMarker" class="required-marker">
-      {{ props.requiredMarker || '*'}}
+      {{ props.requiredMarker || "*" }}
     </span>
     <span *ngIf="!props.required && !props.hideOptionalMarker" class="optional-marker">
       {{ props.optionalMarker || "(optional)" | translate }}
@@ -36,12 +32,12 @@
 
         <ng-container
           *ngIf="message.template"
-          [ngTemplateOutletContext]="{ data: message.data }"
           [ngTemplateOutlet]="message.template"
+          [ngTemplateOutletContext]="{ data: message.data }"
         >
         </ng-container>
 
-        <button (click)="closeMessage(message)" *ngIf="message.dismissible" class="close">&times;</button>
+        <button *ngIf="message.dismissible" (click)="closeMessage(message)" class="close">&times;</button>
       </div>
     </ng-container>
   </ng-container>
@@ -52,16 +48,11 @@
 </div>
 
 <ng-template #description>
-  <small
-    *ngIf="props.description"
-    [innerHTML]="props.description"
-    class="form-text text-muted">
-  </small>
+  <small *ngIf="props.description" [innerHTML]="props.description" class="form-text text-muted"> </small>
 </ng-template>
 
 <ng-template #error>
-  <div *ngIf="showError" [class.mb-2]="props.errorUnderLabel" [style.display]="'block'"
-       class="invalid-feedback">
+  <div *ngIf="showError" [class.mb-2]="props.errorUnderLabel" [style.display]="'block'" class="invalid-feedback">
     <formly-validation-message [field]="field"></formly-validation-message>
   </div>
 </ng-template>

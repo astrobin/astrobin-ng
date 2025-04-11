@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { environment } from "@env/environment";
-import { Constants } from "@shared/constants";
 import { UploadDataServiceInterface } from "@core/services/upload-metadata/upload-data.service-interface";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { environment } from "@env/environment";
 import { TranslateService } from "@ngx-translate/core";
+import { Constants } from "@shared/constants";
+import { Observable, BehaviorSubject, Subject } from "rxjs";
 
 export interface UploadMetadataInterface {
   [key: string]: any;
@@ -21,8 +21,8 @@ export class UploadDataService implements UploadDataServiceInterface {
   metadataChanges$: Observable<UploadMetadataEventInterface>;
   endpointChanges$: Observable<string>;
   allowedTypesChanges$: Observable<{
-    allowedTypes: string,
-    uploadLabel: string
+    allowedTypes: string;
+    uploadLabel: string;
   }>;
 
   private _metadata: { [key: string]: UploadMetadataInterface } = {};
@@ -32,13 +32,11 @@ export class UploadDataService implements UploadDataServiceInterface {
   private _endpointChanges = new BehaviorSubject<string>(`${environment.classicApiUrl}/api/v2/images/image-upload/`);
 
   private _allowedTypesChanges = new Subject<{
-    allowedTypes: string,
-    uploadLabel: string
+    allowedTypes: string;
+    uploadLabel: string;
   }>();
 
-  constructor(
-    public readonly translateService: TranslateService
-  ) {
+  constructor(public readonly translateService: TranslateService) {
     this.metadataChanges$ = this._metadataChanges.asObservable();
     this.endpointChanges$ = this._endpointChanges.asObservable();
     this.allowedTypesChanges$ = this._allowedTypesChanges.asObservable();

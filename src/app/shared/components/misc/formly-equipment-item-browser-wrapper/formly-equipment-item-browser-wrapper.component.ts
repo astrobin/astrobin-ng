@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
-import { FieldWrapper } from "@ngx-formly/core";
 import { FormlyFieldMessage, FormlyFieldService } from "@core/services/formly-field.service";
+import { FieldWrapper } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-formly-equipment-item-browser-wrapper",

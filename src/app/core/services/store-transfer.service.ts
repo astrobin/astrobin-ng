@@ -1,4 +1,4 @@
-import { ApplicationRef, Injectable, makeStateKey, TransferState } from "@angular/core";
+import { ApplicationRef, TransferState, Injectable, makeStateKey } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { filter, take } from "rxjs/operators";
 
@@ -10,8 +10,7 @@ export class StoreTransferService {
     private appRef: ApplicationRef,
     private transferState: TransferState,
     private store: Store
-  ) {
-  }
+  ) {}
 
   public init(): void {
     // Wait for Angular to be stable before capturing the state

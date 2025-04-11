@@ -6,5 +6,4 @@ import { FieldType } from "@ngx-formly/core";
   templateUrl: "./formly-field-button.component.html",
   styleUrls: ["./formly-field-button.component.scss"]
 })
-export class FormlyFieldButtonComponent extends FieldType {
-}
+export class FormlyFieldButtonComponent extends FieldType {}

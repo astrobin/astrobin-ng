@@ -66,7 +66,7 @@
     font-size: 4rem;
     line-height: 4rem;
     color: var(--white);
-    background-color: rgba(0, 0, 0, .5);
+    background-color: rgba(0, 0, 0, 0.5);
     border: 1px solid var(--white);
     z-index: 1;
   }
@@ -77,7 +77,7 @@
     }
 
     .promotion-image-hover-label {
-      opacity: .5;
+      opacity: 0.5;
     }
   }
 }
@@ -94,11 +94,11 @@ astrobin-telescope,
 astrobin-camera,
 astrobin-equipment-item-display-name {
   &:not(:last-child) {
-    margin-right: .25rem;
+    margin-right: 0.25rem;
 
     &::after {
-      content: '\b7'; /* middot */
-      margin-left: .25rem
+      content: "\b7"; /* middot */
+      margin-left: 0.25rem;
     }
   }
 }

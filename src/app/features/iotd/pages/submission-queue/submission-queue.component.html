@@ -11,11 +11,11 @@
       </button>
 
       <astrobin-toggle-button
-        (toggle)="toggleDisplayHiddenImages()"
         [label]="'Display hidden images' | translate"
         [value]="displayHiddenImages"
-        class="me-1"
+        (toggle)="toggleDisplayHiddenImages()"
         id="display-hidden-images"
+        class="me-1"
       ></astrobin-toggle-button>
     </span>
   </h1>
@@ -26,13 +26,13 @@
         <ng-container *ngIf="!loadingQueue; else loading">
           <ng-container *ngIf="queue?.count > 0; else noEntries">
             <astrobin-submission-slots
-              (slotClick)="scrollToEntry($event)"
               [availableEntries]="queue.results"
+              (slotClick)="scrollToEntry($event)"
               astrobinSticky
             >
             </astrobin-submission-slots>
 
-            <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
+            <ng-container [ngTemplateOutlet]="pagination" [ngTemplateOutletContext]="{ queue: queue }"></ng-container>
 
             <ng-container *ngFor="let entry of queue.results">
               <astrobin-submission-entry
@@ -44,7 +44,7 @@
               </astrobin-submission-entry>
             </ng-container>
 
-            <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
+            <ng-container [ngTemplateOutlet]="pagination" [ngTemplateOutletContext]="{ queue: queue }"></ng-container>
 
             <astrobin-scroll-to-top></astrobin-scroll-to-top>
           </ng-container>
@@ -57,18 +57,18 @@
 <ng-template #noEntries>
   <p>
     {{ "The submission queue is currently empty or being refreshed." | translate }}&nbsp;{{
-    comeBackInMinutesMessage(15)
+      comeBackInMinutesMessage(15)
     }}
   </p>
 </ng-template>
 
 <ng-template #pagination let-queue="queue">
   <ngb-pagination
-    (pageChange)="pageChange($event)"
     *ngIf="queue.count > queue.results.length"
-    [(page)]="page"
     [collectionSize]="queue.count"
     [pageSize]="pageSize$ | async"
+    (pageChange)="pageChange($event)"
+    [(page)]="page"
   >
   </ngb-pagination>
 </ng-template>

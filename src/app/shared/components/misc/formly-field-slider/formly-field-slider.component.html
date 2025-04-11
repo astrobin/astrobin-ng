@@ -1,29 +1,19 @@
 <ngx-slider
+  [id]="props.id"
+  [options]="props.sliderOptions"
   (highValueChange)="onHighValueChange($event)"
   (valueChange)="onValueChange($event)"
   [(highValue)]="highValue"
   [(value)]="value"
-  [id]="props.id"
-  [options]="props.sliderOptions"
 ></ngx-slider>
 
 <div *ngIf="props.showInputs" class="inputs d-flex gap-4 justify-content-between align-content-center mt-4">
   <div class="form-group mb-0">
     <label [for]="props.id + '-min'">{{ "Min" | translate }}</label>
-    <input
-      [(ngModel)]="value"
-      [id]="props.id + '-min'"
-      class="form-control"
-      type="number"
-    >
+    <input [id]="props.id + '-min'" class="form-control" [(ngModel)]="value" type="number" />
   </div>
   <div class="form-group mb-0">
     <label [for]="props.id + '-max'">{{ "Max" | translate }}</label>
-    <input
-      [(ngModel)]="highValue"
-      [id]="props.id + '-max'"
-      class="form-control"
-      type="number"
-    >
+    <input [id]="props.id + '-max'" class="form-control" [(ngModel)]="highValue" type="number" />
   </div>
 </div>

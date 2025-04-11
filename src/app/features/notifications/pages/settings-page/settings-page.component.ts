@@ -1,31 +1,31 @@
-import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
-import { Store } from "@ngrx/store";
+import { isPlatformBrowser } from "@angular/common";
+import { AfterViewInit, OnInit, Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MainState } from "@app/store/state";
 import { TitleService } from "@core/services/title/title.service";
-import { TranslateService } from "@ngx-translate/core";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import {
-  selectNotificationSettings,
-  selectNotificationTypes
-} from "@features/notifications/store/notifications.selectors";
-import { filter, map, switchMap, tap } from "rxjs/operators";
+  NotificationSettingInterface,
+  NotificationMedium
+} from "@features/notifications/interfaces/notification-setting.interface";
+import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
 import {
   LoadNotificationSettings,
   LoadNotificationTypes,
   SetNotificationSetting
 } from "@features/notifications/store/notifications.actions";
 import {
-  NotificationMedium,
-  NotificationSettingInterface
-} from "@features/notifications/interfaces/notification-setting.interface";
-import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
-import { Observable } from "rxjs";
-import { selectCurrentUser } from "@features/account/store/auth.selectors";
+  selectNotificationSettings,
+  selectNotificationTypes
+} from "@features/notifications/store/notifications.selectors";
 import { NgbAccordion } from "@ng-bootstrap/ng-bootstrap";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { isPlatformBrowser } from "@angular/common";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
+import { Observable } from "rxjs";
+import { filter, map, switchMap, tap } from "rxjs/operators";
 
 enum NotificationCategory {
   COMMENTS = "COMMENTS",
@@ -40,7 +40,7 @@ enum NotificationCategory {
   USERS = "USERS",
   EQUIPMENT = "EQUIPMENT",
   EQUIPMENT_MODERATION = "EQUIPMENT_MODERATION",
-  MARKETPLACE = "MARKETPLACE",
+  MARKETPLACE = "MARKETPLACE"
 }
 
 interface NotificationCategoriesInterface {
@@ -132,7 +132,8 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
         this.store$.select(selectCurrentUser).pipe(
           tap(user => {
             const isIotdStaff = user.groups.filter(group => group.name === "iotd_staff").length > 0;
-            const isEquipmentModerator = user.groups.filter(group => group.name === Constants.EQUIPMENT_MODERATORS_GROUP).length > 0;
+            const isEquipmentModerator =
+              user.groups.filter(group => group.name === Constants.EQUIPMENT_MODERATORS_GROUP).length > 0;
 
             if (!isIotdStaff) {
               delete this.categories[NotificationCategory.IOTD_STAFF];

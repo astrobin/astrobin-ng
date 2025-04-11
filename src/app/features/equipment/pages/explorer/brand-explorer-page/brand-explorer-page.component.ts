@@ -1,41 +1,41 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { Store } from "@ngrx/store";
+import { ChangeDetectorRef, OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { MainState } from "@app/store/state";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import {
   EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE,
   ExplorerBaseComponent
 } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import { Actions, ofType } from "@ngrx/effects";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { TranslateService } from "@ngx-translate/core";
+import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
+import {
+  GetAllBrandsSuccess,
+  GetAllInBrandSuccess,
+  EquipmentActionTypes,
+  GetAllBrands,
+  GetAllInBrand
+} from "@features/equipment/store/equipment.actions";
 import {
   arrayUniqueEquipmentItems,
   selectBrand,
   selectBrands,
   selectEquipmentItems
 } from "@features/equipment/store/equipment.selectors";
-import {
-  EquipmentActionTypes,
-  GetAllBrands,
-  GetAllBrandsSuccess,
-  GetAllInBrand,
-  GetAllInBrandSuccess
-} from "@features/equipment/store/equipment.actions";
-import { filter, map, take, takeUntil } from "rxjs/operators";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { CookieService } from "ngx-cookie";
-import { LoadingService } from "@core/services/loading.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
-import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
-import { DeviceService } from "@core/services/device.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
+import { CookieService } from "ngx-cookie";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-brand-explorer-page",
@@ -140,7 +140,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   }
 
   viewBrand(brand: BrandInterface) {
-    this.router.navigateByUrl(`/equipment/explorer/brand/${brand.id}/${UtilsService.slugify(brand.name)}`);
+    void this.router.navigateByUrl(`/equipment/explorer/brand/${brand.id}/${UtilsService.slugify(brand.name)}`);
   }
 
   viewItem(item: EquipmentItemBaseInterface): void {
@@ -151,15 +151,15 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
       componentInstance.enableSelectFrozen = false;
 
       modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
-        this.router.navigateByUrl(`/equipment/explorer/${variant.klass}/${variant.id}`);
+        void this.router.navigateByUrl(`/equipment/explorer/${variant.klass}/${variant.id}`);
       });
     } else {
-      this.router.navigateByUrl(`/equipment/explorer/${item.klass}/${item.id}`);
+      void this.router.navigateByUrl(`/equipment/explorer/${item.klass}/${item.id}`);
     }
   }
 
   closeBrand() {
-    this.router.navigateByUrl("/equipment/explorer/brand");
+    void this.router.navigateByUrl("/equipment/explorer/brand");
   }
 
   private _loadAllPages() {

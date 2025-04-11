@@ -1,10 +1,18 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, OnChanges, PLATFORM_ID, SimpleChanges } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  PLATFORM_ID
+} from "@angular/core";
+import { MainState } from "@app/store/state";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { BehaviorSubject } from "rxjs";
 import { delay, distinctUntilChanged } from "rxjs/operators";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-loading-indicator",
@@ -13,12 +21,7 @@ import { isPlatformBrowser } from "@angular/common";
       *ngIf="(shouldShowProgress$ | async) && progress !== undefined && progress > 0 && progress < 100; else noProgress"
       class="d-flex justify-content-center align-items-center flex-column"
     >
-      <ngb-progressbar
-        [animated]="true"
-        [striped]="true"
-        [value]="progress"
-        type="light"
-      ></ngb-progressbar>
+      <ngb-progressbar [animated]="true" [striped]="true" [value]="progress" type="light"></ngb-progressbar>
 
       <ng-container *ngIf="message">
         <ng-container [ngTemplateOutlet]="messageTemplate"></ng-container>
@@ -37,7 +40,7 @@ import { isPlatformBrowser } from "@angular/common";
     </ng-template>
 
     <ng-template #messageTemplate>
-      <div class="message" [innerHTML]="message"></div>
+      <div [innerHTML]="message" class="message"></div>
     </ng-template>
   `,
   styleUrls: ["./loading-indicator.component.scss"],
@@ -57,10 +60,7 @@ export class LoadingIndicatorComponent extends BaseComponentDirective implements
 
   private _progressSubject = new BehaviorSubject<boolean>(false);
 
-  shouldShowProgress$ = this._progressSubject.pipe(
-    distinctUntilChanged(),
-    delay(this.progressDelay)
-  );
+  shouldShowProgress$ = this._progressSubject.pipe(distinctUntilChanged(), delay(this.progressDelay));
 
   constructor(
     public readonly store$: Store<MainState>,

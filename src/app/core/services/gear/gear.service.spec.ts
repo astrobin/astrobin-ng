@@ -1,8 +1,9 @@
 import { TestBed } from "@angular/core/testing";
-import { MockBuilder } from "ng-mocks";
-import { GearService } from "./gear.service";
-import { GearUserInfoApiService } from "@core/services/api/classic/astrobin/gear-user-info/gear-user-info-api.service";
 import { AppModule } from "@app/app.module";
+import { GearUserInfoApiService } from "@core/services/api/classic/astrobin/gear-user-info/gear-user-info-api.service";
+import { MockBuilder } from "ng-mocks";
+
+import { GearService } from "./gear.service";
 
 describe("GearService", () => {
   let service: GearService;

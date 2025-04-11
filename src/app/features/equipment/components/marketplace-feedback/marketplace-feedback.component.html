@@ -49,8 +49,8 @@
 
   <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="card-footer">
     <button
-      (click)="openFeedbackModal($event)"
       *ngIf="recipient && listing && currentUserWrapper.user.id === feedback.user"
+      (click)="openFeedbackModal($event)"
       class="btn btn-secondary"
     >
       {{ "Edit" }}

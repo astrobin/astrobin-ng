@@ -1,24 +1,24 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, OnInit, Component } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { FormlyFieldService, FormlyFieldMessageLevel } from "@core/services/formly-field.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { MainState } from "@app/store/state";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@core/services/equipment-item.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { switchMap, take } from "rxjs/operators";
-import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { Constants } from "@shared/constants";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { switchMap, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-software-editor",
@@ -76,9 +76,9 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
       level: FormlyFieldMessageLevel.INFO,
       text: this.translateService.instant(
         "The AstroBin equipment database does not attempt to track version numbers of software. " +
-        "If that number is a version number, please remove it, thanks!"
+          "If that number is a version number, please remove it, thanks!"
       )
-    }
+    };
 
     if (hasNumbers) {
       this.formlyFieldService.addMessage(field, message);
@@ -95,8 +95,8 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
           this._getDIYField(),
           this._getBrandField(
             `${this.translateService.instant("Brand")} / ` +
-            `${this.translateService.instant("Company")} / ` +
-            this.translateService.instant("Developer(s)")
+              `${this.translateService.instant("Company")} / ` +
+              this.translateService.instant("Developer(s)")
           ),
           this._getNameField(),
           this._getVariantOfField(EquipmentItemType.SOFTWARE, isModerator),

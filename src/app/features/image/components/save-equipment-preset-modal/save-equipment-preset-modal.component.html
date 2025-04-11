@@ -1,9 +1,9 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="save-equipment-preset-modal">
+  <h4 id="save-equipment-preset-modal" class="modal-title">
     {{ "Save equipment setup" | translate }}
   </h4>
 
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -20,9 +20,9 @@
   </button>
 
   <button
-    (click)="onCreateClicked()"
     [class.loading]="(loadingService.loading$ | async) || form.pending"
     [disabled]="form.invalid"
+    (click)="onCreateClicked()"
     class="btn btn-primary"
     type="button"
   >

@@ -1,20 +1,32 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  HostListener,
+  Inject,
+  Input,
+  OnDestroy,
+  Output,
+  PLATFORM_ID
+} from "@angular/core";
 import { MainState } from "@app/store/state";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
 import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { skip, take, takeUntil } from "rxjs/operators";
-import { DeleteAvatar, LoadUser, UploadAvatar } from "@features/account/store/auth.actions";
-import { isPlatformBrowser } from "@angular/common";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { Constants } from "@shared/constants";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { DeleteAvatar, LoadUser, UploadAvatar } from "@features/account/store/auth.actions";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { Constants } from "@shared/constants";
+import { skip, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-avatar-manager",
@@ -56,7 +68,7 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
     }
   }
 
-  @HostListener('window:resize')
+  @HostListener("window:resize")
   onWindowResize() {
     if (this.isBrowser && this.previewUrl && this.previewContainer) {
       // Recalculate circle diameter on window resize
@@ -99,17 +111,12 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
   loadUser() {
     this.loading = true;
     this.store$.dispatch(new LoadUser({ id: this.userId }));
-    this.currentUser$
-      .pipe(
-        take(1),
-        takeUntil(this.destroyed$)
-      )
-      .subscribe(user => {
-        this.user = user;
-        this.setAvatar();
-        this.loading = false;
-        this.changeDetectorRef.markForCheck();
-      });
+    this.currentUser$.pipe(take(1), takeUntil(this.destroyed$)).subscribe(user => {
+      this.user = user;
+      this.setAvatar();
+      this.loading = false;
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   setAvatar() {
@@ -134,14 +141,14 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
       this.selectedFile = input.files[0];
 
       // Validate file type
-      const validImageTypes = ['image/jpeg', 'image/png'];
+      const validImageTypes = ["image/jpeg", "image/png"];
       if (validImageTypes.indexOf(this.selectedFile.type) === -1) {
-        console.warn('Invalid file type selected:', this.selectedFile.type);
+        console.warn("Invalid file type selected:", this.selectedFile.type);
         this.popNotificationsService.error(
           this.translateService.instant("Please select a valid image file (JPEG or PNG)")
         );
         this.selectedFile = null;
-        input.value = '';
+        input.value = "";
         return;
       }
 
@@ -181,9 +188,7 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
     }
 
     if (!this.selectedFile) {
-      this.popNotificationsService.error(
-        this.translateService.instant("Please select an image file to upload")
-      );
+      this.popNotificationsService.error(this.translateService.instant("Please select an image file to upload"));
       return;
     }
 
@@ -197,7 +202,8 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
 
     // Create a one-time subscription to the user profile state after dispatch
     // This ensures we capture the updated avatar state once the effects complete
-    this.store$.select(state => state.auth.user)
+    this.store$
+      .select(state => state.auth.user)
       .pipe(
         // Skip the initial emission immediately after subscribing
         skip(1),
@@ -213,7 +219,7 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
 
           // Reset UI state to return to upload button view
           this.selectedFile = null;
-          this.previewUrl = null;  // This will trigger the template to show the upload button view
+          this.previewUrl = null; // This will trigger the template to show the upload button view
           this.loading = false;
 
           // Emit the avatar updated event after loading is set to false
@@ -233,12 +239,14 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
     // Open confirmation dialog
     const modalRef = this.modalService.open(ConfirmationDialogComponent, {
       centered: true,
-      backdrop: 'static'
+      backdrop: "static"
     });
 
     // Configure dialog
     modalRef.componentInstance.title = this.translateService.instant("Delete avatar");
-    modalRef.componentInstance.message = this.translateService.instant("Your avatar will be reset to the default avatar.");
+    modalRef.componentInstance.message = this.translateService.instant(
+      "Your avatar will be reset to the default avatar."
+    );
     modalRef.componentInstance.confirmLabel = this.translateService.instant("Delete");
 
     // Subscribe to dialog result
@@ -266,7 +274,8 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
 
     // Create a one-time subscription to the user profile state after dispatch
     // This ensures we capture the updated avatar state once the effects complete
-    this.store$.select(state => state.auth.user)
+    this.store$
+      .select(state => state.auth.user)
       .pipe(
         // Skip the initial emission immediately after subscribing
         skip(1),
@@ -289,11 +298,11 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
 
   getFileSize(bytes: number): string {
     if (bytes < 1024) {
-      return bytes + ' B';
+      return bytes + " B";
     } else if (bytes < 1024 * 1024) {
-      return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1024).toFixed(1) + " KB";
     } else {
-      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+      return (bytes / (1024 * 1024)).toFixed(1) + " MB";
     }
   }
 
@@ -371,7 +380,7 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
       const containerHeight = containerElement.offsetHeight;
 
       // Get the image element within the container
-      const imageElement = containerElement.querySelector('.preview-image') as HTMLImageElement;
+      const imageElement = containerElement.querySelector(".preview-image") as HTMLImageElement;
 
       if (!containerWidth || !containerHeight || !imageElement) {
         this.circleDiameter = 200; // Fallback size
@@ -427,12 +436,12 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
   }
 
   private drawTransformedImage(): void {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
 
     // Set canvas dimensions based on rotation
-    let width = this.originalImageData.width;
-    let height = this.originalImageData.height;
+    const width = this.originalImageData.width;
+    const height = this.originalImageData.height;
 
     // Swap dimensions if rotated 90 or 270 degrees
     if (this.rotation === 90 || this.rotation === 270) {
@@ -463,46 +472,43 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
     }
 
     // Draw the image centered on the canvas
-    ctx.drawImage(
-      this.originalImageData,
-      -width / 2,
-      -height / 2,
-      width,
-      height
-    );
+    ctx.drawImage(this.originalImageData, -width / 2, -height / 2, width, height);
 
     // Update the preview URL with the transformed image
-    this.previewUrl = canvas.toDataURL('image/jpeg', 0.92); // Use JPEG for better compression
+    this.previewUrl = canvas.toDataURL("image/jpeg", 0.92); // Use JPEG for better compression
 
     // Create a new file from the canvas data for upload (using a callback)
-    canvas.toBlob(blob => {
-      if (blob) {
-        // Create a new file with the same name but as a JPEG
-        const fileName = this.selectedFile.name.replace(/\.[^/.]+$/, "") + ".jpg";
-        this.selectedFile = new File([blob], fileName, {
-          type: 'image/jpeg',
-          lastModified: Date.now()
-        });
-      }
-
-      // Give the UI time to update with the new image
-      this.utilsService.delay(50).subscribe(() => {
-        // Wait for the image to load before recalculating circle
-        const img = new Image();
-        img.onload = () => {
-          // Force circle size recalculation after image has loaded
-          this.utilsService.delay(50).subscribe(() => {
-            const container = document.querySelector('.preview-image-container') as HTMLElement;
-            if (container) {
-              this.onImageLoad(container);
-            }
-            // Ensure UI updates
-            this.changeDetectorRef.markForCheck();
+    canvas.toBlob(
+      blob => {
+        if (blob) {
+          // Create a new file with the same name but as a JPEG
+          const fileName = this.selectedFile.name.replace(/\.[^/.]+$/, "") + ".jpg";
+          this.selectedFile = new File([blob], fileName, {
+            type: "image/jpeg",
+            lastModified: Date.now()
           });
-        };
-        img.src = this.previewUrl as string;
-      });
-    }, 'image/jpeg', .92); // JPEG with 92% quality is usually a good balance
-  }
+        }
 
+        // Give the UI time to update with the new image
+        this.utilsService.delay(50).subscribe(() => {
+          // Wait for the image to load before recalculating circle
+          const img = new Image();
+          img.onload = () => {
+            // Force circle size recalculation after image has loaded
+            this.utilsService.delay(50).subscribe(() => {
+              const container = document.querySelector(".preview-image-container") as HTMLElement;
+              if (container) {
+                this.onImageLoad(container);
+              }
+              // Ensure UI updates
+              this.changeDetectorRef.markForCheck();
+            });
+          };
+          img.src = this.previewUrl as string;
+        });
+      },
+      "image/jpeg",
+      0.92
+    ); // JPEG with 92% quality is usually a good balance
+  }
 }

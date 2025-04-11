@@ -1,28 +1,28 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { AstrophotographersListPageComponent } from "./astrophotographers-list-page.component";
-import { provideMockStore } from "@ngrx/store/testing";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { BehaviorSubject, of } from "rxjs";
-import { NgbNavModule } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { RouterTestingModule } from "@angular/router/testing";
+import { NO_ERRORS_SCHEMA, PLATFORM_ID } from "@angular/core";
+import { TestBed, ComponentFixture } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { NO_ERRORS_SCHEMA, PLATFORM_ID } from "@angular/core";
-
-import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
 import { UserSearchInterface } from "@core/interfaces/user-search.interface";
 import { UserSearchApiService } from "@core/services/api/classic/users/user-search-api.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
 import { SearchService } from "@core/services/search.service";
 import { TitleService } from "@core/services/title/title.service";
-import { LoadingService } from "@core/services/loading.service";
 import { UserService } from "@core/services/user.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { Constants } from "@shared/constants";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { CookieService } from "ngx-cookie";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { NgbNavModule } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockStore } from "@ngrx/store/testing";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { Constants } from "@shared/constants";
 import { PipesModule } from "@shared/pipes/pipes.module";
+import { CookieService } from "ngx-cookie";
+import { BehaviorSubject, of } from "rxjs";
+
+import { AstrophotographersListPageComponent } from "./astrophotographers-list-page.component";
 
 describe("AstrophotographersListPageComponent", () => {
   let component: AstrophotographersListPageComponent;
@@ -39,7 +39,9 @@ describe("AstrophotographersListPageComponent", () => {
   let mockUtilsService: any;
 
   // Mock navigation events observable
-  const navigationEvents$ = new BehaviorSubject<any>(new NavigationEnd(1, "/explore/astrophotographers-list", "/explore/astrophotographers-list"));
+  const navigationEvents$ = new BehaviorSubject<any>(
+    new NavigationEnd(1, "/explore/astrophotographers-list", "/explore/astrophotographers-list")
+  );
 
   // Mock search results
   const mockResults: UserSearchInterface[] = [
@@ -116,7 +118,7 @@ describe("AstrophotographersListPageComponent", () => {
     mockLoadingService = {};
 
     mockUserService = {
-      getGalleryUrl: jest.fn().mockImplementation((username) => `/user/${username}/`),
+      getGalleryUrl: jest.fn().mockImplementation(username => `/user/${username}/`),
       openGallery: jest.fn()
     };
 
@@ -170,15 +172,11 @@ describe("AstrophotographersListPageComponent", () => {
         NoopAnimationsModule,
         PipesModule
       ],
-      declarations: [
-        AstrophotographersListPageComponent
-      ],
+      declarations: [AstrophotographersListPageComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         provideMockStore({
-          selectors: [
-            { selector: selectCurrentUserProfile, value: null }
-          ]
+          selectors: [{ selector: selectCurrentUserProfile, value: null }]
         }),
         {
           provide: ActivatedRoute,

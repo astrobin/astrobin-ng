@@ -1,30 +1,44 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, Renderer2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { ImageService } from "@core/services/image/image.service";
-import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { select, Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { SearchService } from "@core/services/search.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  Renderer2,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild
+} from "@angular/core";
 import { Router } from "@angular/router";
-import { ImageViewerService } from "@core/services/image-viewer.service";
-import { UserInterface } from "@core/interfaces/user.interface";
+import {
+  AcceptCollaboratorRequest,
+  DenyCollaboratorRequest,
+  ForceCheckTogglePropertyAutoLoad,
+  RemoveCollaborator
+} from "@app/store/actions/image.actions";
+import { MainState } from "@app/store/state";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
 import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
+import { SearchService } from "@core/services/search.service";
+import { UserService } from "@core/services/user.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { filter, take } from "rxjs/operators";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
-import { forkJoin } from "rxjs";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Store, select } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { AcceptCollaboratorRequest, DenyCollaboratorRequest, ForceCheckTogglePropertyAutoLoad, RemoveCollaborator } from "@app/store/actions/image.actions";
-import { LoadingService } from "@core/services/loading.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { UserService } from "@core/services/user.service";
+import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { CookieService } from "ngx-cookie";
-import { CollapseSyncService } from "@core/services/collapse-sync.service";
-
+import { forkJoin } from "rxjs";
+import { filter, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-viewer-photographers",
@@ -35,31 +49,31 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
           class="alert alert-mini d-flex flex-nowrap align-items-center justify-content-between gap-2 mt-3 mb-2 px-3 py-2 w-100"
         >
           <span class="flex-grow-1">
-            <fa-icon icon="info-circle" class="me-2"></fa-icon>
+            <fa-icon class="me-2" icon="info-circle"></fa-icon>
             <span translate="The owner of this image has requested to add you as a collaborator."></span>
           </span>
 
           <div class="d-flex flex-nowrap gap-2">
             <button
-              (click)="acceptCollaboratorRequest(currentUserWrapper.user.id)"
-              [ngbTooltip]="'Accept' | translate"
-              class="btn btn-xs btn-success m-0"
               [class.loading]="loadingService.loading$ | async"
+              [ngbTooltip]="'Accept' | translate"
+              (click)="acceptCollaboratorRequest(currentUserWrapper.user.id)"
+              class="btn btn-xs btn-success m-0"
               container="body"
               triggers="hover"
             >
-              <fa-icon icon="circle-check" class="me-0"></fa-icon>
+              <fa-icon class="me-0" icon="circle-check"></fa-icon>
             </button>
 
             <button
-              (click)="denyCollaboratorRequest(currentUserWrapper.user.id)"
-              [ngbTooltip]="'Deny' | translate"
-              class="btn btn-xs btn-danger m-0"
               [class.loading]="loadingService.loading$ | async"
+              [ngbTooltip]="'Deny' | translate"
+              (click)="denyCollaboratorRequest(currentUserWrapper.user.id)"
+              class="btn btn-xs btn-danger m-0"
               container="body"
               triggers="hover"
             >
-              <fa-icon icon="circle-xmark" class="me-0"></fa-icon>
+              <fa-icon class="me-0" icon="circle-xmark"></fa-icon>
             </button>
           </div>
         </div>
@@ -78,14 +92,16 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             <div *ngIf="photographers.length > 1" class="avatars flex-wrap flex-grow-1">
               <a
                 *ngFor="let user of photographers"
+                [href]="
+                  userService.getGalleryUrl(
+                    user.username,
+                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                  )
+                "
                 (click)="avatarClicked($event, user)"
-                [href]="userService.getGalleryUrl(
-                  user.username,
-                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-                )"
                 class="position-relative"
               >
-                <img [src]="user.avatar" alt="" class="avatar" />
+                <img [src]="user.avatar" class="avatar" alt="" />
 
                 <fa-icon
                   *ngIf="user.pending"
@@ -98,14 +114,14 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
                 <button
                   *ngIf="user.canRemove"
+                  [ngbTooltip]="'Remove' | translate"
                   (click)="removeCollaborator(user.id)"
+                  class="btn btn-link position-absolute top-0 end-0 text-light bg-danger badge badge-pill rounded-pill border border-light px-1"
                   astrobinEventPreventDefault
                   astrobinEventStopPropagation
-                  [ngbTooltip]="'Remove' | translate"
                   container="body"
-                  class="btn btn-link position-absolute top-0 end-0 text-light bg-danger badge badge-pill rounded-pill border border-light px-1"
                 >
-                  <fa-icon icon="times" class="me-0"></fa-icon>
+                  <fa-icon class="me-0" icon="times"></fa-icon>
                 </button>
               </a>
             </div>
@@ -122,30 +138,38 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
               "
             >
               <a
-                (click)="userService.openGallery(
-                  photographers[0].username,
-                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-                )"
-                [href]="userService.getGalleryUrl(
-                  photographers[0].username,
-                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-                )"
-                astrobinEventPreventDefault
+                [href]="
+                  userService.getGalleryUrl(
+                    photographers[0].username,
+                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                  )
+                "
+                (click)="
+                  userService.openGallery(
+                    photographers[0].username,
+                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                  )
+                "
                 class="position-relative"
+                astrobinEventPreventDefault
               >
-                <img [src]="photographers[0].avatar" alt="" class="avatar" />
+                <img [src]="photographers[0].avatar" class="avatar" alt="" />
               </a>
 
               <div class="d-flex gap-2 align-items-center photographer-name-and-follow-button">
                 <a
-                  (click)="userService.openGallery(
-                    photographers[0].username,
-                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-                  )"
-                  [href]="userService.getGalleryUrl(
-                    photographers[0].username,
-                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-                  )"
+                  [href]="
+                    userService.getGalleryUrl(
+                      photographers[0].username,
+                      !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                    )
+                  "
+                  (click)="
+                    userService.openGallery(
+                      photographers[0].username,
+                      !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                    )
+                  "
                   astrobinEventPreventDefault
                 >
                   {{ photographers[0].displayName }}
@@ -153,18 +177,18 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
                 <div
                   *ngIf="currentUserWrapper.user?.id !== image.user"
-                  ngbDropdown
-                  container="body"
                   class="no-toggle m-0"
+                  container="body"
+                  ngbDropdown
                 >
                   <button
+                    id="photographer-actions-dropdown"
                     class="btn btn-sm btn-link btn-no-block no-toggle text-secondary px-2 m-0"
                     ngbDropdownToggle
-                    id="photographer-actions-dropdown"
                   >
                     <fa-icon [icon]="['fas', 'ellipsis-v']" class="m-0"></fa-icon>
                   </button>
-                  <div ngbDropdownMenu aria-labelledby="photographer-actions-dropdown">
+                  <div aria-labelledby="photographer-actions-dropdown" ngbDropdownMenu>
                     <a
                       [href]="classicRoutesService.SEND_MESSAGE(image.username)"
                       class="dropdown-item"
@@ -177,11 +201,11 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                   *ngIf="currentUserWrapper.user?.id !== image.user"
                   [contentType]="userContentType.id"
                   [objectId]="photographers[0].id"
-                  [userId]="currentUserWrapper.user?.id"
-                  [showLabel]="false"
-                  [showIcon]="true"
                   [setLabel]="'Follow' | translate"
+                  [showIcon]="true"
+                  [showLabel]="false"
                   [unsetLabel]="'Unfollow' | translate"
+                  [userId]="currentUserWrapper.user?.id"
                   class="btn-no-block follow-toggle-property"
                   btnClass="btn btn-xs btn-no-block btn-link link-secondary"
                   propertyType="follow"
@@ -209,57 +233,57 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
     <ng-template #collaboratorsTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h4 class="offcanvas-title">{{ "Collaborators" | translate }}</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="users">
-          <div
-            *ngFor="let user of photographers"
-            class="user"
-          >
+          <div *ngFor="let user of photographers" class="user">
             <a
-              (click)="userService.openGallery(
-                user.username,
-                !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-              )"
-              [href]="userService.getGalleryUrl(
-                user.username,
-                !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-              )"
+              [href]="
+                userService.getGalleryUrl(
+                  user.username,
+                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                )
+              "
+              (click)="
+                userService.openGallery(
+                  user.username,
+                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                )
+              "
               astrobinEventPreventDefault
             >
               <img [src]="user.avatar" alt="" />
             </a>
 
             <a
-              (click)="userService.openGallery(
-                user.username,
-                !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-              )"
-              [href]="userService.getGalleryUrl(
-                user.username,
-                !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-              )"
-              astrobinEventPreventDefault
+              [href]="
+                userService.getGalleryUrl(
+                  user.username,
+                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                )
+              "
+              (click)="
+                userService.openGallery(
+                  user.username,
+                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                )
+              "
               class="d-block flex-grow-1 text-start"
+              astrobinEventPreventDefault
             >
               {{ user.displayName }}
             </a>
 
-            <div
-              *ngIf="currentUserWrapper.user?.id !== image.user"
-              ngbDropdown
-              container="body"
-              class="no-toggle me-2"
-            >
+            <div *ngIf="currentUserWrapper.user?.id !== image.user" class="no-toggle me-2" container="body" ngbDropdown>
               <button
+                id="photographer-actions-dropdown"
                 class="btn btn-sm btn-link btn-no-block no-toggle text-secondary px-2 m-0"
                 ngbDropdownToggle
-                id="photographer-actions-dropdown"
               >
                 <fa-icon [icon]="['fas', 'ellipsis-v']" class="m-0"></fa-icon>
               </button>
-              <div ngbDropdownMenu aria-labelledby="photographer-actions-dropdown">
+              <div aria-labelledby="photographer-actions-dropdown" ngbDropdownMenu>
                 <a
                   [href]="classicRoutesService.SEND_MESSAGE(image.username)"
                   class="dropdown-item"
@@ -273,10 +297,10 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                 *ngIf="currentUserWrapper.user?.id !== user.id"
                 [contentType]="userContentType.id"
                 [objectId]="user.id"
-                [userId]="currentUserWrapper.user?.id"
-                [showLabel]="false"
                 [setLabel]="'Follow user' | translate"
+                [showLabel]="false"
                 [unsetLabel]="'Unfollow user' | translate"
+                [userId]="currentUserWrapper.user?.id"
                 class="w-auto"
                 btnClass="btn btn-link btn-no-block link-secondary"
                 propertyType="follow"
@@ -306,7 +330,7 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
   @ViewChild("shareTemplate")
   shareTemplate: TemplateRef<any>;
 
-  protected photographers: (Partial<UserInterface> & { pending?: boolean, canRemove?: boolean })[];
+  protected photographers: (Partial<UserInterface> & { pending?: boolean; canRemove?: boolean })[];
   protected isPendingCollaborator: boolean;
 
   constructor(
@@ -365,32 +389,29 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
       ];
 
       const pendingCollaborators = image.pendingCollaborators?.filter(
-        pendingCollaborator =>
-          !image.collaborators.some(collaborator => collaborator.id === pendingCollaborator)
+        pendingCollaborator => !image.collaborators.some(collaborator => collaborator.id === pendingCollaborator)
       );
 
-      this.isPendingCollaborator = !!currentUser && !!pendingCollaborators?.some(
-        pendingCollaborator => pendingCollaborator === currentUser.id
-      );
+      this.isPendingCollaborator =
+        !!currentUser && !!pendingCollaborators?.some(pendingCollaborator => pendingCollaborator === currentUser.id);
 
       if (
         currentUser &&
         pendingCollaborators?.length > 0 &&
-        (
-          currentUser.id === image.user ||
-          this.isPendingCollaborator
-        )
+        (currentUser.id === image.user || this.isPendingCollaborator)
       ) {
         pendingCollaborators.forEach(pendingCollaborator => {
           this.store$.dispatch(new LoadUser({ id: pendingCollaborator }));
         });
 
         forkJoin(
-          pendingCollaborators.map(pendingCollaborator => this.store$.pipe(
-            select(selectUser, pendingCollaborator),
-            filter(user => !!user),
-            take(1)
-          ))
+          pendingCollaborators.map(pendingCollaborator =>
+            this.store$.pipe(
+              select(selectUser, pendingCollaborator),
+              filter(user => !!user),
+              take(1)
+            )
+          )
         ).subscribe(pendingCollaborators => {
           this.photographers.push(
             ...pendingCollaborators.map(collaborator => ({
@@ -423,7 +444,7 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
       position: this.deviceService.offcanvasPosition()
     });
     this.utilsService.delay(500).subscribe(() => {
-      this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad())
+      this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
     });
   }
 

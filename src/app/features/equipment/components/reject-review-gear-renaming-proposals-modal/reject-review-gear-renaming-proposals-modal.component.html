@@ -1,17 +1,23 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="reject-review-gear-renaming-proposals-model">{{ "Reject" | translate }}</h4>
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <h4 id="reject-review-gear-renaming-proposals-model" class="modal-title">{{ "Reject" | translate }}</h4>
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 
 <div class="modal-body">
   <p>
-    {{ "Please reject a renaming proposal only if the proposal incorrectly makes the item a different product." | translate }}
+    {{
+      "Please reject a renaming proposal only if the proposal incorrectly makes the item a different product."
+        | translate
+    }}
   </p>
 
   <p>
-    {{ "Do not let your personal preference for a naming convention be a reason for rejection at this time, as data defragmentation is more important than minor spelling concerns that can be fixed later." | translate }}
+    {{
+      "Do not let your personal preference for a naming convention be a reason for rejection at this time, as data defragmentation is more important than minor spelling concerns that can be fixed later."
+        | translate
+    }}
   </p>
 
   <p>
@@ -31,9 +37,9 @@
   </button>
 
   <button
-    (click)="reject()"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="!form.valid"
+    (click)="reject()"
     class="btn btn-danger"
     type="button"
   >

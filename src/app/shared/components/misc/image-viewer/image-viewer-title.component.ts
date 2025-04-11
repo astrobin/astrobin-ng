@@ -1,25 +1,32 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { SearchService } from "@core/services/search.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild
+} from "@angular/core";
 import { Router } from "@angular/router";
-import { ImageViewerService } from "@core/services/image-viewer.service";
+import { MainState } from "@app/store/state";
 import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { ImageService } from "@core/services/image/image.service";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchService } from "@core/services/search.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
+import { Store } from "@ngrx/store";
+import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { CookieService } from "ngx-cookie";
-import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
 @Component({
   selector: "astrobin-image-viewer-title",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-
       <div class="image-viewer-title d-flex flex-row justify-content-between align-items-start gap-2">
         <h2 class="flex-grow-1 mb-0 text-center text-sm-start">
           <span [innerHTML]="image.title | highlight: searchModel?.text?.value"></span>
@@ -28,7 +35,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             *ngIf="currentUserWrapper.user?.id === image.user && image.uploaderName"
             class="justify-content-center justify-content-sm-start"
           >
-            <span class="original-filename" [innerHTML]="image.uploaderName"></span>
+            <span [innerHTML]="image.uploaderName" class="original-filename"></span>
           </small>
 
           <small class="justify-content-center justify-content-sm-start flex-wrap">
@@ -37,11 +44,11 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                 *ngIf="licenseIcon && licenseTooltip"
                 [icon]="licenseIcon"
                 [ngbTooltip]="licenseTooltip"
-                triggers="hover click"
-                container="body"
                 class="license-icon"
+                container="body"
+                triggers="hover click"
               ></fa-icon>
-              {{ publicationDate | localDate | timeago:true }}
+              {{ publicationDate | localDate | timeago: true }}
             </span>
 
             <span class="view-count">
@@ -49,42 +56,33 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
               <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
               <span
                 *ngIf="image.viewCount > 1"
-                [translateParams]="{ '0': image.viewCount | numberSuffix }"
                 [translate]="'{{0}} views'"
+                [translateParams]="{ '0': image.viewCount | numberSuffix }"
               ></span>
             </span>
 
-            <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
+            <span *ngIf="resolution" [innerHTML]="resolution" class="resolution"></span>
 
-            <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
+            <span *ngIf="size" [innerHTML]="size | filesize" class="file-size"></span>
 
-            <a
-              *ngIf="image.link"
-              [href]="image.link"
-              target="_blank"
-              rel="noopener"
-              class="no-external-link-icon">
-              <fa-icon icon="external-link-alt" class="me-1"></fa-icon> {{ "Link" | translate }}
+            <a *ngIf="image.link" [href]="image.link" class="no-external-link-icon" rel="noopener" target="_blank">
+              <fa-icon class="me-1" icon="external-link-alt"></fa-icon> {{ "Link" | translate }}
             </a>
 
             <a
               *ngIf="image.linkToFits"
               [href]="image.linkToFits"
-              target="_blank"
+              class="no-external-link-icon"
               rel="noopener"
-              class="no-external-link-icon">
-              <fa-icon icon="file" class="me-1"></fa-icon> {{ "TIFF/FITS" | translate }}
+              target="_blank"
+            >
+              <fa-icon class="me-1" icon="file"></fa-icon> {{ "TIFF/FITS" | translate }}
             </a>
           </small>
 
           <div class="iotd-tp">
-            <div
-              *ngIf="!image.iotdDate && (image.isTopPick || image.isTopPickNomination)"
-            >
-              <span
-                *ngIf="!image.iotdDate && image.isTopPick"
-                class="top-pick"
-              >
+            <div *ngIf="!image.iotdDate && (image.isTopPick || image.isTopPickNomination)">
+              <span *ngIf="!image.iotdDate && image.isTopPick" class="top-pick">
                 <span class="label">
                   <fa-icon icon="star"></fa-icon>
                   {{ "Top Pick" | translate }}
@@ -105,44 +103,41 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             </div>
 
             <span
-              *ngIf="currentUserWrapper.user?.id === image.user && !image.iotdDate && !image.isTopPick && !image.isTopPickNomination && image.isInIotdQueue"
+              *ngIf="
+                currentUserWrapper.user?.id === image.user &&
+                !image.iotdDate &&
+                !image.isTopPick &&
+                !image.isTopPickNomination &&
+                image.isInIotdQueue
+              "
               class="in-iotd-queue"
             >
-              <a
-                (click)="viewIotdTpStats()"
-                astrobinEventPreventDefault
-                astrobinEventStopPropagation
-                href="#"
-              >
+              <a (click)="viewIotdTpStats()" astrobinEventPreventDefault astrobinEventStopPropagation href="#">
                 <span class="label">
                   <fa-icon icon="gavel"></fa-icon>
                   {{ "Currently in the IOTD/TP queues" | translate }}
                 </span>
 
-                <fa-icon icon="info-circle" class="ms-2 d-inline-block"></fa-icon>
+                <fa-icon class="ms-2 d-inline-block" icon="info-circle"></fa-icon>
               </a>
             </span>
           </div>
         </h2>
 
-        <div
-          ngbDropdown
-          [placement]="'bottom-end'"
-          class="dropdown w-auto d-none d-md-block mt-1"
-        >
+        <div [placement]="'bottom-end'" class="dropdown w-auto d-none d-md-block mt-1" ngbDropdown>
           <fa-icon
-            ngbDropdownToggle
-            icon="ellipsis-v"
             class="dropdown-toggle no-toggle"
-            aria-haspopup="true"
             aria-expanded="false"
+            aria-haspopup="true"
+            icon="ellipsis-v"
+            ngbDropdownToggle
           ></fa-icon>
-          <div ngbDropdownMenu class="dropdown-menu">
+          <div class="dropdown-menu" ngbDropdownMenu>
             <astrobin-image-viewer-menu
               [image]="image"
               [revisionLabel]="revisionLabel"
-              itemClass="dropdown-item"
               dividerClass="dropdown-divider"
+              itemClass="dropdown-item"
             ></astrobin-image-viewer-menu>
           </div>
         </div>
@@ -156,12 +151,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
     </ng-container>
 
     <ng-template #iotdInfoLinkTemplate>
-      <a
-        href="https://welcome.astrobin.com/iotd"
-        class="ms-2 no-external-link-icon"
-        rel="noopener"
-        target="_blank"
-      >
+      <a class="ms-2 no-external-link-icon" href="https://welcome.astrobin.com/iotd" rel="noopener" target="_blank">
         <fa-icon icon="info-circle"></fa-icon>
       </a>
     </ng-template>
@@ -170,14 +160,12 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">
           {{ "IOTD/TP stats" | translate }}
-          <fa-icon icon="lock" class="ms-2"></fa-icon>
+          <fa-icon class="ms-2" icon="lock"></fa-icon>
         </h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
-        <astrobin-image-viewer-iotd-tp-stats
-          [image]="image"
-        ></astrobin-image-viewer-iotd-tp-stats>
+        <astrobin-image-viewer-iotd-tp-stats [image]="image"></astrobin-image-viewer-iotd-tp-stats>
       </div>
     </ng-template>
   `,
@@ -220,7 +208,10 @@ export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent i
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
+    if (
+      (changes.image && changes.image.currentValue) ||
+      (changes.revisionLabel && changes.revisionLabel.currentValue)
+    ) {
       this.setResolutionAndFileSize(this.image, this.revisionLabel);
       this.setPublicationDate(this.image);
       this.setLicenseIconAndTooltip(this.image);

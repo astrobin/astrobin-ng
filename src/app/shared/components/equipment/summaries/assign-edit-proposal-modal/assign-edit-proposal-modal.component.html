@@ -1,6 +1,6 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="assign-edit-proposal-modal">{{ "Assign" | translate }}</h4>
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <h4 id="assign-edit-proposal-modal" class="modal-title">{{ "Assign" | translate }}</h4>
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -8,8 +8,8 @@
 <div class="modal-body">
   <p>
     {{
-    "If you assign this edit proposal to a specific user, only they will be able to review it or unassign themselves."
-      | translate
+      "If you assign this edit proposal to a specific user, only they will be able to review it or unassign themselves."
+        | translate
     }}
   </p>
 
@@ -26,9 +26,9 @@
   </button>
 
   <button
-    (click)="save()"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="model.assignee === editProposal.editProposalAssignee"
+    (click)="save()"
     class="btn btn-success"
     type="button"
   >

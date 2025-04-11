@@ -38,12 +38,12 @@ $size: 150px;
 
   astrobin-user-gallery-collection-menu {
     position: absolute;
-    top: -.5rem;
+    top: -0.5rem;
     right: 0;
     margin: 0;
-    padding: .5rem;
+    padding: 0.5rem;
     background: rgba(0, 0, 0, 0.9);
-    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
     border: 1px solid var(--lightGrey);
     cursor: pointer;
     border-radius: 50%;
@@ -56,7 +56,9 @@ $size: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.3s ease, filter 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      filter 0.3s ease;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
@@ -75,7 +77,7 @@ $size: 150px;
   }
 
   .collection-name {
-    padding: .5rem 1rem .25rem 1rem;
+    padding: 0.5rem 1rem 0.25rem 1rem;
     text-align: center;
     color: var(--white);
     font-weight: bold;
@@ -87,7 +89,7 @@ $size: 150px;
     padding: 0 1rem;
     text-align: center;
     color: var(--lighterGrey);
-    font-size: .8rem;
+    font-size: 0.8rem;
   }
 
   @media (hover: hover) and (pointer: fine) {

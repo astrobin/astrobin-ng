@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { ItemUnapprovedInfoModalComponent } from "./item-unapproved-info-modal.component";
-import { MockBuilder } from "ng-mocks";
-import { provideMockStore } from "@ngrx/store/testing";
+import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { AppModule } from "@app/app.module";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { ItemUnapprovedInfoModalComponent } from "./item-unapproved-info-modal.component";
 
 describe("ItemUnapprovedInfoModalComponent", () => {
   let component: ItemUnapprovedInfoModalComponent;

@@ -1,18 +1,11 @@
 import { CurrencyPipe, isPlatformBrowser } from "@angular/common";
-import { Component, Inject, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { OnInit, Renderer2, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { MainState } from "@app/store/state";
-import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
-import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
-import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
-import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
-import { select, Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
@@ -20,22 +13,29 @@ import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TitleService } from "@core/services/title/title.service";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { combineLatest, Observable } from "rxjs";
-import { distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { SubscriptionName } from "@core/types/subscription-name.type";
+import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
+import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
+import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
+import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
+import { GetPricing } from "@features/subscriptions/store/subscriptions.actions";
 import { selectAvailableSubscriptions, selectPricing } from "@features/subscriptions/store/subscriptions.selectors";
 import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
-import { GetPricing } from "@features/subscriptions/store/subscriptions.actions";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Store, select } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
-import { SubscriptionName } from "@core/types/subscription-name.type";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
+import { Observable, combineLatest } from "rxjs";
+import { distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
-declare var Stripe: any;
+declare let Stripe: any;
 
 @Component({
   selector: "astrobin-subscriptions-buy-page",
@@ -182,7 +182,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           this.product
         ) === -1
       ) {
-        this.router.navigateByUrl("/page-not-found", { skipLocationChange: true });
+        void this.router.navigateByUrl("/page-not-found", { skipLocationChange: true });
         return;
       }
 
@@ -308,8 +308,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         return this.domSanitizer.bypassSecurityTrustHtml(
           this.translateService.instant(
             "The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total images, and you currently have " +
-            "<strong>{{numberOfImages}}</strong> images on AstroBin. For this reason, we recommend that you upgrade to " +
-            "Premium or Ultimate instead.",
+              "<strong>{{numberOfImages}}</strong> images on AstroBin. For this reason, we recommend that you upgrade to " +
+              "Premium or Ultimate instead.",
             {
               maxImagesForLite: maxImages,
               numberOfImages
@@ -352,15 +352,15 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
       )
       .subscribe(
         ([
-           stripeCustomerPortalUrl,
-           hasNonRecurringPayPalSubscription,
-           hasRecurringPayPalSubscription,
-           hasNonRecurringStripeSubscription,
-           hasRecurringStripeSubscription
-         ]) => {
+          stripeCustomerPortalUrl,
+          hasNonRecurringPayPalSubscription,
+          hasRecurringPayPalSubscription,
+          hasNonRecurringStripeSubscription,
+          hasRecurringStripeSubscription
+        ]) => {
           const modal = this.modalService.open(InformationDialogComponent);
           const componentInstance: InformationDialogComponent = modal.componentInstance;
-          let message: string = "<ul>";
+          let message = "<ul>";
 
           if (hasNonRecurringPayPalSubscription) {
             message +=
@@ -398,8 +398,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
               "<li>" +
               this.translateService.instant(
                 "You have a recurring Stripe subscription (paid by credit card, Sepa, AliPay, or other). You can " +
-                "cancel it on Stripe's customer portal by logging in with the email address associated to your " +
-                "AstroBin account:"
+                  "cancel it on Stripe's customer portal by logging in with the email address associated to your " +
+                  "AstroBin account:"
               ) +
               " " +
               `<a href="${stripeCustomerPortalUrl}" target="_blank">` +
@@ -499,8 +499,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
 
           componentInstance.message = this.translateService.instant(
             "You are already on this plan. If you are on an automatically renewing plan, you don't need to " +
-            "do anything to renew. If you are on a non-automatically renewing plan, please come back after its " +
-            "expiration date. Thank you!"
+              "do anything to renew. If you are on a non-automatically renewing plan, please come back after its " +
+              "expiration date. Thank you!"
           );
 
           this.loadingService.setLoading(false);
@@ -513,7 +513,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
             " " +
             this.translateService.instant(
               "For this reason, you cannot purchase this at the moment, as AstroBin does not currently offer a " +
-              "downgrade path."
+                "downgrade path."
             );
 
           this.loadingService.setLoading(false);
@@ -526,9 +526,9 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
               "<p>" +
               this.translateService.instant(
                 "Upgrade your subscription now, and only pay the difference at your next billing cycle. Your next " +
-                "payment will include the next billing period, minus the unused portion of your current billing period. " +
-                "If you switch from a yearly to a monthly plan, any balance in your favor will be automatically applied " +
-                "to your future invoices until exhausted."
+                  "payment will include the next billing period, minus the unused portion of your current billing period. " +
+                  "If you switch from a yearly to a monthly plan, any balance in your favor will be automatically applied " +
+                  "to your future invoices until exhausted."
               ) +
               "</p>";
 
@@ -568,8 +568,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     this.pricing$.pipe(take(1)).subscribe(pricing => {
       this.bankDetailsMessage = this.translateService.instant(
         "Please make a deposit of {{ currency }} {{ amount }} to the following bank details and then email " +
-        "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your " +
-        "account manually.",
+          "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your " +
+          "account manually.",
         {
           currency: "",
           amount: `<strong>${this.currencyPipe.transform(

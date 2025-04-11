@@ -1,54 +1,52 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, TemplateRef, ViewChild } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild
+} from "@angular/core";
+import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
 import { ImageInterface } from "@core/interfaces/image.interface";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-acquisition.interface";
 import { DeviceService } from "@core/services/device.service";
-import { TranslateService } from "@ngx-translate/core";
 import { ImageService } from "@core/services/image/image.service";
-import { WindowRefService } from "@core/services/window-ref.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
-import { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-acquisition.interface";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-image-viewer-acquisition-csv-export",
   template: `
     <fa-icon
       *ngIf="showExportButton"
-      (click)="openCsvExport($event)"
       [ngbTooltip]="'Export to CSV' | translate"
-      triggers="hover"
+      (click)="openCsvExport($event)"
       class="ms-2 export-csv-button"
       container="body"
       icon="file-csv"
+      triggers="hover"
     ></fa-icon>
 
     <ng-template #csvExportTemplate let-offcanvas>
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title">{{ 'Export acquisition sessions' | translate }}</h5>
-        <button
-          type="button"
-          class="btn-close"
-          (click)="offcanvas.dismiss()"
-          aria-label="Close"
-        ></button>
+        <h5 class="offcanvas-title">{{ "Export acquisition sessions" | translate }}</h5>
+        <button (click)="offcanvas.dismiss()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
       <div class="offcanvas-body">
-        <textarea
-          class="form-control"
-          rows="20"
-          readonly
-          [value]="csvContent"
-        ></textarea>
+        <textarea [value]="csvContent" class="form-control" readonly rows="20"></textarea>
 
         <div class="form-text mt-2">
-          {{ 'This format is compatible with the CSV import feature in the image data editor.' | translate }}
+          {{ "This format is compatible with the CSV import feature in the image data editor." | translate }}
           <a href="https://welcome.astrobin.com/importing-acquisitions-from-csv" target="_blank">
-            {{ 'Learn more' | translate }}.
+            {{ "Learn more" | translate }}.
           </a>
         </div>
 
-        <button class="btn btn-secondary mt-3" (click)="copyCsvContent()">{{ copyButtonLabel }}</button>
+        <button (click)="copyCsvContent()" class="btn btn-secondary mt-3">{{ copyButtonLabel }}</button>
       </div>
     </ng-template>
   `,
@@ -62,7 +60,7 @@ export class ImageViewerAcquisitionCsvExportComponent implements OnChanges {
   @ViewChild("csvExportTemplate")
   csvExportTemplate: TemplateRef<any>;
 
-  csvContent: string = "";
+  csvContent = "";
   copyButtonLabel = this.translateService.instant("Copy");
   showExportButton = false;
 
@@ -80,8 +78,7 @@ export class ImageViewerAcquisitionCsvExportComponent implements OnChanges {
   ngOnChanges(): void {
     // Show export button if there are acquisitions
     this.showExportButton =
-      (this.image?.deepSkyAcquisitions?.length > 0) ||
-      (this.image?.solarSystemAcquisitions?.length > 0);
+      this.image?.deepSkyAcquisitions?.length > 0 || this.image?.solarSystemAcquisitions?.length > 0;
   }
 
   openCsvExport(event: MouseEvent): void {
@@ -181,7 +178,8 @@ export class ImageViewerAcquisitionCsvExportComponent implements OnChanges {
     if (acq.duration && !isNaN(parseFloat(acq.duration))) {
       // If duration is in minutes (as commonly displayed), convert to seconds
       const durationNum = parseFloat(acq.duration);
-      if (durationNum < 100) { // Assume it's minutes if small number
+      if (durationNum < 100) {
+        // Assume it's minutes if small number
         durationInSeconds = (durationNum * 60).toFixed(4);
       } else {
         // Ensure 4 decimal places max

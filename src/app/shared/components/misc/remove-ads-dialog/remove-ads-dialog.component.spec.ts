@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RemoveAdsDialogComponent } from "./remove-ads-dialog.component";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialMainState } from "@app/store/state";
+import { MockBuilder } from "ng-mocks";
+
+import { RemoveAdsDialogComponent } from "./remove-ads-dialog.component";
 
 describe("ConfirmationDialogComponent", () => {
   let component: RemoveAdsDialogComponent;

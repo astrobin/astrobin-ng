@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 import { skip } from "rxjs/operators";
 
-import { UploadDataService, UploadMetadataEventInterface, UploadMetadataInterface } from "./upload-data.service";
-import { AppModule } from "@app/app.module";
+import { UploadMetadataEventInterface, UploadMetadataInterface, UploadDataService } from "./upload-data.service";
 
 describe("UploadMetadataService", () => {
   let service: UploadDataService;

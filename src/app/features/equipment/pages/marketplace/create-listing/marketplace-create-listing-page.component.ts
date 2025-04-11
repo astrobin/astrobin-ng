@@ -1,30 +1,30 @@
-import { Component, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { take, tap } from "rxjs/operators";
-import {
-  CreateMarketplaceListing,
-  CreateMarketplaceListingFailure,
-  CreateMarketplaceListingSuccess,
-  EquipmentActionTypes
-} from "@features/equipment/store/equipment.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { LoadingService } from "@core/services/loading.service";
+import { OnInit, Component } from "@angular/core";
 import { Router } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { MainState } from "@app/store/state";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { RouterService } from "@core/services/router.service";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { TitleService } from "@core/services/title/title.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import {
   MARKETPLACE_SALE_TYPE,
   MarketplaceListingFormInitialCountInterface
 } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import {
+  CreateMarketplaceListing,
+  EquipmentActionTypes,
+  CreateMarketplaceListingFailure,
+  CreateMarketplaceListingSuccess
+} from "@features/equipment/store/equipment.actions";
 import { MarketplaceShippingCostType } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",
@@ -81,15 +81,16 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     let listings: MarketplaceListingInterface[];
     let listingsProcessed = 0;
 
-    if (
-      value.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE_SEPARATELY &&
-      value.count > 1
-    ) {
+    if (value.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE_SEPARATELY && value.count > 1) {
       // Create multiple listings, each one gets one of the line items, and all other data is the same.
       listings = Array.from({ length: value.count }, (_, i) => ({
         ...value,
-        shippingMethod: value.lineItems[i].shippingCostType !== MarketplaceShippingCostType.NO_SHIPPING ? value.shippingMethod : null,
-        deliveryByShipping: value.lineItems[i].shippingCostType !== MarketplaceShippingCostType.NO_SHIPPING ? value.deliveryByShipping : false,
+        shippingMethod:
+          value.lineItems[i].shippingCostType !== MarketplaceShippingCostType.NO_SHIPPING ? value.shippingMethod : null,
+        deliveryByShipping:
+          value.lineItems[i].shippingCostType !== MarketplaceShippingCostType.NO_SHIPPING
+            ? value.deliveryByShipping
+            : false,
         lineItems: [value.lineItems[i]]
       }));
     } else {
@@ -108,13 +109,15 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
 
           if (action.type === EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS) {
             if (listings.length === 1) {
-              this.router.navigateByUrl(`/equipment/marketplace/listing/${action.payload.listing.hash}`).then(() => {
-                this.loadingService.setLoading(false);
-              });
+              void this.router
+                .navigateByUrl(`/equipment/marketplace/listing/${action.payload.listing.hash}`)
+                .then(() => {
+                  this.loadingService.setLoading(false);
+                });
             } else {
               if (listingsProcessed === listings.length) {
                 this.currentUser$.pipe(take(1)).subscribe(user => {
-                  this.router.navigateByUrl(`/equipment/marketplace/users/${user.username}/listings`).then(() => {
+                  void this.router.navigateByUrl(`/equipment/marketplace/users/${user.username}/listings`).then(() => {
                     this.popNotificationsService.success(
                       this.translateService.instant("All listings have been created.")
                     );

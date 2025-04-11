@@ -1,12 +1,28 @@
 import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { Injectable, ModuleWithProviders, NgModule } from "@angular/core";
+import { ModuleWithProviders, Injectable, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { HammerGestureConfig, HammerModule } from "@angular/platform-browser";
+import { NgxSliderModule } from "@angular-slider/ngx-slider";
+import { CustomMissingTranslationHandler } from "@app/missing-translation-handler";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { InitializeApp } from "@app/store/actions/initialize-app.actions";
 import { MainState } from "@app/store/state";
+import { LanguageLoader } from "@app/translate-loader";
+import { CustomTranslateParser } from "@app/translate-parser";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.actions";
-import { NgbAccordionModule, NgbCarouselModule, NgbDropdownModule, NgbModule, NgbNavModule, NgbPaginationModule, NgbPopoverModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgWizardModule, THEME } from "@kronscht/ng-wizard";
+import {
+  NgbAccordionModule,
+  NgbCarouselModule,
+  NgbDropdownModule,
+  NgbModule,
+  NgbNavModule,
+  NgbPaginationModule,
+  NgbPopoverModule,
+  NgbProgressbarModule
+} from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -14,22 +30,16 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { FormlySelectModule } from "@ngx-formly/core/select";
 import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateParser } from "@ngx-translate/core";
+import { DirectivesModule } from "@shared/directives/directives.module";
+import { IconsModule } from "@shared/icons.module";
+import { AutoSizeInputModule } from "ngx-autosize-input";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { ImageCropperModule } from "ngx-image-cropper";
 import { TimeagoModule } from "ngx-timeago";
 import { switchMap, take } from "rxjs/operators";
+
 import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
-import { CustomMissingTranslationHandler } from "@app/missing-translation-handler";
-import { CustomTranslateParser } from "@app/translate-parser";
-import { LanguageLoader } from "@app/translate-loader";
-import { DirectivesModule } from "@shared/directives/directives.module";
-import { NgWizardModule, THEME } from "@kronscht/ng-wizard";
-import { NgxSliderModule } from "@angular-slider/ngx-slider";
-import { HammerGestureConfig, HammerModule } from "@angular/platform-browser";
-import { AutoSizeInputModule } from "ngx-autosize-input";
-import { IconsModule } from "@shared/icons.module";
 
 declare const Hammer;
 
@@ -55,13 +65,22 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
 
 @Injectable()
 export class AstroBinHammerConfig extends HammerGestureConfig {
-  override events = ["pinch", "pinchstart", "pinchmove", "pinchend",
-    "pan", "panstart", "panmove", "panend",
-    "tap", "doubletap"];  // Add doubletap here
+  override events = [
+    "pinch",
+    "pinchstart",
+    "pinchmove",
+    "pinchend",
+    "pan",
+    "panstart",
+    "panmove",
+    "panend",
+    "tap",
+    "doubletap"
+  ]; // Add doubletap here
 
   override overrides = {
-    "pinch": { enable: true },
-    "doubletap": { enable: true }
+    pinch: { enable: true },
+    doubletap: { enable: true }
   } as any;
 
   override buildHammer(element: HTMLElement) {

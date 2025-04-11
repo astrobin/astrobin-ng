@@ -14,17 +14,20 @@
 </div>
 
 <ng-template #uploaderTemplate>
-  <form (ngSubmit)="onSubmit()" *ngIf="(uploadAllowed$ | async) !== false; else uploadNotAllowed" [formGroup]="form">
+  <form *ngIf="(uploadAllowed$ | async) !== false; else uploadNotAllowed" [formGroup]="form" (ngSubmit)="onSubmit()">
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 
     <small *ngIf="store$ | async as state" class="uploads-left">
       <span
         *ngIf="
-          state.auth.userProfile | hasValidUserSubscription: [
-            SubscriptionName.ASTROBIN_ULTIMATE_2020,
-            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
-            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
-          ] | async;
+          state.auth.userProfile
+            | hasValidUserSubscription
+              : [
+                  SubscriptionName.ASTROBIN_ULTIMATE_2020,
+                  SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+                  SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
+                ]
+            | async;
           else noUltimate
         "
         [innerHTML]="subscriptionWithUnlimitedSlotsMessage()"
@@ -55,10 +58,7 @@
         <span
           *ngIf="
             state.auth.userProfile
-              | hasValidUserSubscription: [
-                SubscriptionName.ASTROBIN_LITE,
-                SubscriptionName.ASTROBIN_LITE_AUTORENEW
-              ]
+              | hasValidUserSubscription: [SubscriptionName.ASTROBIN_LITE, SubscriptionName.ASTROBIN_LITE_AUTORENEW]
               | async;
             else lite2020
           "
@@ -75,11 +75,14 @@
       <ng-template #lite2020>
         <span
           *ngIf="
-            state.auth.userProfile | hasValidUserSubscription: [
-              SubscriptionName.ASTROBIN_LITE_2020,
-              SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
-              SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY
-            ] | async;
+            state.auth.userProfile
+              | hasValidUserSubscription
+                : [
+                    SubscriptionName.ASTROBIN_LITE_2020,
+                    SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+                    SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY
+                  ]
+              | async;
             else free
           "
           [innerHTML]="
@@ -109,7 +112,7 @@
       <button
         [class.loading]="uploadButtonLoading()"
         [disabled]="uploadButtonLoading()"
-        class=" btn btn-lg btn-primary"
+        class="btn btn-lg btn-primary"
         type="submit"
       >
         <fa-icon icon="upload"></fa-icon>

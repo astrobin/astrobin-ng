@@ -1,10 +1,10 @@
-import { TestBed } from '@angular/core/testing';
-
-import { FeedService } from './feed.service';
+import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 
-describe('FeedService', () => {
+import { FeedService } from "./feed.service";
+
+describe("FeedService", () => {
   let service: FeedService;
 
   beforeEach(async () => {
@@ -12,7 +12,7 @@ describe('FeedService', () => {
     service = TestBed.inject(FeedService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

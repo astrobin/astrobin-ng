@@ -1,15 +1,19 @@
 <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper; else loadingTemplate">
   <a
     *ngIf="user && link"
-    (click)="userService.openGallery(
-      user.username,
-      !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-    )"
-    [href]="userService.getGalleryUrl(
-      user.username,
-     !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
-    )"
+    [href]="
+      userService.getGalleryUrl(
+        user.username,
+        !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+      )
+    "
     [target]="linkTarget"
+    (click)="
+      userService.openGallery(
+        user.username,
+        !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+      )
+    "
     astrobinEventPreventDefault
     astrobinEventStopPropagation
   >
@@ -17,10 +21,10 @@
   </a>
 </ng-container>
 
-<ng-container [ngTemplateOutlet]="usernameTemplate" *ngIf="!link"></ng-container>
+<ng-container *ngIf="!link" [ngTemplateOutlet]="usernameTemplate"></ng-container>
 
 <ng-template #usernameTemplate>
-  <span class="username d-inline-block" *ngIf="!!username; else loadingTemplate">{{ username }}</span>
+  <span *ngIf="!!username; else loadingTemplate" class="username d-inline-block">{{ username }}</span>
 </ng-template>
 
 <ng-template #loadingTemplate>

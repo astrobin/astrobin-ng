@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { PipeTransform, Pipe } from "@angular/core";
 import { SafeHtml } from "@angular/platform-browser";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 

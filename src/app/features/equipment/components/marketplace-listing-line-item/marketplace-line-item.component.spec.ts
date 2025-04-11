@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { MarketplaceLineItemComponent } from "./marketplace-line-item.component";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
-import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 import { MarketplaceLineItemConditionComponent } from "@features/equipment/components/marketplace-listing-line-item-condition/marketplace-line-item-condition.component";
 import { MarketplaceListingLineItemPriceComponent } from "@features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { provideMockStore } from "@ngrx/store/testing";
+import { MockBuilder } from "ng-mocks";
+
+import { MarketplaceLineItemComponent } from "./marketplace-line-item.component";
 
 describe("MarketplaceListingLineItemComponent", () => {
   let component: MarketplaceLineItemComponent;

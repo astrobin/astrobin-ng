@@ -4,11 +4,11 @@
 
 .value {
   &:not(.days) {
-    margin-left: .5rem;
+    margin-left: 0.5rem;
   }
 }
 
 .label {
   color: var(--lighterGrey);
-  margin-left: .125rem;
+  margin-left: 0.125rem;
 }

@@ -1,30 +1,30 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { Location } from "@angular/common";
+import { ChangeDetectorRef, OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@core/services/title/title.service";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { CountryService } from "@core/services/country.service";
+import { DeviceService } from "@core/services/device.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { LoadingService } from "@core/services/loading.service";
-import { filter, map, take } from "rxjs/operators";
+import { LocalStorageService } from "@core/services/localstorage.service";
+import { RouterService } from "@core/services/router.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { AuthActionTypes, LoadUser, LoadUserFailure, LoadUserSuccess } from "@features/account/store/auth.actions";
 import {
   MarketplaceFilterModel,
   MarketplaceRefreshOptions
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import { ActivatedRoute, Router } from "@angular/router";
-import { AuthActionTypes, LoadUser, LoadUserFailure, LoadUserSuccess } from "@features/account/store/auth.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { Location } from "@angular/common";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { UserInterface } from "@core/interfaces/user.interface";
 import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
-import { CountryService } from "@core/services/country.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { LocalStorageService } from "@core/services/localstorage.service";
 import { NgbModal, NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { RouterService } from "@core/services/router.service";
-import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
-import { DeviceService } from "@core/services/device.service";
+import { ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { filter, map, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-user-listings-base-page",
@@ -32,7 +32,8 @@ import { DeviceService } from "@core/services/device.service";
 })
 export abstract class MarketplaceUserListingsBasePageComponent
   extends MarketplaceListingsBasePageComponent
-  implements OnInit {
+  implements OnInit
+{
   username: string;
   user: UserInterface;
 

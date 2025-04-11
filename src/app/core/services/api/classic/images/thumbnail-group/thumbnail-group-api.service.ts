@@ -6,6 +6,7 @@ import { BaseClassicApiService } from "@core/services/api/classic/base-classic-a
 import { LoadingService } from "@core/services/loading.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+
 import { ThumbnailGroupApiServiceInterface } from "./thumbnail-group-api.service-interface";
 
 @Injectable({
@@ -14,7 +15,10 @@ import { ThumbnailGroupApiServiceInterface } from "./thumbnail-group-api.service
 export class ThumbnailGroupApiService extends BaseClassicApiService implements ThumbnailGroupApiServiceInterface {
   configUrl = this.baseUrl + "/images/thumbnail-group";
 
-  constructor(public loadingService: LoadingService, private http: HttpClient) {
+  constructor(
+    public loadingService: LoadingService,
+    private http: HttpClient
+  ) {
     super(loadingService);
   }
 

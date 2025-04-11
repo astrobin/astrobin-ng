@@ -1,52 +1,71 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { select, Store } from "@ngrx/store";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MainState } from "@app/store/state";
-import { DownloadLimitationOptions, ImageInterface, ImageRevisionInterface, ORIGINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
-import { ClassicRoutesService } from "@core/services/classic-routes.service";
-import { Actions, ofType } from "@ngrx/effects";
-import { AppActionTypes } from "@app/store/actions/app.actions";
-import { filter, take, takeUntil } from "rxjs/operators";
-import { DeleteImage, DeleteImageFailure, DeleteImageSuccess, SubmitImageForIotdTpConsideration, SubmitImageForIotdTpConsiderationSuccess, UnpublishImage, UnpublishImageSuccess } from "@app/store/actions/image.actions";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { ImageAlias } from "@core/enums/image-alias.enum";
-import { ImageService } from "@core/services/image/image.service";
-import { environment } from "@env/environment";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@core/services/device.service";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { TranslateService } from "@ngx-translate/core";
-import { ModalService } from "@core/services/modal.service";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { Router } from "@angular/router";
-import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import {
+  ChangeDetectorRef,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { ActiveToast } from "ngx-toastr";
-import { LoadingService } from "@core/services/loading.service";
-import { Subscription } from "rxjs";
+import { Router } from "@angular/router";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import {
+  DeleteImageFailure,
+  DeleteImageSuccess,
+  SubmitImageForIotdTpConsiderationSuccess,
+  UnpublishImageSuccess,
+  DeleteImage,
+  SubmitImageForIotdTpConsideration,
+  UnpublishImage
+} from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { MainState } from "@app/store/state";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import {
+  ImageInterface,
+  ImageRevisionInterface,
+  DownloadLimitationOptions,
+  ORIGINAL_REVISION_LABEL
+} from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
+import { ModalService } from "@core/services/modal.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
+import { environment } from "@env/environment";
+import { NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store, select } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { ActiveToast } from "ngx-toastr";
+import { Subscription } from "rxjs";
+import { filter, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-viewer-menu",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <ng-container *ngIf="currentUserWrapper.user?.id === image.user">
-        <a
-          (click)="imageService.navigateToEdit(image)"
-          astrobinEventPreventDefault
-          [class]="itemClass"
-        >
+        <a [class]="itemClass" (click)="imageService.navigateToEdit(image)" astrobinEventPreventDefault>
           {{ "Edit project" | translate }}
         </a>
 
         <a
           *ngIf="revision.label"
-          [routerLink]="['/i', image.hash || image.pk.toString(), revisionLabel, 'edit']"
           [class]="itemClass"
+          [routerLink]="['/i', image.hash || image.pk.toString(), revisionLabel, 'edit']"
         >
           {{ "Edit revision" | translate }}
           <span class="badge rounded-pill bg-light border border-dark fw-bold text-dark">
@@ -56,31 +75,21 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
 
         <a
           *ngIf="image.solution"
-          [routerLink]="['/i', image.hash || image.pk.toString(), 'plate-solving-settings']"
-          [queryParams]="{ r: revisionLabel }"
           [class]="itemClass"
+          [queryParams]="{ r: revisionLabel }"
+          [routerLink]="['/i', image.hash || image.pk.toString(), 'plate-solving-settings']"
         >
           {{ "Edit plate-solving settings" | translate }}
           <span class="badge rounded-pill bg-light border border-dark fw-bold text-dark">
-            <ng-container *ngIf="revision.label">
-              {{ "Revision" | translate }}: {{ revision.label }}
-            </ng-container>
+            <ng-container *ngIf="revision.label"> {{ "Revision" | translate }}: {{ revision.label }} </ng-container>
           </span>
         </a>
 
-        <a
-          [routerLink]="['/uploader/revision', image.hash || image.pk.toString()]"
-          [class]="itemClass"
-        >
+        <a [class]="itemClass" [routerLink]="['/uploader/revision', image.hash || image.pk.toString()]">
           {{ "Upload new revision" | translate }}
         </a>
 
-        <a
-          (click)="uploadCompressedSourceClicked()"
-          [class]="itemClass"
-          astrobinEventPreventDefault
-          href="#"
-        >
+        <a [class]="itemClass" (click)="uploadCompressedSourceClicked()" astrobinEventPreventDefault href="#">
           <ng-container *ngIf="image.uncompressedSourceFile">
             {{ "Replace/delete uncompressed source file" | translate }}
           </ng-container>
@@ -91,10 +100,10 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
 
         <a
           *ngIf="!image.isWip"
+          [class]="itemClass"
+          (click)="unpublish()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          (click)="unpublish()"
-          [class]="itemClass"
           href="#"
         >
           {{ "Move to staging area" | translate }}
@@ -102,8 +111,8 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
 
         <a
           *ngIf="!image.submittedForIotdTpConsideration"
-          (click)="openSubmitForIotdTpConsiderationOffcanvas()"
           [class]="itemClass"
+          (click)="openSubmitForIotdTpConsiderationOffcanvas()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
           href="#"
@@ -116,8 +125,8 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
 
         <a
           *ngIf="image.submittedForIotdTpConsideration"
-          (click)="viewIotdTpStats()"
           [class]="itemClass"
+          (click)="viewIotdTpStats()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
           href="#"
@@ -129,10 +138,10 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
         </a>
 
         <a
+          [class]="itemClass + ' text-danger'"
+          (click)="delete()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          (click)="delete()"
-          [class]="itemClass + ' text-danger'"
           href="#"
         >
           {{ "Delete" | translate }}
@@ -141,16 +150,16 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
 
       <ng-container
         *ngIf="
-          currentUserWrapper.user?.id === image.user ||
-          image.downloadLimitation === DownloadLimitationOptions.EVERYBODY"
+          currentUserWrapper.user?.id === image.user || image.downloadLimitation === DownloadLimitationOptions.EVERYBODY
+        "
       >
         <div [class]="dividerClass"></div>
 
         <a
+          [class]="itemClass"
+          (click)="openDownloadOffcanvas()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          (click)="openDownloadOffcanvas()"
-          [class]="itemClass"
           href="#"
         >
           {{ "Download" | translate }}
@@ -158,8 +167,8 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
       </ng-container>
 
       <a
-        [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString()) + '?force-classic-view'"
         [class]="itemClass"
+        [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString()) + '?force-classic-view'"
       >
         {{ "Classic view" | translate }}
       </a>
@@ -168,41 +177,41 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
     <ng-template #downloadOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Download" | translate }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <a
           (click)="downloadImage(ImageAlias.REGULAR)"
+          class="menu-item"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="menu-item"
         >
           {{ "Medium" | translate }}
         </a>
 
         <a
           (click)="downloadImage(ImageAlias.HD)"
+          class="menu-item"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="menu-item"
         >
           {{ "Large" | translate }}
         </a>
 
         <a
           (click)="downloadImage(ImageAlias.QHD)"
+          class="menu-item"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="menu-item"
         >
           {{ "Extra large" | translate }}
         </a>
 
         <a
           (click)="downloadImage(ImageAlias.REAL)"
+          class="menu-item"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="menu-item"
         >
           {{ "Full size" | translate }}
         </a>
@@ -213,9 +222,9 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
           <a
             *ngIf="revision.solution.imageFile"
             (click)="downloadImage('basic_annotations')"
+            class="menu-item"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
-            class="menu-item"
           >
             {{ "Annotations" | translate }}
           </a>
@@ -223,9 +232,9 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
           <a
             *ngIf="revision.solution.pixinsightSvgAnnotationHd"
             (click)="downloadImage('advanced_annotations')"
+            class="menu-item"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
-            class="menu-item"
           >
             {{ "Advanced annotations" | translate }}
           </a>
@@ -233,9 +242,9 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
           <a
             *ngIf="revision.solution.pixinsightSvgAnnotationRegular"
             (click)="downloadImage('advanced_annotations_large_font')"
+            class="menu-item"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
-            class="menu-item"
           >
             {{ "Advanced annotations (large font)" | translate }}
           </a>
@@ -245,21 +254,21 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
           <a
             *ngIf="image.user === currentUserWrapper.user?.id"
             (click)="downloadImage('original')"
+            class="menu-item"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
-            class="menu-item"
           >
-            <fa-icon icon="lock" class="me-2"></fa-icon>
+            <fa-icon class="me-2" icon="lock"></fa-icon>
             {{ "Original" | translate }}
           </a>
 
           <a
             [href]="image.uncompressedSourceFile"
             class="menu-item no-external-link-icon"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
-            <fa-icon icon="lock" class="me-2"></fa-icon>
+            <fa-icon class="me-2" icon="lock"></fa-icon>
             {{ "Uncompressed source file" | translate }}
           </a>
         </ng-container>
@@ -279,30 +288,26 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
             {{ "Error!" | translate }}
           </ng-container>
         </h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <ng-container *ngIf="maySubmitForIotdTpConsideration === true">
           <p class="alert alert-dark">
             {{
               "The “AstroBin Image of the Day and Top Picks” is a long-running system to promote beautiful, " +
-              "interesting, peculiar, or otherwise amazing astrophotographs, with a focus on technical " +
-              "excellence." | translate
+                "interesting, peculiar, or otherwise amazing astrophotographs, with a focus on technical " +
+                "excellence." | translate
             }}
           </p>
 
           <form [formGroup]="submitForIotdTpConsiderationForm" (ngSubmit)="submitForIotdTpConsideration()">
             <formly-form
-              [model]="submitForIotdTpConsiderationModel"
               [fields]="submitForIotdTpConsiderationFields"
+              [model]="submitForIotdTpConsiderationModel"
             ></formly-form>
 
             <div class="form-actions">
-              <button
-                [class.loading]="loadingService.loading$ | async"
-                class="btn btn-primary w-100"
-                type="submit"
-              >
+              <button [class.loading]="loadingService.loading$ | async" class="btn btn-primary w-100" type="submit">
                 {{ "Submit" | translate }}
               </button>
             </div>
@@ -311,15 +316,12 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
 
         <ng-container *ngIf="maySubmitForIotdTpConsideration === false">
           <p>
-            <fa-icon icon="exclamation-triangle" class="me-2"></fa-icon>
+            <fa-icon class="me-2" icon="exclamation-triangle"></fa-icon>
             <span [innerHTML]="reasonIfCannotSubmitForIotdTpConsideration"></span>
           </p>
         </ng-container>
 
-        <ng-container
-          *ngIf="maySubmitForIotdTpConsideration === undefined"
-          [ngTemplateOutlet]="loadingTemplate"
-        >
+        <ng-container *ngIf="maySubmitForIotdTpConsideration === undefined" [ngTemplateOutlet]="loadingTemplate">
         </ng-container>
       </div>
     </ng-template>
@@ -328,14 +330,12 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">
           {{ "IOTD/TP stats" | translate }}
-          <fa-icon icon="lock" class="ms-2"></fa-icon>
+          <fa-icon class="ms-2" icon="lock"></fa-icon>
         </h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
-        <astrobin-image-viewer-iotd-tp-stats
-          [image]="image"
-        ></astrobin-image-viewer-iotd-tp-stats>
+        <astrobin-image-viewer-iotd-tp-stats [image]="image"></astrobin-image-viewer-iotd-tp-stats>
       </div>
     </ng-template>
 
@@ -362,7 +362,7 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
 
   protected readonly submitForIotdTpConsiderationForm = new FormGroup({});
   protected readonly submitForIotdTpConsiderationModel: {
-    agreedToIotdTpRulesAndGuidelines: boolean
+    agreedToIotdTpRulesAndGuidelines: boolean;
   } = {
     agreedToIotdTpRulesAndGuidelines: false
   };
@@ -375,7 +375,8 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
         label: this.translateService.instant("I agree to the IOTD/TP rules and guidelines"),
         description: this.translateService.instant(
           "By submitting your image for consideration, you agree to the IOTD/TP " +
-          "{{ 0 }}rules{{ 1 }} and {{ 2 }}guidelines.{{ 3 }}", {
+            "{{ 0 }}rules{{ 1 }} and {{ 2 }}guidelines.{{ 3 }}",
+          {
             0: "<a href='https://welcome.astrobin.com/iotd#rules' target='_blank' rel='noopener'>",
             1: "</a>",
             2: "<a href='https://welcome.astrobin.com/iotd#photographer-guidelines' target='_blank' rel='noopener'>",
@@ -429,27 +430,31 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
           this._selectImageSubscription.unsubscribe();
         }
 
-        this._selectImageSubscription = this.store$.pipe(
-          select(selectImage, this.image.pk),
-          filter(image => !!image),
-          takeUntil(this.destroyed$)
-        ).subscribe(image => {
-          this.image = image;
-          this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-          this.changeDetectionRef.markForCheck();
-        });
+        this._selectImageSubscription = this.store$
+          .pipe(
+            select(selectImage, this.image.pk),
+            filter(image => !!image),
+            takeUntil(this.destroyed$)
+          )
+          .subscribe(image => {
+            this.image = image;
+            this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+            this.changeDetectionRef.markForCheck();
+          });
       }
     }
   }
 
   unpublish() {
-    this.actions$.pipe(
-      ofType(AppActionTypes.UNPUBLISH_IMAGE_SUCCESS),
-      filter((action: UnpublishImageSuccess) => action.payload.pk === this.image.pk),
-      take(1)
-    ).subscribe(() => {
-      this.popNotificationsService.success("Image moved to your staging area.");
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.UNPUBLISH_IMAGE_SUCCESS),
+        filter((action: UnpublishImageSuccess) => action.payload.pk === this.image.pk),
+        take(1)
+      )
+      .subscribe(() => {
+        this.popNotificationsService.success("Image moved to your staging area.");
+      });
 
     this.store$.dispatch(new UnpublishImage({ pk: this.image.pk }));
   }
@@ -465,13 +470,15 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
     modalRef.closed.subscribe(() => {
       const loadingModalRef: NgbModalRef = this.modalService.openLoadingDialog();
 
-      this.actions$.pipe(
-        ofType(AppActionTypes.DELETE_IMAGE_SUCCESS, AppActionTypes.DELETE_IMAGE_FAILURE), // Listen for both success and failure
-        filter((action: DeleteImageSuccess | DeleteImageFailure) => action.payload.pk === this.image.pk),
-        take(1)
-      ).subscribe(() => {
-        loadingModalRef.close();
-      });
+      this.actions$
+        .pipe(
+          ofType(AppActionTypes.DELETE_IMAGE_SUCCESS, AppActionTypes.DELETE_IMAGE_FAILURE), // Listen for both success and failure
+          filter((action: DeleteImageSuccess | DeleteImageFailure) => action.payload.pk === this.image.pk),
+          take(1)
+        )
+        .subscribe(() => {
+          loadingModalRef.close();
+        });
 
       this.store$.dispatch(new DeleteImage({ pk: this.image.pk }));
     });
@@ -479,31 +486,34 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
 
   openDownloadOffcanvas() {
     this.offcanvasService.dismiss(); // Avoids nested offcanvases.
-    this.offcanvasService.open(
-      this.downloadOffcanvasTemplate, {
-        panelClass: "image-viewer-offcanvas offcanvas-menu",
-        backdropClass: "image-viewer-offcanvas-backdrop",
-        position: this.deviceService.mdMax() ? "start" : "end"
-      }
-    );
+    this.offcanvasService.open(this.downloadOffcanvasTemplate, {
+      panelClass: "image-viewer-offcanvas offcanvas-menu",
+      backdropClass: "image-viewer-offcanvas-backdrop",
+      position: this.deviceService.mdMax() ? "start" : "end"
+    });
   }
 
   downloadImage(
     version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations" | "advanced_annotations_large_font"
   ) {
-    const url = `${environment.classicBaseUrl}/download/${this.image.hash || this.image.pk}/${this.revisionLabel}/${version}/`;
+    const url = `${environment.classicBaseUrl}/download/${this.image.hash || this.image.pk}/${
+      this.revisionLabel
+    }/${version}/`;
     this.windowRefService.nativeWindow.open(url, "_blank");
   }
 
   uploadCompressedSourceClicked() {
-    this.userSubscriptionService.isUltimate$().pipe(take(1)).subscribe(isUltimate => {
-      if (isUltimate) {
-        this.router.navigate(["/uploader/uncompressed-source", this.image.hash || this.image.pk.toString()]);
-      } else {
-        const modalRef = this.modalService.open(SubscriptionRequiredModalComponent);
-        modalRef.componentInstance.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
-      }
-    });
+    this.userSubscriptionService
+      .isUltimate$()
+      .pipe(take(1))
+      .subscribe(isUltimate => {
+        if (isUltimate) {
+          void this.router.navigate(["/uploader/uncompressed-source", this.image.hash || this.image.pk.toString()]);
+        } else {
+          const modalRef = this.modalService.open(SubscriptionRequiredModalComponent);
+          modalRef.componentInstance.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
+        }
+      });
   }
 
   openSubmitForIotdTpConsiderationOffcanvas() {
@@ -533,13 +543,15 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
       this._agreedToIotdTpRulesAndGuidelinesNotification = undefined;
     }
 
-    this.actions$.pipe(
-      ofType(AppActionTypes.SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION_SUCCESS),
-      filter((action: SubmitImageForIotdTpConsiderationSuccess) => action.payload.image.pk === this.image.pk),
-      take(1)
-    ).subscribe(() => {
-      this.offcanvasService.dismiss();
-    });
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION_SUCCESS),
+        filter((action: SubmitImageForIotdTpConsiderationSuccess) => action.payload.image.pk === this.image.pk),
+        take(1)
+      )
+      .subscribe(() => {
+        this.offcanvasService.dismiss();
+      });
 
     this.store$.dispatch(new SubmitImageForIotdTpConsideration({ pk: this.image.pk }));
   }
@@ -555,7 +567,8 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
 
   private _initSubmitForIotdTpConsiderationForm(): void {
     this.currentUserProfile$.pipe(take(1)).subscribe(currentUserProfile => {
-      this.submitForIotdTpConsiderationModel.agreedToIotdTpRulesAndGuidelines = currentUserProfile?.agreedToIotdTpRulesAndGuidelines;
+      this.submitForIotdTpConsiderationModel.agreedToIotdTpRulesAndGuidelines =
+        currentUserProfile?.agreedToIotdTpRulesAndGuidelines;
     });
   }
 }

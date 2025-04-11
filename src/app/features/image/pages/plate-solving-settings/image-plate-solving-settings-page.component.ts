@@ -1,61 +1,57 @@
-import { Component, OnInit } from "@angular/core";
-import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
-import { TitleService } from "@core/services/title/title.service";
-import { TranslateService } from "@ngx-translate/core";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { OnInit, Component } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { PlateSolvingSettingsInterface } from "@core/interfaces/plate-solving-settings.interface";
-import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
-import { forkJoin, Observable } from "rxjs";
-import { PlateSolvingSettingsApiService } from "@core/services/api/classic/platesolving/settings/plate-solving-settings-api.service";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { MainState } from "@app/store/state";
+import { ImageInterface, ImageRevisionInterface, FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
 import { PlateSolvingAdvancedSettingsInterface } from "@core/interfaces/plate-solving-advanced-settings.interface";
-import { LoadingService } from "@core/services/loading.service";
-import { UtilsService } from "@core/services/utils/utils.service";
-import { switchMap } from "rxjs/operators";
-import { ImageService } from "@core/services/image/image.service";
+import { PlateSolvingSettingsInterface } from "@core/interfaces/plate-solving-settings.interface";
 import { SolutionStatus } from "@core/interfaces/solution.interface";
+import { PlateSolvingSettingsApiService } from "@core/services/api/classic/platesolving/settings/plate-solving-settings-api.service";
+import { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
+import { ImageService } from "@core/services/image/image.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { Store } from "@ngrx/store";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Observable, forkJoin } from "rxjs";
+import { switchMap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-plate-solving-settings-page",
   template: `
     <div class="page has-breadcrumb">
-      <ul ngbNav #nav="ngbNav" class="nav-tabs">
+      <ul #nav="ngbNav" class="nav-tabs" ngbNav>
         <li ngbNavItem>
           <a ngbNavLink translate="Basic settings"></a>
           <ng-template ngbNavContent>
-            <form
-              [formGroup]="basicForm"
-              class="mt-4"
-            >
-              <formly-form [form]="basicForm" [model]="basicModel" [fields]="basicFields"></formly-form>
+            <form [formGroup]="basicForm" class="mt-4">
+              <formly-form [fields]="basicFields" [form]="basicForm" [model]="basicModel"></formly-form>
             </form>
           </ng-template>
         </li>
         <li ngbNavItem>
           <a ngbNavLink translate="Advanced settings"></a>
           <ng-template ngbNavContent>
-            <form
-              *ngIf="canPlateSolveAdvanced; else upgradeTemplate"
-              [formGroup]="advancedForm"
-              class="mt-4"
-            >
+            <form *ngIf="canPlateSolveAdvanced; else upgradeTemplate" [formGroup]="advancedForm" class="mt-4">
               <div *ngIf="!hasValidBasicSolution" class="alert alert-warning mb-4">
                 <strong>{{ "Note:" | translate }}</strong>
-                {{ "Advanced plate-solving settings can only be edited after the image has been successfully plate-solved with basic plate-solving." | translate }}
+                {{
+                  "Advanced plate-solving settings can only be edited after the image has been successfully plate-solved with basic plate-solving."
+                    | translate
+                }}
               </div>
 
               <formly-form
                 *ngIf="hasValidBasicSolution"
+                [fields]="advancedFields"
                 [form]="advancedForm"
                 [model]="advancedModel"
-                [fields]="advancedFields"
               >
               </formly-form>
             </form>
@@ -67,8 +63,8 @@ import { SolutionStatus } from "@core/interfaces/solution.interface";
 
       <div class="form-actions">
         <button
-          (click)="restart()"
           [class.loading]="loadingService.loading$ | async"
+          (click)="restart()"
           class="btn btn-secondary"
           type="submit"
         >
@@ -76,8 +72,8 @@ import { SolutionStatus } from "@core/interfaces/solution.interface";
         </button>
 
         <button
-          (click)="save()"
           [class.loading]="loadingService.loading$ | async"
+          (click)="save()"
           class="btn btn-primary"
           type="submit"
         >
@@ -86,8 +82,8 @@ import { SolutionStatus } from "@core/interfaces/solution.interface";
 
         <a
           [class.loading]="loadingService.loading$ | async"
-          [routerLink]="'/i/' + (image.hash || image.pk)"
           [queryParams]="{ r: revisionLabel }"
+          [routerLink]="'/i/' + (image.hash || image.pk)"
           class="btn btn-outline-secondary"
           astrobinEventPreventDefault
         >
@@ -101,18 +97,15 @@ import { SolutionStatus } from "@core/interfaces/solution.interface";
         <span [translate]="upgradeMessage"></span>
         <span class="no-wrap">
           <a
-            href="https://welcome.astrobin.com/features/astrometry-tools"
-            target="_blank"
-            rel="noopener noreferrer"
             class="no-wrap btn btn-outline-secondary me-2"
+            href="https://welcome.astrobin.com/features/astrometry-tools"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             {{ "Learn more" | translate }}
           </a>
 
-          <a
-            routerLink="/subscriptions/ultimate"
-            class="no-wrap btn btn-primary"
-          >
+          <a class="no-wrap btn btn-primary" routerLink="/subscriptions/ultimate">
             {{ "Upgrade" | translate }}
           </a>
         </span>
@@ -122,8 +115,9 @@ import { SolutionStatus } from "@core/interfaces/solution.interface";
   styleUrls: ["./image-plate-solving-settings-page.component.scss"]
 })
 export class ImagePlateSolvingSettingsPageComponent
-  extends BaseComponentDirective implements OnInit, ComponentCanDeactivate {
-
+  extends BaseComponentDirective
+  implements OnInit, ComponentCanDeactivate
+{
   protected image: ImageInterface;
   protected revisionLabel: ImageRevisionInterface["label"] = FINAL_REVISION_LABEL;
   protected canPlateSolveAdvanced: boolean;
@@ -142,25 +136,25 @@ export class ImagePlateSolvingSettingsPageComponent
   protected radiusCategory: string = null;
   protected radiusCategoryLabel: string = null;
   protected hiddenFields: string[] = [];
-  protected hasValidBasicSolution: boolean = false;
+  protected hasValidBasicSolution = false;
 
   // Map of field names to display labels for hidden fields notification
   private readonly fieldLabels = {
-    'showHd': 'HD stars',
-    'showMessier': 'Messier',
-    'showNgcIc': 'NGC/IC',
-    'showVdb': 'VdB',
-    'showSharpless': 'Sharpless',
-    'showBarnard': 'Barnard',
-    'showLbn': 'LBN',
-    'showLdn': 'LDN',
-    'showPgc': 'PGC',
-    'showPlanets': 'Planets',
-    'showAsteroids': 'Asteroids',
-    'showGcvs': 'GCVS stars',
-    'showTycho2': 'Tycho-2 stars',
-    'showCgpn': 'CGPN',
-    'showQuasars': 'Quasars'
+    showHd: "HD stars",
+    showMessier: "Messier",
+    showNgcIc: "NGC/IC",
+    showVdb: "VdB",
+    showSharpless: "Sharpless",
+    showBarnard: "Barnard",
+    showLbn: "LBN",
+    showLdn: "LDN",
+    showPgc: "PGC",
+    showPlanets: "Planets",
+    showAsteroids: "Asteroids",
+    showGcvs: "GCVS stars",
+    showTycho2: "Tycho-2 stars",
+    showCgpn: "CGPN",
+    showQuasars: "Quasars"
   };
 
   constructor(
@@ -209,16 +203,16 @@ export class ImagePlateSolvingSettingsPageComponent
         delete advancedModeWithoutFile.sampleRawFrameFile;
 
         const file: File = (this.advancedModel.sampleRawFrameFile as any[])[0].file;
-        updateAdvancedSettingsObservable$ =
-          this.plateSolvingSettingsApiService.updateAdvancedSettings(advancedModeWithoutFile).pipe(
+        updateAdvancedSettingsObservable$ = this.plateSolvingSettingsApiService
+          .updateAdvancedSettings(advancedModeWithoutFile)
+          .pipe(
             switchMap(() => this.plateSolvingSettingsApiService.uploadSampleRawFrameFile(this.advancedModel.id, file))
           );
       } else {
-        updateAdvancedSettingsObservable$ =
-          this.plateSolvingSettingsApiService.updateAdvancedSettings({
-            ...this.advancedModel,
-            sampleRawFrameFile: null
-          });
+        updateAdvancedSettingsObservable$ = this.plateSolvingSettingsApiService.updateAdvancedSettings({
+          ...this.advancedModel,
+          sampleRawFrameFile: null
+        });
       }
 
       observables$.push(updateAdvancedSettingsObservable$);
@@ -232,34 +226,36 @@ export class ImagePlateSolvingSettingsPageComponent
     this.loadingService.setLoading(true);
 
     forkJoin(observables$).subscribe(() => {
-      this.router.navigate(["/i", this.image.hash || this.image.pk], {
-        queryParams: {
-          r: this.revisionLabel
-        }
-      }).then(() => {
-        this.loadingService.setLoading(false);
-        this.popNotificationsService.success(
-          this.translateService.instant("Settings saved.") +
-          " " +
-          this.translateService.instant("Plate-solving will be restarted.")
-        );
-      });
+      void this.router
+        .navigate(["/i", this.image.hash || this.image.pk], {
+          queryParams: {
+            r: this.revisionLabel
+          }
+        })
+        .then(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success(
+            this.translateService.instant("Settings saved.") +
+              " " +
+              this.translateService.instant("Plate-solving will be restarted.")
+          );
+        });
     });
   }
 
   restart() {
     this.loadingService.setLoading(true);
     this.plateSolvingSettingsApiService.restart(this.basicModel.solution).subscribe(() => {
-      this.router.navigate(["/i", this.image.hash || this.image.pk], {
-        queryParams: {
-          r: this.revisionLabel
-        }
-      }).then(() => {
-        this.loadingService.setLoading(false);
-        this.popNotificationsService.success(
-          this.translateService.instant("Plate-solving will be restarted.")
-        );
-      });
+      void this.router
+        .navigate(["/i", this.image.hash || this.image.pk], {
+          queryParams: {
+            r: this.revisionLabel
+          }
+        })
+        .then(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success(this.translateService.instant("Plate-solving will be restarted."));
+        });
     });
   }
 
@@ -273,24 +269,26 @@ export class ImagePlateSolvingSettingsPageComponent
   }
 
   private _setBreadcrumb() {
-    this.store$.dispatch(new SetBreadcrumb({
-      breadcrumb: [
-        {
-          label: this.translateService.instant("Image")
-        },
-        {
-          label: this.image.title,
-          link: `/i/${this.image.hash || this.image.pk}`
-        },
-        {
-          label: this.revisionLabel,
-          link: `/i/${this.image.hash || this.image.pk}?r=${this.revisionLabel}`
-        },
-        {
-          label: this.translateService.instant("Plate-solving settings")
-        }
-      ]
-    }));
+    this.store$.dispatch(
+      new SetBreadcrumb({
+        breadcrumb: [
+          {
+            label: this.translateService.instant("Image")
+          },
+          {
+            label: this.image.title,
+            link: `/i/${this.image.hash || this.image.pk}`
+          },
+          {
+            label: this.revisionLabel,
+            link: `/i/${this.image.hash || this.image.pk}?r=${this.revisionLabel}`
+          },
+          {
+            label: this.translateService.instant("Plate-solving settings")
+          }
+        ]
+      })
+    );
   }
 
   private _initCanPlateSolveAdvanced() {
@@ -315,15 +313,15 @@ export class ImagePlateSolvingSettingsPageComponent
     }
 
     if (radiusValue > 30) {
-      return "very_large";  // >30 degrees
+      return "very_large"; // >30 degrees
     } else if (radiusValue > 15) {
-      return "large";       // 15-30 degrees
+      return "large"; // 15-30 degrees
     } else if (radiusValue > 4) {
-      return "medium";      // 4-15 degrees
+      return "medium"; // 4-15 degrees
     } else if (radiusValue > 1) {
-      return "small";       // 1-4 degrees
+      return "small"; // 1-4 degrees
     } else {
-      return "very_small";  // <1 degree
+      return "very_small"; // <1 degree
     }
   }
 
@@ -334,12 +332,18 @@ export class ImagePlateSolvingSettingsPageComponent
    */
   private getRadiusCategoryLabel(category: string): string {
     switch (category) {
-      case "very_large": return this.translateService.instant("Very large (>30°)");
-      case "large": return this.translateService.instant("Large (15-30°)");
-      case "medium": return this.translateService.instant("Medium (4-15°)");
-      case "small": return this.translateService.instant("Small (1-4°)");
-      case "very_small": return this.translateService.instant("Very small (<1°)");
-      default: return "";
+      case "very_large":
+        return this.translateService.instant("Very large (>30°)");
+      case "large":
+        return this.translateService.instant("Large (15-30°)");
+      case "medium":
+        return this.translateService.instant("Medium (4-15°)");
+      case "small":
+        return this.translateService.instant("Small (1-4°)");
+      case "very_small":
+        return this.translateService.instant("Very small (<1°)");
+      default:
+        return "";
     }
   }
 
@@ -486,9 +490,7 @@ export class ImagePlateSolvingSettingsPageComponent
     const image = this.activatedRoute.snapshot.data.image;
 
     // Get the correct revision based on the revision label
-    const revision = this.revisionLabel
-      ? this.imageService.getRevision(image, this.revisionLabel)
-      : image;
+    const revision = this.revisionLabel ? this.imageService.getRevision(image, this.revisionLabel) : image;
 
     // Get the solution radius from the specific revision
     const radius = revision?.solution?.radius || null;
@@ -534,7 +536,7 @@ export class ImagePlateSolvingSettingsPageComponent
       this.advancedModel[fieldName] = enabled;
     }
 
-    const disabledMessage = this.translateService.instant('Option disabled based on field radius.');
+    const disabledMessage = this.translateService.instant("Option disabled based on field radius.");
 
     // Look through advancedFields to find and update the field's properties
     this.advancedFields.forEach(section => {
@@ -550,9 +552,9 @@ export class ImagePlateSolvingSettingsPageComponent
                   nestedField.props.disabled = true;
 
                   // Add a note to the field's description explaining why it's disabled
-                  const originalDescription = nestedField.props.description || '';
-                  nestedField.props.description = originalDescription +
-                    (originalDescription ? ' ' : '') + disabledMessage;
+                  const originalDescription = nestedField.props.description || "";
+                  nestedField.props.description =
+                    originalDescription + (originalDescription ? " " : "") + disabledMessage;
                 }
               }
 
@@ -565,9 +567,9 @@ export class ImagePlateSolvingSettingsPageComponent
                       deepNestedField.props.disabled = true;
 
                       // Add a note to the field's description explaining why it's disabled
-                      const deepOriginalDescription = deepNestedField.props.description || '';
-                      deepNestedField.props.description = deepOriginalDescription +
-                        (deepOriginalDescription ? ' ' : '') + disabledMessage;
+                      const deepOriginalDescription = deepNestedField.props.description || "";
+                      deepNestedField.props.description =
+                        deepOriginalDescription + (deepOriginalDescription ? " " : "") + disabledMessage;
                     }
                   }
                 });
@@ -580,9 +582,8 @@ export class ImagePlateSolvingSettingsPageComponent
               field.props.disabled = true;
 
               // Add a note to the field's description explaining why it's disabled
-              const originalDescription = field.props.description || '';
-              field.props.description = originalDescription +
-                (originalDescription ? ' ' : '') + disabledMessage;
+              const originalDescription = field.props.description || "";
+              field.props.description = originalDescription + (originalDescription ? " " : "") + disabledMessage;
             }
           }
         });
@@ -655,8 +656,8 @@ export class ImagePlateSolvingSettingsPageComponent
               label: this.translateService.instant("Astrometry.net publicly visible"),
               description: this.translateService.instant(
                 "If checked, the astrometry.net submission will be publicly visible. If you leave this unchecked," +
-                "you won't be able to see the full log of the astrometry.net submission, but the image will still" +
-                "be plate-solved and annotated."
+                  "you won't be able to see the full log of the astrometry.net submission, but the image will still" +
+                  "be plate-solved and annotated."
               )
             }
           },
@@ -871,7 +872,8 @@ export class ImagePlateSolvingSettingsPageComponent
           },
           {
             key: "",
-            fieldGroupClassName: "d-flex justify-content-md-between align-items-md-center align-items-start flex-column flex-md-row gap-2",
+            fieldGroupClassName:
+              "d-flex justify-content-md-between align-items-md-center align-items-start flex-column flex-md-row gap-2",
             fieldGroup: [
               {
                 key: "showHd",
@@ -901,7 +903,8 @@ export class ImagePlateSolvingSettingsPageComponent
           },
           {
             key: "",
-            fieldGroupClassName: "d-flex justify-content-md-between align-items-md-center align-items-start flex-column flex-md-row gap-2",
+            fieldGroupClassName:
+              "d-flex justify-content-md-between align-items-md-center align-items-start flex-column flex-md-row gap-2",
             fieldGroup: [
               {
                 key: "showGcvs",
@@ -931,7 +934,8 @@ export class ImagePlateSolvingSettingsPageComponent
           },
           {
             key: "",
-            fieldGroupClassName: "d-flex justify-content-md-between align-items-md-center align-items-start" +
+            fieldGroupClassName:
+              "d-flex justify-content-md-between align-items-md-center align-items-start" +
               " flex-column flex-md-row gap-2",
             fieldGroup: [
               {
@@ -1083,15 +1087,15 @@ export class ImagePlateSolvingSettingsPageComponent
           label: this.translateService.instant("Sample RAW frame (max 100 MB)"),
           description: this.translateService.instant(
             "To improve the accuracy of your plate-solution even further, please upload one of the XISF or " +
-            "FITS files from your data set. Such files normally have date and time headers that will allow AstroBin " +
-            "to calculate solar system body ephemerides and find planets and asteroids in your image (provided you " +
-            "also add location information to it).<br/><br/>For maximum accuracy, it's recommended that you use " +
-            "PixInsight's native and open format XISF. Learn more about XISF here:<br/><br/><a " +
-            "href=\"https://pixinsight.com/xisf/\" target=\"_blank\">https://pixinsight.com/xisf/</a><br/><br/> " +
-            "<strong>Please note:</strong> it's very important that the XISF or FITS file you upload is aligned to " +
-            "your processed image, otherwise the object annotations will not match. To improve your chances at a " +
-            "successful accurate plate-solution, calibrate your file the usual way (dark/bias/flats) but do not " +
-            "stretch it."
+              "FITS files from your data set. Such files normally have date and time headers that will allow AstroBin " +
+              "to calculate solar system body ephemerides and find planets and asteroids in your image (provided you " +
+              "also add location information to it).<br/><br/>For maximum accuracy, it's recommended that you use " +
+              "PixInsight's native and open format XISF. Learn more about XISF here:<br/><br/><a " +
+              'href="https://pixinsight.com/xisf/" target="_blank">https://pixinsight.com/xisf/</a><br/><br/> ' +
+              "<strong>Please note:</strong> it's very important that the XISF or FITS file you upload is aligned to " +
+              "your processed image, otherwise the object annotations will not match. To improve your chances at a " +
+              "successful accurate plate-solution, calibrate your file the usual way (dark/bias/flats) but do not " +
+              "stretch it."
           ),
           accept: ".fits, .xisf"
         }

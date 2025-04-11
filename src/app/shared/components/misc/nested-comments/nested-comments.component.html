@@ -1,26 +1,28 @@
 <div
-  astrobinScrollVisibility
   [forceVisible]="forceVisible"
   [viewportOptions]="{
-       verticalTolerance: 500,
-       horizontalTolerance: 10,
-       shouldCheckHorizontal: false
-     }"
+    verticalTolerance: 500,
+    horizontalTolerance: 10,
+    shouldCheckHorizontal: false
+  }"
   (visibilityChange)="onVisibilityChange($event)"
+  astrobinScrollVisibility
 >
-  <div *ngIf="comments$ | async as comments; else loadingTpl" class="nested-comments card" @fadeInOut>
+  <div *ngIf="comments$ | async as comments; else loadingTpl" @fadeInOut class="nested-comments card">
     <div class="card-header">
       {{ title }}
 
       <div class="actions">
         <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
-        <button (click)="close.emit()" *ngIf="showCloseButton"
-                class="btn btn-link btn-no-block btn-close ms-2"></button>
+        <button
+          *ngIf="showCloseButton"
+          (click)="close.emit()"
+          class="btn btn-link btn-no-block btn-close ms-2"
+        ></button>
       </div>
     </div>
 
     <div class="card-body">
-
       <p *ngIf="!!info">
         <fa-icon class="me-2" icon="info-circle"></fa-icon>
         <span [innerHTML]="info"></span>
@@ -39,8 +41,8 @@
       <ng-container *ngIf="!loadingComments; else loadingTpl">
         <ng-container
           *ngFor="let comment of comments; trackBy: commentTrackByFn"
-          [ngTemplateOutletContext]="{comment}"
           [ngTemplateOutlet]="commentsTpl"
+          [ngTemplateOutletContext]="{ comment }"
         ></ng-container>
         <ng-container *ngIf="comments.length === 0" [ngTemplateOutlet]="noCommentsTpl"></ng-container>
       </ng-container>
@@ -54,10 +56,10 @@
         *ngIf="showTopLevelButton && topLevelFormPlacement === 'BOTTOM' && !showTopLevelForm"
         [ngTemplateOutlet]="addCommentButtonTpl"
       ></ng-container>
-
-    </div> <!-- card-body -->
-
-  </div> <!-- card -->
+    </div>
+    <!-- card-body -->
+  </div>
+  <!-- card -->
 </div>
 
 <ng-template #loadingTpl>
@@ -66,9 +68,7 @@
 
 <ng-template #topLevelFormTpl>
   <div class="top-level-form">
-    <astrobin-read-only-mode
-      *ngIf="(readOnlyMode$ | async) === true; else formTemplate"
-    ></astrobin-read-only-mode>
+    <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else formTemplate"></astrobin-read-only-mode>
 
     <ng-template #formTemplate>
       <form [formGroup]="form">
@@ -77,28 +77,24 @@
 
       <div class="form-actions">
         <button
-          (click)="cancelTopLevelComment()"
           *ngIf="autoStartTopLevelStrategy === null"
           [class.loading]="loadingService.loading$ | async"
+          (click)="cancelTopLevelComment()"
           class="btn btn-sm btn-outline-secondary me-sm-2"
         >
           {{ "Cancel" | translate }}
         </button>
 
         <button
-          (click)="submitTopLevelComment()"
           [class.loading]="loadingService.loading$ | async"
           [disabled]="!form.valid"
+          (click)="submitTopLevelComment()"
           class="btn btn-primary btn-sm"
         >
           {{ "Submit" | translate }}
         </button>
 
-        <button
-          (click)="close.emit()"
-          *ngIf="showCloseButton"
-          class="btn btn-secondary btn-sm ms-md-1"
-        >
+        <button *ngIf="showCloseButton" (click)="close.emit()" class="btn btn-secondary btn-sm ms-md-1">
           {{ "Close" | translate }}
         </button>
       </div>
@@ -118,10 +114,10 @@
     [allowModeration]="allowModeration"
     [allowSelfReply]="allowSelfReply"
     [comment]="comment"
+    [commentContentType]="commentContentType"
     [highlighted]="comment.id === highlightId"
     [restrictReplyToUserId]="restrictReplyToUserId"
     [showReplyButton]="showReplyButton"
-    [commentContentType]="commentContentType"
     (formDirtyChange)="onNestedCommentFormDirtyChange($event)"
   ></astrobin-nested-comment>
 </ng-template>

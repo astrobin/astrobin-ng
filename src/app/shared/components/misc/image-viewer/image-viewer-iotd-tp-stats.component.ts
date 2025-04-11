@@ -1,20 +1,19 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
-import { select, Store } from "@ngrx/store";
+import { OnInit, Component, Input } from "@angular/core";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { filter, map, take } from "rxjs/operators";
-import { TranslateService } from "@ngx-translate/core";
 import { MainState } from "@app/store/state";
-import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
-import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
+import { Store, select } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
+import { filter, map, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-viewer-iotd-tp-stats",
   template: `
     <ng-container *ngIf="getIotdTpStatsLegend$() | async as legend">
-
-      <ngb-accordion *ngIf="iotdTpStats; else loadingTemplate" #accordion="ngbAccordion" class="iotd-stats-accordion">
+      <ngb-accordion #accordion="ngbAccordion" *ngIf="iotdTpStats; else loadingTemplate" class="iotd-stats-accordion">
         <ngb-panel>
           <ng-template ngbPanelTitle>
             <div class="image-iotd-tp-stats-item">
@@ -30,8 +29,7 @@ import { ImageInterface } from "@core/interfaces/image.interface";
         <ngb-panel>
           <ng-template ngbPanelTitle>
             <div class="image-iotd-tp-stats-item">
-                  <span
-                    class="name">{{ "Views by Submitters (available since September 19th, 2023)" | translate }}</span>
+              <span class="name">{{ "Views by Submitters (available since September 19th, 2023)" | translate }}</span>
               <span class="value">{{ iotdTpStats.submitter_views_percentage }}</span>
             </div>
           </ng-template>
@@ -112,40 +110,44 @@ export class ImageViewerIotdTpStatsComponent implements OnInit {
       take(1),
       map(backendConfig => {
         return {
-          "submittedForIotdTpConsideration" : this.translateService.instant(
+          submittedForIotdTpConsideration: this.translateService.instant(
             "The date and time when this image was submitted for IOTD/TP consideration. AstroBin may " +
-            "automatically resubmit your image multiple times if necessary."
+              "automatically resubmit your image multiple times if necessary."
           ),
-          "submitter_views_percentage": this.translateService.instant(
+          submitter_views_percentage: this.translateService.instant(
             "Every image is assigned to {{ 0 }} of available Submitters. In the event that at least 80% of them " +
-            "don't view the image before its time in the IOTD/TP process expires, it's assigned to the other {{ 0 }} " +
-            "of Submitters and the process begins anew.", {
-              0: `${backendConfig.IOTD_DESIGNATED_SUBMITTERS_PERCENTAGE}%`,
+              "don't view the image before its time in the IOTD/TP process expires, it's assigned to the other {{ 0 }} " +
+              "of Submitters and the process begins anew.",
+            {
+              0: `${backendConfig.IOTD_DESIGNATED_SUBMITTERS_PERCENTAGE}%`
             }
           ),
-          "submissions": this.translateService.instant(
+          submissions: this.translateService.instant(
             "When {{ 0 }} distinct Submitters promote the image, it moves on to the next stage of the process: " +
-            "evaluation for Top Pick status. This requirement, in addition to anonymization of images and " +
-            "distribution to only a subset of them, prevents biases and ensures that the best images are " +
-            "selected.", {
+              "evaluation for Top Pick status. This requirement, in addition to anonymization of images and " +
+              "distribution to only a subset of them, prevents biases and ensures that the best images are " +
+              "selected.",
+            {
               0: backendConfig.IOTD_SUBMISSION_MIN_PROMOTIONS
             }
           ),
-          "votes": this.translateService.instant(
+          votes: this.translateService.instant(
             "When {{ 0 }} distinct Reviewers promote the image, it moves on to the next stage of the process: " +
-            "evaluation for IOTD status.", {
+              "evaluation for IOTD status.",
+            {
               0: backendConfig.IOTD_REVIEW_MIN_PROMOTIONS
             }
           ),
-          "early_dismissal": this.translateService.instant(
+          early_dismissal: this.translateService.instant(
             "Staff members have a lot of images to inspect on a daily basis, and they can dismiss images if " +
-            "they believe they don't meet the requirements for IOTD/TP selection. If an image is dismissed {{ 0 }} " +
-            "times, it's removed from the process. This streamlines the process and ensures that any bias " +
-            "present in promotions could be overruled by other staff members.", {
+              "they believe they don't meet the requirements for IOTD/TP selection. If an image is dismissed {{ 0 }} " +
+              "times, it's removed from the process. This streamlines the process and ensures that any bias " +
+              "present in promotions could be overruled by other staff members.",
+            {
               0: backendConfig.IOTD_MAX_DISMISSALS
             }
           )
-        }
+        };
       })
     );
   }

@@ -9,7 +9,7 @@
     white-space: nowrap;
 
     fa-icon {
-      margin-left: .25rem;
+      margin-left: 0.25rem;
     }
   }
 
@@ -24,9 +24,9 @@
 
   .item-name {
     .variant-count {
-      margin-left: .5rem;
+      margin-left: 0.5rem;
       font-style: italic;
-      font-size: .9rem;
+      font-size: 0.9rem;
       color: var(--lighterGrey);
     }
 
@@ -40,11 +40,11 @@
     @media screen and (min-width: $lg-min) {
       .search,
       .add-to-compare {
-        padding: 0 .5rem;
+        padding: 0 0.5rem;
         float: right;
         opacity: 0;
         pointer-events: none;
-        transition: opacity .1s ease-in-out;
+        transition: opacity 0.1s ease-in-out;
       }
 
       @media (hover: hover) and (pointer: fine) {

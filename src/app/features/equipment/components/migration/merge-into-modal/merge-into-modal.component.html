@@ -1,8 +1,8 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="merge-into-modal">
+  <h4 id="merge-into-modal" class="modal-title">
     {{ "Migrate legacy items into this one" | translate }}
   </h4>
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -10,11 +10,7 @@
 <div class="modal-body">
   <ng-container *ngIf="(this.loadingService.loading$ | async) === false; else loading">
     <ng-container *ngIf="similarLegacyItems.length > 0; else noSimilarItems">
-      <p
-        [innerHTML]="message"
-        class="alert alert-info"
-      >
-      </p>
+      <p [innerHTML]="message" class="alert alert-info"></p>
 
       <form [formGroup]="form" class="mt-4 ms-3">
         <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
@@ -29,9 +25,9 @@
   </button>
 
   <button
-    (click)="migrate()"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="migrateButtonDisabled()"
+    (click)="migrate()"
     class="btn btn-danger"
     type="button"
   >

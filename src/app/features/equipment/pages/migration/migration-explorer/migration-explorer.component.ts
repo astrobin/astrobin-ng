@@ -1,17 +1,17 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
-import { Actions } from "@ngrx/effects";
+import { ChangeDetectorRef, OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { TitleService } from "@core/services/title/title.service";
-import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { CookieService } from "ngx-cookie";
+import { MainState } from "@app/store/state";
 import { DeviceService } from "@core/services/device.service";
+import { TitleService } from "@core/services/title/title.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-migration-explorer",
@@ -81,6 +81,5 @@ export class MigrationExplorerComponent extends ExplorerBaseComponent implements
     this.activeId = parseInt(this.activatedRoute.snapshot?.paramMap.get("itemId"), 10);
   }
 
-  getItems() {
-  }
+  getItems() {}
 }

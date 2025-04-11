@@ -29,7 +29,7 @@
   .scroll-left {
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        transform: translateX(-.125rem);
+        transform: translateX(-0.125rem);
       }
     }
   }
@@ -37,7 +37,7 @@
   .scroll-right {
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        transform: translateX(.125rem);
+        transform: translateX(0.125rem);
       }
     }
   }
@@ -60,14 +60,16 @@
       display: inline-flex;
       align-items: center;
       cursor: pointer;
-      padding: .25rem;
+      padding: 0.25rem;
       position: relative;
 
       img {
         height: 5rem;
         width: 5rem;
         object-fit: contain;
-        transition: filter 0.1s ease, transform 0.1s ease;
+        transition:
+          filter 0.1s ease,
+          transform 0.1s ease;
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {
@@ -81,7 +83,7 @@
         top: 50%;
         left: 0;
         transform: translateY(-50%);
-        background: rgba(0, 0, 0, .65);
+        background: rgba(0, 0, 0, 0.65);
       }
 
       &.active {

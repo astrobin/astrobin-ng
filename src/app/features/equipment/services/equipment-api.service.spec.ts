@@ -1,21 +1,21 @@
+import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
+import { AccessoryGenerator } from "@features/equipment/generators/accessory.generator";
+import { BrandGenerator } from "@features/equipment/generators/brand.generator";
+import { CameraGenerator } from "@features/equipment/generators/camera.generator";
+import { FilterGenerator } from "@features/equipment/generators/filter.generator";
+import { MountGenerator } from "@features/equipment/generators/mount.generator";
+import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
+import { SoftwareGenerator } from "@features/equipment/generators/software.generator";
+import { TelescopeGenerator } from "@features/equipment/generators/telescope.generator";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { ContentTypeGenerator } from "@shared/generators/content-type.generator";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
 
 import { EquipmentApiService } from "./equipment-api.service";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { BrandGenerator } from "@features/equipment/generators/brand.generator";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { CameraGenerator } from "@features/equipment/generators/camera.generator";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { TelescopeGenerator } from "@features/equipment/generators/telescope.generator";
-import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
-import { of } from "rxjs";
-import { ContentTypeGenerator } from "@shared/generators/content-type.generator";
-import { MountGenerator } from "@features/equipment/generators/mount.generator";
-import { FilterGenerator } from "@features/equipment/generators/filter.generator";
-import { AccessoryGenerator } from "@features/equipment/generators/accessory.generator";
-import { SoftwareGenerator } from "@features/equipment/generators/software.generator";
 
 describe("EquipmentApiService", () => {
   let service: EquipmentApiService;
@@ -212,7 +212,11 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/sensor/?${new URLSearchParams({ brand: item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
+        `${service.configUrl}/sensor/?${new URLSearchParams({
+          brand: item.brand.toString(),
+          name: item.name,
+          allowUnapproved: "false"
+        })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -226,7 +230,11 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/camera/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
+        `${service.configUrl}/camera/?${new URLSearchParams({
+          brand: "" + item.brand.toString(),
+          name: item.name,
+          allowUnapproved: "false"
+        })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -240,7 +248,11 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/telescope/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
+        `${service.configUrl}/telescope/?${new URLSearchParams({
+          brand: "" + item.brand.toString(),
+          name: item.name,
+          allowUnapproved: "false"
+        })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -254,7 +266,11 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/mount/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
+        `${service.configUrl}/mount/?${new URLSearchParams({
+          brand: "" + item.brand.toString(),
+          name: item.name,
+          allowUnapproved: "false"
+        })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -268,7 +284,11 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/filter/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
+        `${service.configUrl}/filter/?${new URLSearchParams({
+          brand: "" + item.brand.toString(),
+          name: item.name,
+          allowUnapproved: "false"
+        })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -282,7 +302,11 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/accessory/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
+        `${service.configUrl}/accessory/?${new URLSearchParams({
+          brand: "" + item.brand.toString(),
+          name: item.name,
+          allowUnapproved: "false"
+        })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -296,7 +320,11 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/software/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
+        `${service.configUrl}/software/?${new URLSearchParams({
+          brand: "" + item.brand.toString(),
+          name: item.name,
+          allowUnapproved: "false"
+        })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);

@@ -1,20 +1,16 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="additional-deep-sky-acquisition-properties-modal">
+  <h4 id="additional-deep-sky-acquisition-properties-modal" class="modal-title">
     {{ "Additional properties" | translate }}
   </h4>
 
-  <button (click)="close()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="close()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 
 <div class="modal-body">
   <form [formGroup]="imageEditService.form">
-    <formly-form
-      [fields]="fields"
-      [form]="imageEditService.form"
-      [model]="imageEditService.model"
-    ></formly-form>
+    <formly-form [fields]="fields" [form]="imageEditService.form" [model]="imageEditService.model"></formly-form>
   </form>
 </div>
 

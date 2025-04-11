@@ -1,37 +1,33 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="load-save-search-modal">
+  <h4 id="load-save-search-modal" class="modal-title">
     {{ "Load/Save search" | translate }}
   </h4>
 
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 
 <div class="modal-body">
-  <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+  <ul #nav="ngbNav" class="nav-tabs" [(activeId)]="active" ngbNav>
     <li [ngbNavItem]="1">
       <a ngbNavLink>{{ "Load saved search" | translate }}</a>
       <ng-template ngbNavContent>
         <div *ngIf="savedSearches !== null; else loadingTemplate" class="py-4">
-          <ul class="list-group" *ngIf="savedSearches.length > 0; else noSavedSearchesTemplate">
+          <ul *ngIf="savedSearches.length > 0; else noSavedSearchesTemplate" class="list-group">
             <li
               *ngFor="let search of savedSearches"
-              class="list-group-item d-flex justify-content-between align-items-center py-2">
+              class="list-group-item d-flex justify-content-between align-items-center py-2"
+            >
               <div class="search-name">
                 {{ search.name }}
               </div>
               <div class="no-wrap d-flex align-items-center">
-                <button
-                  class="btn btn-sm btn-no-block btn-outline-secondary me-3"
-                  (click)="onLoadSearch(search)"
-                >{{ 'Load' | translate }}
+                <button (click)="onLoadSearch(search)" class="btn btn-sm btn-no-block btn-outline-secondary me-3">
+                  {{ "Load" | translate }}
                 </button>
 
-                <button
-                  class="btn btn-link btn-no-block link-danger"
-                  (click)="onDeleteSearch(search.id)"
-                >
+                <button (click)="onDeleteSearch(search.id)" class="btn btn-link btn-no-block link-danger">
                   <fa-icon icon="trash-alt"></fa-icon>
                 </button>
               </div>
@@ -49,8 +45,8 @@
             <formly-form [fields]="saveFields" [form]="saveForm" [model]="saveModel"></formly-form>
             <div class="buttons-area">
               <button
-                (click)="onSaveSearch($event)"
                 [class.loading]="(loadingService.loading$ | async) || saveForm.pending"
+                (click)="onSaveSearch($event)"
                 class="btn btn-primary"
                 type="button"
               >
@@ -74,10 +70,10 @@
 
 <ng-template #noSavedSearchesTemplate>
   <astrobin-nothing-here
-    class="d-block px-3"
     [message]="'No saved searches found.' | translate"
     [withAlert]="false"
     [withInfoSign]="false"
+    class="d-block px-3"
   ></astrobin-nothing-here>
 </ng-template>
 

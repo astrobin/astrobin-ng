@@ -1,3 +1,4 @@
+// ts-prune-ignore-next
 export const environment = {
   production: true,
   buildVersion: "20250316-11",

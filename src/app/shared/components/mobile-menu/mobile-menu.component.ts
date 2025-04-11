@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { OnInit, TemplateRef, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { take } from "rxjs/operators";
 import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-mobile-menu",

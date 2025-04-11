@@ -1,13 +1,14 @@
 <div class="avatar-editor-offcanvas">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">{{ "Edit avatar" | translate }}</h5>
-    <button type="button" class="btn-close" (click)="close()" [disabled]="isUploading"></button>
+    <button [disabled]="isUploading" (click)="close()" class="btn-close" type="button"></button>
   </div>
   <div class="offcanvas-body">
     <astrobin-avatar-manager
       [user]="user"
       (avatarUpdated)="onAvatarUpdated($event)"
-      (loadingChanged)="onLoadingChanged($event)">
+      (loadingChanged)="onLoadingChanged($event)"
+    >
     </astrobin-avatar-manager>
   </div>
 </div>

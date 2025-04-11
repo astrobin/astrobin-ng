@@ -3,10 +3,11 @@ import { RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { PremiumSubscriptionGuardService } from "@core/services/guards/premium-subscription-guard.service";
 import { UltimateSubscriptionGuardService } from "@core/services/guards/ultimate-subscription-guard.service";
+import { UploaderModule } from "@features/uploader/uploader.module";
 import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
+
 import { UploaderGuardService } from "./uploader-guard.service";
-import { UploaderModule } from "@features/uploader/uploader.module";
 
 describe("UploaderGuardService", () => {
   let service: UploaderGuardService;

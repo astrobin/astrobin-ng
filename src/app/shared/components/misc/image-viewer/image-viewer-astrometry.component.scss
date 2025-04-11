@@ -3,7 +3,7 @@
 
 :host {
   > .metadata-section {
-    font-size: .85rem;
+    font-size: 0.85rem;
   }
 
   .metadata-label > .coordinates {
@@ -19,8 +19,8 @@
         .minutes,
         .seconds {
           .symbol {
-            vertical-align: .375rem;
-            font-size: .65rem;
+            vertical-align: 0.375rem;
+            font-size: 0.65rem;
             line-height: 0;
           }
         }
@@ -28,7 +28,7 @@
 
       .separator {
         display: inline-block;
-        margin: 0 .25rem;
+        margin: 0 0.25rem;
       }
     }
   }
@@ -54,9 +54,11 @@
 
   .degree-choices > .btn {
     display: flex;
-    @include flex-gap(row, .15rem);
+    @include flex-gap(row, 0.15rem);
     justify-content: center;
-    cursor: url("/assets/images/search-white.png") 16 16, pointer;
+    cursor:
+      url("/assets/images/search-white.png") 16 16,
+      pointer;
 
     .symbol {
       color: var(--lighterGrey);

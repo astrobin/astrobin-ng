@@ -1,32 +1,43 @@
-import { Inject, Injectable, NgZone, PLATFORM_ID, Renderer2 } from "@angular/core";
-import { BaseService } from "@core/services/base.service";
-import { LoadingService } from "@core/services/loading.service";
-import { WindowRefService } from "@core/services/window-ref.service";
-import { Observable, Observer, of } from "rxjs";
-import { AcquisitionType, CelestialHemisphere, DataSource, FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, LicenseOptions, ORIGINAL_REVISION_LABEL, SolarSystemSubjectType, SubjectType } from "@core/interfaces/image.interface";
-import { TranslateService } from "@ngx-translate/core";
-import { BortleScale, DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { filter, map, take, tap } from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { PopNotificationsService } from "@core/services/pop-notifications.service";
-import { ActiveToast } from "ngx-toastr";
-import { select, Store } from "@ngrx/store";
-import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { Actions, ofType } from "@ngrx/effects";
+import { HttpClient } from "@angular/common/http";
+import { NgZone, Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadImage, LoadImageFailure } from "@app/store/actions/image.actions";
+import { LoadImageFailure, LoadImage } from "@app/store/actions/image.actions";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { MainState } from "@app/store/state";
-import { UtilsService } from "@core/services/utils/utils.service";
 import { ImageAlias } from "@core/enums/image-alias.enum";
-import { TitleService } from "@core/services/title/title.service";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { DeepSkyAcquisitionInterface, BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
 import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
+import {
+  ImageInterface,
+  ImageRevisionInterface,
+  AcquisitionType,
+  CelestialHemisphere,
+  DataSource,
+  FINAL_REVISION_LABEL,
+  LicenseOptions,
+  ORIGINAL_REVISION_LABEL,
+  SolarSystemSubjectType,
+  SubjectType
+} from "@core/interfaces/image.interface";
+import { BaseService } from "@core/services/base.service";
+import { BBCodeService } from "@core/services/bbcode.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
 import { IotdInterface } from "@features/iotd/services/iotd-api.service";
-import { Router } from "@angular/router";
-import { BBCodeService } from "@core/services/bbcode.service";
-import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { ofType, Actions } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
+import { ActiveToast } from "ngx-toastr";
+import { Observable, of, Observer } from "rxjs";
+import { filter, map, take, tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -48,7 +59,7 @@ export class ImageService extends BaseService {
     public readonly popNotificationsService: PopNotificationsService,
     public readonly titleService: TitleService,
     public readonly router: Router,
-    public readonly bbcodeService: BBCodeService,
+    public readonly bbcodeService: BBCodeService
   ) {
     super(loadingService);
     this._isBrowser = isPlatformBrowser(this.platformId);
@@ -418,13 +429,11 @@ export class ImageService extends BaseService {
   }
 
   getAverageBortleScale(image: ImageInterface): number {
-    const acquisitionsWithBortleScale = image.deepSkyAcquisitions?.filter(
-      acquisition => !!acquisition.bortle
-    );
+    const acquisitionsWithBortleScale = image.deepSkyAcquisitions?.filter(acquisition => !!acquisition.bortle);
 
     if (acquisitionsWithBortleScale.length > 0) {
       const totalWeightedBortle = acquisitionsWithBortleScale.reduce((acc, acquisition) => {
-        return acc + (acquisition.bortle * parseFloat(acquisition.duration));
+        return acc + acquisition.bortle * parseFloat(acquisition.duration);
       }, 0);
 
       const totalDuration = acquisitionsWithBortleScale.reduce((acc, acquisition) => {
@@ -441,7 +450,7 @@ export class ImageService extends BaseService {
     return null;
   }
 
-  formatIntegration(integration: number, useHtml: boolean = true): string {
+  formatIntegration(integration: number, useHtml = true): string {
     // Handle NaN case
     if (isNaN(integration)) {
       return useHtml ? `0<span class='symbol'>&Prime;</span>` : "0s";
@@ -474,7 +483,7 @@ export class ImageService extends BaseService {
     }
 
     return `${seconds}${secondSymbol}`;
-  };
+  }
 
   getDeepSkyIntegration(image: ImageInterface): string {
     const getIntegration = (acquisition: DeepSkyAcquisitionInterface): number => {
@@ -565,13 +574,7 @@ export class ImageService extends BaseService {
     return `${ra.toFixed(6)}, ${dec.toFixed(6)}`;
   }
 
-  formatRightAscension(
-    ra: number,
-    html = true,
-    symbols = true,
-    pad = false,
-    precision = 0
-  ): string {
+  formatRightAscension(ra: number, html = true, symbols = true, pad = false, precision = 0): string {
     const hours = Math.floor(ra / 15);
     const minutes = Math.floor((ra % 15) * 4);
     const seconds = Number((((ra % 15) * 4 - minutes) * 60).toFixed(precision));
@@ -602,13 +605,7 @@ export class ImageService extends BaseService {
     return `${paddedHours} ${paddedMinutes} ${paddedSeconds}`;
   }
 
-  formatDeclination(
-    dec: number,
-    html = true,
-    symbols = true,
-    pad = false,
-    precision = 0
-  ): string {
+  formatDeclination(dec: number, html = true, symbols = true, pad = false, precision = 0): string {
     const totalSeconds = Math.abs(dec) * 3600;
     const [minutes, seconds] = UtilsService.divmod(totalSeconds, 60);
     const [degrees, finalMinutes] = UtilsService.divmod(minutes, 60);
@@ -616,7 +613,9 @@ export class ImageService extends BaseService {
     const finalDegrees = dec >= 0 ? degrees : -degrees;
     const formattedDegrees = finalDegrees >= 0 ? `+${finalDegrees}` : finalDegrees;
     const paddedMinutes = pad ? UtilsService.padNumber(finalMinutes) : finalMinutes;
-    const paddedSeconds = pad ? UtilsService.padNumber(Number(seconds.toFixed(precision))) : Number(seconds.toFixed(precision));
+    const paddedSeconds = pad
+      ? UtilsService.padNumber(Number(seconds.toFixed(precision)))
+      : Number(seconds.toFixed(precision));
 
     if (html && symbols) {
       return `
@@ -649,7 +648,7 @@ export class ImageService extends BaseService {
     }
 
     const symbol = "<span class='symbol'>&Prime;/px</span>";
-    const value = parseFloat((revision.solution.advancedPixscale || revision.solution.pixscale)).toFixed(2);
+    const value = parseFloat(revision.solution.advancedPixscale || revision.solution.pixscale).toFixed(2);
 
     return `${value}${symbol}`;
   }
@@ -722,8 +721,8 @@ export class ImageService extends BaseService {
     const pixelScale = parseFloat(revision.solution.advancedPixscale || revision.solution.pixscale);
 
     // Calculate field width and height in degrees (pixel scale is in arcseconds per pixel, so divide by 3600)
-    const widthInDegrees = (revision.w * pixelScale / 3600).toFixed(2);
-    const heightInDegrees = (revision.h * pixelScale / 3600).toFixed(2);
+    const widthInDegrees = ((revision.w * pixelScale) / 3600).toFixed(2);
+    const heightInDegrees = ((revision.h * pixelScale) / 3600).toFixed(2);
 
     return `${widthInDegrees}${symbol} ${times} ${heightInDegrees}${symbol}`;
   }
@@ -833,44 +832,45 @@ export class ImageService extends BaseService {
   }
 
   isPlateSolvable(image: ImageInterface): boolean {
-    const isDeepSkyPlateSolvable = [
-      SubjectType.DEEP_SKY, SubjectType.WIDE_FIELD
-    ].indexOf(image.subjectType) !== -1;
+    const isDeepSkyPlateSolvable = [SubjectType.DEEP_SKY, SubjectType.WIDE_FIELD].indexOf(image.subjectType) !== -1;
 
     const isSolarSystemPlateSolvable =
-      image.subjectType === SubjectType.SOLAR_SYSTEM &&
-      image.solarSystemMainSubject === SolarSystemSubjectType.COMET;
+      image.subjectType === SubjectType.SOLAR_SYSTEM && image.solarSystemMainSubject === SolarSystemSubjectType.COMET;
 
     return isDeepSkyPlateSolvable || isSolarSystemPlateSolvable;
   }
 
   loadImage(imageId: ImageInterface["hash"] | ImageInterface["pk"]): Observable<ImageInterface> {
     return new Observable<ImageInterface>(observer => {
-      this.store$.pipe(
-        select(selectImage, imageId),
-        filter(image => !!image && !!image.thumbnails),
-        take(1)
-      ).subscribe({
-        next: image => {
-          observer.next(image);
-          observer.complete();
-        },
-        error: err => {
-          observer.error(err);
-          observer.complete();
-        }
-      });
+      this.store$
+        .pipe(
+          select(selectImage, imageId),
+          filter(image => !!image && !!image.thumbnails),
+          take(1)
+        )
+        .subscribe({
+          next: image => {
+            observer.next(image);
+            observer.complete();
+          },
+          error: err => {
+            observer.error(err);
+            observer.complete();
+          }
+        });
 
-      this.actions$.pipe(
-        ofType(AppActionTypes.LOAD_IMAGE_FAILURE),
-        filter((action: LoadImageFailure) => action.payload.imageId === imageId),
-        take(1)
-      ).subscribe({
-        next: err => {
-          observer.error(err);
-          observer.complete();
-        }
-      });
+      this.actions$
+        .pipe(
+          ofType(AppActionTypes.LOAD_IMAGE_FAILURE),
+          filter((action: LoadImageFailure) => action.payload.imageId === imageId),
+          take(1)
+        )
+        .subscribe({
+          next: err => {
+            observer.error(err);
+            observer.complete();
+          }
+        });
 
       this.store$.dispatch(new LoadImage({ imageId, options: { skipThumbnails: false, skipStoreCache: true } }));
     });
@@ -893,20 +893,23 @@ export class ImageService extends BaseService {
     return new Observable<string>(observer => {
       if (typeof XMLHttpRequest === "undefined") {
         // Fallback for environments without XMLHttpRequest
-        const subscription = this.http.get(url, { responseType: "blob" }).pipe(
-          tap(() => progressCallback(100)),
-          map(blob => {
-            const objectUrl = this._createObjectURL(blob);
-            this._loadedImageUrls.set(url, objectUrl);
-            return objectUrl;
-          })
-        ).subscribe(
-          objectUrl => {
-            observer.next(objectUrl);
-            observer.complete();
-          },
-          error => observer.error(error)
-        );
+        const subscription = this.http
+          .get(url, { responseType: "blob" })
+          .pipe(
+            tap(() => progressCallback(100)),
+            map(blob => {
+              const objectUrl = this._createObjectURL(blob);
+              this._loadedImageUrls.set(url, objectUrl);
+              return objectUrl;
+            })
+          )
+          .subscribe(
+            objectUrl => {
+              observer.next(objectUrl);
+              observer.complete();
+            },
+            error => observer.error(error)
+          );
         // Return cleanup function
         return () => subscription.unsubscribe();
       }
@@ -998,9 +1001,7 @@ export class ImageService extends BaseService {
       return image.finalGalleryThumbnail;
     }
 
-    const thumbnail =
-      image.thumbnails &&
-      image.thumbnails.find(thumbnail => thumbnail.alias === alias);
+    const thumbnail = image.thumbnails && image.thumbnails.find(thumbnail => thumbnail.alias === alias);
 
     if (thumbnail) {
       return thumbnail.url;
@@ -1010,9 +1011,9 @@ export class ImageService extends BaseService {
   }
 
   showInvalidImageNotification(): void {
-    this._imageNotFoundNotification = this.popNotificationsService.error(this.translateService.instant(
-      "Image not found. It may have been deleted or you have an invalid link."
-    ));
+    this._imageNotFoundNotification = this.popNotificationsService.error(
+      this.translateService.instant("Image not found. It may have been deleted or you have an invalid link.")
+    );
   }
 
   removeInvalidImageNotification(): void {
@@ -1023,7 +1024,7 @@ export class ImageService extends BaseService {
   }
 
   getShareUrl(image: ImageInterface, revisionLabel: string): string {
-    let url = `${this.windowRef.nativeWindow.location.origin}/i/${image.hash || image.pk}`;
+    const url = `${this.windowRef.nativeWindow.location.origin}/i/${image.hash || image.pk}`;
 
     if (revisionLabel === null || revisionLabel === FINAL_REVISION_LABEL) {
       return url;
@@ -1075,20 +1076,19 @@ export class ImageService extends BaseService {
   }
 
   getObjectFit(
-    obj: (
-      ImageSearchInterface |
-      ImageInterface |
-      ImageRevisionInterface |
-      FeedItemInterface |
-      IotdInterface |
-      CollectionInterface
-    )
+    obj:
+      | ImageSearchInterface
+      | ImageInterface
+      | ImageRevisionInterface
+      | FeedItemInterface
+      | IotdInterface
+      | CollectionInterface
   ): {
     position: {
-      x: number,
-      y: number
-    },
-    scale: number
+      x: number;
+      y: number;
+    };
+    scale: number;
   } {
     if (obj.hasOwnProperty("revisions")) {
       obj = this.getFinalRevision(obj as ImageInterface) as ImageRevisionInterface;
@@ -1101,11 +1101,13 @@ export class ImageService extends BaseService {
       return { position: { x: 50, y: 50 }, scale: 1 };
     }
 
-    if (!(obj as (ImageSearchInterface | ImageInterface | CollectionInterface)).squareCropping) {
+    if (!(obj as ImageSearchInterface | ImageInterface | CollectionInterface).squareCropping) {
       return { position: { x: 50, y: 50 }, scale: 1 };
     }
 
-    const coords = (obj as (ImageSearchInterface | ImageInterface | CollectionInterface)).squareCropping.split(",").map(Number);
+    const coords = (obj as ImageSearchInterface | ImageInterface | CollectionInterface).squareCropping
+      .split(",")
+      .map(Number);
 
     if (coords.length !== 4 || coords.some(isNaN)) {
       return { position: { x: 50, y: 50 }, scale: 1 };
@@ -1155,14 +1157,13 @@ export class ImageService extends BaseService {
   }
 
   getW(
-    obj: (
-      ImageSearchInterface |
-      ImageInterface |
-      ImageRevisionInterface |
-      FeedItemInterface |
-      IotdInterface |
-      CollectionInterface
-      )
+    obj:
+      | ImageSearchInterface
+      | ImageInterface
+      | ImageRevisionInterface
+      | FeedItemInterface
+      | IotdInterface
+      | CollectionInterface
   ) {
     if (obj.hasOwnProperty("finalW")) {
       return (obj as ImageSearchInterface).finalW;
@@ -1176,14 +1177,13 @@ export class ImageService extends BaseService {
   }
 
   getH(
-    obj: (
-      ImageSearchInterface |
-      ImageInterface |
-      ImageRevisionInterface |
-      FeedItemInterface |
-      IotdInterface |
-      CollectionInterface
-    )
+    obj:
+      | ImageSearchInterface
+      | ImageInterface
+      | ImageRevisionInterface
+      | FeedItemInterface
+      | IotdInterface
+      | CollectionInterface
   ) {
     if (obj.hasOwnProperty("finalH")) {
       return (obj as ImageSearchInterface).finalH;
@@ -1205,7 +1205,7 @@ export class ImageService extends BaseService {
       returnUrl = `/i/${image.hash || image.pk}`;
     }
 
-    this.router.navigate(["/i", image.hash || image.pk, "edit"], {
+    void this.router.navigate(["/i", image.hash || image.pk, "edit"], {
       state: { returnUrl }
     });
   }

@@ -1,12 +1,12 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { IsActiveMatchOptions, Router } from "@angular/router";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
-import { MainState } from "@app/store/state";
 import { Location } from "@angular/common";
+import { OnInit, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { IsActiveMatchOptions, Router } from "@angular/router";
+import { MainState } from "@app/store/state";
+import { RouterService } from "@core/services/router.service";
+import { Store } from "@ngrx/store";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { RouterService } from "@core/services/router.service";
 
 export enum MarketplaceNavPage {
   ACTIVE_LISTINGS,
@@ -45,7 +45,7 @@ export class MarketplaceNavComponent extends BaseComponentDirective implements O
     super(store$);
   }
 
-  getLink$(page: MarketplaceNavPage): Observable<{ path: string[], queryParams: { [key: string]: any } }> {
+  getLink$(page: MarketplaceNavPage): Observable<{ path: string[]; queryParams: { [key: string]: any } }> {
     return this.currentUser$.pipe(
       map(user => {
         let path: string[];
