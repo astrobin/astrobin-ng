@@ -7,8 +7,8 @@
   "scripts": {
     "ng": ".node_modules/.bin/ng",
     "lint": "npx eslint \"src/**/*.ts\"",
-    "lint:changed": "git diff --name-only origin/master...HEAD | grep -E '\\.(ts|html)$' | xargs eslint",
-    "format:changed": "git diff --name-only origin/master...HEAD | grep -E '\\.(ts|html|scss|css)$' | xargs prettier --write",
+    "lint:changed": "git diff --diff-filter=AM --name-only origin/master...HEAD | grep -E '\\.(ts|html)$' | xargs eslint",
+    "format:changed": "git diff --diff-filter=AM --name-only origin/master...HEAD | grep -E '\\.(ts|html|scss|css)$' | xargs prettier --write",
     "prune": "npx ts-prune --error | grep -v 'used in module'",
     "start": "ng serve --host 0.0.0.0 --port 4400 --configuration=development",
     "start:prod": "ng serve --host 0.0.0.0 --port 4400 --configuration=local-production",
