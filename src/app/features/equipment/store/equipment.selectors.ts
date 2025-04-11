@@ -168,20 +168,6 @@ export const selectMarketplacePrivateConversation = (conversationId: Marketplace
     marketplace => marketplace.privateConversations.find(conversation => conversation.id === conversationId) || null
   );
 
-export const selectMarketplaceOffers = (listingId: MarketplaceListingInterface["id"]) => {
-  return createSelector(selectMarketplace, marketplace => {
-    const listing = marketplace.listings.find(listing => listing.id === listingId);
-
-    if (!!listing) {
-      return listing.lineItems.reduce<MarketplaceOfferInterface[]>((offers, lineItem) => {
-        return offers.concat(lineItem.offers);
-      }, []);
-    }
-
-    return [];
-  });
-};
-
 export const selectMarketplaceOffersByUser = (
   userId: UserInterface["id"],
   listingId: MarketplaceListingInterface["id"]

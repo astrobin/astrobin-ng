@@ -21,6 +21,7 @@ phases:
       - npx tsc --noEmit
       - npm run lint:changed
       - npm run format:changed
+      - npm run prune
       - npm run build:prod
       - npm run build:ssr:prod
 

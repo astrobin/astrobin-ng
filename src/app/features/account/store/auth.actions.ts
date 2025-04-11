@@ -254,34 +254,3 @@ export class DeleteAvatarFailure implements PayloadActionInterface {
 
   constructor(public payload: { avatarId: UserInterface["avatarId"]; error: any }) {}
 }
-
-export type All =
-  | InitializeAuth
-  | InitializeAuthSuccess
-  | Login
-  | LoginSuccess
-  | LoginFailure
-  | Logout
-  | LogoutSuccess
-  | UpdateUserProfile
-  | UpdateUserProfileSuccess
-  | LoadUser
-  | LoadUserSuccess
-  | LoadUserProfile
-  | LoadUserProfileSuccess
-  | LoadUserProfileFailure
-  | ChangeUserProfileGalleryHeaderImage
-  | ChangeUserProfileGalleryHeaderImageSuccess
-  | ChangeUserProfileGalleryHeaderImageFailure
-  | ShadowBanUserProfile
-  | ShadowBanUserProfileSuccess
-  | ShadowBanUserProfileFailure
-  | RemoveShadowBanUserProfile
-  | RemoveShadowBanUserProfileSuccess
-  | RemoveShadowBanUserProfileFailure
-  | UploadAvatar
-  | UploadAvatarSuccess
-  | UploadAvatarFailure
-  | DeleteAvatar
-  | DeleteAvatarSuccess
-  | DeleteAvatarFailure;

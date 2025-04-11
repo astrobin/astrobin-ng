@@ -13,8 +13,7 @@ import "@angular/platform-server/init";
 import "@angular/localize/init";
 
 import { enableProdMode } from "@angular/core";
-
-import { environment } from "./environments/environment";
+import { environment } from "@env/environment";
 
 if (environment.production) {
   enableProdMode();
