@@ -48,9 +48,9 @@ export class LoggedInPageComponent extends BaseComponentDirective implements OnI
 
     const _doRedirect = () => {
       if (this.redirectUrl) {
-        this.router.navigateByUrl(this.redirectUrl);
+        void this.router.navigateByUrl(this.redirectUrl);
       } else {
-        this.router.navigateByUrl("/");
+        void this.router.navigateByUrl("/");
       }
     };
 

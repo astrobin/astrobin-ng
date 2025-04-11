@@ -59,7 +59,9 @@ export class AuthEffects {
         ofType(AuthActionTypes.LOGIN_SUCCESS),
         tap((action: LoginSuccess) => {
           this.loadingService.setLoading(false);
-          this.router.navigate(["account", "logged-in"], { queryParams: { redirectUrl: action.payload.redirectUrl } });
+          void this.router.navigate(["account", "logged-in"], {
+            queryParams: { redirectUrl: action.payload.redirectUrl }
+          });
         })
       ),
     { dispatch: false }

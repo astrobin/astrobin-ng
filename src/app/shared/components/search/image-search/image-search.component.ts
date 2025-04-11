@@ -185,7 +185,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   private _openImageByNavigation(image: ImageSearchInterface): void {
-    this.router.navigate([`/i/${image.hash || image.objectId}`]);
+    void this.router.navigate([`/i/${image.hash || image.objectId}`]);
   }
 
   private _openImageClassicUrl(image: ImageSearchInterface): void {

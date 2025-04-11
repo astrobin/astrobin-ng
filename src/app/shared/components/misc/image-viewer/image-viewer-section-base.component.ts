@@ -69,7 +69,7 @@ export abstract class ImageViewerSectionBaseComponent extends BaseComponentDirec
   protected search(model: SearchModelInterface): void {
     const params = this.searchService.modelToParams(model);
     this.imageViewerService.closeSlideShow(false);
-    this.router.navigateByUrl(`/search?p=${params}`);
+    void this.router.navigateByUrl(`/search?p=${params}`);
   }
 
   protected toggleCollapse(): void {

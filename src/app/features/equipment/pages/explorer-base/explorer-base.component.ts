@@ -94,7 +94,7 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
 
     const queryParams: Params = { page };
 
-    this.router
+    void this.router
       .navigate([], {
         relativeTo: this.activatedRoute,
         queryParams

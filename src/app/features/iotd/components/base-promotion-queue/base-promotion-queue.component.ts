@@ -148,7 +148,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
 
     const queryParams: Params = { page };
 
-    this.router
+    void this.router
       .navigate([], {
         relativeTo: this.activatedRoute,
         queryParams,

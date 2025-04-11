@@ -26,7 +26,7 @@ export class UploaderGuardService extends BaseService {
       reduce((acc, val) => acc || val),
       tap(result => {
         if (!result) {
-          this.router.navigateByUrl(this.router.createUrlTree(["/permission-denied"]));
+          void this.router.navigateByUrl(this.router.createUrlTree(["/permission-denied"]));
           return false;
         }
       })

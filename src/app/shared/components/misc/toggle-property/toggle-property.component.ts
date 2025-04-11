@@ -190,7 +190,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     }
 
     if (!this.userId) {
-      this.routerService.redirectToLogin();
+      void this.routerService.redirectToLogin();
       return;
     }
 

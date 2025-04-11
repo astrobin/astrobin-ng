@@ -638,7 +638,7 @@ export class ImageEditPageComponent
         if (!this._returnUrl) {
           this.currentUserProfile$.pipe(take(1)).subscribe(userProfile => {
             if (userProfile.enableNewGalleryExperience) {
-              this.router
+              void this.router
                 .navigate(["i", this.imageEditService.model.hash || this.imageEditService.model.pk])
                 .then(() => {
                   this.popNotificationsService.success(this.translateService.instant("Image saved."));
@@ -652,7 +652,7 @@ export class ImageEditPageComponent
             }
           });
         } else {
-          this.router.navigateByUrl(this._returnUrl).then(() => {
+          void this.router.navigateByUrl(this._returnUrl).then(() => {
             this.popNotificationsService.success(this.translateService.instant("Image saved."));
           });
         }

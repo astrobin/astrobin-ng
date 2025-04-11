@@ -93,7 +93,7 @@ export class IotdTpArchiveItemComponent extends BaseComponentDirective implement
 
   openGallery(username: string): void {
     if (this._newGalleryExperience) {
-      this.router.navigate(["/u", username]);
+      void this.router.navigate(["/u", username]);
     } else {
       this.windowRefService.nativeWindow.open(this.classicRoutesService.GALLERY(username), "_self");
     }

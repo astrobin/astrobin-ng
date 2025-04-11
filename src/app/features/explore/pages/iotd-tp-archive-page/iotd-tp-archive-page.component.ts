@@ -257,7 +257,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       [SearchAutoCompleteType.AWARD]: [this.activeTab]
     });
 
-    this.router.navigateByUrl(`/search?p=${encodedParams}`);
+    void this.router.navigateByUrl(`/search?p=${encodedParams}`);
   }
 
   protected onTabChange(event: NgbNavChangeEvent<ArchiveType>) {
@@ -265,7 +265,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       return;
     }
 
-    this.router.navigate([], {
+    void this.router.navigate([], {
       fragment: event.nextId.toString()
     });
 

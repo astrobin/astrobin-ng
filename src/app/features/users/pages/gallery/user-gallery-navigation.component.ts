@@ -398,7 +398,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   }
 
   onTabClick(tab: GalleryNavigationComponent) {
-    this.router.navigate([], { fragment: tab });
+    void this.router.navigate([], { fragment: tab });
   }
 
   protected createCollection() {

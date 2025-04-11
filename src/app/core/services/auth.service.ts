@@ -44,7 +44,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
   logout(): Observable<void> {
     return new Observable<void>(observer => {
-      this.router.navigate(["account", "logging-out"]).then(() => {
+      void this.router.navigate(["account", "logging-out"]).then(() => {
         this.removeAuthenticationToken();
         observer.next();
         observer.complete();

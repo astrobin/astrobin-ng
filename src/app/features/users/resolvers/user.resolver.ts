@@ -27,7 +27,7 @@ export const UserResolver: ResolveFn<{ user: UserInterface; userProfile: UserPro
   const username = route.paramMap.get("username");
 
   const onError = (observer: Subscriber<{ user: UserInterface; userProfile: UserProfileInterface } | null>) => {
-    router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
+    void router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
       location.replaceState(state.url);
       observer.next(null);
       observer.complete();

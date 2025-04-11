@@ -154,7 +154,7 @@ export class WindowRefService extends BaseService {
       fromUrl = this.getCurrentUrl().pathname;
     }
 
-    this.router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
+    void this.router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
       this.location.replaceState(fromUrl);
     });
   }

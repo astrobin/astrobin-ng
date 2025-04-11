@@ -132,7 +132,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
         if (!this.activatedRoute.snapshot.fragment) {
           switch (this.userProfile.defaultGallerySorting) {
             case DefaultGallerySortingOption.PUBLICATION:
-              this.router.navigate([], {
+              void this.router.navigate([], {
                 fragment: "gallery",
                 replaceUrl: true,
                 queryParamsHandling: "merge"
@@ -140,13 +140,13 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
               break;
             case DefaultGallerySortingOption.COLLECTIONS: {
               if (this.userProfile.displayCollectionsOnPublicGallery) {
-                this.router.navigate([], {
+                void this.router.navigate([], {
                   fragment: "gallery",
                   replaceUrl: true,
                   queryParamsHandling: "merge"
                 });
               } else {
-                this.router.navigate([], {
+                void this.router.navigate([], {
                   fragment: "collections",
                   replaceUrl: true,
                   queryParamsHandling: "merge"
@@ -155,7 +155,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
               break;
             }
             case DefaultGallerySortingOption.SUBJECT_TYPE:
-              this.router.navigate([], {
+              void this.router.navigate([], {
                 queryParams: { "folder-type": "subject" },
                 fragment: "smart-folders",
                 replaceUrl: true,
@@ -163,7 +163,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
               });
               break;
             case DefaultGallerySortingOption.YEAR:
-              this.router.navigate([], {
+              void this.router.navigate([], {
                 queryParams: { "folder-type": "year" },
                 fragment: "smart-folders",
                 replaceUrl: true,
@@ -171,7 +171,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
               });
               break;
             case DefaultGallerySortingOption.GEAR:
-              this.router.navigate([], {
+              void this.router.navigate([], {
                 queryParams: { "folder-type": "gear" },
                 fragment: "smart-folders",
                 replaceUrl: true,
@@ -179,7 +179,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
               });
               break;
             case DefaultGallerySortingOption.CONSTELLATION:
-              this.router.navigate([], {
+              void this.router.navigate([], {
                 queryParams: { "folder-type": "constellation" },
                 fragment: "smart-folders",
                 replaceUrl: true,

@@ -182,7 +182,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           this.product
         ) === -1
       ) {
-        this.router.navigateByUrl("/page-not-found", { skipLocationChange: true });
+        void this.router.navigateByUrl("/page-not-found", { skipLocationChange: true });
         return;
       }
 

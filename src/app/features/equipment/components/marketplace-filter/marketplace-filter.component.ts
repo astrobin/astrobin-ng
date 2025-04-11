@@ -122,7 +122,7 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
 
   applyFilters() {
     const _doApplyFilters = () => {
-      this.router
+      void this.router
         .navigate([], {
           relativeTo: this.activatedRoute,
           queryParams: this.filterForm.value,

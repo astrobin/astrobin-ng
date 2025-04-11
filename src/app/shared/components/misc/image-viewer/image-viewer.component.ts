@@ -285,7 +285,7 @@ export class ImageViewerComponent
       this.adDisplayed = false;
 
       if (this.adManagerComponent) {
-        this.adManagerComponent.destroyAd().then(() => {
+        void this.adManagerComponent.destroyAd().then(() => {
           this._setAd();
         });
       } else {
@@ -341,7 +341,7 @@ export class ImageViewerComponent
     }
 
     if (this.adManagerComponent) {
-      this.adManagerComponent.destroyAd();
+      void this.adManagerComponent.destroyAd();
     }
 
     super.ngOnDestroy();

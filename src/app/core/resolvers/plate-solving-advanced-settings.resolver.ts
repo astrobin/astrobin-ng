@@ -31,7 +31,7 @@ export const PlateSolvingAdvancedSettingsResolver: ResolveFn<PlateSolvingAdvance
     }),
     switchMap(solution => (solution ? plateSolvingApiService.getAdvancedSettings(solution!.id) : EMPTY)),
     catchError(err => {
-      router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
+      void router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
         location.replaceState(state.url);
       });
       return EMPTY;

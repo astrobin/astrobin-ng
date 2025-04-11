@@ -50,7 +50,7 @@ export abstract class ImageViewerBaseEquipmentComponent extends ImageViewerSecti
       return;
     }
 
-    this.router.navigateByUrl(url).then(() => {
+    void this.router.navigateByUrl(url).then(() => {
       this.imageViewerService.closeSlideShow(false);
     });
   }

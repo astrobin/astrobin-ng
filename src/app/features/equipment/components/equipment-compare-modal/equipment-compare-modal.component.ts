@@ -68,7 +68,7 @@ export class EquipmentCompareModalComponent extends BaseComponentDirective imple
   }
 
   editButtonClicked(klass: EquipmentItem["klass"], id: EquipmentItem["id"]) {
-    this.router
+    void this.router
       .navigate(["equipment", "explorer", klass.toLowerCase(), id], { queryParams: { edit: "true" } })
       .then(() => {
         this.modal.close();

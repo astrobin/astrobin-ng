@@ -99,7 +99,7 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
 
   reviewItem($event, itemId) {
     $event.target.classList.add("loading");
-    this.router.navigate(["equipment", "migration-review", itemId]);
+    void this.router.navigate(["equipment", "migration-review", itemId]);
   }
 
   // The legacy item was moderated by the same user, so they cannot review it too.

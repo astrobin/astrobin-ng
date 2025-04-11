@@ -382,7 +382,7 @@ export class EquipmentMarketplaceService extends BaseService {
 
     this.userSubscriptionService.canCreateMarketplaceListing$().subscribe(canCreate => {
       if (canCreate) {
-        this.router.navigate(["/equipment/marketplace/create"]);
+        void this.router.navigate(["/equipment/marketplace/create"]);
       } else {
         const modalRef: NgbModalRef = this.modalService.open(SubscriptionRequiredModalComponent);
         const componentInstance: SubscriptionRequiredModalComponent = modalRef.componentInstance;
@@ -397,7 +397,7 @@ export class EquipmentMarketplaceService extends BaseService {
 
     this.userSubscriptionService.canCreateMarketplaceListing$().subscribe(canCreate => {
       if (canCreate) {
-        this.router.navigate(["/equipment/marketplace/create"], { queryParams: { wanted: true } });
+        void this.router.navigate(["/equipment/marketplace/create"], { queryParams: { wanted: true } });
       } else {
         const modalRef: NgbModalRef = this.modalService.open(SubscriptionRequiredModalComponent);
         const componentInstance: SubscriptionRequiredModalComponent = modalRef.componentInstance;

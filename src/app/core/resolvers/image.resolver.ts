@@ -34,7 +34,7 @@ export const ImageResolver: ResolveFn<ImageInterface | null> = (
       store$.dispatch(new SetImage(image));
     }),
     catchError(() => {
-      router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
+      void router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
         location.replaceState(state.url);
       });
       return EMPTY;

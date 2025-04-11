@@ -272,7 +272,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   onItemTypeChanged(itemType: EquipmentItemType) {
     if (!!itemType && itemType !== this.activeType) {
       this.activeType = itemType;
-      this.router.navigateByUrl(`/equipment/explorer/${itemType.toLowerCase()}`);
+      void this.router.navigateByUrl(`/equipment/explorer/${itemType.toLowerCase()}`);
     }
   }
 
@@ -396,7 +396,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   sellInMarketplace() {
-    this.router.navigate(["/equipment/marketplace/create"], {
+    void this.router.navigate(["/equipment/marketplace/create"], {
       queryParams: {
         lineItemCount: 1,
         equipmentItemId: this.selectedItem.id,
@@ -408,7 +408,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   startEditMode() {
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
-        this.routerService.redirectToLogin();
+        void this.routerService.redirectToLogin();
         return;
       }
 

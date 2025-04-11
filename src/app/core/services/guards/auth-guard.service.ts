@@ -43,7 +43,7 @@ export class AuthGuardService extends BaseService {
             return;
           }
 
-          this.routerService.redirectToLogin().then(() => {
+          void this.routerService.redirectToLogin().then(() => {
             observer.next(false);
             observer.complete();
           });

@@ -27,7 +27,7 @@ export class VersionCheckService {
       return;
     }
 
-    this.swUpdate.checkForUpdate();
+    void this.swUpdate.checkForUpdate();
 
     this._subscription = this.swUpdate.versionUpdates.subscribe((event: VersionEvent) => {
       if (event.type === "VERSION_READY") {
@@ -50,7 +50,7 @@ export class VersionCheckService {
     );
 
     notification.onTap.subscribe(() => {
-      this.swUpdate.activateUpdate().then(() => {
+      void this.swUpdate.activateUpdate().then(() => {
         this.document.location.reload();
       });
     });

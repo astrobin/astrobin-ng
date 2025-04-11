@@ -140,7 +140,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   }
 
   viewBrand(brand: BrandInterface) {
-    this.router.navigateByUrl(`/equipment/explorer/brand/${brand.id}/${UtilsService.slugify(brand.name)}`);
+    void this.router.navigateByUrl(`/equipment/explorer/brand/${brand.id}/${UtilsService.slugify(brand.name)}`);
   }
 
   viewItem(item: EquipmentItemBaseInterface): void {
@@ -151,15 +151,15 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
       componentInstance.enableSelectFrozen = false;
 
       modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
-        this.router.navigateByUrl(`/equipment/explorer/${variant.klass}/${variant.id}`);
+        void this.router.navigateByUrl(`/equipment/explorer/${variant.klass}/${variant.id}`);
       });
     } else {
-      this.router.navigateByUrl(`/equipment/explorer/${item.klass}/${item.id}`);
+      void this.router.navigateByUrl(`/equipment/explorer/${item.klass}/${item.id}`);
     }
   }
 
   closeBrand() {
-    this.router.navigateByUrl("/equipment/explorer/brand");
+    void this.router.navigateByUrl("/equipment/explorer/brand");
   }
 
   private _loadAllPages() {

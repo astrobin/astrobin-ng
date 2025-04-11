@@ -225,7 +225,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
 
     const _doCancel = () => {
       this.form.reset();
-      this.router.navigate(["../"], { relativeTo: this.activatedRoute });
+      void this.router.navigate(["../"], { relativeTo: this.activatedRoute });
     };
 
     if (this.form.dirty) {

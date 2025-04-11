@@ -167,7 +167,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         this.windowRefService.nativeWindow.location.href = this.equipmentItemService.getClassicSearchUrl(item);
       } else {
         const params = this.equipmentItemService.getSearchParams(item);
-        this.router.navigateByUrl(`/search?p=${params}`);
+        void this.router.navigateByUrl(`/search?p=${params}`);
       }
     });
   }

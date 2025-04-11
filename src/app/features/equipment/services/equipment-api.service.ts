@@ -1398,7 +1398,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     return new Observable<EditProposalInterface<T>>(observer => {
       if (UtilsService.isString(image)) {
-        UtilsService.fileFromUrl(image as string).then((file: File) => {
+        void UtilsService.fileFromUrl(image as string).then((file: File) => {
           _doUpload(file).subscribe(response => {
             observer.next(response);
             observer.next();

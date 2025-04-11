@@ -183,7 +183,7 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
   }
 
   protected openCollection(collection: CollectionInterface) {
-    this.router.navigate([], {
+    void this.router.navigate([], {
       fragment: this.userProfile.displayCollectionsOnPublicGallery ? "gallery" : "collections",
       queryParams: { collection: collection.id },
       relativeTo: this.activatedRoute

@@ -69,6 +69,6 @@ export class ConstellationsPageComponent extends BaseComponentDirective implemen
 
     event.preventDefault();
 
-    this.router.navigateByUrl(this.getFindImagesUrl(constellation));
+    void this.router.navigateByUrl(this.getFindImagesUrl(constellation));
   }
 }

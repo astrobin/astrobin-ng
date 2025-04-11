@@ -109,13 +109,15 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
 
           if (action.type === EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS) {
             if (listings.length === 1) {
-              this.router.navigateByUrl(`/equipment/marketplace/listing/${action.payload.listing.hash}`).then(() => {
-                this.loadingService.setLoading(false);
-              });
+              void this.router
+                .navigateByUrl(`/equipment/marketplace/listing/${action.payload.listing.hash}`)
+                .then(() => {
+                  this.loadingService.setLoading(false);
+                });
             } else {
               if (listingsProcessed === listings.length) {
                 this.currentUser$.pipe(take(1)).subscribe(user => {
-                  this.router.navigateByUrl(`/equipment/marketplace/users/${user.username}/listings`).then(() => {
+                  void this.router.navigateByUrl(`/equipment/marketplace/users/${user.username}/listings`).then(() => {
                     this.popNotificationsService.success(
                       this.translateService.instant("All listings have been created.")
                     );

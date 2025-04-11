@@ -237,7 +237,7 @@ export class NotificationsListComponent extends BaseComponentDirective implement
         }
       }
     } else {
-      this.router.navigateByUrl(`/notifications?page=${page}`).then(() => {
+      void this.router.navigateByUrl(`/notifications?page=${page}`).then(() => {
         this.loadNotifications();
         this.changeDetectorRef.markForCheck();
       });

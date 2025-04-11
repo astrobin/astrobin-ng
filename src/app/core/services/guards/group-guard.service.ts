@@ -41,7 +41,7 @@ export class GroupGuardService extends BaseService {
         )
         .subscribe(loggingOutViaBackend => {
           if (!loggingOutViaBackend) {
-            this.router.navigateByUrl(redirectTo, { skipLocationChange: true }).then(() => {
+            void this.router.navigateByUrl(redirectTo, { skipLocationChange: true }).then(() => {
               observer.next(false);
               observer.complete();
               this.location.replaceState(routerState.url);

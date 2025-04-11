@@ -226,7 +226,7 @@ export class ImagePlateSolvingSettingsPageComponent
     this.loadingService.setLoading(true);
 
     forkJoin(observables$).subscribe(() => {
-      this.router
+      void this.router
         .navigate(["/i", this.image.hash || this.image.pk], {
           queryParams: {
             r: this.revisionLabel
@@ -246,7 +246,7 @@ export class ImagePlateSolvingSettingsPageComponent
   restart() {
     this.loadingService.setLoading(true);
     this.plateSolvingSettingsApiService.restart(this.basicModel.solution).subscribe(() => {
-      this.router
+      void this.router
         .navigate(["/i", this.image.hash || this.image.pk], {
           queryParams: {
             r: this.revisionLabel

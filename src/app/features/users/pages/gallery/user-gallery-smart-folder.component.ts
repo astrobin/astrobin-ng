@@ -164,7 +164,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   ngOnChanges() {
     this.currentUser$.pipe(take(1)).subscribe(currentUser => {
       if (this._shouldDenyAccess(currentUser)) {
-        this.router.navigateByUrl("/permission-denied", { skipLocationChange: true });
+        void this.router.navigateByUrl("/permission-denied", { skipLocationChange: true });
         return;
       }
 
@@ -322,7 +322,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   }
 
   private _handleDismiss() {
-    this.router
+    void this.router
       .navigate([], {
         queryParams: { active: null },
         queryParamsHandling: "merge",

@@ -533,7 +533,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
         value: ["my_bookmarks"]
       }
     });
-    this.router.navigateByUrl(`/search?p=${params}`);
+    void this.router.navigateByUrl(`/search?p=${params}`);
   }
 
   protected searchLikedImages() {
@@ -542,7 +542,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
         value: ["my_likes"]
       }
     });
-    this.router.navigateByUrl(`/search?p=${params}`);
+    void this.router.navigateByUrl(`/search?p=${params}`);
   }
 
   protected shadowBan(userProfileId: UserProfileInterface["id"]) {

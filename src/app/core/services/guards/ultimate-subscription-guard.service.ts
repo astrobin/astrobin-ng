@@ -43,7 +43,7 @@ export class UltimateSubscriptionGuardService extends BaseService {
           }
 
           if (redirect) {
-            this.router.navigateByUrl(this.router.createUrlTree(["/permission-denied"])).then(() => {
+            void this.router.navigateByUrl(this.router.createUrlTree(["/permission-denied"])).then(() => {
               observer.next(false);
               observer.complete();
             });

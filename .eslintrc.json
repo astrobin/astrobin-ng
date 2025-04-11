@@ -1,33 +1,76 @@
 {
   "root": true,
-  "plugins": ["import", "unused-imports"],
-  "ignorePatterns": ["projects/**/*", "dist/**/*", "node_modules/**/*"],
+  "plugins": [
+    "import",
+    "unused-imports",
+    "@typescript-eslint"
+  ],
+  "ignorePatterns": [
+    "projects/**/*",
+    "dist/**/*",
+    "node_modules/**/*"
+  ],
   "overrides": [
     {
-      "files": ["*.ts"],
+      "files": [
+        "*.ts"
+      ],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
+        "project": "./src/tsconfig.eslint.json",
         "tsconfigRootDir": "."
       },
-      "extends": ["plugin:prettier/recommended"],
+      "extends": [
+        "plugin:prettier/recommended"
+      ],
       "rules": {
         "prettier/prettier": "error",
-        "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 1, "maxBOF": 0 }],
-        "eqeqeq": ["error", "always"],
+        "no-multiple-empty-lines": [
+          "error",
+          {
+            "max": 1,
+            "maxEOF": 1,
+            "maxBOF": 0
+          }
+        ],
+        "eqeqeq": [
+          "error",
+          "always"
+        ],
         "prefer-const": "error",
         "curly": "error",
-        "dot-notation": ["error", { "allowPattern": "^\\w+$" }],
+        "dot-notation": [
+          "error",
+          {
+            "allowPattern": "^\\w+$"
+          }
+        ],
         "import/order": [
           "error",
           {
-            "groups": [["builtin", "external"], "internal", ["parent", "sibling", "index"]],
+            "groups": [
+              [
+                "builtin",
+                "external"
+              ],
+              "internal",
+              [
+                "parent",
+                "sibling",
+                "index"
+              ]
+            ],
             "newlines-between": "always",
-            "alphabetize": { "order": "asc", "caseInsensitive": true }
+            "alphabetize": {
+              "order": "asc",
+              "caseInsensitive": true
+            }
           }
         ],
         "import/no-duplicates": "error",
         "@typescript-eslint/no-unused-vars": "off",
-        "unused-imports/no-unused-vars": "off"
+        "unused-imports/no-unused-vars": "off",
+        "@typescript-eslint/no-floating-promises": "error"
       }
     }
   ]

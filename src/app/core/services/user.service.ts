@@ -81,7 +81,7 @@ export class UserService extends BaseService implements UserServiceInterface {
 
   openGallery(username: UserInterface["username"], newGalleryExperience: boolean): void {
     if (newGalleryExperience) {
-      this.router.navigateByUrl("/u/" + username).then(() => {
+      void this.router.navigateByUrl("/u/" + username).then(() => {
         this.imageViewerService.closeSlideShow(false);
       });
     } else {
@@ -91,7 +91,7 @@ export class UserService extends BaseService implements UserServiceInterface {
 
   openStaging(username: UserInterface["username"], newGalleryExperience: boolean): void {
     if (newGalleryExperience) {
-      this.router.navigateByUrl("/u/" + username + "#staging").then(() => {
+      void this.router.navigateByUrl("/u/" + username + "#staging").then(() => {
         this.imageViewerService.closeSlideShow(false);
       });
     } else {
@@ -107,7 +107,7 @@ export class UserService extends BaseService implements UserServiceInterface {
   ): void {
     const url = this.getCollectionUrl(username, collectionId, newGalleryExperience, displayCollectionsOnPublicGallery);
     if (newGalleryExperience) {
-      this.router.navigateByUrl(url).then(() => {
+      void this.router.navigateByUrl(url).then(() => {
         this.imageViewerService.closeSlideShow(false);
       });
     } else {

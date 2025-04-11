@@ -38,7 +38,7 @@ export class MarketplaceListingOwnerGuardService extends BaseService implements 
     };
 
     const onError = (observer: Observer<boolean>, redirectTo: string) => {
-      this.router.navigateByUrl(redirectTo, { skipLocationChange: true }).then(() => {
+      void this.router.navigateByUrl(redirectTo, { skipLocationChange: true }).then(() => {
         observer.next(false);
         observer.complete();
         this.location.replaceState(state.url);

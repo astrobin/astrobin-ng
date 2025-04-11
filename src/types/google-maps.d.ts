@@ -1,10 +1,7 @@
 declare namespace google {
   namespace maps {
     class Geocoder {
-      geocode(
-        request: GeocoderRequest,
-        callback: (results: GeocoderResult[], status: GeocoderStatus) => void
-      ): void;
+      geocode(request: GeocoderRequest, callback: (results: GeocoderResult[], status: GeocoderStatus) => void): void;
     }
 
     interface GeocoderRequest {
@@ -49,16 +46,16 @@ declare namespace google {
       viewport: LatLngBounds;
     }
 
-    type GeocoderLocationType = 'APPROXIMATE' | 'GEOMETRIC_CENTER' | 'RANGE_INTERPOLATED' | 'ROOFTOP';
+    type GeocoderLocationType = "APPROXIMATE" | "GEOMETRIC_CENTER" | "RANGE_INTERPOLATED" | "ROOFTOP";
 
     enum GeocoderStatus {
-      ERROR = 'ERROR',
-      INVALID_REQUEST = 'INVALID_REQUEST',
-      OK = 'OK',
-      OVER_QUERY_LIMIT = 'OVER_QUERY_LIMIT',
-      REQUEST_DENIED = 'REQUEST_DENIED',
-      UNKNOWN_ERROR = 'UNKNOWN_ERROR',
-      ZERO_RESULTS = 'ZERO_RESULTS'
+      ERROR = "ERROR",
+      INVALID_REQUEST = "INVALID_REQUEST",
+      OK = "OK",
+      OVER_QUERY_LIMIT = "OVER_QUERY_LIMIT",
+      REQUEST_DENIED = "REQUEST_DENIED",
+      UNKNOWN_ERROR = "UNKNOWN_ERROR",
+      ZERO_RESULTS = "ZERO_RESULTS"
     }
 
     class LatLng {

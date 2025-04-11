@@ -122,7 +122,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
 
   ngOnDestroy() {
     if (this.adManagerComponent) {
-      this.adManagerComponent.destroyAd();
+      void this.adManagerComponent.destroyAd();
     }
 
     super.ngOnDestroy();

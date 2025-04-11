@@ -56,7 +56,7 @@ describe("UserGalleryAboutComponent", () => {
       )
     };
 
-    TestBed.configureTestingModule({
+    void TestBed.configureTestingModule({
       declarations: [UserGalleryAboutComponent, MockNothingHereComponent, MockFormlyFormComponent],
       imports: [CommonModule, FormsModule, ReactiveFormsModule, MockModule(TranslateModule)],
       providers: [

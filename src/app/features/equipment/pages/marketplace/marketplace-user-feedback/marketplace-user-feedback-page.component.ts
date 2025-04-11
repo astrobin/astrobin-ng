@@ -36,7 +36,7 @@ export class MarketplaceUserFeedbackPageComponent extends BaseComponentDirective
       .getMarketplaceFeedbackById(feedbackId)
       .pipe(
         catchError(() => {
-          this.router.navigate(["/404"]);
+          void this.router.navigate(["/404"]);
           return EMPTY;
         })
       )

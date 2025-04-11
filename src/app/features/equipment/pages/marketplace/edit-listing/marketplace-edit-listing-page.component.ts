@@ -67,7 +67,7 @@ export class MarketplaceEditListingPageComponent extends BaseComponentDirective 
     this.listing = this.activatedRoute.snapshot.data.listing;
 
     if (this.equipmentMarketplaceService.listingSold(this.listing)) {
-      this.router.navigateByUrl(`/equipment/marketplace/listing/${this.listing.hash}`).then();
+      void this.router.navigateByUrl(`/equipment/marketplace/listing/${this.listing.hash}`).then();
     }
   }
 
@@ -81,7 +81,7 @@ export class MarketplaceEditListingPageComponent extends BaseComponentDirective 
         map((action: UpdateMarketplaceListingSuccess) => action.payload.listing)
       )
       .subscribe(listing => {
-        this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.hash}`).then(() => {
+        void this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.hash}`).then(() => {
           this.loadingService.setLoading(false);
         });
       });

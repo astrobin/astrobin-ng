@@ -139,7 +139,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
             `${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`
           );
         } else {
-          this.router.navigate([`/i/${hash}/edit`]);
+          void this.router.navigate([`/i/${hash}/edit`]);
         }
       }
 

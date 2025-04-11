@@ -214,6 +214,6 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
   }
 
   exit() {
-    this.router.navigateByUrl("/equipment/migration-review");
+    void this.router.navigateByUrl("/equipment/migration-review");
   }
 }

@@ -204,7 +204,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
           });
         }
 
-        this.router.navigateByUrl(`/search?p=${params}`).then(() => {
+        void this.router.navigateByUrl(`/search?p=${params}`).then(() => {
           this.quickSearchQuery = "";
           this.changeDetectorRef.markForCheck();
         });

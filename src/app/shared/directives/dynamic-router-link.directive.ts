@@ -14,7 +14,7 @@ export class DynamicRouterLinkDirective implements AfterViewInit {
       if (routerLink) {
         link.addEventListener("click", (e: Event) => {
           e.preventDefault();
-          this.router.navigateByUrl(routerLink);
+          void this.router.navigateByUrl(routerLink);
         });
       }
     });

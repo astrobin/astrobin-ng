@@ -283,7 +283,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
       return;
     }
 
-    this.router.navigate([], {
+    void this.router.navigate([], {
       relativeTo: this.route,
       fragment: event.nextId.toString(),
       queryParamsHandling: "preserve" // Preserve existing query params when changing tabs
@@ -339,7 +339,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
 
     // Update the URL - the parameters will be reflected in the URL but won't trigger another reload
     // since we're already loading the data
-    this.router.navigate([], {
+    void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: queryParams,
       queryParamsHandling: "merge", // Merge with other query params
@@ -392,7 +392,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
     this.changeDetectorRef.markForCheck();
 
     // Update URL and trigger a reload
-    this.router.navigate([], {
+    void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
         q: this.searchQuery || null // Use null to remove param when empty
@@ -415,7 +415,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
     this.changeDetectorRef.markForCheck();
 
     // Update URL to remove the search parameter
-    this.router.navigate([], {
+    void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
         q: null // Explicitly set to null to remove from URL
@@ -482,7 +482,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
         this.activeTab = fragment as StatType;
       } else {
         this.activeTab = StatType.IMAGE_DATA;
-        this.router.navigate([], {
+        void this.router.navigate([], {
           relativeTo: this.route,
           fragment: this.activeTab,
           queryParamsHandling: "preserve" // Preserve existing query params when setting default fragment

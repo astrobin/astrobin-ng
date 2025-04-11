@@ -321,7 +321,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
 
       if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
-        this.router.navigate(["i", response.image, response.label, "edit"]);
+        void this.router.navigate(["i", response.image, response.label, "edit"]);
       }
 
       this.changeDetectorRef.markForCheck();

@@ -508,7 +508,7 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
       .pipe(take(1))
       .subscribe(isUltimate => {
         if (isUltimate) {
-          this.router.navigate(["/uploader/uncompressed-source", this.image.hash || this.image.pk.toString()]);
+          void this.router.navigate(["/uploader/uncompressed-source", this.image.hash || this.image.pk.toString()]);
         } else {
           const modalRef = this.modalService.open(SubscriptionRequiredModalComponent);
           modalRef.componentInstance.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;

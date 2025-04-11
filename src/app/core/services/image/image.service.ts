@@ -1205,7 +1205,7 @@ export class ImageService extends BaseService {
       returnUrl = `/i/${image.hash || image.pk}`;
     }
 
-    this.router.navigate(["/i", image.hash || image.pk, "edit"], {
+    void this.router.navigate(["/i", image.hash || image.pk, "edit"], {
       state: { returnUrl }
     });
   }

@@ -268,9 +268,9 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     }
 
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.getRegistration().then(registration => {
+      void navigator.serviceWorker.getRegistration().then(registration => {
         if (registration) {
-          registration.unregister().then(() => {
+          void registration.unregister().then(() => {
             console.log("Service Worker unregistered");
           });
         }
@@ -284,9 +284,9 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     }
 
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.getRegistration().then(registration => {
+      void navigator.serviceWorker.getRegistration().then(registration => {
         if (!registration) {
-          navigator.serviceWorker
+          void navigator.serviceWorker
             .register("/ngsw-worker.js")
             .then(() => {
               console.log("Service Worker registered");

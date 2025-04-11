@@ -120,7 +120,7 @@ export class FormlyFieldStepperComponent
       return;
     }
 
-    this.router.navigate([], { fragment: "" + (event.step.index + 1) }).then(() => {
+    void this.router.navigate([], { fragment: "" + (event.step.index + 1) }).then(() => {
       this.markPreviousStepsAsDone(event.step.index);
       this.setHighestVisitedStep(event.step.index);
       this.utilsService.delay(100).subscribe(() => {

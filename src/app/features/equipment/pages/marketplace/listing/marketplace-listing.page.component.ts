@@ -336,7 +336,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         take(1)
       )
       .subscribe(() => {
-        this.router.navigateByUrl("/equipment/marketplace").then(() => {
+        void this.router.navigateByUrl("/equipment/marketplace").then(() => {
           this.loadingService.setLoading(false);
         });
       });
@@ -355,7 +355,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
-        this.routerService.redirectToLogin();
+        void this.routerService.redirectToLogin();
         return;
       }
 
@@ -548,7 +548,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
         if (!currentUser) {
           this.loadingService.setLoading(false);
-          this.routerService.redirectToLogin();
+          void this.routerService.redirectToLogin();
           return;
         }
 

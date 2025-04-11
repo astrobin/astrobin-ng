@@ -227,7 +227,7 @@ export class NestedCommentComponent
   submitReply() {
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
-        this.routerService.redirectToLogin();
+        void this.routerService.redirectToLogin();
         return;
       }
 
@@ -340,7 +340,7 @@ export class NestedCommentComponent
 
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
-        this.routerService.redirectToLogin();
+        void this.routerService.redirectToLogin();
         return;
       }
       this.showReplyForm = true;

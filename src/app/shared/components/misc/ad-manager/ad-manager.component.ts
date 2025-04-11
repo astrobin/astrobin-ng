@@ -143,16 +143,16 @@ export class AdManagerComponent implements OnChanges {
     }
 
     if (this.adManagerService.hasAdSlot(this.divId)) {
-      this.adManagerService.refreshAd(this.divId).then(displayed => {
+      void this.adManagerService.refreshAd(this.divId).then(displayed => {
         this._onAdResult(displayed);
         this.changeDetectorRef.markForCheck();
       });
     } else {
-      this.adManagerService.defineAdSlot(this.configName, this.unitPath, this.size, this.divId).then(() => {
+      void this.adManagerService.defineAdSlot(this.configName, this.unitPath, this.size, this.divId).then(() => {
         this.loading = true;
         this.changeDetectorRef.markForCheck();
 
-        this.adManagerService.displayAd(this.divId).then(displayed => {
+        void this.adManagerService.displayAd(this.divId).then(displayed => {
           this._onAdResult(displayed);
           this.changeDetectorRef.markForCheck();
         });
@@ -172,7 +172,7 @@ export class AdManagerComponent implements OnChanges {
   }
 
   removeAds(): void {
-    this.offcanvasService.open(this.removeAdsOffcanvasTemplate, {
+    void this.offcanvasService.open(this.removeAdsOffcanvasTemplate, {
       position: this.deviceService.offcanvasPosition()
     });
   }

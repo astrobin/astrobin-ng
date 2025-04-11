@@ -208,7 +208,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   submitTopLevelComment() {
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
-        this.routerService.redirectToLogin();
+        void this.routerService.redirectToLogin();
         return;
       }
 
@@ -240,7 +240,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
 
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
-        this.routerService.redirectToLogin();
+        void this.routerService.redirectToLogin();
         return;
       }
       this.showTopLevelForm = true;

@@ -161,7 +161,7 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
       if (userProfile && !userProfile.enableNewSearchExperience) {
         this.windowRefService.nativeWindow.location.href = this.searchUrl;
       } else {
-        this.router.navigateByUrl(this.searchUrl);
+        void this.router.navigateByUrl(this.searchUrl);
       }
     });
   }

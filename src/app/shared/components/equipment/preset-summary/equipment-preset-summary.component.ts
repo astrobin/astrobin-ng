@@ -151,7 +151,7 @@ export class EquipmentPresetSummaryComponent extends BaseComponentDirective impl
   }
 
   protected onEquipmentItemClicked(item: EquipmentItem) {
-    this.router.navigate([`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`]);
+    void this.router.navigate([`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`]);
   }
 
   private _updateSearchModel(): void {

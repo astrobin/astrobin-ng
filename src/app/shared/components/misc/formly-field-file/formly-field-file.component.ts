@@ -47,11 +47,11 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
           this._setValueFromFiles([file1]);
         });
 
-        Promise.all(promises).then(() => {
+        void Promise.all(promises).then(() => {
           this.loadingService.setLoading(false);
         });
       } else {
-        UtilsService.fileFromUrl(this.formControl.value).then((file: File) => {
+        void UtilsService.fileFromUrl(this.formControl.value).then((file: File) => {
           this._setValueFromFiles([file]);
           this.loadingService.setLoading(false);
         });
