@@ -24,25 +24,23 @@ import { distinctUntilChanged, takeUntil } from "rxjs/operators";
   template: `
     <div
       #container
-      class="masonry-container d-flex flex-wrap flex-row"
+      [class.large]="layout === 'large'"
+      [class.medium]="layout === 'medium'"
       [class.ready]="!!containerWidth && !!layout"
       [class.small]="layout === 'small'"
-      [class.medium]="layout === 'medium'"
-      [class.large]="layout === 'large'"
       [class.xl]="layout === 'xl'"
-      [style.--gutter]="'1rem'"
       [style.--container-width]="containerWidth"
+      [style.--gutter]="'1rem'"
+      class="masonry-container d-flex flex-wrap flex-row"
     >
       <div
         *ngFor="let item of items; let i = index; trackBy: trackByFn"
         [attr.data-masonry-id]="item[this.idProperty]"
-        class="masonry-item"
-        [class.small]="layout === 'small'"
-        [class.medium]="layout === 'medium'"
-        [class.large]="layout === 'large'"
-        [class.xl]="layout === 'xl'"
         [class.aspect-narrow]="
           item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] < 0.8
+        "
+        [class.aspect-panoramic]="
+          item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] > 2
         "
         [class.aspect-square]="
           item[widthProperty] &&
@@ -53,9 +51,11 @@ import { distinctUntilChanged, takeUntil } from "rxjs/operators";
         [class.aspect-wide]="
           item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] > 1.2
         "
-        [class.aspect-panoramic]="
-          item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] > 2
-        "
+        [class.large]="layout === 'large'"
+        [class.medium]="layout === 'medium'"
+        [class.small]="layout === 'small'"
+        [class.xl]="layout === 'xl'"
+        class="masonry-item"
       >
         <div class="masonry-content">
           <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="getTemplateContext(item)">

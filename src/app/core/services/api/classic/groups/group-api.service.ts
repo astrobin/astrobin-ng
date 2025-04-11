@@ -20,7 +20,10 @@ export interface GetGroupsParamsInterface {
 export class GroupApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/groups/group/";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

@@ -1,9 +1,9 @@
 <astrobin-mobile-menu
-  (menuClose)="onMobileMenuClose()"
-  (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
   [descriptionTemplate]="descriptionTemplate"
   [template]="navTemplate"
+  [titleTemplate]="titleTemplate"
+  (menuClose)="onMobileMenuClose()"
+  (menuOpen)="onMobileMenuOpen()"
 ></astrobin-mobile-menu>
 
 <ng-template #titleTemplate>
@@ -42,20 +42,20 @@
     <div class="col-md-8 col-xl-9">
       <astrobin-equipment-explorer
         #explorer
-        (creationMode)="creationMode = $event"
-        (valueChanged)="onSelectedItemChanged($event)"
         [activeEditProposalId]="activeEditProposalId"
         [activeId]="activeId"
         [activeType]="activeType"
         [goBackOnClose]="goBackOnClose"
+        (creationMode)="creationMode = $event"
+        (valueChanged)="onSelectedItemChanged($event)"
       ></astrobin-equipment-explorer>
 
       <ng-container *ngIf="!activeId && !creationMode">
         <astrobin-equipment-explorer-filters
           #explorerFilters
-          (applied)="filtersApplied()"
           [activeFilters]="filters"
           [type]="activeType"
+          (applied)="filtersApplied()"
           class="d-block mb-3"
         ></astrobin-equipment-explorer-filters>
 
@@ -90,8 +90,8 @@
               <tr *ngFor="let item of items.results; trackBy: equipmentItemService.trackBy" data-id="{{ item.id }}">
                 <td class="item-name">
                   <a
-                    (click)="viewItem(item)"
                     [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
+                    (click)="viewItem(item)"
                     astrobinEventPreventDefault
                   >
                     <astrobin-equipment-item-display-name
@@ -100,16 +100,15 @@
                     ></astrobin-equipment-item-display-name>
                     <span
                       *ngIf="item.variants?.length > 0"
-                      [innerHTML]="'+ {{numVariants}} variants' | translate : { numVariants: item.variants.length }"
+                      [innerHTML]="'+ {{numVariants}} variants' | translate: { numVariants: item.variants.length }"
                       class="variant-count"
                     >
                     </span>
                   </a>
-                  <a (click)="search(item)" astrobinEventPreventDefault class="search" href="#">
+                  <a (click)="search(item)" class="search" astrobinEventPreventDefault href="#">
                     <fa-icon icon="search"></fa-icon>
                   </a>
                   <a
-                    (click)="compareService.addWithErrorHandling(item)"
                     *ngIf="
                       [
                         EquipmentItemType.CAMERA,
@@ -119,8 +118,9 @@
                         EquipmentItemType.MOUNT
                       ].indexOf(activeType) > -1
                     "
-                    astrobinEventPreventDefault
+                    (click)="compareService.addWithErrorHandling(item)"
                     class="add-to-compare"
+                    astrobinEventPreventDefault
                     href="#"
                   >
                     <fa-icon [ngbTooltip]="'Add to comparison list' | translate" icon="list-alt"></fa-icon>
@@ -135,10 +135,10 @@
           <astrobin-nothing-here *ngIf="items.count === 0"></astrobin-nothing-here>
 
           <ngb-pagination
-            (pageChange)="pageChange($event)"
             *ngIf="items.count > items.results.length"
-            [(page)]="page"
             [collectionSize]="items.count"
+            (pageChange)="pageChange($event)"
+            [(page)]="page"
           >
           </ngb-pagination>
         </ng-container>

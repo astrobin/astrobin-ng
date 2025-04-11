@@ -13,12 +13,12 @@ import { filter, map, take } from "rxjs/operators";
   selector: "astrobin-image-viewer-iotd-tp-stats",
   template: `
     <ng-container *ngIf="getIotdTpStatsLegend$() | async as legend">
-      <ngb-accordion *ngIf="iotdTpStats; else loadingTemplate" #accordion="ngbAccordion" class="iotd-stats-accordion">
+      <ngb-accordion #accordion="ngbAccordion" *ngIf="iotdTpStats; else loadingTemplate" class="iotd-stats-accordion">
         <ngb-panel>
           <ng-template ngbPanelTitle>
             <div class="image-iotd-tp-stats-item">
               <span class="name">{{ "Submitted" | translate }}</span>
-              <span class="value">{{ image.submittedForIotdTpConsideration | localDate | date : "short" }}</span>
+              <span class="value">{{ image.submittedForIotdTpConsideration | localDate | date: "short" }}</span>
             </div>
           </ng-template>
 

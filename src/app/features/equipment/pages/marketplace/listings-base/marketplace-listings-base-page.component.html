@@ -1,9 +1,9 @@
 <astrobin-mobile-menu
-  (menuClose)="onMobileMenuClose()"
-  (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
   [descriptionTemplate]="descriptionTemplate"
   [template]="navTemplate"
+  [titleTemplate]="titleTemplate"
+  (menuClose)="onMobileMenuClose()"
+  (menuOpen)="onMobileMenuOpen()"
 ></astrobin-mobile-menu>
 
 <div class="page has-breadcrumb has-mobile-menu has-infinite-scroll">
@@ -83,9 +83,9 @@
       #selectRegionTooltip="ngbTooltip"
       [class.loading]="loadingService.loading$ | async"
       [ngbTooltip]="selectRegionTooltipText"
+      id="region-selector"
       class="btn btn-outline-primary mb-0"
       container="body"
-      id="region-selector"
       ngbDropdownToggle
       placement="start"
       tooltipClass="tooltip-warning"
@@ -108,21 +108,21 @@
         {{ "Worldwide" | translate }}
       </button>
 
-      <button (click)="setRegion($event, requestContinent)" *ngIf="!!requestContinent" ngbDropdownItem>
+      <button *ngIf="!!requestContinent" (click)="setRegion($event, requestContinent)" ngbDropdownItem>
         <ng-container *ngTemplateOutlet="continentFlagTemplate"></ng-container>
         {{ requestContinent }}
       </button>
 
       <button
-        (click)="setRegion($event, 'EU')"
         *ngIf="!!requestCountryCode && UtilsService.isEUCountry(requestCountryCode)"
+        (click)="setRegion($event, 'EU')"
         ngbDropdownItem
       >
         <fa-icon icon="euro-sign"></fa-icon>
         {{ "European Union" | translate }}
       </button>
 
-      <button (click)="setRegion($event, requestCountryCode)" *ngIf="!!requestCountryLabel" ngbDropdownItem>
+      <button *ngIf="!!requestCountryLabel" (click)="setRegion($event, requestCountryCode)" ngbDropdownItem>
         <ng-container *ngTemplateOutlet="countryFlagTemplate"></ng-container>
         {{ requestCountryLabel }}
       </button>

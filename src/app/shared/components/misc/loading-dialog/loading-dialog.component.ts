@@ -29,7 +29,10 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
   ]
 })
 export class LoadingDialogComponent extends BaseComponentDirective {
-  constructor(public readonly store$: Store<MainState>, public readonly modal: NgbActiveModal) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly modal: NgbActiveModal
+  ) {
     super(store$);
   }
 }

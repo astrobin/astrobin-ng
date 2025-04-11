@@ -20,7 +20,10 @@ export class MigratableGearItemApiService
 {
   configUrl = this.baseUrl + "/astrobin/gear";
 
-  constructor(public loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

@@ -11,8 +11,8 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
     <div class="feed-item-content">
       <astrobin-feed-item-image
         *ngIf="isImageFeedItem"
-        (openImage)="openImage.emit($event)"
         [feedItem]="feedItem"
+        (openImage)="openImage.emit($event)"
       ></astrobin-feed-item-image>
 
       <astrobin-feed-item-marketplace-listing

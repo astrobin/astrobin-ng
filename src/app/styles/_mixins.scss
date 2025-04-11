@@ -159,7 +159,9 @@ $darkest-background-texture: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAA
   transition: all 0.2s ease;
 
   @if $glow {
-    box-shadow: rgba(0, 0, 0, 0.8) 0 1px 5px, $glow-color 0 0 10px;
+    box-shadow:
+      rgba(0, 0, 0, 0.8) 0 1px 5px,
+      $glow-color 0 0 10px;
   } @else {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   }

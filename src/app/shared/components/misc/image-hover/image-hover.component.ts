@@ -11,19 +11,19 @@ import { WindowRefService } from "@core/services/window-ref.service";
 @Component({
   selector: "astrobin-image-hover",
   template: `
-    <div class="static-overlay" *ngIf="staticOverlay">
+    <div *ngIf="staticOverlay" class="static-overlay">
       <ng-container *ngTemplateOutlet="staticOverlayTemplate"></ng-container>
     </div>
 
     <div
-      class="hover d-flex align-items-end gap-2"
-      [class.small]="activeLayout === ActiveLayout.SMALL"
-      [class.medium]="activeLayout === ActiveLayout.MEDIUM"
       [class.large]="activeLayout === ActiveLayout.LARGE"
+      [class.medium]="activeLayout === ActiveLayout.MEDIUM"
+      [class.small]="activeLayout === ActiveLayout.SMALL"
+      class="hover d-flex align-items-end gap-2"
     >
       <div class="flex-grow-1">
-        <div class="title" [innerHTML]="image.title | highlight : searchTerms"></div>
-        <div *ngIf="showAuthor" class="author" [innerHTML]="image.userDisplayName | highlight : searchTerms"></div>
+        <div [innerHTML]="image.title | highlight: searchTerms" class="title"></div>
+        <div *ngIf="showAuthor" [innerHTML]="image.userDisplayName | highlight: searchTerms" class="author"></div>
         <div *ngIf="published" class="published">{{ published | localDate | timeago }}</div>
         <div *ngIf="!published && uploaded" class="uploaded">{{ uploaded | localDate | timeago }}</div>
       </div>
@@ -68,11 +68,9 @@ import { WindowRefService } from "@core/services/window-ref.service";
 
         <span *ngIf="staticOverlay?.includes('integration') && !!integration" [innerHTML]="integration"> </span>
 
-        <span *ngIf="staticOverlay?.includes('field_radius')"> {{ image.fieldRadius | number : "1.2-2" }}&deg; </span>
+        <span *ngIf="staticOverlay?.includes('field_radius')"> {{ image.fieldRadius | number: "1.2-2" }}&deg; </span>
 
-        <span *ngIf="staticOverlay?.includes('pixel_scale')">
-          {{ image.pixelScale | number : "1.2-2" }}&Prime;/px
-        </span>
+        <span *ngIf="staticOverlay?.includes('pixel_scale')"> {{ image.pixelScale | number: "1.2-2" }}&Prime;/px </span>
 
         <span *ngIf="staticOverlay?.includes('coord_ra_min') && !!ra" [innerHTML]="ra"> </span>
 

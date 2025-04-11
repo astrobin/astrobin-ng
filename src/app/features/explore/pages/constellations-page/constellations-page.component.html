@@ -4,12 +4,12 @@
   <div class="constellation-jump-to">
     <label for="constellation-selector">{{ "Jump to" | translate }}:</label>
     <ng-select
-      (change)="jumpTo($event)"
       [clearable]="false"
       [items]="constellations"
+      (change)="jumpTo($event)"
+      id="constellation-selector"
       bindLabel="name"
       bindValue="id"
-      id="constellation-selector"
     >
       <ng-template let-item="item" ng-label-tmp> {{ item.id }}: {{ item.name }} </ng-template>
 
@@ -17,7 +17,7 @@
     </ng-select>
   </div>
 
-  <div *ngFor="let constellation of constellations" class="constellation" id="constellation-{{ constellation.id }}">
+  <div *ngFor="let constellation of constellations" id="constellation-{{ constellation.id }}" class="constellation">
     <ng-container *ngIf="constellation.data$ | async as constellationData">
       <div class="row align-items-center">
         <div class="col-12 col-lg-4">
@@ -29,8 +29,8 @@
           </h3>
           <p>{{ constellationData.extract }}</p>
           <a
-            (click)="findImages($event, constellation)"
             [href]="getFindImagesUrl(constellation)"
+            (click)="findImages($event, constellation)"
             class="btn btn-outline-primary"
           >
             {{ "Find images" | translate }}

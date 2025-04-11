@@ -56,7 +56,7 @@ enum FeedType {
   selector: "astrobin-feed",
   template: `
     <div class="feed-container d-flex justify-content-between align-items-center mb-3">
-      <ul #nav="ngbNav" (activeIdChange)="onTabChange($event)" [(activeId)]="activeTab" class="nav-tabs" ngbNav>
+      <ul #nav="ngbNav" (activeIdChange)="onTabChange($event)" class="nav-tabs" [(activeId)]="activeTab" ngbNav>
         <li [ngbNavItem]="FeedTab.FEED" class="me-2">
           <a ngbNavLink translate="Activity feed"></a>
           <ng-template ngbNavContent>
@@ -81,8 +81,8 @@ enum FeedType {
               >
                 <ng-template let-item>
                   <astrobin-feed-item
-                    (openImage)="openImageById(item.id, $event)"
                     [feedItem]="item"
+                    (openImage)="openImageById(item.id, $event)"
                   ></astrobin-feed-item>
 
                   <astrobin-loading-indicator
@@ -129,22 +129,22 @@ enum FeedType {
                 <ng-template let-item>
                   <div class="image-container">
                     <a
-                      (click)="openImage(item)"
                       [href]="'/i/' + (item.hash || item.pk)"
-                      astrobinEventPreventDefault
+                      (click)="openImage(item)"
                       class="image-link"
+                      astrobinEventPreventDefault
                     >
                       <ng-container *ngIf="imageService.getObjectFit(item) as fit">
                         <div
                           [astrobinLazyBackground]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
+                          [attr.aria-label]="item.title"
                           [highResolutionUrl]="imageService.getThumbnail(item, ImageAlias.HD)"
-                          [useHighResolution]="fit.scale > 3"
                           [ngStyle]="{
                             'background-position': fit.position.x + '% ' + fit.position.y + '%',
                             'background-size': fit.scale > 1.5 ? fit.scale * 100 + '%' : 'cover',
                             'background-repeat': 'no-repeat'
                           }"
-                          [attr.aria-label]="item.title"
+                          [useHighResolution]="fit.scale > 3"
                           role="img"
                         ></div>
                       </ng-container>
@@ -189,17 +189,17 @@ enum FeedType {
 
       <div *ngIf="!!currentUserProfile" class="global-personal-switcher">
         <fa-icon
-          (click)="onFeedTypeChange(FeedType.GLOBAL)"
           [class.active]="activeFeedType === FeedType.GLOBAL"
           [icon]="['fas', 'globe']"
           [ngbTooltip]="'Global feed' | translate"
+          (click)="onFeedTypeChange(FeedType.GLOBAL)"
         ></fa-icon>
 
         <fa-icon
-          (click)="onFeedTypeChange(FeedType.PERSONAL)"
           [class.active]="activeFeedType === FeedType.PERSONAL"
           [icon]="['fas', 'user']"
           [ngbTooltip]="'Personal feed' | translate"
+          (click)="onFeedTypeChange(FeedType.PERSONAL)"
         ></fa-icon>
       </div>
     </div>

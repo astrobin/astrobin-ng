@@ -13,7 +13,10 @@ export class FeedItemDisplayTextComponent implements OnChanges {
 
   protected message: SafeHtml = "";
 
-  constructor(private translateService: TranslateService, private sanitizer: DomSanitizer) {}
+  constructor(
+    private translateService: TranslateService,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnChanges(): void {
     this.message = this._getSanitizedMessage();

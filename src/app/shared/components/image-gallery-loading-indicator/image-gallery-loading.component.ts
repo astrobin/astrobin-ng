@@ -24,16 +24,16 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
           activeLayout === UserGalleryActiveLayout.SMALL
             ? 'small'
             : activeLayout === UserGalleryActiveLayout.MEDIUM
-            ? 'medium'
-            : 'large'
+              ? 'medium'
+              : 'large'
         "
         [leftAlignLastRow]="true"
       >
         <ng-template let-item>
           <astrobin-image-loading-indicator
-            class="loading-item"
-            [w]="item.w"
             [h]="item.h"
+            [w]="item.w"
+            class="loading-item"
           ></astrobin-image-loading-indicator>
         </ng-template>
       </astrobin-masonry-layout>

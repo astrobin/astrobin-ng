@@ -8,7 +8,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
   selector: "astrobin-feed-item-revision",
   template: `
     <div class="feed-item-image">
-      <img (click)="navigateToImage()" [src]="feedItem.image" alt="" loading="lazy" />
+      <img [src]="feedItem.image" (click)="navigateToImage()" alt="" loading="lazy" />
     </div>
   `,
   styleUrls: ["./feed-item-revision.component.scss"],

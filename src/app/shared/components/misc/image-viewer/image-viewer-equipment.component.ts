@@ -34,8 +34,8 @@ import { CookieService } from "ngx-cookie";
     <ng-container *ngIf="hasEquipment">
       <div
         *ngIf="hasGuidingEquipment"
-        (click)="toggleCollapse()"
         [class.collapsed]="collapsed"
+        (click)="toggleCollapse()"
         class="metadata-header supports-collapsing"
       >
         {{ "Imaging equipment" | translate }}
@@ -43,14 +43,14 @@ import { CookieService } from "ngx-cookie";
 
       <div
         *ngIf="!hasGuidingEquipment"
-        (click)="toggleCollapse()"
         [class.collapsed]="collapsed"
+        (click)="toggleCollapse()"
         class="metadata-header supports-collapsing"
       >
         {{ "Equipment" | translate }}
       </div>
 
-      <div [collapsed]="collapsed" collapseAnimation class="metadata-section w-100">
+      <div [collapsed]="collapsed" class="metadata-section w-100" collapseAnimation>
         <div class="equipment-section flex-wrap">
           <table class="table table-sm table-mobile-support mb-0">
             <tbody>
@@ -67,8 +67,8 @@ import { CookieService } from "ngx-cookie";
                         [attr]="attr"
                         [attrToIcon]="attrToIcon"
                         [enableKlassIcon]="false"
-                        [highlightTerms]="highlightTerms"
                         [highlightedItems]="highlightedItems[attr]"
+                        [highlightTerms]="highlightTerms"
                         [items]="this[attr]"
                         [legacyEquipmentUrl]="legacyEquipmentUrl.bind(this)"
                         (equipmentItemClicked)="equipmentItemClicked($event.event, $event.item)"

@@ -9,7 +9,7 @@
     ></div>
     <ng-template #presetDescriptionLoading>
       <div class="preset-description mb-5">
-        <small><fa-icon icon="spinner" animation="spin"></fa-icon> {{ "Loading content..." | translate }}</small>
+        <small><fa-icon animation="spin" icon="spinner"></fa-icon> {{ "Loading content..." | translate }}</small>
       </div>
     </ng-template>
   </ng-container>
@@ -20,15 +20,15 @@
       <div class="d-flex flex-wrap gap-3">
         <astrobin-equipment-item-display-name
           *ngFor="let item of equipmentItems[section.property]"
-          (click)="onEquipmentItemClicked(item)"
-          [item]="item"
-          [enableKlassIcon]="true"
           [enableBrandLink]="false"
+          [enableKlassIcon]="true"
           [enableNameLink]="false"
           [enableSummaryPopover]="false"
+          [item]="item"
           [showFrozenAsAmbiguous]="false"
           [showItemUnapprovedInfo]="false"
           [showRetailers]="true"
+          (click)="onEquipmentItemClicked(item)"
           class="equipment-item"
         ></astrobin-equipment-item-display-name>
       </div>

@@ -22,19 +22,19 @@ import { filter, take } from "rxjs/operators";
   selector: "astrobin-user-gallery-image-menu",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div *ngIf="currentUserWrapper.user?.id === user.id" ngbDropdown container="body" class="image-menu">
+      <div *ngIf="currentUserWrapper.user?.id === user.id" class="image-menu" container="body" ngbDropdown>
         <button
-          class="btn btn-sm btn-link btn-no-block no-toggle"
-          ngbDropdownToggle
           id="image-menu-dropdown-button-{{ image.hash || image.pk }}"
-          astrobinEventStopPropagation
+          class="btn btn-sm btn-link btn-no-block no-toggle"
           astrobinEventPreventDefault
+          astrobinEventStopPropagation
+          ngbDropdownToggle
         >
           <fa-icon icon="ellipsis"></fa-icon>
         </button>
 
         <div [attr.aria-labelledby]="'image-menu-dropdown-button-' + (image.hash || image.pk)" ngbDropdownMenu>
-          <a (click)="imageService.navigateToEdit(image)" astrobinEventPreventDefault class="dropdown-item">
+          <a (click)="imageService.navigateToEdit(image)" class="dropdown-item" astrobinEventPreventDefault>
             {{ "Edit" | translate }}
           </a>
 
@@ -42,15 +42,15 @@ import { filter, take } from "rxjs/operators";
             {{ "Set as cover image" | translate }}
           </a>
 
-          <a class="dropdown-item text-danger" astrobinEventPreventDefault (click)="delete()">
+          <a (click)="delete()" class="dropdown-item text-danger" astrobinEventPreventDefault>
             {{ "Delete" | translate }}
           </a>
 
           <a
             *ngIf="collectionId"
             (click)="removeFromCollection()"
-            astrobinEventPreventDefault
             class="dropdown-item text-danger"
+            astrobinEventPreventDefault
           >
             {{ "Remove from collection" | translate }}
           </a>

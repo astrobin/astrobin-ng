@@ -13,7 +13,10 @@ import { expand, reduce } from "rxjs/operators";
 export class RemoteSourceAffiliateApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/remote-source-affiliation/remote-source-affiliate/";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

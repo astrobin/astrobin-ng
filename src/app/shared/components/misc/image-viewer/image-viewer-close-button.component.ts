@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from "@angul
 @Component({
   selector: "astrobin-image-viewer-close-button",
   template: `
-    <button class="btn btn-link text-light" (click)="closeClick.emit()">
+    <button (click)="closeClick.emit()" class="btn btn-link text-light">
       <fa-icon [ngbTooltip]="'Close' | translate" container="body" icon="times"></fa-icon>
     </button>
   `,

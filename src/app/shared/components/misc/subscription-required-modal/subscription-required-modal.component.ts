@@ -16,7 +16,10 @@ export class SubscriptionRequiredModalComponent extends BaseComponentDirective {
   @Input()
   minimumSubscription: SimplifiedSubscriptionName = SimplifiedSubscriptionName.ASTROBIN_LITE_2020;
 
-  constructor(public readonly store$: Store<MainState>, public readonly modal: NgbActiveModal) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly modal: NgbActiveModal
+  ) {
     super(store$);
   }
 }

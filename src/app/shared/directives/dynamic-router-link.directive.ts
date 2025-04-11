@@ -5,7 +5,10 @@ import { Router } from "@angular/router";
   selector: "[dynamicRouterLink]"
 })
 export class DynamicRouterLinkDirective implements AfterViewInit {
-  constructor(private el: ElementRef, private router: Router) {}
+  constructor(
+    private el: ElementRef,
+    private router: Router
+  ) {}
 
   ngAfterViewInit() {
     const links = this.el.nativeElement.getElementsByTagName("a");

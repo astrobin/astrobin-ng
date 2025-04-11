@@ -14,7 +14,10 @@ export class OthersInBrandComponent extends BaseComponentDirective {
   @Input()
   items: EquipmentItemBaseInterface[];
 
-  constructor(public readonly store$: Store<MainState>, public readonly translateService: TranslateService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly translateService: TranslateService
+  ) {
     super(store$);
   }
 

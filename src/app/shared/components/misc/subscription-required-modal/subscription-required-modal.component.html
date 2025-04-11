@@ -1,6 +1,6 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="subscription-required-modal">{{ "Sorry" | translate }} :-(</h4>
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <h4 id="subscription-required-modal" class="modal-title">{{ "Sorry" | translate }} :-(</h4>
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -10,15 +10,14 @@
     *ngIf="minimumSubscription !== SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020"
     [innerHTML]="
       'To use this feature, you need the <strong>{{0}}</strong> subscription or higher.'
-        | translate : { '0': minimumSubscription }
+        | translate: { '0': minimumSubscription }
     "
   ></p>
 
   <p
     *ngIf="minimumSubscription === SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020"
     [innerHTML]="
-      'To use this feature, you need the <strong>{{0}}</strong> subscription.'
-        | translate : { '0': minimumSubscription }
+      'To use this feature, you need the <strong>{{0}}</strong> subscription.' | translate: { '0': minimumSubscription }
     "
   ></p>
 

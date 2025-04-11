@@ -19,11 +19,11 @@ import { CookieService } from "ngx-cookie";
   selector: "astrobin-image-viewer-guiding-equipment",
   template: `
     <ng-container *ngIf="hasGuidingEquipment">
-      <div (click)="toggleCollapse()" [class.collapsed]="collapsed" class="metadata-header supports-collapsing">
+      <div [class.collapsed]="collapsed" (click)="toggleCollapse()" class="metadata-header supports-collapsing">
         {{ "Guiding equipment" | translate }}
       </div>
 
-      <div [collapsed]="collapsed" collapseAnimation class="metadata-section w-100">
+      <div [collapsed]="collapsed" class="metadata-section w-100" collapseAnimation>
         <div class="equipment-section">
           <table class="table table-sm table-mobile-support mb-0">
             <tbody>
@@ -38,9 +38,9 @@ import { CookieService } from "ngx-cookie";
                     <div class="equipment-container">
                       <astrobin-image-viewer-equipment-items
                         [attr]="attr"
-                        [items]="this[attr]"
-                        [enableKlassIcon]="false"
                         [attrToIcon]="attrToIcon"
+                        [enableKlassIcon]="false"
+                        [items]="this[attr]"
                         [legacyEquipmentUrl]="legacyEquipmentUrl.bind(this)"
                         (equipmentItemClicked)="equipmentItemClicked($event.event, $event.item)"
                         (legacyEquipmentItemClicked)="legacyEquipmentItemClicked($event.event, $event.item)"

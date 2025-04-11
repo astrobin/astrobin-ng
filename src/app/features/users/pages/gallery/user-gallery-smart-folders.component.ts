@@ -34,10 +34,10 @@ export enum SmartFolderType {
         <ng-container *ngFor="let smartFolder of smartFolders">
           <a
             *ngIf="!smartFolder.onlyOwner || currentUserWrapper.user?.id === user.id"
-            [routerLink]="['/u', user.username]"
             [queryParams]="{ 'folder-type': smartFolder.type }"
-            fragment="smart-folders"
+            [routerLink]="['/u', user.username]"
             class="smart-folder-category"
+            fragment="smart-folders"
           >
             <div class="smart-folder-background"></div>
             <div class="smart-folder-stars"></div>
@@ -63,10 +63,10 @@ export enum SmartFolderType {
 
       <astrobin-user-gallery-smart-folder
         *ngIf="activeFolderType"
-        (activeChange)="activeChange.emit($event)"
+        [folderType]="activeFolderType"
         [user]="user"
         [userProfile]="userProfile"
-        [folderType]="activeFolderType"
+        (activeChange)="activeChange.emit($event)"
       ></astrobin-user-gallery-smart-folder>
     </ng-container>
   `,

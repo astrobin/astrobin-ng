@@ -12,7 +12,10 @@ import { Observable } from "rxjs";
 export class TelescopeApiService extends BaseClassicApiService implements TelescopeApiServiceInterface {
   configUrl = this.baseUrl + "/astrobin/telescope";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

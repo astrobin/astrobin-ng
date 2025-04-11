@@ -9,7 +9,10 @@ import { LoadingService } from "@core/services/loading.service";
 export class SoftwareApiService extends MigratableGearItemApiService {
   configUrl = this.baseUrl + "/astrobin/software";
 
-  constructor(public loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService, http);
   }
 }

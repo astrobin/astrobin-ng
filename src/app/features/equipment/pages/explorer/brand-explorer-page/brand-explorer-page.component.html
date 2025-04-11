@@ -1,9 +1,9 @@
 <astrobin-mobile-menu
-  (menuClose)="onMobileMenuClose()"
-  (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
   [descriptionTemplate]="descriptionTemplate"
   [template]="navTemplate"
+  [titleTemplate]="titleTemplate"
+  (menuClose)="onMobileMenuClose()"
+  (menuOpen)="onMobileMenuOpen()"
 ></astrobin-mobile-menu>
 
 <ng-template #titleTemplate>
@@ -134,8 +134,8 @@
                   <tr *ngFor="let item of itemsInBrand; trackBy: equipmentItemService.trackBy">
                     <td class="item-name">
                       <a
-                        (click)="viewItem(item)"
                         [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
+                        (click)="viewItem(item)"
                         astrobinEventPreventDefault
                       >
                         <astrobin-equipment-item-display-name
@@ -144,7 +144,7 @@
                         ></astrobin-equipment-item-display-name>
                         <span
                           *ngIf="item.variants?.length > 0"
-                          [innerHTML]="'+ {{numVariants}} variants' | translate : { numVariants: item.variants.length }"
+                          [innerHTML]="'+ {{numVariants}} variants' | translate: { numVariants: item.variants.length }"
                           class="variant-count"
                         >
                         </span>
@@ -162,10 +162,10 @@
                 [model]="{
                   text: { value: activeBrand.name, matchType: MatchType.ALL, onlySearchInTitlesAndDescriptions: false }
                 }"
-                [showRetailers]="false"
                 [showMarketplaceItems]="false"
-                [showStaticOverlay]="false"
                 [showMoreButton]="false"
+                [showRetailers]="false"
+                [showStaticOverlay]="false"
                 class="mt-5 d-block"
                 ordering="-likes"
               ></astrobin-image-search-card>
@@ -209,8 +209,8 @@
                     <tr *ngFor="let brand of brands" data-id="{{ brand.id }}">
                       <td>
                         <a
-                          (click)="viewBrand(brand)"
                           [href]="'/equipment/explorer/brand/' + brand.id + '/' + UtilsService.slugify(brand.name)"
+                          (click)="viewBrand(brand)"
                           astrobinEventPreventDefault
                         >
                           {{ brand.name }}

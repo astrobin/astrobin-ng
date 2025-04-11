@@ -21,7 +21,10 @@ export class SearchFilterEditorModalComponent extends BaseComponentDirective {
   @Input()
   fields: FormlyFieldConfig[];
 
-  constructor(public readonly store$: Store<MainState>, public readonly modal: NgbActiveModal) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly modal: NgbActiveModal
+  ) {
     super(store$);
   }
 

@@ -16,7 +16,10 @@ import { catchError, filter, first, map, switchMap, take, tap } from "rxjs/opera
   providedIn: "root"
 })
 export class ImageUserGroupsResolver {
-  constructor(private readonly store$: Store<MainState>, private readonly groupApiService: GroupApiService) {}
+  constructor(
+    private readonly store$: Store<MainState>,
+    private readonly groupApiService: GroupApiService
+  ) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {
     const imageId = route.paramMap.get("imageId");

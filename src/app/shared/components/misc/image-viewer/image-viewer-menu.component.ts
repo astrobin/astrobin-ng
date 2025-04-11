@@ -58,14 +58,14 @@ import { filter, take, takeUntil } from "rxjs/operators";
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <ng-container *ngIf="currentUserWrapper.user?.id === image.user">
-        <a (click)="imageService.navigateToEdit(image)" astrobinEventPreventDefault [class]="itemClass">
+        <a [class]="itemClass" (click)="imageService.navigateToEdit(image)" astrobinEventPreventDefault>
           {{ "Edit project" | translate }}
         </a>
 
         <a
           *ngIf="revision.label"
-          [routerLink]="['/i', image.hash || image.pk.toString(), revisionLabel, 'edit']"
           [class]="itemClass"
+          [routerLink]="['/i', image.hash || image.pk.toString(), revisionLabel, 'edit']"
         >
           {{ "Edit revision" | translate }}
           <span class="badge rounded-pill bg-light border border-dark fw-bold text-dark">
@@ -75,9 +75,9 @@ import { filter, take, takeUntil } from "rxjs/operators";
 
         <a
           *ngIf="image.solution"
-          [routerLink]="['/i', image.hash || image.pk.toString(), 'plate-solving-settings']"
-          [queryParams]="{ r: revisionLabel }"
           [class]="itemClass"
+          [queryParams]="{ r: revisionLabel }"
+          [routerLink]="['/i', image.hash || image.pk.toString(), 'plate-solving-settings']"
         >
           {{ "Edit plate-solving settings" | translate }}
           <span class="badge rounded-pill bg-light border border-dark fw-bold text-dark">
@@ -85,11 +85,11 @@ import { filter, take, takeUntil } from "rxjs/operators";
           </span>
         </a>
 
-        <a [routerLink]="['/uploader/revision', image.hash || image.pk.toString()]" [class]="itemClass">
+        <a [class]="itemClass" [routerLink]="['/uploader/revision', image.hash || image.pk.toString()]">
           {{ "Upload new revision" | translate }}
         </a>
 
-        <a (click)="uploadCompressedSourceClicked()" [class]="itemClass" astrobinEventPreventDefault href="#">
+        <a [class]="itemClass" (click)="uploadCompressedSourceClicked()" astrobinEventPreventDefault href="#">
           <ng-container *ngIf="image.uncompressedSourceFile">
             {{ "Replace/delete uncompressed source file" | translate }}
           </ng-container>
@@ -100,10 +100,10 @@ import { filter, take, takeUntil } from "rxjs/operators";
 
         <a
           *ngIf="!image.isWip"
+          [class]="itemClass"
+          (click)="unpublish()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          (click)="unpublish()"
-          [class]="itemClass"
           href="#"
         >
           {{ "Move to staging area" | translate }}
@@ -111,37 +111,37 @@ import { filter, take, takeUntil } from "rxjs/operators";
 
         <a
           *ngIf="!image.submittedForIotdTpConsideration"
-          (click)="openSubmitForIotdTpConsiderationOffcanvas()"
           [class]="itemClass"
+          (click)="openSubmitForIotdTpConsiderationOffcanvas()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
           href="#"
         >
           {{ "Submit for IOTD/TP consideration" | translate }}
           <small *ngIf="image.published" class="d-block text-muted">
-            {{ "Deadline" }}: {{ image.published | addDays : 30 | utcToLocal | date : "short" }}
+            {{ "Deadline" }}: {{ image.published | addDays: 30 | utcToLocal | date: "short" }}
           </small>
         </a>
 
         <a
           *ngIf="image.submittedForIotdTpConsideration"
-          (click)="viewIotdTpStats()"
           [class]="itemClass"
+          (click)="viewIotdTpStats()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
           href="#"
         >
           {{ "View IOTD/TP stats" | translate }}
           <small class="d-block text-muted">
-            {{ "Submitted" }}: {{ image.submittedForIotdTpConsideration | localDate | date : "short" }}
+            {{ "Submitted" }}: {{ image.submittedForIotdTpConsideration | localDate | date: "short" }}
           </small>
         </a>
 
         <a
+          [class]="itemClass + ' text-danger'"
+          (click)="delete()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          (click)="delete()"
-          [class]="itemClass + ' text-danger'"
           href="#"
         >
           {{ "Delete" | translate }}
@@ -156,10 +156,10 @@ import { filter, take, takeUntil } from "rxjs/operators";
         <div [class]="dividerClass"></div>
 
         <a
+          [class]="itemClass"
+          (click)="openDownloadOffcanvas()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          (click)="openDownloadOffcanvas()"
-          [class]="itemClass"
           href="#"
         >
           {{ "Download" | translate }}
@@ -167,8 +167,8 @@ import { filter, take, takeUntil } from "rxjs/operators";
       </ng-container>
 
       <a
-        [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString()) + '?force-classic-view'"
         [class]="itemClass"
+        [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString()) + '?force-classic-view'"
       >
         {{ "Classic view" | translate }}
       </a>
@@ -177,41 +177,41 @@ import { filter, take, takeUntil } from "rxjs/operators";
     <ng-template #downloadOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Download" | translate }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <a
           (click)="downloadImage(ImageAlias.REGULAR)"
+          class="menu-item"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="menu-item"
         >
           {{ "Medium" | translate }}
         </a>
 
         <a
           (click)="downloadImage(ImageAlias.HD)"
+          class="menu-item"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="menu-item"
         >
           {{ "Large" | translate }}
         </a>
 
         <a
           (click)="downloadImage(ImageAlias.QHD)"
+          class="menu-item"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="menu-item"
         >
           {{ "Extra large" | translate }}
         </a>
 
         <a
           (click)="downloadImage(ImageAlias.REAL)"
+          class="menu-item"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="menu-item"
         >
           {{ "Full size" | translate }}
         </a>
@@ -222,9 +222,9 @@ import { filter, take, takeUntil } from "rxjs/operators";
           <a
             *ngIf="revision.solution.imageFile"
             (click)="downloadImage('basic_annotations')"
+            class="menu-item"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
-            class="menu-item"
           >
             {{ "Annotations" | translate }}
           </a>
@@ -232,9 +232,9 @@ import { filter, take, takeUntil } from "rxjs/operators";
           <a
             *ngIf="revision.solution.pixinsightSvgAnnotationHd"
             (click)="downloadImage('advanced_annotations')"
+            class="menu-item"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
-            class="menu-item"
           >
             {{ "Advanced annotations" | translate }}
           </a>
@@ -242,9 +242,9 @@ import { filter, take, takeUntil } from "rxjs/operators";
           <a
             *ngIf="revision.solution.pixinsightSvgAnnotationRegular"
             (click)="downloadImage('advanced_annotations_large_font')"
+            class="menu-item"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
-            class="menu-item"
           >
             {{ "Advanced annotations (large font)" | translate }}
           </a>
@@ -254,21 +254,21 @@ import { filter, take, takeUntil } from "rxjs/operators";
           <a
             *ngIf="image.user === currentUserWrapper.user?.id"
             (click)="downloadImage('original')"
+            class="menu-item"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
-            class="menu-item"
           >
-            <fa-icon icon="lock" class="me-2"></fa-icon>
+            <fa-icon class="me-2" icon="lock"></fa-icon>
             {{ "Original" | translate }}
           </a>
 
           <a
             [href]="image.uncompressedSourceFile"
             class="menu-item no-external-link-icon"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
-            <fa-icon icon="lock" class="me-2"></fa-icon>
+            <fa-icon class="me-2" icon="lock"></fa-icon>
             {{ "Uncompressed source file" | translate }}
           </a>
         </ng-container>
@@ -288,7 +288,7 @@ import { filter, take, takeUntil } from "rxjs/operators";
             {{ "Error!" | translate }}
           </ng-container>
         </h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <ng-container *ngIf="maySubmitForIotdTpConsideration === true">
@@ -302,8 +302,8 @@ import { filter, take, takeUntil } from "rxjs/operators";
 
           <form [formGroup]="submitForIotdTpConsiderationForm" (ngSubmit)="submitForIotdTpConsideration()">
             <formly-form
-              [model]="submitForIotdTpConsiderationModel"
               [fields]="submitForIotdTpConsiderationFields"
+              [model]="submitForIotdTpConsiderationModel"
             ></formly-form>
 
             <div class="form-actions">
@@ -316,7 +316,7 @@ import { filter, take, takeUntil } from "rxjs/operators";
 
         <ng-container *ngIf="maySubmitForIotdTpConsideration === false">
           <p>
-            <fa-icon icon="exclamation-triangle" class="me-2"></fa-icon>
+            <fa-icon class="me-2" icon="exclamation-triangle"></fa-icon>
             <span [innerHTML]="reasonIfCannotSubmitForIotdTpConsideration"></span>
           </p>
         </ng-container>
@@ -330,9 +330,9 @@ import { filter, take, takeUntil } from "rxjs/operators";
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">
           {{ "IOTD/TP stats" | translate }}
-          <fa-icon icon="lock" class="ms-2"></fa-icon>
+          <fa-icon class="ms-2" icon="lock"></fa-icon>
         </h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <astrobin-image-viewer-iotd-tp-stats [image]="image"></astrobin-image-viewer-iotd-tp-stats>

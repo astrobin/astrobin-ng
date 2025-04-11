@@ -4,11 +4,11 @@
 
 <ng-template #footerTemplate>
   <ng-container *ngIf="!loading; else loadingTemplate">
-    <a *ngIf="topics?.length > MAX_TOPICS" class="btn btn-secondary" [href]="forumUrl">
+    <a *ngIf="topics?.length > MAX_TOPICS" [href]="forumUrl" class="btn btn-secondary">
       {{ "View all" | translate }}
     </a>
 
-    <a class="btn btn-primary" [href]="forumNewTopicUrl">
+    <a [href]="forumNewTopicUrl" class="btn btn-primary">
       {{ "New topic" | translate }}
     </a>
   </ng-container>
@@ -20,9 +20,9 @@
       <tbody>
         <tr *ngFor="let topic of topics; trackBy: topicTrackByFn">
           <td class="read-status">
-            <fa-icon *ngIf="topic.read" icon="circle" class="text-muted" [title]="'Read' | translate"></fa-icon>
+            <fa-icon *ngIf="topic.read" [title]="'Read' | translate" class="text-muted" icon="circle"></fa-icon>
 
-            <fa-icon *ngIf="!topic.read" icon="circle" class="text-primary" [title]="'Unread' | translate"></fa-icon>
+            <fa-icon *ngIf="!topic.read" [title]="'Unread' | translate" class="text-primary" icon="circle"></fa-icon>
           </td>
 
           <td class="title">
@@ -40,7 +40,7 @@
                 <a [routerLink]="['/u', topic.username]">{{ topic.displayName }}</a
                 >&middot;
                 <abbr [attr.title]="topic.created | localDate">
-                  {{ topic.created | localDate | timeago : true }}
+                  {{ topic.created | localDate | timeago: true }}
                 </abbr>
               </div>
               <div class="last-post">
@@ -48,7 +48,7 @@
                 <a [routerLink]="['/u', topic.lastPostUsername]">{{ topic.lastPostUserDisplayName }}</a
                 >&middot;
                 <abbr [attr.title]="topic.lastPostTimestamp | localDate">
-                  {{ topic.lastPostTimestamp | localDate | timeago : true }}
+                  {{ topic.lastPostTimestamp | localDate | timeago: true }}
                 </abbr>
               </div>
             </div>
@@ -57,19 +57,19 @@
           <td class="stats d-none d-md-table-cell">
             <div class="d-flex gap-3">
               <div>
-                <fa-icon icon="comment" class="me-1"></fa-icon>
+                <fa-icon class="me-1" icon="comment"></fa-icon>
                 {{ topic.postCount - 1 }}
               </div>
 
               <div>
-                <fa-icon icon="eye" class="me-1"></fa-icon>
+                <fa-icon class="me-1" icon="eye"></fa-icon>
                 {{ topic.views }}
               </div>
             </div>
           </td>
 
           <td class="go-to-last-post">
-            <a class="p-3" [href]="classicRoutesService.FORUM_POST(topic.lastPostId.toString())"> &rsaquo; </a>
+            <a [href]="classicRoutesService.FORUM_POST(topic.lastPostId.toString())" class="p-3"> &rsaquo; </a>
           </td>
         </tr>
       </tbody>

@@ -36,10 +36,10 @@ interface RevisionDataInterface {
       <div *ngIf="revisionData && revisionData.length > 1" class="revisions flex-wrap">
         <div
           *ngFor="let revision of revisionData"
-          (click)="!revision.deleting && onRevisionSelected(revision.label)"
           [class.active]="revision.active"
-          [class.final]="revision.isFinal"
           [class.deleting]="revision.deleting"
+          [class.final]="revision.isFinal"
+          (click)="!revision.deleting && onRevisionSelected(revision.label)"
           class="revision"
         >
           <img [src]="revision.gallery?.url" alt="" />
@@ -53,22 +53,22 @@ interface RevisionDataInterface {
           <div
             *ngIf="currentUserWrapper.user?.id === image.user && !revision.deleting"
             class="no-toggle z-index-1"
-            ngbDropdown
             container="body"
+            ngbDropdown
           >
             <fa-icon
-              astrobinEventStopPropagation
-              ngbDropdownToggle
-              icon="ellipsis"
               class="dropdown-toggle no-toggle"
-              aria-haspopup="true"
               aria-expanded="false"
+              aria-haspopup="true"
+              astrobinEventStopPropagation
+              icon="ellipsis"
+              ngbDropdownToggle
             ></fa-icon>
-            <div ngbDropdownMenu class="dropdown-menu">
+            <div class="dropdown-menu" ngbDropdownMenu>
               <a
                 *ngIf="revision.label !== ORIGINAL_REVISION_LABEL"
-                ngbDropdownItem
                 [routerLink]="['/i', image.hash || image.pk.toString(), revision.label, 'edit']"
+                ngbDropdownItem
               >
                 {{ "Edit" | translate }}
               </a>
@@ -76,10 +76,10 @@ interface RevisionDataInterface {
               <a
                 *ngIf="!revision.isFinal"
                 (click)="markAsFinal(revision)"
-                ngbDropdownItem
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
                 href="#"
+                ngbDropdownItem
               >
                 {{ "Mark as final" | translate }}
               </a>
@@ -91,10 +91,10 @@ interface RevisionDataInterface {
               <a
                 *ngIf="revision.label === ORIGINAL_REVISION_LABEL"
                 (click)="showDeleteOriginalConfirmation()"
-                astrobinEventPreventDefault
                 class="text-danger"
-                ngbDropdownItem
+                astrobinEventPreventDefault
                 href="#"
+                ngbDropdownItem
               >
                 {{ "Delete" | translate }}
               </a>
@@ -102,10 +102,10 @@ interface RevisionDataInterface {
               <a
                 *ngIf="revision.label !== ORIGINAL_REVISION_LABEL && revision.label !== FINAL_REVISION_LABEL"
                 (click)="showDeleteRevisionConfirmation(revision.id)"
-                astrobinEventPreventDefault
                 class="text-danger"
-                ngbDropdownItem
+                astrobinEventPreventDefault
                 href="#"
+                ngbDropdownItem
               >
                 {{ "Delete" | translate }}
               </a>

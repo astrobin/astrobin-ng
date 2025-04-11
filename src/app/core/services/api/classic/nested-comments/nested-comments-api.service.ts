@@ -14,7 +14,10 @@ import { map } from "rxjs/operators";
 export class NestedCommentsApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/nestedcomments";
 
-  constructor(public loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

@@ -34,9 +34,9 @@ import { CookieService } from "ngx-cookie";
         <div class="metadata-icon">
           <fa-icon
             [ngbTooltip]="'Celestial hemisphere' | translate"
-            triggers="hover click"
             container="body"
             icon="globe"
+            triggers="hover click"
           ></fa-icon>
         </div>
         <div class="metadata-label">
@@ -48,18 +48,18 @@ import { CookieService } from "ngx-cookie";
         <div class="metadata-icon">
           <img
             [ngbTooltip]="'Constellation' | translate"
-            triggers="hover click"
+            alt=""
             container="body"
             src="/assets/images/subject-types/constellation-white.png?v=1"
-            alt=""
+            triggers="hover click"
           />
         </div>
         <div
-          (click)="constellationClicked($event, constellation)"
           [ngbTooltip]="isTouchDevice ? null : constellationFull"
-          triggers="hover click"
-          container="body"
+          (click)="constellationClicked($event, constellation)"
           class="metadata-link search"
+          container="body"
+          triggers="hover click"
         >
           <span [class.highlighted]="constellationIsSearchTerm">{{ constellation }}</span>
         </div>
@@ -69,17 +69,17 @@ import { CookieService } from "ngx-cookie";
         <div class="metadata-icon">
           <fa-icon
             [ngbTooltip]="'Coordinates' | translate"
-            triggers="hover click"
             container="body"
             icon="crosshairs"
+            triggers="hover click"
           ></fa-icon>
         </div>
         <div class="metadata-label">
           <span
-            (click)="openMoreInfo($event)"
             [innerHTML]="coordinates"
-            astrobinEventPreventDefault
+            (click)="openMoreInfo($event)"
             class="coordinates"
+            astrobinEventPreventDefault
             data-toggle="offcanvas"
           >
           </span>
@@ -90,17 +90,17 @@ import { CookieService } from "ngx-cookie";
         <div class="metadata-icon">
           <fa-icon
             [ngbTooltip]="'Field size' | translate"
-            triggers="hover click"
             container="body"
             icon="arrows-left-right-to-line"
+            triggers="hover click"
           ></fa-icon>
         </div>
         <div
           [innerHTML]="fieldSize"
           [ngbTooltip]="fieldRadiusTooltip"
-          triggers="hover click"
-          container="body"
           class="metadata-label"
+          container="body"
+          triggers="hover click"
         ></div>
       </div>
 
@@ -108,9 +108,9 @@ import { CookieService } from "ngx-cookie";
         <div class="metadata-icon">
           <fa-icon
             [ngbTooltip]="'Pixel scale' | translate"
-            triggers="hover click"
             container="body"
             icon="square"
+            triggers="hover click"
           ></fa-icon>
         </div>
         <div [innerHTML]="pixelScale" class="metadata-label"></div>
@@ -120,18 +120,18 @@ import { CookieService } from "ngx-cookie";
         <div class="metadata-icon">
           <fa-icon
             [ngbTooltip]="'Celestial North' | translate"
-            triggers="hover click"
+            [ngStyle]="{ transform: 'rotate(calc(' + orientationCalculated * -1 + 'deg - 45deg))' }"
             container="body"
             icon="location-arrow"
-            [ngStyle]="{ transform: 'rotate(calc(' + orientationCalculated * -1 + 'deg - 45deg))' }"
+            triggers="hover click"
           ></fa-icon>
         </div>
         <div
           [innerHTML]="orientation"
           [ngbTooltip]="orientationTooltip"
-          triggers="hover click"
-          container="body"
           class="metadata-label"
+          container="body"
+          triggers="hover click"
         ></div>
       </div>
     </div>
@@ -139,7 +139,7 @@ import { CookieService } from "ngx-cookie";
     <ng-template #moreInfoTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h4 class="offcanvas-title">{{ "Astrometry details" | translate }}</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <table class="table table-striped">
@@ -199,7 +199,7 @@ import { CookieService } from "ngx-cookie";
           {{ "Copy the coordinates in decimal or sexagesimal format to your clipboard." | translate }}
         </p>
 
-        <textarea class="form-control mt-1" rows="6" readonly>{{ coordinatesTextArea }}</textarea>
+        <textarea class="form-control mt-1" readonly rows="6">{{ coordinatesTextArea }}</textarea>
 
         <hr class="my-4" />
 
@@ -215,8 +215,8 @@ import { CookieService } from "ngx-cookie";
           <button
             *ngFor="let degree of [1, 2, 3, 4, 5]"
             (click)="findImagesInTheSameArea(degree)"
-            astrobinEventPreventDefault
             class="btn btn-outline-secondary m-0 p-2"
+            astrobinEventPreventDefault
           >
             <span class="symbol">±</span><span class="value">{{ degree }}</span
             ><span class="symbol">°</span>

@@ -51,7 +51,7 @@ enum ArchiveType {
   template: `
     <div class="page has-breadcrumb">
       <div class="tabs-container d-flex justify-content-between align-items-center mb-1 mb-md-2 mb-lg-3">
-        <ul ngbNav #nav="ngbNav" (navChange)="onTabChange($event)" [(activeId)]="activeTab" class="nav-tabs">
+        <ul #nav="ngbNav" (navChange)="onTabChange($event)" class="nav-tabs" [(activeId)]="activeTab" ngbNav>
           <li [ngbNavItem]="ArchiveType.IOTD">
             <button ngbNavLink>
               <span class="d-none d-md-inline">{{ "Image of the day" | translate }}</span>
@@ -76,8 +76,8 @@ enum ArchiveType {
         </ul>
 
         <div class="d-flex flex-nowrap align-items-center me-2">
-          <div ngbDropdown [placement]="'bottom-end'" class="dropdown px-2 py-3 d-none d-md-block">
-            <button ngbDropdownToggle class="btn btn-link text-primary no-toggle">
+          <div [placement]="'bottom-end'" class="dropdown px-2 py-3 d-none d-md-block" ngbDropdown>
+            <button class="btn btn-link text-primary no-toggle" ngbDropdownToggle>
               <fa-icon icon="filter"></fa-icon>
             </button>
             <div ngbDropdownMenu>
@@ -107,7 +107,7 @@ enum ArchiveType {
             </div>
           </div>
 
-          <a href="https://welcome.astrobin.com/iotd" target="_blank" rel="noopener" class="px-2 py-3">
+          <a class="px-2 py-3" href="https://welcome.astrobin.com/iotd" rel="noopener" target="_blank">
             <fa-icon icon="info-circle"></fa-icon>
           </a>
         </div>
@@ -123,12 +123,12 @@ enum ArchiveType {
         <ng-template [ngTemplateOutlet]="loadingTemplate"></ng-template>
       </ng-container>
 
-      <astrobin-masonry-layout [layout]="'small'" [items]="items">
+      <astrobin-masonry-layout [items]="items" [layout]="'small'">
         <ng-template let-item>
           <astrobin-iotd-tp-archive-item
             @fadeInOut
-            (click)="openImageById(item.image['hash'] || item.image['pk'])"
             [item]="item"
+            (click)="openImageById(item.image['hash'] || item.image['pk'])"
           ></astrobin-iotd-tp-archive-item>
         </ng-template>
       </astrobin-masonry-layout>

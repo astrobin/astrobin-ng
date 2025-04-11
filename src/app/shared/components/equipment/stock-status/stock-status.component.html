@@ -1,7 +1,7 @@
 <fa-icon [class]="listing.stockStatus.toLowerCase()" icon="circle"></fa-icon>
 
 <span
-  [ngbTooltip]="('Last update' | translate) + ': ' + (listing.updated | localDate | timeago : true)"
+  [ngbTooltip]="('Last update' | translate) + ': ' + (listing.updated | localDate | timeago: true)"
   class="stock-status"
 >
   <ng-container *ngIf="listing.stockStatus === StockStatus.UNKNOWN">

@@ -45,12 +45,12 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil } from
       </p>
 
       <input
-        (ngModelChange)="imagesSearchSubject.next($event)"
         [ngModelOptions]="{ standalone: true }"
-        [(ngModel)]="imagesSearch"
+        (ngModelChange)="imagesSearchSubject.next($event)"
         class="form-control mb-2"
-        type="search"
+        [(ngModel)]="imagesSearch"
         placeholder="{{ 'Search' | translate }}"
+        type="search"
       />
 
       <astrobin-loading-indicator *ngIf="loadingImages" @fadeInOut class="mt-2"></astrobin-loading-indicator>
@@ -65,18 +65,18 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil } from
         <ng-template let-item>
           <div
             @fadeInOut
-            (click)="toggleSelected(item)"
             [class.selected]="collection.images?.includes(item.pk)"
             [class.toggling]="togglingImages.includes(item.pk)"
             [class.wip]="item.isWip"
             [ngbTooltip]="item.title"
+            (click)="toggleSelected(item)"
             class="image-container"
             container="body"
           >
-            <img [src]="imageService.getThumbnail(item, ImageAlias.REGULAR)" [alt]="item.title" loading="lazy" />
+            <img [alt]="item.title" [src]="imageService.getThumbnail(item, ImageAlias.REGULAR)" loading="lazy" />
 
             <fa-icon class="check" icon="circle-check"></fa-icon>
-            <fa-icon class="loading-indicator" icon="circle-notch" animation="spin"></fa-icon>
+            <fa-icon class="loading-indicator" animation="spin" icon="circle-notch"></fa-icon>
             <fa-icon class="wip" icon="lock"></fa-icon>
           </div>
         </ng-template>

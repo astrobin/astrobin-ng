@@ -31,7 +31,10 @@ export class CountDownComponent extends BaseComponentDirective implements OnInit
   hoursToTargetDate;
   daysToTargetDate;
 
-  constructor(public readonly store$: Store<MainState>, @Inject(PLATFORM_ID) public readonly platformId) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    @Inject(PLATFORM_ID) public readonly platformId
+  ) {
     super(store$);
   }
 

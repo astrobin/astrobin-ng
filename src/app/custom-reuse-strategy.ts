@@ -23,7 +23,10 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
   private _cache: Map<string, RouteCacheEntry> = new Map();
   private _isBackNavigation = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, locationStrategy: LocationStrategy) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    locationStrategy: LocationStrategy
+  ) {
     this._isBrowser = isPlatformBrowser(platformId);
     if (this._isBrowser) {
       locationStrategy.onPopState(() => {

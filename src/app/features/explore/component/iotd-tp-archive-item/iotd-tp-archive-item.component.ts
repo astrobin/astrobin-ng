@@ -22,18 +22,18 @@ import { take } from "rxjs/operators";
           {{ item.image.title }},
           <span *ngFor="let photographer of photographers; let last = last">
             <a
-              (click)="openGallery(photographer.username)"
               [href]="photographer.link"
-              astrobinEventStopPropagation
-              astrobinEventPreventDefault
+              (click)="openGallery(photographer.username)"
               class="user-display-name"
+              astrobinEventPreventDefault
+              astrobinEventStopPropagation
               >{{ photographer.displayName }}</a
             ><span *ngIf="!last" class="separator">&middot;</span>
           </span>
         </div>
 
         <div class="date">
-          {{ date | localDate | date : "shortDate" }}
+          {{ date | localDate | date: "shortDate" }}
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 
       <div class="feed-item-body">
         <a [href]="classicRoutesService.GROUP(+feedItem.actionObjectObjectId)" class="main-image-container">
-          <img #image src="/assets/images/actstream-group-action.jpg" alt="" class="main-image" loading="lazy" />
+          <img #image class="main-image" alt="" loading="lazy" src="/assets/images/actstream-group-action.jpg" />
         </a>
       </div>
 
@@ -43,7 +43,10 @@ export class FeedItemGroupComponent extends BaseComponentDirective {
   @Input() feedItem: FeedItemInterface;
   @ViewChild("image") imageElement: ElementRef<HTMLImageElement>;
 
-  constructor(public readonly store$: Store<MainState>, public readonly classicRoutesService: ClassicRoutesService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly classicRoutesService: ClassicRoutesService
+  ) {
     super(store$);
   }
 }

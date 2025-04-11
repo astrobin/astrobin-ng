@@ -19,14 +19,14 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
               <ng-container *ngIf="imageService.getObjectFit(collection) as fit">
                 <div
                   [astrobinLazyBackground]="collection.coverThumbnail"
+                  [attr.aria-label]="collection.name"
                   [highResolutionUrl]="collection.coverThumbnailHd"
-                  [useHighResolution]="fit.scale > 3"
                   [ngStyle]="{
                     'background-position': fit.position.x + '% ' + fit.position.y + '%',
                     'background-size': fit.scale > 1.5 ? fit.scale * 100 + '%' : 'cover',
                     'background-repeat': 'no-repeat'
                   }"
-                  [attr.aria-label]="collection.name"
+                  [useHighResolution]="fit.scale > 3"
                   role="img"
                 ></div>
               </ng-container>
@@ -35,8 +35,8 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
             <img
               *ngIf="!collection.coverThumbnail"
               [ngSrc]="'/assets/images/stars.jpg?v=20241008'"
-              alt=""
               class="empty-collection-thumbnail"
+              alt=""
               fill
             />
           </div>
@@ -44,9 +44,9 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 
         <astrobin-user-gallery-collection-menu
           *ngIf="currentUserWrapper.user?.id === collection.user"
+          [collection]="collection"
           [user]="user"
           [userProfile]="userProfile"
-          [collection]="collection"
         ></astrobin-user-gallery-collection-menu>
 
         <div class="collection-name">
@@ -103,7 +103,10 @@ export class UserGalleryCollectionThumbnailComponent extends BaseComponentDirect
   @Input() userProfile: UserProfileInterface;
   @Input() collection: CollectionInterface;
 
-  constructor(public readonly store$: Store<MainState>, public readonly imageService: ImageService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly imageService: ImageService
+  ) {
     super(store$);
   }
 

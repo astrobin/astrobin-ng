@@ -14,7 +14,10 @@ import { Observable } from "rxjs";
 export class FeedApiService extends BaseClassicApiService {
   private readonly _url = this.baseUrl + "/astrobin/frontpage-feed";
 
-  constructor(public readonly loadingService: LoadingService, public readonly httpClient: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly httpClient: HttpClient
+  ) {
     super(loadingService);
   }
 

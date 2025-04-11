@@ -10,7 +10,10 @@ export class LazyBackgroundDirective implements OnInit, OnChanges {
   private _observer: IntersectionObserver;
   private _hasLoaded = false;
 
-  constructor(public readonly el: ElementRef, public readonly renderer: Renderer2) {
+  constructor(
+    public readonly el: ElementRef,
+    public readonly renderer: Renderer2
+  ) {
     this.renderer.setStyle(this.el.nativeElement, "position", "relative");
   }
 

@@ -12,7 +12,10 @@ import { Observable } from "rxjs";
 export class UsersLocationsApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/users/locations";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

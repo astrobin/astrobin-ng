@@ -15,7 +15,10 @@ import { Observable } from "rxjs";
 export class NotificationsApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/notifications";
 
-  constructor(public loadingService: LoadingService, public http: HttpClient) {
+  constructor(
+    public loadingService: LoadingService,
+    public http: HttpClient
+  ) {
     super(loadingService);
   }
 

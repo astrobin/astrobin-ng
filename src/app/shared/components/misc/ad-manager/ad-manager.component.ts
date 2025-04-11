@@ -25,10 +25,10 @@ import { fadeInOut } from "@shared/animations";
   template: `
     <div
       *ngIf="isBrowser && unitPath && divId && size"
+      [class.ad-rendered]="rendered"
       [id]="divId"
       [style.height.px]="loading || rendered ? height : 0"
       class="ad-container"
-      [class.ad-rendered]="rendered"
     ></div>
 
     <astrobin-loading-indicator *ngIf="loading && !rendered"></astrobin-loading-indicator>
@@ -36,8 +36,8 @@ import { fadeInOut } from "@shared/animations";
     <img
       *ngIf="!loading && !rendered && !!configName"
       @fadeInOut
-      [src]="'/assets/images/ads/' + configName + '/thank-you-for-not-blocking-ads.jpeg?v=1'"
       [alt]="'Thank you for not blocking ads!' | translate"
+      [src]="'/assets/images/ads/' + configName + '/thank-you-for-not-blocking-ads.jpeg?v=1'"
       class="default-ad"
     />
 
@@ -50,7 +50,7 @@ import { fadeInOut } from "@shared/animations";
         <h5 class="offcanvas-title">
           {{ "Remove ads" | translate }}
         </h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
 
       <div class="offcanvas-body">

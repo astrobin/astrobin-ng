@@ -27,8 +27,8 @@ import { CookieService } from "ngx-cookie";
   template: `
     <div
       *ngIf="objectsInField?.length > 0"
-      (click)="toggleCollapse()"
       [class.collapsed]="collapsed"
+      (click)="toggleCollapse()"
       class="metadata-header supports-collapsing"
     >
       {{ "Objects" | translate }}
@@ -37,20 +37,20 @@ import { CookieService } from "ngx-cookie";
     <div
       *ngIf="objectsInField?.length > 0"
       [collapsed]="collapsed"
-      collapseAnimation
       class="metadata-section bg-transparent"
+      collapseAnimation
     >
       <div class="metadata-item objects-in-field">
         <div class="metadata-label flex-wrap">
-          <a *ngFor="let item of objectsInField" (click)="objectInFieldClicked($event, item)" href="#" class="value">
-            <span class="name" [innerHTML]="item | highlight : highlightTerms"></span>
+          <a *ngFor="let item of objectsInField" (click)="objectInFieldClicked($event, item)" class="value" href="#">
+            <span [innerHTML]="item | highlight: highlightTerms" class="name"></span>
           </a>
 
           <a
             *ngIf="moreObjectsInField?.length > 0"
             (click)="moreObjectsInFieldClicked($event)"
-            href="#"
             class="value more"
+            href="#"
           >
             {{ "+ {{ count }} more" | translate: { count: moreObjectsInField.length } }}
           </a>
@@ -61,13 +61,13 @@ import { CookieService } from "ngx-cookie";
     <ng-template #moreObjectsInFieldTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h4 class="offcanvas-title">{{ "Additional objects in this field" | translate }}</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <ul class="flex-wrap">
           <li *ngFor="let item of moreObjectsInField">
-            <a (click)="objectInFieldClicked($event, item)" href="#" class="value">
-              <span class="name" [innerHTML]="item | highlight : highlightTerms"></span>
+            <a (click)="objectInFieldClicked($event, item)" class="value" href="#">
+              <span [innerHTML]="item | highlight: highlightTerms" class="name"></span>
             </a>
           </li>
         </ul>

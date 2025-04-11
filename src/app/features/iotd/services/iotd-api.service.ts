@@ -71,7 +71,10 @@ export interface DismissedImage {
   providedIn: "root"
 })
 export class IotdApiService extends BaseClassicApiService {
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 
@@ -212,9 +215,9 @@ export class IotdApiService extends BaseClassicApiService {
 
   getNextAvailableSelectionTime(): Observable<string | null> {
     return this.http
-      .get<{ nextAvailableSelectionTime: string | null }>(
-        `${this.baseUrl}/iotd/judgement-queue/next-available-selection-time/`
-      )
+      .get<{
+        nextAvailableSelectionTime: string | null;
+      }>(`${this.baseUrl}/iotd/judgement-queue/next-available-selection-time/`)
       .pipe(map(response => response.nextAvailableSelectionTime));
   }
 

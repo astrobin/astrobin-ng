@@ -1,9 +1,9 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="unapprove-item-modal">
+  <h4 id="unapprove-item-modal" class="modal-title">
     {{ "Unapprove" | translate }}: {{ equipmentItemService.getName$(equipmentItem) | async }}
   </h4>
 
-  <button (click)="cancel()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="cancel()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -17,7 +17,7 @@
     {{ "Cancel" | translate }}
   </button>
 
-  <button (click)="unapprove()" [class.loading]="loadingService.loading$ | async" class="btn btn-danger" type="button">
+  <button [class.loading]="loadingService.loading$ | async" (click)="unapprove()" class="btn btn-danger" type="button">
     {{ "Unapprove" | translate }}
   </button>
 </div>

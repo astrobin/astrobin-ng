@@ -24,7 +24,10 @@ export interface FilterSummary {
   providedIn: "root"
 })
 export class FilterAcquisitionService {
-  constructor(private readonly translateService: TranslateService, private readonly filterService: FilterService) {}
+  constructor(
+    private readonly translateService: TranslateService,
+    private readonly filterService: FilterService
+  ) {}
 
   /**
    * Determines the filter type from an acquisition

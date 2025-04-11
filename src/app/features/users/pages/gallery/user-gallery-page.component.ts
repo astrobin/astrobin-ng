@@ -29,8 +29,8 @@ import { filter, map, take, takeUntil } from "rxjs/operators";
     <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="page has-infinite-scroll">
       <astrobin-ad-manager
         #ad
-        [style.visibility]="showAd ? 'visible' : 'hidden'"
         [configName]="showAd ? 'wide' : null"
+        [style.visibility]="showAd ? 'visible' : 'hidden'"
       ></astrobin-ad-manager>
 
       <astrobin-user-gallery-header [user]="user" [userProfile]="userProfile"></astrobin-user-gallery-header>

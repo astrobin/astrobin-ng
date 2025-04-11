@@ -57,9 +57,9 @@ import { filter, map, switchMap, takeUntil } from "rxjs/operators";
 
     <ng-template #trashTemplate>
       <button
-        class="btn btn-secondary mb-3 float-md-end"
         [class.loading]="loading || loadingMore"
         (click)="emptyTrash()"
+        class="btn btn-secondary mb-3 float-md-end"
         translate="Empty trash"
       ></button>
 
@@ -79,18 +79,18 @@ import { filter, map, switchMap, takeUntil } from "rxjs/operators";
               <td class="thumbnail">
                 <img [src]="imageService.getGalleryThumbnail(image)" alt="" />
               </td>
-              <td class="title" [attr.data-label]="'Title' | translate">{{ image.title }}</td>
-              <td class="uploaded" [attr.data-label]="'Uploaded' | translate">
-                {{ image.uploaded | localDate | date : "mediumDate" }}
+              <td [attr.data-label]="'Title' | translate" class="title">{{ image.title }}</td>
+              <td [attr.data-label]="'Uploaded' | translate" class="uploaded">
+                {{ image.uploaded | localDate | date: "mediumDate" }}
               </td>
-              <td class="deleted" [attr.data-label]="'Deleted' | translate">
-                {{ image.deleted | localDate | date : "mediumDate" }}
+              <td [attr.data-label]="'Deleted' | translate" class="deleted">
+                {{ image.deleted | localDate | date: "mediumDate" }}
               </td>
               <td class="restore">
                 <button
+                  [class.loading]="restoringImage === image.pk"
                   (click)="restoreImage(image)"
                   class="btn btn-link btn-no-block link-primary"
-                  [class.loading]="restoringImage === image.pk"
                   translate="Restore"
                 ></button>
               </td>

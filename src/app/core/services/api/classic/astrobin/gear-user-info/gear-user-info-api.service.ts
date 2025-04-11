@@ -13,7 +13,10 @@ import { Observable } from "rxjs";
 export class GearUserInfoApiService extends MigratableGearItemApiService {
   configUrl = this.baseUrl + "/astrobin/gear-user-info";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService, http);
   }
 

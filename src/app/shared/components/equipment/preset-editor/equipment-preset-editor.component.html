@@ -7,7 +7,7 @@
 </form>
 
 <div class="form-actions">
-  <button (click)="onSaveClicked()" [class.loading]="loadingService.loading$ | async" class="btn btn-primary">
+  <button [class.loading]="loadingService.loading$ | async" (click)="onSaveClicked()" class="btn btn-primary">
     {{ "Save" | translate }}
   </button>
 </div>

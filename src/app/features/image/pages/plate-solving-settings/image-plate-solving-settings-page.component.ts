@@ -26,12 +26,12 @@ import { switchMap } from "rxjs/operators";
   selector: "astrobin-image-plate-solving-settings-page",
   template: `
     <div class="page has-breadcrumb">
-      <ul ngbNav #nav="ngbNav" class="nav-tabs">
+      <ul #nav="ngbNav" class="nav-tabs" ngbNav>
         <li ngbNavItem>
           <a ngbNavLink translate="Basic settings"></a>
           <ng-template ngbNavContent>
             <form [formGroup]="basicForm" class="mt-4">
-              <formly-form [form]="basicForm" [model]="basicModel" [fields]="basicFields"></formly-form>
+              <formly-form [fields]="basicFields" [form]="basicForm" [model]="basicModel"></formly-form>
             </form>
           </ng-template>
         </li>
@@ -49,9 +49,9 @@ import { switchMap } from "rxjs/operators";
 
               <formly-form
                 *ngIf="hasValidBasicSolution"
+                [fields]="advancedFields"
                 [form]="advancedForm"
                 [model]="advancedModel"
-                [fields]="advancedFields"
               >
               </formly-form>
             </form>
@@ -63,8 +63,8 @@ import { switchMap } from "rxjs/operators";
 
       <div class="form-actions">
         <button
-          (click)="restart()"
           [class.loading]="loadingService.loading$ | async"
+          (click)="restart()"
           class="btn btn-secondary"
           type="submit"
         >
@@ -72,8 +72,8 @@ import { switchMap } from "rxjs/operators";
         </button>
 
         <button
-          (click)="save()"
           [class.loading]="loadingService.loading$ | async"
+          (click)="save()"
           class="btn btn-primary"
           type="submit"
         >
@@ -82,8 +82,8 @@ import { switchMap } from "rxjs/operators";
 
         <a
           [class.loading]="loadingService.loading$ | async"
-          [routerLink]="'/i/' + (image.hash || image.pk)"
           [queryParams]="{ r: revisionLabel }"
+          [routerLink]="'/i/' + (image.hash || image.pk)"
           class="btn btn-outline-secondary"
           astrobinEventPreventDefault
         >
@@ -97,15 +97,15 @@ import { switchMap } from "rxjs/operators";
         <span [translate]="upgradeMessage"></span>
         <span class="no-wrap">
           <a
-            href="https://welcome.astrobin.com/features/astrometry-tools"
-            target="_blank"
-            rel="noopener noreferrer"
             class="no-wrap btn btn-outline-secondary me-2"
+            href="https://welcome.astrobin.com/features/astrometry-tools"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             {{ "Learn more" | translate }}
           </a>
 
-          <a routerLink="/subscriptions/ultimate" class="no-wrap btn btn-primary">
+          <a class="no-wrap btn btn-primary" routerLink="/subscriptions/ultimate">
             {{ "Upgrade" | translate }}
           </a>
         </span>

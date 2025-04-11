@@ -19,11 +19,11 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
     <div class="feed-item-component feed-item-marketplace-listing">
       <div class="feed-item-header">
         <img
-          class="feed-item-avatar"
           [alt]="feedItem.actionObjectDisplayName"
           [ngSrc]="feedItem.actorAvatar"
-          width="60"
+          class="feed-item-avatar"
           height="60"
+          width="60"
         />
 
         <div class="feed-item-header-text">
@@ -47,8 +47,8 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
             #image
             [alt]="feedItem.actionObjectDisplayName"
             [src]="feedItem.image"
-            loading="lazy"
             class="main-image"
+            loading="lazy"
           />
         </a>
       </div>

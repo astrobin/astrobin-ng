@@ -3,11 +3,11 @@
     <a ngbNavLink routerLink="/equipment/migration-tool"><strong>Migrate</strong> legacy items</a>
   </li>
 
-  <li *ngIf="currentUser$ | async | isInGroup : Constants.EQUIPMENT_MODERATORS_GROUP" ngbNavItem="explorer">
+  <li *ngIf="currentUser$ | async | isInGroup: Constants.EQUIPMENT_MODERATORS_GROUP" ngbNavItem="explorer">
     <a ngbNavLink routerLink="/equipment/migration-explorer"><strong>Explore</strong> new database</a>
   </li>
 
-  <li *ngIf="currentUser$ | async | isInGroup : Constants.EQUIPMENT_MODERATORS_GROUP" ngbNavItem="review">
+  <li *ngIf="currentUser$ | async | isInGroup: Constants.EQUIPMENT_MODERATORS_GROUP" ngbNavItem="review">
     <a ngbNavLink routerLink="/equipment/migration-review"><strong>Review</strong> migrations</a>
   </li>
 </ul>

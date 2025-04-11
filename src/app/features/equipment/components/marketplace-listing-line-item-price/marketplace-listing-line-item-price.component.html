@@ -54,7 +54,7 @@
   </span>
 
   <div class="price">
-    {{ lineItem.price | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
+    {{ lineItem.price | currency: lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
   </div>
 
   <div class="shipping-cost">
@@ -69,7 +69,7 @@
     <ng-container *ngIf="lineItem.shippingCostType === MarketplaceShippingCostType.FIXED">
       <ng-container *ngIf="!!lineItem.shippingCost; else freeShippingTemplate">
         {{ "+ shipping" | translate }}:
-        {{ lineItem.shippingCost | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
+        {{ lineItem.shippingCost | currency: lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
       </ng-container>
       <ng-template #freeShippingTemplate>
         {{ "Free Shipping" | translate }}

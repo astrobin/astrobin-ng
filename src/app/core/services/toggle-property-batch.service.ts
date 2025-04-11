@@ -24,7 +24,10 @@ export class TogglePropertyBatchService implements OnDestroy {
   private _batchSubject = new Subject<void>();
   private readonly _BATCH_DELAY = 500; // ms to wait before sending batch
 
-  constructor(private store$: Store<MainState>, @Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(
+    private store$: Store<MainState>,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
     if (isPlatformBrowser(this.platformId)) {
       this._initBatchProcessing();
     }

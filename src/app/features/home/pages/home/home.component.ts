@@ -43,7 +43,7 @@ import { filter, pairwise, takeUntil } from "rxjs/operators";
           </div>
         </div>
 
-        <astrobin-forum-preview [showHeader]="false" [showFooter]="false" [useCard]="false"></astrobin-forum-preview>
+        <astrobin-forum-preview [showFooter]="false" [showHeader]="false" [useCard]="false"></astrobin-forum-preview>
       </div>
 
       <astrobin-feed></astrobin-feed>

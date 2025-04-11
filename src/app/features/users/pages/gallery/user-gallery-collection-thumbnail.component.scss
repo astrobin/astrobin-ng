@@ -56,7 +56,9 @@ $size: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.3s ease, filter 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      filter 0.3s ease;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {

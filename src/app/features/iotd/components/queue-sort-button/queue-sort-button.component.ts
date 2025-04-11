@@ -17,7 +17,10 @@ export class QueueSortButtonComponent extends BaseComponentDirective {
   @Output()
   queueSortOrderChanged = new EventEmitter<"newest" | "oldest">();
 
-  constructor(public readonly store$: Store<MainState>, public readonly loadingService: LoadingService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly loadingService: LoadingService
+  ) {
     super(store$);
   }
 

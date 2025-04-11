@@ -1,4 +1,16 @@
 {
+  "plugins": ["prettier-plugin-organize-attributes"],
+  "attributeGroups": [
+    "^#.*",
+    "$ANGULAR_STRUCTURAL_DIRECTIVE",
+    "$ANGULAR_ANIMATION",
+    "$ANGULAR_INPUT",
+    "$ANGULAR_OUTPUT",
+    "^id$",
+    "^class$",
+    "$DEFAULT"
+  ],
+  "attributeSort": "ASC",
   "printWidth": 120,
   "tabWidth": 2,
   "useTabs": false,

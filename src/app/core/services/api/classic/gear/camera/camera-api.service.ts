@@ -12,7 +12,10 @@ import { Observable } from "rxjs";
 export class CameraApiService extends BaseClassicApiService implements CameraApiServiceInterface {
   configUrl = this.baseUrl + "/astrobin/camera";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

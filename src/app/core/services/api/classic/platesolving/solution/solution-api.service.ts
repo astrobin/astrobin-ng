@@ -14,7 +14,10 @@ import { map } from "rxjs/operators";
 export class SolutionApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/platesolving/solutions";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

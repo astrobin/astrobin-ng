@@ -9,7 +9,10 @@ import { ToastPackage, ToastrService, Toast } from "ngx-toastr";
   preserveWhitespaces: false
 })
 export class CustomToastComponent extends Toast {
-  constructor(public readonly toastrService: ToastrService, public readonly toastPackage: ToastPackage) {
+  constructor(
+    public readonly toastrService: ToastrService,
+    public readonly toastPackage: ToastPackage
+  ) {
     super(toastrService, toastPackage);
   }
 

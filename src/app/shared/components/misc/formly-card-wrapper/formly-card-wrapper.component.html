@@ -1,8 +1,8 @@
 <div class="card">
   <div
-    (click)="toggleCollapse($event)"
     [class.card-collapsed]="props.collapsible && props.collapsed"
     [class.card-collapsible]="props.collapsible"
+    (click)="toggleCollapse($event)"
     class="card-header d-flex"
   >
     <span class="flex-grow-1">
@@ -10,8 +10,8 @@
     </span>
 
     <button
-      (click)="toggleCollapse($event)"
       *ngIf="props.collapsible"
+      (click)="toggleCollapse($event)"
       class="btn btn-link me-3 mb-0 btn-toggle-collapse w-auto"
     >
       <fa-icon [icon]="props.collapsed ? 'angle-down' : 'angle-up'"></fa-icon>
@@ -19,9 +19,9 @@
   </div>
 
   <div
-    [@collapse]="props.collapsible && props.collapsed ? 'collapsed' : 'expanded'"
     [class.overflow-hidden]="props.collapsible && props.collapsed"
     class="card-body"
+    [@collapse]="props.collapsible && props.collapsed ? 'collapsed' : 'expanded'"
   >
     <ng-container #fieldComponent></ng-container>
   </div>

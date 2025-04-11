@@ -22,7 +22,9 @@
     a {
       color: var(--white);
       border-bottom: 1px solid var(--lighterGrey);
-      transition: color 0.3s, border-color 0.3s;
+      transition:
+        color 0.3s,
+        border-color 0.3s;
 
       @media (hover: hover) {
         &:hover {
@@ -71,7 +73,9 @@
     top: -0.5rem;
     right: -0.5rem;
     opacity: 0;
-    transition: opacity 0.2s, color 0.2s;
+    transition:
+      opacity 0.2s,
+      color 0.2s;
     filter: drop-shadow(0 0 0.25rem rgba(0, 0, 0, 0.5));
 
     fa-icon {

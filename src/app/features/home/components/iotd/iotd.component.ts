@@ -26,8 +26,8 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
             'background-repeat': 'no-repeat',
             'background-size': 'cover'
           }"
-          role="img"
           class="iotd-image"
+          role="img"
         ></a>
 
         <div class="iotd-footer">
@@ -46,22 +46,22 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
               <div class="iotd-label">
                 <span class="text">{{ "Image of the day" | translate }}</span>
                 <a
-                  href="https://welcome.astrobin.com/iotd"
-                  target="_blank"
-                  rel="noopener"
                   class="info-link"
                   astrobinEventStopPropagation
+                  href="https://welcome.astrobin.com/iotd"
+                  rel="noopener"
+                  target="_blank"
                 >
-                  <fa-icon icon="info-circle" class="info-icon"></fa-icon>
+                  <fa-icon class="info-icon" icon="info-circle"></fa-icon>
                 </a>
                 <a
                   (click)="openStats()"
-                  href="#"
                   class="stats-link ms-2"
-                  astrobinEventStopPropagation
                   astrobinEventPreventDefault
+                  astrobinEventStopPropagation
+                  href="#"
                 >
-                  <fa-icon icon="table-cells" class="stats-icon"></fa-icon>
+                  <fa-icon class="stats-icon" icon="table-cells"></fa-icon>
                 </a>
               </div>
 
@@ -78,11 +78,11 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
     <ng-template #iotdStatsOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "IOTD/TP stats (last 365 days)" | translate }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" type="button"></button>
       </div>
 
       <div class="offcanvas-body">
-        <div class="stats-container" *ngIf="iotdStats">
+        <div *ngIf="iotdStats" class="stats-container">
           <!-- Distribution of Astrophotographers -->
           <div class="table-section">
             <h2 class="section-title">{{ "Distribution of astrophotographers" | translate }}</h2>
@@ -136,59 +136,59 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
               <tbody>
                 <tr>
                   <td class="category-cell">{{ "Deep sky" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.deep_sky_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.deep_sky_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.deep_sky_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_deep_sky_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.deep_sky_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.deep_sky_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.deep_sky_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_deep_sky_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Solar system" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.solar_system_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.solar_system_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.solar_system_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_solar_system_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.solar_system_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.solar_system_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.solar_system_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_solar_system_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Extremely wide field" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.wide_field_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.wide_field_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.wide_field_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_wide_field_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.wide_field_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.wide_field_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.wide_field_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_wide_field_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Star trails" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.star_trails_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.star_trails_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.star_trails_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_star_trails_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.star_trails_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.star_trails_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.star_trails_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_star_trails_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Northern lights" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.northern_lights_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.northern_lights_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.northern_lights_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_northern_lights_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.northern_lights_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.northern_lights_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.northern_lights_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_northern_lights_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Noctilucent clouds" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.noctilucent_clouds_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.noctilucent_clouds_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.noctilucent_clouds_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_noctilucent_clouds_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.noctilucent_clouds_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.noctilucent_clouds_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.noctilucent_clouds_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_noctilucent_clouds_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Landscape" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.landscape_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.landscape_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.landscape_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_landscape_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.landscape_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.landscape_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.landscape_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_landscape_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Artificial satellite" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.artificial_satellite_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.artificial_satellite_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.artificial_satellite_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_artificial_satellite_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.artificial_satellite_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.artificial_satellite_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.artificial_satellite_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_artificial_satellite_images | number: "1.2-2" }}%</td>
                 </tr>
               </tbody>
             </table>
@@ -216,66 +216,66 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
               <tbody>
                 <tr>
                   <td class="category-cell">{{ "Backyard" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.backyard_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.backyard_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.backyard_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_backyard_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.backyard_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.backyard_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.backyard_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_backyard_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Traveller" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.traveller_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.traveller_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.traveller_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_traveller_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.traveller_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.traveller_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.traveller_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_traveller_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Private remote observatory" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.own_remote_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.own_remote_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.own_remote_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_own_remote_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.own_remote_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.own_remote_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.own_remote_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_own_remote_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Amateur hosting facility" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.amateur_hosting_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.amateur_hosting_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.amateur_hosting_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_amateur_hosting_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.amateur_hosting_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.amateur_hosting_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.amateur_hosting_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_amateur_hosting_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Public amateur data" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.public_amateur_data_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.public_amateur_data_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.public_amateur_data_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_public_amateur_data_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.public_amateur_data_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.public_amateur_data_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.public_amateur_data_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_public_amateur_data_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Professional, scientific grade data" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.pro_data_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.pro_data_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.pro_data_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_pro_data_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.pro_data_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.pro_data_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.pro_data_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_pro_data_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Mix of multiple sources" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.mix_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.mix_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.mix_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_mix_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.mix_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.mix_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.mix_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_mix_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Other" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.other_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.other_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.other_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_other_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.other_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.other_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.other_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_other_images | number: "1.2-2" }}%</td>
                 </tr>
                 <tr>
                   <td class="category-cell">{{ "Unknown" | translate }}</td>
-                  <td class="numeric-cell">{{ iotdStats.unknown_iotds | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.unknown_tps | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.unknown_tpns | number : "1.2-2" }}%</td>
-                  <td class="numeric-cell">{{ iotdStats.total_unknown_images | number : "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.unknown_iotds | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.unknown_tps | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.unknown_tpns | number: "1.2-2" }}%</td>
+                  <td class="numeric-cell">{{ iotdStats.total_unknown_images | number: "1.2-2" }}%</td>
                 </tr>
               </tbody>
             </table>

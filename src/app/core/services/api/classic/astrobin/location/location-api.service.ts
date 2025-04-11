@@ -12,7 +12,10 @@ import { Observable } from "rxjs";
 export class LocationApiService extends BaseClassicApiService implements LocationApiServiceInterface {
   configUrl = this.baseUrl + "/astrobin/location";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

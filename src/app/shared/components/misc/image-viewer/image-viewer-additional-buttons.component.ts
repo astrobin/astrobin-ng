@@ -26,34 +26,34 @@ import { TranslateService } from "@ngx-translate/core";
   template: `
     <button
       *ngIf="isTouchOnly && hasMouseHover"
-      (click)="toggleViewMouseHover.emit()"
-      astrobinEventPreventDefault
-      class="force-view-mousehover-button btn btn-link text-light"
       [class.active]="forceViewMouseHover"
+      (click)="toggleViewMouseHover.emit()"
+      class="force-view-mousehover-button btn btn-link text-light"
+      astrobinEventPreventDefault
     >
       <fa-icon icon="computer-mouse"></fa-icon>
     </button>
 
     <button
       *ngIf="!isTouchOnly && hasMouseHover"
+      [class.active]="allowTogglingAnnotationsOnMouseHover && showAnnotationsOnMouseHover"
+      [class.disabled]="!allowTogglingAnnotationsOnMouseHover"
       (click)="allowTogglingAnnotationsOnMouseHover && toggleAnnotationsOnMouseHover.emit()"
       (mouseenter)="onToggleAnnotationsOnMouseHoverEnter.emit()"
       (mouseleave)="onToggleAnnotationsOnMouseHoverLeave.emit()"
-      astrobinEventPreventDefault
       class="force-toggle-annotations-on-mousehover-button btn btn-link text-light"
-      [class.active]="allowTogglingAnnotationsOnMouseHover && showAnnotationsOnMouseHover"
-      [class.disabled]="!allowTogglingAnnotationsOnMouseHover"
+      astrobinEventPreventDefault
     >
       <fa-icon [ngbTooltip]="toggleAnnotationsOnMouseHoverTooltip" container="body" icon="crosshairs"></fa-icon>
     </button>
 
     <button
       *ngIf="revision?.solution?.pixscale"
-      (click)="toggleMoonOverlay.emit()"
-      astrobinEventPreventDefault
-      class="moon-scale-button btn btn-link"
       [class.active-moon]="moonOverlayActive"
       [class.text-light]="!moonOverlayActive"
+      (click)="toggleMoonOverlay.emit()"
+      class="moon-scale-button btn btn-link"
+      astrobinEventPreventDefault
     >
       <fa-icon
         [ngbTooltip]="moonOverlayActive ? hideMoonScaleTooltip : showMoonScaleTooltip"
@@ -65,13 +65,13 @@ import { TranslateService } from "@ngx-translate/core";
     <button
       *ngIf="revision?.solution && (revision?.solution.skyplotZoom1 || revision?.solution.pixinsightFindingChart)"
       (click)="openSkyplot()"
-      astrobinEventPreventDefault
       class="skyplot-button btn btn-link text-light"
+      astrobinEventPreventDefault
     >
       <fa-icon [ngbTooltip]="'View sky map' | translate" container="body" icon="map"></fa-icon>
     </button>
 
-    <button *ngIf="!revision?.videoFile" class="histogram-button btn btn-link text-light" (click)="openHistogram()">
+    <button *ngIf="!revision?.videoFile" (click)="openHistogram()" class="histogram-button btn btn-link text-light">
       <fa-icon [ngbTooltip]="'View histogram' | translate" container="body" icon="chart-simple"></fa-icon>
     </button>
 
@@ -81,9 +81,9 @@ import { TranslateService } from "@ngx-translate/core";
         (image.allowImageAdjustmentsWidget === null && image.defaultAllowImageAdjustmentsWidget)
       "
       (click)="showAdjustmentsEditor.emit()"
+      class="adjustments-editor-button btn btn-link text-light d-none d-md-block"
       astrobinEventPreventDefault
       astrobinEventStopPropagation
-      class="adjustments-editor-button btn btn-link text-light d-none d-md-block"
     >
       <fa-icon [ngbTooltip]="'Image adjustments' | translate" container="body" icon="sliders"></fa-icon>
     </button>
@@ -91,8 +91,8 @@ import { TranslateService } from "@ngx-translate/core";
     <ng-template #skyplotModalTemplate>
       <div class="modal-body">
         <img
-          [src]="revision?.solution?.pixinsightFindingChart || revision?.solution?.skyplotZoom1"
           [ngStyle]="{ filter: revision.solution.pixinsightFindingChart ? 'none' : 'grayscale(100%)' }"
+          [src]="revision?.solution?.pixinsightFindingChart || revision?.solution?.skyplotZoom1"
           class="w-100"
           alt=""
         />

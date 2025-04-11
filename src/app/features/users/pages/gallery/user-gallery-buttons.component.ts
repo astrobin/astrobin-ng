@@ -31,36 +31,36 @@ import { takeUntil } from "rxjs/operators";
   selector: "astrobin-user-gallery-buttons",
   template: `
     <div class="d-flex gap-3 justify-content-end align-items-center">
-      <div ngbDropdown class="mb-0 p-0">
+      <div class="mb-0 p-0" ngbDropdown>
         <button class="btn btn-outline-secondary btn-sm py-1 mb-0" ngbDropdownToggle>
           {{ "Sort" | translate }}
         </button>
         <div ngbDropdownMenu>
-          <button class="dropdown-item" (click)="sortChange.emit('title')">
+          <button (click)="sortChange.emit('title')" class="dropdown-item">
             {{ "Title" | translate }}
             <fa-icon *ngIf="subsection === 'title'" icon="check"></fa-icon>
           </button>
-          <button class="dropdown-item" (click)="sortChange.emit('uploaded')">
+          <button (click)="sortChange.emit('uploaded')" class="dropdown-item">
             {{ "Publication date" | translate }}
             <fa-icon *ngIf="subsection === 'uploaded'" icon="check"></fa-icon>
           </button>
-          <button class="dropdown-item" (click)="sortChange.emit('acquired')">
+          <button (click)="sortChange.emit('acquired')" class="dropdown-item">
             {{ "Acquisition date" | translate }}
             <fa-icon *ngIf="subsection === 'acquired'" icon="check"></fa-icon>
           </button>
-          <button class="dropdown-item" (click)="sortChange.emit('views')">
+          <button (click)="sortChange.emit('views')" class="dropdown-item">
             {{ "Views" | translate }}
             <fa-icon *ngIf="ordering === 'views'" icon="check"></fa-icon>
           </button>
-          <button class="dropdown-item" (click)="sortChange.emit('likes')">
+          <button (click)="sortChange.emit('likes')" class="dropdown-item">
             {{ "Likes" | translate }}
             <fa-icon *ngIf="ordering === 'likes'" icon="check"></fa-icon>
           </button>
-          <button class="dropdown-item" (click)="sortChange.emit('bookmarks')">
+          <button (click)="sortChange.emit('bookmarks')" class="dropdown-item">
             {{ "Bookmarks" | translate }}
             <fa-icon *ngIf="ordering === 'bookmarks'" icon="check"></fa-icon>
           </button>
-          <button class="dropdown-item" (click)="sortChange.emit('comments')">
+          <button (click)="sortChange.emit('comments')" class="dropdown-item">
             {{ "Comments" | translate }}
             <fa-icon *ngIf="ordering === 'comments'" icon="check"></fa-icon>
           </button>
@@ -69,44 +69,44 @@ import { takeUntil } from "rxjs/operators";
 
       <fa-icon
         *ngIf="isOwner"
-        (click)="images?.length > 0 && openExportCsvOffcanvas()"
-        icon="file-csv"
-        [ngbTooltip]="'Export CSV' | translate"
         [class.cursor-pointer]="images?.length > 0"
         [class.disabled]="!images?.length"
+        [ngbTooltip]="'Export CSV' | translate"
+        (click)="images?.length > 0 && openExportCsvOffcanvas()"
         container="body"
+        icon="file-csv"
       ></fa-icon>
 
       <fa-icon
-        (click)="setLayout(UserGalleryActiveLayout.SMALL)"
-        icon="table-cells"
-        [ngbTooltip]="'Small layout' | translate"
-        class="cursor-pointer"
         [class.active]="activeLayout === UserGalleryActiveLayout.SMALL"
+        [ngbTooltip]="'Small layout' | translate"
+        (click)="setLayout(UserGalleryActiveLayout.SMALL)"
+        class="cursor-pointer"
         container="body"
+        icon="table-cells"
       />
       <fa-icon
-        (click)="setLayout(UserGalleryActiveLayout.MEDIUM)"
-        icon="table-cells-large"
-        [ngbTooltip]="'Medium layout' | translate"
-        class="cursor-pointer"
         [class.active]="activeLayout === UserGalleryActiveLayout.MEDIUM"
-        container="body"
-      />
-      <fa-icon
-        (click)="setLayout(UserGalleryActiveLayout.LARGE)"
-        icon="square"
-        [ngbTooltip]="'Large layout' | translate"
+        [ngbTooltip]="'Medium layout' | translate"
+        (click)="setLayout(UserGalleryActiveLayout.MEDIUM)"
         class="cursor-pointer"
-        [class.active]="activeLayout === UserGalleryActiveLayout.LARGE"
         container="body"
+        icon="table-cells-large"
       />
       <fa-icon
-        (click)="setLayout(UserGalleryActiveLayout.TABLE)"
+        [class.active]="activeLayout === UserGalleryActiveLayout.LARGE"
+        [ngbTooltip]="'Large layout' | translate"
+        (click)="setLayout(UserGalleryActiveLayout.LARGE)"
+        class="cursor-pointer"
+        container="body"
+        icon="square"
+      />
+      <fa-icon
+        [class.active]="activeLayout === UserGalleryActiveLayout.TABLE"
         [icon]="['fas', 'bars']"
         [ngbTooltip]="'Table layout' | translate"
+        (click)="setLayout(UserGalleryActiveLayout.TABLE)"
         class="cursor-pointer"
-        [class.active]="activeLayout === UserGalleryActiveLayout.TABLE"
         container="body"
       ></fa-icon>
     </div>
@@ -114,7 +114,7 @@ import { takeUntil } from "rxjs/operators";
     <ng-template #exportCsvOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Export CSV" | translate }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <p class="mb-3">
@@ -124,10 +124,10 @@ import { takeUntil } from "rxjs/operators";
           }}
         </p>
 
-        <textarea class="form-control mb-3" rows="15" readonly [value]="csvContent"></textarea>
+        <textarea [value]="csvContent" class="form-control mb-3" readonly rows="15"></textarea>
 
-        <button class="btn btn-secondary" (click)="copyToClipboard()">
-          <fa-icon icon="copy" class="me-2"></fa-icon>
+        <button (click)="copyToClipboard()" class="btn btn-secondary">
+          <fa-icon class="me-2" icon="copy"></fa-icon>
           {{ "Copy" | translate }}
         </button>
       </div>

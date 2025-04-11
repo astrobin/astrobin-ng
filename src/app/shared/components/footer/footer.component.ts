@@ -15,7 +15,10 @@ export class FooterComponent extends BaseComponentDirective {
   protected readonly currentYear: number;
   protected readonly version: string;
 
-  constructor(public readonly store$: Store<MainState>, public readonly classicRoutesService: ClassicRoutesService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly classicRoutesService: ClassicRoutesService
+  ) {
     super(store$);
     this.currentYear = new Date().getFullYear();
     this.version = environment.buildVersion;

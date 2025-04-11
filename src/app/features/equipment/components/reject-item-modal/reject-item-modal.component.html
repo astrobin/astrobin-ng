@@ -1,9 +1,9 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="reject-item-modal">
+  <h4 id="reject-item-modal" class="modal-title">
     {{ "Reject" | translate }}: {{ equipmentItemService.getName$(equipmentItem) | async }}
   </h4>
 
-  <button (click)="cancel()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="cancel()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -27,9 +27,9 @@
   </button>
 
   <button
-    (click)="reject()"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="!form.valid"
+    (click)="reject()"
     class="btn btn-danger"
     type="button"
   >

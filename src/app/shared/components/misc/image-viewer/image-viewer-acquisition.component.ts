@@ -58,8 +58,8 @@ interface DetailedFilterSummary {
   template: `
     <ng-container *ngIf="image.solarSystemAcquisitions?.length && !image.deepSkyAcquisitions?.length">
       <div
-        (click)="toggleCollapse()"
         [class.collapsed]="collapsed"
+        (click)="toggleCollapse()"
         class="metadata-header supports-collapsing d-flex justify-content-between"
       >
         <span *ngIf="currentUserWrapper$ | async as currentUserWrapper">
@@ -73,15 +73,15 @@ interface DetailedFilterSummary {
 
       <div
         *ngIf="image.solarSystemAcquisitions?.length && !image.deepSkyAcquisitions?.length"
-        class="metadata-section px-2"
         [collapsed]="collapsed"
+        class="metadata-section px-2"
         collapseAnimation
       >
         <div *ngIf="solarSystemIntegration" class="metadata-item">
           <div class="metadata-icon">
             <fa-icon icon="clock"></fa-icon>
           </div>
-          <div class="metadata-label" [innerHTML]="solarSystemIntegration"></div>
+          <div [innerHTML]="solarSystemIntegration" class="metadata-label"></div>
         </div>
 
         <div *ngIf="dates?.length" class="metadata-item">
@@ -104,8 +104,8 @@ interface DetailedFilterSummary {
 
     <ng-container *ngIf="image.deepSkyAcquisitions?.length && !image.solarSystemAcquisitions?.length">
       <div
-        (click)="toggleCollapse()"
         [class.collapsed]="collapsed"
+        (click)="toggleCollapse()"
         class="metadata-header supports-collapsing d-flex justify-content-between"
       >
         <span *ngIf="currentUserWrapper$ | async as currentUserWrapper">
@@ -126,7 +126,7 @@ interface DetailedFilterSummary {
         </span>
       </div>
 
-      <div [collapsed]="collapsed" collapseAnimation class="metadata-section">
+      <div [collapsed]="collapsed" class="metadata-section" collapseAnimation>
         <table class="table table-striped d-none d-md-table m-0">
           <tbody>
             <tr *ngFor="let filterSummary of filterSummaries">
@@ -188,7 +188,7 @@ interface DetailedFilterSummary {
               </td>
             </tr>
 
-            <tr class="totals" *ngIf="filterSummaries?.length > 1">
+            <tr *ngIf="filterSummaries?.length > 1" class="totals">
               <td [attr.data-label]="'Totals' | translate">
                 <div class="metadata-item">
                   <div class="metadata-label">
@@ -364,7 +364,7 @@ interface DetailedFilterSummary {
     <ng-template #deepSkyIntegrationDetailsTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h4 class="offcanvas-title">{{ "Acquisition sessions" | translate }}</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <table class="table mt-0 table-mobile-support-md">
@@ -397,7 +397,7 @@ interface DetailedFilterSummary {
               <tr *ngFor="let detail of detailedFilterSummaries[filterType].details">
                 <td [attr.data-label]="'Date' | translate" class="date">
                   <ng-container *ngIf="detail.date">
-                    {{ detail.date | date : "mediumDate" }}
+                    {{ detail.date | date: "mediumDate" }}
                   </ng-container>
                   <ng-container *ngIf="!detail.date">
                     {{ "Unknown date" | translate }}

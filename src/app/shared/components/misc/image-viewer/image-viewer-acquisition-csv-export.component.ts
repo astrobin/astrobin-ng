@@ -23,21 +23,21 @@ import { TranslateService } from "@ngx-translate/core";
   template: `
     <fa-icon
       *ngIf="showExportButton"
-      (click)="openCsvExport($event)"
       [ngbTooltip]="'Export to CSV' | translate"
-      triggers="hover"
+      (click)="openCsvExport($event)"
       class="ms-2 export-csv-button"
       container="body"
       icon="file-csv"
+      triggers="hover"
     ></fa-icon>
 
     <ng-template #csvExportTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Export acquisition sessions" | translate }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()" aria-label="Close"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
       <div class="offcanvas-body">
-        <textarea class="form-control" rows="20" readonly [value]="csvContent"></textarea>
+        <textarea [value]="csvContent" class="form-control" readonly rows="20"></textarea>
 
         <div class="form-text mt-2">
           {{ "This format is compatible with the CSV import feature in the image data editor." | translate }}
@@ -46,7 +46,7 @@ import { TranslateService } from "@ngx-translate/core";
           </a>
         </div>
 
-        <button class="btn btn-secondary mt-3" (click)="copyCsvContent()">{{ copyButtonLabel }}</button>
+        <button (click)="copyCsvContent()" class="btn btn-secondary mt-3">{{ copyButtonLabel }}</button>
       </div>
     </ng-template>
   `,

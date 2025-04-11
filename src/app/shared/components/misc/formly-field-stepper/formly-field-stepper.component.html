@@ -1,4 +1,4 @@
-<ng-wizard #wizard (stepChanged)="onStepChanged($event)" [attr.id]="field.id" [config]="{ selected: currentStepIndex }">
+<ng-wizard #wizard [attr.id]="field.id" [config]="{ selected: currentStepIndex }" (stepChanged)="onStepChanged($event)">
   <ng-wizard-step
     #wizardSteps
     *ngFor="let field of field?.fieldGroup; let index = index; let last = last"
@@ -23,18 +23,18 @@
     <div [class.fixed]="props.fixed" class="form-actions">
       <div class="form-actions-container">
         <button
-          (click)="goToPreviousStep($event, index)"
           [class.loading]="loadingService.loading$ | async"
           [disabled]="isFirstStep(index)"
+          (click)="goToPreviousStep($event, index)"
           class="btn btn-outline-secondary"
         >
           {{ "Previous" | translate }}
         </button>
 
         <button
-          (click)="goToNextStep($event, index)"
           [class.loading]="loadingService.loading$ | async"
           [disabled]="isLastStep(index)"
+          (click)="goToNextStep($event, index)"
           class="btn btn-outline-primary"
         >
           {{ "Next" | translate }}

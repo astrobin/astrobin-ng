@@ -21,7 +21,7 @@ import { map, take, takeUntil } from "rxjs/operators";
   selector: "astrobin-user-gallery-collection-create",
   template: `
     <form *ngIf="!createdCollection" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+      <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
       <div class="d-flex justify-content-end mt-4">
         <button
           (click)="cancelClick.emit(null)"
@@ -41,13 +41,13 @@ import { map, take, takeUntil } from "rxjs/operators";
 
     <ng-container *ngIf="createdCollection">
       <astrobin-user-gallery-collection-add-remove-images
+        [collection]="createdCollection"
         [user]="user"
         [userProfile]="userProfile"
-        [collection]="createdCollection"
       ></astrobin-user-gallery-collection-add-remove-images>
 
       <div class="d-flex justify-content-center mt-4">
-        <button class="btn btn-secondary" (click)="cancelClick.emit(null)" translate="Close" type="button"></button>
+        <button (click)="cancelClick.emit(null)" class="btn btn-secondary" translate="Close" type="button"></button>
       </div>
     </ng-container>
   `,

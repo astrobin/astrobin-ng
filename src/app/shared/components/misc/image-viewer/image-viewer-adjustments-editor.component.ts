@@ -38,39 +38,39 @@ const DEFAULT_INVERT = 0;
         <fa-icon [ngbTooltip]="'Brightness' | translate" container="body" icon="sun"></fa-icon>
         <ngx-slider
           [options]="brightnessSliderOptions"
-          [(value)]="brightness"
           (valueChange)="applyFilters()"
+          [(value)]="brightness"
         ></ngx-slider>
       </div>
 
       <div class="adjuster flex-grow-1">
         <fa-icon [ngbTooltip]="'Contrast' | translate" container="body" icon="circle-half-stroke"></fa-icon>
-        <ngx-slider [options]="contrastSliderOptions" [(value)]="contrast" (valueChange)="applyFilters()"></ngx-slider>
+        <ngx-slider [options]="contrastSliderOptions" (valueChange)="applyFilters()" [(value)]="contrast"></ngx-slider>
       </div>
 
       <div class="adjuster flex-grow-1">
         <fa-icon [ngbTooltip]="'Saturation' | translate" container="body" icon="droplet"></fa-icon>
         <ngx-slider
           [options]="saturationSliderOptions"
-          [(value)]="saturation"
           (valueChange)="applyFilters()"
+          [(value)]="saturation"
         ></ngx-slider>
       </div>
 
       <div class="adjuster">
-        <fa-icon (click)="invertImage()" [class.active]="invert === 1" class="invert" icon="repeat"></fa-icon>
+        <fa-icon [class.active]="invert === 1" (click)="invertImage()" class="invert" icon="repeat"></fa-icon>
       </div>
 
       <div class="d-flex flex-nowrap">
-        <button class="btn btn-link text-light m-0" (click)="reset()" astrobinEventPreventDefault>
+        <button (click)="reset()" class="btn btn-link text-light m-0" astrobinEventPreventDefault>
           <fa-icon icon="undo"></fa-icon>
         </button>
 
-        <button class="btn btn-link text-light m-0" (click)="share()" astrobinEventPreventDefault>
+        <button (click)="share()" class="btn btn-link text-light m-0" astrobinEventPreventDefault>
           <fa-icon icon="share"></fa-icon>
         </button>
 
-        <button class="btn btn-link text-light m-0" (click)="close()" astrobinEventPreventDefault>
+        <button (click)="close()" class="btn btn-link text-light m-0" astrobinEventPreventDefault>
           <fa-icon icon="times-circle"></fa-icon>
         </button>
       </div>
@@ -79,7 +79,7 @@ const DEFAULT_INVERT = 0;
     <ng-template #shareOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Share" | translate }}</h5>
-        <button type="button" class="btn-close text-reset" (click)="offcanvas.close()" aria-label="Close"></button>
+        <button (click)="offcanvas.close()" class="btn-close text-reset" aria-label="Close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <p class="alert alert-dark mb-5">
@@ -91,7 +91,7 @@ const DEFAULT_INVERT = 0;
         </p>
 
         <form [formGroup]="shareForm">
-          <formly-form [form]="shareForm" [fields]="shareFields" [model]="shareModel"></formly-form>
+          <formly-form [fields]="shareFields" [form]="shareForm" [model]="shareModel"></formly-form>
         </form>
       </div>
     </ng-template>

@@ -2,7 +2,7 @@
   <div class="row">
     <div *ngIf="showImage" class="col-12 col-lg-3">
       <div [class.image-large]="showLargeImage" [style.background-image]="'url(' + image + ')'" class="image">
-        <fa-icon (click)="editButtonClick.emit(item)" *ngIf="showEditButtons" class="edit" icon="pen"></fa-icon>
+        <fa-icon *ngIf="showEditButtons" (click)="editButtonClick.emit(item)" class="edit" icon="pen"></fa-icon>
       </div>
     </div>
 
@@ -14,7 +14,7 @@
             [enableNameLink]="showViewLink"
             [item]="item"
           ></astrobin-equipment-item-display-name>
-          <fa-icon (click)="editButtonClick.emit(item)" *ngIf="showEditButtons" class="edit" icon="pen"></fa-icon>
+          <fa-icon *ngIf="showEditButtons" (click)="editButtonClick.emit(item)" class="edit" icon="pen"></fa-icon>
         </h2>
         <h6 *ngIf="showProperties && !!item.website" class="website">
           <a [href]="item.website" target="_blank">{{ UtilsService.shortenUrl(item.website) }}</a>
@@ -53,8 +53,8 @@
                 </ng-template>
 
                 <fa-icon
-                  (click)="editButtonClick.emit(item)"
                   *ngIf="showEditButtons && (property.value | async) === ''"
+                  (click)="editButtonClick.emit(item)"
                   class="edit"
                   icon="pen"
                 ></fa-icon>
@@ -129,7 +129,7 @@
                 <ng-container *ngIf="mostOftenUsedWith.length > 0; else noMostOftenUsedWithTemplate">
                   <ng-container *ngIf="mostOftenUsedWith[0].item$ | async as currentItem">
                     <a
-                      [ngbTooltip]="'{{0}} images in common' | translate : { '0': mostOftenUsedWith[0].matches }"
+                      [ngbTooltip]="'{{0}} images in common' | translate: { '0': mostOftenUsedWith[0].matches }"
                       [routerLink]="['/equipment/explorer', currentItem.klass.toLowerCase(), currentItem.id]"
                     >
                       <astrobin-equipment-item-display-name [item]="currentItem"></astrobin-equipment-item-display-name>
@@ -138,9 +138,9 @@
                 </ng-container>
 
                 <button
-                  (click)="viewMoreMostOftenUsedWith()"
                   *ngIf="mostOftenUsedWith.length > 0"
                   [class.loading]="loadingService.loading$ | async"
+                  (click)="viewMoreMostOftenUsedWith()"
                   class="ms-2 btn btn-outline-primary btn-sm d-none d-lg-inline"
                 >
                   {{ "More" | translate }}
@@ -189,7 +189,7 @@
         ></div>
         <ng-template #communityNotesLoading>
           <div class="community-notes-content">
-            <small><fa-icon icon="spinner" animation="spin"></fa-icon> {{ "Loading content..." | translate }}</small>
+            <small><fa-icon animation="spin" icon="spinner"></fa-icon> {{ "Loading content..." | translate }}</small>
           </div>
         </ng-template>
       </div>
@@ -218,7 +218,7 @@
         <p *ngIf="item.createdBy">
           <strong>{{ "Created by" | translate }}:</strong>
           <astrobin-username [user]="createdBy$ | async"></astrobin-username>
-          <abbr [attr.title]="item.created | localDate"> ({{ item.created | localDate | timeago : true }}) </abbr>
+          <abbr [attr.title]="item.created | localDate"> ({{ item.created | localDate | timeago: true }}) </abbr>
         </p>
 
         <p *ngIf="!item.reviewerDecision">
@@ -226,12 +226,12 @@
           <astrobin-username *ngIf="item.assignee" [user]="assignee$ | async"></astrobin-username>
           <span *ngIf="!item.assignee">{{ "Any moderator" | translate }}</span>
           <a
-            (click)="assign()"
             *ngIf="item.assignee === null || item.assignee === currentUser.id"
             [ngbTooltip]="'Assign' | translate"
+            (click)="assign()"
+            class="assign"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
-            class="assign"
             href="#"
           >
             <fa-icon icon="pen"></fa-icon>
@@ -242,13 +242,13 @@
           <strong>{{ "Reviewed by" | translate }}:</strong>
           <astrobin-username [user]="reviewedBy$ | async"></astrobin-username>
           <abbr *ngIf="item.reviewedTimestamp" [attr.title]="item.reviewedTimestamp | localDate">
-            ({{ item.reviewedTimestamp | localDate | timeago : true }})
+            ({{ item.reviewedTimestamp | localDate | timeago: true }})
           </abbr>
         </p>
         <p *ngIf="lastUpdateVisible">
           <strong>{{ "Last update" | translate }}:</strong>
           <abbr [attr.title]="item.updated | localDate">
-            {{ item.updated | localDate | timeago : true }}
+            {{ item.updated | localDate | timeago: true }}
           </abbr>
         </p>
       </div>
@@ -263,14 +263,14 @@
 <ng-template #moreRelatedItemsOffcanvas let-offcanvas>
   <div class="offcanvas-header">
     <h4 class="offcanvas-title">{{ relatedItemsLabel }}</h4>
-    <button (click)="offcanvas.dismiss()" class="btn-close" type="button" aria-label="Close"></button>
+    <button (click)="offcanvas.dismiss()" class="btn-close" aria-label="Close" type="button"></button>
   </div>
   <div class="offcanvas-body">
     <div *ngFor="let relatedItem of relatedItems" class="related-item-wrapper">
       <div class="equipment-pill">
         <a
-          (click)="offcanvas.dismiss()"
           [routerLink]="['/equipment/explorer', relatedItem.klass.toLowerCase(), relatedItem.id]"
+          (click)="offcanvas.dismiss()"
         >
           <astrobin-equipment-item-display-name [item]="relatedItem"></astrobin-equipment-item-display-name>
         </a>

@@ -1,4 +1,4 @@
-<button (click)="props.click(field, $event)" [className]="props.className">
+<button [className]="props.className" (click)="props.click(field, $event)">
   <ng-container *ngIf="!!props.icon">
     <fa-icon [icon]="props.icon" [ngbTooltip]="props.tooltip"></fa-icon>
   </ng-container>

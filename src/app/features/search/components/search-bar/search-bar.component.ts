@@ -801,8 +801,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
                 this.model.text.matchType !== undefined
                   ? this.model.text.matchType
                   : value.includes(" ")
-                  ? MatchType.ALL
-                  : undefined,
+                    ? MatchType.ALL
+                    : undefined,
               onlySearchInTitlesAndDescriptions: this.searchSettingsModel.simpleMode
             }
           };

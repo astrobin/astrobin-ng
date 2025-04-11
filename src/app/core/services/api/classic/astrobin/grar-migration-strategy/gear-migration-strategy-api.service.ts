@@ -13,7 +13,10 @@ import { catchError } from "rxjs/operators";
 export class GearMigrationStrategyApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/astrobin/gear-migration-strategy";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

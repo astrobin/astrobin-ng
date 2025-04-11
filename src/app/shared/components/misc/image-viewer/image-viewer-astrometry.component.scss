@@ -56,7 +56,9 @@
     display: flex;
     @include flex-gap(row, 0.15rem);
     justify-content: center;
-    cursor: url("/assets/images/search-white.png") 16 16, pointer;
+    cursor:
+      url("/assets/images/search-white.png") 16 16,
+      pointer;
 
     .symbol {
       color: var(--lighterGrey);

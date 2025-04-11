@@ -1,10 +1,10 @@
 <ng-container *ngIf="item; else loading">
   <div
-    class="edit-proposal"
+    [attr.data-id]="editProposal.id"
     [class.opened]="opened"
     [class.pending]="editProposal.editProposalReviewStatus === null"
-    [attr.data-id]="editProposal.id"
     (click)="opened = !opened"
+    class="edit-proposal"
   >
     <div class="row">
       <span class="col user">
@@ -14,7 +14,7 @@
       <span [class]="editProposal.editProposalReviewStatus?.toLowerCase() || 'pending'" class="col-4 col-lg-3 status">
         {{ reviewStatusText }}
       </span>
-      <span class="col-3 d-none d-lg-inline timeago">{{ editProposal.created | localDate | timeago : true }}</span>
+      <span class="col-3 d-none d-lg-inline timeago">{{ editProposal.created | localDate | timeago: true }}</span>
     </div>
   </div>
 
@@ -81,12 +81,12 @@
           ></astrobin-username>
           <span *ngIf="!editProposal.editProposalAssignee">{{ "Anyone" | translate }}</span>
           <a
-            (click)="assign()"
             *ngIf="editProposal.editProposalAssignee === null || editProposal.editProposalAssignee === currentUser.id"
             [ngbTooltip]="'Assign' | translate"
+            (click)="assign()"
+            class="assign"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
-            class="assign"
             href="#"
           >
             <fa-icon icon="pen"></fa-icon>
@@ -96,19 +96,19 @@
 
       <ng-container *ngIf="showReviewButtons$ | async as showReviewButtons">
         <button
-          (click)="rejectEdit()"
           *ngIf="showReviewButtons && rejectButtonsStatus$ | async as buttonStatus"
           [class.loading]="loadingService.loading$ | async"
           [disabled]="buttonStatus.disabled"
+          (click)="rejectEdit()"
           class="btn btn-outline-danger"
         >
           {{ "Reject edit" | translate }}&hellip;
         </button>
         <button
-          (click)="approveEdit()"
           *ngIf="showReviewButtons && approveButtonsStatus$ | async as buttonStatus"
           [class.loading]="loadingService.loading$ | async"
           [disabled]="buttonStatus.disabled"
+          (click)="approveEdit()"
           class="btn btn-success"
         >
           {{ "Approve edit" | translate }}&hellip;

@@ -16,7 +16,10 @@ export class MarketplaceSearchBarComponent extends BaseComponentDirective implem
 
   query: string;
 
-  constructor(public readonly store$: Store<MainState>, public readonly activatedRoute: ActivatedRoute) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly activatedRoute: ActivatedRoute
+  ) {
     super(store$);
   }
 

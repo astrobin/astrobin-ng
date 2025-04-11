@@ -19,23 +19,23 @@
 
     <div class="btn-group ms-3" role="group">
       <input
-        (click)="payYearly()"
         [checked]="recurringUnit === RecurringUnit.YEARLY"
+        (click)="payYearly()"
+        id="pay-yearly"
+        class="btn-check"
         autocomplete="off"
         checked
-        class="btn-check"
-        id="pay-yearly"
         name="pay-yearly"
         type="radio"
       />
       <label class="btn btn-outline-primary" for="pay-yearly">{{ "Yearly" | translate }}</label>
 
       <input
-        (click)="payMonthly()"
         [checked]="recurringUnit === RecurringUnit.MONTHLY"
-        autocomplete="off"
-        class="btn-check"
+        (click)="payMonthly()"
         id="pay-monthly"
+        class="btn-check"
+        autocomplete="off"
         name="pay-monthly"
         type="radio"
       />
@@ -48,9 +48,9 @@
   {{ " Automatic renewal" | translate }}:
 
   <astrobin-toggle-button
-    (toggle)="automaticRenewal = $event; setActiveUserSubscription()"
     *ngIf="recurringUnit === RecurringUnit.YEARLY"
     [value]="automaticRenewal"
+    (toggle)="automaticRenewal = $event; setActiveUserSubscription()"
   >
   </astrobin-toggle-button>
 
@@ -86,11 +86,11 @@
 
       <label for="bank-location-selector">{{ "Preferred bank location" }}:</label>
       <ng-select
-        [(ngModel)]="selectedBankLocation"
         [clearable]="false"
         [items]="bankLocations"
-        bindValue="id"
         id="bank-location-selector"
+        [(ngModel)]="selectedBankLocation"
+        bindValue="id"
       >
       </ng-select>
 
@@ -124,10 +124,10 @@
   <ng-container *ngIf="(alreadySubscribed$ | async) === true">
     <ng-container *ngIf="activeUserSubscription$ | async as activeUserSubscription">
       <button
-        (click)="cancel()"
         *ngIf="!activeUserSubscription.cancelled; else alreadyCancelledTemplate"
         [class.loading]="loadingService.loading$ | async"
         [disabled]="loadingService.loading$ | async"
+        (click)="cancel()"
         class="btn btn-secondary"
       >
         {{ "Cancel subscription" | translate }}
@@ -135,17 +135,17 @@
 
       <ng-template #alreadyCancelledTemplate>
         <p
-          [translateParams]="{ '0': activeUserSubscription.expires | localDate | date : 'mediumDate' }"
           [translate]="'Your subscription is currently cancelled and it will expire on {{0}}.'"
+          [translateParams]="{ '0': activeUserSubscription.expires | localDate | date: 'mediumDate' }"
         ></p>
       </ng-template>
     </ng-container>
   </ng-container>
 
   <button
-    (click)="buy()"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="loadingService.loading$ | async"
+    (click)="buy()"
     class="btn btn-xl btn-primary buy"
   >
     <ng-container *ngIf="!automaticRenewal">
@@ -170,40 +170,40 @@
     <span class="icons">
       <img
         *ngIf="subscriptionsService.supportsAliPayPaymentType"
-        alt="AliPay"
         class="icon"
+        alt="AliPay"
         src="/assets/images/alipay-brands.svg"
       />
 
       <img
         *ngIf="subscriptionsService.supportsCardPaymentType"
-        alt="Visa"
         class="icon"
+        alt="Visa"
         src="/assets/images/cc-visa-brands.svg"
       />
       <img
         *ngIf="subscriptionsService.supportsCardPaymentType"
-        alt="Mastercard"
         class="icon"
+        alt="Mastercard"
         src="/assets/images/cc-mastercard-brands.svg"
       />
       <img
         *ngIf="subscriptionsService.supportsCardPaymentType"
-        alt="Amex"
         class="icon"
+        alt="Amex"
         src="/assets/images/cc-amex-brands.svg"
       />
       <img
         *ngIf="subscriptionsService.supportsCardPaymentType"
-        alt="Discover"
         class="icon"
+        alt="Discover"
         src="/assets/images/cc-discover-brands.svg"
       />
 
       <img
         *ngIf="subscriptionsService.supportsSepaDebitPaymentType"
-        alt="SEPA"
         class="icon"
+        alt="SEPA"
         src="/assets/images/bank.svg"
       />
     </span>

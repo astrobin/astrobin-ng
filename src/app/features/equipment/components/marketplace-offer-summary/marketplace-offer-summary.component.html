@@ -1,30 +1,30 @@
 <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper; else loadingTemplate">
   <ng-container *ngIf="!loadingOffers; else loadingTemplate">
     <ng-container
+      [ngTemplateOutlet]="offerGroupTemplate"
       [ngTemplateOutletContext]="{ offerGroup: acceptedOfferGroup }"
-      [ngTemplateOutlet]="offerGroupTemplate"
     ></ng-container>
 
     <ng-container
+      [ngTemplateOutlet]="offerGroupTemplate"
       [ngTemplateOutletContext]="{ offerGroup: pendingOfferGroup }"
-      [ngTemplateOutlet]="offerGroupTemplate"
     ></ng-container>
 
     <ng-container
       *ngIf="showRejectedAndRetractedOffers"
+      [ngTemplateOutlet]="offerGroupTemplate"
       [ngTemplateOutletContext]="{ offerGroup: rejectedOfferGroup }"
-      [ngTemplateOutlet]="offerGroupTemplate"
     ></ng-container>
 
     <ng-container
       *ngIf="showRejectedAndRetractedOffers"
-      [ngTemplateOutletContext]="{ offerGroup: retractedOfferGroup }"
       [ngTemplateOutlet]="offerGroupTemplate"
+      [ngTemplateOutletContext]="{ offerGroup: retractedOfferGroup }"
     ></ng-container>
 
     <button
-      (click)="showRejectedAndRetractedOffers = !showRejectedAndRetractedOffers"
       *ngIf="offerGroupHasOffers(rejectedOfferGroup) || offerGroupHasOffers(retractedOfferGroup)"
+      (click)="showRejectedAndRetractedOffers = !showRejectedAndRetractedOffers"
       class="btn btn-link link-primary w-100"
     >
       <ng-container *ngIf="!showRejectedAndRetractedOffers">
@@ -47,14 +47,14 @@
 
               <h5>
                 <a
-                  (click)="
-                    userService.openGallery(
+                  [href]="
+                    userService.getGalleryUrl(
                       group.value[0].userObj.username,
                       !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
                     )
                   "
-                  [href]="
-                    userService.getGalleryUrl(
+                  (click)="
+                    userService.openGallery(
                       group.value[0].userObj.username,
                       !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
                     )
@@ -78,7 +78,7 @@
             </ng-container>
 
             <div class="offer-info">
-              <p>{{ "Created" | translate }}: {{ group.value[0].created | localDate | timeago : true }}</p>
+              <p>{{ "Created" | translate }}: {{ group.value[0].created | localDate | timeago: true }}</p>
 
               <p>
                 {{ "Status" | translate }}: {{ equipmentMarketplaceService.humanizeOfferStatus(group.value[0].status) }}
@@ -92,9 +92,9 @@
                 <ng-container *ngIf="getLineItem(offer.lineItem) as lineItem">
                   <li>
                     <div class="item-name">{{ lineItem.itemName }}</div>
-                    <span class="amount">{{ offer.amount | currency : lineItem.currency }}</span>
+                    <span class="amount">{{ offer.amount | currency: lineItem.currency }}</span>
                     <span *ngIf="!!lineItem.shippingCost" class="shipping">
-                      + {{ "shipping" | translate }}: {{ lineItem.shippingCost | currency : lineItem.currency }}
+                      + {{ "shipping" | translate }}: {{ lineItem.shippingCost | currency: lineItem.currency }}
                     </span>
                   </li>
                 </ng-container>
@@ -107,9 +107,9 @@
             <div class="card-footer d-flex flex-column gap-2">
               <ng-container *ngIf="!equipmentMarketplaceService.listingSold(listing)">
                 <button
-                  (click)="onAcceptOfferClicked($event, group.value)"
                   *ngIf="group.value[0].status === MarketplaceOfferStatus.PENDING"
                   [class.loading]="loadingService.loading$ | async"
+                  (click)="onAcceptOfferClicked($event, group.value)"
                   class="btn btn-success d-block w-100 m-0"
                 >
                   <fa-icon icon="thumbs-up"></fa-icon>
@@ -117,12 +117,12 @@
                 </button>
 
                 <button
-                  (click)="onRejectOfferClicked($event, group.value)"
                   *ngIf="
                     group.value[0].status === MarketplaceOfferStatus.PENDING ||
                     group.value[0].status === MarketplaceOfferStatus.ACCEPTED
                   "
                   [class.loading]="loadingService.loading$ | async"
+                  (click)="onRejectOfferClicked($event, group.value)"
                   class="btn btn-danger d-block w-100 m-0"
                 >
                   <fa-icon icon="thumbs-down"></fa-icon>
@@ -131,8 +131,8 @@
               </ng-container>
 
               <button
-                (click)="onMessageProspectBuyerClicked($event, group.value[0].user)"
                 [class.loading]="loadingService.loading$ | async"
+                (click)="onMessageProspectBuyerClicked($event, group.value[0].user)"
                 class="btn btn-secondary d-block w-100 m-0"
               >
                 <fa-icon icon="envelope"></fa-icon>
@@ -165,9 +165,9 @@
           >
             <div class="card-footer">
               <button
-                (click)="onModifyOfferClicked($event, group.value)"
                 *ngIf="group.value[0].status === MarketplaceOfferStatus.PENDING"
                 [class.loading]="loadingService.loading$ | async"
+                (click)="onModifyOfferClicked($event, group.value)"
                 class="btn btn-link link-secondary d-block"
               >
                 <fa-icon icon="edit"></fa-icon>
@@ -175,12 +175,12 @@
               </button>
 
               <button
-                (click)="onRetractOfferClicked($event, group.value)"
                 *ngIf="
                   group.value[0].status === MarketplaceOfferStatus.ACCEPTED ||
                   group.value[0].status === MarketplaceOfferStatus.PENDING
                 "
                 [class.loading]="loadingService.loading$ | async"
+                (click)="onRetractOfferClicked($event, group.value)"
                 class="btn btn-link link-danger"
               >
                 <fa-icon icon="times"></fa-icon>

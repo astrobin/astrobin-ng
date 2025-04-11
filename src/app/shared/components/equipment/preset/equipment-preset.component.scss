@@ -78,7 +78,9 @@
     border-radius: 50%;
     pointer-events: all;
     opacity: 1;
-    transition: opacity 0.3s ease, background 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      background 0.3s ease;
 
     .ng-fa-icon {
       margin-right: 0;

@@ -45,46 +45,46 @@ const SLIDESHOW_WINDOW = 3;
   template: `
     <div
       #carouselContainer
-      class="carousel-container"
-      (touchstart)="onTouchStart($event)"
-      (touchmove)="onTouchMove($event)"
       (touchend)="onTouchEnd($event)"
+      (touchmove)="onTouchMove($event)"
+      (touchstart)="onTouchStart($event)"
+      class="carousel-container"
     >
       <div class="carousel-area">
         <ngb-carousel
           #carousel
           *ngIf="visibleContext.length > 0; else loadingTemplate"
-          (slide)="onSlide($event)"
-          [animation]="false"
           [activeId]="activeId"
-          [interval]="0"
-          [showNavigationArrows]="false"
-          [showNavigationIndicators]="false"
-          [keyboard]="false"
-          [wrap]="false"
+          [animation]="false"
           [class.is-on-first]="activeId === navigationContext[0].imageId"
           [class.is-on-last]="activeId === navigationContext[navigationContext.length - 1].imageId"
+          [interval]="0"
+          [keyboard]="false"
+          [showNavigationArrows]="false"
+          [showNavigationIndicators]="false"
+          [wrap]="false"
+          (slide)="onSlide($event)"
         >
           <ng-template
-            ngbSlide
             *ngFor="let item of visibleContext; let i = index; trackBy: contextTrackByFn"
             [attr.id]="item.imageId"
+            ngbSlide
           >
             <astrobin-image-viewer
               *ngIf="item.image; else loadingTemplate"
-              (closeClick)="closeSlideshow.emit(true)"
-              (nextClick)="onNextClick()"
-              (previousClick)="onPreviousClick()"
-              (revisionSelected)="onRevisionSelected($event)"
               [active]="item.imageId === activeId"
               [image]="item.image"
               [revisionLabel]="activeImageRevisionLabel"
               [showCloseButton]="true"
-              [showPreviousButton]="activeId !== navigationContext[0].imageId && navigationContext.length > 1"
               [showNextButton]="
                 activeId !== navigationContext[navigationContext.length - 1].imageId && navigationContext.length > 1
               "
+              [showPreviousButton]="activeId !== navigationContext[0].imageId && navigationContext.length > 1"
               [standalone]="false"
+              (closeClick)="closeSlideshow.emit(true)"
+              (nextClick)="onNextClick()"
+              (previousClick)="onPreviousClick()"
+              (revisionSelected)="onRevisionSelected($event)"
             ></astrobin-image-viewer>
           </ng-template>
         </ngb-carousel>
@@ -104,16 +104,16 @@ const SLIDESHOW_WINDOW = 3;
 
     <astrobin-fullscreen-image-viewer
       *ngIf="activeImage"
-      [id]="activeImage.pk"
       [eagerLoading]="true"
+      [id]="activeImage.pk"
       [revisionLabel]="activeImageRevisionLabel"
       (enterFullscreen)="onEnterFullscreen()"
       (exitFullscreen)="onExitFullscreen()"
     ></astrobin-fullscreen-image-viewer>
 
     <ng-template #loadingTemplate>
-      <div class="loading-area" @fadeInOut>
-        <div class="close-button" (click)="closeSlideshow.emit(true)">
+      <div @fadeInOut class="loading-area">
+        <div (click)="closeSlideshow.emit(true)" class="close-button">
           <fa-icon icon="times"></fa-icon>
         </div>
         <astrobin-loading-indicator></astrobin-loading-indicator>

@@ -49,18 +49,18 @@ type GalleryNavigationComponent =
     <ng-container *ngIf="isBrowser; else loadingTemplate">
       <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
         <div class="nav-tabs-fade"></div>
-        <ul ngbNav #nav="ngbNav" (click)="onTabClick(activeTab)" [(activeId)]="activeTab" class="nav-tabs">
+        <ul #nav="ngbNav" (click)="onTabClick(activeTab)" class="nav-tabs" [(activeId)]="activeTab" ngbNav>
           <li ngbNavItem="gallery">
             <a ngbNavLink>
-              <fa-icon icon="images" class="me-2"></fa-icon>
+              <fa-icon class="me-2" icon="images"></fa-icon>
               <span translate="Gallery"></span>
 
               <div
                 *ngIf="currentUserWrapper.user?.id === user.id"
                 [autoClose]="'outside'"
-                ngbDropdown
                 class="d-inline-block ms-3"
                 container="body"
+                ngbDropdown
               >
                 <a class="btn btn-sm btn-link no-toggle text-secondary" ngbDropdownToggle>
                   <fa-icon icon="cog"></fa-icon>
@@ -89,18 +89,18 @@ type GalleryNavigationComponent =
             <ng-template ngbNavContent>
               <astrobin-user-gallery-collections
                 *ngIf="userProfile.displayCollectionsOnPublicGallery"
+                [parent]="collectionId"
                 [user]="user"
                 [userProfile]="userProfile"
-                [parent]="collectionId"
               ></astrobin-user-gallery-collections>
 
               <astrobin-user-gallery-buttons
-                [(activeLayout)]="activeLayout"
-                [subsection]="publicGalleryOptions.subsection"
-                [ordering]="publicGalleryOptions.ordering"
                 [images]="galleryImages"
+                [ordering]="publicGalleryOptions.ordering"
+                [subsection]="publicGalleryOptions.subsection"
                 [user]="user"
                 (sortChange)="onSortChange($event)"
+                [(activeLayout)]="activeLayout"
               ></astrobin-user-gallery-buttons>
 
               <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
@@ -108,9 +108,9 @@ type GalleryNavigationComponent =
               <astrobin-user-gallery-images
                 [activeLayout]="activeLayout"
                 [expectedImageCount]="activeCollection ? activeCollection.imageCount : userProfile.imageCount"
+                [options]="publicGalleryOptions"
                 [user]="user"
                 [userProfile]="userProfile"
-                [options]="publicGalleryOptions"
                 (imagesLoaded)="onImagesLoaded($event)"
               ></astrobin-user-gallery-images>
             </ng-template>
@@ -121,24 +121,24 @@ type GalleryNavigationComponent =
             ngbNavItem="staging"
           >
             <a ngbNavLink>
-              <fa-icon icon="lock" class="me-2"></fa-icon>
+              <fa-icon class="me-2" icon="lock"></fa-icon>
               <span translate="Staging area"></span>
             </a>
             <ng-template ngbNavContent>
               <astrobin-user-gallery-buttons
-                [(activeLayout)]="activeLayout"
-                (sortChange)="onSortChange($event)"
-                [subsection]="stagingAreaOptions.subsection"
-                [ordering]="stagingAreaOptions.ordering"
                 [images]="galleryImages"
+                [ordering]="stagingAreaOptions.ordering"
+                [subsection]="stagingAreaOptions.subsection"
                 [user]="user"
+                (sortChange)="onSortChange($event)"
+                [(activeLayout)]="activeLayout"
               ></astrobin-user-gallery-buttons>
               <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
               <astrobin-user-gallery-images
                 [activeLayout]="activeLayout"
+                [options]="stagingAreaOptions"
                 [user]="user"
                 [userProfile]="userProfile"
-                [options]="stagingAreaOptions"
                 (imagesLoaded)="onImagesLoaded($event)"
               ></astrobin-user-gallery-images>
             </ng-template>
@@ -146,24 +146,24 @@ type GalleryNavigationComponent =
 
           <li *ngIf="!userProfile.displayCollectionsOnPublicGallery" ngbNavItem="collections">
             <a ngbNavLink>
-              <fa-icon icon="layer-group" class="me-2"></fa-icon>
+              <fa-icon class="me-2" icon="layer-group"></fa-icon>
               <span translate="Collections"></span>
             </a>
             <ng-template ngbNavContent>
               <astrobin-user-gallery-collections
+                [parent]="collectionId"
                 [user]="user"
                 [userProfile]="userProfile"
-                [parent]="collectionId"
               ></astrobin-user-gallery-collections>
 
               <ng-container *ngIf="activeCollection">
                 <astrobin-user-gallery-buttons
-                  [(activeLayout)]="activeLayout"
-                  (sortChange)="onSortChange($event)"
-                  [subsection]="publicGalleryOptions.subsection"
-                  [ordering]="publicGalleryOptions.ordering"
                   [images]="galleryImages"
+                  [ordering]="publicGalleryOptions.ordering"
+                  [subsection]="publicGalleryOptions.subsection"
                   [user]="user"
+                  (sortChange)="onSortChange($event)"
+                  [(activeLayout)]="activeLayout"
                 ></astrobin-user-gallery-buttons>
 
                 <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
@@ -171,9 +171,9 @@ type GalleryNavigationComponent =
                 <astrobin-user-gallery-images
                   [activeLayout]="activeLayout"
                   [expectedImageCount]="activeCollection ? activeCollection.imageCount : userProfile.imageCount"
+                  [options]="publicGalleryOptions"
                   [user]="user"
                   [userProfile]="userProfile"
-                  [options]="publicGalleryOptions"
                   (imagesLoaded)="onImagesLoaded($event)"
                 ></astrobin-user-gallery-images>
               </ng-container>
@@ -182,7 +182,7 @@ type GalleryNavigationComponent =
 
           <li ngbNavItem="smart-folders">
             <a ngbNavLink>
-              <fa-icon icon="folder-open" class="me-2"></fa-icon>
+              <fa-icon class="me-2" icon="folder-open"></fa-icon>
               <span translate="Smart folders"></span>
             </a>
             <ng-template ngbNavContent>
@@ -195,7 +195,7 @@ type GalleryNavigationComponent =
 
           <li ngbNavItem="equipment">
             <a ngbNavLink>
-              <fa-icon icon="camera" class="me-2"></fa-icon>
+              <fa-icon class="me-2" icon="camera"></fa-icon>
               <span translate="Equipment"></span>
             </a>
             <ng-template ngbNavContent>
@@ -208,7 +208,7 @@ type GalleryNavigationComponent =
 
           <li ngbNavItem="marketplace">
             <a ngbNavLink>
-              <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+              <fa-icon class="me-2" icon="shopping-cart"></fa-icon>
               <span translate="Marketplace"></span>
             </a>
             <ng-template ngbNavContent>
@@ -218,7 +218,7 @@ type GalleryNavigationComponent =
 
           <li ngbNavItem="about">
             <a ngbNavLink>
-              <fa-icon icon="user" class="me-2"></fa-icon>
+              <fa-icon class="me-2" icon="user"></fa-icon>
               <span translate="About"></span>
             </a>
             <ng-template ngbNavContent>
@@ -232,7 +232,7 @@ type GalleryNavigationComponent =
 
             <li ngbNavItem="trash">
               <a ngbNavLink>
-                <fa-icon icon="trash" class="me-2"></fa-icon>
+                <fa-icon class="me-2" icon="trash"></fa-icon>
                 <span translate="Trash"></span>
               </a>
               <ng-template ngbNavContent>
@@ -253,13 +253,13 @@ type GalleryNavigationComponent =
     <ng-template #createCollectionOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Create collection" | translate }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <astrobin-user-gallery-collection-create
+          [parent]="null"
           [user]="user"
           [userProfile]="userProfile"
-          [parent]="null"
           (cancelClick)="offcanvas.close()"
         ></astrobin-user-gallery-collection-create>
       </div>
@@ -267,11 +267,11 @@ type GalleryNavigationComponent =
 
     <ng-template #quickSearchTemplate>
       <input
-        class="form-control mb-3 user-gallery-quick-search"
-        type="search"
-        placeholder="{{ 'Search' | translate }}"
-        [(ngModel)]="searchModel"
         (ngModelChange)="onSearchModelChange()"
+        class="form-control mb-3 user-gallery-quick-search"
+        [(ngModel)]="searchModel"
+        placeholder="{{ 'Search' | translate }}"
+        type="search"
       />
     </ng-template>
   `,

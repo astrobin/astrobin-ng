@@ -220,7 +220,9 @@
     border: 1px var(--lightGrey) !important;
 
     &:focus {
-      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(204, 75, 46, 0.6);
+      box-shadow:
+        inset 0 1px 1px rgba(0, 0, 0, 0.075),
+        0 0 8px rgba(204, 75, 46, 0.6);
     }
   }
 

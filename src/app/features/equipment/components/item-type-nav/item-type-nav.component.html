@@ -1,4 +1,4 @@
-<ul #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" ngbNav orientation="vertical">
+<ul #nav="ngbNav" class="nav-pills" [(activeId)]="activeType" ngbNav orientation="vertical">
   <ng-container *ngIf="showBrands">
     <li [ngbNavItem]="'brand'">
       <a [queryParams]="{ page: 1 }" ngbNavLink routerLink="{{ routingBasePath }}/brand">
@@ -43,8 +43,8 @@
     <ul
       #subnav="ngbNav"
       *ngIf="showSubNavigation && (uncollapsedTypes.includes(type.value) || activeType === type.value.toLowerCase())"
-      [(activeId)]="activeSubNav"
       class="nav-pills"
+      [(activeId)]="activeSubNav"
       ngbNav
       orientation="vertical"
     >

@@ -16,7 +16,10 @@ import { takeUntil } from "rxjs/operators";
 export class BreadcrumbComponent extends BaseComponentDirective implements OnInit {
   breadcrumb$: Observable<BreadcrumbInterface[]>;
 
-  constructor(public readonly store$: Store<MainState>, public readonly classicRoutesService: ClassicRoutesService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly classicRoutesService: ClassicRoutesService
+  ) {
     super(store$);
   }
 

@@ -154,9 +154,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     page = 1
   ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
     return this.http
-      .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
-        `${this.configUrl}/${type.toLowerCase()}/?pending_review=true&page=${page}`
-      )
+      .get<
+        PaginatedApiResultInterface<EquipmentItemBaseInterface>
+      >(`${this.configUrl}/${type.toLowerCase()}/?pending_review=true&page=${page}`)
       .pipe(
         map(response => ({
           ...response,
@@ -172,9 +172,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     page = 1
   ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
     return this.http
-      .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
-        `${this.configUrl}/${type.toLowerCase()}/?pending_edit=true&page=${page}`
-      )
+      .get<
+        PaginatedApiResultInterface<EquipmentItemBaseInterface>
+      >(`${this.configUrl}/${type.toLowerCase()}/?pending_edit=true&page=${page}`)
       .pipe(
         map(response => ({
           ...response,
@@ -190,9 +190,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     page = 1
   ): Observable<PaginatedApiResultInterface<EquipmentItem>> {
     return this.http
-      .get<PaginatedApiResultInterface<EquipmentItem>>(
-        `${this.configUrl}/${type.toLowerCase()}/?followed=true&page=${page}`
-      )
+      .get<
+        PaginatedApiResultInterface<EquipmentItem>
+      >(`${this.configUrl}/${type.toLowerCase()}/?followed=true&page=${page}`)
       .pipe(
         map(response => ({
           ...response,
@@ -243,9 +243,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     }
 
     return this.http
-      .get<EquipmentItemBaseInterface[]>(
-        `${this.configUrl}/${type.toLowerCase()}/find-similar-in-brand/?brand=${brand}&q=${q}`
-      )
+      .get<
+        EquipmentItemBaseInterface[]
+      >(`${this.configUrl}/${type.toLowerCase()}/find-similar-in-brand/?brand=${brand}&q=${q}`)
       .pipe(map(items => items.map(item => this._parseItem(item))));
   }
 
@@ -395,9 +395,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http
-      .get<PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>>>(
-        `${this.configUrl}/${path}-edit-proposal/?edit_proposal_target=${item.id}`
-      )
+      .get<
+        PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>>
+      >(`${this.configUrl}/${path}-edit-proposal/?edit_proposal_target=${item.id}`)
       .pipe(
         map(response => ({
           ...response,
@@ -931,9 +931,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     hash: MarketplaceListingInterface["hash"]
   ): Observable<MarketplaceListingInterface> {
     return this.http
-      .get<PaginatedApiResultInterface<MarketplaceListingInterface>>(
-        `${this.configUrl}/marketplace/listing/?hash=${hash}`
-      )
+      .get<
+        PaginatedApiResultInterface<MarketplaceListingInterface>
+      >(`${this.configUrl}/marketplace/listing/?hash=${hash}`)
       .pipe(
         map((result: PaginatedApiResultInterface<MarketplaceListingInterface>) => {
           if (result.results.length === 0) {

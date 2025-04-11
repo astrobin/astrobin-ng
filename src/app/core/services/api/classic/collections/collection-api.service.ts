@@ -24,7 +24,10 @@ export interface GetCollectionsParamsInterface {
 export class CollectionApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/astrobin/collection/";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

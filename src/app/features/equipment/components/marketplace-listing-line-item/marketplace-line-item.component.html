@@ -1,18 +1,18 @@
 <ng-container>
   <div [class.reserved]="!!lineItem.reserved" [class.sold]="!!lineItem.sold" class="card">
-    <div (click)="collapsed = !collapsed" [class.collapsed-body]="!previewMode && collapsed" class="card-header">
+    <div [class.collapsed-body]="!previewMode && collapsed" (click)="collapsed = !collapsed" class="card-header">
       <div class="align-items-center d-flex flex-column flex-md-row gap-3 text-center text-md-start">
         <div *ngIf="listing.listingType !== MarketplaceListingType.WANTED" class="image">
           <img
             *ngIf="lineItem.images?.length > 0"
             [src]="getFirstImageUrl()"
-            alt="{{ equipmentItemType(equipmentItem) }}"
             class="type-image"
+            alt="{{ equipmentItemType(equipmentItem) }}"
           />
           <img
             *ngIf="lineItem.images?.length === 0 && lineItem.itemKlass"
-            alt="{{ equipmentItemService.humanizeType(lineItem.itemKlass) }}"
             class="type-image"
+            alt="{{ equipmentItemService.humanizeType(lineItem.itemKlass) }}"
             src="/assets/images/{{ lineItem.itemKlass.toLowerCase() }}-placeholder.png?v=2"
           />
         </div>
@@ -34,9 +34,9 @@
 
               <a
                 [routerLink]="['/equipment/explorer/', equipmentItem.klass.toLowerCase(), equipmentItem.id]"
+                class="line-item-item-link"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
-                class="line-item-item-link"
               >
                 <fa-icon icon="info-circle"></fa-icon>
               </a>
@@ -50,10 +50,10 @@
             <span *ngIf="pendingOffers?.length === 1" [translate]="'One offer'"></span>
             <span
               *ngIf="pendingOffers?.length > 1"
+              [translate]="'{{0}} offers'"
               [translateParams]="{
                 '0': pendingOffers.length
               }"
-              [translate]="'{{0}} offers'"
             ></span>
           </div>
 
@@ -69,7 +69,7 @@
             {{ "First added to an image by the seller" | translate }}:
             <span class="first-added-date">
               <ng-container *ngIf="lineItem.firstAddedToAnImage; else noFirstAddedDateTemplate">
-                {{ lineItem.firstAddedToAnImage | date : "mediumDate" }}
+                {{ lineItem.firstAddedToAnImage | date: "mediumDate" }}
               </ng-container>
               <ng-template #noFirstAddedDateTemplate>
                 {{ "Unknown" | translate }}
@@ -130,11 +130,11 @@
           username: lineItem.username,
           pageSize: 21
         }"
-        [showSortButton]="false"
-        [showUsageButton]="false"
-        [showRetailers]="false"
         [showMarketplaceItems]="false"
+        [showRetailers]="false"
+        [showSortButton]="false"
         [showStaticOverlay]="false"
+        [showUsageButton]="false"
         class="d-block mt-5"
         ordering="-likes"
       ></astrobin-image-search-card>
@@ -148,11 +148,11 @@
         [header]="'Images from the AstroBin community' | translate"
         [loadMoreOnScroll]="false"
         [model]="{ itemId: lineItem.itemObjectId, itemType: lineItem.itemKlass, pageSize: 50 }"
-        [showSortButton]="false"
-        [showUsageButton]="false"
-        [showRetailers]="false"
         [showMarketplaceItems]="false"
+        [showRetailers]="false"
+        [showSortButton]="false"
         [showStaticOverlay]="false"
+        [showUsageButton]="false"
         class="d-block"
         ordering="-likes"
       ></astrobin-image-search-card>

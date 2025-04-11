@@ -66,8 +66,8 @@
             <tr *ngFor="let item of results">
               <td [attr.data-label]="'Name' | translate">
                 <a
-                  (click)="itemSelected.emit(item)"
                   [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
+                  (click)="itemSelected.emit(item)"
                   astrobinEventPreventDefault
                   astrobinEventStopPropagation
                 >
@@ -155,10 +155,10 @@
                 </td>
               </ng-container>
 
-              <td class="d-none d-lg-table-cell" [attr.data-label]="'Users' | translate">
+              <td [attr.data-label]="'Users' | translate" class="d-none d-lg-table-cell">
                 {{ item.userCount }}
               </td>
-              <td class="d-none d-lg-table-cell" [attr.data-label]="'Images' | translate">
+              <td [attr.data-label]="'Images' | translate" class="d-none d-lg-table-cell">
                 {{ item.imageCount }}
               </td>
             </tr>
@@ -174,11 +174,11 @@
       </div>
 
       <a
-        (click)="loadNextPage()"
         *ngIf="hasNextPage && !options.formState.loadingPage"
+        (click)="loadNextPage()"
+        class="text-center d-block d-lg-none p-2"
         astrobinEventPreventDefault
         astrobinEventStopPropagation
-        class="text-center d-block d-lg-none p-2"
         href="#"
       >
         {{ "Load more" | translate }}

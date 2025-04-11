@@ -14,7 +14,10 @@ export class GtagOutboundClickEventDirective {
   @Input()
   target: string;
 
-  constructor(public readonly windowRefService: WindowRefService, public readonly loadingService: LoadingService) {}
+  constructor(
+    public readonly windowRefService: WindowRefService,
+    public readonly loadingService: LoadingService
+  ) {}
 
   @HostListener("click", ["$event"])
   public onClick(event: Event): void {

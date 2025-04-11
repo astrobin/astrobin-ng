@@ -17,7 +17,10 @@ export class MoreRelatedItemsModalComponent extends BaseComponentDirective {
   @Input()
   title: string;
 
-  constructor(public readonly store$: Store<MainState>, public readonly modal: NgbActiveModal) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly modal: NgbActiveModal
+  ) {
     super(store$);
   }
 }

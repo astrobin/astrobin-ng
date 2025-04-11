@@ -8,7 +8,10 @@ declare let global: any;
 
 @Injectable()
 export class ClientIpInterceptor implements HttpInterceptor {
-  constructor(public readonly transferState: TransferState, @Inject(CLIENT_IP) public readonly clientIp: string) {}
+  constructor(
+    public readonly transferState: TransferState,
+    @Inject(CLIENT_IP) public readonly clientIp: string
+  ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let clientIp: string | null;

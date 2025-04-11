@@ -58,32 +58,32 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
         <div class="d-flex gap-3 align-items-center">
           <div class="avatar-container position-relative">
             <astrobin-avatar
-              [user]="user"
               [link]="false"
-              [showPremiumBadge]="true"
-              [showFollowsYouBadge]="true"
               [showEditButton]="currentUserWrapper.user?.id === user.id"
+              [showFollowsYouBadge]="true"
+              [showPremiumBadge]="true"
+              [user]="user"
             ></astrobin-avatar>
           </div>
 
           <div class="d-flex flex-column gap-3 gap-md-2">
             <div class="d-flex flex-column flex-sm-row username-and-follows align-items-sm-center">
               <div class="d-flex flex-row align-items-center gap-3">
-                <astrobin-username [user]="user" [link]="false" class="d-inline-block"></astrobin-username>
+                <astrobin-username [link]="false" [user]="user" class="d-inline-block"></astrobin-username>
 
                 <div *ngIf="user.displayName !== user.username" class="username d-none d-sm-block">
                   ({{ user.username }})
                 </div>
 
-                <div ngbDropdown class="d-inline-block py-0">
+                <div class="d-inline-block py-0" ngbDropdown>
                   <button
-                    class="btn btn-sm btn-link btn-no-block no-toggle text-secondary px-2"
                     id="user-gallery-dropdown"
+                    class="btn btn-sm btn-link btn-no-block no-toggle text-secondary px-2"
                     ngbDropdownToggle
                   >
                     <fa-icon [icon]="['fas', 'ellipsis-v']" class="m-0"></fa-icon>
                   </button>
-                  <div ngbDropdownMenu [attr.aria-labelledby]="'user-gallery-dropdown'">
+                  <div [attr.aria-labelledby]="'user-gallery-dropdown'" ngbDropdownMenu>
                     <button
                       *ngIf="currentUserWrapper.user?.id === user.id"
                       (click)="openChangeHeaderImageOffcanvas()"
@@ -102,10 +102,10 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
                         !currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)
                       "
                       (click)="shadowBan(userProfile.id)"
-                      href="#"
+                      class="dropdown-item"
                       astrobinEventPreventDefault
                       astrobinEventStopPropagation
-                      class="dropdown-item"
+                      href="#"
                       translate="Shadow-ban"
                     ></a>
                     <a
@@ -114,10 +114,10 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
                         currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)
                       "
                       (click)="removeShadowBan(userProfile.id)"
-                      href="#"
+                      class="dropdown-item"
                       astrobinEventPreventDefault
                       astrobinEventStopPropagation
-                      class="dropdown-item"
+                      href="#"
                       translate="Remove shadow-ban"
                     ></a>
                     <a
@@ -134,10 +134,10 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
                 *ngIf="userContentType && currentUserWrapper.user?.id !== user.id"
                 [contentType]="userContentType.id"
                 [objectId]="user.id"
-                [userId]="currentUserWrapper.user?.id"
-                [showIcon]="false"
                 [setLabel]="'Follow' | translate"
+                [showIcon]="false"
                 [unsetLabel]="'Unfollow' | translate"
+                [userId]="currentUserWrapper.user?.id"
                 class="w-auto p-0"
                 btnClass="btn btn-dark btn-no-block"
                 propertyType="follow"
@@ -153,8 +153,8 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
 
               <span
                 *ngIf="userProfile.wipImageCount === 1 && currentUserWrapper.user?.id === user.id"
-                translate="(1 in staging)"
                 class="d-none d-sm-inline"
+                translate="(1 in staging)"
               ></span>
               <span
                 *ngIf="userProfile.wipImageCount > 1 && currentUserWrapper.user?.id === user.id"
@@ -166,29 +166,29 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
               <span
                 *ngIf="userProfile.followersCount === 1"
                 (click)="openFollowersOffcanvas()"
-                translate="1 follower"
                 data-toggle="offcanvas"
+                translate="1 follower"
               ></span>
               <span
                 *ngIf="userProfile.followersCount !== 1"
-                (click)="userProfile.followersCount ? openFollowersOffcanvas() : null"
+                [attr.data-toggle]="userProfile.followersCount ? 'offcanvas' : ''"
                 [translate]="'{{ 0 }} followers'"
                 [translateParams]="{ '0': userProfile.followersCount }"
-                [attr.data-toggle]="userProfile.followersCount ? 'offcanvas' : ''"
+                (click)="userProfile.followersCount ? openFollowersOffcanvas() : null"
               ></span>
 
               <span
                 *ngIf="currentUserWrapper.user?.id === user.id && userProfile.followingCount === 1"
                 (click)="openFollowingOffcanvas()"
-                translate="1 following"
                 data-toggle="offcanvas"
+                translate="1 following"
               ></span>
               <span
                 *ngIf="currentUserWrapper.user?.id === user.id && userProfile.followingCount !== 1"
-                (click)="userProfile.followingCount ? openFollowingOffcanvas() : null"
+                [attr.data-toggle]="userProfile.followingCount ? 'offcanvas' : ''"
                 [translate]="'{{ 0 }} following'"
                 [translateParams]="{ '0': userProfile.followingCount }"
-                [attr.data-toggle]="userProfile.followingCount ? 'offcanvas' : ''"
+                (click)="userProfile.followingCount ? openFollowingOffcanvas() : null"
               ></span>
 
               <span
@@ -204,15 +204,15 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
               <span
                 *ngIf="currentUserWrapper.user?.id === user.id"
                 (click)="openMutualFollowersOffcanvas()"
-                translate="(view mutual)"
                 class="d-none d-sm-inline"
                 data-toggle="offcanvas"
+                translate="(view mutual)"
               ></span>
 
               <a
                 (click)="openStatsOffcanvas()"
-                astrobinEventPreventDefault
                 class="btn btn-xs btn-link btn-no-block p-0 p-md-2 more"
+                astrobinEventPreventDefault
                 data-toggle="offcanvas"
                 href=""
                 translate="More"
@@ -240,7 +240,7 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
     <ng-template #statsOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ user.displayName }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <ng-container *ngIf="stats === null" [ngTemplateOutlet]="loadingTemplate"> </ng-container>
@@ -271,7 +271,7 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
     <ng-template #changeHeaderImageOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" translate="Change header image"></h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <astrobin-user-gallery-header-change-image
@@ -285,17 +285,17 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
     <ng-template #followersOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" translate="Followers"></h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <div *ngIf="followers; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
-            type="search"
-            class="form-control mb-2"
-            placeholder="{{ 'Search' | translate }}"
             [ngModelOptions]="{ standalone: true }"
-            [(ngModel)]="followersSearch"
             (ngModelChange)="followersSearchSubject.next($event)"
+            class="form-control mb-2"
+            [(ngModel)]="followersSearch"
+            placeholder="{{ 'Search' | translate }}"
+            type="search"
           />
           <ng-container *ngIf="!searching; else loadingTemplate">
             <a *ngFor="let follower of followers.followers" [routerLink]="['/u', follower[1]]">
@@ -310,17 +310,17 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
     <ng-template #followingOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" translate="Following"></h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <div *ngIf="following; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
-            type="search"
-            class="form-control mb-2"
-            placeholder="{{ 'Search' | translate }}"
             [ngModelOptions]="{ standalone: true }"
-            [(ngModel)]="followingSearch"
             (ngModelChange)="followingSearchSubject.next($event)"
+            class="form-control mb-2"
+            [(ngModel)]="followingSearch"
+            placeholder="{{ 'Search' | translate }}"
+            type="search"
           />
           <ng-container *ngIf="!searching; else loadingTemplate">
             <a *ngFor="let following of following.following" [routerLink]="['/u', following[1]]">
@@ -335,7 +335,7 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
     <ng-template #mutualFollowersOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" translate="Mutual followers"></h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <p class="mb-3 text-muted">
@@ -343,12 +343,12 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxj
         </p>
         <div *ngIf="mutualFollowers; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
-            type="search"
-            class="form-control mb-2"
-            placeholder="{{ 'Search' | translate }}"
             [ngModelOptions]="{ standalone: true }"
-            [(ngModel)]="mutualFollowersSearch"
             (ngModelChange)="mutualFollowersSearchSubject.next($event)"
+            class="form-control mb-2"
+            [(ngModel)]="mutualFollowersSearch"
+            placeholder="{{ 'Search' | translate }}"
+            type="search"
           />
 
           <ng-container *ngIf="!searching; else loadingTemplate">

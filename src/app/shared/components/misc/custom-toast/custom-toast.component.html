@@ -1,31 +1,31 @@
 <button
   *ngIf="options.closeButton"
   (click)="remove()"
-  type="button"
   class="toast-close-button"
   aria-label="{{ 'Close' | translate }}"
+  type="button"
 >
   <span aria-hidden="true">&times;</span>
 </button>
 
-<div *ngIf="title" [class]="options.titleClass" [attr.aria-label]="title">
+<div *ngIf="title" [attr.aria-label]="title" [class]="options.titleClass">
   {{ title }} <ng-container *ngIf="duplicatesCount">[{{ duplicatesCount + 1 }}]</ng-container>
 </div>
 
 <div
   *ngIf="message && options.enableHtml"
-  role="alertdialog"
-  aria-live="polite"
   [class]="options.messageClass"
   [innerHTML]="message"
+  aria-live="polite"
+  role="alertdialog"
 ></div>
 
 <div
   *ngIf="message && !options.enableHtml"
-  role="alertdialog"
-  aria-live="polite"
-  [class]="options.messageClass"
   [attr.aria-label]="message"
+  [class]="options.messageClass"
+  aria-live="polite"
+  role="alertdialog"
 >
   {{ message }}
 </div>
@@ -37,5 +37,5 @@
 </div>
 
 <div *ngIf="options.progressBar">
-  <div class="toast-progress" [style.width]="width + '%'"></div>
+  <div [style.width]="width + '%'" class="toast-progress"></div>
 </div>

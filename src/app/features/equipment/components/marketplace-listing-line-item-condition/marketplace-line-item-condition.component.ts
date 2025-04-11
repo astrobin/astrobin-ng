@@ -14,7 +14,10 @@ export class MarketplaceLineItemConditionComponent extends BaseComponentDirectiv
   @Input()
   lineItem: MarketplaceLineItemInterface;
 
-  constructor(public readonly store$: Store<MainState>, public readonly equipmentItemService: EquipmentItemService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly equipmentItemService: EquipmentItemService
+  ) {
     super(store$);
   }
 }

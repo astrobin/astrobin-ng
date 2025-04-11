@@ -37,30 +37,30 @@ import { map, take, takeUntil } from "rxjs/operators";
   selector: "astrobin-user-gallery-collection-menu",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div ngbDropdown container="body" class="collection-menu">
+      <div class="collection-menu" container="body" ngbDropdown>
         <button
-          class="btn btn-sm btn-link btn-no-block no-toggle"
-          ngbDropdownToggle
           id="collection-menu-dropdown-button-{{ collection.id }}"
+          class="btn btn-sm btn-link btn-no-block no-toggle"
           astrobinEventStopPropagation
+          ngbDropdownToggle
         >
           <fa-icon icon="ellipsis"></fa-icon>
         </button>
 
         <div [attr.aria-labelledby]="'collection-menu-dropdown-button-' + collection.id" ngbDropdownMenu>
-          <a href="#" class="dropdown-item" (click)="editCollection()" astrobinEventPreventDefault>
+          <a (click)="editCollection()" class="dropdown-item" astrobinEventPreventDefault href="#">
             {{ "Edit" | translate }}
           </a>
 
-          <a href="#" class="dropdown-item" (click)="addRemoveImages()" astrobinEventPreventDefault>
+          <a (click)="addRemoveImages()" class="dropdown-item" astrobinEventPreventDefault href="#">
             {{ "Add/Remove images" | translate }}
           </a>
 
-          <a href="#" class="dropdown-item" (click)="createCollection()" astrobinEventPreventDefault>
+          <a (click)="createCollection()" class="dropdown-item" astrobinEventPreventDefault href="#">
             {{ "Create nested collection" | translate }}
           </a>
 
-          <a href="#" class="dropdown-item text-danger" (click)="deleteCollection()" astrobinEventPreventDefault>
+          <a (click)="deleteCollection()" class="dropdown-item text-danger" astrobinEventPreventDefault href="#">
             {{ "Delete" | translate }}
           </a>
         </div>
@@ -70,14 +70,14 @@ import { map, take, takeUntil } from "rxjs/operators";
     <ng-template #editCollectionOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Edit collection" | translate }}</h5>
-        <button class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close"></button>
       </div>
       <div class="offcanvas-body">
         <form [formGroup]="editCollectionForm" (ngSubmit)="submitEditCollection()" novalidate>
-          <formly-form [model]="editCollectionModel" [fields]="editCollectionFields" [form]="editCollectionForm">
+          <formly-form [fields]="editCollectionFields" [form]="editCollectionForm" [model]="editCollectionModel">
           </formly-form>
           <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary">{{ "Save" | translate }}</button>
+            <button class="btn btn-primary" type="submit">{{ "Save" | translate }}</button>
           </div>
         </form>
       </div>
@@ -86,17 +86,17 @@ import { map, take, takeUntil } from "rxjs/operators";
     <ng-template #addRemoveImagesOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Add/remove images" | translate }}</h5>
-        <button class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close"></button>
       </div>
       <div class="offcanvas-body">
         <astrobin-user-gallery-collection-add-remove-images
+          [collection]="collection"
           [user]="user"
           [userProfile]="userProfile"
-          [collection]="collection"
         ></astrobin-user-gallery-collection-add-remove-images>
 
         <div class="d-flex justify-content-center mt-4">
-          <button class="btn btn-secondary" (click)="offcanvas.dismiss()" translate="Close" type="button"></button>
+          <button (click)="offcanvas.dismiss()" class="btn btn-secondary" translate="Close" type="button"></button>
         </div>
       </div>
     </ng-template>
@@ -104,13 +104,13 @@ import { map, take, takeUntil } from "rxjs/operators";
     <ng-template #createCollectionOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Create collection" | translate }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <astrobin-user-gallery-collection-create
+          [parent]="collection"
           [user]="user"
           [userProfile]="userProfile"
-          [parent]="collection"
           (cancelClick)="offcanvas.close()"
         ></astrobin-user-gallery-collection-create>
       </div>
@@ -119,7 +119,7 @@ import { map, take, takeUntil } from "rxjs/operators";
     <ng-template #deleteCollectionConfirmationOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Delete collection" | translate }}</h5>
-        <button class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close"></button>
       </div>
       <div class="offcanvas-body">
         <p>{{ "Are you sure you want to delete this collection?" | translate }}</p>

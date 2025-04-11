@@ -2,13 +2,13 @@
   <ng-container *ngIf="props.options !== null">
     <ng-container *ngIf="hasAsyncItems; else hasSyncItems">
       <ng-container
-        [ngTemplateOutletContext]="{ options: props.options | async }"
         [ngTemplateOutlet]="select"
+        [ngTemplateOutletContext]="{ options: props.options | async }"
       ></ng-container>
     </ng-container>
 
     <ng-template #hasSyncItems>
-      <ng-container [ngTemplateOutletContext]="{ options: props.options }" [ngTemplateOutlet]="select"></ng-container>
+      <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ options: props.options }"></ng-container>
     </ng-template>
   </ng-container>
 </ng-template>
@@ -17,9 +17,6 @@
   <div class="position-relative">
     <ng-select
       #ngSelect
-      (change)="onChange($event)"
-      (click)="goFullscreen($event, null)"
-      (search)="goFullscreen(null, $event)"
       [appendTo]="props.appendTo"
       [attr.id]="field.id"
       [bindLabel]="props.bindLabel || 'label'"
@@ -29,8 +26,8 @@
       [class.ng-select-striped]="!!props.striped"
       [class.show-arrow]="props.showArrow !== false"
       [class.too-many-options]="hasAsyncItems && (props.options | async)?.length > TOO_MANY_OPTIONS"
-      [clearSearchOnAdd]="true"
       [clearable]="props.clearable || false"
+      [clearSearchOnAdd]="true"
       [closeOnSelect]="props.closeOnSelect !== undefined ? props.closeOnSelect : !props.multiple"
       [dropdownPosition]="this.fullscreen ? 'bottom' : 'auto'"
       [formControl]="formControl"
@@ -43,8 +40,11 @@
       [placeholder]="fullscreen ? '' : placeholder"
       [readonly]="props.readonly"
       [searchable]="props.searchable !== undefined ? props.searchable : true"
-      [typeToSearchText]="fullscreen ? '' : placeholder"
       [typeahead]="input$"
+      [typeToSearchText]="fullscreen ? '' : placeholder"
+      (change)="onChange($event)"
+      (click)="goFullscreen($event, null)"
+      (search)="goFullscreen(null, $event)"
       class="{{ props.classNames }} flex-grow-1"
       groupBy="group"
     >
@@ -56,15 +56,15 @@
         <ng-container *ngIf="!props.labelTemplate">{{ item.label }}</ng-container>
         <ng-container
           *ngIf="props.labelTemplate"
-          [ngTemplateOutletContext]="{ item: item }"
           [ngTemplateOutlet]="props.labelTemplate"
+          [ngTemplateOutletContext]="{ item: item }"
         ></ng-container>
         <span
           (click)="clear(item)"
+          class="ng-value-icon right"
           aria-hidden="true"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="ng-value-icon right"
           >×</span
         >
       </ng-template>
@@ -76,8 +76,8 @@
         </ng-container>
         <ng-container
           *ngIf="props.optionTemplate"
-          [ngTemplateOutletContext]="{ item }"
           [ngTemplateOutlet]="props.optionTemplate"
+          [ngTemplateOutletContext]="{ item }"
         ></ng-container>
       </ng-template>
 
@@ -94,14 +94,14 @@
 
       <ng-template ng-footer-tmp>
         <div *ngIf="!!value && !!props.addTag && showCreateNewButton; else footerTemplateExtra" class="add-tag">
-          <div [innerHTML]="'Can\'t find <strong>{{0}}</strong>?' | translate : { '0': value }" class="cant-find"></div>
+          <div [innerHTML]="'Can\'t find <strong>{{0}}</strong>?' | translate: { '0': value }" class="cant-find"></div>
 
           <ng-container [ngTemplateOutlet]="footerTemplateExtra"></ng-container>
 
           <button
-            (click)="onAddTag(value)"
             *ngIf="!!value && !!props.addTag && showCreateNewButton"
             [class.loading]="loading"
+            (click)="onAddTag(value)"
             class="btn btn-outline-primary"
           >
             {{ "Create new" }}
@@ -119,12 +119,12 @@
     </ng-select>
 
     <a
-      (click)="toggleEnableFullscreen()"
       *ngIf="!fullscreen && props.enableFullscreen && cypressTesting"
       [ngbTooltip]="'Disable fullscreen mode' | translate"
+      (click)="toggleEnableFullscreen()"
+      class="toggle-enable-fullscreen"
       astrobinEventPreventDefault
       astrobinEventStopPropagation
-      class="toggle-enable-fullscreen"
       href="#"
     >
       <fa-icon [class.text-muted]="!props.enableFullscreen" icon="expand"></fa-icon>
@@ -134,7 +134,7 @@
 
 <ng-template #ngSelectModal>
   <div class="modal-header">
-    <h4 class="modal-title" id="ng-select-modal">
+    <h4 id="ng-select-modal" class="modal-title">
       <ng-container *ngIf="field.props.fullScreenLabel; else noFullScreenLabel">
         {{ field.props.fullScreenLabel }}
       </ng-container>
@@ -142,7 +142,7 @@
         {{ field.props.label }}
       </ng-template>
     </h4>
-    <button (click)="exitFullscreen()" aria-describedby="modal-title" class="close" type="button">
+    <button (click)="exitFullscreen()" class="close" aria-describedby="modal-title" type="button">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -157,7 +157,7 @@
         <div class="flex-grow-1">
           <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
         </div>
-        <button (click)="exitFullscreen()" *ngIf="props.multiple" class="btn btn-primary btn-sm btn-no-block">
+        <button *ngIf="props.multiple" (click)="exitFullscreen()" class="btn btn-primary btn-sm btn-no-block">
           {{ "Done" | translate }}
         </button>
       </div>

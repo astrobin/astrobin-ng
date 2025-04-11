@@ -17,7 +17,10 @@ import { BaseClassicApiService } from "../base-classic-api.service";
 export class JsonApiService extends BaseClassicApiService implements JsonApiServiceInterface {
   configUrl = environment.classicApiUrl + "/json-api";
 
-  constructor(public loadingService: LoadingService, private http: HttpClient) {
+  constructor(
+    public loadingService: LoadingService,
+    private http: HttpClient
+  ) {
     super(loadingService);
   }
 

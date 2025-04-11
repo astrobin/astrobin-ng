@@ -1,6 +1,6 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="reject-migration-modal">{{ "Reject" | translate }}</h4>
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <h4 id="reject-migration-modal" class="modal-title">{{ "Reject" | translate }}</h4>
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -17,9 +17,9 @@
   </button>
 
   <button
-    (click)="reject()"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="!form.valid"
+    (click)="reject()"
     class="btn btn-danger"
     type="button"
   >

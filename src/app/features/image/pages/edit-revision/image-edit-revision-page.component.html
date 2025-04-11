@@ -7,9 +7,9 @@
 
   <ng-container *ngIf="isBrowser; else loadingTemplate">
     <div class="row">
-      <div class="col-sm-12 col-md-3" *ngIf="thumbnail">
+      <div *ngIf="thumbnail" class="col-sm-12 col-md-3">
         <div class="thumbnail text-center">
-          <img [attr.src]="imageThumbnail" [alt]="image.title" />
+          <img [alt]="image.title" [attr.src]="imageThumbnail" />
         </div>
       </div>
 
@@ -24,8 +24,8 @@
 
           <div class="form-actions">
             <button
-              (click)="onCancel($event)"
               [class.loading]="saving || (loadingService.loading$ | async)"
+              (click)="onCancel($event)"
               class="btn btn-secondary"
               type="button"
             >
@@ -33,8 +33,8 @@
             </button>
 
             <button
-              (click)="onSave($event)"
               [class.loading]="saving || (loadingService.loading$ | async)"
+              (click)="onSave($event)"
               class="btn btn-primary"
               type="submit"
             >

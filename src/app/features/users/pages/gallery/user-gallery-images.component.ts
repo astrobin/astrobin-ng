@@ -73,44 +73,44 @@ import { debounceTime, filter, map, switchMap, take, takeUntil, tap } from "rxjs
 
         <astrobin-image-gallery-loading
           *ngIf="loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
-          [hidden]="!loading"
           [activeLayout]="activeLayout"
+          [hidden]="!loading"
           [numberOfImages]="loadingPlaceholdersCount"
         ></astrobin-image-gallery-loading>
 
         <ng-container *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TABLE">
           <astrobin-masonry-layout
+            [idProperty]="'pk'"
             [items]="images"
             [layout]="
               activeLayout === UserGalleryActiveLayout.SMALL
                 ? 'small'
                 : activeLayout === UserGalleryActiveLayout.MEDIUM
-                ? 'medium'
-                : 'large'
+                  ? 'medium'
+                  : 'large'
             "
-            [idProperty]="'pk'"
             [leftAlignLastRow]="next === null"
           >
             <ng-template let-item>
               <div class="image-container">
                 <a
-                  (click)="openImage(item)"
-                  [href]="'/i/' + (item.hash || item.pk)"
                   [class.wip]="item.isWip"
+                  [href]="'/i/' + (item.hash || item.pk)"
+                  (click)="openImage(item)"
                   class="image-link"
                   astrobinEventPreventDefault
                 >
                   <ng-container *ngIf="imageService.getObjectFit(item) as fit">
                     <div
                       [astrobinLazyBackground]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
+                      [attr.aria-label]="item.title"
                       [highResolutionUrl]="imageService.getThumbnail(item, ImageAlias.HD)"
-                      [useHighResolution]="fit.scale > 3 || activeLayout === ImageGalleryLayout.LARGE"
                       [ngStyle]="{
                         'background-position': fit.position.x + '% ' + fit.position.y + '%',
                         'background-size': fit.scale > 1.5 ? fit.scale * 100 + '%' : 'cover',
                         'background-repeat': 'no-repeat'
                       }"
-                      [attr.aria-label]="item.title"
+                      [useHighResolution]="fit.scale > 3 || activeLayout === ImageGalleryLayout.LARGE"
                       role="img"
                     ></div>
                   </ng-container>
@@ -126,10 +126,10 @@ import { debounceTime, filter, map, switchMap, take, takeUntil, tap } from "rxjs
                   <astrobin-image-hover
                     *ngIf="!loadingImageId"
                     @fadeInOut
-                    [image]="item"
-                    [staticOverlay]="options.ordering"
                     [activeLayout]="activeLayout"
+                    [image]="item"
                     [showAuthor]="false"
+                    [staticOverlay]="options.ordering"
                   ></astrobin-image-hover>
 
                   <ng-container *ngTemplateOutlet="menuTemplate; context: { image: item }"></ng-container>
@@ -147,27 +147,27 @@ import { debounceTime, filter, map, switchMap, take, takeUntil, tap } from "rxjs
                 <tr>
                   <th>
                     {{ "Title" | translate }}
-                    <fa-icon *ngIf="options.subsection === 'title'" icon="sort-alpha-asc" class="ms-2"></fa-icon>
+                    <fa-icon *ngIf="options.subsection === 'title'" class="ms-2" icon="sort-alpha-asc"></fa-icon>
                   </th>
                   <th>
                     {{ "Published" | translate }}
-                    <fa-icon *ngIf="options.subsection === 'uploaded'" icon="sort-desc" class="ms-2"></fa-icon>
+                    <fa-icon *ngIf="options.subsection === 'uploaded'" class="ms-2" icon="sort-desc"></fa-icon>
                   </th>
                   <th>
                     {{ "Views" | translate }}
-                    <fa-icon *ngIf="options.ordering === 'views'" icon="sort-amount-down" class="ms-2"></fa-icon>
+                    <fa-icon *ngIf="options.ordering === 'views'" class="ms-2" icon="sort-amount-down"></fa-icon>
                   </th>
                   <th>
                     {{ "Likes" | translate }}
-                    <fa-icon *ngIf="options.ordering === 'likes'" icon="sort-amount-down" class="ms-2"></fa-icon>
+                    <fa-icon *ngIf="options.ordering === 'likes'" class="ms-2" icon="sort-amount-down"></fa-icon>
                   </th>
                   <th>
                     {{ "Bookmarks" | translate }}
-                    <fa-icon *ngIf="options.ordering === 'bookmarks'" icon="sort-amount-down" class="ms-2"></fa-icon>
+                    <fa-icon *ngIf="options.ordering === 'bookmarks'" class="ms-2" icon="sort-amount-down"></fa-icon>
                   </th>
                   <th>
                     {{ "Comments" | translate }}
-                    <fa-icon *ngIf="options.ordering === 'comments'" icon="sort-amount-down" class="ms-2"></fa-icon>
+                    <fa-icon *ngIf="options.ordering === 'comments'" class="ms-2" icon="sort-amount-down"></fa-icon>
                   </th>
                 </tr>
               </thead>
@@ -179,8 +179,8 @@ import { debounceTime, filter, map, switchMap, take, takeUntil, tap } from "rxjs
                     class="d-flex justify-content-md-between align-items-md-center flex-column flex-md-row"
                   >
                     <a
-                      (click)="openImage(image)"
                       [href]="'/i/' + (image.hash || image.pk.toString())"
+                      (click)="openImage(image)"
                       astrobinEventPreventDefault
                     >
                       {{ image.title }}
@@ -190,7 +190,7 @@ import { debounceTime, filter, map, switchMap, take, takeUntil, tap } from "rxjs
                   </td>
                   <td [attr.data-label]="'Published' | translate" class="no-wrap">
                     <abbr [attr.title]="image.published || image.uploaded | localDate">
-                      {{ image.published || image.uploaded | localDate | timeago : true }}
+                      {{ image.published || image.uploaded | localDate | timeago: true }}
                     </abbr>
                   </td>
                   <td [attr.data-label]="'Views' | translate">{{ image.viewCount }}</td>
@@ -217,16 +217,16 @@ import { debounceTime, filter, map, switchMap, take, takeUntil, tap } from "rxjs
 
     <ng-template #menuTemplate let-image="image">
       <astrobin-user-gallery-image-menu
-        (imageDeleted)="onImageDeleted($event)"
-        (imageRemovedFromCollection)="onImageRemovedFromCollection($event)"
+        [image]="image"
         [user]="user"
         [userProfile]="userProfile"
-        [image]="image"
+        (imageDeleted)="onImageDeleted($event)"
+        (imageRemovedFromCollection)="onImageRemovedFromCollection($event)"
       ></astrobin-user-gallery-image-menu>
     </ng-template>
 
     <ng-template #keyValueTagTemplate let-image="image">
-      <div class="key-value-tag" *ngIf="collection?.orderByTag && image.keyValueTags">
+      <div *ngIf="collection?.orderByTag && image.keyValueTags" class="key-value-tag">
         <span *ngFor="let tag of image.keyValueTags.split(',')">
           <ng-container *ngIf="tag.split('=')[0] === collection.orderByTag">
             {{ tag }}

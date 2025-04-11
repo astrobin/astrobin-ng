@@ -29,7 +29,10 @@ export class NestedCommentsCountComponent extends BaseComponentDirective impleme
 
   private _storeSubscription: Subscription;
 
-  constructor(public readonly store$: Store<MainState>, public readonly changeDetectorRef: ChangeDetectorRef) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly changeDetectorRef: ChangeDetectorRef
+  ) {
     super(store$);
   }
 

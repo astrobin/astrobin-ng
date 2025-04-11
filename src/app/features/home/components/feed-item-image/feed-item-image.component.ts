@@ -34,22 +34,22 @@ import { filter, take } from "rxjs/operators";
       <div class="feed-item-component feed-item-image">
         <div class="feed-item-header">
           <img
-            class="feed-item-avatar"
             [alt]="displayName"
             [ngSrc]="userAvatar"
-            width="60"
+            class="feed-item-avatar"
             height="60"
             loading="lazy"
+            width="60"
           />
 
           <div class="feed-item-header-text">
             <div class="feed-item-header-text-1">
               <a
-                (click)="onClick($event)"
                 [href]="'/i/' + objectId"
+                (click)="onClick($event)"
+                class="item-display-name"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
-                class="item-display-name"
               >
                 {{ displayName }}
               </a>
@@ -62,11 +62,11 @@ import { filter, take } from "rxjs/operators";
 
         <div class="feed-item-body">
           <a
-            (click)="onClick($event)"
             [href]="'/i/' + objectId"
+            (click)="onClick($event)"
+            class="main-image-container"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
-            class="main-image-container"
           >
             <img #image [alt]="displayName" [src]="feedItem.image" class="main-image" loading="lazy" />
           </a>
@@ -96,8 +96,8 @@ import { filter, take } from "rxjs/operators";
             >
               <button
                 *ngIf="!translatedHtml"
-                (click)="onTranslateCommentClicked($event)"
                 [class.loading]="translating"
+                (click)="onTranslateCommentClicked($event)"
                 class="btn btn-link btn-sm w-auto btn-no-block text-muted text-start mb-3"
               >
                 <fa-icon icon="language"></fa-icon>

@@ -8,7 +8,7 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price">
-              {{ 0 | currency : this.subscriptionsService.currency : "symbol" : "1.2-2" : translate.currentLang }}
+              {{ 0 | currency: this.subscriptionsService.currency : "symbol" : "1.2-2" : translate.currentLang }}
             </li>
             <li [innerHTML]="subscriptionsService.maxUploadsMessage(10)"></li>
             <li [innerHTML]="subscriptionsService.maxSizeMessage(25)"></li>

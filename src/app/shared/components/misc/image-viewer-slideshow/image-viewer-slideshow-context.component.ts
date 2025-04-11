@@ -20,9 +20,9 @@ import { Subscription, fromEvent, throttleTime } from "rxjs";
     <div class="navigation-context-wrapper">
       <button
         (click)="scrollNavigationContextLeft()"
+        class="scroll-left"
         astrobinEventPreventDefault
         astrobinEventStopPropagation
-        class="scroll-left"
       >
         <fa-icon icon="chevron-circle-left"></fa-icon>
       </button>
@@ -30,9 +30,9 @@ import { Subscription, fromEvent, throttleTime } from "rxjs";
       <div #navigationContextElement class="navigation-context">
         <div
           *ngFor="let item of navigationContext; trackBy: trackByFn"
+          [class.active]="item.imageId === activeId"
           (click)="onItemClicked(item.imageId)"
           class="navigation-context-item"
-          [class.active]="item.imageId === activeId"
         >
           <img [id]="'image-viewer-context-' + item.imageId" [src]="item.thumbnailUrl" alt="" />
 
@@ -45,9 +45,9 @@ import { Subscription, fromEvent, throttleTime } from "rxjs";
 
       <button
         (click)="scrollNavigationContextRight()"
+        class="scroll-right"
         astrobinEventPreventDefault
         astrobinEventStopPropagation
-        class="scroll-right"
       >
         <fa-icon icon="chevron-circle-right"></fa-icon>
       </button>

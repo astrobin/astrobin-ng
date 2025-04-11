@@ -1,5 +1,4 @@
 <div
-  astrobinScrollVisibility
   [forceVisible]="forceVisible"
   [viewportOptions]="{
     verticalTolerance: 500,
@@ -7,16 +6,17 @@
     shouldCheckHorizontal: false
   }"
   (visibilityChange)="onVisibilityChange($event)"
+  astrobinScrollVisibility
 >
-  <div *ngIf="comments$ | async as comments; else loadingTpl" class="nested-comments card" @fadeInOut>
+  <div *ngIf="comments$ | async as comments; else loadingTpl" @fadeInOut class="nested-comments card">
     <div class="card-header">
       {{ title }}
 
       <div class="actions">
         <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
         <button
-          (click)="close.emit()"
           *ngIf="showCloseButton"
+          (click)="close.emit()"
           class="btn btn-link btn-no-block btn-close ms-2"
         ></button>
       </div>
@@ -41,8 +41,8 @@
       <ng-container *ngIf="!loadingComments; else loadingTpl">
         <ng-container
           *ngFor="let comment of comments; trackBy: commentTrackByFn"
-          [ngTemplateOutletContext]="{comment}"
           [ngTemplateOutlet]="commentsTpl"
+          [ngTemplateOutletContext]="{ comment }"
         ></ng-container>
         <ng-container *ngIf="comments.length === 0" [ngTemplateOutlet]="noCommentsTpl"></ng-container>
       </ng-container>
@@ -77,24 +77,24 @@
 
       <div class="form-actions">
         <button
-          (click)="cancelTopLevelComment()"
           *ngIf="autoStartTopLevelStrategy === null"
           [class.loading]="loadingService.loading$ | async"
+          (click)="cancelTopLevelComment()"
           class="btn btn-sm btn-outline-secondary me-sm-2"
         >
           {{ "Cancel" | translate }}
         </button>
 
         <button
-          (click)="submitTopLevelComment()"
           [class.loading]="loadingService.loading$ | async"
           [disabled]="!form.valid"
+          (click)="submitTopLevelComment()"
           class="btn btn-primary btn-sm"
         >
           {{ "Submit" | translate }}
         </button>
 
-        <button (click)="close.emit()" *ngIf="showCloseButton" class="btn btn-secondary btn-sm ms-md-1">
+        <button *ngIf="showCloseButton" (click)="close.emit()" class="btn btn-secondary btn-sm ms-md-1">
           {{ "Close" | translate }}
         </button>
       </div>
@@ -114,10 +114,10 @@
     [allowModeration]="allowModeration"
     [allowSelfReply]="allowSelfReply"
     [comment]="comment"
+    [commentContentType]="commentContentType"
     [highlighted]="comment.id === highlightId"
     [restrictReplyToUserId]="restrictReplyToUserId"
     [showReplyButton]="showReplyButton"
-    [commentContentType]="commentContentType"
     (formDirtyChange)="onNestedCommentFormDirtyChange($event)"
   ></astrobin-nested-comment>
 </ng-template>

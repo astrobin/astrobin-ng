@@ -17,7 +17,10 @@ import { map } from "rxjs/operators";
 export class PlateSolvingSettingsApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/platesolving";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

@@ -32,7 +32,10 @@ export class MarketplaceListingLineItemPriceComponent extends BaseComponentDirec
   soldToUser: UserInterface;
   reservedToUser: UserInterface;
 
-  constructor(public readonly store$: Store<MainState>, public readonly translateService: TranslateService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly translateService: TranslateService
+  ) {
     super(store$);
   }
 

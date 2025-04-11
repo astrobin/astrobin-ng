@@ -9,16 +9,16 @@
 
   <div class="d-flex justify-content-center gap-2 mb-5 mb-lg-0">
     <button
-      (click)="applyFilters()"
       [class.loading]="(loadingService.loading$ | async) || filterForm.pending"
+      (click)="applyFilters()"
       class="btn btn-primary btn-block mb-0"
     >
       {{ "Apply" | translate }}
     </button>
 
     <button
-      (click)="resetFilters()"
       [class.loading]="(loadingService.loading$ | async) || filterForm.pending"
+      (click)="resetFilters()"
       class="btn btn-secondary btn-block mb-0"
     >
       {{ "Reset" | translate }}

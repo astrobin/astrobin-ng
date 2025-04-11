@@ -31,5 +31,9 @@ export class GroupEffects {
     )
   );
 
-  constructor(private actions$: Actions, private store: Store<MainState>, private groupApiService: GroupApiService) {}
+  constructor(
+    private actions$: Actions,
+    private store: Store<MainState>,
+    private groupApiService: GroupApiService
+  ) {}
 }

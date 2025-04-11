@@ -11,7 +11,9 @@
       margin: 0;
       line-height: 1rem;
       z-index: 1;
-      transition: opacity 0.3s ease, filter 0.3s ease;
+      transition:
+        opacity 0.3s ease,
+        filter 0.3s ease;
 
       ::ng-deep {
         .dropdown {

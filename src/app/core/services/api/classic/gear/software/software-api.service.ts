@@ -12,7 +12,10 @@ import { Observable } from "rxjs";
 export class SoftwareApiService extends BaseClassicApiService implements SoftwareApiServiceInterface {
   configUrl = this.baseUrl + "/astrobin/software";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

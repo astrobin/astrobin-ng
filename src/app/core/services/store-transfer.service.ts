@@ -6,7 +6,11 @@ export const NGRX_STATE_KEY = makeStateKey<any>("NGRX_STATE");
 
 @Injectable({ providedIn: "root" })
 export class StoreTransferService {
-  constructor(private appRef: ApplicationRef, private transferState: TransferState, private store: Store) {}
+  constructor(
+    private appRef: ApplicationRef,
+    private transferState: TransferState,
+    private store: Store
+  ) {}
 
   public init(): void {
     // Wait for Angular to be stable before capturing the state

@@ -22,11 +22,11 @@ import { CookieService } from "ngx-cookie";
 @Component({
   selector: "astrobin-image-viewer-revision-summary",
   template: `
-    <div (click)="toggleCollapse()" [class.collapsed]="collapsed" class="metadata-header supports-collapsing">
+    <div [class.collapsed]="collapsed" (click)="toggleCollapse()" class="metadata-header supports-collapsing">
       {{ "Revision" | translate }}: {{ label }}
     </div>
 
-    <div [collapsed]="collapsed" collapseAnimation class="metadata-section">
+    <div [collapsed]="collapsed" class="metadata-section" collapseAnimation>
       <div class="metadata-item">
         <div class="metadata-label">
           <div class="revision-summary">
@@ -42,7 +42,7 @@ import { CookieService } from "ngx-cookie";
 
             <div *ngIf="published">
               <strong>{{ "Published" | translate }}</strong>
-              {{ published | date : "medium" }}
+              {{ published | date: "medium" }}
             </div>
           </div>
         </div>

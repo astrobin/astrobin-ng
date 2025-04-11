@@ -38,7 +38,9 @@ $largeViewPortBreakpoint: 2561px;
 
   will-change: transform, opacity;
   transform: translateY(0) scale(1);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 
   ::ng-deep .highlight {
     @include highlight;
@@ -196,7 +198,9 @@ $largeViewPortBreakpoint: 2561px;
           @include clickableMetadata;
 
           &.search {
-            cursor: url("/assets/images/search-white.png") 16 16, pointer;
+            cursor:
+              url("/assets/images/search-white.png") 16 16,
+              pointer;
           }
 
           &.metadata-link-sponsor {
@@ -393,7 +397,9 @@ $largeViewPortBreakpoint: 2561px;
 
           .moon-image {
             filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.7));
-            transition: filter 0.2s ease, opacity 0.2s ease;
+            transition:
+              filter 0.2s ease,
+              opacity 0.2s ease;
             pointer-events: none; /* Let the parent handle all events */
             border-radius: 50%; /* Ensure perfect circle */
             background-size: contain;
@@ -455,7 +461,9 @@ $largeViewPortBreakpoint: 2561px;
               justify-content: center;
               width: 1.25rem;
               height: 1.25rem;
-              transition: color 0.2s ease, transform 0.2s ease;
+              transition:
+                color 0.2s ease,
+                transform 0.2s ease;
 
               &:hover {
                 color: var(--black);
@@ -545,7 +553,9 @@ $largeViewPortBreakpoint: 2561px;
         opacity: 1;
         pointer-events: all;
         padding: 0.5rem;
-        transition: opacity 0.3s, transform 0.3s ease-in-out;
+        transition:
+          opacity 0.3s,
+          transform 0.3s ease-in-out;
 
         &:focus-visible {
           outline: none !important;

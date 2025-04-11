@@ -12,7 +12,10 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 export class RefreshButtonComponent extends BaseComponentDirective {
   @Input() loading: boolean;
 
-  constructor(public readonly store$: Store<MainState>, public readonly loadingService: LoadingService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly loadingService: LoadingService
+  ) {
     super(store$);
   }
 }

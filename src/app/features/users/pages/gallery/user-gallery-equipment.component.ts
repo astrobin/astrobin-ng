@@ -63,8 +63,8 @@ import { filter, map, take } from "rxjs/operators";
           <div class="d-flex flex-wrap gap-3">
             <astrobin-equipment-preset
               *ngFor="let preset of presets"
-              (presetClicked)="onPresetClicked(preset)"
               [preset]="preset"
+              (presetClicked)="onPresetClicked(preset)"
             ></astrobin-equipment-preset>
 
             <div
@@ -80,10 +80,10 @@ import { filter, map, take } from "rxjs/operators";
       </div>
 
       <astrobin-user-gallery-smart-folder
-        (activeChange)="activeEquipmentItemChange.emit($event)"
+        [folderType]="SmartFolderType.GEAR"
         [user]="user"
         [userProfile]="userProfile"
-        [folderType]="SmartFolderType.GEAR"
+        (activeChange)="activeEquipmentItemChange.emit($event)"
         galleryFragment="equipment"
       ></astrobin-user-gallery-smart-folder>
     </ng-container>
@@ -91,7 +91,7 @@ import { filter, map, take } from "rxjs/operators";
     <ng-template #presetSummaryOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ activePreset.name }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <astrobin-equipment-preset-summary [preset]="activePreset"></astrobin-equipment-preset-summary>
@@ -101,7 +101,7 @@ import { filter, map, take } from "rxjs/operators";
     <ng-template #presetCreateOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Add setup" | translate }}</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
 
       <div class="offcanvas-body">

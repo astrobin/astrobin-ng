@@ -4,11 +4,11 @@
     <div class="d-flex flex-column flex-md-row w-100 justify-content-between">
       <!-- Tabs -->
       <ul
-        ngbNav
         #nav="ngbNav"
         (navChange)="onTabChange($event)"
-        [(activeId)]="activeTab"
         class="nav-tabs align-items-center"
+        [(activeId)]="activeTab"
+        ngbNav
       >
         <li [ngbNavItem]="StatType.IMAGE_DATA">
           <button ngbNavLink>
@@ -31,17 +31,17 @@
         <div class="d-flex align-items-center search-container my-2 my-md-0 me-2">
           <div class="input-group align-items-center">
             <input
-              type="text"
-              class="form-control"
-              placeholder="{{ 'Search' | translate }}"
-              [(ngModel)]="searchQuery"
               (keydown.enter)="onSearch(); $event.preventDefault()"
+              class="form-control"
+              [(ngModel)]="searchQuery"
+              placeholder="{{ 'Search' | translate }}"
+              type="text"
             />
             <div class="input-group-append ms-2">
-              <button class="btn btn-link link-primary" type="button" (click)="onSearch()">
+              <button (click)="onSearch()" class="btn btn-link link-primary" type="button">
                 <fa-icon icon="search"></fa-icon>
               </button>
-              <button *ngIf="searchQuery" class="btn btn-link link-secondary" type="button" (click)="onClearSearch()">
+              <button *ngIf="searchQuery" (click)="onClearSearch()" class="btn btn-link link-secondary" type="button">
                 <fa-icon icon="times"></fa-icon>
               </button>
             </div>
@@ -56,9 +56,9 @@
                 ? 'https://welcome.astrobin.com/features/image-index'
                 : 'https://welcome.astrobin.com/features/contribution-index'
             "
-            target="_blank"
-            rel="noopener"
             class="px-2 py-3"
+            rel="noopener"
+            target="_blank"
           >
             <fa-icon icon="info-circle"></fa-icon>
           </a>
@@ -74,39 +74,39 @@
       <table class="table table-images-data table-striped table-bordered m-0">
         <thead>
           <tr>
-            <th scope="col" class="text-center">#</th>
+            <th class="text-center" scope="col">#</th>
             <th scope="col">
               {{ "User" | translate }}
             </th>
-            <th scope="col" class="sortable" (click)="onSort('followers')">
+            <th (click)="onSort('followers')" class="sortable" scope="col">
               {{ "Followers" | translate }}
               <fa-icon [icon]="getSortIcon('followers')"></fa-icon>
             </th>
-            <th scope="col" class="sortable" (click)="onSort('images')">
+            <th (click)="onSort('images')" class="sortable" scope="col">
               {{ "Images" | translate }}
               <fa-icon [icon]="getSortIcon('images')"></fa-icon>
             </th>
-            <th scope="col" class="sortable" (click)="onSort('totalLikesReceived')">
+            <th (click)="onSort('totalLikesReceived')" class="sortable" scope="col">
               {{ "Likes" | translate }}
               <fa-icon [icon]="getSortIcon('totalLikesReceived')"></fa-icon>
             </th>
-            <th scope="col" class="sortable" (click)="onSort('integration')">
+            <th (click)="onSort('integration')" class="sortable" scope="col">
               {{ "Total integration" | translate }}
               <fa-icon [icon]="getSortIcon('integration')"></fa-icon>
             </th>
-            <th scope="col" class="sortable award-icon-column" (click)="onSort('topPickNominations')">
-              <fa-icon icon="arrow-up" ngbTooltip="{{ 'Top Pick Nominations' | translate }}" container="body"></fa-icon>
+            <th (click)="onSort('topPickNominations')" class="sortable award-icon-column" scope="col">
+              <fa-icon container="body" icon="arrow-up" ngbTooltip="{{ 'Top Pick Nominations' | translate }}"></fa-icon>
               <fa-icon [icon]="getSortIcon('topPickNominations')" class="sort-icon"></fa-icon>
             </th>
-            <th scope="col" class="sortable award-icon-column" (click)="onSort('topPicks')">
-              <fa-icon icon="star" ngbTooltip="{{ 'Top Picks' | translate }}" container="body"></fa-icon>
+            <th (click)="onSort('topPicks')" class="sortable award-icon-column" scope="col">
+              <fa-icon container="body" icon="star" ngbTooltip="{{ 'Top Picks' | translate }}"></fa-icon>
               <fa-icon [icon]="getSortIcon('topPicks')" class="sort-icon"></fa-icon>
             </th>
-            <th scope="col" class="sortable award-icon-column" (click)="onSort('iotds')">
-              <fa-icon icon="trophy" ngbTooltip="{{ 'IOTDs' | translate }}" container="body"></fa-icon>
+            <th (click)="onSort('iotds')" class="sortable award-icon-column" scope="col">
+              <fa-icon container="body" icon="trophy" ngbTooltip="{{ 'IOTDs' | translate }}"></fa-icon>
               <fa-icon [icon]="getSortIcon('iotds')" class="sort-icon"></fa-icon>
             </th>
-            <th scope="col" class="sortable" (click)="onSort('normalizedLikes')">
+            <th (click)="onSort('normalizedLikes')" class="sortable" scope="col">
               {{ "Image Index" | translate }}
               <fa-icon [icon]="getSortIcon('normalizedLikes')"></fa-icon>
             </th>
@@ -114,7 +114,7 @@
         </thead>
         <tbody>
           <tr *ngIf="initialLoading">
-            <td colspan="10" class="text-center py-4">
+            <td class="text-center py-4" colspan="10">
               <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
             </td>
           </tr>
@@ -158,7 +158,7 @@
                 {{
                   (user.integration | nullOrUndefined) === "n/a"
                     ? ("n/a" | translate)
-                    : (user.integration | number : "1.1-1")
+                    : (user.integration | number: "1.1-1")
                 }}
               </td>
               <td>
@@ -176,12 +176,12 @@
                 {{
                   (user.normalizedLikes | nullOrUndefined) === "n/a"
                     ? ("n/a" | translate)
-                    : (user.normalizedLikes | number : "1.2-2")
+                    : (user.normalizedLikes | number: "1.2-2")
                 }}
               </td>
             </tr>
             <tr *ngIf="!initialLoading && !loading && results.length === 0">
-              <td colspan="10" class="text-center py-4">
+              <td class="text-center py-4" colspan="10">
                 {{ "No data available" | translate }}
               </td>
             </tr>
@@ -198,35 +198,35 @@
           <tr>
             <th scope="col"></th>
             <th scope="col"></th>
-            <th scope="col" colspan="3" class="text-center">{{ "Comments" | translate }}</th>
-            <th scope="col" colspan="2" class="text-center">{{ "Forum posts" | translate }}</th>
-            <th scope="col" class="sortable" (click)="onSort('contributionIndex')">
+            <th class="text-center" colspan="3" scope="col">{{ "Comments" | translate }}</th>
+            <th class="text-center" colspan="2" scope="col">{{ "Forum posts" | translate }}</th>
+            <th (click)="onSort('contributionIndex')" class="sortable" scope="col">
               {{ "Contribution index" | translate }}
               <fa-icon [icon]="getSortIcon('contributionIndex')"></fa-icon>
             </th>
           </tr>
           <tr>
-            <th scope="col" class="text-center">#</th>
+            <th class="text-center" scope="col">#</th>
             <th scope="col">
               {{ "User" | translate }}
             </th>
-            <th scope="col" class="sortable" (click)="onSort('commentsWritten')">
+            <th (click)="onSort('commentsWritten')" class="sortable" scope="col">
               {{ "Written" | translate }}
               <fa-icon [icon]="getSortIcon('commentsWritten')"></fa-icon>
             </th>
-            <th scope="col" class="sortable" (click)="onSort('commentsReceived')">
+            <th (click)="onSort('commentsReceived')" class="sortable" scope="col">
               {{ "Received" | translate }}
               <fa-icon [icon]="getSortIcon('commentsReceived')"></fa-icon>
             </th>
-            <th scope="col" class="sortable" (click)="onSort('commentLikesReceived')">
+            <th (click)="onSort('commentLikesReceived')" class="sortable" scope="col">
               {{ "Likes" | translate }}
               <fa-icon [icon]="getSortIcon('commentLikesReceived')"></fa-icon>
             </th>
-            <th scope="col" class="sortable" (click)="onSort('forumPosts')">
+            <th (click)="onSort('forumPosts')" class="sortable" scope="col">
               {{ "Written" | translate }}
               <fa-icon [icon]="getSortIcon('forumPosts')"></fa-icon>
             </th>
-            <th scope="col" class="sortable" (click)="onSort('forumPostLikesReceived')">
+            <th (click)="onSort('forumPostLikesReceived')" class="sortable" scope="col">
               {{ "Likes" | translate }}
               <fa-icon [icon]="getSortIcon('forumPostLikesReceived')"></fa-icon>
             </th>
@@ -235,7 +235,7 @@
         </thead>
         <tbody>
           <tr *ngIf="initialLoading">
-            <td colspan="8" class="text-center py-4">
+            <td class="text-center py-4" colspan="8">
               <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
             </td>
           </tr>
@@ -299,12 +299,12 @@
                 {{
                   (user.contributionIndex | nullOrUndefined) === "n/a"
                     ? ("n/a" | translate)
-                    : (user.contributionIndex | number : "1.2-2")
+                    : (user.contributionIndex | number: "1.2-2")
                 }}
               </td>
             </tr>
             <tr *ngIf="!initialLoading && !loading && results.length === 0">
-              <td colspan="8" class="text-center py-4">
+              <td class="text-center py-4" colspan="8">
                 {{ "No data available" | translate }}
               </td>
             </tr>
@@ -315,11 +315,11 @@
   </ng-template>
 
   <!-- Loading indicator and Load more button -->
-  <div class="text-center py-3" *ngIf="(loading && !initialLoading) || (!loading && hasMore && results.length > 0)">
+  <div *ngIf="(loading && !initialLoading) || (!loading && hasMore && results.length > 0)" class="text-center py-3">
     <div *ngIf="loading && !initialLoading">
       <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
     </div>
-    <button *ngIf="!loading && hasMore && results.length > 0" class="btn btn-secondary mt-3" (click)="loadMore()">
+    <button *ngIf="!loading && hasMore && results.length > 0" (click)="loadMore()" class="btn btn-secondary mt-3">
       {{ "Load more" | translate }}
     </button>
   </div>

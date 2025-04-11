@@ -20,7 +20,10 @@ export class MostOftenUsedWithModalComponent extends BaseComponentDirective impl
 
   mostOftenUsedWith: { item: EquipmentItem; matches: number }[];
 
-  constructor(public readonly store$: Store<MainState>, public readonly modal: NgbActiveModal) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly modal: NgbActiveModal
+  ) {
     super(store$);
   }
 

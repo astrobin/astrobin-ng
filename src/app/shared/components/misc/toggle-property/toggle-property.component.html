@@ -1,5 +1,5 @@
 <button
-  (click)="onClick($event)"
+  [attr.aria-label]="!showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null"
   [class.loading]="showLoadingIndicator && (loading || !initialized || toggled === undefined)"
   [class.toggled]="!!toggled"
   [class.toggling]="toggling"
@@ -9,7 +9,7 @@
     showTooltip && !isTouchDevice && !showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : ''
   "
   [openDelay]="1000"
-  [attr.aria-label]="!showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null"
+  (click)="onClick($event)"
   container="body"
 >
   <ng-container *ngIf="toggled">

@@ -1,14 +1,14 @@
 <div class="modal-body">
   <div class="form-group">
     <input
-      (keydown.escape)="modal.dismiss()"
-      (ngModelChange)="onSelect($event)"
-      [(ngModel)]="model"
       [editable]="false"
       [ngbTypeahead]="search"
       [resultTemplate]="resultTemplate"
-      disableAutoFocusOnTouchDevices
+      (keydown.escape)="modal.dismiss()"
+      (ngModelChange)="onSelect($event)"
       class="form-control"
+      [(ngModel)]="model"
+      disableAutoFocusOnTouchDevices
       placeholder="{{ translateService.instant('Search') }}"
       type="text"
     />
@@ -27,7 +27,7 @@
               <div *ngFor="let filter of categoryFilters(SearchFilterCategory[category])">
                 <div class="search-filter-selection-item">
                   <div (click)="onSelect(filter)" class="search-filter-selection-item-label">
-                    <span class="search-filter-selection-item-label-text" [ngClass]="filter.key">
+                    <span [ngClass]="filter.key" class="search-filter-selection-item-label-text">
                       {{ filter.label }}
                     </span>
                     <span class="search-filter-selection-item-label-icon">

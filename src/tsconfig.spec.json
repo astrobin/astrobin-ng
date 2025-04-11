@@ -6,18 +6,8 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "outDir": "../out-tsc/spec",
-    "types": [
-      "jest",
-      "node",
-      "googlemaps"
-    ]
+    "types": ["jest", "node", "googlemaps"]
   },
-  "files": [
-    "polyfills.ts"
-  ],
-  "include": [
-    "**/*.spec.ts",
-    "**/*.d.ts"
-  ]
+  "files": ["polyfills.ts"],
+  "include": ["**/*.spec.ts", "**/*.d.ts"]
 }
-

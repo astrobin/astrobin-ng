@@ -12,7 +12,10 @@ import { map } from "rxjs/operators";
 
 @Injectable()
 export class UsernameService extends BaseService implements UsernameServiceInterface {
-  constructor(public readonly store$: Store<MainState>, public readonly loadingService: LoadingService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly loadingService: LoadingService
+  ) {
     super(loadingService);
   }
 

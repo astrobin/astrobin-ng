@@ -1,8 +1,8 @@
 <span [innerHTML]="preamble"></span>
 &nbsp;
 <span *ngFor="let item of items; let isLast = last">
-  <button class="btn btn-link" (click)="itemSelected.emit(item)">
-    <span class="name" [innerHTML]="equipmentItemService.getName$(item) | async"></span>
+  <button (click)="itemSelected.emit(item)" class="btn btn-link">
+    <span [innerHTML]="equipmentItemService.getName$(item) | async" class="name"></span>
   </button>
   {{ isLast ? "" : " &middot; " }}
 </span>

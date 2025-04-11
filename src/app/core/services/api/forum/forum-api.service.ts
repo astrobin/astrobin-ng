@@ -16,7 +16,10 @@ import { BaseClassicApiService } from "../classic/base-classic-api.service";
 export class ForumApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/forum";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

@@ -33,9 +33,9 @@ import { filter, take, takeUntil } from "rxjs/operators";
     <div class="metadata-section">
       <div *ngIf="image.partOfGroupSet.length > 0" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon [ngbTooltip]="'Groups' | translate" triggers="hover click" container="body" icon="users"></fa-icon>
+          <fa-icon [ngbTooltip]="'Groups' | translate" container="body" icon="users" triggers="hover click"></fa-icon>
         </div>
-        <div class="metadata-link" (click)="openGroupsOffcanvas()">
+        <div (click)="openGroupsOffcanvas()" class="metadata-link">
           <ng-container *ngIf="image.partOfGroupSet.length === 1; else pluralGroupsTemplate">
             {{ "In 1 group" | translate }}
           </ng-container>
@@ -49,12 +49,12 @@ import { filter, take, takeUntil } from "rxjs/operators";
         <div class="metadata-icon">
           <fa-icon
             [ngbTooltip]="'Collections' | translate"
-            triggers="hover click"
             container="body"
             icon="folder"
+            triggers="hover click"
           ></fa-icon>
         </div>
-        <div class="metadata-link" (click)="openCollectionsOffcanvas()">
+        <div (click)="openCollectionsOffcanvas()" class="metadata-link">
           <ng-container *ngIf="image.collections.length === 1; else pluralCollectionsTemplate">
             {{ "In 1 collection" | translate }}
           </ng-container>
@@ -68,7 +68,7 @@ import { filter, take, takeUntil } from "rxjs/operators";
     <ng-template #groupsOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h4 class="offcanvas-title">{{ "Groups" | translate }}</h4>
-        <button type="button" class="close" aria-label="Close" (click)="offcanvas.close()">
+        <button (click)="offcanvas.close()" class="close" aria-label="Close" type="button">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -86,7 +86,7 @@ import { filter, take, takeUntil } from "rxjs/operators";
     <ng-template #collectionsOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h4 class="offcanvas-title">{{ "Collections" | translate }}</h4>
-        <button type="button" class="close" aria-label="Close" (click)="offcanvas.close()">
+        <button (click)="offcanvas.close()" class="close" aria-label="Close" type="button">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -96,16 +96,16 @@ import { filter, take, takeUntil } from "rxjs/operators";
             <div *ngFor="let collection of collections" class="d-flex justify-content-between align-items-center w-100">
               <div class="d-flex flex-column gap-1">
                 <a
-                  (click)="
-                    userService.openCollection(
+                  [href]="
+                    userService.getCollectionUrl(
                       collection.username,
                       collection.id,
                       !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
                       collection.displayCollectionsOnPublicGallery
                     )
                   "
-                  [href]="
-                    userService.getCollectionUrl(
+                  (click)="
+                    userService.openCollection(
                       collection.username,
                       collection.id,
                       !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
@@ -117,7 +117,7 @@ import { filter, take, takeUntil } from "rxjs/operators";
                   {{ collection.name }}
                 </a>
 
-                <span class="text-muted collection-user" *ngIf="collection.user !== image.user">
+                <span *ngIf="collection.user !== image.user" class="text-muted collection-user">
                   {{ collection.userDisplayName }}
                 </span>
               </div>

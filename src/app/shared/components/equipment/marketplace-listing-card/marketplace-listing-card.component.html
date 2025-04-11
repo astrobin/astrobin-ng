@@ -11,7 +11,7 @@
       </div>
       <div class="created">
         <fa-icon icon="calendar-alt"></fa-icon>
-        {{ listing.created | localDate | timeago : true }}
+        {{ listing.created | localDate | timeago: true }}
         <ng-container *ngIf="!!listing.followerCount">
           &middot;
           <fa-icon icon="bell"></fa-icon>
@@ -39,8 +39,8 @@
 
       <img
         *ngIf="listing.lineItems[0].images?.length === 0 && listing.lineItems[0].itemKlass"
-        alt="{{ equipmentItemService.humanizeType(listing.lineItems[0].itemKlass) }}"
         class="type-image"
+        alt="{{ equipmentItemService.humanizeType(listing.lineItems[0].itemKlass) }}"
         src="/assets/images/{{ listing.lineItems[0].itemKlass.toLowerCase() }}-placeholder.png?v=2"
       />
     </div>
@@ -53,9 +53,7 @@
           {{ countryService.getCountryName(listing.country) }}
         </div>
         <div *ngIf="!!totalPrice" class="price">
-          {{
-            totalPrice | currency : listing.lineItems[0].currency : "symbol" : "1.2-2" : translateService.currentLang
-          }}
+          {{ totalPrice | currency: listing.lineItems[0].currency : "symbol" : "1.2-2" : translateService.currentLang }}
         </div>
       </div>
     </div>

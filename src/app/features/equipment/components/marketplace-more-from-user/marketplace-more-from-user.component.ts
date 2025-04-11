@@ -21,7 +21,10 @@ export class MarketplaceMoreFromUserComponent extends BaseComponentDirective imp
 
   otherListings: MarketplaceListingInterface[];
 
-  constructor(public readonly store$: Store<MainState>, public readonly loadingService: LoadingService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly loadingService: LoadingService
+  ) {
     super(store$);
   }
 

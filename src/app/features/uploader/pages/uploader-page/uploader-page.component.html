@@ -14,7 +14,7 @@
 </div>
 
 <ng-template #uploaderTemplate>
-  <form (ngSubmit)="onSubmit()" *ngIf="(uploadAllowed$ | async) !== false; else uploadNotAllowed" [formGroup]="form">
+  <form *ngIf="(uploadAllowed$ | async) !== false; else uploadNotAllowed" [formGroup]="form" (ngSubmit)="onSubmit()">
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 
     <small *ngIf="store$ | async as state" class="uploads-left">
@@ -58,7 +58,7 @@
         <span
           *ngIf="
             state.auth.userProfile
-              | hasValidUserSubscription : [SubscriptionName.ASTROBIN_LITE, SubscriptionName.ASTROBIN_LITE_AUTORENEW]
+              | hasValidUserSubscription: [SubscriptionName.ASTROBIN_LITE, SubscriptionName.ASTROBIN_LITE_AUTORENEW]
               | async;
             else lite2020
           "

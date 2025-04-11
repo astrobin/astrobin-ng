@@ -26,7 +26,7 @@ import { filter, take } from "rxjs/operators";
       <div class="flex-grow-1">
         <fa-icon icon="info-circle"></fa-icon>
         {{ "This image is in your staging area." | translate }}
-        <a href="https://welcome.astrobin.com/faq#staging-area" target="_blank" rel="noopener">
+        <a href="https://welcome.astrobin.com/faq#staging-area" rel="noopener" target="_blank">
           {{ "Learn more" | translate }}.
         </a>
       </div>
@@ -38,14 +38,14 @@ import { filter, take } from "rxjs/operators";
     <ng-template #promoteOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Publish image" | translate }}</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <form [formGroup]="form">
-          <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+          <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
         </form>
 
-        <button (click)="publish()" class="btn btn-primary mt-5" [class.loading]="loadingService.loading$ | async">
+        <button [class.loading]="loadingService.loading$ | async" (click)="publish()" class="btn btn-primary mt-5">
           {{ "Publish" | translate }}
         </button>
       </div>

@@ -42,7 +42,7 @@
     {{ field.props.clearLabel || "Clear" | translate }}
   </button>
 
-  <button (click)="add(null, {})" *ngIf="mayAdd" class="btn btn-outline-secondary">
+  <button *ngIf="mayAdd" (click)="add(null, {})" class="btn btn-outline-secondary">
     {{ field.props.addLabel || "Add" | translate }}
   </button>
 

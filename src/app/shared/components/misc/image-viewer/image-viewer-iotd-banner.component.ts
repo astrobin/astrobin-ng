@@ -27,7 +27,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
     </div>
 
     <ng-template #iotdInfoLinkTemplate>
-      <a href="https://welcome.astrobin.com/iotd" class="ms-2 no-external-link-icon" rel="noopener" target="_blank">
+      <a class="ms-2 no-external-link-icon" href="https://welcome.astrobin.com/iotd" rel="noopener" target="_blank">
         <fa-icon icon="info-circle"></fa-icon>
       </a>
     </ng-template>

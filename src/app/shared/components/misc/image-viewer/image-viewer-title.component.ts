@@ -29,13 +29,13 @@ import { CookieService } from "ngx-cookie";
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <div class="image-viewer-title d-flex flex-row justify-content-between align-items-start gap-2">
         <h2 class="flex-grow-1 mb-0 text-center text-sm-start">
-          <span [innerHTML]="image.title | highlight : searchModel?.text?.value"></span>
+          <span [innerHTML]="image.title | highlight: searchModel?.text?.value"></span>
 
           <small
             *ngIf="currentUserWrapper.user?.id === image.user && image.uploaderName"
             class="justify-content-center justify-content-sm-start"
           >
-            <span class="original-filename" [innerHTML]="image.uploaderName"></span>
+            <span [innerHTML]="image.uploaderName" class="original-filename"></span>
           </small>
 
           <small class="justify-content-center justify-content-sm-start flex-wrap">
@@ -44,11 +44,11 @@ import { CookieService } from "ngx-cookie";
                 *ngIf="licenseIcon && licenseTooltip"
                 [icon]="licenseIcon"
                 [ngbTooltip]="licenseTooltip"
-                triggers="hover click"
-                container="body"
                 class="license-icon"
+                container="body"
+                triggers="hover click"
               ></fa-icon>
-              {{ publicationDate | localDate | timeago : true }}
+              {{ publicationDate | localDate | timeago: true }}
             </span>
 
             <span class="view-count">
@@ -56,27 +56,27 @@ import { CookieService } from "ngx-cookie";
               <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
               <span
                 *ngIf="image.viewCount > 1"
-                [translateParams]="{ '0': image.viewCount | numberSuffix }"
                 [translate]="'{{0}} views'"
+                [translateParams]="{ '0': image.viewCount | numberSuffix }"
               ></span>
             </span>
 
-            <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
+            <span *ngIf="resolution" [innerHTML]="resolution" class="resolution"></span>
 
-            <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
+            <span *ngIf="size" [innerHTML]="size | filesize" class="file-size"></span>
 
-            <a *ngIf="image.link" [href]="image.link" target="_blank" rel="noopener" class="no-external-link-icon">
-              <fa-icon icon="external-link-alt" class="me-1"></fa-icon> {{ "Link" | translate }}
+            <a *ngIf="image.link" [href]="image.link" class="no-external-link-icon" rel="noopener" target="_blank">
+              <fa-icon class="me-1" icon="external-link-alt"></fa-icon> {{ "Link" | translate }}
             </a>
 
             <a
               *ngIf="image.linkToFits"
               [href]="image.linkToFits"
-              target="_blank"
-              rel="noopener"
               class="no-external-link-icon"
+              rel="noopener"
+              target="_blank"
             >
-              <fa-icon icon="file" class="me-1"></fa-icon> {{ "TIFF/FITS" | translate }}
+              <fa-icon class="me-1" icon="file"></fa-icon> {{ "TIFF/FITS" | translate }}
             </a>
           </small>
 
@@ -118,26 +118,26 @@ import { CookieService } from "ngx-cookie";
                   {{ "Currently in the IOTD/TP queues" | translate }}
                 </span>
 
-                <fa-icon icon="info-circle" class="ms-2 d-inline-block"></fa-icon>
+                <fa-icon class="ms-2 d-inline-block" icon="info-circle"></fa-icon>
               </a>
             </span>
           </div>
         </h2>
 
-        <div ngbDropdown [placement]="'bottom-end'" class="dropdown w-auto d-none d-md-block mt-1">
+        <div [placement]="'bottom-end'" class="dropdown w-auto d-none d-md-block mt-1" ngbDropdown>
           <fa-icon
-            ngbDropdownToggle
-            icon="ellipsis-v"
             class="dropdown-toggle no-toggle"
-            aria-haspopup="true"
             aria-expanded="false"
+            aria-haspopup="true"
+            icon="ellipsis-v"
+            ngbDropdownToggle
           ></fa-icon>
-          <div ngbDropdownMenu class="dropdown-menu">
+          <div class="dropdown-menu" ngbDropdownMenu>
             <astrobin-image-viewer-menu
               [image]="image"
               [revisionLabel]="revisionLabel"
-              itemClass="dropdown-item"
               dividerClass="dropdown-divider"
+              itemClass="dropdown-item"
             ></astrobin-image-viewer-menu>
           </div>
         </div>
@@ -151,7 +151,7 @@ import { CookieService } from "ngx-cookie";
     </ng-container>
 
     <ng-template #iotdInfoLinkTemplate>
-      <a href="https://welcome.astrobin.com/iotd" class="ms-2 no-external-link-icon" rel="noopener" target="_blank">
+      <a class="ms-2 no-external-link-icon" href="https://welcome.astrobin.com/iotd" rel="noopener" target="_blank">
         <fa-icon icon="info-circle"></fa-icon>
       </a>
     </ng-template>
@@ -160,9 +160,9 @@ import { CookieService } from "ngx-cookie";
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">
           {{ "IOTD/TP stats" | translate }}
-          <fa-icon icon="lock" class="ms-2"></fa-icon>
+          <fa-icon class="ms-2" icon="lock"></fa-icon>
         </h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <astrobin-image-viewer-iotd-tp-stats [image]="image"></astrobin-image-viewer-iotd-tp-stats>

@@ -29,11 +29,11 @@ import { debounceTime, distinctUntilChanged, map, take, takeUntil } from "rxjs/o
     </p>
 
     <input
-      class="form-control mb-3 user-gallery-quick-search"
-      type="search"
-      placeholder="{{ 'Search' | translate }}"
-      [(ngModel)]="searchModel"
       (ngModelChange)="onSearchModelChange()"
+      class="form-control mb-3 user-gallery-quick-search"
+      [(ngModel)]="searchModel"
+      placeholder="{{ 'Search' | translate }}"
+      type="search"
     />
 
     <div class="d-flex flex-wrap gap-2 justify-content-center">
@@ -42,8 +42,8 @@ import { debounceTime, distinctUntilChanged, map, take, takeUntil } from "rxjs/o
       <div
         *ngFor="let image of images; trackBy: imageTrackBy"
         @fadeInOut
-        (click)="onSelect(image)"
         [ngbTooltip]="image.title"
+        (click)="onSelect(image)"
         class="image"
         container="body"
       >

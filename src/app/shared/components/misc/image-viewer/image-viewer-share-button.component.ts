@@ -50,24 +50,24 @@ enum ThumbnailSize {
     <button (click)="openShare($event)" class="btn btn-no-block btn-link link-secondary open-share">
       <fa-icon
         [ngbTooltip]="'Share' | translate"
-        triggers="hover click"
         class="m-0"
         container="body"
         icon="share"
+        triggers="hover click"
       ></fa-icon>
     </button>
 
     <ng-template #shareTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Share" | translate }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()" aria-label="Close"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <form>
-          <formly-form [form]="shareForm" [fields]="shareFields" [model]="shareModel"></formly-form>
+          <formly-form [fields]="shareFields" [form]="shareForm" [model]="shareModel"></formly-form>
         </form>
 
-        <button class="btn btn-secondary mt-3" (click)="copyShareModelCode()">{{ copyButtonLabel }}</button>
+        <button (click)="copyShareModelCode()" class="btn btn-secondary mt-3">{{ copyButtonLabel }}</button>
 
         <ng-container *ngIf="currentUser$ | async as currentUser">
           <div *ngIf="currentUser?.id === image.user" class="mt-5">
@@ -89,8 +89,8 @@ enum ThumbnailSize {
                 <fa-icon
                   *ngIf="smallThumbnail; else thumbnailNotAvailableTemplate"
                   (click)="copyDirectLink(smallThumbnail)"
-                  icon="copy"
                   class="ms-2"
+                  icon="copy"
                 ></fa-icon>
               </li>
               <li>
@@ -98,8 +98,8 @@ enum ThumbnailSize {
                 <fa-icon
                   *ngIf="mediumThumbnail; else thumbnailNotAvailableTemplate"
                   (click)="copyDirectLink(mediumThumbnail)"
-                  icon="copy"
                   class="ms-2"
+                  icon="copy"
                 ></fa-icon>
               </li>
               <li>
@@ -107,8 +107,8 @@ enum ThumbnailSize {
                 <fa-icon
                   *ngIf="largeThumbnail; else thumbnailNotAvailableTemplate"
                   (click)="copyDirectLink(largeThumbnail)"
-                  icon="copy"
                   class="ms-2"
+                  icon="copy"
                 ></fa-icon>
               </li>
               <li>
@@ -116,8 +116,8 @@ enum ThumbnailSize {
                 <fa-icon
                   *ngIf="extraLargeThumbnail; else thumbnailNotAvailableTemplate"
                   (click)="copyDirectLink(extraLargeThumbnail)"
-                  icon="copy"
                   class="ms-2"
+                  icon="copy"
                 ></fa-icon>
               </li>
             </ul>

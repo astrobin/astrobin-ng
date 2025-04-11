@@ -1,9 +1,9 @@
 <astrobin-mobile-menu
-  (menuClose)="onMobileMenuClose()"
-  (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
   [descriptionTemplate]="descriptionTemplate"
   [template]="navTemplate"
+  [titleTemplate]="titleTemplate"
+  (menuClose)="onMobileMenuClose()"
+  (menuOpen)="onMobileMenuOpen()"
 ></astrobin-mobile-menu>
 
 <ng-template #titleTemplate>
@@ -70,10 +70,10 @@
         <astrobin-nothing-here *ngIf="items.count === 0"></astrobin-nothing-here>
 
         <ngb-pagination
-          (pageChange)="pageChange($event)"
           *ngIf="items.count > items.results.length"
-          [(page)]="page"
           [collectionSize]="items.count"
+          (pageChange)="pageChange($event)"
+          [(page)]="page"
         >
         </ngb-pagination>
       </ng-container>

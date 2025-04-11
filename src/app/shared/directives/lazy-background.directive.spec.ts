@@ -7,9 +7,9 @@ import { LazyBackgroundDirective } from "./lazy-background.directive";
 @Component({
   template: `
     <div
-      astrobinLazyBackground="regular-url.jpg"
       [highResolutionUrl]="highResUrl"
       [useHighResolution]="useHighRes"
+      astrobinLazyBackground="regular-url.jpg"
     ></div>
   `
 })

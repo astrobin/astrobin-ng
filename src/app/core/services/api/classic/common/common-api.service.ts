@@ -220,11 +220,9 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
 
   getToggleProperty(params: Partial<TogglePropertyInterface>): Observable<TogglePropertyInterface | null> {
     return this.http
-      .get<PaginatedApiResultInterface<BackendTogglePropertyInterface>>(
-        `${this.configUrl}/toggleproperties/?` +
-          `property_type=${params.propertyType}&user_id=${params.user}&` +
-          `content_type=${params.contentType}&object_id=${params.objectId}`
-      )
+      .get<
+        PaginatedApiResultInterface<BackendTogglePropertyInterface>
+      >(`${this.configUrl}/toggleproperties/?` + `property_type=${params.propertyType}&user_id=${params.user}&` + `content_type=${params.contentType}&object_id=${params.objectId}`)
       .pipe(
         map(response => {
           if (response.results.length > 0) {
@@ -248,13 +246,9 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     const objectIds = params.map(item => item.objectId).join(",");
 
     return this.http
-      .get<PaginatedApiResultInterface<BackendTogglePropertyInterface>>(
-        `${this.configUrl}/toggleproperties/?` +
-          `property_type=${propertyType}&` +
-          `user_id__in=${userIds}&` +
-          `content_type=${contentType}&` +
-          `object_id__in=${objectIds}`
-      )
+      .get<
+        PaginatedApiResultInterface<BackendTogglePropertyInterface>
+      >(`${this.configUrl}/toggleproperties/?` + `property_type=${propertyType}&` + `user_id__in=${userIds}&` + `content_type=${contentType}&` + `object_id__in=${objectIds}`)
       .pipe(
         map(response => {
           if (response.results.length > 0) {

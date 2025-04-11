@@ -1,6 +1,6 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="approve-edit-proposal-modal">{{ "Approve" | translate }}</h4>
-  <button (click)="cancel()" aria-describedby="modal-title" class="close" type="button">
+  <h4 id="approve-edit-proposal-modal" class="modal-title">{{ "Approve" | translate }}</h4>
+  <button (click)="cancel()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -17,9 +17,9 @@
   </button>
 
   <button
-    (click)="approve()"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="!form.valid"
+    (click)="approve()"
     class="btn btn-success"
     type="button"
   >

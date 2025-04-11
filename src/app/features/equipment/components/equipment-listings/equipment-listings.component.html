@@ -79,7 +79,7 @@
 
 <ng-template #cardBodyItemListingsFullTemplate>
   <div *ngFor="let listing of listings.itemListings" class="listing">
-    <ng-container [ngTemplateOutletContext]="{listing}" [ngTemplateOutlet]="listingFull"></ng-container>
+    <ng-container [ngTemplateOutlet]="listingFull" [ngTemplateOutletContext]="{ listing }"></ng-container>
   </div>
 </ng-template>
 
@@ -89,7 +89,7 @@
 
 <ng-template #cardBodyBrandListingsFullTemplate>
   <div *ngFor="let listing of listings.brandListings" class="listing">
-    <ng-container [ngTemplateOutletContext]="{listing}" [ngTemplateOutlet]="listingFull"></ng-container>
+    <ng-container [ngTemplateOutlet]="listingFull" [ngTemplateOutletContext]="{ listing }"></ng-container>
   </div>
 </ng-template>
 
@@ -99,7 +99,7 @@
 
 <ng-template #cardBodyItemListingsPairsWellFullTemplate>
   <div *ngFor="let listing of pairsWellListings" class="listing">
-    <ng-container [ngTemplateOutletContext]="{listing}" [ngTemplateOutlet]="listingFull"></ng-container>
+    <ng-container [ngTemplateOutlet]="listingFull" [ngTemplateOutletContext]="{ listing }"></ng-container>
   </div>
 </ng-template>
 
@@ -112,8 +112,8 @@
     <a
       [href]="urlWithTags(listing)"
       [ngbTooltip]="listing.retailer.name"
-      astrobinGtagOutboundClickEvent
       class="with-logo"
+      astrobinGtagOutboundClickEvent
       target="_blank"
     >
       <img *ngIf="listing.imageUrl" [alt]="listing.name" [src]="listing.imageUrl" />

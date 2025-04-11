@@ -11,35 +11,35 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
     <fa-icon
       *ngIf="isWip"
       [ngbTooltip]="'This image is in your staging area' | translate"
-      container="body"
-      triggers="hover click"
-      icon="lock"
       class="wip-icon"
+      container="body"
+      icon="lock"
+      triggers="hover click"
     ></fa-icon>
 
     <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="badges">
       <fa-icon
         *ngIf="image.isIotd"
-        class="iotd"
-        icon="trophy"
         [ngbTooltip]="'Image of the Day' | translate"
+        class="iotd"
         container="body"
+        icon="trophy"
       ></fa-icon>
 
       <fa-icon
         *ngIf="!image.isIotd && image.isTopPick"
-        class="top-pick"
-        icon="star"
         [ngbTooltip]="'Top Pick' | translate"
+        class="top-pick"
         container="body"
+        icon="star"
       ></fa-icon>
 
       <fa-icon
         *ngIf="!image.isIotd && !image.isTopPick && image.isTopPickNomination"
-        class="top-pick-nomination"
-        icon="arrow-up"
         [ngbTooltip]="'Top Pick Nomination' | translate"
+        class="top-pick-nomination"
         container="body"
+        icon="arrow-up"
       ></fa-icon>
 
       <fa-icon
@@ -50,10 +50,10 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
           !image.isTopPickNomination &&
           isInIotdQueue
         "
-        class="in-iotd-queue"
-        icon="gavel"
         [ngbTooltip]="'Currently in the IOTD/TP queues' | translate"
+        class="in-iotd-queue"
         container="body"
+        icon="gavel"
       ></fa-icon>
 
       <fa-icon *ngIf="isCollaboration" class="collaborators" icon="users"></fa-icon>

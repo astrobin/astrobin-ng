@@ -34,10 +34,10 @@ import { filter, takeUntil } from "rxjs/operators";
         <div class="metadata-icon">
           <img
             [ngbTooltip]="'Data source' | translate"
-            triggers="hover click"
-            container="body"
             [src]="'/assets/images/' + dataSourceIcon"
             alt=""
+            container="body"
+            triggers="hover click"
           />
         </div>
         <div (click)="dataSourceClicked($event)" class="metadata-link search">
@@ -49,15 +49,15 @@ import { filter, takeUntil } from "rxjs/operators";
         <div class="metadata-icon">
           <img
             [ngbTooltip]="'Remote hosting' | translate"
-            triggers="hover click"
+            alt=""
             container="body"
             src="/assets/images/data-sources/observatory-white.png?v=1"
-            alt=""
+            triggers="hover click"
           />
         </div>
         <div
-          (click)="remoteDataSourceClicked($event)"
           [ngClass]="remoteDataSourceIsSponsor ? 'metadata-link metadata-link-sponsor' : 'metadata-label'"
+          (click)="remoteDataSourceClicked($event)"
         >
           <span [class.highlight]="remoteDataSourceIsSearchTerm">{{ remoteDataSource }}</span>
         </div>
@@ -67,21 +67,21 @@ import { filter, takeUntil } from "rxjs/operators";
         <div class="metadata-icon">
           <fa-icon
             [ngbTooltip]="'Location' | translate"
-            triggers="hover click"
             container="body"
             icon="map-marker-alt"
+            triggers="hover click"
           ></fa-icon>
         </div>
-        <div class="metadata-label" [innerHTML]="location | highlight : highlightTerms"></div>
+        <div [innerHTML]="location | highlight: highlightTerms" class="metadata-label"></div>
       </div>
 
       <div *ngIf="bortle" class="metadata-item">
         <div class="metadata-icon w-auto">
           <span
-            class="bortle"
             [ngbTooltip]="'Weighted average Bortle scale' | translate"
-            triggers="hover click"
+            class="bortle"
             container="body"
+            triggers="hover click"
           >
             Bortle
           </span>
@@ -95,7 +95,7 @@ import { filter, takeUntil } from "rxjs/operators";
     <ng-template #remoteSourceAffiliateSponsorOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ remoteDataSource }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+        <button (click)="offcanvas.dismiss()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <div class="sponsor-info d-flex flex-column gap-3 align-items-center p-4">
@@ -112,7 +112,7 @@ import { filter, takeUntil } from "rxjs/operators";
             {{ "Visit website" | translate }}
           </a>
 
-          <button class="btn btn-primary" (click)="search({ remote_source: this.image.remoteSource })">
+          <button (click)="search({ remote_source: this.image.remoteSource })" class="btn btn-primary">
             {{ "Browse images" | translate }}
           </button>
         </div>

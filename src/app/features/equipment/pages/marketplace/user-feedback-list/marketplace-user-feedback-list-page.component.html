@@ -19,7 +19,6 @@
   </div>
 
   <ngb-pagination
-    (pageChange)="loadFeedback($event)"
     *ngIf="feedback && feedback.count > feedback.results.length"
     [boundaryLinks]="true"
     [collectionSize]="feedback.count"
@@ -28,6 +27,7 @@
     [maxSize]="5"
     [page]="page"
     [rotate]="true"
+    (pageChange)="loadFeedback($event)"
   ></ngb-pagination>
 </div>
 

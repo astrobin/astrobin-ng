@@ -24,7 +24,10 @@ export class DragDropAreaComponent implements OnInit {
 
   isDragActive = false;
 
-  constructor(private ngZone: NgZone, private renderer: Renderer2) {}
+  constructor(
+    private ngZone: NgZone,
+    private renderer: Renderer2
+  ) {}
 
   ngOnInit() {
     // Attach listeners inside Angular's zone to ensure change detection works properly

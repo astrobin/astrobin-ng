@@ -40,7 +40,7 @@ import { delay, distinctUntilChanged } from "rxjs/operators";
     </ng-template>
 
     <ng-template #messageTemplate>
-      <div class="message" [innerHTML]="message"></div>
+      <div [innerHTML]="message" class="message"></div>
     </ng-template>
   `,
   styleUrls: ["./loading-indicator.component.scss"],
@@ -62,7 +62,10 @@ export class LoadingIndicatorComponent extends BaseComponentDirective implements
 
   shouldShowProgress$ = this._progressSubject.pipe(distinctUntilChanged(), delay(this.progressDelay));
 
-  constructor(public readonly store$: Store<MainState>, @Inject(PLATFORM_ID) private readonly platformId: Object) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    @Inject(PLATFORM_ID) private readonly platformId: Object
+  ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
   }

@@ -31,7 +31,7 @@ import { filter, take } from "rxjs/operators";
 
           <div *ngIf="userProfile.website" class="website">
             <h5 translate="Website"></h5>
-            <a [href]="userProfile.website" target="_blank" rel="noopener">
+            <a [href]="userProfile.website" rel="noopener" target="_blank">
               {{ userProfile.website }}
             </a>
           </div>
@@ -48,8 +48,8 @@ import { filter, take } from "rxjs/operators";
 
           <button
             *ngIf="isCurrentUser"
-            class="btn btn-outline-primary btn-sm mt-4"
             (click)="toggleEdit()"
+            class="btn btn-outline-primary btn-sm mt-4"
             translate="Edit"
           ></button>
         </ng-container>
@@ -57,20 +57,20 @@ import { filter, take } from "rxjs/operators";
 
       <ng-template #editingTemplate>
         <form [formGroup]="form">
-          <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+          <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 
           <div class="d-flex justify-content-end mt-4">
             <button
-              class="btn btn-outline-secondary btn-no-block btn-sm me-2"
-              (click)="cancelEdit()"
               [disabled]="isLoading"
+              (click)="cancelEdit()"
+              class="btn btn-outline-secondary btn-no-block btn-sm me-2"
               translate="Cancel"
             ></button>
             <button
-              class="btn btn-primary btn-no-block btn-sm"
               [class.loading]="isLoading"
-              (click)="saveChanges()"
               [disabled]="form.pristine || isLoading"
+              (click)="saveChanges()"
+              class="btn btn-primary btn-no-block btn-sm"
               translate="Save"
             ></button>
           </div>
@@ -81,7 +81,7 @@ import { filter, take } from "rxjs/operators";
         <div *ngIf="isCurrentUser">
           <p class="text-muted text-center" translate="You haven't added any information about yourself yet."></p>
           <div class="text-center">
-            <button class="btn btn-outline-primary btn-sm" (click)="toggleEdit()" translate="Add info"></button>
+            <button (click)="toggleEdit()" class="btn btn-outline-primary btn-sm" translate="Add info"></button>
           </div>
         </div>
         <astrobin-nothing-here

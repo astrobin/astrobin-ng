@@ -45,9 +45,9 @@ import { filter, map, take, takeUntil } from "rxjs/operators";
           <a
             *ngFor="let item of menu"
             [class.active]="!!active && item[0].toString() === active.toString()"
-            [routerLink]="['/u', user.username]"
-            [queryParams]="{ 'folder-type': folderType, active: item[0] }"
             [fragment]="galleryFragment"
+            [queryParams]="{ 'folder-type': folderType, active: item[0] }"
+            [routerLink]="['/u', user.username]"
             class="smart-folder"
           >
             {{ item[1] }}
@@ -64,7 +64,7 @@ import { filter, map, take, takeUntil } from "rxjs/operators";
       <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
         <div class="offcanvas-header">
           <h5 class="offcanvas-title">{{ activeLabel }}</h5>
-          <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+          <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
         </div>
 
         <div class="offcanvas-body">
@@ -81,14 +81,14 @@ import { filter, map, take, takeUntil } from "rxjs/operators";
           <astrobin-user-gallery-images
             *ngIf="activeType && active !== null && active !== undefined"
             [activeLayout]="UserGalleryActiveLayout.MEDIUM"
-            [user]="user"
-            [userProfile]="userProfile"
             [options]="{
               includeStagingArea:
                 currentUserWrapper.user?.id === user.id && userProfile.displayWipImagesOnPublicGallery,
               subsection: activeType,
               active: active
             }"
+            [user]="user"
+            [userProfile]="userProfile"
           ></astrobin-user-gallery-images>
         </div>
       </ng-container>

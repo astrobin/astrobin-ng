@@ -5,8 +5,8 @@
 >
   <astrobin-marketplace-listing-line-item
     [collapsed]="listing.lineItems.length > 1 || !!lineItem.sold"
-    [lineItemIndex]="listing.lineItems.length > 1 ? lineItemIndex : undefined"
     [lineItem]="lineItem"
+    [lineItemIndex]="listing.lineItems.length > 1 ? lineItemIndex : undefined"
     [listing]="listing"
     [previewMode]="previewMode"
   ></astrobin-marketplace-listing-line-item>

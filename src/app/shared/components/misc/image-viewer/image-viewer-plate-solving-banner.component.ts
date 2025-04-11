@@ -45,7 +45,7 @@ import { filter, map, takeUntil } from "rxjs/operators";
   template: `
     <div *ngIf="performSolve" class="image-viewer-banner alert alert-dark d-flex align-items-center gap-2">
       <div class="flex-grow-1">
-        <fa-icon icon="spinner" animation="spin" class="me-2"></fa-icon>
+        <fa-icon class="me-2" animation="spin" icon="spinner"></fa-icon>
 
         <span *ngIf="!solution || !solution.status">
           {{ "AstroBin is preparing to plate-solve this image..." | translate }}
@@ -71,7 +71,7 @@ import { filter, map, takeUntil } from "rxjs/operators";
         (click)="openInformationOffcanvas()"
         class="btn btn-link btn-no-block"
       >
-        <fa-icon icon="info-circle" class="me-0"></fa-icon>
+        <fa-icon class="me-0" icon="info-circle"></fa-icon>
       </button>
     </div>
 
@@ -80,7 +80,7 @@ import { filter, map, takeUntil } from "rxjs/operators";
         <h5 class="offcanvas-title">
           {{ "Plate-solving information" | translate }}
         </h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <p>
@@ -88,8 +88,8 @@ import { filter, map, takeUntil } from "rxjs/operators";
           <a
             *ngIf="solution.submissionId; else naTemplate"
             [href]="'https://nova.astrometry.net/status/' + solution.submissionId"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             {{ solution.submissionId }}
           </a>

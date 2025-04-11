@@ -29,7 +29,10 @@ export class MobileMenuComponent extends BaseComponentDirective implements OnIni
 
   private _offcanvasRef: NgbOffcanvasRef;
 
-  constructor(public readonly store$: Store<MainState>, public readonly offcanvasService: NgbOffcanvas) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly offcanvasService: NgbOffcanvas
+  ) {
     super(store$);
   }
 

@@ -15,7 +15,10 @@ export class MigrationNavComponent extends BaseComponentDirective implements OnI
 
   activeId = "migration";
 
-  constructor(public readonly store$: Store<MainState>, public readonly location: Location) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly location: Location
+  ) {
     super(store$);
   }
 

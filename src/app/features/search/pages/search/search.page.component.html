@@ -1,10 +1,10 @@
 <div class="page has-infinite-scroll">
-  <astrobin-search-bar (modelChanged)="updateModel($event)" [model]="model"></astrobin-search-bar>
+  <astrobin-search-bar [model]="model" (modelChanged)="updateModel($event)"></astrobin-search-bar>
 
   <astrobin-ad-manager
     #ad
-    [style.visibility]="showAd ? 'visible' : 'hidden'"
     [configName]="showAd ? 'wide' : null"
+    [style.visibility]="showAd ? 'visible' : 'hidden'"
   ></astrobin-ad-manager>
 
   <astrobin-image-search

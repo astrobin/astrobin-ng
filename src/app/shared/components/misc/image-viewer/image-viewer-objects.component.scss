@@ -19,7 +19,9 @@
         background: var(--grey);
         padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
-        cursor: url("/assets/images/search-white.png") 16 16, pointer;
+        cursor:
+          url("/assets/images/search-white.png") 16 16,
+          pointer;
 
         &.more {
           font-style: italic;

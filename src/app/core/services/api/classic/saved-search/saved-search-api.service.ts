@@ -11,7 +11,10 @@ import { Observable } from "rxjs";
 export class SavedSearchApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/astrobin/saved-search";
 
-  constructor(public loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

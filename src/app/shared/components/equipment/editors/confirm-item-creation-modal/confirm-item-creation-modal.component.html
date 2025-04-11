@@ -1,9 +1,9 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="confirm-item-creation-modal">{{ "Confirm item creation" | translate }}</h4>
+  <h4 id="confirm-item-creation-modal" class="modal-title">{{ "Confirm item creation" | translate }}</h4>
   <button
     (click)="modal.dismiss(ConfirmItemCreationResult.CANCEL)"
-    aria-describedby="modal-title"
     class="close"
+    aria-describedby="modal-title"
     type="button"
   >
     <span aria-hidden="true">&times;</span>
@@ -49,8 +49,8 @@
         <strong>{{ "Warning!" | translate }} {{ "We found similar items from the same brand." | translate }}</strong>
       </p>
       <astrobin-similar-items-suggestion
-        (itemSelected)="useSuggestion($event)"
         [items]="similarItems"
+        (itemSelected)="useSuggestion($event)"
       ></astrobin-similar-items-suggestion>
     </div>
   </ng-container>
@@ -67,7 +67,7 @@
     {{ "Cancel" | translate }}
   </button>
 
-  <button (click)="modal.close(item)" [disabled]="!formIsValid()" class="btn btn-danger" type="button">
+  <button [disabled]="!formIsValid()" (click)="modal.close(item)" class="btn btn-danger" type="button">
     {{ "Confirm" | translate }}
   </button>
 </div>

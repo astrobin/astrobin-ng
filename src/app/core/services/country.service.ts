@@ -49,7 +49,10 @@ countries.registerLocale(turkish);
 export class CountryService extends BaseService {
   readonly cachedContinentsMap: Map<string, string> = new Map<string, string>();
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
   }
 

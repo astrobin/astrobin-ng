@@ -1,6 +1,6 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="equipmnt-compare-modal">{{ "Compare" | translate }}</h4>
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <h4 id="equipmnt-compare-modal" class="modal-title">{{ "Compare" | translate }}</h4>
+  <button (click)="modal.dismiss()" class="close" aria-describedby="modal-title" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -19,8 +19,8 @@
             <span [innerHTML]="row[i].value || 'n/a' | translate"></span>
             <span *ngIf="row[i].propertyName !== EquipmentItemDisplayProperty.IMAGE" class="edit-button">
               <fa-icon
-                (click)="editButtonClicked(row[i].klass, row[i].id)"
                 *ngIf="showEditButton(row[i])"
+                (click)="editButtonClicked(row[i].klass, row[i].id)"
                 icon="pen"
               ></fa-icon>
             </span>

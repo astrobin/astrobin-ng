@@ -34,9 +34,9 @@ import { filter, map, takeUntil } from "rxjs/operators";
       <div *ngIf="!loading && parentCollection" class="collection-header">
         <h2>
           <a
-            [routerLink]="['/u', user.username]"
-            [queryParams]="{ collection: parentCollection.parent }"
             [fragment]="userProfile.displayCollectionsOnPublicGallery ? 'gallery' : 'collections'"
+            [queryParams]="{ collection: parentCollection.parent }"
+            [routerLink]="['/u', user.username]"
             class="up"
           >
             <fa-icon icon="arrow-turn-up"></fa-icon>
@@ -46,9 +46,9 @@ import { filter, map, takeUntil } from "rxjs/operators";
 
           <astrobin-user-gallery-collection-menu
             *ngIf="currentUserWrapper.user?.id === user.id"
+            [collection]="parentCollection"
             [user]="user"
             [userProfile]="userProfile"
-            [collection]="parentCollection"
           ></astrobin-user-gallery-collection-menu>
         </h2>
         <p *ngIf="parentCollection.description" [innerHTML]="parentCollection.description" class="m-0 p-0"></p>
@@ -67,25 +67,25 @@ import { filter, map, takeUntil } from "rxjs/operators";
         <a
           *ngFor="let collection of collections; trackBy: collectionTrackByFn"
           (click)="openCollection(collection)"
+          class="d-block"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="d-block"
         >
           <astrobin-user-gallery-collection-thumbnail
+            [collection]="collection"
             [user]="user"
             [userProfile]="userProfile"
-            [collection]="collection"
           ></astrobin-user-gallery-collection-thumbnail>
         </a>
 
         <a
           *ngIf="currentUserWrapper.user?.id === user.id && !parentCollection"
           (click)="createCollection()"
+          class="create-collection-button d-flex flex-column justify-content-center align-items-center text-center"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="create-collection-button d-flex flex-column justify-content-center align-items-center text-center"
         >
-          <fa-icon icon="plus" [ngbTooltip]="'Create collection'"></fa-icon>
+          <fa-icon [ngbTooltip]="'Create collection'" icon="plus"></fa-icon>
         </a>
       </div>
     </ng-container>
@@ -93,13 +93,13 @@ import { filter, map, takeUntil } from "rxjs/operators";
     <ng-template #createCollectionOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">{{ "Create collection" | translate }}</h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        <button (click)="offcanvas.close()" class="btn-close" type="button"></button>
       </div>
       <div class="offcanvas-body">
         <astrobin-user-gallery-collection-create
+          [parent]="parentCollection"
           [user]="user"
           [userProfile]="userProfile"
-          [parent]="parentCollection"
           (cancelClick)="offcanvas.close()"
         ></astrobin-user-gallery-collection-create>
       </div>

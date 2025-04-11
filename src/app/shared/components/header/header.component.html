@@ -18,8 +18,8 @@
 </nav>
 
 <ng-template #astrobinLogoTemplate>
-  <a *ngIf="!showMobileSearch" routerLink="/" class="navbar-brand p-0 ps-3 pe-2 w-100 d-inline-block me-0 me-lg-3">
-    <img alt="AstroBin" class="d-block d-sm-none d-lg-block" src="assets/images/nav-logo.png?v=3" />
+  <a *ngIf="!showMobileSearch" class="navbar-brand p-0 ps-3 pe-2 w-100 d-inline-block me-0 me-lg-3" routerLink="/">
+    <img class="d-block d-sm-none d-lg-block" alt="AstroBin" src="assets/images/nav-logo.png?v=3" />
     <h4 class="d-none d-sm-inline-block d-lg-none m-0 fw-bold">AstroBin</h4>
   </a>
   <ng-container *ngIf="showMobileSearch">
@@ -33,9 +33,9 @@
     <label class="w-100 mb-0">
       <input
         #quickSearchInput
+        class="form-control"
         [(ngModel)]="quickSearchQuery"
         autocomplete="off"
-        class="form-control"
         name="q"
         placeholder="{{ 'Quick search' | translate }}"
         type="text"
@@ -48,11 +48,11 @@
 
 <ng-template #menubarTemplate>
   <button
-    (click)="openSidebarMenu()"
     [attr.aria-expanded]="!menubarIsCollapsed"
+    (click)="openSidebarMenu()"
+    class="navbar-toggler"
     aria-controls="navbarSupportedContent"
     aria-label="Toggle navigation"
-    class="navbar-toggler"
     data-target="#navbarSupportedContent"
     data-toggle="collapse"
     type="button"
@@ -76,11 +76,11 @@
 
     <li class="nav-item">
       <a
-        (click)="openUserSidebarMenu()"
         [attr.aria-expanded]="!userMenubarIsCollapsed"
+        (click)="openUserSidebarMenu()"
+        class="d-lg-block ms-lg-2"
         aria-controls="userNavbarSupportedContent"
         aria-label="Toggle navigation"
-        class="d-lg-block ms-lg-2"
         data-target="#userNavbarSupportedContent"
         data-toggle="collapse"
       >
@@ -97,7 +97,7 @@
   <!-- Language selector -->
   <li class="nav-item">
     <div ngbDropdown>
-      <button class="btn btn-link no-triangle" id="languageDropdown" ngbDropdownToggle>
+      <button id="languageDropdown" class="btn btn-link no-triangle" ngbDropdownToggle>
         {{ currentLanguageCodeDisplay }}
       </button>
       <div [attr.aria-labelledby]="'languageDropdown'" ngbDropdownMenu>
@@ -127,7 +127,7 @@
 
 <ng-template #notificationsButtonTemplate>
   <!-- Notifications -->
-  <a class="btn btn-link nav-link position-relative" (click)="openNotificationsOffcanvas()">
+  <a (click)="openNotificationsOffcanvas()" class="btn btn-link nav-link position-relative">
     <fa-icon icon="bell"></fa-icon>
     <ng-container *ngIf="unreadNotificationsCount$ | async as unreadCount">
       <span *ngIf="!!unreadCount" class="badge bg-danger badge-pill rounded-pill m-0">
@@ -147,7 +147,7 @@
         <ng-container [ngTemplateOutlet]="astrobinIndexTemplate"></ng-container>
       </button>
 
-      <button class="btn btn-primary mt-2 d-none d-xl-inline-block" id="user-dropdown" ngbDropdownToggle></button>
+      <button id="user-dropdown" class="btn btn-primary mt-2 d-none d-xl-inline-block" ngbDropdownToggle></button>
 
       <ul [class.active]="!userMenubarIsCollapsed" class="nav user-navigation d-block d-xl-none">
         <ng-container [ngTemplateOutlet]="userMenubarTemplate"></ng-container>
@@ -173,10 +173,10 @@
         </a>
 
         <a
-          (click)="userService.openGallery(user.username, userProfile.enableNewGalleryExperience)"
           [href]="userService.getGalleryUrl(user.username, userProfile.enableNewGalleryExperience)"
-          astrobinEventPreventDefault
+          (click)="userService.openGallery(user.username, userProfile.enableNewGalleryExperience)"
           class="dropdown-item"
+          astrobinEventPreventDefault
         >
           <fa-icon icon="image"></fa-icon>
           {{ "Public Gallery" | translate }}
@@ -184,10 +184,10 @@
 
         <a
           *ngIf="!userProfile.displayWipImagesOnPublicGallery"
-          (click)="userService.openStaging(user.username, userProfile.enableNewGalleryExperience)"
           [href]="userService.getStagingUrl(user.username, userProfile.enableNewGalleryExperience)"
-          astrobinEventPreventDefault
+          (click)="userService.openStaging(user.username, userProfile.enableNewGalleryExperience)"
           class="dropdown-item"
+          astrobinEventPreventDefault
         >
           <fa-icon icon="lock"></fa-icon>
           {{ "Staging Area" | translate }}
@@ -256,12 +256,12 @@
 
 <ng-template #indexesPopoverContentTemplate>
   <ng-container *ngIf="userProfile">
-    <h4>{{ "Image Index" | translate }}: {{ userProfile.astroBinIndex | number : "1.2-2" }}</h4>
+    <h4>{{ "Image Index" | translate }}: {{ userProfile.astroBinIndex | number: "1.2-2" }}</h4>
     <div [innerHTML]="imageIndexPopoverInfo"></div>
 
     <hr />
 
-    <h4>{{ "Contribution Index" | translate }} (beta): {{ userProfile.contributionIndex | number : "1.2-2" }}</h4>
+    <h4>{{ "Contribution Index" | translate }} (beta): {{ userProfile.contributionIndex | number: "1.2-2" }}</h4>
     <div [innerHTML]="contributionIndexPopoverInfo"></div>
   </ng-container>
 </ng-template>
@@ -273,7 +273,7 @@
   >
     <ul class="navbar-nav mr-lg-auto mb-0 order-1 order-lg-0 justify-content-center">
       <li class="nav-item">
-        <a routerLink="/" class="nav-link d-lg-none">
+        <a class="nav-link d-lg-none" routerLink="/">
           {{ "Home" | translate }}
         </a>
       </li>
@@ -281,7 +281,7 @@
       <!-- Moderate menu -->
       <li *ngIf="user | isContentModerator" class="nav-item">
         <div ngbDropdown>
-          <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>Moderate</button>
+          <button id="moderateDropdown" class="btn btn-link" ngbDropdownToggle translate>Moderate</button>
           <div [attr.aria-labelledby]="'moderateDropdown'" ngbDropdownMenu>
             <h6 class="dropdown-header" translate>Images</h6>
 
@@ -336,7 +336,7 @@
       <!-- Forum menu -->
       <li class="nav-item">
         <div ngbDropdown>
-          <button class="btn btn-link" id="forumDropdown" ngbDropdownToggle translate>Forum</button>
+          <button id="forumDropdown" class="btn btn-link" ngbDropdownToggle translate>Forum</button>
           <div [attr.aria-labelledby]="'forumDropdown'" ngbDropdownMenu>
             <a [href]="classicRoutesService.FORUM_HOME" class="dropdown-item">
               <fa-icon icon="comments"></fa-icon>
@@ -360,7 +360,7 @@
       <!-- Marketplace menu -->
       <li class="nav-item">
         <div ngbDropdown>
-          <button class="btn btn-link" id="marketplaceDropdown" ngbDropdownToggle translate>Marketplace</button>
+          <button id="marketplaceDropdown" class="btn btn-link" ngbDropdownToggle translate>Marketplace</button>
           <div [attr.aria-labelledby]="'marketplaceDropdown'" ngbDropdownMenu>
             <a [routerLink]="['equipment', 'marketplace']" class="dropdown-item">
               <fa-icon icon="shopping-cart"></fa-icon>
@@ -395,7 +395,7 @@
       <!-- Explore menu -->
       <li class="nav-item">
         <div ngbDropdown>
-          <button class="btn btn-link" id="exploreDropdown" ngbDropdownToggle translate>Explore</button>
+          <button id="exploreDropdown" class="btn btn-link" ngbDropdownToggle translate>Explore</button>
           <div [attr.aria-labelledby]="'exploreDropdown'" ngbDropdownMenu>
             <a [routerLink]="['/', 'search']" class="dropdown-item">
               <fa-icon icon="search"></fa-icon>
@@ -441,7 +441,7 @@
       <!-- Help menu -->
       <li class="nav-item">
         <div ngbDropdown>
-          <button class="btn btn-link" id="helpDropdown" ngbDropdownToggle translate>Help</button>
+          <button id="helpDropdown" class="btn btn-link" ngbDropdownToggle translate>Help</button>
           <div [attr.aria-labelledby]="'helpDropdown'" ngbDropdownMenu>
             <a [href]="classicRoutesService.ABOUT" class="dropdown-item">
               <fa-icon icon="info"></fa-icon>
@@ -498,8 +498,8 @@
 
       <ng-template #loginAndRegisterMenubarTemplate>
         <ng-container
-          [ngTemplateOutletContext]="{ liClasses: 'd-none d-lg-block' }"
           [ngTemplateOutlet]="loginAndRegisterTemplate"
+          [ngTemplateOutletContext]="{ liClasses: 'd-none d-lg-block' }"
         ></ng-container>
       </ng-template>
     </ul>
@@ -536,10 +536,10 @@
 
       <li class="nav-item">
         <a
-          (click)="userService.openGallery(user.username, userProfile.enableNewGalleryExperience)"
           [href]="userService.getGalleryUrl(user.username, userProfile.enableNewGalleryExperience)"
-          astrobinEventPreventDefault
+          (click)="userService.openGallery(user.username, userProfile.enableNewGalleryExperience)"
           class="nav-link"
+          astrobinEventPreventDefault
         >
           {{ "Public Gallery" | translate }}
         </a>
@@ -547,8 +547,8 @@
 
       <li class="nav-item">
         <a
-          (click)="userService.openStaging(user.username, userProfile.enableNewGalleryExperience)"
           [href]="userService.getStagingUrl(user.username, userProfile.enableNewGalleryExperience)"
+          (click)="userService.openStaging(user.username, userProfile.enableNewGalleryExperience)"
           class="nav-link"
         >
           {{ "Staging Area" | translate }}
@@ -618,11 +618,11 @@
     triggers="mouseenter:click"
   >
     <span class="image-index index">
-      {{ userProfile?.astroBinIndex | number : "1.2-2" }}
+      {{ userProfile?.astroBinIndex | number: "1.2-2" }}
       &middot;
     </span>
     <span class="contribution-index index">
-      {{ userProfile?.contributionIndex | number : "1.2-2" }}
+      {{ userProfile?.contributionIndex | number: "1.2-2" }}
     </span>
   </span>
 </ng-template>

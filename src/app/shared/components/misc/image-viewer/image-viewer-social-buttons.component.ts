@@ -47,10 +47,10 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap }
         <astrobin-toggle-property
           *ngIf="currentUserWrapper.user?.id !== image.user"
           [contentType]="imageContentType.id"
+          [count]="initialLikeCount"
           [objectId]="image?.pk"
           [showLabel]="false"
           [userId]="currentUserWrapper.user?.id"
-          [count]="initialLikeCount"
           class="btn-no-block"
           btnClass="btn btn-no-block {{ btnExtraClasses }}"
           propertyType="like"
@@ -72,10 +72,10 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap }
         <astrobin-toggle-property
           *ngIf="!!image && currentUserWrapper.user?.id !== image.user"
           [contentType]="imageContentType.id"
-          [objectId]="image?.pk"
-          [userId]="currentUserWrapper.user?.id"
-          [showLabel]="false"
           [count]="initialBookmarkCount"
+          [objectId]="image?.pk"
+          [showLabel]="false"
+          [userId]="currentUserWrapper.user?.id"
           class="btn-no-block"
           btnClass="btn btn-no-block {{ btnExtraClasses }}"
           propertyType="bookmark"
@@ -97,9 +97,9 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap }
         <button (click)="scrollToComments($event)" class="btn btn-no-block {{ btnExtraClasses }}">
           <fa-icon
             [ngbTooltip]="'Comments' | translate"
-            triggers="hover click"
             container="body"
             icon="comments"
+            triggers="hover click"
           ></fa-icon>
 
           <span class="count">
@@ -141,18 +141,18 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap }
     <ng-template #likeThisOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" translate="People who like this"></h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()" aria-label="Close"></button>
+        <button (click)="offcanvas.close()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
-      <div class="offcanvas-body" *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+      <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="offcanvas-body">
         <div *ngIf="likeThis; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
             *ngIf="likeThis && likeThis.length > 0"
-            type="search"
-            class="form-control mb-2"
-            placeholder="{{ 'Search' | translate }}"
             [ngModelOptions]="{ standalone: true }"
-            [(ngModel)]="likeThisSearch"
             (ngModelChange)="likeThisSearchSubject.next($event)"
+            class="form-control mb-2"
+            [(ngModel)]="likeThisSearch"
+            placeholder="{{ 'Search' | translate }}"
+            type="search"
           />
           <ng-container *ngIf="!searching; else loadingTemplate">
             <table
@@ -166,21 +166,21 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap }
                       {{ like.displayName || like.username }}
                     </a>
                     <div class="d-xl-none">
-                      {{ like.timestamp | localDate | timeago : true }}
+                      {{ like.timestamp | localDate | timeago: true }}
                     </div>
                   </td>
                   <td class="d-none d-xl-table-cell">
-                    {{ like.timestamp | localDate | timeago : true }}
+                    {{ like.timestamp | localDate | timeago: true }}
                   </td>
                   <td class="text-end">
                     <astrobin-toggle-property
                       *ngIf="!!currentUserWrapper.user && currentUserWrapper.user.id !== like.userId"
-                      [userId]="currentUserWrapper.user.id"
                       [contentType]="userContentType.id"
                       [objectId]="like.userId"
                       [propertyType]="'follow'"
                       [showLabel]="false"
                       [toggled]="like.followed"
+                      [userId]="currentUserWrapper.user.id"
                       class="d-block"
                       btnClass="btn btn-sm btn-link text-secondary"
                     ></astrobin-toggle-property>
@@ -198,16 +198,16 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap }
     <ng-template #bookmarkedThisOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" translate="People who bookmarked this"></h5>
-        <button type="button" class="btn-close" (click)="offcanvas.close()" aria-label="Close"></button>
+        <button (click)="offcanvas.close()" class="btn-close" aria-label="Close" type="button"></button>
       </div>
-      <div class="offcanvas-body" *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+      <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="offcanvas-body">
         <astrobin-toggle-property
           *ngIf="!!currentUserWrapper.user && currentUserWrapper.user.id === image.user"
-          [userId]="currentUserWrapper.user.id"
           [contentType]="imageContentType.id"
           [objectId]="image.pk"
           [propertyType]="'bookmark'"
           [setLabel]="'Bookmark your own image' | translate"
+          [userId]="currentUserWrapper.user.id"
           class="d-block mb-3"
           btnClass="btn btn-primary"
         ></astrobin-toggle-property>
@@ -215,12 +215,12 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap }
         <div *ngIf="bookmarkedThis; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
             *ngIf="bookmarkedThis && bookmarkedThis.length > 0"
-            type="search"
-            class="form-control mb-2"
-            placeholder="{{ 'Search' | translate }}"
             [ngModelOptions]="{ standalone: true }"
-            [(ngModel)]="bookmarkedThisSearch"
             (ngModelChange)="bookmarkedThisSearchSubject.next($event)"
+            class="form-control mb-2"
+            [(ngModel)]="bookmarkedThisSearch"
+            placeholder="{{ 'Search' | translate }}"
+            type="search"
           />
           <ng-container *ngIf="!searching; else loadingTemplate">
             <table
@@ -234,21 +234,21 @@ import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap }
                       {{ bookmark.displayName || bookmark.username }}
                     </a>
                     <div class="d-xl-none">
-                      {{ bookmark.timestamp | localDate | timeago : true }}
+                      {{ bookmark.timestamp | localDate | timeago: true }}
                     </div>
                   </td>
                   <td class="d-none d-xl-table-cell">
-                    {{ bookmark.timestamp | localDate | timeago : true }}
+                    {{ bookmark.timestamp | localDate | timeago: true }}
                   </td>
                   <td class="text-end">
                     <astrobin-toggle-property
                       *ngIf="!!currentUserWrapper.user && currentUserWrapper.user.id !== bookmark.userId"
-                      [userId]="currentUserWrapper.user.id"
                       [contentType]="userContentType.id"
                       [objectId]="bookmark.userId"
                       [propertyType]="'follow'"
                       [showLabel]="false"
                       [toggled]="bookmark.followed"
+                      [userId]="currentUserWrapper.user.id"
                       class="d-block"
                       btnClass="btn btn-sm btn-link text-secondary"
                     ></astrobin-toggle-property>
