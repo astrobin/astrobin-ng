@@ -82,6 +82,14 @@
         ],
         "require-await": "error"
       }
+    },
+    {
+      "files": ["*.component.html"],
+      "parser": "@angular-eslint/template-parser",
+      "extends": ["plugin:@angular-eslint/template/recommended"],
+      "rules": {
+        "prettier/prettier": "error"
+      }
     }
   ]
 }
