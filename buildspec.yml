@@ -18,6 +18,7 @@ phases:
     commands:
       - git fetch origin master # Needed for git diff to work
       - git diff origin/master...HEAD --name-only
+      - npx tsc --noEmit
       - npm run lint:changed
       - npm run format:changed
       - npm run build:prod
