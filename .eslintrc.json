@@ -79,7 +79,8 @@
               "attributes": true
             }
           }
-        ]
+        ],
+        "require-await": "error"
       }
     }
   ]

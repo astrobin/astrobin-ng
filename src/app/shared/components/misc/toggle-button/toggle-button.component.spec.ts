@@ -10,8 +10,9 @@ describe("ToggleButtonComponent", () => {
   let component: ToggleButtonComponent;
   let fixture: ComponentFixture<ToggleButtonComponent>;
 
-  beforeEach(async () =>
-    MockBuilder(ToggleButtonComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }))
+  beforeEach(
+    async () =>
+      await MockBuilder(ToggleButtonComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }))
   );
 
   beforeEach(() => {

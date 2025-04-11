@@ -251,7 +251,7 @@ describe("DateService", () => {
   describe("DateService with past years and en-US locale", () => {
     let translateService: TranslateService;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       translateService = TestBed.inject(TranslateService);
 
       // Mock the locale to be 'en-US'

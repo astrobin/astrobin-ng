@@ -204,7 +204,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       });
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     super.ngOnInit();
 
     this._initScrollListener();

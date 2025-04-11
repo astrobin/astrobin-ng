@@ -264,7 +264,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     super.ngOnInit();
 
     this._initContentTypes();

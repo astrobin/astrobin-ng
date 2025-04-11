@@ -6,7 +6,7 @@ import { ReadOnlyModeComponent } from "./read-only-mode.component";
 describe("ReadOnlyModeComponent", () => {
   let component: ReadOnlyModeComponent;
 
-  beforeEach(async () => MockBuilder(ReadOnlyModeComponent, AppModule));
+  beforeEach(async () => await MockBuilder(ReadOnlyModeComponent, AppModule));
   beforeEach(() => (component = MockRender(ReadOnlyModeComponent).point.componentInstance));
 
   it("should create", () => {

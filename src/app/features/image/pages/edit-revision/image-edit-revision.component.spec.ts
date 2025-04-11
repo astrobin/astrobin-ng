@@ -86,7 +86,7 @@ describe("ImageEditRevisionComponent", () => {
     store = TestBed.inject(MockStore);
   });
 
-  beforeEach(async () => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(ImageEditRevisionPageComponent);
     component = fixture.componentInstance;
 
