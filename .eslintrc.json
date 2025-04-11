@@ -21,10 +21,8 @@
         "tsconfigRootDir": "."
       },
       "extends": [
-        "plugin:prettier/recommended"
       ],
       "rules": {
-        "prettier/prettier": "error",
         "no-multiple-empty-lines": [
           "error",
           {
@@ -88,7 +86,6 @@
       "parser": "@angular-eslint/template-parser",
       "extends": ["plugin:@angular-eslint/template/recommended"],
       "rules": {
-        "prettier/prettier": "error"
       }
     }
   ]
