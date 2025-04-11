@@ -67,7 +67,7 @@ export class HighlightService {
    */
   loadHighlightJs(): Promise<void> {
     // Return existing promise if already loading
-    if (this._loadingPromise) {
+    if (this._loadingPromise !== null && this._loadingPromise !== undefined) {
       return this._loadingPromise;
     }
 

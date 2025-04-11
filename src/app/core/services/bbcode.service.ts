@@ -30,7 +30,7 @@ export class BBCodeService {
 
     try {
       // Use our cached promise if we have one, otherwise create a new one
-      if (!this._transformPromise) {
+      if (this._transformPromise === null || this._transformPromise === undefined) {
         this._transformPromise = this.ckEditorService.loadCKEditor();
       }
 
